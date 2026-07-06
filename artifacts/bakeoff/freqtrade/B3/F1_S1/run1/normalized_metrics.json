@@ -1,0 +1,21 @@
+{
+  "engine": "freqtrade",
+  "strategy": "B3BollingerMr",
+  "trades_roundtrips": 2771,
+  "fills": 5542,
+  "left_open_trades": 0,
+  "profit_total_abs": "-994.54219371",
+  "cagr": "-0.61252732303866",
+  "max_drawdown_abs": "995.0878887299987",
+  "wins": 1018,
+  "losses": 1753,
+  "fee_audit": {
+    "max_pnl_deviation_quote": "5E-9",
+    "status": "PASS"
+  },
+  "semantic_notes": [
+    "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+    "fees converted from freqtrade per-side ratios to absolute quote amounts",
+    "prices float64 at engine boundary (declared converter loss)"
+  ]
+}

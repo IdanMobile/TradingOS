@@ -1,0 +1,52 @@
+{
+  "artifact_id": "freqtrade-B1-F1/S1-run1",
+  "produced_by": "T-006-02",
+  "status": "OK",
+  "engine": "freqtrade",
+  "command": [
+    "/Users/user/Downloads/trading_os_project_package/engines/freqtrade/.venv/bin/freqtrade",
+    "backtesting",
+    "--config",
+    "/Users/user/Downloads/trading_os_project_package/engines/freqtrade/lane/config_F1_S1.json",
+    "--strategy",
+    "B1BuyAndHold",
+    "--timerange",
+    "20210101-20260701",
+    "--fee",
+    "0.001",
+    "--export",
+    "trades",
+    "--timeframe",
+    "5m"
+  ],
+  "returncode": 0,
+  "started_utc": "2026-07-06T15:57:11.447336+00:00",
+  "scenario": "F1/S1",
+  "fee_rate_per_side": "0.001",
+  "slippage_note": "CapabilityGap: freqtrade backtesting has no per-side bps slippage model; S-scenarios applied post-hoc in parity analysis (documented, not silent)",
+  "converter_losses": [
+    "decimal128->float64 (freqtrade dataframe model)"
+  ],
+  "input_refs": [
+    "DS-CRYPTO-SPOT-BAKEOFF-V1"
+  ],
+  "files": [
+    {
+      "path": "backtest-result-2026-07-06_18-57-40.zip",
+      "sha256": "208163ab12e898a48d2d0215bf11c8d403ae99d15950b1eb16642ccfbee19a6a"
+    },
+    {
+      "path": "trades.parquet",
+      "sha256": "0cd1e415d94d6c4c545d8fec254d3bb98838d165b49dc3a5a5604efe35aad02a"
+    },
+    {
+      "path": "equity.parquet",
+      "sha256": "916b883b7f3fe08236971f505c4846ed49f7fa5edf283f85432f0e07f38607fc"
+    },
+    {
+      "path": "normalized_metrics.json",
+      "sha256": "00b5a5ff3bbb715ff01f8a038423f09198f0667f985bf55aab62cfa42f116ea2"
+    }
+  ],
+  "schema_version": 1
+}

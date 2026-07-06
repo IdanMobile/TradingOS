@@ -1,0 +1,21 @@
+{
+  "engine": "freqtrade",
+  "strategy": "B1BuyAndHold",
+  "trades_roundtrips": 1,
+  "fills": 2,
+  "left_open_trades": 0,
+  "profit_total_abs": "1013.197556",
+  "cagr": "0.1357778291806444",
+  "max_drawdown_abs": "0.0",
+  "wins": 1,
+  "losses": 0,
+  "fee_audit": {
+    "max_pnl_deviation_quote": "0",
+    "status": "PASS"
+  },
+  "semantic_notes": [
+    "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+    "fees converted from freqtrade per-side ratios to absolute quote amounts",
+    "prices float64 at engine boundary (declared converter loss)"
+  ]
+}
