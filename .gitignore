@@ -49,3 +49,7 @@ mlartifacts/
 .DS_Store
 .idea/
 .vscode/
+
+# --- Engine lane working dirs (rebuilt from code; artifacts live in artifacts/) ---
+engines/*/lane/
+artifacts/**/*.zip

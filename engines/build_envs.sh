@@ -48,7 +48,7 @@ docker_ready() {
 }
 
 # --- venv lanes ---
-pip_lane freqtrade 3.12 "freqtrade==2026.6"
+pip_lane freqtrade 3.12 "freqtrade==2026.6" "scipy"  # scipy: required by freqtrade.data.metrics but absent from its wheel deps
 pip_lane nautilus  3.13 "nautilus_trader==1.230.0"
 pip_lane vectorbt  3.13 "vectorbt==1.1.0"
 pip_lane lean      3.12 "lean==1.0.227"   # QuantConnect CLI; engine itself runs in Docker
