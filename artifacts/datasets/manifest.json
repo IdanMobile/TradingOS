@@ -1,4 +1,17 @@
 {
   "schema": "tios-artifact-manifest-v1",
-  "artifacts": []
+  "artifacts": [
+    {
+      "file": "DS-CRYPTO-SPOT-BAKEOFF-V1.manifest.json",
+      "sha256": "f2b729627adb5d75a99c90dd7dd25ea6dcabf83de4baea5784397424034dfc56"
+    },
+    {
+      "file": "QUALITY_REPORT.json",
+      "sha256": "0f83a1073836708d60138e4aca76c81c20e749136c88571babc550a176fe5cd3"
+    },
+    {
+      "file": "QUALITY_REPORT.md",
+      "sha256": "4d6afac65a066e24d939ba0a5956f4fd55919b4918a94e3d6eae99eeec1d67e6"
+    }
+  ]
 }

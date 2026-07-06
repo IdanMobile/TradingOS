@@ -1,0 +1,22 @@
+# Baseline B3 — Bollinger-band mean reversion (T-005-03, REQ-013)
+strategy_id: STRAT-B3-bollinger-mr
+family: mean_reversion
+inputs: [close]
+indicators:
+  - name: bollinger_bands
+    parameters: {window: 3, std_multiplier: 1, ddof: 0, source: close}
+    outputs: [middle_band, lower_band, upper_band]
+entry_long:
+  all:
+    - close < lower_band
+exit_long:
+  any:
+    - close >= middle_band
+position_sizing: {type: fixed_fraction, fraction: 1.0}
+risk: {stop_loss: null, take_profit: null}
+assumptions:
+  - "signal evaluated at bar close; execution at next bar open"
+  - "warm-up: no signal until the band window is full (first 2 bars produce no signal; signals start at bar 3)"
+  - "standard deviation is population std (ddof=0) over the last `window` closes including the current bar"
+  - "middle_band = SMA(window); lower/upper = middle -/+ std_multiplier * std"
+ambiguities: []

@@ -1,0 +1,25 @@
+# Baseline B4 — Volatility (channel) breakout (T-005-03, REQ-013)
+strategy_id: STRAT-B4-vol-breakout
+family: breakout
+inputs: [close, high]
+indicators:
+  - name: rolling_max
+    parameters: {window: 5, shift: 1, source: high}
+    outputs: [hh_prev5]
+  - name: sma
+    parameters: {window: 3, source: close}
+    outputs: [sma_3]
+entry_long:
+  all:
+    - close > hh_prev5
+exit_long:
+  any:
+    - close < sma_3
+position_sizing: {type: fixed_fraction, fraction: 1.0}
+risk: {stop_loss: null, take_profit: null}
+assumptions:
+  - "signal evaluated at bar close; execution at next bar open"
+  - "warm-up: entry undefined until 5 prior bars exist (entry signals start at bar 6); exit undefined until SMA window is full (bar 3)"
+  - "hh_prev5 = max of the HIGHS of the previous 5 bars, EXCLUDING the current bar (shift 1)"
+  - "undefined signals during warm-up are treated as false"
+ambiguities: []

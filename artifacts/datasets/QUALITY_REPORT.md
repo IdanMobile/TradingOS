@@ -1,6 +1,6 @@
 # Dataset Quality Report — DS-CRYPTO-SPOT-BAKEOFF-V1
 
-Overall: **PASS** · normalization commit `ff6c63727057`
+Overall: **PASS** · normalization commit `d541c500459e`
 
 - raw_source_checksums: PASS (396 files, 396 official-checksum-verified)
 - schema_identical_across_tables: PASS

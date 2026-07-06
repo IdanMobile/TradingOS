@@ -1,6 +1,6 @@
 {
   "dataset_id": "DS-CRYPTO-SPOT-BAKEOFF-V1",
-  "normalization_code_commit": "ff6c63727057c325cd4e4feaa272e6c7c4db53b2",
+  "normalization_code_commit": "d541c500459e8cff9407f76e8c9c03507af26668",
   "tables": {
     "BTCUSDT_5m": {
       "checks": [

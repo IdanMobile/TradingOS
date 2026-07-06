@@ -1,0 +1,15 @@
+# Baseline B1 — Buy and hold (engine-neutral canonical spec, T-005-03, REQ-013)
+strategy_id: STRAT-B1-buy-and-hold
+family: buy_and_hold
+inputs: [close]
+indicators: []
+always_in_market: true
+entry_long: null
+exit_long: null
+position_sizing: {type: fixed_fraction, fraction: 1.0}
+risk: {stop_loss: null, take_profit: null}
+assumptions:
+  - "enter with full fraction at the first tradable bar; never exit (always in market)"
+  - "signal evaluated at bar close; execution at next bar open"
+  - "warm-up: none (no indicators)"
+ambiguities: []

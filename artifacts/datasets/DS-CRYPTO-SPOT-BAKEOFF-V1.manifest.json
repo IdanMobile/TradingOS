@@ -1,0 +1,74 @@
+{
+  "dataset_id": "DS-CRYPTO-SPOT-BAKEOFF-V1",
+  "manifest_version": 1,
+  "source": "Binance public Spot data",
+  "frozen_utc": "2026-07-06T15:28:10.512479+00:00",
+  "normalization_code_commit": "d541c500459e8cff9407f76e8c9c03507af26668",
+  "raw_manifest": {
+    "path": "/Users/user/Downloads/trading_os_project_package/data/raw/binance_spot/raw_manifest.json",
+    "sha256": "7d2a2336625b9c17f2e83ac98c6ec80ca66f6a70fd93551a2d2e59b60862178a"
+  },
+  "quality_report_sha256": "0f83a1073836708d60138e4aca76c81c20e749136c88571babc550a176fe5cd3",
+  "tables": {
+    "BTCUSDT_5m": {
+      "parquet": "BTCUSDT_5m.parquet",
+      "rows": 577803,
+      "coverage_start_utc": "2021-01-01 00:00:00+00:00",
+      "coverage_end_utc": "2026-06-30 23:55:00+00:00",
+      "content_sha256": "3ec05eb0ea618310209ae92de4bf1940b929ed2c889bccb0b3f749ff0a8a17fa",
+      "parquet_sha256": "d4d6b3306c44e242f3fb7f71c44bacabf9a6af1f1f8d507ca2de0853b6a727d0"
+    },
+    "BTCUSDT_15m": {
+      "parquet": "BTCUSDT_15m.parquet",
+      "rows": 192602,
+      "coverage_start_utc": "2021-01-01 00:00:00+00:00",
+      "coverage_end_utc": "2026-06-30 23:45:00+00:00",
+      "content_sha256": "f8126080e029281a5a8982fc3311cbd8d573d04be74ccc248e709c28b7ccb2e5",
+      "parquet_sha256": "3c39eb7e988f5f9740260ce89cb53ea2e4ad152df576e4691f483997b6151821"
+    },
+    "BTCUSDT_1h": {
+      "parquet": "BTCUSDT_1h.parquet",
+      "rows": 48154,
+      "coverage_start_utc": "2021-01-01 00:00:00+00:00",
+      "coverage_end_utc": "2026-06-30 23:00:00+00:00",
+      "content_sha256": "49981c5cf5f3376ea60e931415feefa252c5970d902732dd68d8e95c46a2a3b3",
+      "parquet_sha256": "d44c70c3c87a3e342dd0496c3975d3b54a2b50dd4c5c1b8873ef84eece99947c"
+    },
+    "ETHUSDT_5m": {
+      "parquet": "ETHUSDT_5m.parquet",
+      "rows": 577803,
+      "coverage_start_utc": "2021-01-01 00:00:00+00:00",
+      "coverage_end_utc": "2026-06-30 23:55:00+00:00",
+      "content_sha256": "c4ca5cb07e5a4f09d87207639a16ffcba1eccbdd9ec0a85b55be16e80ea841f5",
+      "parquet_sha256": "79c4678cebf490b82e3adb34c31f8e696bf14f6d35ddd3bdfa09658078d68dff"
+    },
+    "ETHUSDT_15m": {
+      "parquet": "ETHUSDT_15m.parquet",
+      "rows": 192602,
+      "coverage_start_utc": "2021-01-01 00:00:00+00:00",
+      "coverage_end_utc": "2026-06-30 23:45:00+00:00",
+      "content_sha256": "5489b08439c2dc4f3b2a57842f06b8da7ae0d8a9eabf6681f7314b1ece55e025",
+      "parquet_sha256": "230e7ef993e70ffc708ab61bb18fbfdbe9de6d71ae31d9a78535cde20e1d5759"
+    },
+    "ETHUSDT_1h": {
+      "parquet": "ETHUSDT_1h.parquet",
+      "rows": 48154,
+      "coverage_start_utc": "2021-01-01 00:00:00+00:00",
+      "coverage_end_utc": "2026-06-30 23:00:00+00:00",
+      "content_sha256": "12c4ae9a846c777948cfa9c3f5add36efbcb54129edec8cf6a0d2b16ab0433e9",
+      "parquet_sha256": "324b3a704560103d9d49453e48d5b24839df6ab2ca67c6fcd5da2d2365d3b1da"
+    }
+  },
+  "regeneration_proof": {
+    "runs": 2,
+    "identical_content_hashes": true,
+    "content_sha256_by_table": {
+      "BTCUSDT_5m": "3ec05eb0ea618310209ae92de4bf1940b929ed2c889bccb0b3f749ff0a8a17fa",
+      "BTCUSDT_15m": "f8126080e029281a5a8982fc3311cbd8d573d04be74ccc248e709c28b7ccb2e5",
+      "BTCUSDT_1h": "49981c5cf5f3376ea60e931415feefa252c5970d902732dd68d8e95c46a2a3b3",
+      "ETHUSDT_5m": "c4ca5cb07e5a4f09d87207639a16ffcba1eccbdd9ec0a85b55be16e80ea841f5",
+      "ETHUSDT_15m": "5489b08439c2dc4f3b2a57842f06b8da7ae0d8a9eabf6681f7314b1ece55e025",
+      "ETHUSDT_1h": "12c4ae9a846c777948cfa9c3f5add36efbcb54129edec8cf6a0d2b16ab0433e9"
+    }
+  }
+}

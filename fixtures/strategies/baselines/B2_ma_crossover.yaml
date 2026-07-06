@@ -1,0 +1,25 @@
+# Baseline B2 — Moving-average crossover (T-005-03, REQ-013)
+strategy_id: STRAT-B2-ma-crossover
+family: trend_following
+inputs: [close]
+indicators:
+  - name: sma
+    parameters: {window: 3, source: close}
+    outputs: [sma_fast]
+  - name: sma
+    parameters: {window: 5, source: close}
+    outputs: [sma_slow]
+entry_long:
+  all:
+    - sma_fast > sma_slow
+exit_long:
+  any:
+    - sma_fast < sma_slow
+position_sizing: {type: fixed_fraction, fraction: 1.0}
+risk: {stop_loss: null, take_profit: null}
+assumptions:
+  - "signal evaluated at bar close; execution at next bar open"
+  - "warm-up: no signal until both SMAs are defined (first 4 bars produce no signal; signals start at bar 5)"
+  - "SMA is the arithmetic mean of the last N closes including the current bar"
+  - "equality (sma_fast == sma_slow) is neither entry nor exit"
+ambiguities: []
