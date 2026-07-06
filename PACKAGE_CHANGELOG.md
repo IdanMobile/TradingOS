@@ -111,3 +111,9 @@ Key outcomes:
 - Initiative 06: T-006-01 DONE (EngineAdapter port, NormalizedResult, capability gaps, mandatory fee/slippage grid, fee audit utility).
 - Initiative 18: T-018-01/03 DONE (secret hygiene, license audit w/ planted-AGPL proof).
 - Controlled edits: PROJECT_STATE, todos/04/05/06/18 — manifest regenerated.
+
+## v8.3 — 2026-07-06 — S1: Freqtrade matrix + vectorbt probe evidence
+
+- Freqtrade lane: B1–B4 × {F0/S0, F1/S1} all OK on frozen dataset; normalization to canonical decimal parquet; fee/PnL audit PASS everywhere; determinism byte-identical; lookahead flag root-caused (execution-state artifact, numeric proof); slippage CapabilityGap recorded; stake-model semantic note for parity.
+- vectorbt probe: 1.31M bar-combos/s, all trials retained.
+- Controlled edits: PROJECT_STATE, todos/06 — manifest regenerated.

@@ -25,7 +25,7 @@ Requirement source: `specs/ENGINE_BAKEOFF_BLUEPRINT_V1.md`. Skills: R7 + SKILL_E
 ## T-006-06 vectorbt accelerator probe (separate, not a peer)
 - Purpose: research-accelerator fit behind anti-overfit controls. Requirement: REQ-019. Precondition: T-001-01 (license).
 - Actions: run B2–B4 sweeps; measure throughput; verify all-trial retention pathway; document multiple-testing hazard controls.
-- Acceptance: accelerator verdict with evidence. Complexity: M. Status: TODO.
+- Acceptance: accelerator verdict with evidence. Complexity: M. Status: **IN PROGRESS 2026-07-06** — license verified (CG-10); B2 sweep ran: 34 combos × 577,803 bars in 15.0s (1.31M bar-combos/s), all trials retained (artifacts/bakeoff/vectorbt/). Remaining: B3/B4 sweeps, retention-pathway wiring into experiment ledger, hazard-controls doc, verdict.
 
 ## T-006-07 Cross-engine parity analysis (WS4)
 - Purpose: semantic diagnosis of every divergence. Requirement: REQ-020 (EG-2 input).

@@ -78,7 +78,7 @@ class B2MaCrossover(IStrategy):
     can_short = False
     minimal_roi = {"0": 1000}
     stoploss = -1.0
-    startup_candle_count = 5
+    startup_candle_count = 30
     process_only_new_candles = True
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -105,7 +105,7 @@ class B3BollingerMr(IStrategy):
     can_short = False
     minimal_roi = {"0": 1000}
     stoploss = -1.0
-    startup_candle_count = 3
+    startup_candle_count = 30
     process_only_new_candles = True
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -134,7 +134,7 @@ class B4VolBreakout(IStrategy):
     can_short = False
     minimal_roi = {"0": 1000}
     stoploss = -1.0
-    startup_candle_count = 6
+    startup_candle_count = 30
     process_only_new_candles = True
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:

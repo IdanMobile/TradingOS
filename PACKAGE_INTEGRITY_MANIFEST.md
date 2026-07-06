@@ -10,7 +10,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `0befe16dc4417eed19d84ddfc66ddcb537628302d5d7f9f8583f43eeb0b6b077` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `8eb7ce303173c18d5c28fcec7acb83631b514efb18a0bbcb3a53bcb7cdf46c92` |
+| `PROJECT_STATE.md` | `b3bb1f4b7fed74697223de2a31b08bb92f313eb63bc07bb3cddc60864e8aeed6` |
 | `DECISION_LOG.md` | `b55e9a650798a33e4e0ab6daa9098f923b0d2708e934281c8800786dc83ca88e` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
@@ -55,7 +55,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `todos/03_repository_foundation.md` | `180208e84db8c3a55007aadbf125e8b9e454a1bcf7c0fcb277d521ada5221a6d` |
 | `todos/04_data_foundation.md` | `7510144b128ba2e0f1b14882b2bb617f457d5487a8d6a4d7dead67f62247bb19` |
 | `todos/05_strategy_domain.md` | `e11b0f27f518eddf521b8250e27624279b14782b20e80284d6923c21b914934a` |
-| `todos/06_engine_bakeoff.md` | `cffe6764d60911d33ac4e0a92493f920547fc030e1a9e283710e21c8f02ff19c` |
+| `todos/06_engine_bakeoff.md` | `9fe41a0037b98f37886cd398b06c03a4c4e0c8aad67e389a8aa75ca474df1987` |
 | `todos/07_experiment_lineage.md` | `df00bed7820d90805b7b74968b4f74507b04c14579ba55cd883613a8398a85ea` |
 | `todos/08_backtesting.md` | `1e66847a6baec6c964635778c939187780264a5674924e31cf9b7e2d213b836a` |
 | `todos/09_validation.md` | `2eb3a095ae17bca8afc4b1af8e28c66fc0b53871c82284ea48c228bcced8c9c5` |

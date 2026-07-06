@@ -15,8 +15,11 @@ S0 finished 2026-07-06. **S1 started same day.** Progress:
 - **Initiative 05 (strategy domain): DONE.** Canonical spec model + validator (property-tested), immutable StrategyVersion, baselines B1–B4 VALID with hand-derived + independently recomputed micro-fixture goldens (`fixtures/strategies/baselines/`, `fixtures/micro/`).
 - **Initiative 18: T-018-01/03 DONE** (secret hygiene incl. artifacts; license audit — core venv copyleft-free, planted AGPL flagged); T-018-02 awaits T-010-01; T-018-04 recurring.
 - **Initiative 06 (bake-off): T-006-01 DONE** (EngineAdapter port, NormalizedResult, CapabilityReport, mandatory F/S grid, fee recomputation audit). Engine lanes T-006-02..05 next.
-- Local gate: 63 tests green (`make check` <2 min). Commits through `1a855fa`+.
-- Next: **T-006-02 Freqtrade lane** (subprocess-only, GPL boundary), then remaining lanes, vectorbt probe (license verified, lane unblocked), parity (T-006-07).
+- Local gate: 63 tests green (`make check` <2 min).
+- **T-006-02 Freqtrade lane IN PROGRESS**: full matrix B1–B4 × {F0/S0, F1/S1} ran OK on the frozen dataset (up to 102k roundtrips/run); normalized to canonical decimal parquet; fee/PnL audit PASS all runs (max dev 5e-9); determinism PASS (byte-identical rerun); slippage CapabilityGap documented; lookahead-analysis flag root-caused as execution-state artifact with numeric proof (`artifacts/bakeoff/freqtrade/LOOKAHEAD_ANALYSIS_B2.md`). Remaining: hyperopt retention probe, dry-run probe, signal parity vs micro goldens.
+- **T-006-06 vectorbt probe IN PROGRESS**: 34-combo B2 sweep over 577,803 bars in 15.0s (1.31M bar-combos/s), all trials retained (`artifacts/bakeoff/vectorbt/`).
+- Semantic note for parity: freqtrade compounding unlimited-stake + fees collapses executed-trade counts (F1/S1 2,501 vs F0 83,996 roundtrips on B2) — parity runs should pin a fixed stake.
+- Next: remaining T-006-02 probes → T-006-03 Nautilus lane → T-006-04 LEAN (Docker) → T-006-05 Hummingbot → T-006-07 parity; then {07, 08} per TODO order.
 
 ## Operational SSOT (unchanged)
 
