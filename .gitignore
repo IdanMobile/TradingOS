@@ -1,0 +1,41 @@
+# --- Secrets: never commit ---
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*credentials*.json
+*service-account*.json
+secrets/
+
+# .env.example IS committed (names/comments only)
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venvs/
+*.egg-info/
+.pytest_cache/
+.hypothesis/
+.mypy_cache/
+.ruff_cache/
+
+# --- Engine environments (rebuilt from manifests) ---
+engines/*/.venv/
+engines/*/venv/
+
+# --- Data & runtime artifacts (regenerated; manifests are committed) ---
+data/raw/
+data/normalized/
+mlruns/
+mlartifacts/
+*.duckdb
+*.sqlite
+*.db
+
+# --- OS / editor ---
+.DS_Store
+.idea/
+.vscode/
