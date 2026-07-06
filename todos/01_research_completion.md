@@ -5,7 +5,7 @@ Each task closes an RG-xx row in `research/RESEARCH_GAP_MATRIX.md`. Default skil
 ## T-001-01 vectorbt OSS license text (RG-03)
 - Actions: fetch LICENSE from the repo at the pinned version; classify; record in registry.
 - Outputs: registry row updated to S-strength; evidence record. Acceptance: exact license text quoted. Failure: text unavailable → vectorbt probe blocked, recorded.
-- Blocks: T-006-06. Status: TODO.
+- Blocks: T-006-06. Status: **DONE 2026-07-06** — Apache 2.0 + Commons Clause verified from installed v1.1.0 dist-info; evidence engines/vectorbt/LICENSE_CAPTURED.txt; RG-03 closed as CG-10.
 
 ## T-001-02 LEAN local data/pricing boundary (RG-02)
 - Actions: fetch current QuantConnect datasets/pricing/CLI docs; determine free local crypto-spot backtest path; note account requirements.

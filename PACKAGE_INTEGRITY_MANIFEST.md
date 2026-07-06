@@ -10,7 +10,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `0befe16dc4417eed19d84ddfc66ddcb537628302d5d7f9f8583f43eeb0b6b077` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `8a479337b66521ce548398825e1fca27b0ddb303992db9ce5e5c924fdc69259c` |
+| `PROJECT_STATE.md` | `f2b4c3a101d268d746860d3b23cbeb15d060d76d710bad81106276e98db1240c` |
 | `DECISION_LOG.md` | `b55e9a650798a33e4e0ab6daa9098f923b0d2708e934281c8800786dc83ca88e` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
@@ -42,17 +42,17 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/traceability/TRACEABILITY_MATRIX.md` | `cc4b43ba2613ecd1948cd86f5c243243546e2340944cb346cc232b80fa1513e9` |
 | `docs/ai/AGENT_ROLES.md` | `87fcdc8f5a92a4ee98f4262c0c06e10022534353452c30321e6bdfdd643cd99d` |
 | `TODO.md` | `ac8e730831c4c27049ca337bc10f5d1310ecaaba7911b1d4c8e7672d53fe3abd` |
-| `research/EXISTING_CAPABILITY_REGISTRY.md` | `ee6e0c574d19628e45c0e796b4507512c9e1af10146b0d86484b57485d7c3b02` |
-| `research/RESEARCH_GAP_MATRIX.md` | `4125ca0d58c98b95a7922af3b566ca371d31cb510d20fcd191806e81cca644d8` |
+| `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
+| `research/RESEARCH_GAP_MATRIX.md` | `034953642ebd11143366f65a0d892041120aacbb333fffc49c5d2c220e01b93d` |
 | `audits/ARCHITECTURE_COMPLETENESS_AUDIT.md` | `729af643828c44b8b59d6dd95a209d9bfe53ed90e9ffd9a404e62db60944cef0` |
 | `audits/TODO_COMPLETENESS_AUDIT.md` | `22ca004dfd4049637db6be5128186a3e51411e2b606c45413d344d46508ad666` |
 | `audits/RED_TEAM_PLAN_REVIEW.md` | `a8d0f8850fdce2fbcfa985016b69d8755a52ed16b8c01e7d8652f6bcb9ee833c` |
 | `audits/PLANNING_HANDOFF_SIMULATION.md` | `99f70334d411ebbeb58039f95d6e8a20636700269e5b8755b72f4d71316694b3` |
 | `skills/README.md` | `3d84002f72c58dc744fa8beb582701cd610e766e992c2ddd4d8de3fa1ef134c7` |
 | `todos/00_program.md` | `4adf5d986585321d8e2ecc0d59abceede8eb4d6481ae2f90781f62c7742ed37c` |
-| `todos/01_research_completion.md` | `5618e1c17f1a47fbd13f94a0ba35a73a46230d92b472e365dd0a3b249110ee7e` |
+| `todos/01_research_completion.md` | `eedc085faf2f3003f0a1ec717dadb10602de81610181a055f000e9686e7f17b8` |
 | `todos/02_architecture_foundation.md` | `aa52165c68cef78d223e827c355260395578bbf11f625bb8df6384c904ea4cda` |
-| `todos/03_repository_foundation.md` | `f9fa26b7895287dc6087b20c9a90dc3cced6cbbee4292cfa959d9c5a9730065b` |
+| `todos/03_repository_foundation.md` | `180208e84db8c3a55007aadbf125e8b9e454a1bcf7c0fcb277d521ada5221a6d` |
 | `todos/04_data_foundation.md` | `591f9c483afcab1b414667858bec841954111d49d37cc82220972ddd632cc5ab` |
 | `todos/05_strategy_domain.md` | `26a15aaefb98b9b4f8370583f4dc41e71797e9e87f393dbea3f0e05a53a53f71` |
 | `todos/06_engine_bakeoff.md` | `308f37668b89aaeaa4b84a65fa69983e7d91278e58a397434ee6b07591fe4f1e` |

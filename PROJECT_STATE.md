@@ -1,12 +1,17 @@
 # Trading Intelligence OS — Project State
 
-Last updated: 2026-07-06
-Package version: v8 (planning system)
-Status: Planning phase COMPLETE. Ready for constrained coding-agent prototype execution (stage S1). Not approved for full production build or real-money trading.
+Last updated: 2026-07-06 (evening — S1 execution started)
+Package version: v8 (planning system) + S1 execution commits
+Status: **S1 prototype execution IN PROGRESS.** Not approved for full production build or real-money trading.
 
 ## Current phase
 
-S0 (planning completion) finished 2026-07-06. Next stage: **S1 — Prototype execution** per `docs/program/PROGRAM_PLAN.md`.
+S0 finished 2026-07-06. **S1 started same day.** Progress:
+
+- **HG-1 intake gate: PASSED** — `artifacts/reports/PRE_CODE_ENVIRONMENT_INTAKE_REPORT.md` (AI keys: add later ×3; MLflow/DVC: fully local).
+- **Initiative 03 (repository foundation): DONE** — T-003-01..05 all complete. Git repo live; AD §F tree + module skeletons; idempotent `scripts/bootstrap.py`; one-command local gate (`make check`: ruff+mypy-strict+pytest incl. architecture dependency-law test, decision-ID uniqueness, secret scan — proven failable); 5 engine envs built+smoke-tested (freqtrade 2026.6, nautilus 1.230.0, vectorbt 1.1.0, lean CLI 1.0.227, hummingbot 2.15.0 digest-pinned); security review #1 PASS (0 secrets, 0 blocking, 6 findings fixed) at `artifacts/reports/SECURITY_REVIEW_01.md`; pre-commit secret-scan hook auto-installed; pip-audit clean.
+- **T-001-01 / RG-03: CLOSED** — vectorbt 1.1.0 license verified from installed dist-info: Apache 2.0 + Commons Clause (internal use OK). Evidence `engines/vectorbt/LICENSE_CAPTURED.txt`. RG-04 closed via per-engine isolation (CG-10/CG-11 in gap matrix).
+- Next: **Initiative 04 — data foundation** (canonical dataset freeze per `specs/CANONICAL_BAKEOFF_DATASET_V1.md` + Amendment A1 µs boundary).
 
 ## Operational SSOT (unchanged)
 
@@ -48,11 +53,7 @@ None blocking S1 start. Open items tracked in `MISSING_AND_OPEN_ITEMS.md` + `res
 
 ## Exact next action
 
-Give the package to the coding agent with the single instruction:
-
-`Read and execute handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md`
-
-The agent's first initiative is `todos/03_repository_foundation.md`, first task **T-003-01 — Pre-Code Environment & Credentials Intake Gate** (interactive; requires the operator). No code before that gate passes.
+Continue S1 execution order: **initiative 04** (`todos/04_data_foundation.md`) — canonical dataset DS-CRYPTO-SPOT-BAKEOFF-V1 freeze with Amendment A1 (µs timestamps in files dated ≥2025-01-01; boundary golden test). Then {05, 18} → 06 → {07, 08} → 09 → 14 → 19, with 10 and 11 in parallel.
 
 ## Exit condition of next phase (unchanged)
 
