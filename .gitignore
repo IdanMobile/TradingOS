@@ -35,6 +35,9 @@ mlartifacts/
 *.sqlite
 *.db
 
+# --- Local assistant/session config ---
+.claude/
+
 # --- OS / editor ---
 .DS_Store
 .idea/

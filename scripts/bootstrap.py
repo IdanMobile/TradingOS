@@ -13,18 +13,42 @@ ROOT = Path(__file__).resolve().parent.parent
 
 # MODULE_CATALOG modules laid out per AD §F
 TIOS_PACKAGES = [
-    "core_types", "dataset", "strategy", "parity", "experiment", "validation",
-    "evidence", "approval", "knowledge", "ai_eval", "memory", "security_ops",
-    "adapters", "adapters/freqtrade", "adapters/nautilus", "adapters/lean",
-    "adapters/hummingbot", "adapters/vectorbt", "adapters/lineage",
-    "services", "services/jobs", "services/ingestion", "services/reporting",
-    "services/dashboard_api", "services/dashboard_ui",
+    "core_types",
+    "dataset",
+    "strategy",
+    "parity",
+    "experiment",
+    "validation",
+    "evidence",
+    "approval",
+    "knowledge",
+    "ai_eval",
+    "memory",
+    "security_ops",
+    "adapters",
+    "adapters/freqtrade",
+    "adapters/nautilus",
+    "adapters/lean",
+    "adapters/hummingbot",
+    "adapters/vectorbt",
+    "adapters/lineage",
+    "services",
+    "services/jobs",
+    "services/ingestion",
+    "services/reporting",
+    "services/dashboard_api",
+    "services/dashboard_ui",
 ]
 
 # SSOT WS1 minimum evidence directories
 ARTIFACT_DIRS = [
-    "datasets", "bakeoff", "lineage", "validation",
-    "strategy_ingestion", "ai_benchmarks", "reports",
+    "datasets",
+    "bakeoff",
+    "lineage",
+    "validation",
+    "strategy_ingestion",
+    "ai_benchmarks",
+    "reports",
 ]
 
 # Isolated per-engine environments (AD-02); contents built by T-003-03
