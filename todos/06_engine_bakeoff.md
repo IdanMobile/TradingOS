@@ -11,7 +11,7 @@ Requirement source: `specs/ENGINE_BAKEOFF_BLUEPRINT_V1.md`. Skills: R7 + SKILL_E
 - Purpose: full test matrix + Freqtrade-specific probes (lookahead-analysis, recursive-analysis, bounded hyperopt with all-trial retention, dry-run capability check, artifact export). Requirement: REQ-015.
 - Integration rule: subprocess/CLI only (GPL boundary, AD-02).
 - Outputs: `artifacts/bakeoff/freqtrade/**` (manifest, trades, equity, metrics, logs, env manifest, divergence notes) + matrix scores.
-- Acceptance: all 16 blueprint gates evidenced or blocker recorded per SSOT rules. Complexity: L. Dependencies: T-006-01, T-003-03. Status: TODO.
+- Acceptance: all 16 blueprint gates evidenced or blocker recorded per SSOT rules. Complexity: L. Dependencies: T-006-01, T-003-03. Status: **IN PROGRESS 2026-07-06** — done: installability, data ingestion, determinism (byte-identical rerun), fee modeling (audit PASS), artifact export (canonical parquet + manifests), slippage CapabilityGap documented. Remaining: lookahead/recursive-analysis, bounded hyperopt w/ all-trial retention, dry-run probe, signal parity vs micro goldens, precision/failure probes.
 
 ## T-006-03 NautilusTrader lane
 - Same contract as T-006-02 with Nautilus-specific probes (bar backtest, fee/fill/latency config, catalog export, Binance-adapter surface). Requirement: REQ-016. Complexity: L. Status: TODO.
