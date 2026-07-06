@@ -10,7 +10,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `0befe16dc4417eed19d84ddfc66ddcb537628302d5d7f9f8583f43eeb0b6b077` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `f2b4c3a101d268d746860d3b23cbeb15d060d76d710bad81106276e98db1240c` |
+| `PROJECT_STATE.md` | `8eb7ce303173c18d5c28fcec7acb83631b514efb18a0bbcb3a53bcb7cdf46c92` |
 | `DECISION_LOG.md` | `b55e9a650798a33e4e0ab6daa9098f923b0d2708e934281c8800786dc83ca88e` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
@@ -53,9 +53,9 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `todos/01_research_completion.md` | `eedc085faf2f3003f0a1ec717dadb10602de81610181a055f000e9686e7f17b8` |
 | `todos/02_architecture_foundation.md` | `aa52165c68cef78d223e827c355260395578bbf11f625bb8df6384c904ea4cda` |
 | `todos/03_repository_foundation.md` | `180208e84db8c3a55007aadbf125e8b9e454a1bcf7c0fcb277d521ada5221a6d` |
-| `todos/04_data_foundation.md` | `591f9c483afcab1b414667858bec841954111d49d37cc82220972ddd632cc5ab` |
-| `todos/05_strategy_domain.md` | `26a15aaefb98b9b4f8370583f4dc41e71797e9e87f393dbea3f0e05a53a53f71` |
-| `todos/06_engine_bakeoff.md` | `308f37668b89aaeaa4b84a65fa69983e7d91278e58a397434ee6b07591fe4f1e` |
+| `todos/04_data_foundation.md` | `7510144b128ba2e0f1b14882b2bb617f457d5487a8d6a4d7dead67f62247bb19` |
+| `todos/05_strategy_domain.md` | `e11b0f27f518eddf521b8250e27624279b14782b20e80284d6923c21b914934a` |
+| `todos/06_engine_bakeoff.md` | `cffe6764d60911d33ac4e0a92493f920547fc030e1a9e283710e21c8f02ff19c` |
 | `todos/07_experiment_lineage.md` | `df00bed7820d90805b7b74968b4f74507b04c14579ba55cd883613a8398a85ea` |
 | `todos/08_backtesting.md` | `1e66847a6baec6c964635778c939187780264a5674924e31cf9b7e2d213b836a` |
 | `todos/09_validation.md` | `2eb3a095ae17bca8afc4b1af8e28c66fc0b53871c82284ea48c228bcced8c9c5` |
@@ -67,7 +67,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `todos/15_paper_trading.md` | `f5bd29869937172ff82fed29cb1e0631784cdd4e1c84825015a73fc6b1e13b1b` |
 | `todos/16_risk_approvals.md` | `0238f7e06c6642b957751ddc8fc2ff075477eaf7f800ade961600c4c81d5377d` |
 | `todos/17_observability.md` | `65fb01ab96e11528229354af920f781f7bfeb5d846dfc1c91238ff66e5545a50` |
-| `todos/18_security.md` | `dcb44992e4beb840365db8ba60ab3e113058e09c0fccf2ea0617712081a92707` |
+| `todos/18_security.md` | `7561ceae55d611627b8dae1a3702483be6c1e78107dcf08fd74c026dfa8e62ab` |
 | `todos/19_operations.md` | `8c2511cba16ea30abb9226ab9d35030783fa969db992c229972ee3292dd2e3f0` |
 | `todos/20_future_market_expansion.md` | `425922d959ec7f4f04135cb8d538c09f62f9be4b115828095ebd65c1f19f4f04` |
 | `skills/SKILL_ARCHITECTURE_GUARDIAN.md` | `c11eb205b3dc89bf3ed9be4436aaabbc1883488c2c8a4b47d911496c39a19a82` |

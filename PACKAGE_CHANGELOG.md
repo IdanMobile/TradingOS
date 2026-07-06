@@ -103,3 +103,11 @@ Key outcomes:
 - Initiative 03 DONE (T-003-01..05): git repo initialized; AD §F tree + module skeletons; idempotent bootstrap; one-command local gate (`make check`) with architecture dependency-law test, decision-ID uniqueness, secret scan — proven failable; per-engine isolated envs built and smoke-tested (freqtrade 2026.6, nautilus_trader 1.230.0, vectorbt 1.1.0, lean CLI 1.0.227, hummingbot 2.15.0 by digest); security review #1 PASS with all 6 findings fixed.
 - T-001-01/RG-03 closed: vectorbt 1.1.0 license = Apache 2.0 + Commons Clause (verified from dist-info; `engines/vectorbt/LICENSE_CAPTURED.txt`). RG-04 closed via per-engine isolation. Gap matrix rows CG-10/CG-11.
 - Controlled edits (manifest regenerated, 5 hashes): PROJECT_STATE.md, registry, gap matrix, todos/01, todos/03.
+
+## v8.2 — 2026-07-06 — S1 execution: initiatives 04, 05 complete; 06 started; 18 partial
+
+- Initiative 04 DONE (EG-1): DS-CRYPTO-SPOT-BAKEOFF-V1 frozen — 396 raw files checksum-verified, 1.64M normalized rows, Amendment A1 boundary goldens, quality PASS (all checks proven failable), double-regeneration identical hashes, independent audit PASS_WITH_NOTES (zero discrepancies).
+- Initiative 05 DONE: canonical spec model/validator (property-tested), immutable SV, baselines B1–B4 + double-derived micro goldens.
+- Initiative 06: T-006-01 DONE (EngineAdapter port, NormalizedResult, capability gaps, mandatory fee/slippage grid, fee audit utility).
+- Initiative 18: T-018-01/03 DONE (secret hygiene, license audit w/ planted-AGPL proof).
+- Controlled edits: PROJECT_STATE, todos/04/05/06/18 — manifest regenerated.

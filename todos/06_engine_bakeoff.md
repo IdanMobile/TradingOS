@@ -5,7 +5,7 @@ Requirement source: `specs/ENGINE_BAKEOFF_BLUEPRINT_V1.md`. Skills: R7 + SKILL_E
 ## T-006-01 EngineAdapter port + NormalizedResult
 - Purpose: the parity boundary (type catalog §4, converter C3). Requirement: REQ-014.
 - Actions: implement port, NormalizedResult model, capability-report model; golden tests on synthetic engine output.
-- Acceptance: normalization goldens; fee recomputation check utility works. Complexity: M. Dependencies: T-005-01, T-004-04. Status: TODO.
+- Acceptance: normalization goldens; fee recomputation check utility works. Complexity: M. Dependencies: T-005-01, T-004-04. Status: **DONE 2026-07-06** (core_types/engine.py port + parity/fees.py; mandatory grid encoded; goldens green).
 
 ## T-006-02 Freqtrade lane
 - Purpose: full test matrix + Freqtrade-specific probes (lookahead-analysis, recursive-analysis, bounded hyperopt with all-trial retention, dry-run capability check, artifact export). Requirement: REQ-015.
