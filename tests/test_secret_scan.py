@@ -20,6 +20,9 @@ PATTERNS = [
         r"ghp_[A-Za-z0-9]{36}",  # GitHub PAT
         r"xox[baprs]-[A-Za-z0-9-]{10,}",  # Slack token
         r"AIzaSy[A-Za-z0-9_-]{33}",  # Google API key
+        r"\bsk_live_[A-Za-z0-9]{10,}",  # Stripe live key
+        # DSN with embedded credentials
+        r"\b(?:postgres(?:ql)?|mysql|mongodb(?:\+srv)?|redis|amqp)://[^\s/@]+:[^\s@]+@",
     )
 ]
 

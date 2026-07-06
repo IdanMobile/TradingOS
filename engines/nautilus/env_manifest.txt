@@ -1,0 +1,18 @@
+engine: nautilus
+built: 2026-07-06T14:40:43Z
+python: Python 3.13.7
+--- pip freeze ---
+click==8.4.2
+fsspec==2026.2.0
+msgspec==0.21.1
+nautilus-trader==1.230.0
+numpy==2.5.1
+pandas==3.0.3
+portion==2.6.2
+pyarrow==24.0.0
+python-dateutil==2.9.0.post0
+pytz==2026.2
+six==1.17.0
+sortedcontainers==2.4.0
+tqdm==4.68.3
+uvloop==0.22.1

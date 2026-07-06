@@ -7,6 +7,7 @@ Never overwrites an existing file.
 """
 
 import json
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -94,6 +95,12 @@ def main() -> None:
         if not d.exists():
             d.mkdir(parents=True)
             created.append(d)
+
+    if (ROOT / ".git").is_dir():
+        subprocess.run(
+            ["git", "config", "core.hooksPath", "scripts/githooks"], cwd=ROOT, check=True
+        )
+        print("git hooks: core.hooksPath=scripts/githooks")
 
     for p in created:
         print(f"created {p.relative_to(ROOT)}")

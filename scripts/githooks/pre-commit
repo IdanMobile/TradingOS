@@ -1,0 +1,8 @@
+#!/bin/sh
+# T-003-05: block commits containing key-shaped strings or gitignore regressions.
+# Installed via: git config core.hooksPath scripts/githooks
+cd "$(git rev-parse --show-toplevel)" || exit 1
+uv run pytest tests/test_secret_scan.py tests/test_gitignore.py -q || {
+  echo "pre-commit: secret scan / gitignore audit FAILED — commit blocked." >&2
+  exit 1
+}

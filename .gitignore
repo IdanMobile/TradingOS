@@ -35,6 +35,13 @@ mlartifacts/
 *.sqlite
 *.db
 
+# --- Build/run logs (not guaranteed secret-free) ---
+*.log
+
+# --- DVC local state (WS4; caches may hold tokens/creds later) ---
+.dvc/cache/
+.dvc/tmp/
+
 # --- Local assistant/session config ---
 .claude/
 

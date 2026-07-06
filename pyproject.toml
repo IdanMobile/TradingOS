@@ -11,6 +11,7 @@ dev = [
     "hypothesis>=6.135",
     "ruff>=0.12",
     "mypy>=1.16",
+    "pip-audit>=2.9",
 ]
 
 [build-system]
