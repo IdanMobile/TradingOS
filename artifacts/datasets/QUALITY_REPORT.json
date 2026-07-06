@@ -1,0 +1,3318 @@
+{
+  "dataset_id": "DS-CRYPTO-SPOT-BAKEOFF-V1",
+  "normalization_code_commit": "ff6c63727057c325cd4e4feaa272e6c7c4db53b2",
+  "tables": {
+    "BTCUSDT_5m": {
+      "checks": [
+        {
+          "name": "monotonic_unique_open_timestamps",
+          "status": "PASS",
+          "details": {
+            "non_increasing_pairs": 0,
+            "rows": 577803
+          }
+        },
+        {
+          "name": "interval_spacing",
+          "status": "PASS",
+          "details": {
+            "non_multiple_steps": 0,
+            "interval_us": 300000000
+          }
+        },
+        {
+          "name": "missing_interval_report",
+          "status": "PASS",
+          "details": {
+            "gap_count": 7,
+            "missing_bars_total": 213,
+            "gaps": [
+              {
+                "gap_start_utc": "2021-02-11 03:40:00+00:00",
+                "missing_bars": 15
+              },
+              {
+                "gap_start_utc": "2021-03-06 01:55:00+00:00",
+                "missing_bars": 18
+              },
+              {
+                "gap_start_utc": "2021-04-20 01:55:00+00:00",
+                "missing_bars": 30
+              },
+              {
+                "gap_start_utc": "2021-04-25 04:00:00+00:00",
+                "missing_bars": 56
+              },
+              {
+                "gap_start_utc": "2021-08-13 01:55:00+00:00",
+                "missing_bars": 54
+              },
+              {
+                "gap_start_utc": "2021-09-29 06:55:00+00:00",
+                "missing_bars": 24
+              },
+              {
+                "gap_start_utc": "2023-03-24 12:35:00+00:00",
+                "missing_bars": 16
+              }
+            ]
+          }
+        },
+        {
+          "name": "ohlc_invariants",
+          "status": "PASS",
+          "details": {
+            "violating_rows": 0
+          }
+        },
+        {
+          "name": "non_negative_volumes",
+          "status": "PASS",
+          "details": {
+            "violating_rows": 0
+          }
+        },
+        {
+          "name": "timezone_utc",
+          "status": "PASS",
+          "details": {
+            "tz": [
+              "UTC"
+            ]
+          }
+        }
+      ],
+      "row_counts_by_month": {
+        "2021-01": 8904,
+        "2021-02": 8049,
+        "2021-03": 8898,
+        "2021-04": 8554,
+        "2021-05": 8928,
+        "2021-06": 8640,
+        "2021-07": 8928,
+        "2021-08": 8874,
+        "2021-09": 8616,
+        "2021-10": 8940,
+        "2021-11": 8640,
+        "2021-12": 8928,
+        "2022-01": 8928,
+        "2022-02": 8064,
+        "2022-03": 8916,
+        "2022-04": 8640,
+        "2022-05": 8928,
+        "2022-06": 8640,
+        "2022-07": 8928,
+        "2022-08": 8928,
+        "2022-09": 8640,
+        "2022-10": 8940,
+        "2022-11": 8640,
+        "2022-12": 8928,
+        "2023-01": 8928,
+        "2023-02": 8064,
+        "2023-03": 8900,
+        "2023-04": 8640,
+        "2023-05": 8928,
+        "2023-06": 8640,
+        "2023-07": 8928,
+        "2023-08": 8928,
+        "2023-09": 8640,
+        "2023-10": 8940,
+        "2023-11": 8640,
+        "2023-12": 8928,
+        "2024-01": 8928,
+        "2024-02": 8352,
+        "2024-03": 8916,
+        "2024-04": 8640,
+        "2024-05": 8928,
+        "2024-06": 8640,
+        "2024-07": 8928,
+        "2024-08": 8928,
+        "2024-09": 8640,
+        "2024-10": 8940,
+        "2024-11": 8640,
+        "2024-12": 8928,
+        "2025-01": 8928,
+        "2025-02": 8064,
+        "2025-03": 8916,
+        "2025-04": 8640,
+        "2025-05": 8928,
+        "2025-06": 8640,
+        "2025-07": 8928,
+        "2025-08": 8928,
+        "2025-09": 8640,
+        "2025-10": 8940,
+        "2025-11": 8640,
+        "2025-12": 8928,
+        "2026-01": 8928,
+        "2026-02": 8064,
+        "2026-03": 8916,
+        "2026-04": 8640,
+        "2026-05": 8928,
+        "2026-06": 8640,
+        "2026-07": 36
+      },
+      "dropped_duplicate_open_timestamps": 0,
+      "file_unit_detections": [
+        {
+          "file": "BTCUSDT-5m-2021-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2021-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8049
+        },
+        {
+          "file": "BTCUSDT-5m-2021-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8910
+        },
+        {
+          "file": "BTCUSDT-5m-2021-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8554
+        },
+        {
+          "file": "BTCUSDT-5m-2021-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2021-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2021-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2021-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8874
+        },
+        {
+          "file": "BTCUSDT-5m-2021-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8616
+        },
+        {
+          "file": "BTCUSDT-5m-2021-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2021-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2021-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2022-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2022-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8064
+        },
+        {
+          "file": "BTCUSDT-5m-2022-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2022-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2022-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2022-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2022-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2022-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2022-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2022-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2022-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2022-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2023-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2023-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8064
+        },
+        {
+          "file": "BTCUSDT-5m-2023-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8912
+        },
+        {
+          "file": "BTCUSDT-5m-2023-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2023-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2023-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2023-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2023-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2023-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2023-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2023-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2023-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2024-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2024-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8352
+        },
+        {
+          "file": "BTCUSDT-5m-2024-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2024-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2024-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2024-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2024-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2024-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2024-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2024-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2024-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2024-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2025-01.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2025-02.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8064
+        },
+        {
+          "file": "BTCUSDT-5m-2025-03.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2025-04.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2025-05.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2025-06.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2025-07.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2025-08.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2025-09.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2025-10.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2025-11.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2025-12.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2026-01.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2026-02.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8064
+        },
+        {
+          "file": "BTCUSDT-5m-2026-03.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2026-04.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8640
+        },
+        {
+          "file": "BTCUSDT-5m-2026-05.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "BTCUSDT-5m-2026-06.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8640
+        }
+      ]
+    },
+    "BTCUSDT_15m": {
+      "checks": [
+        {
+          "name": "monotonic_unique_open_timestamps",
+          "status": "PASS",
+          "details": {
+            "non_increasing_pairs": 0,
+            "rows": 192602
+          }
+        },
+        {
+          "name": "interval_spacing",
+          "status": "PASS",
+          "details": {
+            "non_multiple_steps": 0,
+            "interval_us": 900000000
+          }
+        },
+        {
+          "name": "missing_interval_report",
+          "status": "PASS",
+          "details": {
+            "gap_count": 7,
+            "missing_bars_total": 70,
+            "gaps": [
+              {
+                "gap_start_utc": "2021-02-11 03:30:00+00:00",
+                "missing_bars": 5
+              },
+              {
+                "gap_start_utc": "2021-03-06 01:45:00+00:00",
+                "missing_bars": 6
+              },
+              {
+                "gap_start_utc": "2021-04-20 01:45:00+00:00",
+                "missing_bars": 10
+              },
+              {
+                "gap_start_utc": "2021-04-25 04:00:00+00:00",
+                "missing_bars": 18
+              },
+              {
+                "gap_start_utc": "2021-08-13 01:45:00+00:00",
+                "missing_bars": 18
+              },
+              {
+                "gap_start_utc": "2021-09-29 06:45:00+00:00",
+                "missing_bars": 8
+              },
+              {
+                "gap_start_utc": "2023-03-24 12:30:00+00:00",
+                "missing_bars": 5
+              }
+            ]
+          }
+        },
+        {
+          "name": "ohlc_invariants",
+          "status": "PASS",
+          "details": {
+            "violating_rows": 0
+          }
+        },
+        {
+          "name": "non_negative_volumes",
+          "status": "PASS",
+          "details": {
+            "violating_rows": 0
+          }
+        },
+        {
+          "name": "timezone_utc",
+          "status": "PASS",
+          "details": {
+            "tz": [
+              "UTC"
+            ]
+          }
+        }
+      ],
+      "row_counts_by_month": {
+        "2021-01": 2968,
+        "2021-02": 2683,
+        "2021-03": 2966,
+        "2021-04": 2852,
+        "2021-05": 2976,
+        "2021-06": 2880,
+        "2021-07": 2976,
+        "2021-08": 2958,
+        "2021-09": 2872,
+        "2021-10": 2980,
+        "2021-11": 2880,
+        "2021-12": 2976,
+        "2022-01": 2976,
+        "2022-02": 2688,
+        "2022-03": 2972,
+        "2022-04": 2880,
+        "2022-05": 2976,
+        "2022-06": 2880,
+        "2022-07": 2976,
+        "2022-08": 2976,
+        "2022-09": 2880,
+        "2022-10": 2980,
+        "2022-11": 2880,
+        "2022-12": 2976,
+        "2023-01": 2976,
+        "2023-02": 2688,
+        "2023-03": 2967,
+        "2023-04": 2880,
+        "2023-05": 2976,
+        "2023-06": 2880,
+        "2023-07": 2976,
+        "2023-08": 2976,
+        "2023-09": 2880,
+        "2023-10": 2980,
+        "2023-11": 2880,
+        "2023-12": 2976,
+        "2024-01": 2976,
+        "2024-02": 2784,
+        "2024-03": 2972,
+        "2024-04": 2880,
+        "2024-05": 2976,
+        "2024-06": 2880,
+        "2024-07": 2976,
+        "2024-08": 2976,
+        "2024-09": 2880,
+        "2024-10": 2980,
+        "2024-11": 2880,
+        "2024-12": 2976,
+        "2025-01": 2976,
+        "2025-02": 2688,
+        "2025-03": 2972,
+        "2025-04": 2880,
+        "2025-05": 2976,
+        "2025-06": 2880,
+        "2025-07": 2976,
+        "2025-08": 2976,
+        "2025-09": 2880,
+        "2025-10": 2980,
+        "2025-11": 2880,
+        "2025-12": 2976,
+        "2026-01": 2976,
+        "2026-02": 2688,
+        "2026-03": 2972,
+        "2026-04": 2880,
+        "2026-05": 2976,
+        "2026-06": 2880,
+        "2026-07": 12
+      },
+      "dropped_duplicate_open_timestamps": 0,
+      "file_unit_detections": [
+        {
+          "file": "BTCUSDT-15m-2021-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2021-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2683
+        },
+        {
+          "file": "BTCUSDT-15m-2021-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2970
+        },
+        {
+          "file": "BTCUSDT-15m-2021-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2852
+        },
+        {
+          "file": "BTCUSDT-15m-2021-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2021-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2021-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2021-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2958
+        },
+        {
+          "file": "BTCUSDT-15m-2021-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2872
+        },
+        {
+          "file": "BTCUSDT-15m-2021-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2021-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2021-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2022-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2022-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2688
+        },
+        {
+          "file": "BTCUSDT-15m-2022-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2022-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2022-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2022-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2022-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2022-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2022-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2022-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2022-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2022-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2023-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2023-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2688
+        },
+        {
+          "file": "BTCUSDT-15m-2023-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2971
+        },
+        {
+          "file": "BTCUSDT-15m-2023-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2023-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2023-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2023-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2023-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2023-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2023-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2023-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2023-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2024-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2024-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2784
+        },
+        {
+          "file": "BTCUSDT-15m-2024-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2024-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2024-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2024-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2024-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2024-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2024-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2024-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2024-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2024-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2025-01.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2025-02.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2688
+        },
+        {
+          "file": "BTCUSDT-15m-2025-03.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2025-04.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2025-05.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2025-06.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2025-07.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2025-08.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2025-09.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2025-10.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2025-11.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2025-12.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2026-01.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2026-02.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2688
+        },
+        {
+          "file": "BTCUSDT-15m-2026-03.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2026-04.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2880
+        },
+        {
+          "file": "BTCUSDT-15m-2026-05.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "BTCUSDT-15m-2026-06.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2880
+        }
+      ]
+    },
+    "BTCUSDT_1h": {
+      "checks": [
+        {
+          "name": "monotonic_unique_open_timestamps",
+          "status": "PASS",
+          "details": {
+            "non_increasing_pairs": 0,
+            "rows": 48154
+          }
+        },
+        {
+          "name": "interval_spacing",
+          "status": "PASS",
+          "details": {
+            "non_multiple_steps": 0,
+            "interval_us": 3600000000
+          }
+        },
+        {
+          "name": "missing_interval_report",
+          "status": "PASS",
+          "details": {
+            "gap_count": 7,
+            "missing_bars_total": 14,
+            "gaps": [
+              {
+                "gap_start_utc": "2021-02-11 03:00:00+00:00",
+                "missing_bars": 1
+              },
+              {
+                "gap_start_utc": "2021-03-06 01:00:00+00:00",
+                "missing_bars": 1
+              },
+              {
+                "gap_start_utc": "2021-04-20 01:00:00+00:00",
+                "missing_bars": 2
+              },
+              {
+                "gap_start_utc": "2021-04-25 04:00:00+00:00",
+                "missing_bars": 3
+              },
+              {
+                "gap_start_utc": "2021-08-13 01:00:00+00:00",
+                "missing_bars": 4
+              },
+              {
+                "gap_start_utc": "2021-09-29 06:00:00+00:00",
+                "missing_bars": 2
+              },
+              {
+                "gap_start_utc": "2023-03-24 12:00:00+00:00",
+                "missing_bars": 1
+              }
+            ]
+          }
+        },
+        {
+          "name": "ohlc_invariants",
+          "status": "PASS",
+          "details": {
+            "violating_rows": 0
+          }
+        },
+        {
+          "name": "non_negative_volumes",
+          "status": "PASS",
+          "details": {
+            "violating_rows": 0
+          }
+        },
+        {
+          "name": "timezone_utc",
+          "status": "PASS",
+          "details": {
+            "tz": [
+              "UTC"
+            ]
+          }
+        }
+      ],
+      "row_counts_by_month": {
+        "2021-01": 742,
+        "2021-02": 671,
+        "2021-03": 742,
+        "2021-04": 715,
+        "2021-05": 744,
+        "2021-06": 720,
+        "2021-07": 744,
+        "2021-08": 740,
+        "2021-09": 718,
+        "2021-10": 745,
+        "2021-11": 720,
+        "2021-12": 744,
+        "2022-01": 744,
+        "2022-02": 672,
+        "2022-03": 743,
+        "2022-04": 720,
+        "2022-05": 744,
+        "2022-06": 720,
+        "2022-07": 744,
+        "2022-08": 744,
+        "2022-09": 720,
+        "2022-10": 745,
+        "2022-11": 720,
+        "2022-12": 744,
+        "2023-01": 744,
+        "2023-02": 672,
+        "2023-03": 742,
+        "2023-04": 720,
+        "2023-05": 744,
+        "2023-06": 720,
+        "2023-07": 744,
+        "2023-08": 744,
+        "2023-09": 720,
+        "2023-10": 745,
+        "2023-11": 720,
+        "2023-12": 744,
+        "2024-01": 744,
+        "2024-02": 696,
+        "2024-03": 743,
+        "2024-04": 720,
+        "2024-05": 744,
+        "2024-06": 720,
+        "2024-07": 744,
+        "2024-08": 744,
+        "2024-09": 720,
+        "2024-10": 745,
+        "2024-11": 720,
+        "2024-12": 744,
+        "2025-01": 744,
+        "2025-02": 672,
+        "2025-03": 743,
+        "2025-04": 720,
+        "2025-05": 744,
+        "2025-06": 720,
+        "2025-07": 744,
+        "2025-08": 744,
+        "2025-09": 720,
+        "2025-10": 745,
+        "2025-11": 720,
+        "2025-12": 744,
+        "2026-01": 744,
+        "2026-02": 672,
+        "2026-03": 743,
+        "2026-04": 720,
+        "2026-05": 744,
+        "2026-06": 720,
+        "2026-07": 3
+      },
+      "dropped_duplicate_open_timestamps": 0,
+      "file_unit_detections": [
+        {
+          "file": "BTCUSDT-1h-2021-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2021-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 671
+        },
+        {
+          "file": "BTCUSDT-1h-2021-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 743
+        },
+        {
+          "file": "BTCUSDT-1h-2021-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 715
+        },
+        {
+          "file": "BTCUSDT-1h-2021-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2021-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2021-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2021-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 740
+        },
+        {
+          "file": "BTCUSDT-1h-2021-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 718
+        },
+        {
+          "file": "BTCUSDT-1h-2021-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2021-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2021-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2022-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2022-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 672
+        },
+        {
+          "file": "BTCUSDT-1h-2022-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2022-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2022-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2022-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2022-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2022-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2022-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2022-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2022-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2022-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2023-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2023-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 672
+        },
+        {
+          "file": "BTCUSDT-1h-2023-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 743
+        },
+        {
+          "file": "BTCUSDT-1h-2023-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2023-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2023-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2023-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2023-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2023-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2023-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2023-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2023-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2024-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2024-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 696
+        },
+        {
+          "file": "BTCUSDT-1h-2024-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2024-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2024-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2024-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2024-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2024-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2024-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2024-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2024-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2024-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2025-01.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2025-02.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 672
+        },
+        {
+          "file": "BTCUSDT-1h-2025-03.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2025-04.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2025-05.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2025-06.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2025-07.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2025-08.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2025-09.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2025-10.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2025-11.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2025-12.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2026-01.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2026-02.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 672
+        },
+        {
+          "file": "BTCUSDT-1h-2026-03.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2026-04.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 720
+        },
+        {
+          "file": "BTCUSDT-1h-2026-05.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "BTCUSDT-1h-2026-06.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 720
+        }
+      ]
+    },
+    "ETHUSDT_5m": {
+      "checks": [
+        {
+          "name": "monotonic_unique_open_timestamps",
+          "status": "PASS",
+          "details": {
+            "non_increasing_pairs": 0,
+            "rows": 577803
+          }
+        },
+        {
+          "name": "interval_spacing",
+          "status": "PASS",
+          "details": {
+            "non_multiple_steps": 0,
+            "interval_us": 300000000
+          }
+        },
+        {
+          "name": "missing_interval_report",
+          "status": "PASS",
+          "details": {
+            "gap_count": 7,
+            "missing_bars_total": 213,
+            "gaps": [
+              {
+                "gap_start_utc": "2021-02-11 03:40:00+00:00",
+                "missing_bars": 15
+              },
+              {
+                "gap_start_utc": "2021-03-06 01:55:00+00:00",
+                "missing_bars": 18
+              },
+              {
+                "gap_start_utc": "2021-04-20 01:55:00+00:00",
+                "missing_bars": 30
+              },
+              {
+                "gap_start_utc": "2021-04-25 04:00:00+00:00",
+                "missing_bars": 56
+              },
+              {
+                "gap_start_utc": "2021-08-13 01:55:00+00:00",
+                "missing_bars": 54
+              },
+              {
+                "gap_start_utc": "2021-09-29 06:55:00+00:00",
+                "missing_bars": 24
+              },
+              {
+                "gap_start_utc": "2023-03-24 12:35:00+00:00",
+                "missing_bars": 16
+              }
+            ]
+          }
+        },
+        {
+          "name": "ohlc_invariants",
+          "status": "PASS",
+          "details": {
+            "violating_rows": 0
+          }
+        },
+        {
+          "name": "non_negative_volumes",
+          "status": "PASS",
+          "details": {
+            "violating_rows": 0
+          }
+        },
+        {
+          "name": "timezone_utc",
+          "status": "PASS",
+          "details": {
+            "tz": [
+              "UTC"
+            ]
+          }
+        }
+      ],
+      "row_counts_by_month": {
+        "2021-01": 8904,
+        "2021-02": 8049,
+        "2021-03": 8898,
+        "2021-04": 8554,
+        "2021-05": 8928,
+        "2021-06": 8640,
+        "2021-07": 8928,
+        "2021-08": 8874,
+        "2021-09": 8616,
+        "2021-10": 8940,
+        "2021-11": 8640,
+        "2021-12": 8928,
+        "2022-01": 8928,
+        "2022-02": 8064,
+        "2022-03": 8916,
+        "2022-04": 8640,
+        "2022-05": 8928,
+        "2022-06": 8640,
+        "2022-07": 8928,
+        "2022-08": 8928,
+        "2022-09": 8640,
+        "2022-10": 8940,
+        "2022-11": 8640,
+        "2022-12": 8928,
+        "2023-01": 8928,
+        "2023-02": 8064,
+        "2023-03": 8900,
+        "2023-04": 8640,
+        "2023-05": 8928,
+        "2023-06": 8640,
+        "2023-07": 8928,
+        "2023-08": 8928,
+        "2023-09": 8640,
+        "2023-10": 8940,
+        "2023-11": 8640,
+        "2023-12": 8928,
+        "2024-01": 8928,
+        "2024-02": 8352,
+        "2024-03": 8916,
+        "2024-04": 8640,
+        "2024-05": 8928,
+        "2024-06": 8640,
+        "2024-07": 8928,
+        "2024-08": 8928,
+        "2024-09": 8640,
+        "2024-10": 8940,
+        "2024-11": 8640,
+        "2024-12": 8928,
+        "2025-01": 8928,
+        "2025-02": 8064,
+        "2025-03": 8916,
+        "2025-04": 8640,
+        "2025-05": 8928,
+        "2025-06": 8640,
+        "2025-07": 8928,
+        "2025-08": 8928,
+        "2025-09": 8640,
+        "2025-10": 8940,
+        "2025-11": 8640,
+        "2025-12": 8928,
+        "2026-01": 8928,
+        "2026-02": 8064,
+        "2026-03": 8916,
+        "2026-04": 8640,
+        "2026-05": 8928,
+        "2026-06": 8640,
+        "2026-07": 36
+      },
+      "dropped_duplicate_open_timestamps": 0,
+      "file_unit_detections": [
+        {
+          "file": "ETHUSDT-5m-2021-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2021-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8049
+        },
+        {
+          "file": "ETHUSDT-5m-2021-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8910
+        },
+        {
+          "file": "ETHUSDT-5m-2021-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8554
+        },
+        {
+          "file": "ETHUSDT-5m-2021-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2021-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2021-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2021-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8874
+        },
+        {
+          "file": "ETHUSDT-5m-2021-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8616
+        },
+        {
+          "file": "ETHUSDT-5m-2021-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2021-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2021-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2022-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2022-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8064
+        },
+        {
+          "file": "ETHUSDT-5m-2022-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2022-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2022-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2022-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2022-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2022-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2022-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2022-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2022-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2022-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2023-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2023-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8064
+        },
+        {
+          "file": "ETHUSDT-5m-2023-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8912
+        },
+        {
+          "file": "ETHUSDT-5m-2023-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2023-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2023-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2023-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2023-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2023-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2023-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2023-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2023-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2024-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2024-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8352
+        },
+        {
+          "file": "ETHUSDT-5m-2024-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2024-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2024-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2024-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2024-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2024-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2024-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2024-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2024-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2024-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2025-01.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2025-02.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8064
+        },
+        {
+          "file": "ETHUSDT-5m-2025-03.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2025-04.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2025-05.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2025-06.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2025-07.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2025-08.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2025-09.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2025-10.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2025-11.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2025-12.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2026-01.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2026-02.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8064
+        },
+        {
+          "file": "ETHUSDT-5m-2026-03.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2026-04.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8640
+        },
+        {
+          "file": "ETHUSDT-5m-2026-05.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8928
+        },
+        {
+          "file": "ETHUSDT-5m-2026-06.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 8640
+        }
+      ]
+    },
+    "ETHUSDT_15m": {
+      "checks": [
+        {
+          "name": "monotonic_unique_open_timestamps",
+          "status": "PASS",
+          "details": {
+            "non_increasing_pairs": 0,
+            "rows": 192602
+          }
+        },
+        {
+          "name": "interval_spacing",
+          "status": "PASS",
+          "details": {
+            "non_multiple_steps": 0,
+            "interval_us": 900000000
+          }
+        },
+        {
+          "name": "missing_interval_report",
+          "status": "PASS",
+          "details": {
+            "gap_count": 7,
+            "missing_bars_total": 70,
+            "gaps": [
+              {
+                "gap_start_utc": "2021-02-11 03:30:00+00:00",
+                "missing_bars": 5
+              },
+              {
+                "gap_start_utc": "2021-03-06 01:45:00+00:00",
+                "missing_bars": 6
+              },
+              {
+                "gap_start_utc": "2021-04-20 01:45:00+00:00",
+                "missing_bars": 10
+              },
+              {
+                "gap_start_utc": "2021-04-25 04:00:00+00:00",
+                "missing_bars": 18
+              },
+              {
+                "gap_start_utc": "2021-08-13 01:45:00+00:00",
+                "missing_bars": 18
+              },
+              {
+                "gap_start_utc": "2021-09-29 06:45:00+00:00",
+                "missing_bars": 8
+              },
+              {
+                "gap_start_utc": "2023-03-24 12:30:00+00:00",
+                "missing_bars": 5
+              }
+            ]
+          }
+        },
+        {
+          "name": "ohlc_invariants",
+          "status": "PASS",
+          "details": {
+            "violating_rows": 0
+          }
+        },
+        {
+          "name": "non_negative_volumes",
+          "status": "PASS",
+          "details": {
+            "violating_rows": 0
+          }
+        },
+        {
+          "name": "timezone_utc",
+          "status": "PASS",
+          "details": {
+            "tz": [
+              "UTC"
+            ]
+          }
+        }
+      ],
+      "row_counts_by_month": {
+        "2021-01": 2968,
+        "2021-02": 2683,
+        "2021-03": 2966,
+        "2021-04": 2852,
+        "2021-05": 2976,
+        "2021-06": 2880,
+        "2021-07": 2976,
+        "2021-08": 2958,
+        "2021-09": 2872,
+        "2021-10": 2980,
+        "2021-11": 2880,
+        "2021-12": 2976,
+        "2022-01": 2976,
+        "2022-02": 2688,
+        "2022-03": 2972,
+        "2022-04": 2880,
+        "2022-05": 2976,
+        "2022-06": 2880,
+        "2022-07": 2976,
+        "2022-08": 2976,
+        "2022-09": 2880,
+        "2022-10": 2980,
+        "2022-11": 2880,
+        "2022-12": 2976,
+        "2023-01": 2976,
+        "2023-02": 2688,
+        "2023-03": 2967,
+        "2023-04": 2880,
+        "2023-05": 2976,
+        "2023-06": 2880,
+        "2023-07": 2976,
+        "2023-08": 2976,
+        "2023-09": 2880,
+        "2023-10": 2980,
+        "2023-11": 2880,
+        "2023-12": 2976,
+        "2024-01": 2976,
+        "2024-02": 2784,
+        "2024-03": 2972,
+        "2024-04": 2880,
+        "2024-05": 2976,
+        "2024-06": 2880,
+        "2024-07": 2976,
+        "2024-08": 2976,
+        "2024-09": 2880,
+        "2024-10": 2980,
+        "2024-11": 2880,
+        "2024-12": 2976,
+        "2025-01": 2976,
+        "2025-02": 2688,
+        "2025-03": 2972,
+        "2025-04": 2880,
+        "2025-05": 2976,
+        "2025-06": 2880,
+        "2025-07": 2976,
+        "2025-08": 2976,
+        "2025-09": 2880,
+        "2025-10": 2980,
+        "2025-11": 2880,
+        "2025-12": 2976,
+        "2026-01": 2976,
+        "2026-02": 2688,
+        "2026-03": 2972,
+        "2026-04": 2880,
+        "2026-05": 2976,
+        "2026-06": 2880,
+        "2026-07": 12
+      },
+      "dropped_duplicate_open_timestamps": 0,
+      "file_unit_detections": [
+        {
+          "file": "ETHUSDT-15m-2021-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2021-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2683
+        },
+        {
+          "file": "ETHUSDT-15m-2021-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2970
+        },
+        {
+          "file": "ETHUSDT-15m-2021-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2852
+        },
+        {
+          "file": "ETHUSDT-15m-2021-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2021-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2021-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2021-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2958
+        },
+        {
+          "file": "ETHUSDT-15m-2021-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2872
+        },
+        {
+          "file": "ETHUSDT-15m-2021-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2021-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2021-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2022-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2022-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2688
+        },
+        {
+          "file": "ETHUSDT-15m-2022-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2022-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2022-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2022-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2022-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2022-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2022-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2022-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2022-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2022-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2023-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2023-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2688
+        },
+        {
+          "file": "ETHUSDT-15m-2023-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2971
+        },
+        {
+          "file": "ETHUSDT-15m-2023-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2023-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2023-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2023-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2023-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2023-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2023-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2023-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2023-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2024-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2024-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2784
+        },
+        {
+          "file": "ETHUSDT-15m-2024-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2024-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2024-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2024-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2024-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2024-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2024-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2024-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2024-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2024-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2025-01.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2025-02.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2688
+        },
+        {
+          "file": "ETHUSDT-15m-2025-03.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2025-04.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2025-05.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2025-06.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2025-07.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2025-08.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2025-09.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2025-10.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2025-11.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2025-12.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2026-01.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2026-02.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2688
+        },
+        {
+          "file": "ETHUSDT-15m-2026-03.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2026-04.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2880
+        },
+        {
+          "file": "ETHUSDT-15m-2026-05.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2976
+        },
+        {
+          "file": "ETHUSDT-15m-2026-06.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 2880
+        }
+      ]
+    },
+    "ETHUSDT_1h": {
+      "checks": [
+        {
+          "name": "monotonic_unique_open_timestamps",
+          "status": "PASS",
+          "details": {
+            "non_increasing_pairs": 0,
+            "rows": 48154
+          }
+        },
+        {
+          "name": "interval_spacing",
+          "status": "PASS",
+          "details": {
+            "non_multiple_steps": 0,
+            "interval_us": 3600000000
+          }
+        },
+        {
+          "name": "missing_interval_report",
+          "status": "PASS",
+          "details": {
+            "gap_count": 7,
+            "missing_bars_total": 14,
+            "gaps": [
+              {
+                "gap_start_utc": "2021-02-11 03:00:00+00:00",
+                "missing_bars": 1
+              },
+              {
+                "gap_start_utc": "2021-03-06 01:00:00+00:00",
+                "missing_bars": 1
+              },
+              {
+                "gap_start_utc": "2021-04-20 01:00:00+00:00",
+                "missing_bars": 2
+              },
+              {
+                "gap_start_utc": "2021-04-25 04:00:00+00:00",
+                "missing_bars": 3
+              },
+              {
+                "gap_start_utc": "2021-08-13 01:00:00+00:00",
+                "missing_bars": 4
+              },
+              {
+                "gap_start_utc": "2021-09-29 06:00:00+00:00",
+                "missing_bars": 2
+              },
+              {
+                "gap_start_utc": "2023-03-24 12:00:00+00:00",
+                "missing_bars": 1
+              }
+            ]
+          }
+        },
+        {
+          "name": "ohlc_invariants",
+          "status": "PASS",
+          "details": {
+            "violating_rows": 0
+          }
+        },
+        {
+          "name": "non_negative_volumes",
+          "status": "PASS",
+          "details": {
+            "violating_rows": 0
+          }
+        },
+        {
+          "name": "timezone_utc",
+          "status": "PASS",
+          "details": {
+            "tz": [
+              "UTC"
+            ]
+          }
+        }
+      ],
+      "row_counts_by_month": {
+        "2021-01": 742,
+        "2021-02": 671,
+        "2021-03": 742,
+        "2021-04": 715,
+        "2021-05": 744,
+        "2021-06": 720,
+        "2021-07": 744,
+        "2021-08": 740,
+        "2021-09": 718,
+        "2021-10": 745,
+        "2021-11": 720,
+        "2021-12": 744,
+        "2022-01": 744,
+        "2022-02": 672,
+        "2022-03": 743,
+        "2022-04": 720,
+        "2022-05": 744,
+        "2022-06": 720,
+        "2022-07": 744,
+        "2022-08": 744,
+        "2022-09": 720,
+        "2022-10": 745,
+        "2022-11": 720,
+        "2022-12": 744,
+        "2023-01": 744,
+        "2023-02": 672,
+        "2023-03": 742,
+        "2023-04": 720,
+        "2023-05": 744,
+        "2023-06": 720,
+        "2023-07": 744,
+        "2023-08": 744,
+        "2023-09": 720,
+        "2023-10": 745,
+        "2023-11": 720,
+        "2023-12": 744,
+        "2024-01": 744,
+        "2024-02": 696,
+        "2024-03": 743,
+        "2024-04": 720,
+        "2024-05": 744,
+        "2024-06": 720,
+        "2024-07": 744,
+        "2024-08": 744,
+        "2024-09": 720,
+        "2024-10": 745,
+        "2024-11": 720,
+        "2024-12": 744,
+        "2025-01": 744,
+        "2025-02": 672,
+        "2025-03": 743,
+        "2025-04": 720,
+        "2025-05": 744,
+        "2025-06": 720,
+        "2025-07": 744,
+        "2025-08": 744,
+        "2025-09": 720,
+        "2025-10": 745,
+        "2025-11": 720,
+        "2025-12": 744,
+        "2026-01": 744,
+        "2026-02": 672,
+        "2026-03": 743,
+        "2026-04": 720,
+        "2026-05": 744,
+        "2026-06": 720,
+        "2026-07": 3
+      },
+      "dropped_duplicate_open_timestamps": 0,
+      "file_unit_detections": [
+        {
+          "file": "ETHUSDT-1h-2021-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2021-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 671
+        },
+        {
+          "file": "ETHUSDT-1h-2021-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 743
+        },
+        {
+          "file": "ETHUSDT-1h-2021-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 715
+        },
+        {
+          "file": "ETHUSDT-1h-2021-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2021-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2021-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2021-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 740
+        },
+        {
+          "file": "ETHUSDT-1h-2021-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 718
+        },
+        {
+          "file": "ETHUSDT-1h-2021-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2021-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2021-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2022-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2022-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 672
+        },
+        {
+          "file": "ETHUSDT-1h-2022-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2022-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2022-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2022-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2022-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2022-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2022-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2022-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2022-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2022-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2023-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2023-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 672
+        },
+        {
+          "file": "ETHUSDT-1h-2023-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 743
+        },
+        {
+          "file": "ETHUSDT-1h-2023-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2023-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2023-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2023-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2023-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2023-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2023-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2023-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2023-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2024-01.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2024-02.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 696
+        },
+        {
+          "file": "ETHUSDT-1h-2024-03.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2024-04.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2024-05.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2024-06.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2024-07.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2024-08.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2024-09.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2024-10.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2024-11.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2024-12.zip",
+          "detected_unit": "ms",
+          "expected_unit": "ms",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2025-01.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2025-02.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 672
+        },
+        {
+          "file": "ETHUSDT-1h-2025-03.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2025-04.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2025-05.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2025-06.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2025-07.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2025-08.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2025-09.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2025-10.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2025-11.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2025-12.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2026-01.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2026-02.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 672
+        },
+        {
+          "file": "ETHUSDT-1h-2026-03.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2026-04.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 720
+        },
+        {
+          "file": "ETHUSDT-1h-2026-05.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 744
+        },
+        {
+          "file": "ETHUSDT-1h-2026-06.zip",
+          "detected_unit": "us",
+          "expected_unit": "us",
+          "rows": 720
+        }
+      ]
+    }
+  },
+  "raw": {
+    "name": "raw_source_checksums",
+    "status": "PASS",
+    "details": {
+      "files": 396,
+      "official_checksum_verified": 396,
+      "mismatched": [],
+      "missing": []
+    }
+  },
+  "schema_identical_across_tables": {
+    "name": "schema_identical",
+    "status": "PASS",
+    "details": {
+      "distinct_schemas": 1
+    }
+  },
+  "overall": "PASS"
+}
