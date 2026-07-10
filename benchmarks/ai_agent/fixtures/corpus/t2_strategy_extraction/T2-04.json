@@ -1,0 +1,13 @@
+{
+  "description": "Hold the position for as long as the funding-rate signal is positive; flatten immediately when it turns negative or zero.",
+  "family": "carry",
+  "ground_truth": {
+    "ambiguities": [
+      "funding-rate sampling frequency is not stated"
+    ],
+    "entry_rule": "funding_rate > 0",
+    "exit_rule": "funding_rate <= 0",
+    "family": "carry"
+  },
+  "id": "T2-04"
+}

@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "seconds_run": 25,
+  "pass_markers_found": [
+    "Dry run is enabled"
+  ],
+  "fail_markers_found": [],
+  "log_path": "artifacts/bakeoff/freqtrade/dry_run_probe/trade_dry_run.log"
+}

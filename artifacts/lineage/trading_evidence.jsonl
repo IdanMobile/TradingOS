@@ -1,0 +1,1 @@
+{"approval_state":"NOT_ELIGIBLE","dataset_ref":"DS-CRYPTO-SPOT-BAKEOFF-V1","evidence_id":"EV-LINEAGE-PROTOTYPE-001","hypothesis_id":"HYP-BASELINE-MA-CROSSOVER","instrument":"BTC/USDT","market":"crypto_spot","run_ref":"artifacts/bakeoff/freqtrade/B2/F0_S0/run1","strategy_version_id":"STRAT-B2MA-CROSSOVER-V1","timeframe":"5m","validation_state":"REJECTED"}

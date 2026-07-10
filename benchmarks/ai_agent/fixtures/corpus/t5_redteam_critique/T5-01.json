@@ -1,0 +1,9 @@
+{
+  "backtest_report": "Strategy X: Sharpe 3.1, max drawdown 4%, 5 trades total, backtested on 2021-01-01..2021-03-01 BTCUSDT 5m bars, no fees applied.",
+  "ground_truth_failure_modes": [
+    "sample size (5 trades) too small for the Sharpe estimate to be meaningful",
+    "no trading fees applied overstates net returns",
+    "single 2-month window with no OOS or regime diversity"
+  ],
+  "id": "T5-01"
+}

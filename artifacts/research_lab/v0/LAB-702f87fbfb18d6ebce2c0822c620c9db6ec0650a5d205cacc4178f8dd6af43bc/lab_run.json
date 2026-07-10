@@ -1,0 +1,85 @@
+{
+  "artifact_manifest_sha256": "6233074801993f2e110adea67b5b09de733c8dadd4cd331ab3ec502be95cfe10",
+  "blockers": [
+    "economic and drawdown metrics are retained but not validation evidence",
+    "parameter-neighborhood robustness is not run",
+    "temporal/walk-forward stability is not run",
+    "regime stability is not run",
+    "baseline superiority is not established",
+    "multiple-testing and selection-bias controls are incomplete",
+    "cross-engine reproduction is incomplete"
+  ],
+  "commands": [
+    [
+      "/Users/user/Downloads/trading_os_project_package/engines/vectorbt/.venv/bin/python",
+      "/Users/user/Downloads/trading_os_project_package/engines/vectorbt/probe_sweep.py",
+      "--dataset",
+      "/Users/user/Downloads/trading_os_project_package/data/normalized/BTCUSDT_5m.parquet",
+      "--out",
+      "/Users/user/Downloads/trading_os_project_package/artifacts/research_lab/v0/LAB-702f87fbfb18d6ebce2c0822c620c9db6ec0650a5d205cacc4178f8dd6af43bc"
+    ]
+  ],
+  "content_sha256": "80b5bb8630f5f4fed68ebe102ee7ffd3271df51f19a952019acc1cc257effbc8",
+  "counts": {
+    "completed_trials": 66,
+    "evidence_records": 66,
+    "experiments": 3,
+    "failed_trials": 0,
+    "trials": 66
+  },
+  "execution_authority": "NONE",
+  "finished_at_utc": "2026-07-10T14:14:06.141448+00:00",
+  "hashes": {
+    "canonical_spec_sha256": {
+      "B2": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "B3": "523b5f6a61afe7b71b2507f0640815b619f4f14aa35d73665e865cf140b2102d",
+      "B4": "dce462ca70fd6f479a7bbb068837718d9e5ce7bf3a01e2b040a11af58935c046"
+    },
+    "dataset_sha256": "d4d6b3306c44e242f3fb7f71c44bacabf9a6af1f1f8d507ca2de0853b6a727d0",
+    "expected_trial_config_sha256": "bc3bc9bee03a27970b6b509812d248532476b34500cb429e928041cdd857aa06",
+    "frozen_manifest_sha256": "f2b729627adb5d75a99c90dd7dd25ea6dcabf83de4baea5784397424034dfc56",
+    "hypothesis_registry_digest": "a03257233d6b1b6abbb2c4b5555eac831a30405d9f9e28cc130aa684495ac8e4",
+    "hypothesis_registry_sha256": "a2c24e3f1bfb4f7c22cb64f2232d0e0c7021f6ad88d87b1cc33933efecf1ba4f",
+    "probe_source_sha256": "e8009101a51b68aa2b50ff5a6b85469813963ff0df87f15e3eccbfd1a64a7a21",
+    "quality_report_sha256": "0f83a1073836708d60138e4aca76c81c20e749136c88571babc550a176fe5cd3",
+    "registration_source_sha256": "55bef823f927ded18b222ccad386bcfb4c4fdb23b3f1337fd83f151b835a5754",
+    "runner_source_sha256": "9d6e9dd6bc889eac2a8ed33d16b7c3591a94efa3d11da21323cb4a8a337212d4",
+    "safety_policy_sha256": "d23ccb4b59a40026145b99d33e155848092ce2b4a98bce9d0a313aba0faee4ea",
+    "source_registry_digest": "f72d7144c9fc7a061db1dbe883ab021044aad025960359e2d751d3f8a8f74b6b",
+    "source_registry_sha256": "3ba04068d6d26d34aaebb2343b3afe0e51c64c02ae40908f0fcd3a2da6a13f67",
+    "spec_sha256": {
+      "B2_ma_crossover.yaml": "da3b238432f5e7085f901a87ca6ac3b527055382abacd3d4c21f0476ed15356a",
+      "B3_bollinger_mean_reversion.yaml": "347384f3102770c588c7a8e5451bfdb7ac929785120227e39a20559b99fb8ef1",
+      "B4_volatility_breakout.yaml": "ae7ac1faffe1f083c6b74aabbeb73ab2c99ba7737c1cd387a95b7508363eaeae"
+    },
+    "strategy_version_ids": {
+      "B2": "SV-d562c2e6a4fadaa9",
+      "B3": "SV-73dee142966eae77",
+      "B4": "SV-b7a50e1188dc4c99"
+    },
+    "strategy_versions_sha256": "84904bd28d0588c38e15c19a74b33f7d66f5acb1354f75c652e81b4c08e99fdf",
+    "vectorbt_environment_sha256": "c55ce4ec3b333a7872da99424ed6187222cc3f70e0ed5ad40825e755c36407d8"
+  },
+  "lab_id": "LAB-702f87fbfb18d6ebce2c0822c620c9db6ec0650a5d205cacc4178f8dd6af43bc",
+  "ledger_sha256": "3acab063c7a2c3f6e1818d76e403d64fbb70dc6e6aaca4d60bfe62fdbe64cbeb",
+  "live_orders": "DISABLED",
+  "mode": "OFFLINE_RESEARCH_ONLY",
+  "paper_orders": "DISABLED",
+  "reused": false,
+  "score_states": {
+    "baseline_superiority": "BLOCKED",
+    "cross_engine_reproduction": "BLOCKED",
+    "data_integrity_and_freshness": "PASS",
+    "drawdown_and_loss_severity": "UNASSESSED",
+    "economic_performance_after_declared_costs": "UNASSESSED",
+    "multiple_testing_selection_bias_control": "BLOCKED",
+    "operational_and_evidence_completeness": "PASS",
+    "parameter_neighborhood_robustness": "BLOCKED",
+    "regime_stability": "BLOCKED",
+    "temporal_walk_forward_stability": "BLOCKED"
+  },
+  "started_at_utc": "2026-07-10T14:13:54.617882+00:00",
+  "status": "COMPLETED",
+  "venue_connection": "NONE",
+  "winner_selected": false
+}

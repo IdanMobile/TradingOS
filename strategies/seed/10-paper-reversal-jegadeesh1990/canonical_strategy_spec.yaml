@@ -1,0 +1,24 @@
+# Seed item 10/10 (T-010-11) -- Jegadeesh (1990) short-horizon return reversal
+strategy_id: STRAT-PAPER2-reversal-jegadeesh1990
+family: mean_reversion
+inputs: [close]
+indicators:
+  - name: rate_of_change
+    parameters: {window: 5, source: close}
+    outputs: [short_term_return]
+entry_long:
+  all:
+    - short_term_return < 0
+exit_long:
+  any:
+    - short_term_return > 0
+position_sizing: {type: fixed_fraction, fraction: 1.0}
+risk: {stop_loss: null, take_profit: null}
+assumptions:
+  - "signal evaluated at bar close; execution at next bar open"
+  - "warm-up: no signal until the 5-bar lookback-return window is full (bars 1-5 produce no signal)"
+ambiguities:
+  - "Jegadeesh (1990) ranks stocks cross-sectionally by prior-week return and goes long last week's losers / short last week's winners, holding one week, rebalanced weekly. As with SRC-PAPER1, this project's spec collapses the cross-sectional ranking to a same-instrument threshold rule ('this instrument's own trailing 5-bar return < 0 -> long') and drops the short-losers leg entirely."
+  - "the paper's weekly holding period/rebalance is collapsed to continuous per-bar evaluation, matching this project's bar-driven execution model rather than the paper's own weekly cadence"
+source_refs: [SRC-PAPER2]
+license_ref: LIC-PAPER2

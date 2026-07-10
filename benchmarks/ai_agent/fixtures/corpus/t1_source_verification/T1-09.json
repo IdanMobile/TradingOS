@@ -1,0 +1,9 @@
+{
+  "claim": "The benchmark harness is built MLflow-first, treating Inspect as a design reference rather than a dependency.",
+  "evidence_span": "MLflow-first harness with Inspect as design reference",
+  "id": "T1-09",
+  "label": "supported",
+  "publication_date": "2026-07-06",
+  "source_ref": "docs/architecture/AD.md",
+  "source_text": "MLflow-first harness with Inspect as design reference"
+}

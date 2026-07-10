@@ -1,0 +1,8 @@
+{
+  "ground_truth_mismatches": [
+    "bars_held counter can carry a stale non-zero value into the next trade if reset is missed while flat"
+  ],
+  "id": "T3-02",
+  "implementation": "exit: bars_held >= 5, but bars_held is reset to 0 only on a new entry, never decremented while flat",
+  "strategy": "Exit any long position after 5 bars regardless of price."
+}

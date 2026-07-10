@@ -1,0 +1,49 @@
+{
+  "counts": {
+    "t1_source_verification": 12,
+    "t2_strategy_extraction": 5,
+    "t3_semantic_review": 2,
+    "t4_backtest_plan": 2,
+    "t5_redteam_critique": 2,
+    "t6_tool_comparison": 1,
+    "t7_dictionary_ontology": 2,
+    "t8_research_synthesis": 1
+  },
+  "files": {
+    "t1_source_verification/T1-01.json": "d907f22b886feaf3a69e18cbed4a9576bd671488d4c6321875d65d67484706c3",
+    "t1_source_verification/T1-02.json": "3103db2602e6a11f2845e3d8abe49e4fd1aa00db0dc82a30489c7241ebcb4218",
+    "t1_source_verification/T1-03.json": "21c634db4045c5c585b12bff60d28694d764aaa29c32ac327bdd7d3de065b049",
+    "t1_source_verification/T1-04.json": "ba5925da52a06306689f528c7cea68b82cbfb0d04623d825ac6b35b9d96a71b9",
+    "t1_source_verification/T1-05.json": "b9829bda759948b1922c8985ca730592aecc321d6f7f9f564e32cc5b3a0a7572",
+    "t1_source_verification/T1-06.json": "ab1d0f6704c1795f0c06520d0a65a47e4a546a199fe9fcbadab5a8cf4ef7edc7",
+    "t1_source_verification/T1-07.json": "72b9dcd4309a4753d8d537edbba93dcf1f5f59f2a718104980c7b6a12b374dc1",
+    "t1_source_verification/T1-08.json": "0caf5e575d42aaac2f576508041da2d2c52ffcc4c7875b870e7ddf8e2299851a",
+    "t1_source_verification/T1-09.json": "0fe94e13f4facdd7c49b877eaf03598ff32f475a98e34dd0004a57fe9d9950db",
+    "t1_source_verification/T1-10.json": "22be1200ee0ee9ae5d9eafb8e7664207a9476aaf8ece7b934de04918409f1b04",
+    "t1_source_verification/T1-11.json": "296fb9438503c40e1e63c99ad6c9267c096b3be721ef41906ffb09f7a19baa86",
+    "t1_source_verification/T1-12.json": "04dbc6b6a2252af46a5124a09d92070584f8a4f4f18cf6cba2c5b9fe3a78bbfa",
+    "t2_strategy_extraction/T2-01.json": "170cc8a504c5c39868d2a69141467b06649765af4c7209d6adcfb4eb8ad9d8c9",
+    "t2_strategy_extraction/T2-02.json": "dce2720857f2f97298f742cca4fbea9ed7121032941e0f2d8313ea4a01a93fda",
+    "t2_strategy_extraction/T2-03.json": "18157ebede575b4f996ec01e4fb719eb56b4a839b96a96fe002b668c58f873ef",
+    "t2_strategy_extraction/T2-04.json": "75ff2571416f9353247ebfd70784ccf42579d78b15f449c6b971def6abc37480",
+    "t2_strategy_extraction/T2-05.json": "58936f11de56704f612f5862b84a9461f8b8eb6c9e48b2202b5ba75ea928801e",
+    "t3_semantic_review/T3-01.json": "5f158d196e59faf8c9d94310f333dd5685a207e84386c2ffc17d0eec520ba0c6",
+    "t3_semantic_review/T3-02.json": "ad3e5426282cf45f0f3b15e78d3d7f177fa1cdde5ce61a66dc16da5044bceb68",
+    "t4_backtest_plan/T4-01.json": "1d52f782ba4e3787a78e11468e2e62ae064bd2e023b9d12b9f7e42a108310620",
+    "t4_backtest_plan/T4-02.json": "9f4012ab6dc956dcb1938be51875dabb965e5f38c7a4da99f94e755f20a0f129",
+    "t5_redteam_critique/T5-01.json": "bc24d46d75a1291b335a0b8dee6e2b537cb4847ecce41dae77077e1ccdf97458",
+    "t5_redteam_critique/T5-02.json": "dbfa0557561f69e34ce48e64d6cc37376c9c8429a6da5113ed1e700249e38f29",
+    "t6_tool_comparison/T6-01.json": "666540799fe9695d6b90c9f2dcf09d1b7a8bb134ad121b8f8d868171419f12bc",
+    "t7_dictionary_ontology/T7-01.json": "0407d027d7f760999d7406b4d69f80ecfaf05ead32d1568bf972ddfb826d6a5b",
+    "t7_dictionary_ontology/T7-02.json": "37b5bee01ab0cf18c56835c8ba55bb2b4eabb537f8c987d6c269b3a705bffd64",
+    "t8_research_synthesis/T8-01.json": "6ec83b316b72788c5a1ab1e50d5c70eed7e1eef06b40440ac73cfba4e11d164b"
+  },
+  "frozen_utc": "2026-07-07T13:42:10Z",
+  "leakage_controls": {
+    "controlled_mode_network_disabled": true,
+    "corpus_hashes_frozen": true,
+    "masking_applied_where_required": "not required: all fixtures are synthetic or self-referential to this repo's own frozen docs, no real ticker/entity/date leakage risk",
+    "publication_dates_recorded": true,
+    "raw_profit_not_treated_as_reasoning_proof": true
+  }
+}

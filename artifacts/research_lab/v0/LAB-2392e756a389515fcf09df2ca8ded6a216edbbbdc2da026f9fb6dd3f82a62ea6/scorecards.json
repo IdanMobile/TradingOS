@@ -1,0 +1,92 @@
+{
+  "approval_state": "NOT_ELIGIBLE",
+  "candidates": [
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "blockers": [
+        "economic and drawdown metrics are retained but not validation evidence",
+        "parameter-neighborhood robustness is not run",
+        "temporal/walk-forward stability is not run",
+        "regime stability is not run",
+        "baseline superiority is not established",
+        "multiple-testing and selection-bias controls are incomplete",
+        "cross-engine reproduction is incomplete"
+      ],
+      "candidate_id": "B2",
+      "dimensions": {
+        "baseline_superiority": "BLOCKED",
+        "cross_engine_reproduction": "BLOCKED",
+        "data_integrity_and_freshness": "PASS",
+        "drawdown_and_loss_severity": "UNASSESSED",
+        "economic_performance_after_declared_costs": "UNASSESSED",
+        "multiple_testing_selection_bias_control": "BLOCKED",
+        "operational_and_evidence_completeness": "PASS",
+        "parameter_neighborhood_robustness": "BLOCKED",
+        "regime_stability": "BLOCKED",
+        "temporal_walk_forward_stability": "BLOCKED"
+      },
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "blockers": [
+        "economic and drawdown metrics are retained but not validation evidence",
+        "parameter-neighborhood robustness is not run",
+        "temporal/walk-forward stability is not run",
+        "regime stability is not run",
+        "baseline superiority is not established",
+        "multiple-testing and selection-bias controls are incomplete",
+        "cross-engine reproduction is incomplete"
+      ],
+      "candidate_id": "B3",
+      "dimensions": {
+        "baseline_superiority": "BLOCKED",
+        "cross_engine_reproduction": "BLOCKED",
+        "data_integrity_and_freshness": "PASS",
+        "drawdown_and_loss_severity": "UNASSESSED",
+        "economic_performance_after_declared_costs": "UNASSESSED",
+        "multiple_testing_selection_bias_control": "BLOCKED",
+        "operational_and_evidence_completeness": "PASS",
+        "parameter_neighborhood_robustness": "BLOCKED",
+        "regime_stability": "BLOCKED",
+        "temporal_walk_forward_stability": "BLOCKED"
+      },
+      "hypothesis_id": "HYP-B3-RSI-MEAN-REVERSION-PROXY",
+      "strategy_version_id": "SV-73dee142966eae77",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "blockers": [
+        "economic and drawdown metrics are retained but not validation evidence",
+        "parameter-neighborhood robustness is not run",
+        "temporal/walk-forward stability is not run",
+        "regime stability is not run",
+        "baseline superiority is not established",
+        "multiple-testing and selection-bias controls are incomplete",
+        "cross-engine reproduction is incomplete"
+      ],
+      "candidate_id": "B4",
+      "dimensions": {
+        "baseline_superiority": "BLOCKED",
+        "cross_engine_reproduction": "BLOCKED",
+        "data_integrity_and_freshness": "PASS",
+        "drawdown_and_loss_severity": "UNASSESSED",
+        "economic_performance_after_declared_costs": "UNASSESSED",
+        "multiple_testing_selection_bias_control": "BLOCKED",
+        "operational_and_evidence_completeness": "PASS",
+        "parameter_neighborhood_robustness": "BLOCKED",
+        "regime_stability": "BLOCKED",
+        "temporal_walk_forward_stability": "BLOCKED"
+      },
+      "hypothesis_id": "HYP-B4-ATR-BREAKOUT-PROXY",
+      "strategy_version_id": "SV-b7a50e1188dc4c99",
+      "validation_state": "UNVALIDATED"
+    }
+  ],
+  "lab_id": "LAB-2392e756a389515fcf09df2ca8ded6a216edbbbdc2da026f9fb6dd3f82a62ea6",
+  "scoring_policy": "independent dimensions only; no blended approval score",
+  "validation_state": "UNVALIDATED"
+}

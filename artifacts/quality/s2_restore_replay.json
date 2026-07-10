@@ -1,0 +1,82 @@
+{
+  "artifacts": [
+    {
+      "hash_match": true,
+      "restored": "/var/folders/n0/7dzzk73s5m9bj358d6c0qmmr0000gn/T/tios-s2-restore-pwjq072z/restore/artifacts/research_lab/v0/LAB-799f7d81843d15aaf3b161036a4cd543ac37a709cb1e2ecc72a161f7348488fa/lab_run.json",
+      "restored_sha256": "e5ba2fe31000904d3273afe0dd3e82f7d8521adebebe5fcda58fd26be2b2b9b9",
+      "source": "artifacts/research_lab/v0/LAB-799f7d81843d15aaf3b161036a4cd543ac37a709cb1e2ecc72a161f7348488fa/lab_run.json",
+      "source_sha256": "e5ba2fe31000904d3273afe0dd3e82f7d8521adebebe5fcda58fd26be2b2b9b9"
+    },
+    {
+      "hash_match": true,
+      "restored": "/var/folders/n0/7dzzk73s5m9bj358d6c0qmmr0000gn/T/tios-s2-restore-pwjq072z/restore/artifacts/research_lab/v0/LAB-799f7d81843d15aaf3b161036a4cd543ac37a709cb1e2ecc72a161f7348488fa/manifest.json",
+      "restored_sha256": "259ffc03e61b4a001f25d711f1df857716697a0fd61d891189a6629ff0e67707",
+      "source": "artifacts/research_lab/v0/LAB-799f7d81843d15aaf3b161036a4cd543ac37a709cb1e2ecc72a161f7348488fa/manifest.json",
+      "source_sha256": "259ffc03e61b4a001f25d711f1df857716697a0fd61d891189a6629ff0e67707"
+    },
+    {
+      "hash_match": true,
+      "restored": "/var/folders/n0/7dzzk73s5m9bj358d6c0qmmr0000gn/T/tios-s2-restore-pwjq072z/restore/artifacts/research_lab/v0/LAB-799f7d81843d15aaf3b161036a4cd543ac37a709cb1e2ecc72a161f7348488fa/scorecards.json",
+      "restored_sha256": "030dc2518738564ad966871abeb83cd29cc4faf15c9c8db242b77bbeb43aa419",
+      "source": "artifacts/research_lab/v0/LAB-799f7d81843d15aaf3b161036a4cd543ac37a709cb1e2ecc72a161f7348488fa/scorecards.json",
+      "source_sha256": "030dc2518738564ad966871abeb83cd29cc4faf15c9c8db242b77bbeb43aa419"
+    },
+    {
+      "hash_match": true,
+      "restored": "/var/folders/n0/7dzzk73s5m9bj358d6c0qmmr0000gn/T/tios-s2-restore-pwjq072z/restore/artifacts/research_lab/v0/LAB-799f7d81843d15aaf3b161036a4cd543ac37a709cb1e2ecc72a161f7348488fa/trial_ledger_summary.json",
+      "restored_sha256": "29031ffc75c90d7e523e1bd9d1a264399a1fc5b0f5a62c98b5fca93cb6e272bd",
+      "source": "artifacts/research_lab/v0/LAB-799f7d81843d15aaf3b161036a4cd543ac37a709cb1e2ecc72a161f7348488fa/trial_ledger_summary.json",
+      "source_sha256": "29031ffc75c90d7e523e1bd9d1a264399a1fc5b0f5a62c98b5fca93cb6e272bd"
+    },
+    {
+      "hash_match": true,
+      "restored": "/var/folders/n0/7dzzk73s5m9bj358d6c0qmmr0000gn/T/tios-s2-restore-pwjq072z/restore/artifacts/validation/B2_F0_S0/validation_summary.json",
+      "restored_sha256": "38419feae071a999f9938e96171ff6f67306f4a58cf2b35d6e8b5caa032921c5",
+      "source": "artifacts/validation/B2_F0_S0/validation_summary.json",
+      "source_sha256": "38419feae071a999f9938e96171ff6f67306f4a58cf2b35d6e8b5caa032921c5"
+    },
+    {
+      "hash_match": true,
+      "restored": "/var/folders/n0/7dzzk73s5m9bj358d6c0qmmr0000gn/T/tios-s2-restore-pwjq072z/restore/artifacts/validation/B2_F0_S0/multiple_testing_method_candidate.json",
+      "restored_sha256": "63671b819fe6fa3804dffc03e1c3d15a9a2bb6dbba9cbb2896391a180916f4ae",
+      "source": "artifacts/validation/B2_F0_S0/multiple_testing_method_candidate.json",
+      "source_sha256": "63671b819fe6fa3804dffc03e1c3d15a9a2bb6dbba9cbb2896391a180916f4ae"
+    },
+    {
+      "hash_match": true,
+      "restored": "/var/folders/n0/7dzzk73s5m9bj358d6c0qmmr0000gn/T/tios-s2-restore-pwjq072z/restore/artifacts/validation/B2_F0_S0/baseline_comparison.json",
+      "restored_sha256": "82da0a1162da09a415a178e4636a1deb64332449a3f9f57ada8d6b70e439fa93",
+      "source": "artifacts/validation/B2_F0_S0/baseline_comparison.json",
+      "source_sha256": "82da0a1162da09a415a178e4636a1deb64332449a3f9f57ada8d6b70e439fa93"
+    }
+  ],
+  "checks": {
+    "artifact_hash_restore": true,
+    "dvc_fresh_checkout_replay": true,
+    "lab_no_winner": true,
+    "mlflow_artifact_restore": true,
+    "sqlite_backup_restore": true,
+    "validation_not_approvable": true
+  },
+  "lineage_result": "artifacts/lineage/prototype/prototype_result.json",
+  "notes": [
+    "Restore area is temporary; retained source artifacts remain authoritative.",
+    "This verifies S2 local restore/replay only and does not approve a strategy."
+  ],
+  "schema": "tios-s2-restore-replay-v1",
+  "sqlite": {
+    "hash_match": false,
+    "integrity": "ok",
+    "jobs_by_state": {
+      "SUCCEEDED": 3
+    },
+    "restored": "/var/folders/n0/7dzzk73s5m9bj358d6c0qmmr0000gn/T/tios-s2-restore-pwjq072z/restore/artifacts/jobs/jobs.sqlite3",
+    "restored_sha256": "dc19a203e5e88fbb35a3e3e95630fe8f1c00243c4d0b2fa93fa16fef9a1ff5e2",
+    "schedule_count": 1,
+    "schema_version": 2,
+    "source": "artifacts/jobs/jobs.sqlite3",
+    "source_sha256": "e41da50b4971f73557ae4bb15f72ffeb6b1356cc560e483ef154b08f24c14ea9",
+    "status": "PASS"
+  },
+  "status": "PASS"
+}

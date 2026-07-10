@@ -1,0 +1,7 @@
+source_id: SRC-HB1
+license_class: permissive
+license_name: Apache-2.0
+evidence_url: https://github.com/hummingbot/hummingbot/blob/master/LICENSE
+code_reuse_allowed: true
+requires_attribution: false
+notes: Hummingbot repository is Apache-2.0 licensed; permissive class per license_gate().

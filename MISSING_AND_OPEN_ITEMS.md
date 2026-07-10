@@ -1,37 +1,51 @@
 # Trading Intelligence OS — Missing and Open Items
 
-Last updated: 2026-07-06
+Last updated: 2026-07-10
 
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
-- RG-02 LEAN local data/pricing boundary (verify before WS3 LEAN lane).
-- RG-03 vectorbt OSS exact license text (blocks vectorbt probe lane only).
 - RG-05 Kraken/Coinbase Israel availability (before S3; Coinbase demoted provisionally).
+- RG-07 G10 PBO/DSR estimator and known-answer validation before G10 activation.
 - RG-08 OpenAI/Gemini primary-source pricing + context windows (before paid benchmark runs).
-- Remaining RG-xx rows: see the matrix; none block S1 start.
 
-## Resolved 2026-07-06 (planning pass)
+## Current environment/coverage constraints
 
-- Duplicate decision IDs D-022/D-023 → renumbered D-027/D-028 (D-031).
-- Binance timestamp-unit change → dataset spec Amendment A1 (D-029).
-- Stale candidate assumptions corrected (vectorbt OSS active; Backtrader/backtesting.py rejected; Databento reclassified) (D-032).
+- BTC-only B2 Freqtrade/Hummingbot parity remains non-identical but is explained and
+  retained as execution/order-state plus missing-data behavior; it is not a P&L fixture.
 
-## Blocking current coding-agent prototype
+Docker is currently stopped, so LEAN execution and missing Hummingbot B3/B4 runs
+cannot proceed in the present environment. NautilusTrader remains bounded-window
+evidence; full-history parity and latency/fill evidence remain open. Deferred adapters
+and normalized artifacts are retained as evidence-only/deferred assets under D-037.
 
-None identified. The project passed the constrained coding-agent readiness gate.
+## Open S2 evidence and exit items
 
-## Must be resolved by prototype evidence
+1. Real retained Research Lab evidence now exists: LAB-799 completed and the persisted
+   jobs/dashboard projection show three succeeded `RESEARCH_LAB_V0` jobs plus the
+   six-hour offline schedule. Continue the next S2 evidence cycle from the recorded
+   blockers; do not treat the batch or scheduler as strategy approval. A follow-on
+   seed-candidate cycle also retained 16 trials for the two reproduced QuantConnect seed
+   specs and selected no winner.
+2. Strategy validation remains `INCOMPLETE_NOT_APPROVABLE`: B2 is rejected for paper,
+   G4 remains WARN, and G10 is a deferred method candidate requiring validated
+   estimators and known-answer fixtures.
+3. Preserve and close only with evidence the LEAN, Hummingbot, NautilusTrader, and
+   cross-engine signal/order/fill semantic gaps described above.
+4. S2 exit/HG-3 remains blocked: the verification package is retained, but the
+   requirement audit says not to prepare HG-3 because no strategy is complete,
+   approvable, or promotion-eligible.
 
-1. Role fit of Freqtrade, NautilusTrader, LEAN, and Hummingbot under common tests.
-2. Whether vectorbt should be reused as a research accelerator and under which overfitting controls.
-3. Cross-engine signal/order semantic differences.
-4. Actual installation and maintenance friction on the development machine.
-5. MLflow + DVC vs simpler lineage combination.
-6. Canonical data conversion and regeneration reliability.
-7. Practical validation-harness design and artifact schema.
-8. Real schema/license/semantic lessons from 10-item strategy seed ingestion.
-9. Minimal dashboard data contract.
-10. Initial AI/agent benchmark harness practicality.
+## Resolved S2 verification evidence
+
+- Clean-checkout/restore/replay evidence now passes for DVC fresh-checkout replay,
+  MLflow artifact restore, SQLite jobs DB logical backup/restore, retained artifact
+  hash restore, LAB-799 no-winner status, and validation non-approvability. Evidence:
+  `artifacts/reports/S2_RESTORE_REPLAY_REPORT.md` and
+  `artifacts/quality/s2_restore_replay.json`.
+- S2 live-unreachability evidence passes. Evidence:
+  `artifacts/reports/S2_LIVE_UNREACHABILITY_REPORT.md`.
+- S2 requirement audit is complete and blocks exit/HG-3 on evidence grounds. Evidence:
+  `artifacts/reports/S2_REQUIREMENT_AUDIT.md`.
 
 ## Human-only before live trading
 
@@ -63,9 +77,23 @@ None identified. The project passed the constrained coding-agent readiness gate.
 - full ontology ingestion;
 - final 27-page dashboard implementation.
 
+## Credential- and human-gated AI work
+
+- T-011-05 (AI benchmark first real runs) is deferred: no `ANTHROPIC_API_KEY` /
+  `OPENAI_API_KEY` / `GOOGLE_API_KEY` is configured in this environment
+  (intake gate's "add later" AI-key disposition still holds). T-011-01..04 and
+  T-011-06 are complete on the null provider; see
+  `artifacts/reports/AI_BENCHMARK_SEED_REPORT.md`. Unblock by configuring one
+  provider credential, then run controlled-mode Mode A per
+  `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md`.
+- Judge calibration set (`benchmarks/ai_agent/calibration/calibration_set.json`)
+  is frozen but `review_status: PENDING_HUMAN_REVIEW` — needs an operator to
+  review samples and record `reviewer`/`reviewed_at` (T-011-04 human-approval
+  requirement).
+
 ## Re-verification required
 
-Before implementation/live use recheck:
+Before S3/S4 implementation or live use recheck:
 - exchange APIs and changelogs;
 - provider model versions/pricing;
 - data provider pricing/licensing;

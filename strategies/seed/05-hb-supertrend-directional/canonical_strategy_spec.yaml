@@ -1,0 +1,24 @@
+# Seed item 5/10 (T-010-06) -- Hummingbot V2 directional-trading controller (supertrend_v1)
+strategy_id: STRAT-HB1-supertrend-directional
+family: trend_following
+inputs: [close, high, low]
+indicators:
+  - name: supertrend
+    parameters: {window: 10, multiplier: 3, source: close}
+    outputs: [supertrend_direction]
+entry_long:
+  all:
+    - supertrend_direction > 0
+exit_long:
+  any:
+    - supertrend_direction < 0
+position_sizing: {type: fixed_fraction, fraction: 1.0}
+risk: {stop_loss: null, take_profit: null}
+assumptions:
+  - "signal evaluated at bar close; execution at next bar open (mapped from Hummingbot's per-candle controller update_processed_data / executor-proposal cycle)"
+  - "warm-up: no signal until the 10-bar ATR/Supertrend window is seeded (bars 1-9 produce no signal)"
+ambiguities:
+  - "supertrend_direction is modeled here as a single signed output (+1 long-bias / -1 short-bias); Hummingbot's actual supertrend_v1 controller wraps pandas_ta's supertrend and derives a signal (1/0/-1, with 0 meaning no new signal) from the direction CHANGE, not the raw direction level -- this spec simplifies '0 = flat' out and only distinguishes >0 / <0"
+  - "Hummingbot V2 directional-trading controllers configure a triple-barrier (stop-loss/take-profit/trailing-stop/time-limit) at the controller-config level, separate from the pandas_ta signal itself; this canonical spec captures only the signal rule, not the triple-barrier -- a real semantic gap between this project's single stop_loss/take_profit fields and Hummingbot's richer executor-level risk config"
+source_refs: [SRC-HB1]
+license_ref: LIC-HB1

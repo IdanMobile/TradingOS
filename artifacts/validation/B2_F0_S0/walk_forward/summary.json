@@ -1,0 +1,189 @@
+{
+  "status": "COMPLETE_ENGINE_RUNS",
+  "train_days": 365,
+  "test_days": 90,
+  "step_days": 90,
+  "windows": [
+    {
+      "window": "w00",
+      "profit_total_abs": "-990.9292267800001",
+      "trades_roundtrips": 383,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/walk_forward/w00"
+    },
+    {
+      "window": "w01",
+      "profit_total_abs": "-989.9539396199999",
+      "trades_roundtrips": 448,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/walk_forward/w01"
+    },
+    {
+      "window": "w02",
+      "profit_total_abs": "-992.77531456",
+      "trades_roundtrips": 501,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/walk_forward/w02"
+    },
+    {
+      "window": "w03",
+      "profit_total_abs": "-993.0802018999999",
+      "trades_roundtrips": 471,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5.0E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/walk_forward/w03"
+    },
+    {
+      "window": "w04",
+      "profit_total_abs": "-991.0364883699999",
+      "trades_roundtrips": 499,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5.0E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/walk_forward/w04"
+    },
+    {
+      "window": "w05",
+      "profit_total_abs": "-991.18771176",
+      "trades_roundtrips": 522,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/walk_forward/w05"
+    },
+    {
+      "window": "w06",
+      "profit_total_abs": "-991.15380427",
+      "trades_roundtrips": 481,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5.0E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/walk_forward/w06"
+    },
+    {
+      "window": "w07",
+      "profit_total_abs": "-991.2963982900001",
+      "trades_roundtrips": 509,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/walk_forward/w07"
+    },
+    {
+      "window": "w08",
+      "profit_total_abs": "-992.6762709300001",
+      "trades_roundtrips": 500,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/walk_forward/w08"
+    },
+    {
+      "window": "w09",
+      "profit_total_abs": "-992.62302234",
+      "trades_roundtrips": 487,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/walk_forward/w09"
+    },
+    {
+      "window": "w10",
+      "profit_total_abs": "-991.42986196",
+      "trades_roundtrips": 476,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/walk_forward/w10"
+    },
+    {
+      "window": "w11",
+      "profit_total_abs": "-990.5101923300001",
+      "trades_roundtrips": 531,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5.0E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/walk_forward/w11"
+    },
+    {
+      "window": "w12",
+      "profit_total_abs": "-992.07419524",
+      "trades_roundtrips": 506,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/walk_forward/w12"
+    },
+    {
+      "window": "w13",
+      "profit_total_abs": "-991.1177793999999",
+      "trades_roundtrips": 503,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/walk_forward/w13"
+    },
+    {
+      "window": "w14",
+      "profit_total_abs": "-990.42970073",
+      "trades_roundtrips": 488,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/walk_forward/w14"
+    },
+    {
+      "window": "w15",
+      "profit_total_abs": "-990.7347952900001",
+      "trades_roundtrips": 463,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/walk_forward/w15"
+    },
+    {
+      "window": "w16",
+      "profit_total_abs": "-990.6186208199999",
+      "trades_roundtrips": 456,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/walk_forward/w16"
+    },
+    {
+      "window": "w17",
+      "profit_total_abs": "-992.9636275199999",
+      "trades_roundtrips": 534,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5.0E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/walk_forward/w17"
+    }
+  ],
+  "interpretation": "All test windows retain results; no test-window tuning was performed."
+}

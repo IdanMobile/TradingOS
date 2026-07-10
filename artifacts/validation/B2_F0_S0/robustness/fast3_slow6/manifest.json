@@ -1,0 +1,32 @@
+{
+  "artifact_id": "B2-ROBUSTNESS-fast3_slow6",
+  "produced_by": "T-009-03",
+  "status": "OK",
+  "engine": "freqtrade",
+  "strategy": "B2Neighborhood36",
+  "dataset_id": "DS-CRYPTO-SPOT-BAKEOFF-V1",
+  "scenario": "F1/S1",
+  "window": "20250525-20260701",
+  "parameters": {
+    "fast_window": 3,
+    "slow_window": 6
+  },
+  "files": [
+    {
+      "path": "backtest-result-2026-07-10_04-16-47.zip",
+      "sha256": "7caf556f6f432800e9ceb8edefb8974ed84000048f85d30b00f32f8a17c56f78"
+    },
+    {
+      "path": "trades.parquet",
+      "sha256": "e755b5b94363d83257df769a464d20de8861627e4e3be547fdd544962b1c2749"
+    },
+    {
+      "path": "equity.parquet",
+      "sha256": "d10562ed65f57eb85b82d683d28c1fd625a250c3ad68bf67f8b6c46b153cb745"
+    },
+    {
+      "path": "normalized_metrics.json",
+      "sha256": "98e3ac2d826c8f15602d54f928b65bcfc9e8df906e41e017420ba34dc012b1d9"
+    }
+  ]
+}

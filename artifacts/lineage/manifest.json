@@ -1,4 +1,17 @@
 {
   "schema": "tios-artifact-manifest-v1",
-  "artifacts": []
+  "artifacts": [
+    {
+      "artifact_id": "EV-LINEAGE-PROTOTYPE-001",
+      "produced_by": "Test C local-first lineage prototype",
+      "input_refs": [
+        "DS-CRYPTO-SPOT-BAKEOFF-V1",
+        "STRAT-B2MA-CROSSOVER-V1",
+        "artifacts/bakeoff/freqtrade/B2/F0_S0/run1"
+      ],
+      "files": [
+        "trading_evidence.jsonl"
+      ]
+    }
+  ]
 }

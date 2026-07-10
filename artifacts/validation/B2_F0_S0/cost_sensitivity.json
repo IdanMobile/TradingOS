@@ -1,0 +1,74 @@
+{
+  "status": "COMPLETE_GRID_POST_HOC",
+  "strategy": "B2MaCrossover",
+  "source_trades": "artifacts/validation/B2_F0_S0/trades.parquet",
+  "scenarios": [
+    {
+      "scenario": "F0/S0",
+      "fee_rate_per_side": "0",
+      "slippage_bps_per_side": "0",
+      "diagnostic_only": true,
+      "roundtrips": 83996,
+      "gross_pnl_quote": "-854.2458047000000000",
+      "net_pnl_quote": "-854.2458047000000000",
+      "profitable": false,
+      "source": "B2 F0/S0 canonical trades; adverse slippage applied post-hoc"
+    },
+    {
+      "scenario": "F1/S1",
+      "fee_rate_per_side": "0.001",
+      "slippage_bps_per_side": "1",
+      "diagnostic_only": false,
+      "roundtrips": 83996,
+      "gross_pnl_quote": "-6389.10966776035000000000",
+      "net_pnl_quote": "-61737.74838378843047000000000",
+      "profitable": false,
+      "source": "B2 F0/S0 canonical trades; adverse slippage applied post-hoc"
+    },
+    {
+      "scenario": "F1/S2",
+      "fee_rate_per_side": "0.001",
+      "slippage_bps_per_side": "5",
+      "diagnostic_only": false,
+      "roundtrips": 83996,
+      "gross_pnl_quote": "-28528.56512000175000000000",
+      "net_pnl_quote": "-83877.20417772815235000000000",
+      "profitable": false,
+      "source": "B2 F0/S0 canonical trades; adverse slippage applied post-hoc"
+    },
+    {
+      "scenario": "F1/S3",
+      "fee_rate_per_side": "0.001",
+      "slippage_bps_per_side": "10",
+      "diagnostic_only": false,
+      "roundtrips": 83996,
+      "gross_pnl_quote": "-56202.8844353035000000000",
+      "net_pnl_quote": "-111551.5239201528047000000000",
+      "profitable": false,
+      "source": "B2 F0/S0 canonical trades; adverse slippage applied post-hoc"
+    },
+    {
+      "scenario": "F2/S2",
+      "fee_rate_per_side": "0.0015",
+      "slippage_bps_per_side": "5",
+      "diagnostic_only": false,
+      "roundtrips": 83996,
+      "gross_pnl_quote": "-28528.56512000175000000000",
+      "net_pnl_quote": "-111551.5237065913535250000000",
+      "profitable": false,
+      "source": "B2 F0/S0 canonical trades; adverse slippage applied post-hoc"
+    },
+    {
+      "scenario": "F2/S3",
+      "fee_rate_per_side": "0.0015",
+      "slippage_bps_per_side": "10",
+      "diagnostic_only": false,
+      "roundtrips": 83996,
+      "gross_pnl_quote": "-56202.8844353035000000000",
+      "net_pnl_quote": "-139225.8436625774570500000000",
+      "profitable": false,
+      "source": "B2 F0/S0 canonical trades; adverse slippage applied post-hoc"
+    }
+  ],
+  "interpretation": "Diagnostic F0/S0 is never approval evidence; all economic cells are retained."
+}

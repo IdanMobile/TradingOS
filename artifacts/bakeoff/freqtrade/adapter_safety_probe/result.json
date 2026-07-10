@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "precision": {
+    "conversion": "canonical decimal128 -> engine float64",
+    "max_decimal_roundtrip_error": "0",
+    "rows_checked": 577803,
+    "columns_checked": 5,
+    "boundary": "loss is declared in every lane manifest"
+  },
+  "failures": {
+    "invalid_pair_returncode": 2,
+    "invalid_pair_observable": true,
+    "missing_result_returncode": 1,
+    "missing_result_observable": true
+  }
+}

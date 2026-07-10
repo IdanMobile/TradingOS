@@ -1,0 +1,57 @@
+{
+  "status": "COMPLETE_ENGINE_RUNS",
+  "holdout_window": "20250525-20260701",
+  "variants": [
+    {
+      "variant": "fast2_slow5",
+      "profit_total_abs": "-992.2096814299999",
+      "trades_roundtrips": 474,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5.0E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/robustness/fast2_slow5"
+    },
+    {
+      "variant": "fast3_slow4",
+      "profit_total_abs": "-991.44220427",
+      "trades_roundtrips": 512,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5.0E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/robustness/fast3_slow4"
+    },
+    {
+      "variant": "fast3_slow5",
+      "profit_total_abs": "-991.1570058399999",
+      "trades_roundtrips": 474,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5.0E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/robustness/fast3_slow5"
+    },
+    {
+      "variant": "fast3_slow6",
+      "profit_total_abs": "-990.35720098",
+      "trades_roundtrips": 470,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5.0E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/robustness/fast3_slow6"
+    },
+    {
+      "variant": "fast4_slow5",
+      "profit_total_abs": "-990.1455548399999",
+      "trades_roundtrips": 481,
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5.0E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/robustness/fast4_slow5"
+    }
+  ],
+  "interpretation": "All retained neighborhood variants are evidence; no isolated optimum is promoted."
+}

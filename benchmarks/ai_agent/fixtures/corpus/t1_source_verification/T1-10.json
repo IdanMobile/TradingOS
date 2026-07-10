@@ -1,0 +1,9 @@
+{
+  "claim": "T-011-04 judge calibration requires no human operator involvement.",
+  "evidence_span": "Human approval: Yes (operator reviews samples)",
+  "id": "T1-10",
+  "label": "contradicted",
+  "publication_date": "2026-07-06",
+  "source_ref": "todos/11_ai_agent_eval.md",
+  "source_text": "Human approval: Yes (operator reviews samples)"
+}

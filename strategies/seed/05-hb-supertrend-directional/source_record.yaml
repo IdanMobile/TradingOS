@@ -1,0 +1,17 @@
+source_id: SRC-HB1
+source_class: official_framework
+url: https://github.com/hummingbot/hummingbot/blob/master/controllers/directional_trading/supertrend_v1.py
+title: "supertrend_v1 (Hummingbot V2 directional-trading controller)"
+author: hummingbot-foundation
+published_at: "unknown (V2 controller framework, introduced ~2023-2024)"
+retrieved_at: "2026-07-07"
+license: Apache-2.0
+version_or_commit: "master branch, exact commit not pinned in this pass"
+market_claimed: "perpetual futures (Hummingbot V2 directional-trading controllers default to perpetuals per this project's own prior Hummingbot bakeoff-lane research)"
+timeframe_claimed: "1m-1h (controller-configurable; no single fixed value)"
+profit_claims_inherited: false
+notes: >
+  Recalled from this project's own prior Hummingbot V2 controller-architecture
+  research (bakeoff lane) plus public knowledge of the `directional_trading`
+  controller family; no live fetch performed in this ingestion pass -- exact
+  current file contents should be reviewer-confirmed.

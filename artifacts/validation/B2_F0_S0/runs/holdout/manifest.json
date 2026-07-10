@@ -1,0 +1,32 @@
+{
+  "artifact_id": "B2-F1-S1-holdout",
+  "produced_by": "T-009-03",
+  "status": "OK",
+  "engine": "freqtrade",
+  "strategy": "B2MaCrossover",
+  "window": "holdout",
+  "dataset_id": "DS-CRYPTO-SPOT-BAKEOFF-V1",
+  "scenario": "F1/S1",
+  "fee_rate_per_side": "0.001",
+  "stake_amount": "1000",
+  "max_open_trades": 1,
+  "files": [
+    {
+      "path": "backtest-result-2026-07-10_04-12-10.zip",
+      "sha256": "6ba569a5a1fb16b8c50359d8ff95f958465494aee0088647eaec5c81db440186"
+    },
+    {
+      "path": "trades.parquet",
+      "sha256": "7255e8dcd31f4c1bfe64fe783fb29ef2306ad6db3f69ead7533227f835c60f91"
+    },
+    {
+      "path": "equity.parquet",
+      "sha256": "cc13e6910fd80ad3bee271a9e874f9fae5492f03c9415fba77d165f4ef2feae8"
+    },
+    {
+      "path": "normalized_metrics.json",
+      "sha256": "840d76b47f99f25a3844434c6192c1ae49453a06816b12480321cef9832d1317"
+    }
+  ],
+  "schema_version": 1
+}

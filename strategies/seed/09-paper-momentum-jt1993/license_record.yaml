@@ -1,0 +1,12 @@
+source_id: SRC-PAPER1
+license_class: unclear
+license_name: "journal copyright (publisher-held); method/idea not separately copyrightable"
+evidence_url: "https://doi.org/10.1111/j.1540-6261.1993.tb04702.x"
+code_reuse_allowed: false
+requires_attribution: false
+notes: >
+  No source code exists to reuse. `license_class: unclear` reflects that the
+  paper's text/figures are publisher-copyrighted while the underlying method
+  it describes is not itself copyrightable subject matter; this project's
+  ingestion extracts only the method (per license_gate(): spec_extraction_allowed
+  is true for every license_class, precisely to cover this academic-paper case).

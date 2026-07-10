@@ -1,0 +1,281 @@
+registry_version: 1
+sources:
+  - source_id: SRC-PAPER1
+    source_class: primary_academic_paper
+    title: "Returns to Buying Winners and Selling Losers: Implications for Stock Market Efficiency"
+    authors: [Narasimhan Jegadeesh, Sheridan Titman]
+    publication: The Journal of Finance
+    year: 1993
+    volume: "48"
+    issue: "1"
+    pages: "65-91"
+    doi: 10.1111/j.1540-6261.1993.tb04702.x
+    canonical_publisher_url: "https://onlinelibrary.wiley.com/doi/10.1111/j.1540-6261.1993.tb04702.x"
+    lawful_full_text_url: null
+    checked_at: "2026-07-10T00:00:00Z"
+    access_license_status: publisher_page_only
+    hypothesis_families: [cross_sectional_momentum]
+    claim_summary: >-
+      Primary hypothesis source for cross-sectional relative-strength portfolios formed from
+      prior winners and losers; it does not prove profitability in this application.
+    exact_span_status: not_captured
+    evidence_strength: hypothesis_only
+    profit_claims_inherited: false
+    locally_reproduced: false
+    approval_eligible: false
+    contradictions: []
+    reverify_trigger: Recheck if bibliographic metadata, publisher access, or the DOI target changes.
+    supersedes: []
+    related_source_ids: [SRC-PAPER2, SRC-TCOST-KS2004]
+
+  - source_id: SRC-TSMOM-MOP2012
+    source_class: primary_academic_paper
+    title: Time Series Momentum
+    authors: [Tobias J. Moskowitz, Yao Hua Ooi, Lasse Heje Pedersen]
+    publication: Journal of Financial Economics
+    year: 2012
+    volume: "104"
+    issue: "2"
+    pages: "228-250"
+    doi: 10.1016/j.jfineco.2011.11.003
+    canonical_publisher_url: "https://www.sciencedirect.com/science/article/pii/S0304405X11002613"
+    lawful_full_text_url: null
+    checked_at: "2026-07-10T00:00:00Z"
+    access_license_status: publisher_page_only
+    hypothesis_families: [time_series_momentum]
+    claim_summary: >-
+      Primary hypothesis source for an asset's own past return predicting its future return;
+      this is distinct from cross-sectional winner-minus-loser ranking and is not established here.
+    exact_span_status: not_captured
+    evidence_strength: hypothesis_only
+    profit_claims_inherited: false
+    locally_reproduced: false
+    approval_eligible: false
+    contradictions: []
+    reverify_trigger: Recheck if bibliographic metadata, publisher access, or the DOI target changes.
+    supersedes: []
+    related_source_ids: [SRC-PAPER1]
+
+  - source_id: SRC-PAPER2
+    source_class: primary_academic_paper
+    title: Evidence of Predictable Behavior of Security Returns
+    authors: [Narasimhan Jegadeesh]
+    publication: The Journal of Finance
+    year: 1990
+    volume: "45"
+    issue: "3"
+    pages: "881-898"
+    doi: 10.1111/j.1540-6261.1990.tb05110.x
+    canonical_publisher_url: "https://onlinelibrary.wiley.com/doi/10.1111/j.1540-6261.1990.tb05110.x"
+    lawful_full_text_url: null
+    checked_at: "2026-07-10T00:00:00Z"
+    access_license_status: publisher_page_only
+    hypothesis_families: [reversal]
+    claim_summary: >-
+      Primary hypothesis source for short-horizon cross-sectional return reversal; the existing
+      seed extraction remains ambiguous and neither reproduces nor proves the paper's result.
+    exact_span_status: not_captured
+    evidence_strength: hypothesis_only
+    profit_claims_inherited: false
+    locally_reproduced: false
+    approval_eligible: false
+    contradictions: []
+    reverify_trigger: Recheck if bibliographic metadata, publisher access, or the DOI target changes.
+    supersedes: []
+    related_source_ids: [SRC-PAPER1]
+
+  - source_id: SRC-VOLSCALE-BS2015
+    source_class: primary_academic_paper
+    title: Momentum Has Its Moments
+    authors: [Pedro Barroso, Pedro Santa-Clara]
+    publication: Journal of Financial Economics
+    year: 2015
+    volume: "116"
+    issue: "1"
+    pages: "111-120"
+    doi: 10.1016/j.jfineco.2014.11.010
+    canonical_publisher_url: "https://www.sciencedirect.com/science/article/pii/S0304405X14002323"
+    lawful_full_text_url: null
+    checked_at: "2026-07-10T00:00:00Z"
+    access_license_status: publisher_page_only
+    hypothesis_families: [volatility_scaling, cross_sectional_momentum]
+    claim_summary: >-
+      Primary hypothesis source for scaling momentum exposure using forecast volatility; no
+      volatility target, performance claim, or approval status is inherited by this application.
+    exact_span_status: not_captured
+    evidence_strength: hypothesis_only
+    profit_claims_inherited: false
+    locally_reproduced: false
+    approval_eligible: false
+    contradictions: []
+    reverify_trigger: Recheck if bibliographic metadata, publisher access, or the DOI target changes.
+    supersedes: []
+    related_source_ids: [SRC-PAPER1, SRC-VOLMANAGED-MM2017]
+
+  - source_id: SRC-VOLMANAGED-MM2017
+    source_class: primary_academic_paper
+    title: Volatility-Managed Portfolios
+    authors: [Alan Moreira, Tyler Muir]
+    publication: The Journal of Finance
+    year: 2017
+    volume: "72"
+    issue: "4"
+    pages: "1611-1644"
+    doi: 10.1111/jofi.12513
+    canonical_publisher_url: "https://onlinelibrary.wiley.com/doi/10.1111/jofi.12513"
+    lawful_full_text_url: null
+    checked_at: "2026-07-10T00:00:00Z"
+    access_license_status: publisher_page_only
+    hypothesis_families: [volatility_scaling]
+    claim_summary: >-
+      Primary hypothesis source for dynamically scaling portfolio exposure inversely with recent
+      variance; the finding is not treated as local reproduction or proof.
+    exact_span_status: not_captured
+    evidence_strength: hypothesis_only
+    profit_claims_inherited: false
+    locally_reproduced: false
+    approval_eligible: false
+    contradictions: []
+    reverify_trigger: Recheck if bibliographic metadata, publisher access, or the DOI target changes.
+    supersedes: []
+    related_source_ids: [SRC-VOLSCALE-BS2015]
+
+  - source_id: SRC-TCOST-KS2004
+    source_class: primary_academic_paper
+    title: Are Momentum Profits Robust to Trading Costs?
+    authors: [Robert A. Korajczyk, Ronnie Sadka]
+    publication: The Journal of Finance
+    year: 2004
+    volume: "59"
+    issue: "3"
+    pages: "1039-1082"
+    doi: 10.1111/j.1540-6261.2004.00656.x
+    canonical_publisher_url: "https://onlinelibrary.wiley.com/doi/10.1111/j.1540-6261.2004.00656.x"
+    lawful_full_text_url: null
+    checked_at: "2026-07-10T00:00:00Z"
+    access_license_status: publisher_page_only
+    hypothesis_families: [transaction_costs, cross_sectional_momentum]
+    claim_summary: >-
+      Primary hypothesis source for evaluating momentum after market-impact and trading-cost
+      estimates; its empirical results are not inherited as application profit proof.
+    exact_span_status: not_captured
+    evidence_strength: hypothesis_only
+    profit_claims_inherited: false
+    locally_reproduced: false
+    approval_eligible: false
+    contradictions: []
+    reverify_trigger: Recheck if bibliographic metadata, publisher access, or the DOI target changes.
+    supersedes: []
+    related_source_ids: [SRC-PAPER1]
+
+  - source_id: SRC-PBO-2016
+    source_class: primary_academic_paper
+    title: The Probability of Backtest Overfitting
+    authors: [David H. Bailey, Jonathan M. Borwein, Marcos López de Prado, Qiji Jim Zhu]
+    publication: The Journal of Computational Finance
+    year: 2017
+    volume: "20"
+    issue: "4"
+    pages: "39-69"
+    doi: 10.21314/JCF.2016.322
+    canonical_publisher_url: "https://www.risk.net/journal-of-computational-finance/technical-paper/2473372/the-probability-of-backtest-overfitting"
+    lawful_full_text_url: null
+    checked_at: "2026-07-10T00:00:00Z"
+    access_license_status: publisher_page_only
+    hypothesis_families: [multiple_testing_controls]
+    claim_summary: >-
+      Primary method source for estimating selection-driven backtest overfitting across strategy
+      configurations; recording it does not establish that a local search is controlled.
+    exact_span_status: not_captured
+    evidence_strength: hypothesis_only
+    profit_claims_inherited: false
+    locally_reproduced: false
+    approval_eligible: false
+    contradictions: []
+    reverify_trigger: Recheck if bibliographic metadata, publisher access, or the DOI target changes.
+    supersedes: []
+    related_source_ids: [SRC-DSR-2014, SRC-WRC-2000, SRC-SPA-2005]
+
+  - source_id: SRC-DSR-2014
+    source_class: primary_academic_paper
+    title: "The Deflated Sharpe Ratio: Correcting for Selection Bias, Backtest Overfitting, and Non-Normality"
+    authors: [David H. Bailey, Marcos López de Prado]
+    publication: The Journal of Portfolio Management
+    year: 2014
+    volume: "40"
+    issue: "5"
+    pages: "94-107"
+    doi: 10.3905/jpm.2014.40.5.094
+    canonical_publisher_url: "https://www.pm-research.com/content/iijpormgmt/40/5/94"
+    lawful_full_text_url: null
+    checked_at: "2026-07-10T00:00:00Z"
+    access_license_status: publisher_page_only
+    hypothesis_families: [multiple_testing_controls]
+    claim_summary: >-
+      Primary method source for adjusting Sharpe-ratio interpretation for selection, multiple
+      trials, and non-normal returns; no local statistic is validated merely by citing it.
+    exact_span_status: not_captured
+    evidence_strength: hypothesis_only
+    profit_claims_inherited: false
+    locally_reproduced: false
+    approval_eligible: false
+    contradictions: []
+    reverify_trigger: Recheck if bibliographic metadata, publisher access, or the DOI target changes.
+    supersedes: []
+    related_source_ids: [SRC-PBO-2016, SRC-WRC-2000, SRC-SPA-2005]
+
+  - source_id: SRC-WRC-2000
+    source_class: primary_academic_paper
+    title: A Reality Check for Data Snooping
+    authors: [Halbert White]
+    publication: Econometrica
+    year: 2000
+    volume: "68"
+    issue: "5"
+    pages: "1097-1126"
+    doi: 10.1111/1468-0262.00152
+    canonical_publisher_url: "https://onlinelibrary.wiley.com/doi/10.1111/1468-0262.00152"
+    lawful_full_text_url: null
+    checked_at: "2026-07-10T00:00:00Z"
+    access_license_status: publisher_page_only
+    hypothesis_families: [multiple_testing_controls]
+    claim_summary: >-
+      Primary method source for testing a benchmark against a searched collection while accounting
+      for data snooping; citation alone does not make a local comparison valid.
+    exact_span_status: not_captured
+    evidence_strength: hypothesis_only
+    profit_claims_inherited: false
+    locally_reproduced: false
+    approval_eligible: false
+    contradictions: []
+    reverify_trigger: Recheck if bibliographic metadata, publisher access, or the DOI target changes.
+    supersedes: []
+    related_source_ids: [SRC-PBO-2016, SRC-DSR-2014, SRC-SPA-2005]
+
+  - source_id: SRC-SPA-2005
+    source_class: primary_academic_paper
+    title: A Test for Superior Predictive Ability
+    authors: [Peter Reinhard Hansen]
+    publication: Journal of Business & Economic Statistics
+    year: 2005
+    volume: "23"
+    issue: "4"
+    pages: "365-380"
+    doi: 10.1198/073500105000000063
+    canonical_publisher_url: "https://www.tandfonline.com/doi/abs/10.1198/073500105000000063"
+    lawful_full_text_url: null
+    checked_at: "2026-07-10T00:00:00Z"
+    access_license_status: publisher_page_only
+    hypothesis_families: [multiple_testing_controls]
+    claim_summary: >-
+      Primary method source for comparing predictive alternatives while controlling effects of
+      poor and irrelevant models; it supplies a hypothesis-control method, not proof.
+    exact_span_status: not_captured
+    evidence_strength: hypothesis_only
+    profit_claims_inherited: false
+    locally_reproduced: false
+    approval_eligible: false
+    contradictions: []
+    reverify_trigger: Recheck if bibliographic metadata, publisher access, or the DOI target changes.
+    supersedes: []
+    related_source_ids: [SRC-PBO-2016, SRC-DSR-2014, SRC-WRC-2000]

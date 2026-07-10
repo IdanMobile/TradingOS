@@ -1,0 +1,18 @@
+{
+  "docs": {
+    "freqtrade": "Freqtrade is an open-source, Python-based free crypto trading bot framework supporting backtesting and dry-run/live modes via exchange adapters (ccxt).",
+    "nautilus_trader": "NautilusTrader is an open-source, high-performance algorithmic trading platform written in Python/Rust supporting backtesting and live trading with the same strategy code.",
+    "vectorbt": "vectorbt is an open-source Python library for backtesting and analyzing trading strategies using vectorized (NumPy/pandas) operations for speed."
+  },
+  "ground_truth_matrix_keys": [
+    "language",
+    "backtest_live_code_parity",
+    "vectorized_backtesting"
+  ],
+  "id": "T6-01",
+  "tool_names": [
+    "freqtrade",
+    "vectorbt",
+    "nautilus_trader"
+  ]
+}

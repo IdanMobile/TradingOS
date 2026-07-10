@@ -1,0 +1,13 @@
+{
+  "description": "When RSI(14) drops below 30, buy; when RSI(14) rises above 70, sell. Position is flat otherwise.",
+  "family": "mean_reversion",
+  "ground_truth": {
+    "ambiguities": [
+      "behavior while 30 <= RSI <= 70 and already in a position is unstated"
+    ],
+    "entry_rule": "rsi_14 < 30",
+    "exit_rule": "rsi_14 > 70",
+    "family": "mean_reversion"
+  },
+  "id": "T2-02"
+}

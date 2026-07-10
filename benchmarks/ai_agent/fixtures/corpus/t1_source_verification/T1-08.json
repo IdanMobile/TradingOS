@@ -1,0 +1,9 @@
+{
+  "claim": "The OpenAI Evals platform has no announced end-of-life date.",
+  "evidence_span": "OpenAI Evals platform EOL 2026-11-30",
+  "id": "T1-08",
+  "label": "contradicted",
+  "publication_date": "2026-07-06",
+  "source_ref": "docs/architecture/AD.md",
+  "source_text": "OpenAI Evals platform EOL 2026-11-30"
+}

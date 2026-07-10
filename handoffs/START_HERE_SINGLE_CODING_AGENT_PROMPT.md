@@ -20,7 +20,7 @@ When instructions conflict, use this exact order:
 2. **This file:** `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md`.
 3. `TRADING_OS_NORTH_STAR.md` for immutable product intent, approved principles, and strategic boundaries.
 4. `DECISION_LOG.md` and files under `decisions/` for approved scoped decisions.
-5. Files under `specs/` and `benchmarks/` for executable requirements and acceptance gates, and `docs/` planning authorities (`docs/architecture/AD.md`, `docs/architecture/MODULE_CATALOG.md`, `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md`, `docs/program/PROGRAM_PLAN.md`, `docs/product/MVP_SCOPE.md`, `docs/testing/TEST_MASTER_PLAN.md`, `docs/traceability/TRACEABILITY_MATRIX.md`, `docs/ai/AGENT_ROLES.md`, `skills/`) for architecture, scope, and task design (D-030). Maturity labels inside AD.md (APPROVED/PROVISIONAL/UNRESOLVED) are binding: PROVISIONAL/UNRESOLVED items may not be treated as final selections.
+5. Files under `specs/` and `benchmarks/` for executable requirements and acceptance gates, and `docs/` planning authorities (`docs/architecture/AD.md`, `docs/architecture/MODULE_CATALOG.md`, `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md`, `docs/program/PROGRAM_PLAN.md`, `docs/program/S2_AUTONOMOUS_RESEARCH_LAB_PLAN.md`, `docs/product/MVP_SCOPE.md`, `docs/testing/TEST_MASTER_PLAN.md`, `docs/traceability/TRACEABILITY_MATRIX.md`, `docs/ai/AGENT_ROLES.md`, `skills/`) for architecture, scope, and task design (D-030/D-036). Maturity labels inside AD.md (APPROVED/PROVISIONAL/UNRESOLVED) are binding: PROVISIONAL/UNRESOLVED items may not be treated as final selections.
 6. `TODO.md` + `todos/` for task ordering *within* the phase this file authorizes. TODO never expands authorized scope.
 7. `PROJECT_STATE.md` for current phase/status only.
 8. `MISSING_AND_OPEN_ITEMS.md`, `RESEARCH_BACKLOG.md`, and `research/RESEARCH_GAP_MATRIX.md` for unresolved/deferred work.
@@ -114,12 +114,13 @@ Before asking the pre-code intake questions, read these in order:
 19. `MISSING_AND_OPEN_ITEMS.md`
 20. `docs/product/MVP_SCOPE.md`
 21. `docs/program/PROGRAM_PLAN.md`
-22. `docs/architecture/AD.md` (note its maturity labels)
-23. `docs/architecture/MODULE_CATALOG.md`
-24. `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md`
-25. `docs/testing/TEST_MASTER_PLAN.md`
-26. `TODO.md` (then the `todos/` initiative files for the current stage)
-27. `research/EXISTING_CAPABILITY_REGISTRY.md` and `research/RESEARCH_GAP_MATRIX.md` (evidence freshness as of 2026-07-06; respect reverify triggers)
+22. `docs/program/S2_AUTONOMOUS_RESEARCH_LAB_PLAN.md`
+23. `docs/architecture/AD.md` (note its maturity labels)
+24. `docs/architecture/MODULE_CATALOG.md`
+25. `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md`
+26. `docs/testing/TEST_MASTER_PLAN.md`
+27. `TODO.md` (then the `todos/` initiative files for the current stage)
+28. `research/EXISTING_CAPABILITY_REGISTRY.md` and `research/RESEARCH_GAP_MATRIX.md` (evidence freshness as of 2026-07-06; respect reverify triggers)
 
 Do not merely acknowledge reading.
 
@@ -188,13 +189,15 @@ If the user chooses **Add later**:
 
 ## Important current scope constraint
 
-The current phase is no-money prototype execution. Therefore:
+The current phase is constrained, no-money S2 autonomous research-lab execution.
+Therefore:
 
 - do **not** request live trading keys;
 - do **not** request withdrawal-enabled exchange keys;
 - do **not** request real-money brokerage credentials;
 - do **not** require paid data accounts when free/public data is sufficient for the current test;
-- sandbox/testnet or read-only credentials may be requested only when a defined workstream actually needs them, and must still allow `Add later`.
+- do **not** request provider or venue credentials in the current S2 scope;
+- do **not** connect to a paper, demo, sandbox, or testnet venue.
 
 ## Gate completion artifact
 
@@ -243,19 +246,29 @@ Every run must record code commit, data identity, engine/tool version, parameter
 
 # 4. Current authorized phase
 
-Execute only the constrained prototype defined in:
+Execute only the constrained S2 architecture and autonomous research-lab scope defined in:
 
-`specs/CRYPTO_SPOT_MVP_VERTICAL_SLICE_V1.md`
+`docs/program/S2_AUTONOMOUS_RESEARCH_LAB_PLAN.md`
 
-The goal is to discover which existing capabilities should be reused and how they compose.
+S1 evidence in `specs/CRYPTO_SPOT_MVP_VERTICAL_SLICE_V1.md` remains the retained input.
+The active goal is autonomous evidence operations: sourced hypotheses, reproducible
+offline research/backtests, retained trials, independent scoring, validation, and a
+read-only research console.
 
-## Stage and first initiative (2026-07-06 planning pass)
+## Stage and first initiative (2026-07-10 HG-2 decision)
 
-- Program stage: **S1 — Prototype execution** (stages defined in `docs/program/PROGRAM_PLAN.md`; S0 planning completion is done).
-- **Exact first initiative:** `todos/03_repository_foundation.md`, starting with task **T-003-01** (the pre-code intake gate below). S1 execution order: 03 → 04 → {05, 18} → 06 → {07, 08} → 09 → 14(WS9) → 19(T-019-03), with 10 and 11 in parallel per `TODO.md`.
-- Workstreams WS1–WS9 in §5 remain the requirement source; the `todos/` files decompose them into tracked tasks with acceptance criteria. If a conflict appears between §5 and a todo file, §5 wins and the conflict is recorded (see §0 conflict rule).
-- Implementation must respect `docs/architecture/MODULE_CATALOG.md` boundaries and `docs/testing/TEST_MASTER_PLAN.md` gates. PROVISIONAL architecture items (AD.md §AL) are directions, not locks; they are resolved by this phase's evidence via `decisions/PROTOTYPE_EVIDENCE_DECISION.md`.
-- Known execution-relevant evidence updates (2026-07-06): Binance data timestamp-unit amendment (dataset spec Amendment A1 / D-029); vectorbt OSS probe gated on license verification (RG-03); engine version floors recorded in `research/EXISTING_CAPABILITY_REGISTRY.md` §1.
+- Program stage: **S2 — constrained autonomous research lab** (HG-2 approved in D-036).
+- **Exact first initiative:** `todos/02_architecture_foundation.md`, T-002-01 through
+  T-002-04, followed by the S2 delivery waves in
+  `docs/program/S2_AUTONOMOUS_RESEARCH_LAB_PLAN.md`.
+- S1 workstreams WS1–WS9 in §5 are completed evidence inputs, not instructions to
+  rerun or expand the prototype.
+- Implementation must respect module boundaries and test gates. S2 may resolve
+  PROVISIONAL architecture items only from retained evidence and recorded decisions.
+- No strategy approval, synthetic wallet activation, paper/demo/testnet connection,
+  credential use, order routing, live trading, or real-money capability follows from
+  S2 entry. B2 remains `INCOMPLETE_NOT_APPROVABLE` and rejected for paper. AI cannot
+  approve or trade.
 
 ---
 
@@ -374,9 +387,9 @@ Record licensing and semantic ambiguity.
 ### WS8 — AI/Agent benchmark seed
 Build the harness and frozen fixtures for the V1 suite.
 
-During the pre-code intake, present supported model-provider credentials as optional items. If the user chooses `Add later`, complete the harness/fixtures without fabricating model outputs and mark execution deferred.
-
-If valid provider credentials are locally configured and use is authorized, run at least two model/agent configurations on a small controlled subset.
+The S1 intake deferred model-provider credentials. Constrained S2 remains null/mock-only:
+do not request or use provider credentials, and do not fabricate model outputs. Any
+future real-provider evaluation requires separate authority beyond D-036.
 
 ### WS9 — Minimal evidence control surface
 Build only a minimal read-only dashboard/control surface showing:

@@ -1,0 +1,19 @@
+# Seed item 6/10 (T-010-07) -- Hummingbot V2 market-making controller (pmm_simple)
+strategy_id: STRAT-HB2-pmm-simple
+family: market_making
+inputs: [close]
+indicators:
+  - name: reference_price
+    parameters: {bid_spread: 0.001, ask_spread: 0.001, order_refresh_time_s: 30, source: close}
+    outputs: [reference_price]
+always_in_market: true
+position_sizing: {type: fixed_fraction, fraction: 1.0}
+risk: {stop_loss: null, take_profit: null}
+assumptions:
+  - "signal evaluated at bar close; execution at next bar open (formal fields required by this project's spec schema; see ambiguities.md -- a continuous two-sided quoter has no discrete entry/exit 'signal' to place in time)"
+  - "warm-up: none required (pure market-making has no indicator warm-up in the trend-signal sense; the reference-price/spread config is available from bar 1)"
+ambiguities:
+  - "THIS IS THE SEED BATCH'S CENTRAL SCHEMA-FIT FINDING FOR THE MARKET-MAKING SLOT: CanonicalStrategySpec models a single-sided directional signal (entry_long/exit_long over indicator outputs). Hummingbot's pmm_simple (MarketMakingControllerBase) instead continuously quotes BOTH a bid and an ask around a reference price with a spread and refresh timer -- there is no boolean 'enter/exit' rule to extract. This item is modeled with always_in_market: true and a single pseudo-indicator carrying the controller's config (bid_spread/ask_spread/refresh) as a workaround, not a faithful semantic capture. See STRATEGY_INGESTION_REPORT.md 'incompatible semantics' section."
+  - "no rule tree exists to state execution timing or warm-up meaningfully for this family; the two required assumption strings above are present only to satisfy this project's validator, not because they carry real content for a market maker"
+source_refs: [SRC-HB2]
+license_ref: LIC-HB2

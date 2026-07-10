@@ -1,12 +1,14 @@
 # Trading Intelligence OS — Project State
 
-Last updated: 2026-07-06 (evening — S1 execution started)
-Package version: v8 (planning system) + S1 execution commits
-Status: **S1 prototype execution IN PROGRESS.** Not approved for full production build or real-money trading.
+Last updated: 2026-07-10 (HG-2 approved; constrained S2 active)
+Package version: v8 (planning system) + S1 evidence + S2 governance entry
+Status: **S2 AUTONOMOUS RESEARCH LAB ACTIVE (CONSTRAINED).** No strategy, venue connection, or real-money trading is approved.
 
 ## Current phase
 
-S0 finished 2026-07-06. **S1 started same day.** Progress:
+S0 finished 2026-07-06. S1 evidence execution is complete and **HG-2 was approved by
+the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
+`docs/program/S2_AUTONOMOUS_RESEARCH_LAB_PLAN.md`. Retained S1 evidence and constraints:
 
 - **HG-1 intake gate: PASSED** — `artifacts/reports/PRE_CODE_ENVIRONMENT_INTAKE_REPORT.md` (AI keys: add later ×3; MLflow/DVC: fully local).
 - **Initiative 03 (repository foundation): DONE** — T-003-01..05 all complete. Git repo live; AD §F tree + module skeletons; idempotent `scripts/bootstrap.py`; one-command local gate (`make check`: ruff+mypy-strict+pytest incl. architecture dependency-law test, decision-ID uniqueness, secret scan — proven failable); 5 engine envs built+smoke-tested (freqtrade 2026.6, nautilus 1.230.0, vectorbt 1.1.0, lean CLI 1.0.227, hummingbot 2.15.0 digest-pinned); security review #1 PASS (0 secrets, 0 blocking, 6 findings fixed) at `artifacts/reports/SECURITY_REVIEW_01.md`; pre-commit secret-scan hook auto-installed; pip-audit clean.
@@ -14,12 +16,41 @@ S0 finished 2026-07-06. **S1 started same day.** Progress:
 - **Initiative 04 (data foundation): DONE — EG-1 evidence complete.** DS-CRYPTO-SPOT-BAKEOFF-V1 frozen: 396 raw files (all official-checksum-verified), 1,637,118 normalized rows across 6 tables (BTCUSDT/ETHUSDT × 5m/15m/1h, 2021-01-01→2026-06-30), decimal128 precision, Amendment A1 µs/ms detection (48 ms + 18 µs files per table, boundary goldens on real rows), quality PASS, double-regeneration identical hashes, independent audit PASS_WITH_NOTES zero discrepancies. Artifacts: `artifacts/datasets/` (frozen manifest, quality report, audit).
 - **Initiative 05 (strategy domain): DONE.** Canonical spec model + validator (property-tested), immutable StrategyVersion, baselines B1–B4 VALID with hand-derived + independently recomputed micro-fixture goldens (`fixtures/strategies/baselines/`, `fixtures/micro/`).
 - **Initiative 18: T-018-01/03 DONE** (secret hygiene incl. artifacts; license audit — core venv copyleft-free, planted AGPL flagged); T-018-02 awaits T-010-01; T-018-04 recurring.
-- **Initiative 06 (bake-off): T-006-01 DONE** (EngineAdapter port, NormalizedResult, CapabilityReport, mandatory F/S grid, fee recomputation audit). Engine lanes T-006-02..05 next.
-- Local gate: 63 tests green (`make check` <2 min).
-- **T-006-02 Freqtrade lane IN PROGRESS**: full matrix B1–B4 × {F0/S0, F1/S1} ran OK on the frozen dataset (up to 102k roundtrips/run); normalized to canonical decimal parquet; fee/PnL audit PASS all runs (max dev 5e-9); determinism PASS (byte-identical rerun); slippage CapabilityGap documented; lookahead-analysis flag root-caused as execution-state artifact with numeric proof (`artifacts/bakeoff/freqtrade/LOOKAHEAD_ANALYSIS_B2.md`). Remaining: hyperopt retention probe, dry-run probe, signal parity vs micro goldens.
-- **T-006-06 vectorbt probe IN PROGRESS**: 34-combo B2 sweep over 577,803 bars in 15.0s (1.31M bar-combos/s), all trials retained (`artifacts/bakeoff/vectorbt/`).
-- Semantic note for parity: freqtrade compounding unlimited-stake + fees collapses executed-trade counts (F1/S1 2,501 vs F0 83,996 roundtrips on B2) — parity runs should pin a fixed stake.
-- Next: remaining T-006-02 probes → T-006-03 Nautilus lane → T-006-04 LEAN (Docker) → T-006-05 Hummingbot → T-006-07 parity; then {07, 08} per TODO order.
+- **Initiative 06 (bake-off): T-006-01 DONE** (EngineAdapter port, NormalizedResult, CapabilityReport, mandatory F/S grid, fee recomputation audit). Freqtrade and Nautilus have B1–B4 evidence; Hummingbot and LEAN retain explicit gaps.
+- **T-006-02 Freqtrade lane DONE WITH CONSTRAINTS**: full matrix B1–B4 × {F0/S0, F1/S1}, exact micro signal parity, determinism, recursive analysis, bounded hyperopt retention, dry-run, precision/failure probes, fee audits, and export pass. Native lookahead forced-state behavior and slippage remain explicit WARN/capability gaps.
+- **T-006-06 vectorbt probe DONE**: B2/B3/B4 ran 66 trials over 577,803 bars; all 66 are retained in Parquet and the append-only ledger, no winner selected, and binding overfit controls keep vectorbt an accelerator only.
+- **T-006-03 Nautilus lane:** bounded B1–B4 × {F0/S0, F1/S1} × {run1,run2} is now physically present; all 16 runs are byte-deterministic across normalized trade/equity/metric artifacts and all fee audits pass.
+- **Cross-engine parity:** three full-period BTC contexts are comparable with zero unexplained available-lane residuals. B1 timing differences and B2 execution/order-state plus missing-data behavior are retained; B2 is not fill/P&L parity.
+- **Initiative 07 (lineage): DONE.** Local MLflow 3.14.0 + DVC 3.66.1 Tests A/B/C pass reproduce, compare, trace, domain-link, local-first, and replaceability gates; AI trace is explicitly null-provider/mock-only. The fresh clone restored the exact 577,803-row BTC dataset and matched deterministic reproduction output. Decision D-035 selects the composition for S2 architecture input.
+- **S1 approval/risk/security closure:** contextual approval transitions require evidence, paper states require a human decision, and all live states are unreachable; every validation package now carries independent no-live/cost-grid/drawdown-tail/promotion preconditions; external ingested code is subprocess-contained with no inherited secrets or network. Security Review #2 passes with zero blockers.
+- **S2 entry:** architecture/research-console work, sourced strategy research, offline backtesting, retained-trial scoring, validation, and eventual demo preparation are active. Docker-dependent LEAN and Hummingbot B3/B4 remain exact follow-up constraints.
+- **Governance re-check (gov-02, 2026-07-07): PASS.** `make check` green (63 tests, ruff, mypy-strict). Fixed a real gate gap: D-027/D-028 used `##` headings, exempting them from the decision-ID uniqueness regex (`### D-NNN` only) — normalized to `###` (D-033); all 32 IDs now covered. No invented decision-category labels found in `DECISION_LOG.md` (the 7-label taxonomy from SSOT §7 applies to the `decisions/`/`research/`/`artifacts/reports/` decision artifacts, most of which are correctly not-yet-created since bake-off (initiative 06) is still in progress). No stop-condition triggers pending or worked around.
+- **S1 execution closure (2026-07-10):** live Trading OS evidence dashboard is operational with an attributed TradingView Market Monitor plus an OS-owned canonical-candle chart and retained B2 markers; read-only APIs explicitly disable paper/live orders; staged TradingView direction is D-034; offline-first AI/provider gates are implemented; local MLflow+DVC lineage is selected in D-035; Freqtrade and vectorbt lanes are closed with constraints; bake-off contains 30 normalized runs plus 66 ledgered accelerator trials. B2 remains `INCOMPLETE_NOT_APPROVABLE`, G4 WARN, G10 deferred, and rejected for paper. Full local gate: 123 tests, ruff, format, mypy-strict.
+- **D-036 boundaries:** no strategy approval; no synthetic wallet activation; no paper/demo/testnet venue connection; no credentials, order routing, live trading, or real-money authorization. AI cannot approve or trade.
+- **S2 Research Lab v0 and automation evidence (2026-07-10):** latest real retained
+  batch `LAB-799f7d81843d15aaf3b161036a4cd543ac37a709cb1e2ecc72a161f7348488fa`
+  completed 3 experiments / 66 trials with 66 evidence rows, all marked
+  `UNVALIDATED` / `NOT_ELIGIBLE`; no winner is selected. Score dimensions now bind to
+  retained validation evidence: economic performance, drawdown severity, parameter
+  neighborhood, walk-forward, and baseline superiority are negative/failing; regime is
+  descriptive-only; multiple-testing and cross-engine reproduction remain blockers.
+  The local SQLite jobs DB has three succeeded `RESEARCH_LAB_V0` records; the latest
+  persisted job reused the unchanged LAB-799 artifacts, and a six-hour recurring
+  offline schedule is visible with next due `2026-07-11T00:00:00+00:00`. The Automation
+  dashboard is read-only/browser-verified at 375/768/1024/1440 px with no POST, queue
+  mutation, credential, venue, paper/demo/live, or order control.
+- **S2 verification package (2026-07-10):** restore/replay verification PASS
+  (`artifacts/reports/S2_RESTORE_REPLAY_REPORT.md`), live-unreachability PASS
+  (`artifacts/reports/S2_LIVE_UNREACHABILITY_REPORT.md`), and requirement audit BLOCKED
+  before S2 exit (`artifacts/reports/S2_REQUIREMENT_AUDIT.md`) because no candidate is
+  `COMPLETE_APPROVABLE` or promotion-eligible.
+- **S2 seed-candidate cycle (2026-07-10):**
+  `SEEDCYCLE-5bd3faa48ad47e23f0af45e12c0e613c843215fda324b3821b58b35d53da5c1a`
+  retained 16 offline trials across the two seed strategies already marked
+  `REPRODUCED` (`STRAT-QC1-dual-ma-cross`, `STRAT-QC2-donchian-breakout`). The cycle
+  reused idempotently, selected no winner, and kept both candidates `UNVALIDATED` /
+  `NOT_ELIGIBLE`; the simple next-open all-in proxy is strongly negative and does not
+  change S2 exit status.
 
 ## Operational SSOT (unchanged)
 
@@ -28,10 +59,11 @@ S0 finished 2026-07-06. **S1 started same day.** Progress:
 ## Coding authorization status (explicit, per planning mandate §25)
 
 - Planning Complete? **YES** (this pass; see audits).
-- Research Complete Enough? **YES for S1** — remaining gaps are executable (RG-01, RG-10, RG-11) or non-blocking desk items (RG-02/03/05/08 with owners/triggers).
-- Architecture Approved? **PARTIALLY — by design.** Boundaries, contracts, principles, lifecycle, and rejections are APPROVED; component selections marked PROVISIONAL/UNRESOLVED in `docs/architecture/AD.md` §AL await S1 evidence (D-007 stands).
+- Research Complete Enough? **YES for constrained S2 entry** — S2 sourced research remains hypothesis input, not inherited proof or strategy approval.
+- Architecture Approved? **PARTIALLY — S2 resolution active.** Boundaries, contracts, principles, lifecycle, and rejections are APPROVED; S2-1 resolves remaining PROVISIONAL/UNRESOLVED items from S1 evidence.
 - Prototype Execution Authorized? **YES** (D-025 + readiness gate PASS; entry condition: HG-1 intake gate).
-- MVP Build Authorized? **NO** — requires S1 exit + HG-2 (prototype evidence approval).
+- Constrained S2 Architecture/Research Lab Authorized? **YES** — D-036; scope is `docs/program/S2_AUTONOMOUS_RESEARCH_LAB_PLAN.md`.
+- MVP Build Authorized? **NO beyond the constrained S2 research-lab/research-console scope.**
 - Live Trading Authorized? **NO** — S4; human-only gates untouched.
 
 ## What was added 2026-07-06 (planning pass)
@@ -57,12 +89,23 @@ S0 finished 2026-07-06. **S1 started same day.** Progress:
 
 ## Unresolved blockers
 
-None blocking S1 start. Open items tracked in `MISSING_AND_OPEN_ITEMS.md` + `research/RESEARCH_GAP_MATRIX.md`.
+No blocker prevents continuing constrained S2 evidence operations. Docker is stopped,
+so LEAN and missing Hummingbot follow-up lanes remain recorded constraints. B2 and the
+current S2 hypothesis population remain incomplete and not approvable; this blocks
+strategy promotion and demo activation, not offline research. Open items are tracked in
+`MISSING_AND_OPEN_ITEMS.md`.
 
 ## Exact next action
 
-Continue S1 execution order: **initiative 04** (`todos/04_data_foundation.md`) — canonical dataset DS-CRYPTO-SPOT-BAKEOFF-V1 freeze with Amendment A1 (µs timestamps in files dated ≥2025-01-01; boundary golden test). Then {05, 18} → 06 → {07, 08} → 09 → 14 → 19, with 10 and 11 in parallel.
+Stop before HG-3/paper-demo preparation unless the operator explicitly authorizes a new
+offline hypothesis cycle or resolves human-only blockers. The retained S2 verification
+package says S2 exit is blocked by lack of a validated, promotion-eligible strategy.
+The live progress surface remains `make dashboard` at `http://127.0.0.1:8765`,
+including the read-only Automation view over `artifacts/jobs/jobs.sqlite3`.
 
 ## Exit condition of next phase (unchanged)
 
-Satisfy `specs/CRYPTO_SPOT_MVP_VERTICAL_SLICE_V1.md` and produce `decisions/PROTOTYPE_EVIDENCE_DECISION.md`; then HG-2 operator review gates S2.
+S2 exit requires the plan's verification package and HG-3. Paper/demo activation also
+requires complete approvable validation, promotion eligibility, a paper-lane
+architecture decision, a security pass, and new operator approval for the specific
+integration. Until then, venue connections and execution remain disabled.

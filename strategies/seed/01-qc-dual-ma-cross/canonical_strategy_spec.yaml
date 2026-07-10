@@ -1,0 +1,28 @@
+# Seed item 1/10 (T-010-02) — QuantConnect/LEAN dual moving-average crossover
+strategy_id: STRAT-QC1-dual-ma-cross
+family: trend_following
+inputs: [close]
+indicators:
+  - name: sma_fast
+    parameters: {window: 3, source: close}
+    outputs: [sma_fast]
+  - name: sma_slow
+    parameters: {window: 5, source: close}
+    outputs: [sma_slow]
+entry_long:
+  all:
+    - sma_fast > sma_slow
+exit_long:
+  any:
+    - sma_fast < sma_slow
+position_sizing: {type: fixed_fraction, fraction: 1.0}
+risk: {stop_loss: null, take_profit: null}
+assumptions:
+  - "signal evaluated at bar close; execution at next bar open"
+  - "warm-up: no signal until both SMA windows are full (first 4 bars produce no signal; signals start at bar 5)"
+  - "reproduction uses small windows (3/5) to fit the 16-bar frozen fixture used for the spot-check; QuantConnect's own dual-MA demos commonly use larger windows (e.g. 50/200) in production — the window pair is a reproduction-scope choice, not the source's literal default"
+ambiguities:
+  - "source does not fix one canonical (fast, slow) window pair across its example algorithms; treated here as a configurable input, not a fixed rule"
+  - "tie-break when sma_fast == sma_slow is unspecified; this reproduction treats equality as no-signal (strict < / > only)"
+source_refs: [SRC-QC1]
+license_ref: LIC-QC1

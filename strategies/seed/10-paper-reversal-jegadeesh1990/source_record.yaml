@@ -1,0 +1,17 @@
+source_id: SRC-PAPER2
+source_class: primary_academic_paper
+url: "https://doi.org/10.1111/j.1540-6261.1990.tb05110.x"
+title: "Evidence of Predictable Behavior of Security Returns"
+author: "Narasimhan Jegadeesh"
+published_at: "1990 (The Journal of Finance, Vol. 45, No. 3)"
+retrieved_at: "2026-07-07"
+license: unclear
+version_or_commit: "not applicable (published journal article, no code)"
+market_claimed: "US equities, cross-sectional weekly-return-sorted portfolios"
+timeframe_claimed: "weekly holding period, weekly rebalance"
+profit_claims_inherited: false
+notes: >
+  Method description (short-horizon return reversal, contrarian to
+  SRC-PAPER1's momentum finding) recalled from public/academic knowledge of
+  this widely-cited paper; no code exists to reuse, same extraction-only
+  treatment as SRC-PAPER1.

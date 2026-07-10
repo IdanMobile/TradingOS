@@ -1,0 +1,12 @@
+source_id: SRC-PINE1
+license_class: copyleft
+license_name: Mozilla Public License 2.0
+evidence_url: https://www.tradingview.com/policies/house-rules/#open-source
+code_reuse_allowed: true
+requires_attribution: true
+notes: >
+  MPL-2.0 is a file-level (weak) copyleft license -- distinct from GPL's
+  project-level copyleft -- but this project's license_class enum only
+  distinguishes permissive/copyleft/proprietary/unclear, so it is bucketed
+  as `copyleft` (reuse allowed, attribution/file-level share-alike
+  required). This granularity gap is flagged for the lessons report.

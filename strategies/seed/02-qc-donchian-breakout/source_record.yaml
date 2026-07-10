@@ -1,0 +1,16 @@
+source_id: SRC-QC2
+source_class: official_framework
+url: https://github.com/QuantConnect/Lean
+title: "Donchian-channel breakout pattern (QuantConnect Learning Center / LEAN indicator library)"
+author: QuantConnect (LEAN maintainers)
+published_at: "unknown (long-standing tutorial pattern)"
+retrieved_at: "2026-07-07"
+license: Apache-2.0
+version_or_commit: "master branch, exact commit not pinned in this pass"
+market_claimed: "market-agnostic framework demo"
+timeframe_claimed: "daily (typical tutorial resolution; configurable)"
+profit_claims_inherited: false
+notes: >
+  LEAN ships a built-in `DonchianChannel` indicator and documents breakout
+  usage in its learning materials; no single canonical example file was
+  independently fetched in this pass — flagged in ambiguities.md.

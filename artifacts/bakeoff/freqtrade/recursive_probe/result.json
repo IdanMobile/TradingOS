@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "returncode": 0,
+  "strategy": "B2MaCrossover",
+  "timerange": "20250101-20250401",
+  "startup_candles": [
+    5,
+    30,
+    100
+  ],
+  "no_recursive_variance": true,
+  "no_indicator_lookahead": true,
+  "command": [
+    "/Users/user/Downloads/trading_os_project_package/engines/freqtrade/.venv/bin/freqtrade",
+    "recursive-analysis",
+    "--config",
+    "/Users/user/Downloads/trading_os_project_package/engines/freqtrade/lane/config_F0_S0_BTCUSDT.json",
+    "--strategy",
+    "B2MaCrossover",
+    "--timerange",
+    "20250101-20250401",
+    "--startup-candle",
+    "5",
+    "30",
+    "100",
+    "--pairs",
+    "BTC/USDT",
+    "--no-color"
+  ]
+}

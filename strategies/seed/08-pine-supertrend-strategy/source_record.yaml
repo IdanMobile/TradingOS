@@ -1,0 +1,14 @@
+source_id: SRC-PINE2
+source_class: maintained_open_source
+url: https://www.tradingview.com/support/solutions/43000634738-supertrend/
+title: "Supertrend strategy (Pine Script open-source pattern; TradingView built-in Supertrend indicator/strategy)"
+author: "TradingView community / TradingView built-in script library"
+published_at: "unknown (long-standing built-in Pine script)"
+retrieved_at: "2026-07-07"
+license: "Mozilla Public License 2.0 (standard header on TradingView's open-source-published Pine scripts)"
+version_or_commit: "not applicable (built-in script, not one pinned community revision)"
+market_claimed: "market-agnostic (Pine strategies run on any TradingView-charted symbol)"
+timeframe_claimed: "chart-timeframe-dependent"
+profit_claims_inherited: false
+notes: >
+  No live fetch performed in this pass; same sourcing caveat as SRC-PINE1.

@@ -1,0 +1,21 @@
+{
+  "engine": "freqtrade",
+  "strategy": "B2MaCrossover",
+  "trades_roundtrips": 531,
+  "fills": 1062,
+  "left_open_trades": 0,
+  "profit_total_abs": "-990.5101923300001",
+  "cagr": "-0.9375126988216973",
+  "max_drawdown_abs": "990.5101923299994",
+  "wins": 66,
+  "losses": 465,
+  "fee_audit": {
+    "max_pnl_deviation_quote": "5.0E-9",
+    "status": "PASS"
+  },
+  "semantic_notes": [
+    "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+    "fees converted from freqtrade per-side ratios to absolute quote amounts",
+    "prices float64 at engine boundary (declared converter loss)"
+  ]
+}

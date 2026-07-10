@@ -1,0 +1,13 @@
+{
+  "description": "Go long when the 10-period SMA of close crosses above the 30-period SMA; exit when it crosses back below. No shorting. Evaluate signals on bar close, execute at the next bar's open.",
+  "family": "trend_following",
+  "ground_truth": {
+    "ambiguities": [
+      "equal-value cross (sma_fast == sma_slow) is unspecified"
+    ],
+    "entry_rule": "sma_fast > sma_slow",
+    "exit_rule": "sma_fast < sma_slow",
+    "family": "trend_following"
+  },
+  "id": "T2-01"
+}

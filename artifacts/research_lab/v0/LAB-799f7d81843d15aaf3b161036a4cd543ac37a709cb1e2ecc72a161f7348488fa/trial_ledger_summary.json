@@ -1,0 +1,11 @@
+{
+  "all_trials_registered": true,
+  "completed_runs": 66,
+  "expected_runs": 66,
+  "experiments": 3,
+  "failed_runs": 0,
+  "ledger_sha256": "e14a0a58f663cefc2697294aa3c82de72d8ad5d1ac16e9aadc4699b55f5ade84",
+  "runs": 66,
+  "status": "PASS",
+  "winner_selected": false
+}

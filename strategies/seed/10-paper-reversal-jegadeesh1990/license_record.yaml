@@ -1,0 +1,7 @@
+source_id: SRC-PAPER2
+license_class: unclear
+license_name: "journal copyright (publisher-held); method/idea not separately copyrightable"
+evidence_url: "https://doi.org/10.1016/0304-405X(90)90013-6"
+code_reuse_allowed: false
+requires_attribution: false
+notes: Same license-class rationale as SRC-PAPER1.

@@ -1,0 +1,57 @@
+{
+  "artifact_id": "freqtrade-B2-BTCUSDT-F0/S0-market_probe",
+  "produced_by": "T-006-02",
+  "status": "OK",
+  "engine": "freqtrade",
+  "command": [
+    "/Users/user/Downloads/trading_os_project_package/engines/freqtrade/.venv/bin/freqtrade",
+    "backtesting",
+    "--config",
+    "/Users/user/Downloads/trading_os_project_package/engines/freqtrade/lane/config_F0_S0_BTCUSDT.json",
+    "--strategy",
+    "B2MaCrossover",
+    "--timerange",
+    "20210101-20260701",
+    "--fee",
+    "0",
+    "--export",
+    "trades",
+    "--timeframe",
+    "5m",
+    "--cache",
+    "none"
+  ],
+  "returncode": 0,
+  "started_utc": "2026-07-10T02:18:13.901212+00:00",
+  "scenario": "F0/S0",
+  "fee_rate_per_side": "0",
+  "slippage_note": "CapabilityGap: freqtrade backtesting has no per-side bps slippage model; S-scenarios applied post-hoc in parity analysis (documented, not silent)",
+  "converter_losses": [
+    "decimal128->float64 (freqtrade dataframe model)"
+  ],
+  "input_refs": [
+    "DS-CRYPTO-SPOT-BAKEOFF-V1"
+  ],
+  "instruments": [
+    "BTCUSDT"
+  ],
+  "files": [
+    {
+      "path": "backtest-result-2026-07-10_05-19-19.zip",
+      "sha256": "3588ca2be36ec6828dd2e69a6d91b53e6e76cd750b65702f30d05bbdd08c430e"
+    },
+    {
+      "path": "trades.parquet",
+      "sha256": "7be52de7eaa3fe188673b40c97f3f5d4f105f0843d421aeb78868066dbd61f0f"
+    },
+    {
+      "path": "equity.parquet",
+      "sha256": "3168803213499c8b2ab40e44db4b67bcdefd10d13d1b30da1571886eb97fbcfa"
+    },
+    {
+      "path": "normalized_metrics.json",
+      "sha256": "ae75309fc0f5713d8e25a8fe29fb67f726bb9984dd0da969b23fdbfb9fae02b2"
+    }
+  ],
+  "schema_version": 1
+}

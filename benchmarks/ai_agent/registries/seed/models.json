@@ -1,0 +1,54 @@
+[
+  {
+    "model_key": "MDL-anthropic-unresolved",
+    "provider": "anthropic",
+    "display_name": "Anthropic (snapshot TBD at run time)",
+    "snapshot_id": "UNRESOLVED",
+    "snapshot_resolved_at": null,
+    "deprecation_notice_days": 60,
+    "deprecation_notice_source": "REG §7 / docs/architecture/AD.md L176 (Anthropic >=60d notice)",
+    "supports_snapshot_pinning": true,
+    "notes": [
+      "Per FROZEN_BENCHMARK_SUITE_V1.md 'First candidate set': exact model IDs must be resolved and recorded at execution time, not hard-coded here."
+    ]
+  },
+  {
+    "model_key": "MDL-openai-unresolved",
+    "provider": "openai",
+    "display_name": "OpenAI (snapshot TBD at run time)",
+    "snapshot_id": "UNRESOLVED",
+    "snapshot_resolved_at": null,
+    "deprecation_notice_days": 14,
+    "deprecation_notice_source": "REG §7 / docs/architecture/AD.md L176 (OpenAI as little as 2 weeks for previews)",
+    "supports_snapshot_pinning": true,
+    "notes": [
+      "Preview models have shorter deprecation windows than GA models; registry stores the conservative (shortest) bound."
+    ]
+  },
+  {
+    "model_key": "MDL-google-unresolved",
+    "provider": "google",
+    "display_name": "Google (snapshot TBD at run time)",
+    "snapshot_id": "UNRESOLVED",
+    "snapshot_resolved_at": null,
+    "deprecation_notice_days": 14,
+    "deprecation_notice_source": "REG §7 (no Google-specific notice window confirmed yet; conservatively aligned to OpenAI preview bound pending RG-08)",
+    "supports_snapshot_pinning": false,
+    "notes": [
+      "RG-08 (MISSING_AND_OPEN_ITEMS.md) is open for Google/Gemini pricing + context windows; treat deprecation_notice_days as provisional."
+    ]
+  },
+  {
+    "model_key": "MDL-null-provider",
+    "provider": "other",
+    "display_name": "Null provider (harness self-test; never a real model)",
+    "snapshot_id": "null-v1",
+    "snapshot_resolved_at": "2026-07-07",
+    "deprecation_notice_days": 0,
+    "deprecation_notice_source": "n/a (internal test double, no provider policy applies)",
+    "supports_snapshot_pinning": true,
+    "notes": [
+      "Used exclusively by T-011-03 to prove the pipeline end-to-end with zero fabricated model output."
+    ]
+  }
+]

@@ -1,0 +1,34 @@
+{
+  "run": {
+    "returncode": 0,
+    "cmd": [
+      "/Users/user/Downloads/trading_os_project_package/engines/freqtrade/.venv/bin/freqtrade",
+      "hyperopt",
+      "--config",
+      "/Users/user/Downloads/trading_os_project_package/engines/freqtrade/lane/config_F1_S1.json",
+      "--strategy",
+      "B2MaCrossover",
+      "--timerange",
+      "20250101-20250401",
+      "--fee",
+      "0.001",
+      "--epochs",
+      "8",
+      "--spaces",
+      "roi",
+      "stoploss",
+      "--hyperopt-loss",
+      "SharpeHyperOptLoss",
+      "--job-workers",
+      "1",
+      "--random-state",
+      "42"
+    ]
+  },
+  "retention": {
+    "status": "PASS",
+    "requested_epochs": 8,
+    "retained_epochs": 8,
+    "result_file": "artifacts/bakeoff/freqtrade/hyperopt_probe/strategy_B2MaCrossover_2026-07-07_16-43-41.fthypt"
+  }
+}

@@ -109,7 +109,7 @@ Status: Approved. See `decisions/CODING_AGENT_READINESS_GATE_V1.md`.
 Decision: next phase may build only a minimal read-only evidence/control surface; full product information architecture implementation remains deferred until prototype decisions.
 Status: Approved.
 
-## D-027 — Single operational SSOT for coding agent
+### D-027 — Single operational SSOT for coding agent
 
 *(Renumbered from a duplicate "D-022" on 2026-07-06; see D-031. Content unchanged.)*
 
@@ -119,7 +119,7 @@ Status: Approved.
 
 **Status:** Approved.
 
-## D-028 — Mandatory pre-code environment and credentials intake
+### D-028 — Mandatory pre-code environment and credentials intake
 
 *(Renumbered from a duplicate "D-023" on 2026-07-06; see D-031. Content unchanged.)*
 
@@ -154,3 +154,73 @@ Decision, per `research/EXISTING_CAPABILITY_REGISTRY.md`:
 4. Venue connectivity-test ranking provisionally adjusted: OKX promoted (Israel explicitly supported + demo environment), Coinbase demoted pending RG-05 verification; Kraken/Binance unchanged. Live-venue approval gates are untouched (D-015/D-017 stand).
 5. W&B rejected for lineage (self-host licensing conflicts with local-first); MLflow+DVC hypothesis retained and strengthened (MLflow 3.x GenAI tracing; DVC stewardship moved to lakeFS 2025-11 — reverify trigger set at S2).
 Status: Approved as registry/planning adjustments; none of these are final architecture selections (prototype evidence still governs — D-007, D-019, D-025).
+
+## 2026-07-07 — Governance re-check
+
+### D-033 — Decision-ID uniqueness gate coverage fix
+Decision: D-027 and D-028 used `##` headings instead of `###`, so `tests/test_decision_ids.py` (regex `^### (D-\d{3})`) silently excluded them from the uniqueness check. Normalized both to `###` to match convention; no content change. All 32 decision IDs are now covered by the gate.
+Status: Approved (governance fix, gov-02 task).
+
+## 2026-07-10 — Product integration direction
+
+### D-034 — Staged TradingView and market-workspace integration
+Decision: use an attributed TradingView Widget for the immediate S1 read-only market monitor; prefer TradingView Lightweight Charts plus the OS-owned datafeed for S2 strategy/evidence overlays; evaluate TradingView Trading Platform and Broker API only as a restricted S4 option after access, licensing, venue, risk, and human approval gates. Do not treat any TradingView library as a market-data entitlement or allow chart UI to bypass the OS risk/approval backend.
+Evidence: official TradingView Widget, Advanced Charts/Datafeed, Trading Platform/Broker API, bracket-order documentation, and Lightweight Charts Apache-2.0 repository reviewed 2026-07-10; see `docs/product/TRADING_OS_PRODUCT_ROADMAP.md`.
+Alternatives: immediate full Trading Platform integration (blocked by access/licensing and premature for S1); custom chart from scratch (unnecessary); third-party chart library (less aligned with existing TradingView direction).
+Status: Approved staged direction; S1 widget implementation is read-only, Lightweight Charts and Trading Platform remain conditional on their stage gates.
+
+### D-035 — Local lineage composition selected from executable prototype
+Decision: reuse MLflow for local run/metric/artifact/AI-trace tracking and native comparison, reuse DVC for dataset snapshot/restoration, and keep trading approval semantics in the thin custom Trading Evidence Registry. The tools remain adapter-isolated from the product runtime. Test B proves mock-provider trace plumbing only; real-model quality remains credential- and evaluation-gated.
+Evidence: `artifacts/lineage/prototype/prototype_result.json` and `artifacts/reports/LINEAGE_PROTOTYPE_REPORT.md`; all seven prototype gates evaluated on 2026-07-10. The S2 retention, backup/restore, migration, and loopback/operator-only access policy is now locked in AD §P / D-037.
+Status: Approved for S1/S2 architecture input; S2 policy resolved by D-037. Clean-checkout restore/replay remains an S2 exit verification item, not an unresolved architecture decision.
+
+### D-036 — HG-2 approved for constrained S2 autonomous research-lab entry
+Decision: the operator's 2026-07-10 message explicitly approves HG-2 and authorizes
+constrained S2 architecture and research-console work for the autonomous research/test
+lab: sourced strategy research, reproducible offline backtesting, retained-trial scoring,
+validation, and preparation for a possible later demo. Execution follows
+`docs/program/S2_AUTONOMOUS_RESEARCH_LAB_PLAN.md`.
+
+Boundaries: this decision approves no strategy. B2 remains
+`INCOMPLETE_NOT_APPROVABLE` and rejected for paper. It activates no synthetic wallet,
+paper/demo/testnet venue connection, credentials, order routing, live trading, or
+real-money capability. AI may support research but cannot approve a strategy, authorize
+an execution state, or trade. Any later demo activation requires the S2 exit predicate,
+HG-3, complete validation and risk evidence, a security pass, and a new operator approval
+for the specific integration.
+
+Status: **HG-2 APPROVED — constrained S2 entry authorized.**
+
+### D-037 — S2 architecture lock
+Decision: lock S2 to a local-first modular monolith with ports/adapters, one CLI
+application boundary, and a read-only console. Use SQLite in WAL mode for operational
+state; PostgreSQL 18 is only a measured migration candidate after a write loss/failure
+beyond the SQLite retry budget, p95 write latency above 500 ms in three consecutive
+complete batches, or an approved multi-host/concurrent-writer requirement (AD §P).
+Keep analytical data in Parquet queried with DuckDB. Keep MLflow
+and DVC behind lineage ports, with the custom Trading Evidence Registry storing only
+stable public references.
+
+Jobs begin as bounded, deterministic, allowlisted commands. No persisted schedule is
+enabled until the identical command has demonstrated real idempotent reuse with
+failure preservation; any later local scheduler remains bounded and SQLite-backed.
+Engine roles are: vectorbt research accelerator; Freqtrade isolated Crypto Spot
+event/reproduction lane; NautilusTrader bounded event-simulation lane; Hummingbot
+deferred bot-operations/market-making candidate; and LEAN deferred multi-asset
+portability candidate. Deferred adapters and normalized artifacts are retained as
+evidence-only/deferred assets rather than deleted; they have no general S2 execution
+authority.
+
+The S2 product boundary is the existing replaceable read-only console plus inert typed
+trading-domain contracts. There is no HTTP mutation route, venue client, credential,
+synthetic wallet, paper/demo/testnet connection, order-routing path, live command, or
+real-money capability. This lock activates only initiatives 13, 14, 17, and 19 for
+their bounded S2 slices; initiative 12 remains deferred because full ontology work is
+not required by this architecture.
+
+Evidence: retained S1 engine, lineage, data, dashboard, validation, and stage-exit
+evidence; the completed five-track S2 architecture audit; `docs/architecture/AD.md` and
+`docs/architecture/TYPE_AND_CONTRACT_CATALOG.md` as locked on 2026-07-10.
+Status: **APPROVED FOR S2.** This closes the architecture-lock decision. Later retained
+S2 evidence includes real LAB-702/LAB-799 research batches and persisted read-only jobs,
+but strategy validation remains incomplete/not approvable and S2 has not exited.

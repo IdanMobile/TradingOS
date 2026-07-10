@@ -1,0 +1,17 @@
+bar,entry,exit
+1,False,False
+2,False,False
+3,False,True
+4,False,True
+5,False,True
+6,False,True
+7,False,True
+8,False,True
+9,False,True
+10,False,True
+11,False,False
+12,True,False
+13,True,False
+14,True,False
+15,False,False
+16,False,True

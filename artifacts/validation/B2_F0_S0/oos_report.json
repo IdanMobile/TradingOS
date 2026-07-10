@@ -1,0 +1,49 @@
+{
+  "status": "COMPLETE_ENGINE_RUNS",
+  "strategy": "B2MaCrossover",
+  "dataset": "DS-CRYPTO-SPOT-BAKEOFF-V1",
+  "engine": "freqtrade",
+  "scenario": "F1/S1",
+  "fixed_parameters": {
+    "stake_amount": "1000",
+    "max_open_trades": 1,
+    "fee_per_side": "0.001"
+  },
+  "windows": {
+    "development": {
+      "coverage": "2021-01-01T00:00:00+00:00 \u2192 2024-04-19T04:45:00+00:00",
+      "roundtrips": 436,
+      "fills": 872,
+      "profit_total_abs": "-997.6971932199999",
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/runs/development"
+    },
+    "validation": {
+      "coverage": "2024-04-19T04:45:00.000001+00:00 \u2192 2025-05-25T14:20:00+00:00",
+      "roundtrips": 497,
+      "fills": 994,
+      "profit_total_abs": "-990.17871029",
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/runs/validation"
+    },
+    "holdout": {
+      "coverage": "2025-05-25T14:20:00.000001+00:00 \u2192 2026-06-30T23:55:00+00:00",
+      "roundtrips": 474,
+      "fills": 948,
+      "profit_total_abs": "-991.1570058399999",
+      "fee_audit": {
+        "max_pnl_deviation_quote": "5.0E-9",
+        "status": "PASS"
+      },
+      "artifact": "artifacts/validation/B2_F0_S0/runs/holdout"
+    }
+  },
+  "holdout_touched_before_optimization": false,
+  "interpretation": "B2 is negative in development, validation, and untouched holdout; no survivor claim."
+}

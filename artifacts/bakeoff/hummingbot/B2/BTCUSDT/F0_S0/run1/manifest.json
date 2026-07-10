@@ -1,0 +1,32 @@
+{
+  "artifact_id": "hummingbot-B2-BTC-USDT-F0/S0",
+  "produced_by": "T-006-05-recovery",
+  "status": "RECOVERED_FROM_COMPLETE_RAW",
+  "engine": "hummingbot",
+  "engine_version": "2.15.0",
+  "scenario": "F0/S0",
+  "fee_rate_per_side": "0.0",
+  "input_refs": [
+    "DS-CRYPTO-SPOT-BAKEOFF-V1"
+  ],
+  "recovery_note": "Host manifest creation was interrupted after raw.json completed; command provenance is unavailable and is not reconstructed.",
+  "files": [
+    {
+      "path": "raw.json",
+      "sha256": "94832d17aba2eb2279f05b8eda3bf850313735ca143773452653f9bf92299d03"
+    },
+    {
+      "path": "trades.parquet",
+      "sha256": "4dac24bbe287bf63de3051df60267ff88e2b82d1024541be063467f7e35bf0c6"
+    },
+    {
+      "path": "equity.parquet",
+      "sha256": "f03e3779e2de55a19ae626a5fa46b77d2c8e7e134ce9485826a5830605343ce1"
+    },
+    {
+      "path": "normalized_metrics.json",
+      "sha256": "95f8094d3b32aac411d077b31bca6e8b9362e3efcfd61ebdc33969f84167b5dd"
+    }
+  ],
+  "schema_version": 1
+}

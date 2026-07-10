@@ -9,7 +9,7 @@ Requirement source: AD §AB, SSOT secret rules, intake gate. Skills: R7 + SKILL_
 ## T-018-02 Ingested-code containment policy (executable)
 - Purpose: external strategy code never runs in-process; isolated env without credentials/network for reproduction. Requirement: REQ-053.
 - Actions: containment wrapper + policy test; document in ingestion module.
-- Acceptance: containment test (ingested sample cannot read env/secrets); policy doc linked from ingestion lifecycle. Complexity: M. Dependencies: T-010-01. Status: TODO.
+- Acceptance: containment test (ingested sample cannot read env/secrets); policy doc linked from ingestion lifecycle. Complexity: M. Dependencies: T-010-01. Status: **DONE 2026-07-10** — external Python executes only out-of-process via isolated `.venv`, clean environment, bounded timeout, and macOS network deny; secret/network probe passes.
 
 ## T-018-03 Dependency & license audit wiring
 - Purpose: vulnerability audit + license-compatibility check (GPL/LGPL/AGPL boundaries per AD-02) in local gate. Requirement: REQ-054.
@@ -17,4 +17,4 @@ Requirement source: AD §AB, SSOT secret rules, intake gate. Skills: R7 + SKILL_
 
 ## T-018-04 Stage-exit security reviews
 - Purpose: SKILL_SECURITY_REVIEWER pass at each stage exit. Requirement: REQ-055.
-- Acceptance: review reports; blocking findings resolved or open-itemed. Complexity: S recurring. Status: **IN PROGRESS** (review #1 done 2026-07-06 at bootstrap: artifacts/reports/SECURITY_REVIEW_01.md; recurs at each stage exit).
+- Acceptance: review reports; blocking findings resolved or open-itemed. Complexity: S recurring. Status: **DONE FOR S1 AND S2 NO-LIVE BOUNDARY 2026-07-10** — review #2 passes with zero blockers, and `S2_LIVE_UNREACHABILITY_REPORT.md` verifies no paper/demo/testnet/live execution path. Full S2 exit remains blocked by validation, not by a discovered live-reachability security issue.

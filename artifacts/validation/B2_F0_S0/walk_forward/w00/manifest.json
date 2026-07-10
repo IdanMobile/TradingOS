@@ -1,0 +1,38 @@
+{
+  "artifact_id": "B2-WALK-FORWARD-00",
+  "produced_by": "T-009-03",
+  "status": "OK",
+  "engine": "freqtrade",
+  "strategy": "B2MaCrossover",
+  "dataset_id": "DS-CRYPTO-SPOT-BAKEOFF-V1",
+  "window": {
+    "train_start": "2021-01-01T00:00:00+00:00",
+    "train_end": "2022-01-01T00:00:00+00:00",
+    "test_start": "2022-01-01T00:00:00+00:00",
+    "test_end": "2022-04-01T00:00:00+00:00"
+  },
+  "timerange": "20220101-20220401",
+  "parameters": {
+    "fast_window": 3,
+    "slow_window": 5
+  },
+  "fee_rate_per_side": "0.001",
+  "files": [
+    {
+      "path": "backtest-result-2026-07-10_04-18-55.zip",
+      "sha256": "7177abfd54b445491553e6a7aa97aa3a0d3d1af60f20c5c33e5f05df083d5066"
+    },
+    {
+      "path": "trades.parquet",
+      "sha256": "eecfdfa581ca1ab358888d48b0c6494ac9a351ccc616e02839f968fa6e097412"
+    },
+    {
+      "path": "equity.parquet",
+      "sha256": "e0d1551336e96b27bbf2becd2b994d794c5f756be6d2c046c75b4da99021b362"
+    },
+    {
+      "path": "normalized_metrics.json",
+      "sha256": "80f734738c971047889c9c8e71e87eea4966f9f23f06e9e1570a5214298ec92b"
+    }
+  ]
+}

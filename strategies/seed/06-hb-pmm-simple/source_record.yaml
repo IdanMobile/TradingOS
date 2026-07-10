@@ -1,0 +1,16 @@
+source_id: SRC-HB2
+source_class: official_framework
+url: https://github.com/hummingbot/hummingbot/blob/master/controllers/market_making/pmm_simple.py
+title: "pmm_simple (Hummingbot V2 market-making controller)"
+author: hummingbot-foundation
+published_at: "unknown (V2 controller framework, introduced ~2023-2024)"
+retrieved_at: "2026-07-07"
+license: Apache-2.0
+version_or_commit: "master branch, exact commit not pinned in this pass"
+market_claimed: "spot or perpetual (pure market-making controller, venue-configurable)"
+timeframe_claimed: "continuous / order-refresh-driven, not candle-driven"
+profit_claims_inherited: false
+notes: >
+  Recalled from this project's own prior Hummingbot V2 controller-architecture
+  research plus public knowledge of the `market_making` controller family
+  (classic pure-market-making pattern); no live fetch performed in this pass.

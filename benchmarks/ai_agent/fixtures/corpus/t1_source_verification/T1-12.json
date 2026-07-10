@@ -1,0 +1,9 @@
+{
+  "claim": "Mode C (Longitudinal) reruns the frozen task set only once, at suite creation time.",
+  "evidence_span": "Rerun frozen tasks after model/provider changes.",
+  "id": "T1-12",
+  "label": "insufficient",
+  "publication_date": "2026-07-06",
+  "source_ref": "benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md",
+  "source_text": "Rerun frozen tasks after model/provider changes."
+}

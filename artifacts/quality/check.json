@@ -1,0 +1,8 @@
+{
+  "schema_version": 2,
+  "gate": "check",
+  "command": "make check",
+  "status": "PASS",
+  "includes_dependency_audit": false,
+  "generated_at": "2026-07-10T15:17:29.970024+00:00"
+}

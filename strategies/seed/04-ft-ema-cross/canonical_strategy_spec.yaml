@@ -1,0 +1,27 @@
+# Seed item 4/10 (T-010-05) -- freqtrade documented EMA short/long crossover
+strategy_id: STRAT-FT2-ema-cross
+family: trend_following
+inputs: [close]
+indicators:
+  - name: ema_short
+    parameters: {window: 5, source: close}
+    outputs: [ema_short]
+  - name: ema_long
+    parameters: {window: 10, source: close}
+    outputs: [ema_long]
+entry_long:
+  all:
+    - ema_short > ema_long
+exit_long:
+  any:
+    - ema_short < ema_long
+position_sizing: {type: fixed_fraction, fraction: 1.0}
+risk: {stop_loss: null, take_profit: null}
+assumptions:
+  - "signal evaluated at bar close; execution at next bar open"
+  - "warm-up: no signal until both EMA windows are seeded (this project approximates EMA warm-up the same as SMA warm-up: first 9 bars produce no signal, matching the slower 10-bar window)"
+ambiguities:
+  - "freqtrade's documentation 'Strategy Customization' page shows an EMA-cross example with illustrative rather than fixed window lengths; 5/10 chosen here for parity with this project's other short-window reproductions"
+  - "true EMA recursive seeding (first value = SMA of the window, then exponential smoothing) vs. this spec's simplified 'treat like SMA warm-up' approximation is a project-side modeling limitation, not a source ambiguity -- flagged here so a reviewer doesn't mistake it for source fidelity"
+source_refs: [SRC-FT2]
+license_ref: LIC-FT2

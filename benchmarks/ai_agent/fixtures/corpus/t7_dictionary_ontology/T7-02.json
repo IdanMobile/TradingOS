@@ -1,0 +1,18 @@
+{
+  "docs": {
+    "backtest_engine_doc": "In the backtest engine, a 'fill' is a simulated execution event assigned a synthetic price and timestamp, not a real exchange match.",
+    "maker_taker_doc": "A fill is the (partial or full) execution of an order against the book; maker fills add liquidity, taker fills remove it."
+  },
+  "ground_truth_concepts": [
+    {
+      "concept": "fill (live exchange)",
+      "meaning": "real order-book match, maker or taker"
+    },
+    {
+      "concept": "fill (backtest engine)",
+      "meaning": "simulated execution event, no real matching"
+    }
+  ],
+  "id": "T7-02",
+  "term": "fill"
+}

@@ -1,0 +1,22 @@
+{
+  "engine": "nautilus",
+  "strategy": "B4",
+  "trades_roundtrips": 586,
+  "fills": 1172,
+  "left_open_trades": 0,
+  "profit_total_abs": "-67.8865460900",
+  "wins": 202,
+  "losses": 384,
+  "fee_audit": {
+    "max_pnl_deviation_quote": "0",
+    "status": "PASS"
+  },
+  "semantic_notes": [
+    "signal computed at bar close (pandas, identical math to Freqtrade lane strategies); order submitted in on_bar() fills at the venue's next processed bar open (matches Freqtrade's open_date==fill-time semantics)",
+    "fixed notional sizing per trade (documented sizing deviation from Freqtrade's compounding 'unlimited' stake mode; bake-off goal is infrastructure comparison, not profit discovery per blueprint)",
+    "prices float64 at engine boundary (declared converter loss, same as Freqtrade lane)",
+    "profit_total_abs is mark-to-market (ending account value at last close price minus starting balance), not sum of realized_pnl alone, so buy-and-hold (B1) unrealized gains are captured",
+    "equity.parquet is a coarse two-point series (start, end), not a full intra-run curve - documented scope simplification",
+    "evidence window 2024-01-01..2024-01-14 (bounded subset of the frozen dataset), not full 2021-2026 history - Nautilus's event-driven matching engine has materially higher per-bar/per-order overhead than Freqtrade's vectorized backtest; full-history x 2-pair x 4-strategy x 2-scenario x determinism-rerun replay was infeasible within task budget. Documented scope deviation, not a silent gap."
+  ]
+}

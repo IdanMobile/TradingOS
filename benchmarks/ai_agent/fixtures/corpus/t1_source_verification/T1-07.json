@@ -1,0 +1,9 @@
+{
+  "claim": "Anthropic's minimum model-deprecation notice window is at least 60 days.",
+  "evidence_span": "Anthropic >=60d notice",
+  "id": "T1-07",
+  "label": "supported",
+  "publication_date": "2026-07-06",
+  "source_ref": "docs/architecture/AD.md",
+  "source_text": "Anthropic >=60d notice; OpenAI as little as 2 weeks for previews"
+}

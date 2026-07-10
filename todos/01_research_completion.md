@@ -9,15 +9,15 @@ Each task closes an RG-xx row in `research/RESEARCH_GAP_MATRIX.md`. Default skil
 
 ## T-001-02 LEAN local data/pricing boundary (RG-02)
 - Actions: fetch current QuantConnect datasets/pricing/CLI docs; determine free local crypto-spot backtest path; note account requirements.
-- Outputs: evidence record + WS3 LEAN lane preconditions. Acceptance: boundary stated with quotes; else INSUFFICIENT recorded and lane proceeds to executable check with blocker protocol. Blocks: T-006-04 (soft). Status: TODO.
+- Outputs: evidence record + WS3 LEAN lane preconditions. Acceptance: boundary stated with quotes; else INSUFFICIENT recorded and lane proceeds to executable check with blocker protocol. Blocks: T-006-04 (soft). Status: **DONE 2026-07-07** (local Docker/custom-data boundary recorded in `artifacts/bakeoff/lean/STATUS.md`; no QuantConnect account required for local lane).
 
 ## T-001-03 Kraken/Coinbase Israel availability (RG-05)
 - Actions: official supported-countries/legal pages; record verdicts; update venue matrix ranking if warranted (decision-log entry).
-- Outputs: evidence records; possible AD-13 revision. Not blocking S1. Status: TODO.
+- Outputs: evidence records; possible AD-13 revision. Not blocking S1. Status: **DEFERRED-S3** — trigger before paper venue selection; no venue credential path exists now.
 
 ## T-001-04 AI provider primary-source pricing/policy sweep (RG-08)
 - Actions: verify OpenAI GPT-5.6 tier pricing, Gemini 3.x context windows, Google deprecation policy from primary pages.
-- Outputs: registry §7 rows at S-strength. Blocks: first paid benchmark run (T-011-05). Status: TODO.
+- Outputs: registry §7 rows at S-strength. Blocks: first paid benchmark run (T-011-05). Status: **DEFERRED-AI-CREDENTIAL** — trigger when the operator enables a real provider; mock mode remains default.
 
 ## T-001-05 promptfoo ownership check (RG-09)
 - Trigger-only: execute if promptfoo is proposed for WS8. Outputs: evidence record. Status: DEFERRED (triggered).

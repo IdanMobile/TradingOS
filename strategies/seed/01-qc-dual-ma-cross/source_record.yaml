@@ -1,0 +1,17 @@
+source_id: SRC-QC1
+source_class: official_framework
+url: https://github.com/QuantConnect/Lean/tree/master/Algorithm.Python
+title: "Moving Average Cross Algorithm (LEAN official example algorithms)"
+author: QuantConnect (LEAN maintainers)
+published_at: "unknown (long-standing example in the LEAN repo history)"
+retrieved_at: "2026-07-07"
+license: Apache-2.0
+version_or_commit: "master branch, exact commit not pinned in this pass"
+market_claimed: "equities (framework demo, market-agnostic algorithm shape)"
+timeframe_claimed: "daily (typical demo resolution; configurable)"
+profit_claims_inherited: false
+notes: >
+  Exact example filename (e.g. MovingAverageCrossAlgorithm.py) recalled from
+  public knowledge of the LEAN repo layout; a live permalink/commit hash was
+  not fetched in this pass (no browsing tool used) — treat as an ambiguity,
+  not a verified citation. Reviewer should confirm before any code reuse.

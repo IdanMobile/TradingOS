@@ -1,0 +1,9 @@
+{
+  "claim": "Raw profit is treated as sufficient proof of reasoning skill.",
+  "evidence_span": "Do not treat raw profit as proof of reasoning skill.",
+  "id": "T1-03",
+  "label": "contradicted",
+  "publication_date": "2026-07-06",
+  "source_ref": "benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md",
+  "source_text": "Do not treat raw profit as proof of reasoning skill."
+}

@@ -1,0 +1,24 @@
+# Seed item 8/10 (T-010-09) -- open-source Pine Supertrend trend-following strategy
+strategy_id: STRAT-PINE2-supertrend-strategy
+family: trend_following
+inputs: [close, high, low]
+indicators:
+  - name: supertrend
+    parameters: {window: 10, multiplier: 3, source: close}
+    outputs: [supertrend_direction]
+entry_long:
+  all:
+    - supertrend_direction > 0
+exit_long:
+  any:
+    - supertrend_direction < 0
+position_sizing: {type: fixed_fraction, fraction: 1.0}
+risk: {stop_loss: null, take_profit: null}
+assumptions:
+  - "signal evaluated at bar close; execution at next bar open"
+  - "warm-up: no signal until the 10-bar ATR/Supertrend window is seeded (bars 1-9 produce no signal)"
+ambiguities:
+  - "TradingView's built-in Supertrend script (and its many open-source republications) exposes a discrete direction/trend output (+1/-1); some published variants add a third 'no signal yet' state during ATR warm-up, others emit a value from bar 1 with a documented warm-up caveat instead -- this spec assumes the explicit-warm-up reading for consistency with SRC-HB1's supertrend_direction handling"
+  - "exact published script/author/permalink not independently fetched in this pass; grounded in TradingView's own built-in Supertrend script and the standard MPL-2.0 open-source pattern"
+source_refs: [SRC-PINE2]
+license_ref: LIC-PINE2

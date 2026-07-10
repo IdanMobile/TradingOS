@@ -1,0 +1,25 @@
+# Seed item 2/10 (T-010-03) — QuantConnect/LEAN Donchian-channel breakout
+strategy_id: STRAT-QC2-donchian-breakout
+family: breakout
+inputs: [close]
+indicators:
+  - name: donchian_channel
+    parameters: {window: 4, source: close, include_current_bar: false}
+    outputs: [donchian_upper, donchian_lower]
+entry_long:
+  all:
+    - close > donchian_upper
+exit_long:
+  any:
+    - close < donchian_lower
+position_sizing: {type: fixed_fraction, fraction: 1.0}
+risk: {stop_loss: null, take_profit: null}
+assumptions:
+  - "signal evaluated at bar close; execution at next bar open"
+  - "warm-up: no signal until 4 prior bars exist (bars 1-4 produce no signal)"
+  - "donchian_upper/lower are computed over the PRIOR `window` bars, excluding the current bar (classic Turtle-rule convention); this is an explicit choice, not the only valid reading"
+ambiguities:
+  - "whether the channel includes the current bar's high/low is genuinely ambiguous across tutorial write-ups; this spec picks 'excludes current bar' and states it as an assumption rather than guessing silently"
+  - "exit rule (breaking the lower channel) vs. a mid-channel exit are both used in different breakout write-ups; this spec picks the lower-channel exit"
+source_refs: [SRC-QC2]
+license_ref: LIC-QC2

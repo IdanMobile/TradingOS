@@ -1,0 +1,25 @@
+# Seed item 9/10 (T-010-10) -- Jegadeesh & Titman (1993) cross-sectional momentum
+strategy_id: STRAT-PAPER1-momentum-jt1993
+family: trend_following
+inputs: [close]
+indicators:
+  - name: rate_of_change
+    parameters: {window: 12, source: close}
+    outputs: [momentum_return]
+entry_long:
+  all:
+    - momentum_return > 0
+exit_long:
+  any:
+    - momentum_return < 0
+position_sizing: {type: fixed_fraction, fraction: 1.0}
+risk: {stop_loss: null, take_profit: null}
+assumptions:
+  - "signal evaluated at bar close; execution at next bar open"
+  - "warm-up: no signal until the 12-bar lookback-return window is full (bars 1-12 produce no signal)"
+ambiguities:
+  - "MAJOR SEMANTIC COLLAPSE (flagged prominently): Jegadeesh & Titman (1993) rank stocks CROSS-SECTIONALLY into deciles by trailing return and go long the winner decile / short the loser decile, rebalancing monthly over a 3-12 month formation period. This project's canonical spec has no cross-sectional/portfolio-ranking primitive -- only single-instrument threshold rules. This item approximates the paper's winner-decile membership as 'this instrument's own trailing return > 0', which captures the SIGN of momentum but drops the RELATIVE-RANKING mechanism entirely. This is a genuine incompatible-semantics finding, not a minor reading choice."
+  - "the paper's monthly rebalance/holding-period cadence is collapsed to per-bar continuous evaluation, since this project's fixture/dataset resolution is sub-daily, not monthly"
+  - "no short leg (losers) is modeled; only the long-winners half of the paper's long-short design is captured, consistent with this project's entry_long/exit_long-only spec shape"
+source_refs: [SRC-PAPER1]
+license_ref: LIC-PAPER1

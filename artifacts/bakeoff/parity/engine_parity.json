@@ -1,0 +1,1158 @@
+{
+  "schema": "tios-engine-parity-v1",
+  "status": "AVAILABLE_LANES_COMPLETE_WITH_BLOCKERS",
+  "comparable_contexts": [
+    {
+      "baseline": "B1",
+      "scenario": "F0_S0",
+      "instrument": "BTCUSDT",
+      "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT",
+      "engines": [
+        "freqtrade",
+        "hummingbot"
+      ],
+      "classification": "EXPECTED_EXECUTION_TIMING_DIVERGENCE",
+      "rows": [
+        {
+          "baseline": "B1",
+          "scenario": "F0_S0",
+          "instrument": "BTCUSDT",
+          "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT",
+          "engine": "freqtrade",
+          "fills": 2,
+          "buys": 1,
+          "sells": 1,
+          "first_fill_epoch": 1609459500,
+          "last_fill_epoch": 1782863700,
+          "first_price": 28975.65,
+          "last_price": 58636.0,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/freqtrade/B1/F0_S0/run1",
+          "semantic_notes": [
+            "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+            "fees converted from freqtrade per-side ratios to absolute quote amounts",
+            "prices float64 at engine boundary (declared converter loss)"
+          ]
+        },
+        {
+          "baseline": "B1",
+          "scenario": "F0_S0",
+          "instrument": "BTCUSDT",
+          "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT",
+          "engine": "hummingbot",
+          "fills": 2,
+          "buys": 1,
+          "sells": 1,
+          "first_fill_epoch": 1609459200,
+          "last_fill_epoch": 1782864000,
+          "first_price": 28975.65,
+          "last_price": 58726.0,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/hummingbot/B1/BTCUSDT/F0_S0/run1",
+          "semantic_notes": [
+            "ts_signal not exposed per executor; controller evaluates signal at current bar and the engine fills at the same bar's close (no separate order-placement lag modeled by BacktestingEngineBase)",
+            "fee per leg recomputed as trade_cost * entry_price * qty (matches PositionExecutorSimulator's fixed-notional fee model exactly)",
+            "equity_curve reconstructed as configured total_amount_quote + cumulative total_pnl (no native account-balance series exposed by BacktestingEngineBase)",
+            "prices float64 at engine boundary (declared converter loss, C-hb)"
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B1",
+      "scenario": "F1_S1",
+      "instrument": "BTCUSDT",
+      "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT",
+      "engines": [
+        "freqtrade",
+        "hummingbot"
+      ],
+      "classification": "EXPECTED_EXECUTION_TIMING_DIVERGENCE",
+      "rows": [
+        {
+          "baseline": "B1",
+          "scenario": "F1_S1",
+          "instrument": "BTCUSDT",
+          "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT",
+          "engine": "freqtrade",
+          "fills": 2,
+          "buys": 1,
+          "sells": 1,
+          "first_fill_epoch": 1609459500,
+          "last_fill_epoch": 1782863700,
+          "first_price": 28975.65,
+          "last_price": 58636.0,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/freqtrade/B1/F1_S1/run1",
+          "semantic_notes": [
+            "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+            "fees converted from freqtrade per-side ratios to absolute quote amounts",
+            "prices float64 at engine boundary (declared converter loss)"
+          ]
+        },
+        {
+          "baseline": "B1",
+          "scenario": "F1_S1",
+          "instrument": "BTCUSDT",
+          "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT",
+          "engine": "hummingbot",
+          "fills": 2,
+          "buys": 1,
+          "sells": 1,
+          "first_fill_epoch": 1609459200,
+          "last_fill_epoch": 1782864000,
+          "first_price": 28975.65,
+          "last_price": 58726.0,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/hummingbot/B1/BTCUSDT/F1_S1/run1",
+          "semantic_notes": [
+            "ts_signal not exposed per executor; controller evaluates signal at current bar and the engine fills at the same bar's close (no separate order-placement lag modeled by BacktestingEngineBase)",
+            "fee per leg recomputed as trade_cost * entry_price * qty (matches PositionExecutorSimulator's fixed-notional fee model exactly)",
+            "equity_curve reconstructed as configured total_amount_quote + cumulative total_pnl (no native account-balance series exposed by BacktestingEngineBase)",
+            "prices float64 at engine boundary (declared converter loss, C-hb)"
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B2",
+      "scenario": "F0_S0",
+      "instrument": "BTCUSDT",
+      "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT",
+      "engines": [
+        "freqtrade",
+        "hummingbot"
+      ],
+      "classification": "EXPLAINED_ENGINE_EXECUTION_AND_DATA_GAP_DIVERGENCE",
+      "rows": [
+        {
+          "baseline": "B2",
+          "scenario": "F0_S0",
+          "instrument": "BTCUSDT",
+          "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT",
+          "engine": "freqtrade",
+          "fills": 132770,
+          "buys": 66385,
+          "sells": 66385,
+          "first_fill_epoch": 1609468500,
+          "last_fill_epoch": 1782862800,
+          "first_price": 29224.86,
+          "last_price": 58586.0,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/freqtrade/B2/BTCUSDT/F0_S0/run1",
+          "semantic_notes": [
+            "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+            "fees converted from freqtrade per-side ratios to absolute quote amounts",
+            "prices float64 at engine boundary (declared converter loss)"
+          ]
+        },
+        {
+          "baseline": "B2",
+          "scenario": "F0_S0",
+          "instrument": "BTCUSDT",
+          "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT",
+          "engine": "hummingbot",
+          "fills": 132924,
+          "buys": 66462,
+          "sells": 66462,
+          "first_fill_epoch": 1609460700,
+          "last_fill_epoch": 1782864000,
+          "first_price": 28836.63,
+          "last_price": 58726.0,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/hummingbot/B2/BTCUSDT/F0_S0/run1",
+          "semantic_notes": [
+            "ts_signal not exposed per executor; controller evaluates signal at current bar and the engine fills at the same bar's close (no separate order-placement lag modeled by BacktestingEngineBase)",
+            "fee per leg recomputed as trade_cost * entry_price * qty (matches PositionExecutorSimulator's fixed-notional fee model exactly)",
+            "equity_curve reconstructed as configured total_amount_quote + cumulative total_pnl (no native account-balance series exposed by BacktestingEngineBase)",
+            "prices float64 at engine boundary (declared converter loss, C-hb)"
+          ]
+        }
+      ]
+    }
+  ],
+  "single_engine_contexts": [
+    {
+      "baseline": "B1",
+      "scenario": "F0_S0",
+      "instrument": "BTCUSDT",
+      "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "nautilus"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B1",
+          "scenario": "F0_S0",
+          "instrument": "BTCUSDT",
+          "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "nautilus",
+          "fills": 1,
+          "buys": 1,
+          "sells": 0,
+          "first_fill_epoch": 1609459200,
+          "last_fill_epoch": 1609459200,
+          "first_price": 28975.65,
+          "last_price": 28975.65,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/nautilus/B1/F0_S0/run1",
+          "semantic_notes": [
+            "signal computed at bar close (pandas, identical math to Freqtrade lane strategies); order submitted in on_bar() fills at the venue's next processed bar open (matches Freqtrade's open_date==fill-time semantics)",
+            "fixed notional sizing per trade (documented sizing deviation from Freqtrade's compounding 'unlimited' stake mode; bake-off goal is infrastructure comparison, not profit discovery per blueprint)",
+            "prices float64 at engine boundary (declared converter loss, same as Freqtrade lane)",
+            "profit_total_abs is mark-to-market (ending account value at last close price minus starting balance), not sum of realized_pnl alone, so buy-and-hold (B1) unrealized gains are captured",
+            "equity.parquet is a coarse two-point series (start, end), not a full intra-run curve - documented scope simplification",
+            "evidence window 2024-01-01..2024-01-14 (bounded subset of the frozen dataset), not full 2021-2026 history - Nautilus's event-driven matching engine has materially higher per-bar/per-order overhead than Freqtrade's vectorized backtest; full-history x 2-pair x 4-strategy x 2-scenario x determinism-rerun replay was infeasible within task budget. Documented scope deviation, not a silent gap."
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B1",
+      "scenario": "F0_S0",
+      "instrument": "ETHUSDT",
+      "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "nautilus"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B1",
+          "scenario": "F0_S0",
+          "instrument": "ETHUSDT",
+          "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "nautilus",
+          "fills": 1,
+          "buys": 1,
+          "sells": 0,
+          "first_fill_epoch": 1609459200,
+          "last_fill_epoch": 1609459200,
+          "first_price": 736.89,
+          "last_price": 736.89,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/nautilus/B1/F0_S0/run1",
+          "semantic_notes": [
+            "signal computed at bar close (pandas, identical math to Freqtrade lane strategies); order submitted in on_bar() fills at the venue's next processed bar open (matches Freqtrade's open_date==fill-time semantics)",
+            "fixed notional sizing per trade (documented sizing deviation from Freqtrade's compounding 'unlimited' stake mode; bake-off goal is infrastructure comparison, not profit discovery per blueprint)",
+            "prices float64 at engine boundary (declared converter loss, same as Freqtrade lane)",
+            "profit_total_abs is mark-to-market (ending account value at last close price minus starting balance), not sum of realized_pnl alone, so buy-and-hold (B1) unrealized gains are captured",
+            "equity.parquet is a coarse two-point series (start, end), not a full intra-run curve - documented scope simplification",
+            "evidence window 2024-01-01..2024-01-14 (bounded subset of the frozen dataset), not full 2021-2026 history - Nautilus's event-driven matching engine has materially higher per-bar/per-order overhead than Freqtrade's vectorized backtest; full-history x 2-pair x 4-strategy x 2-scenario x determinism-rerun replay was infeasible within task budget. Documented scope deviation, not a silent gap."
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B1",
+      "scenario": "F1_S1",
+      "instrument": "BTCUSDT",
+      "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "nautilus"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B1",
+          "scenario": "F1_S1",
+          "instrument": "BTCUSDT",
+          "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "nautilus",
+          "fills": 1,
+          "buys": 1,
+          "sells": 0,
+          "first_fill_epoch": 1609459200,
+          "last_fill_epoch": 1609459200,
+          "first_price": 28975.65,
+          "last_price": 28975.65,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/nautilus/B1/F1_S1/run1",
+          "semantic_notes": [
+            "signal computed at bar close (pandas, identical math to Freqtrade lane strategies); order submitted in on_bar() fills at the venue's next processed bar open (matches Freqtrade's open_date==fill-time semantics)",
+            "fixed notional sizing per trade (documented sizing deviation from Freqtrade's compounding 'unlimited' stake mode; bake-off goal is infrastructure comparison, not profit discovery per blueprint)",
+            "prices float64 at engine boundary (declared converter loss, same as Freqtrade lane)",
+            "profit_total_abs is mark-to-market (ending account value at last close price minus starting balance), not sum of realized_pnl alone, so buy-and-hold (B1) unrealized gains are captured",
+            "equity.parquet is a coarse two-point series (start, end), not a full intra-run curve - documented scope simplification",
+            "evidence window 2024-01-01..2024-01-14 (bounded subset of the frozen dataset), not full 2021-2026 history - Nautilus's event-driven matching engine has materially higher per-bar/per-order overhead than Freqtrade's vectorized backtest; full-history x 2-pair x 4-strategy x 2-scenario x determinism-rerun replay was infeasible within task budget. Documented scope deviation, not a silent gap."
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B1",
+      "scenario": "F1_S1",
+      "instrument": "ETHUSDT",
+      "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "nautilus"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B1",
+          "scenario": "F1_S1",
+          "instrument": "ETHUSDT",
+          "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "nautilus",
+          "fills": 1,
+          "buys": 1,
+          "sells": 0,
+          "first_fill_epoch": 1609459200,
+          "last_fill_epoch": 1609459200,
+          "first_price": 736.89,
+          "last_price": 736.89,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/nautilus/B1/F1_S1/run1",
+          "semantic_notes": [
+            "signal computed at bar close (pandas, identical math to Freqtrade lane strategies); order submitted in on_bar() fills at the venue's next processed bar open (matches Freqtrade's open_date==fill-time semantics)",
+            "fixed notional sizing per trade (documented sizing deviation from Freqtrade's compounding 'unlimited' stake mode; bake-off goal is infrastructure comparison, not profit discovery per blueprint)",
+            "prices float64 at engine boundary (declared converter loss, same as Freqtrade lane)",
+            "profit_total_abs is mark-to-market (ending account value at last close price minus starting balance), not sum of realized_pnl alone, so buy-and-hold (B1) unrealized gains are captured",
+            "equity.parquet is a coarse two-point series (start, end), not a full intra-run curve - documented scope simplification",
+            "evidence window 2024-01-01..2024-01-14 (bounded subset of the frozen dataset), not full 2021-2026 history - Nautilus's event-driven matching engine has materially higher per-bar/per-order overhead than Freqtrade's vectorized backtest; full-history x 2-pair x 4-strategy x 2-scenario x determinism-rerun replay was infeasible within task budget. Documented scope deviation, not a silent gap."
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B2",
+      "scenario": "F0_S0",
+      "instrument": "BTCUSDT",
+      "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "nautilus"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B2",
+          "scenario": "F0_S0",
+          "instrument": "BTCUSDT",
+          "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "nautilus",
+          "fills": 950,
+          "buys": 475,
+          "sells": 475,
+          "first_fill_epoch": 1704068400,
+          "last_fill_epoch": 1705275600,
+          "first_price": 42473.93,
+          "last_price": 41913.99,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/nautilus/B2/F0_S0/run1",
+          "semantic_notes": [
+            "signal computed at bar close (pandas, identical math to Freqtrade lane strategies); order submitted in on_bar() fills at the venue's next processed bar open (matches Freqtrade's open_date==fill-time semantics)",
+            "fixed notional sizing per trade (documented sizing deviation from Freqtrade's compounding 'unlimited' stake mode; bake-off goal is infrastructure comparison, not profit discovery per blueprint)",
+            "prices float64 at engine boundary (declared converter loss, same as Freqtrade lane)",
+            "profit_total_abs is mark-to-market (ending account value at last close price minus starting balance), not sum of realized_pnl alone, so buy-and-hold (B1) unrealized gains are captured",
+            "equity.parquet is a coarse two-point series (start, end), not a full intra-run curve - documented scope simplification",
+            "evidence window 2024-01-01..2024-01-14 (bounded subset of the frozen dataset), not full 2021-2026 history - Nautilus's event-driven matching engine has materially higher per-bar/per-order overhead than Freqtrade's vectorized backtest; full-history x 2-pair x 4-strategy x 2-scenario x determinism-rerun replay was infeasible within task budget. Documented scope deviation, not a silent gap."
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B2",
+      "scenario": "F0_S0",
+      "instrument": "BTCUSDT",
+      "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "freqtrade"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B2",
+          "scenario": "F0_S0",
+          "instrument": "BTCUSDT",
+          "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "freqtrade",
+          "fills": 107956,
+          "buys": 53978,
+          "sells": 53978,
+          "first_fill_epoch": 1609461000,
+          "last_fill_epoch": 1782862800,
+          "first_price": 28836.63,
+          "last_price": 58586.0,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/freqtrade/B2/F0_S0/run1",
+          "semantic_notes": [
+            "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+            "fees converted from freqtrade per-side ratios to absolute quote amounts",
+            "prices float64 at engine boundary (declared converter loss)"
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B2",
+      "scenario": "F0_S0",
+      "instrument": "ETHUSDT",
+      "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "nautilus"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B2",
+          "scenario": "F0_S0",
+          "instrument": "ETHUSDT",
+          "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "nautilus",
+          "fills": 898,
+          "buys": 449,
+          "sells": 449,
+          "first_fill_epoch": 1704068400,
+          "last_fill_epoch": 1705275600,
+          "first_price": 2294.67,
+          "last_price": 2479.61,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/nautilus/B2/F0_S0/run1",
+          "semantic_notes": [
+            "signal computed at bar close (pandas, identical math to Freqtrade lane strategies); order submitted in on_bar() fills at the venue's next processed bar open (matches Freqtrade's open_date==fill-time semantics)",
+            "fixed notional sizing per trade (documented sizing deviation from Freqtrade's compounding 'unlimited' stake mode; bake-off goal is infrastructure comparison, not profit discovery per blueprint)",
+            "prices float64 at engine boundary (declared converter loss, same as Freqtrade lane)",
+            "profit_total_abs is mark-to-market (ending account value at last close price minus starting balance), not sum of realized_pnl alone, so buy-and-hold (B1) unrealized gains are captured",
+            "equity.parquet is a coarse two-point series (start, end), not a full intra-run curve - documented scope simplification",
+            "evidence window 2024-01-01..2024-01-14 (bounded subset of the frozen dataset), not full 2021-2026 history - Nautilus's event-driven matching engine has materially higher per-bar/per-order overhead than Freqtrade's vectorized backtest; full-history x 2-pair x 4-strategy x 2-scenario x determinism-rerun replay was infeasible within task budget. Documented scope deviation, not a silent gap."
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B2",
+      "scenario": "F0_S0",
+      "instrument": "ETHUSDT",
+      "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "freqtrade"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B2",
+          "scenario": "F0_S0",
+          "instrument": "ETHUSDT",
+          "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "freqtrade",
+          "fills": 60036,
+          "buys": 30018,
+          "sells": 30018,
+          "first_fill_epoch": 1609465800,
+          "last_fill_epoch": 1782863400,
+          "first_price": 747.95,
+          "last_price": 1571.18,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/freqtrade/B2/F0_S0/run1",
+          "semantic_notes": [
+            "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+            "fees converted from freqtrade per-side ratios to absolute quote amounts",
+            "prices float64 at engine boundary (declared converter loss)"
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B2",
+      "scenario": "F1_S1",
+      "instrument": "BTCUSDT",
+      "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "nautilus"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B2",
+          "scenario": "F1_S1",
+          "instrument": "BTCUSDT",
+          "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "nautilus",
+          "fills": 950,
+          "buys": 475,
+          "sells": 475,
+          "first_fill_epoch": 1704068400,
+          "last_fill_epoch": 1705275600,
+          "first_price": 42473.93,
+          "last_price": 41913.99,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/nautilus/B2/F1_S1/run1",
+          "semantic_notes": [
+            "signal computed at bar close (pandas, identical math to Freqtrade lane strategies); order submitted in on_bar() fills at the venue's next processed bar open (matches Freqtrade's open_date==fill-time semantics)",
+            "fixed notional sizing per trade (documented sizing deviation from Freqtrade's compounding 'unlimited' stake mode; bake-off goal is infrastructure comparison, not profit discovery per blueprint)",
+            "prices float64 at engine boundary (declared converter loss, same as Freqtrade lane)",
+            "profit_total_abs is mark-to-market (ending account value at last close price minus starting balance), not sum of realized_pnl alone, so buy-and-hold (B1) unrealized gains are captured",
+            "equity.parquet is a coarse two-point series (start, end), not a full intra-run curve - documented scope simplification",
+            "evidence window 2024-01-01..2024-01-14 (bounded subset of the frozen dataset), not full 2021-2026 history - Nautilus's event-driven matching engine has materially higher per-bar/per-order overhead than Freqtrade's vectorized backtest; full-history x 2-pair x 4-strategy x 2-scenario x determinism-rerun replay was infeasible within task budget. Documented scope deviation, not a silent gap."
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B2",
+      "scenario": "F1_S1",
+      "instrument": "BTCUSDT",
+      "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "freqtrade"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B2",
+          "scenario": "F1_S1",
+          "instrument": "BTCUSDT",
+          "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "freqtrade",
+          "fills": 3144,
+          "buys": 1572,
+          "sells": 1572,
+          "first_fill_epoch": 1609461000,
+          "last_fill_epoch": 1614551100,
+          "first_price": 28836.63,
+          "last_price": 45163.85,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/freqtrade/B2/F1_S1/run1",
+          "semantic_notes": [
+            "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+            "fees converted from freqtrade per-side ratios to absolute quote amounts",
+            "prices float64 at engine boundary (declared converter loss)"
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B2",
+      "scenario": "F1_S1",
+      "instrument": "ETHUSDT",
+      "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "nautilus"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B2",
+          "scenario": "F1_S1",
+          "instrument": "ETHUSDT",
+          "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "nautilus",
+          "fills": 898,
+          "buys": 449,
+          "sells": 449,
+          "first_fill_epoch": 1704068400,
+          "last_fill_epoch": 1705275600,
+          "first_price": 2294.67,
+          "last_price": 2479.61,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/nautilus/B2/F1_S1/run1",
+          "semantic_notes": [
+            "signal computed at bar close (pandas, identical math to Freqtrade lane strategies); order submitted in on_bar() fills at the venue's next processed bar open (matches Freqtrade's open_date==fill-time semantics)",
+            "fixed notional sizing per trade (documented sizing deviation from Freqtrade's compounding 'unlimited' stake mode; bake-off goal is infrastructure comparison, not profit discovery per blueprint)",
+            "prices float64 at engine boundary (declared converter loss, same as Freqtrade lane)",
+            "profit_total_abs is mark-to-market (ending account value at last close price minus starting balance), not sum of realized_pnl alone, so buy-and-hold (B1) unrealized gains are captured",
+            "equity.parquet is a coarse two-point series (start, end), not a full intra-run curve - documented scope simplification",
+            "evidence window 2024-01-01..2024-01-14 (bounded subset of the frozen dataset), not full 2021-2026 history - Nautilus's event-driven matching engine has materially higher per-bar/per-order overhead than Freqtrade's vectorized backtest; full-history x 2-pair x 4-strategy x 2-scenario x determinism-rerun replay was infeasible within task budget. Documented scope deviation, not a silent gap."
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B2",
+      "scenario": "F1_S1",
+      "instrument": "ETHUSDT",
+      "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "freqtrade"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B2",
+          "scenario": "F1_S1",
+          "instrument": "ETHUSDT",
+          "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "freqtrade",
+          "fills": 1858,
+          "buys": 929,
+          "sells": 929,
+          "first_fill_epoch": 1609465800,
+          "last_fill_epoch": 1614551700,
+          "first_price": 747.95,
+          "last_price": 1394.0,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/freqtrade/B2/F1_S1/run1",
+          "semantic_notes": [
+            "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+            "fees converted from freqtrade per-side ratios to absolute quote amounts",
+            "prices float64 at engine boundary (declared converter loss)"
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B3",
+      "scenario": "F0_S0",
+      "instrument": "BTCUSDT",
+      "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "nautilus"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B3",
+          "scenario": "F0_S0",
+          "instrument": "BTCUSDT",
+          "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "nautilus",
+          "fills": 1211,
+          "buys": 606,
+          "sells": 605,
+          "first_fill_epoch": 1704068700,
+          "last_fill_epoch": 1705276200,
+          "first_price": 42419.73,
+          "last_price": 41759.99,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/nautilus/B3/F0_S0/run1",
+          "semantic_notes": [
+            "signal computed at bar close (pandas, identical math to Freqtrade lane strategies); order submitted in on_bar() fills at the venue's next processed bar open (matches Freqtrade's open_date==fill-time semantics)",
+            "fixed notional sizing per trade (documented sizing deviation from Freqtrade's compounding 'unlimited' stake mode; bake-off goal is infrastructure comparison, not profit discovery per blueprint)",
+            "prices float64 at engine boundary (declared converter loss, same as Freqtrade lane)",
+            "profit_total_abs is mark-to-market (ending account value at last close price minus starting balance), not sum of realized_pnl alone, so buy-and-hold (B1) unrealized gains are captured",
+            "equity.parquet is a coarse two-point series (start, end), not a full intra-run curve - documented scope simplification",
+            "evidence window 2024-01-01..2024-01-14 (bounded subset of the frozen dataset), not full 2021-2026 history - Nautilus's event-driven matching engine has materially higher per-bar/per-order overhead than Freqtrade's vectorized backtest; full-history x 2-pair x 4-strategy x 2-scenario x determinism-rerun replay was infeasible within task budget. Documented scope deviation, not a silent gap."
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B3",
+      "scenario": "F0_S0",
+      "instrument": "BTCUSDT",
+      "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "freqtrade"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B3",
+          "scenario": "F0_S0",
+          "instrument": "BTCUSDT",
+          "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "freqtrade",
+          "fills": 149942,
+          "buys": 74971,
+          "sells": 74971,
+          "first_fill_epoch": 1609465500,
+          "last_fill_epoch": 1782863400,
+          "first_price": 29320.7,
+          "last_price": 58650.0,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/freqtrade/B3/F0_S0/run1",
+          "semantic_notes": [
+            "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+            "fees converted from freqtrade per-side ratios to absolute quote amounts",
+            "prices float64 at engine boundary (declared converter loss)"
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B3",
+      "scenario": "F0_S0",
+      "instrument": "ETHUSDT",
+      "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "nautilus"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B3",
+          "scenario": "F0_S0",
+          "instrument": "ETHUSDT",
+          "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "nautilus",
+          "fills": 1185,
+          "buys": 593,
+          "sells": 592,
+          "first_fill_epoch": 1704068700,
+          "last_fill_epoch": 1705276200,
+          "first_price": 2291.05,
+          "last_price": 2473.93,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/nautilus/B3/F0_S0/run1",
+          "semantic_notes": [
+            "signal computed at bar close (pandas, identical math to Freqtrade lane strategies); order submitted in on_bar() fills at the venue's next processed bar open (matches Freqtrade's open_date==fill-time semantics)",
+            "fixed notional sizing per trade (documented sizing deviation from Freqtrade's compounding 'unlimited' stake mode; bake-off goal is infrastructure comparison, not profit discovery per blueprint)",
+            "prices float64 at engine boundary (declared converter loss, same as Freqtrade lane)",
+            "profit_total_abs is mark-to-market (ending account value at last close price minus starting balance), not sum of realized_pnl alone, so buy-and-hold (B1) unrealized gains are captured",
+            "equity.parquet is a coarse two-point series (start, end), not a full intra-run curve - documented scope simplification",
+            "evidence window 2024-01-01..2024-01-14 (bounded subset of the frozen dataset), not full 2021-2026 history - Nautilus's event-driven matching engine has materially higher per-bar/per-order overhead than Freqtrade's vectorized backtest; full-history x 2-pair x 4-strategy x 2-scenario x determinism-rerun replay was infeasible within task budget. Documented scope deviation, not a silent gap."
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B3",
+      "scenario": "F0_S0",
+      "instrument": "ETHUSDT",
+      "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "freqtrade"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B3",
+          "scenario": "F0_S0",
+          "instrument": "ETHUSDT",
+          "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "freqtrade",
+          "fills": 54930,
+          "buys": 27465,
+          "sells": 27465,
+          "first_fill_epoch": 1609466100,
+          "last_fill_epoch": 1782861000,
+          "first_price": 746.62,
+          "last_price": 1569.28,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/freqtrade/B3/F0_S0/run1",
+          "semantic_notes": [
+            "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+            "fees converted from freqtrade per-side ratios to absolute quote amounts",
+            "prices float64 at engine boundary (declared converter loss)"
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B3",
+      "scenario": "F1_S1",
+      "instrument": "BTCUSDT",
+      "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "nautilus"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B3",
+          "scenario": "F1_S1",
+          "instrument": "BTCUSDT",
+          "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "nautilus",
+          "fills": 1211,
+          "buys": 606,
+          "sells": 605,
+          "first_fill_epoch": 1704068700,
+          "last_fill_epoch": 1705276200,
+          "first_price": 42419.73,
+          "last_price": 41759.99,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/nautilus/B3/F1_S1/run1",
+          "semantic_notes": [
+            "signal computed at bar close (pandas, identical math to Freqtrade lane strategies); order submitted in on_bar() fills at the venue's next processed bar open (matches Freqtrade's open_date==fill-time semantics)",
+            "fixed notional sizing per trade (documented sizing deviation from Freqtrade's compounding 'unlimited' stake mode; bake-off goal is infrastructure comparison, not profit discovery per blueprint)",
+            "prices float64 at engine boundary (declared converter loss, same as Freqtrade lane)",
+            "profit_total_abs is mark-to-market (ending account value at last close price minus starting balance), not sum of realized_pnl alone, so buy-and-hold (B1) unrealized gains are captured",
+            "equity.parquet is a coarse two-point series (start, end), not a full intra-run curve - documented scope simplification",
+            "evidence window 2024-01-01..2024-01-14 (bounded subset of the frozen dataset), not full 2021-2026 history - Nautilus's event-driven matching engine has materially higher per-bar/per-order overhead than Freqtrade's vectorized backtest; full-history x 2-pair x 4-strategy x 2-scenario x determinism-rerun replay was infeasible within task budget. Documented scope deviation, not a silent gap."
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B3",
+      "scenario": "F1_S1",
+      "instrument": "BTCUSDT",
+      "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "freqtrade"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B3",
+          "scenario": "F1_S1",
+          "instrument": "BTCUSDT",
+          "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "freqtrade",
+          "fills": 4034,
+          "buys": 2017,
+          "sells": 2017,
+          "first_fill_epoch": 1609465500,
+          "last_fill_epoch": 1614081000,
+          "first_price": 29320.7,
+          "last_price": 45940.4,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/freqtrade/B3/F1_S1/run1",
+          "semantic_notes": [
+            "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+            "fees converted from freqtrade per-side ratios to absolute quote amounts",
+            "prices float64 at engine boundary (declared converter loss)"
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B3",
+      "scenario": "F1_S1",
+      "instrument": "ETHUSDT",
+      "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "nautilus"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B3",
+          "scenario": "F1_S1",
+          "instrument": "ETHUSDT",
+          "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "nautilus",
+          "fills": 1185,
+          "buys": 593,
+          "sells": 592,
+          "first_fill_epoch": 1704068700,
+          "last_fill_epoch": 1705276200,
+          "first_price": 2291.05,
+          "last_price": 2473.93,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/nautilus/B3/F1_S1/run1",
+          "semantic_notes": [
+            "signal computed at bar close (pandas, identical math to Freqtrade lane strategies); order submitted in on_bar() fills at the venue's next processed bar open (matches Freqtrade's open_date==fill-time semantics)",
+            "fixed notional sizing per trade (documented sizing deviation from Freqtrade's compounding 'unlimited' stake mode; bake-off goal is infrastructure comparison, not profit discovery per blueprint)",
+            "prices float64 at engine boundary (declared converter loss, same as Freqtrade lane)",
+            "profit_total_abs is mark-to-market (ending account value at last close price minus starting balance), not sum of realized_pnl alone, so buy-and-hold (B1) unrealized gains are captured",
+            "equity.parquet is a coarse two-point series (start, end), not a full intra-run curve - documented scope simplification",
+            "evidence window 2024-01-01..2024-01-14 (bounded subset of the frozen dataset), not full 2021-2026 history - Nautilus's event-driven matching engine has materially higher per-bar/per-order overhead than Freqtrade's vectorized backtest; full-history x 2-pair x 4-strategy x 2-scenario x determinism-rerun replay was infeasible within task budget. Documented scope deviation, not a silent gap."
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B3",
+      "scenario": "F1_S1",
+      "instrument": "ETHUSDT",
+      "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "freqtrade"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B3",
+          "scenario": "F1_S1",
+          "instrument": "ETHUSDT",
+          "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "freqtrade",
+          "fills": 1508,
+          "buys": 754,
+          "sells": 754,
+          "first_fill_epoch": 1609466100,
+          "last_fill_epoch": 1614053400,
+          "first_price": 746.62,
+          "last_price": 1681.62,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/freqtrade/B3/F1_S1/run1",
+          "semantic_notes": [
+            "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+            "fees converted from freqtrade per-side ratios to absolute quote amounts",
+            "prices float64 at engine boundary (declared converter loss)"
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B4",
+      "scenario": "F0_S0",
+      "instrument": "BTCUSDT",
+      "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "nautilus"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B4",
+          "scenario": "F0_S0",
+          "instrument": "BTCUSDT",
+          "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "nautilus",
+          "fills": 584,
+          "buys": 292,
+          "sells": 292,
+          "first_fill_epoch": 1704070500,
+          "last_fill_epoch": 1705270200,
+          "first_price": 42475.23,
+          "last_price": 42552.0,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/nautilus/B4/F0_S0/run1",
+          "semantic_notes": [
+            "signal computed at bar close (pandas, identical math to Freqtrade lane strategies); order submitted in on_bar() fills at the venue's next processed bar open (matches Freqtrade's open_date==fill-time semantics)",
+            "fixed notional sizing per trade (documented sizing deviation from Freqtrade's compounding 'unlimited' stake mode; bake-off goal is infrastructure comparison, not profit discovery per blueprint)",
+            "prices float64 at engine boundary (declared converter loss, same as Freqtrade lane)",
+            "profit_total_abs is mark-to-market (ending account value at last close price minus starting balance), not sum of realized_pnl alone, so buy-and-hold (B1) unrealized gains are captured",
+            "equity.parquet is a coarse two-point series (start, end), not a full intra-run curve - documented scope simplification",
+            "evidence window 2024-01-01..2024-01-14 (bounded subset of the frozen dataset), not full 2021-2026 history - Nautilus's event-driven matching engine has materially higher per-bar/per-order overhead than Freqtrade's vectorized backtest; full-history x 2-pair x 4-strategy x 2-scenario x determinism-rerun replay was infeasible within task budget. Documented scope deviation, not a silent gap."
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B4",
+      "scenario": "F0_S0",
+      "instrument": "BTCUSDT",
+      "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "freqtrade"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B4",
+          "scenario": "F0_S0",
+          "instrument": "BTCUSDT",
+          "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "freqtrade",
+          "fills": 69506,
+          "buys": 34753,
+          "sells": 34753,
+          "first_fill_epoch": 1609461600,
+          "last_fill_epoch": 1782858300,
+          "first_price": 28897.97,
+          "last_price": 58702.0,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/freqtrade/B4/F0_S0/run1",
+          "semantic_notes": [
+            "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+            "fees converted from freqtrade per-side ratios to absolute quote amounts",
+            "prices float64 at engine boundary (declared converter loss)"
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B4",
+      "scenario": "F0_S0",
+      "instrument": "ETHUSDT",
+      "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "nautilus"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B4",
+          "scenario": "F0_S0",
+          "instrument": "ETHUSDT",
+          "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "nautilus",
+          "fills": 588,
+          "buys": 294,
+          "sells": 294,
+          "first_fill_epoch": 1704070500,
+          "last_fill_epoch": 1705270500,
+          "first_price": 2295.51,
+          "last_price": 2526.45,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/nautilus/B4/F0_S0/run1",
+          "semantic_notes": [
+            "signal computed at bar close (pandas, identical math to Freqtrade lane strategies); order submitted in on_bar() fills at the venue's next processed bar open (matches Freqtrade's open_date==fill-time semantics)",
+            "fixed notional sizing per trade (documented sizing deviation from Freqtrade's compounding 'unlimited' stake mode; bake-off goal is infrastructure comparison, not profit discovery per blueprint)",
+            "prices float64 at engine boundary (declared converter loss, same as Freqtrade lane)",
+            "profit_total_abs is mark-to-market (ending account value at last close price minus starting balance), not sum of realized_pnl alone, so buy-and-hold (B1) unrealized gains are captured",
+            "equity.parquet is a coarse two-point series (start, end), not a full intra-run curve - documented scope simplification",
+            "evidence window 2024-01-01..2024-01-14 (bounded subset of the frozen dataset), not full 2021-2026 history - Nautilus's event-driven matching engine has materially higher per-bar/per-order overhead than Freqtrade's vectorized backtest; full-history x 2-pair x 4-strategy x 2-scenario x determinism-rerun replay was infeasible within task budget. Documented scope deviation, not a silent gap."
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B4",
+      "scenario": "F0_S0",
+      "instrument": "ETHUSDT",
+      "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "freqtrade"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B4",
+          "scenario": "F0_S0",
+          "instrument": "ETHUSDT",
+          "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "freqtrade",
+          "fills": 34500,
+          "buys": 17250,
+          "sells": 17250,
+          "first_fill_epoch": 1609484700,
+          "last_fill_epoch": 1782862800,
+          "first_price": 740.48,
+          "last_price": 1570.0,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/freqtrade/B4/F0_S0/run1",
+          "semantic_notes": [
+            "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+            "fees converted from freqtrade per-side ratios to absolute quote amounts",
+            "prices float64 at engine boundary (declared converter loss)"
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B4",
+      "scenario": "F1_S1",
+      "instrument": "BTCUSDT",
+      "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "nautilus"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B4",
+          "scenario": "F1_S1",
+          "instrument": "BTCUSDT",
+          "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "nautilus",
+          "fills": 584,
+          "buys": 292,
+          "sells": 292,
+          "first_fill_epoch": 1704070500,
+          "last_fill_epoch": 1705270200,
+          "first_price": 42475.23,
+          "last_price": 42552.0,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/nautilus/B4/F1_S1/run1",
+          "semantic_notes": [
+            "signal computed at bar close (pandas, identical math to Freqtrade lane strategies); order submitted in on_bar() fills at the venue's next processed bar open (matches Freqtrade's open_date==fill-time semantics)",
+            "fixed notional sizing per trade (documented sizing deviation from Freqtrade's compounding 'unlimited' stake mode; bake-off goal is infrastructure comparison, not profit discovery per blueprint)",
+            "prices float64 at engine boundary (declared converter loss, same as Freqtrade lane)",
+            "profit_total_abs is mark-to-market (ending account value at last close price minus starting balance), not sum of realized_pnl alone, so buy-and-hold (B1) unrealized gains are captured",
+            "equity.parquet is a coarse two-point series (start, end), not a full intra-run curve - documented scope simplification",
+            "evidence window 2024-01-01..2024-01-14 (bounded subset of the frozen dataset), not full 2021-2026 history - Nautilus's event-driven matching engine has materially higher per-bar/per-order overhead than Freqtrade's vectorized backtest; full-history x 2-pair x 4-strategy x 2-scenario x determinism-rerun replay was infeasible within task budget. Documented scope deviation, not a silent gap."
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B4",
+      "scenario": "F1_S1",
+      "instrument": "BTCUSDT",
+      "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "freqtrade"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B4",
+          "scenario": "F1_S1",
+          "instrument": "BTCUSDT",
+          "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "freqtrade",
+          "fills": 3100,
+          "buys": 1550,
+          "sells": 1550,
+          "first_fill_epoch": 1609461600,
+          "last_fill_epoch": 1617009000,
+          "first_price": 28897.97,
+          "last_price": 57080.07,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/freqtrade/B4/F1_S1/run1",
+          "semantic_notes": [
+            "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+            "fees converted from freqtrade per-side ratios to absolute quote amounts",
+            "prices float64 at engine boundary (declared converter loss)"
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B4",
+      "scenario": "F1_S1",
+      "instrument": "ETHUSDT",
+      "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "nautilus"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B4",
+          "scenario": "F1_S1",
+          "instrument": "ETHUSDT",
+          "scope": "BOUNDED_2024-01-01..2024-01-14 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "nautilus",
+          "fills": 588,
+          "buys": 294,
+          "sells": 294,
+          "first_fill_epoch": 1704070500,
+          "last_fill_epoch": 1705270500,
+          "first_price": 2295.51,
+          "last_price": 2526.45,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/nautilus/B4/F1_S1/run1",
+          "semantic_notes": [
+            "signal computed at bar close (pandas, identical math to Freqtrade lane strategies); order submitted in on_bar() fills at the venue's next processed bar open (matches Freqtrade's open_date==fill-time semantics)",
+            "fixed notional sizing per trade (documented sizing deviation from Freqtrade's compounding 'unlimited' stake mode; bake-off goal is infrastructure comparison, not profit discovery per blueprint)",
+            "prices float64 at engine boundary (declared converter loss, same as Freqtrade lane)",
+            "profit_total_abs is mark-to-market (ending account value at last close price minus starting balance), not sum of realized_pnl alone, so buy-and-hold (B1) unrealized gains are captured",
+            "equity.parquet is a coarse two-point series (start, end), not a full intra-run curve - documented scope simplification",
+            "evidence window 2024-01-01..2024-01-14 (bounded subset of the frozen dataset), not full 2021-2026 history - Nautilus's event-driven matching engine has materially higher per-bar/per-order overhead than Freqtrade's vectorized backtest; full-history x 2-pair x 4-strategy x 2-scenario x determinism-rerun replay was infeasible within task budget. Documented scope deviation, not a silent gap."
+          ]
+        }
+      ]
+    },
+    {
+      "baseline": "B4",
+      "scenario": "F1_S1",
+      "instrument": "ETHUSDT",
+      "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+      "engines": [
+        "freqtrade"
+      ],
+      "classification": "SINGLE_ENGINE_ONLY",
+      "rows": [
+        {
+          "baseline": "B4",
+          "scenario": "F1_S1",
+          "instrument": "ETHUSDT",
+          "scope": "FULL_CANONICAL_2021-01-01..2026-07-01 / PORTFOLIO_BTCUSDT+ETHUSDT",
+          "engine": "freqtrade",
+          "fills": 1672,
+          "buys": 836,
+          "sells": 836,
+          "first_fill_epoch": 1609484700,
+          "last_fill_epoch": 1617010500,
+          "first_price": 740.48,
+          "last_price": 1744.78,
+          "fee_audit": "PASS",
+          "artifact": "artifacts/bakeoff/freqtrade/B4/F1_S1/run1",
+          "semantic_notes": [
+            "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+            "fees converted from freqtrade per-side ratios to absolute quote amounts",
+            "prices float64 at engine boundary (declared converter loss)"
+          ]
+        }
+      ]
+    }
+  ],
+  "coverage_by_engine": {
+    "freqtrade": 15,
+    "hummingbot": 3,
+    "nautilus": 16
+  },
+  "blockers": [
+    "LEAN execution requires a running Docker daemon.",
+    "Nautilus evidence uses a bounded 2024-01-01..2024-01-14 window and is not full-period parity evidence.",
+    "Hummingbot B3/B4 normalized artifacts are absent from the current worktree."
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "schema": "tios-multiple-testing-method-evidence-v1",
+  "status": "METHOD_EVIDENCE_RETAINED",
+  "g10_gate_status": "NOT_RUN",
+  "production_gate_activated": false,
+  "methods": [
+    {
+      "name": "Probability of Backtest Overfitting / CSCV",
+      "status": "ESTIMATOR_NOT_VALIDATED",
+      "source_id": "SRC-PBO-2016",
+      "primary_reference": "Bailey et al., The Probability of Backtest Overfitting"
+    },
+    {
+      "name": "Deflated Sharpe Ratio",
+      "status": "ESTIMATOR_NOT_VALIDATED",
+      "source_id": "SRC-DSR-2014",
+      "primary_reference": "Bailey and Lopez de Prado, The Deflated Sharpe Ratio"
+    }
+  ],
+  "retained_method_evidence": {
+    "status": "PASS",
+    "gate": "G10_RETENTION",
+    "trial_count": 66,
+    "expected_trial_count": 66,
+    "experiments": 3,
+    "all_trials_registered": true,
+    "all_sweep_tables_retained": true,
+    "winner_selected": false,
+    "selection_procedure": "No winner selected; vectorbt B2/B3/B4 accelerator sweeps are retained as candidate-population evidence only, and in-sample return is never a promotion criterion.",
+    "source_artifacts": [
+      "artifacts/bakeoff/vectorbt/trial_ledger_summary.json",
+      "artifacts/bakeoff/vectorbt/trial_ledger.jsonl",
+      "artifacts/bakeoff/vectorbt/b2_sweep_all_trials.parquet",
+      "artifacts/bakeoff/vectorbt/b3_sweep_all_trials.parquet",
+      "artifacts/bakeoff/vectorbt/b4_sweep_all_trials.parquet",
+      "artifacts/bakeoff/vectorbt/b2_sweep_meta.json",
+      "artifacts/bakeoff/vectorbt/b3_sweep_meta.json",
+      "artifacts/bakeoff/vectorbt/b4_sweep_meta.json"
+    ]
+  },
+  "reason": "Concrete local multiple-testing evidence is retained, but production PBO/DSR estimator outputs are still blocked until estimator choices, small-sample behavior, and known-answer fixtures are reviewed against the primary literature.",
+  "effect": "G10 remains NOT_RUN for production validation; this package cannot claim full production validation or strategy approval.",
+  "next_required_evidence": [
+    "primary-literature implementation review",
+    "synthetic known-answer fixtures for PBO/CSCV and DSR",
+    "independent recomputation of estimator outputs",
+    "documented integration into validation gates"
+  ]
+}

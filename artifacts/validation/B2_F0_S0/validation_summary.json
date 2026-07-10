@@ -1,0 +1,92 @@
+{
+  "schema": "tios-validation-package-v1",
+  "status": "INCOMPLETE_NOT_APPROVABLE",
+  "strategy": "B2MaCrossover",
+  "dataset": "DS-CRYPTO-SPOT-BAKEOFF-V1",
+  "engine": "freqtrade",
+  "scenario": "F0/S0",
+  "capabilities": {
+    "live_orders": "DISABLED"
+  },
+  "gates": {
+    "G1": {
+      "status": "PASS",
+      "reason": "B2 F0/S0 normalized metrics are byte-identical across run1/run2"
+    },
+    "G2": {
+      "status": "PASS",
+      "reason": "dataset quality report"
+    },
+    "G3": {
+      "status": "PASS",
+      "reason": "16-bar signal parity fixture"
+    },
+    "G4": {
+      "status": "WARN",
+      "reason": "follow-up requested fixed stake, but tool forced stake_amount=10000 and max_open_trades=-1; 2 entries still flagged"
+    },
+    "G5": {
+      "status": "PASS",
+      "reason": "complete six-cell grid calculated from canonical trades with explicit post-hoc slippage model"
+    },
+    "G6": {
+      "status": "PASS",
+      "reason": "development, validation, and untouched holdout windows executed with fixed parameters"
+    },
+    "G7": {
+      "status": "PASS",
+      "reason": "all 18 planned walk-forward test windows executed; zero positive windows"
+    },
+    "G8": {
+      "status": "PASS",
+      "reason": "five neighboring parameter variants executed on untouched holdout; all remain negative"
+    },
+    "G9": {
+      "status": "PASS",
+      "reason": "holdout trades segmented by ex-post volatility, trend, and volume labels"
+    },
+    "G10": {
+      "status": "NOT_RUN",
+      "reason": "method candidate only; PBO/DSR not validated"
+    },
+    "G11": {
+      "status": "PASS",
+      "reason": "B2 compared with cash and B1 buy-and-hold; candidate underperforms both"
+    }
+  },
+  "metrics": {
+    "engine": "freqtrade",
+    "strategy": "B2MaCrossover",
+    "trades_roundtrips": 83996,
+    "fills": 167992,
+    "left_open_trades": 0,
+    "profit_total_abs": "-854.2458047",
+    "cagr": "-0.29560317133651326",
+    "max_drawdown_abs": "996.9322276999944",
+    "wins": 33254,
+    "losses": 50656,
+    "fee_audit": {
+      "max_pnl_deviation_quote": "0",
+      "status": "PASS"
+    },
+    "semantic_notes": [
+      "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+      "fees converted from freqtrade per-side ratios to absolute quote amounts",
+      "prices float64 at engine boundary (declared converter loss)"
+    ]
+  },
+  "provenance": {
+    "run_artifact": "artifacts/bakeoff/freqtrade/B2/F0_S0/run1",
+    "rerun_artifact": "artifacts/bakeoff/freqtrade/B2/F0_S0/run2",
+    "dataset_quality": "artifacts/datasets/QUALITY_REPORT.json",
+    "signal_parity": "artifacts/bakeoff/freqtrade/signal_parity/results.json"
+  },
+  "risk_preconditions": {
+    "status": "PASS",
+    "no_live_capability": true,
+    "complete_cost_grid": true,
+    "drawdown_and_tail_metrics_reported": true,
+    "promotion_eligible": false,
+    "reasons": []
+  }
+}

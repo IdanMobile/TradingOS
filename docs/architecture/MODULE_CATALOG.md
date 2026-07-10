@@ -1,7 +1,7 @@
 # Module Catalog — Trading Intelligence OS
 
-Status: Planning specification v1. Module boundaries are Approved as *names and responsibilities*; internal technology remains Provisional until `decisions/PROTOTYPE_EVIDENCE_DECISION.md`.
-Date: 2026-07-06
+Status: S2 architecture-lock specification v1. Boundaries and selected S2 technologies are approved by retained S1 evidence and D-036.
+Date: 2026-07-10
 Companion: `docs/architecture/AD.md` §E (module map), `TYPE_AND_CONTRACT_CATALOG.md` (types).
 
 ## Dependency law
@@ -17,11 +17,14 @@ services (jobs, ingestion, reporting, dashboard_api)
 ```
 Arrows point inward (ports & adapters). A dependency in the forbidden direction is an architecture-test failure (see TEST_MASTER_PLAN).
 
+S2 infrastructure allocation: SQLite owns operational rows and read models; Parquet + DuckDB own analytical payloads; MLflow + DVC sit only behind lineage ports. No module may introduce a broker, PostgreSQL dependency before the measured `AD.md` §P trigger, or a second source of truth for retained artifacts.
+
 ## Modules
 
 ### 1. `core_types`
-- Responsibility: value objects, IDs, enums, decimal/money/timestamp discipline (§1 of type catalog).
+- Responsibility: value objects, IDs, enums, decimal/money/timestamp discipline, and inert Market/Signal/Order/Fill/Position/Account/Portfolio/Risk/Approval/ChartAnnotation records (§0–2 of type catalog).
 - Public API: constructors + validation only. No I/O, no config.
+- S2 boundary: trading-domain records normalize historical evidence/read models only; they expose no venue client, mutation method, account state, or execution authority.
 - Forbidden deps: everything else.
 - Tests: property-based validation tests; serialization round-trips.
 - MVP: required first. Replacement strategy: none (foundational).
@@ -43,10 +46,11 @@ Arrows point inward (ports & adapters). A dependency in the forbidden direction 
 
 ### 4. `engine_adapters`
 - Responsibility: one adapter per engine implementing EngineAdapter port; result normalization; capability reports.
-- Sub-modules: `freqtrade_adapter`, `nautilus_adapter`, `lean_adapter`, `hummingbot_adapter`, `vectorbt_probe` (each independently removable).
+- S2 roles: `vectorbt_probe` is the selected bounded research accelerator; `freqtrade_adapter` is the selected Crypto Spot event/reproduction lane; `nautilus_adapter` is limited to its evidenced bounded event-simulation capability; `hummingbot_adapter` and `lean_adapter` remain deferred capability candidates until their recorded gaps close. Each is independently removable.
+- Invocation: isolated subprocess/CLI environments only for S2 Research Lab work; adapters receive allowlisted plans and return normalized results. Freqtrade trade/dry-run, testnet/sandbox, venue, paper, and live modes are rejected.
 - Forbidden deps: adapters may not import each other; parity logic lives in `parity`, not in adapters.
 - Tests: per-adapter integration tests against frozen mini-fixture dataset; normalization golden tests.
-- MVP: ≥2 adapters must reach working state (vertical-slice exit criterion); all 4 attempted.
+- S2: vectorbt acceleration plus Freqtrade reproduction are required; other lanes run only where retained capability evidence supports the task.
 - Replacement strategy: delete the directory; port stays.
 
 ### 5. `parity`
@@ -56,17 +60,18 @@ Arrows point inward (ports & adapters). A dependency in the forbidden direction 
 - MVP: required.
 
 ### 6. `experiment` (Experiment Ledger)
-- Responsibility: EXP/RUN records, all-trial retention, environment manifests, artifact registration.
-- Public API: declare experiment, record run, list/compare, lineage queries.
+- Responsibility: EXP/RUN, ResearchLabBatch, and Scorecard records; all-trial retention; environment manifests; artifact registration; independent score dimensions and blockers.
+- Public API: declare experiment, record run/batch/scorecard, list/compare, lineage queries.
 - Depends on: `lineage_adapter` port for external tracker refs.
 - Tests: retention invariants (winner must reference population), append-only enforcement.
 - MVP: required (WS5 consumer).
 
 ### 7. `lineage_adapter`
-- Responsibility: wrap MLflow/DVC (or the prototype-selected alternative) behind LineageAdapter port.
+- Responsibility: wrap the S1-selected MLflow run/artifact service and DVC dataset snapshot/restore service behind LineageAdapter ports.
 - Constraint: domain stores only public refs (replaceability gate from prototype spec).
-- Tests: fresh-checkout restore test; ref-stability test.
-- MVP: required in prototype form (WS5).
+- Operations: retain completed and failed lineage indefinitely by default; operator/loopback-only access; backup, restore, upgrade, and migration follow `AD.md` §P.
+- Tests: fresh-checkout restore/hash-replay test; ref-stability test; backup-set restore after tool upgrade.
+- S2: approved from the seven-gate S1 prototype; filesystem manifests remain the failure fallback.
 
 ### 8. `validation`
 - Responsibility: gates G1–G12 as composable checks; fee/slippage grid runner; OOS/walk-forward/robustness/regime report builders; hard-fail logic.
@@ -76,24 +81,24 @@ Arrows point inward (ports & adapters). A dependency in the forbidden direction 
 - MVP: required subset G1–G9+G11 (WS6).
 
 ### 9. `ingestion`
-- Responsibility: source records, license records, ambiguity records, canonical-spec extraction workflow state machine (`DISCOVERED→…→VALIDATION_ELIGIBLE/REJECTED`).
-- MVP: manual-assist tooling for the 10-item seed batch only (WS7). Mass automation forbidden until S2 decision.
+- Responsibility: acquire untrusted research inputs, validate `ResearchSource`/license/ambiguity records, and translate source claims into proposed Hypothesis/canonical-spec inputs.
+- S2: bounded primary-source registration and refresh are allowed; source text is data, publication is not proof, and only the deterministic provenance flow may write domain records. Mass unsourced discovery remains forbidden.
 - Tests: lifecycle transition guards; license-class gating.
 
 ### 10. `evidence` (Trading Evidence Registry)
-- Responsibility: EV records; validation_state/approval_state projections; contradiction links; the queryable spine connecting everything.
+- Responsibility: EV records; validation_state/approval_state projections; contradiction links; the queryable spine `ResearchSource → Hypothesis → STRAT/SV → LAB/EXP/RUN → Scorecard → VAL/EV`.
 - Custom-build justification: North Star §15.1; no existing tool owns these semantics (re-checked in `research/EXISTING_CAPABILITY_REGISTRY.md`).
 - Tests: referential integrity across DS/SV/EXP/VAL; replaceability test (no tracker-internal keys).
 - MVP: thin version required (Test C of lineage prototype).
 
 ### 11. `approval`
 - Responsibility: approval identity + state machine (§2 Approval in type catalog); transition gate enforcement; human-decision records.
-- MVP: state model + records only; no live states reachable (compile-time/config guard).
-- Tests: forbidden-transition tests; live-state-unreachable test (security-relevant).
+- S2: inert state records/read projections only. `NOT_ELIGIBLE`, `RESEARCH`, and `VALIDATION` are reachable; demo/paper/live decisions and all LIVE-family states are unreachable.
+- Tests: forbidden-transition tests; demo/paper/live-unreachable tests (security-relevant).
 
 ### 12. `knowledge` (Dictionary + Research Assets + Sources)
-- Responsibility: CON/RA/SRC entities, freshness states, contradiction/supersession chains.
-- MVP: minimal — entities + seed of concepts actually referenced by MVP artifacts.
+- Responsibility: CON/RA/ResearchSource/Hypothesis entities, bibliographic/provenance identity, freshness/reproduction states, and contradiction/supersession chains.
+- S2: primary-source registry and hypothesis families needed by the autonomous evidence flow; no claim is labeled proven without retained local reproduction evidence.
 - Tests: freshness transitions; supersession chain integrity.
 
 ### 13. `ai_eval`
@@ -107,13 +112,16 @@ Arrows point inward (ports & adapters). A dependency in the forbidden direction 
 - MVP: minimal write path + list view.
 
 ### 15. `jobs`
-- Responsibility: local job runner per Job contract (§5 type catalog) — queue table, retries, timeouts, artifact registration. No distributed broker in MVP.
-- Tests: idempotency (rerun with same inputs), failure-preserves-artifacts.
+- Responsibility: first expose one bounded deterministic ResearchLabBatch CLI command; after its idempotency proof, optionally run the allowlisted Job contract (§5 type catalog) from a local SQLite table with bounded retries/timeouts/concurrency and artifact registration.
+- Allowlist: research batches, research-source refresh, data freshness, validation, and reports only. Engine/parity steps occur inside a bounded batch; arbitrary shell/venue/order commands are invalid.
+- Forbidden: scheduling before identical-input reuse passes; distributed workers; broker; demo/testnet/sandbox, paper, live, venue, credential, order, and approval-transition commands.
+- Tests: identical complete input returns the same batch/artifact refs without recomputation; partial/failure preservation; command allowlist; prohibited execution boundaries.
 
 ### 16. `dashboard_api` + `dashboard_ui`
-- Responsibility: read-only `/api/v1/` + the 6 MVP views (`MVP_SCOPE.md` §7).
-- Forbidden: any write endpoint; any live-trading affordance.
-- Tests: API contract tests; empty-state rendering.
+- Responsibility: read-only `/api/v1/` and bounded S2 views for Research Lab batches, source-linked candidates, independent score comparisons, historical market/chart annotations, automation status, and inert trading-domain projections.
+- Read model: manifests + operational projections only; UI is never a source of truth. Local batch triggering remains CLI-only throughout S2; persisted scheduling is the only trigger added after the jobs idempotency gate passes.
+- Forbidden: POST/PUT/PATCH/DELETE, trigger/order/approval endpoints, synthetic wallet or account mutation, venue credentials/clients, and demo/paper/live controls or affordances.
+- Tests: JSON serialization/schema contracts; prohibited HTTP methods; disabled execution flags; empty-state rendering.
 
 ### 17. `reporting`
 - Responsibility: build the mandated `artifacts/reports/*.md` from machine-readable inputs (reports are projections, never hand-maintained truth).
@@ -130,6 +138,7 @@ Single operator owns everything; "ownership" columns therefore denote *replaceme
 
 | Module | MVP | Stage |
 |---|---|---|
-| core_types, dataset, strategy, engine_adapters(≥2), parity, experiment, lineage_adapter, validation(G1–G9,G11), ingestion(manual), evidence(thin), jobs, dashboard_api/ui(read-only), reporting, security_ops | Required | S1 |
-| approval (model only), knowledge (minimal), ai_eval (harness+fixtures), memory (minimal) | Required-thin | S1 |
-| approval (full), knowledge (full), ai_eval (routing), paper lane, risk center, observability stack | Deferred | S2/S3 |
+| core_types (including inert trading contracts), dataset, strategy, engine_adapters (vectorbt accelerator + Freqtrade reproduction), parity, experiment (LAB/SCORE), lineage_adapter (MLflow+DVC), validation, ingestion (bounded sources), evidence, jobs (command first), dashboard_api/ui (read-only), reporting, security_ops | Active bounded scope | S2 |
+| approval (inert model only), knowledge (ResearchSource/Hypothesis), ai_eval (mock/null only), memory (evidence-linked) | Active bounded scope | S2 |
+| persisted scheduling | Conditional: only after first batch command proves idempotent | S2 |
+| real-provider AI, demo/testnet/sandbox or paper lane, synthetic wallet/account mutation, venue/order routing, live-family approval, live trading, risk execution center, broker/distributed orchestration | Prohibited or deferred | Post-S2 gates / S3–S4 |

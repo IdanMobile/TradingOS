@@ -7,6 +7,7 @@ dataframe model); loss recorded in every artifact manifest.
 
 Run: uv run python -m tios.adapters.freqtrade.lane
      [--scenarios F0/S0,F1/S1] [--baselines B1,B2,B3,B4]
+     [--pairs BTCUSDT,ETHUSDT]
 """
 
 from __future__ import annotations
@@ -60,7 +61,8 @@ class B1BuyAndHold(IStrategy):
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        dataframe.loc[:, "enter_long"] = 1
+        dataframe.loc[:, "enter_long"] = 0
+        dataframe.loc[dataframe.index[0], "enter_long"] = 1
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -183,7 +185,7 @@ def convert_data() -> list[str]:
     return notes
 
 
-def write_config(scenario: FeeSlippageScenario) -> Path:
+def write_config(scenario: FeeSlippageScenario, symbols: list[str]) -> Path:
     config = {
         "trading_mode": "spot",
         "dry_run": True,
@@ -196,7 +198,7 @@ def write_config(scenario: FeeSlippageScenario) -> Path:
             "name": "binance",
             "key": "",
             "secret": "",
-            "pair_whitelist": list(PAIRS.values()),
+            "pair_whitelist": [PAIRS[symbol] for symbol in symbols],
             "pair_blacklist": [],
         },
         "entry_pricing": {
@@ -208,13 +210,16 @@ def write_config(scenario: FeeSlippageScenario) -> Path:
         "exit_pricing": {"price_side": "same", "use_order_book": False, "order_book_top": 1},
         "user_data_dir": str(USER_DATA),
     }
-    path = LANE / f"config_{scenario.scenario_id.replace('/', '_')}.json"
+    suffix = f"_{symbols[0]}" if len(symbols) == 1 else ""
+    path = LANE / f"config_{scenario.scenario_id.replace('/', '_')}{suffix}.json"
     path.write_text(json.dumps(config, indent=2))
     return path
 
 
-def run_backtest(baseline: str, scenario: FeeSlippageScenario, run_tag: str) -> dict[str, Any]:
-    config = write_config(scenario)
+def run_backtest(
+    baseline: str, scenario: FeeSlippageScenario, run_tag: str, symbols: list[str]
+) -> dict[str, Any]:
+    config = write_config(scenario, symbols)
     cmd = [
         str(FT_BIN),
         "backtesting",
@@ -230,17 +235,26 @@ def run_backtest(baseline: str, scenario: FeeSlippageScenario, run_tag: str) -> 
         "trades",
         "--timeframe",
         TIMEFRAME,
+        "--cache",
+        "none",
     ]
+    results_dir = USER_DATA / "backtest_results"
+    results_dir.mkdir(parents=True, exist_ok=True)
+    before = {path.resolve() for path in results_dir.glob("backtest-result-*")}
     started = datetime.now(tz=UTC).isoformat()
     proc = subprocess.run(cmd, capture_output=True, text=True, cwd=LANE, timeout=3600)
-    out_dir = ARTIFACTS / baseline / scenario.scenario_id.replace("/", "_") / run_tag
+    context = [baseline]
+    if len(symbols) == 1:
+        context.append(symbols[0])
+    out_dir = ARTIFACTS.joinpath(*context, scenario.scenario_id.replace("/", "_"), run_tag)
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "stdout.log").write_text(proc.stdout)
     (out_dir / "stderr.log").write_text(proc.stderr)
 
-    results_dir = USER_DATA / "backtest_results"
     exported = sorted(
-        p for p in results_dir.glob("backtest-result-*") if p.suffix in (".zip", ".json")
+        p
+        for p in results_dir.glob("backtest-result-*")
+        if p.suffix in (".zip", ".json") and p.resolve() not in before
     )
     result_file = exported[-1] if exported else None
     files = []
@@ -249,7 +263,9 @@ def run_backtest(baseline: str, scenario: FeeSlippageScenario, run_tag: str) -> 
         shutil.copy2(result_file, dest)
         files.append(dest)
     manifest = {
-        "artifact_id": f"freqtrade-{baseline}-{scenario.scenario_id}-{run_tag}",
+        "artifact_id": (
+            f"freqtrade-{baseline}-{'-'.join(symbols)}-{scenario.scenario_id}-{run_tag}"
+        ),
         "produced_by": "T-006-02",
         # success requires BOTH a zero exit code AND an exported result artifact
         "status": "OK" if proc.returncode == 0 and result_file else "FAILED",
@@ -265,6 +281,7 @@ def run_backtest(baseline: str, scenario: FeeSlippageScenario, run_tag: str) -> 
         ),
         "converter_losses": ["decimal128->float64 (freqtrade dataframe model)"],
         "input_refs": ["DS-CRYPTO-SPOT-BAKEOFF-V1"],
+        "instruments": symbols,
         "files": [
             {"path": f.name, "sha256": hashlib.sha256(f.read_bytes()).hexdigest()} for f in files
         ],
@@ -279,9 +296,14 @@ def main() -> None:
     parser.add_argument("--scenarios", default="F0/S0,F1/S1")
     parser.add_argument("--baselines", default=",".join(BASELINES))
     parser.add_argument("--run-tag", default="run1")
+    parser.add_argument("--pairs", default=",".join(PAIRS))
     args = parser.parse_args()
     wanted = args.scenarios.split(",")
     scenarios = [s for s in MANDATORY_GRID if s.scenario_id in wanted]
+    symbols = args.pairs.split(",")
+    unknown = sorted(set(symbols) - PAIRS.keys())
+    if unknown:
+        parser.error(f"unsupported pairs: {','.join(unknown)}")
 
     LANE.mkdir(parents=True, exist_ok=True)
     strat_dir = USER_DATA / "strategies"
@@ -295,7 +317,7 @@ def main() -> None:
 
     for baseline in args.baselines.split(","):
         for scenario in scenarios:
-            m = run_backtest(baseline, scenario, args.run_tag)
+            m = run_backtest(baseline, scenario, args.run_tag, symbols)
             print(f"{baseline} {scenario.scenario_id}: {m['status']} (rc={m['returncode']})")
 
 

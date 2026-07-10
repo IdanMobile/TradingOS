@@ -1,0 +1,28 @@
+# Seed item 3/10 (T-010-04) -- freqtrade official SampleStrategy
+strategy_id: STRAT-FT1-sample-strategy
+family: mean_reversion
+inputs: [close]
+indicators:
+  - name: bollinger_bands
+    parameters: {window: 20, std: 2, source: close}
+    outputs: [bb_lower, bb_mid, bb_upper]
+  - name: rsi
+    parameters: {window: 14, source: close}
+    outputs: [rsi]
+entry_long:
+  all:
+    - close < bb_lower
+    - rsi < 30
+exit_long:
+  any:
+    - close > bb_mid
+position_sizing: {type: fixed_fraction, fraction: 1.0}
+risk: {stop_loss: null, take_profit: null}
+assumptions:
+  - "signal evaluated at bar close; execution at next bar open"
+  - "warm-up: no signal until the 20-bar Bollinger window is full (bars 1-19 produce no signal); this project's 16-bar micro fixture never reaches warm-up, so this item is not spot-check reproducible against it (see reproduction_status.md)"
+ambiguities:
+  - "freqtrade's `new-strategy` template generator has changed its exact default indicator set and thresholds across freqtrade versions; the (BB(20,2) + RSI(14)<30) combination reproduced here is the long-standing 'SampleStrategy' shape, not pinned to one exact commit/version"
+  - "RSI guard threshold (30) and BB exit rule (mid-band vs upper-band) vary slightly between freqtrade doc revisions; mid-band exit chosen as the more common convention"
+source_refs: [SRC-FT1]
+license_ref: LIC-FT1

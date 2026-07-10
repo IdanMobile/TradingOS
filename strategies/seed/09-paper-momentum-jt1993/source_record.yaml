@@ -1,0 +1,19 @@
+source_id: SRC-PAPER1
+source_class: primary_academic_paper
+url: "https://doi.org/10.1111/j.1540-6261.1993.tb04702.x"
+title: "Returns to Buying Winners and Selling Losers: Implications for Stock Market Efficiency"
+author: "Narasimhan Jegadeesh, Sheridan Titman"
+published_at: "1993 (The Journal of Finance, Vol. 48, No. 1)"
+retrieved_at: "2026-07-07"
+license: unclear
+version_or_commit: "not applicable (published journal article, no code)"
+market_claimed: "US equities (NYSE/AMEX), cross-sectional decile portfolios"
+timeframe_claimed: "3-12 month formation periods, monthly rebalance"
+profit_claims_inherited: false
+notes: >
+  Method description (relative-strength ranking into decile portfolios)
+  recalled from public/academic knowledge of this widely-cited paper; no
+  code exists to reuse. Only the described METHOD is extracted into the
+  canonical spec below (a major simplification -- see ambiguities.md); no
+  full-text reproduction of the paper itself, and no performance numbers
+  from the paper are imported (D-011).

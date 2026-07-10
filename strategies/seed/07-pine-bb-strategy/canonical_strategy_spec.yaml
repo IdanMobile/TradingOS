@@ -1,0 +1,24 @@
+# Seed item 7/10 (T-010-08) -- open-source Pine Bollinger Bands mean-reversion strategy
+strategy_id: STRAT-PINE1-bb-strategy
+family: mean_reversion
+inputs: [close]
+indicators:
+  - name: bollinger_bands
+    parameters: {window: 20, std: 2, source: close}
+    outputs: [bb_lower, bb_mid, bb_upper]
+entry_long:
+  all:
+    - close < bb_lower
+exit_long:
+  any:
+    - close > bb_upper
+position_sizing: {type: fixed_fraction, fraction: 1.0}
+risk: {stop_loss: null, take_profit: null}
+assumptions:
+  - "signal evaluated at bar close; execution at next bar open"
+  - "warm-up: no signal until the 20-bar Bollinger window is full (bars 1-19 produce no signal); this project's 16-bar micro fixture never reaches warm-up (same limitation as SRC-FT1)"
+ambiguities:
+  - "Pine's ta.sma/ta.stdev-based Bollinger Bands strategy pattern exists in multiple published variants with different exit conventions (upper-band touch vs. mid-band reversion); upper-band exit chosen here as the more literal 'band strategy' reading"
+  - "exact publishing author/script permalink not independently fetched in this pass; grounded in the well-known public Bollinger-Bands-strategy pattern documented across TradingView's own Pine Script user manual and widely-republished open-source scripts carrying the standard MPL-2.0 open-source header"
+source_refs: [SRC-PINE1]
+license_ref: LIC-PINE1

@@ -117,3 +117,77 @@ Key outcomes:
 - Freqtrade lane: B1–B4 × {F0/S0, F1/S1} all OK on frozen dataset; normalization to canonical decimal parquet; fee/PnL audit PASS everywhere; determinism byte-identical; lookahead flag root-caused (execution-state artifact, numeric proof); slippage CapabilityGap recorded; stake-model semantic note for parity.
 - vectorbt probe: 1.31M bar-combos/s, all trials retained.
 - Controlled edits: PROJECT_STATE, todos/06 — manifest regenerated.
+
+## v8.4 — 2026-07-07 — Governance re-check (gov-02): decision-ID gate coverage fix
+
+- `make check` re-verified green (63 tests, ruff, mypy-strict).
+- Found and fixed a real gap: D-027/D-028 used `##` headings, so `tests/test_decision_ids.py`'s uniqueness regex (`### D-NNN`) silently skipped them. Normalized both to `###` (D-033); all 32 decision IDs now covered.
+- Confirmed no invented decision-category labels in `DECISION_LOG.md`; confirmed PROJECT_STATE.md matches latest closed work; confirmed no stop-condition triggers worked around.
+- Controlled edits: DECISION_LOG.md (D-033 + heading fix), PROJECT_STATE.md.
+## v8.5 — 2026-07-10 — S1 executable evidence and HG-2 review packet
+
+- Executed and selected the local MLflow+DVC lineage composition; retained restore,
+  compare, strategy trace, mock-only AI trace, and thin domain-link evidence.
+- Closed available engine parity with explained B1/B2 divergences; closed the
+  Freqtrade lane with constraints and vectorbt with 66/66 retained ledgered trials.
+- Kept the real Trading OS dashboard live and added explicit HG-2 readiness while
+  preserving `INCOMPLETE_NOT_APPROVABLE` strategy validation and no-order boundaries.
+- Added the S1 stage-exit review, D-035, and regenerated all changed controlled-input
+  SHA-256 entries in `PACKAGE_INTEGRITY_MANIFEST.md`.
+- Closed the S1 contextual approval, independent risk-precondition, and ingested-code
+  containment tasks; Security Review #2 passes and the local gate now has 123 tests.
+
+## v8.6 — 2026-07-10 — S2-0 governance reconciliation
+
+- Recorded the operator's explicit HG-2 approval as D-036 and opened constrained S2
+  architecture, autonomous research/test-lab, sourced-research, offline backtesting,
+  retained-trial scoring, validation, and research-console work.
+- Made `docs/program/S2_AUTONOMOUS_RESEARCH_LAB_PLAN.md` the active S2 execution plan
+  under the existing SSOT hierarchy.
+- Preserved B2 as `INCOMPLETE_NOT_APPROVABLE` and rejected for paper; no strategy,
+  synthetic wallet, paper/demo/testnet venue connection, credentials, order routing,
+  live trading, real money, or AI approval/trading authority was granted.
+- Reconciled the prototype decision, S1 stage exit/readiness reports, project state,
+  operational handoff, program/architecture task states, and execution plan. The
+  integrity manifest was intentionally not edited in this reconciliation.
+
+## v8.7 — 2026-07-10 — S2 architecture-lock governance reconciliation
+
+- Added unique D-037 for the evidence-backed S2 architecture lock: modular monolith;
+  SQLite operational state with measured PostgreSQL triggers; Parquet/DuckDB analytics;
+  MLflow+DVC behind ports; and bounded scheduling only after real idempotent reuse.
+- Closed T-002-01..04 against their revised, evidence-backed acceptance criteria and
+  recorded engine roles. Hummingbot/LEAN deferred adapters and normalized artifacts are
+  retained as evidence-only/deferred assets rather than deleting historical evidence.
+- Activated only bounded S2 initiatives 13, 14, 17, and 19; full ontology initiative 12
+  remains deferred. Folded former product wave 7 into the S2 console/product slice.
+- Removed stale HG-2/S1-current and resolved-open-item wording while preserving B2/G4/G10
+  strategy-validation gaps, engine gaps, and all paper/demo/live human gates.
+- Kept the execution boundary read-only and inert. No real `LAB-*` batch, enabled
+  scheduler, S2 completion, strategy approval, paper/demo connection, or live capability
+  is claimed. The integrity manifest and all source/test files were intentionally left
+  untouched by this reconciliation.
+
+## v8.8 — 2026-07-10 — S2 Research Lab automation dashboard
+
+- Finished the paused jobs/dashboard integration: read-only `build_jobs_projection(root)`,
+  dashboard Automation view, and focused jobs/dashboard tests.
+- Verified the real retained LAB-702 batch and persisted queue state: 2 succeeded
+  `RESEARCH_LAB_V0` jobs, latest reused unchanged artifacts, recurring six-hour schedule
+  next due `2026-07-11T00:00:00+00:00`, no failed/cancelled jobs.
+- Ran full quality gates: Ruff, format check, strict mypy, 282 tests, and
+  `make required` including `pip-audit` with no known vulnerabilities.
+- Browser-tested the live dashboard at 375/768/1024/1440 px across Overview, Research
+  Lab, Automation, and Market Monitor; market evidence loaded from frozen candles plus
+  retained backtest fills. The page remains read-only with no POST, credential, venue,
+  order, paper/demo/live, or real-money control.
+- Tightened the Automation projection after independent review: retained job errors are
+  redacted by default, including unlabeled secret-looking failure text.
+- Refreshed the Research Lab score assessment from retained validation evidence,
+  producing `LAB-799f7d81843d15aaf3b161036a4cd543ac37a709cb1e2ecc72a161f7348488fa`.
+  The new batch remains `UNVALIDATED` / `NOT_ELIGIBLE`, but distinguishes negative
+  completed evidence (economic, drawdown, walk-forward, robustness, baseline
+  superiority) from still-blocked multiple-testing and cross-engine reproduction.
+- Enqueued and executed `s2-production-offline-research-lab-v0-cycle-003`; the local
+  worker reused LAB-799 and retained a third succeeded `RESEARCH_LAB_V0` job without
+  enabling any paper/demo/live or order capability.

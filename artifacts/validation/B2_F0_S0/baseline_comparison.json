@@ -1,0 +1,19 @@
+{
+  "status": "COMPLETE",
+  "candidate": {
+    "id": "B2MaCrossover",
+    "profit_total_abs": -854.2458047
+  },
+  "baselines": {
+    "cash_no_trade": {
+      "profit_total_abs": 0.0
+    },
+    "B1BuyAndHold": {
+      "profit_total_abs": 1013.197556
+    }
+  },
+  "candidate_beats_cash": false,
+  "candidate_beats_buy_and_hold": false,
+  "interpretation": "B2 underperforms both cash and B1 buy-and-hold in this retained F0/S0 run.",
+  "approval_effect": "negative evidence; no promotion claim"
+}

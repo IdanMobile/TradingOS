@@ -1,0 +1,8 @@
+{
+  "backtest_report": "Strategy Y: 40% annualized return over 2020-2023, parameters chosen via grid search over the same 2020-2023 window; no walk-forward validation performed.",
+  "ground_truth_failure_modes": [
+    "in-sample parameter search with no held-out OOS window (overfitting)",
+    "no walk-forward or regime-split validation performed"
+  ],
+  "id": "T5-02"
+}

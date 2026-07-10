@@ -1,0 +1,19 @@
+source_id: SRC-PINE1
+source_class: maintained_open_source
+url: https://www.tradingview.com/pine-script-docs/concepts/strategies/
+title: "Bollinger Bands mean-reversion strategy (Pine Script open-source pattern; documented in TradingView's Pine Script User Manual 'Strategies' concepts page)"
+author: "TradingView community / Pine Script User Manual"
+published_at: "unknown (long-standing documented Pine pattern)"
+retrieved_at: "2026-07-07"
+license: "Mozilla Public License 2.0 (standard header on TradingView's open-source-published Pine scripts)"
+version_or_commit: "not applicable (documentation pattern, not one pinned script revision)"
+market_claimed: "market-agnostic (Pine strategies run on any TradingView-charted symbol)"
+timeframe_claimed: "chart-timeframe-dependent (Pine strategies inherit the chart's resolution; commonly demoed on daily)"
+profit_claims_inherited: false
+notes: >
+  No live fetch performed in this pass. TradingView's Pine Script User Manual
+  and its open-source public script library both use MPL-2.0 as the standard
+  publication license; exact script permalink/author not independently
+  verified here -- reviewer should confirm the specific published script
+  before any code reuse (this item extracts the well-documented rule
+  pattern, not one script's literal source text).

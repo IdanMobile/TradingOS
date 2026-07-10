@@ -1,0 +1,22 @@
+{
+  "B1": {
+    "status": "PASS",
+    "bars_compared": 16,
+    "mismatches": []
+  },
+  "B2": {
+    "status": "PASS",
+    "bars_compared": 16,
+    "mismatches": []
+  },
+  "B3": {
+    "status": "PASS",
+    "bars_compared": 16,
+    "mismatches": []
+  },
+  "B4": {
+    "status": "PASS",
+    "bars_compared": 16,
+    "mismatches": []
+  }
+}

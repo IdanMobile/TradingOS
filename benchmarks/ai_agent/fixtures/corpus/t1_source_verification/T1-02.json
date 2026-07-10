@@ -1,0 +1,9 @@
+{
+  "claim": "The suite requires emitting exactly one global model score per run.",
+  "evidence_span": "Never emit one global model score.",
+  "id": "T1-02",
+  "label": "contradicted",
+  "publication_date": "2026-07-06",
+  "source_ref": "benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md",
+  "source_text": "Never emit one global model score."
+}

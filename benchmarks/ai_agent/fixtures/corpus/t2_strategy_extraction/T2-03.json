@@ -1,0 +1,13 @@
+{
+  "description": "Enter long when close exceeds the highest high of the prior 20 bars. Exit when close falls below the lowest low of the prior 10 bars.",
+  "family": "breakout",
+  "ground_truth": {
+    "ambiguities": [
+      "whether the breakout bar itself is included in the 20-bar window"
+    ],
+    "entry_rule": "close > donchian_high_20",
+    "exit_rule": "close < donchian_low_10",
+    "family": "breakout"
+  },
+  "id": "T2-03"
+}

@@ -1,0 +1,1560 @@
+{
+  "approval_state": "NOT_ELIGIBLE",
+  "faithful_paper_reproduction": false,
+  "lab_id": "LAB-2392e756a389515fcf09df2ca8ded6a216edbbbdc2da026f9fb6dd3f82a62ea6",
+  "lineage": "source->hypothesis->strategy_version->experiment->run",
+  "links": [
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-1D5166F0E705D723201A",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=8,slow=30",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-2A50124767CEDE3D43E1",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=15,slow=20",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-2F379F256B782E660A5D",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=10,slow=40",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-36AE44A569DCACA67E60",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=15,slow=30",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-3ECBBF4E09AB6E3B9E99",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=8,slow=50",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-415EC72787BB1D57CA73",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=15,slow=40",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-4412A49CE65D8E18C64B",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=10,slow=50",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-5C5F059B61F61535937A",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=2,slow=30",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-5F1D45D30AE9DE4CA66E",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=2,slow=20",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-5FC82B42611D26E80CA9",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=2,slow=10",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-6553E5AF971EBDAA024A",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=5,slow=20",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-6888EBAF4467849F7E5E",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=5,slow=60",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-7215A8D7E523B8D3602A",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=5,slow=50",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-75A40CC5998E6127FA14",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=5,slow=10",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-76E061FE305FD11EE20D",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=8,slow=20",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-79AD9E3AD40043C90669",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=8,slow=60",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-7B72BDBB3F3AF6C539D5",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=10,slow=60",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-7B8E07C38EAAC1E6EFC3",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=10,slow=30",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-8704C86F9B4E322CEB09",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=8,slow=10",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-874D829E223EDBE513FC",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=3,slow=60",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-8FD7FDD8E9E0AA38A163",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=2,slow=40",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-93E53E963DFBB7E6BF3B",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=15,slow=60",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-9525305DC2FD4D4D72AD",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=15,slow=50",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-A1EB3C8DAB6DA8846385",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=2,slow=50",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-BE145C00E2093FCC788C",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=3,slow=10",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-C7B950FA75A304D9E5BB",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=3,slow=30",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-C91D7EA53C0AADC1D513",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=2,slow=60",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-D1382CC577D744E336D2",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=5,slow=40",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-D4648BE9502FEB6ABF39",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=10,slow=20",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-E35FF8DEE8CC24DCC9B3",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=3,slow=20",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-E36D32425EC9F8C0A2DA",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=3,slow=40",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-E8C8933C488333081638",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=8,slow=40",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-EC067053ECADCD61F18B",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=3,slow=50",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06",
+      "experiment_id": "EXP-VECTORBT-B2-F1",
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "hypothesis_sha256": "6e4de727a2d1d587845f85fb51bb62ac57e43cee96fd98898a89f6208216379c",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.",
+        "The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover."
+      ],
+      "run_id": "RUN-VECTORBT-B2-FA585AD6E7EB255893CF",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform the paper's diversified, monthly time-series-momentum construction into a long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B2-ma-crossover",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "strategy_version_sha256": "af481973c26680d065f9eb59331782e114962563120ae1c793d28db4d75e5aec",
+      "trial_key": "fast=5,slow=30",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "523b5f6a61afe7b71b2507f0640815b619f4f14aa35d73665e865cf140b2102d",
+      "experiment_id": "EXP-VECTORBT-B3-F1",
+      "hypothesis_id": "HYP-B3-RSI-MEAN-REVERSION-PROXY",
+      "hypothesis_sha256": "19086e3217e19f0130647543ee228bb16456cf79fdd4fdc94b261b647c002a20",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses Bollinger bands, not RSI; no RSI threshold or RSI calculation is present in the canonical spec.",
+        "The cited paper studies cross-sectional security-return reversal, not single-instrument intraday band reversion.",
+        "The citation motivates only a reversal hypothesis and supplies no inherited profitability proof."
+      ],
+      "run_id": "RUN-VECTORBT-B3-01ED24EC6E05D90792E8",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform a short-horizon reversal idea, requested as RSI mean reversion, into the actual canonical executable B3 rule: long BTCUSDT when close is below a 3-bar Bollinger lower band using population standard deviation, exit at the middle band, and sweep window/deviation.",
+      "source_refs": [
+        "SRC-PAPER2"
+      ],
+      "strategy_id": "STRAT-B3-bollinger-mr",
+      "strategy_version_id": "SV-73dee142966eae77",
+      "strategy_version_sha256": "03deafd19ca36b943da8f568796d22000f0432b9d636d2326cf74e48934fcac6",
+      "trial_key": "window=5,deviation=2",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "523b5f6a61afe7b71b2507f0640815b619f4f14aa35d73665e865cf140b2102d",
+      "experiment_id": "EXP-VECTORBT-B3-F1",
+      "hypothesis_id": "HYP-B3-RSI-MEAN-REVERSION-PROXY",
+      "hypothesis_sha256": "19086e3217e19f0130647543ee228bb16456cf79fdd4fdc94b261b647c002a20",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses Bollinger bands, not RSI; no RSI threshold or RSI calculation is present in the canonical spec.",
+        "The cited paper studies cross-sectional security-return reversal, not single-instrument intraday band reversion.",
+        "The citation motivates only a reversal hypothesis and supplies no inherited profitability proof."
+      ],
+      "run_id": "RUN-VECTORBT-B3-29A232B57BF13C8D1C23",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform a short-horizon reversal idea, requested as RSI mean reversion, into the actual canonical executable B3 rule: long BTCUSDT when close is below a 3-bar Bollinger lower band using population standard deviation, exit at the middle band, and sweep window/deviation.",
+      "source_refs": [
+        "SRC-PAPER2"
+      ],
+      "strategy_id": "STRAT-B3-bollinger-mr",
+      "strategy_version_id": "SV-73dee142966eae77",
+      "strategy_version_sha256": "03deafd19ca36b943da8f568796d22000f0432b9d636d2326cf74e48934fcac6",
+      "trial_key": "window=3,deviation=2",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "523b5f6a61afe7b71b2507f0640815b619f4f14aa35d73665e865cf140b2102d",
+      "experiment_id": "EXP-VECTORBT-B3-F1",
+      "hypothesis_id": "HYP-B3-RSI-MEAN-REVERSION-PROXY",
+      "hypothesis_sha256": "19086e3217e19f0130647543ee228bb16456cf79fdd4fdc94b261b647c002a20",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses Bollinger bands, not RSI; no RSI threshold or RSI calculation is present in the canonical spec.",
+        "The cited paper studies cross-sectional security-return reversal, not single-instrument intraday band reversion.",
+        "The citation motivates only a reversal hypothesis and supplies no inherited profitability proof."
+      ],
+      "run_id": "RUN-VECTORBT-B3-40D72C5211E646C42C2B",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform a short-horizon reversal idea, requested as RSI mean reversion, into the actual canonical executable B3 rule: long BTCUSDT when close is below a 3-bar Bollinger lower band using population standard deviation, exit at the middle band, and sweep window/deviation.",
+      "source_refs": [
+        "SRC-PAPER2"
+      ],
+      "strategy_id": "STRAT-B3-bollinger-mr",
+      "strategy_version_id": "SV-73dee142966eae77",
+      "strategy_version_sha256": "03deafd19ca36b943da8f568796d22000f0432b9d636d2326cf74e48934fcac6",
+      "trial_key": "window=5,deviation=1.5",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "523b5f6a61afe7b71b2507f0640815b619f4f14aa35d73665e865cf140b2102d",
+      "experiment_id": "EXP-VECTORBT-B3-F1",
+      "hypothesis_id": "HYP-B3-RSI-MEAN-REVERSION-PROXY",
+      "hypothesis_sha256": "19086e3217e19f0130647543ee228bb16456cf79fdd4fdc94b261b647c002a20",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses Bollinger bands, not RSI; no RSI threshold or RSI calculation is present in the canonical spec.",
+        "The cited paper studies cross-sectional security-return reversal, not single-instrument intraday band reversion.",
+        "The citation motivates only a reversal hypothesis and supplies no inherited profitability proof."
+      ],
+      "run_id": "RUN-VECTORBT-B3-4F30740D0440249E3FC2",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform a short-horizon reversal idea, requested as RSI mean reversion, into the actual canonical executable B3 rule: long BTCUSDT when close is below a 3-bar Bollinger lower band using population standard deviation, exit at the middle band, and sweep window/deviation.",
+      "source_refs": [
+        "SRC-PAPER2"
+      ],
+      "strategy_id": "STRAT-B3-bollinger-mr",
+      "strategy_version_id": "SV-73dee142966eae77",
+      "strategy_version_sha256": "03deafd19ca36b943da8f568796d22000f0432b9d636d2326cf74e48934fcac6",
+      "trial_key": "window=5,deviation=1",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "523b5f6a61afe7b71b2507f0640815b619f4f14aa35d73665e865cf140b2102d",
+      "experiment_id": "EXP-VECTORBT-B3-F1",
+      "hypothesis_id": "HYP-B3-RSI-MEAN-REVERSION-PROXY",
+      "hypothesis_sha256": "19086e3217e19f0130647543ee228bb16456cf79fdd4fdc94b261b647c002a20",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses Bollinger bands, not RSI; no RSI threshold or RSI calculation is present in the canonical spec.",
+        "The cited paper studies cross-sectional security-return reversal, not single-instrument intraday band reversion.",
+        "The citation motivates only a reversal hypothesis and supplies no inherited profitability proof."
+      ],
+      "run_id": "RUN-VECTORBT-B3-5757F314FFA1F64316CE",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform a short-horizon reversal idea, requested as RSI mean reversion, into the actual canonical executable B3 rule: long BTCUSDT when close is below a 3-bar Bollinger lower band using population standard deviation, exit at the middle band, and sweep window/deviation.",
+      "source_refs": [
+        "SRC-PAPER2"
+      ],
+      "strategy_id": "STRAT-B3-bollinger-mr",
+      "strategy_version_id": "SV-73dee142966eae77",
+      "strategy_version_sha256": "03deafd19ca36b943da8f568796d22000f0432b9d636d2326cf74e48934fcac6",
+      "trial_key": "window=20,deviation=2",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "523b5f6a61afe7b71b2507f0640815b619f4f14aa35d73665e865cf140b2102d",
+      "experiment_id": "EXP-VECTORBT-B3-F1",
+      "hypothesis_id": "HYP-B3-RSI-MEAN-REVERSION-PROXY",
+      "hypothesis_sha256": "19086e3217e19f0130647543ee228bb16456cf79fdd4fdc94b261b647c002a20",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses Bollinger bands, not RSI; no RSI threshold or RSI calculation is present in the canonical spec.",
+        "The cited paper studies cross-sectional security-return reversal, not single-instrument intraday band reversion.",
+        "The citation motivates only a reversal hypothesis and supplies no inherited profitability proof."
+      ],
+      "run_id": "RUN-VECTORBT-B3-60E00911B5EB4BF91820",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform a short-horizon reversal idea, requested as RSI mean reversion, into the actual canonical executable B3 rule: long BTCUSDT when close is below a 3-bar Bollinger lower band using population standard deviation, exit at the middle band, and sweep window/deviation.",
+      "source_refs": [
+        "SRC-PAPER2"
+      ],
+      "strategy_id": "STRAT-B3-bollinger-mr",
+      "strategy_version_id": "SV-73dee142966eae77",
+      "strategy_version_sha256": "03deafd19ca36b943da8f568796d22000f0432b9d636d2326cf74e48934fcac6",
+      "trial_key": "window=10,deviation=1",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "523b5f6a61afe7b71b2507f0640815b619f4f14aa35d73665e865cf140b2102d",
+      "experiment_id": "EXP-VECTORBT-B3-F1",
+      "hypothesis_id": "HYP-B3-RSI-MEAN-REVERSION-PROXY",
+      "hypothesis_sha256": "19086e3217e19f0130647543ee228bb16456cf79fdd4fdc94b261b647c002a20",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses Bollinger bands, not RSI; no RSI threshold or RSI calculation is present in the canonical spec.",
+        "The cited paper studies cross-sectional security-return reversal, not single-instrument intraday band reversion.",
+        "The citation motivates only a reversal hypothesis and supplies no inherited profitability proof."
+      ],
+      "run_id": "RUN-VECTORBT-B3-7279E25CCBD102D3357E",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform a short-horizon reversal idea, requested as RSI mean reversion, into the actual canonical executable B3 rule: long BTCUSDT when close is below a 3-bar Bollinger lower band using population standard deviation, exit at the middle band, and sweep window/deviation.",
+      "source_refs": [
+        "SRC-PAPER2"
+      ],
+      "strategy_id": "STRAT-B3-bollinger-mr",
+      "strategy_version_id": "SV-73dee142966eae77",
+      "strategy_version_sha256": "03deafd19ca36b943da8f568796d22000f0432b9d636d2326cf74e48934fcac6",
+      "trial_key": "window=3,deviation=1",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "523b5f6a61afe7b71b2507f0640815b619f4f14aa35d73665e865cf140b2102d",
+      "experiment_id": "EXP-VECTORBT-B3-F1",
+      "hypothesis_id": "HYP-B3-RSI-MEAN-REVERSION-PROXY",
+      "hypothesis_sha256": "19086e3217e19f0130647543ee228bb16456cf79fdd4fdc94b261b647c002a20",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses Bollinger bands, not RSI; no RSI threshold or RSI calculation is present in the canonical spec.",
+        "The cited paper studies cross-sectional security-return reversal, not single-instrument intraday band reversion.",
+        "The citation motivates only a reversal hypothesis and supplies no inherited profitability proof."
+      ],
+      "run_id": "RUN-VECTORBT-B3-9ADD397528AF75A44269",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform a short-horizon reversal idea, requested as RSI mean reversion, into the actual canonical executable B3 rule: long BTCUSDT when close is below a 3-bar Bollinger lower band using population standard deviation, exit at the middle band, and sweep window/deviation.",
+      "source_refs": [
+        "SRC-PAPER2"
+      ],
+      "strategy_id": "STRAT-B3-bollinger-mr",
+      "strategy_version_id": "SV-73dee142966eae77",
+      "strategy_version_sha256": "03deafd19ca36b943da8f568796d22000f0432b9d636d2326cf74e48934fcac6",
+      "trial_key": "window=20,deviation=1.5",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "523b5f6a61afe7b71b2507f0640815b619f4f14aa35d73665e865cf140b2102d",
+      "experiment_id": "EXP-VECTORBT-B3-F1",
+      "hypothesis_id": "HYP-B3-RSI-MEAN-REVERSION-PROXY",
+      "hypothesis_sha256": "19086e3217e19f0130647543ee228bb16456cf79fdd4fdc94b261b647c002a20",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses Bollinger bands, not RSI; no RSI threshold or RSI calculation is present in the canonical spec.",
+        "The cited paper studies cross-sectional security-return reversal, not single-instrument intraday band reversion.",
+        "The citation motivates only a reversal hypothesis and supplies no inherited profitability proof."
+      ],
+      "run_id": "RUN-VECTORBT-B3-9ECBAA11B8A53AF8580B",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform a short-horizon reversal idea, requested as RSI mean reversion, into the actual canonical executable B3 rule: long BTCUSDT when close is below a 3-bar Bollinger lower band using population standard deviation, exit at the middle band, and sweep window/deviation.",
+      "source_refs": [
+        "SRC-PAPER2"
+      ],
+      "strategy_id": "STRAT-B3-bollinger-mr",
+      "strategy_version_id": "SV-73dee142966eae77",
+      "strategy_version_sha256": "03deafd19ca36b943da8f568796d22000f0432b9d636d2326cf74e48934fcac6",
+      "trial_key": "window=10,deviation=1.5",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "523b5f6a61afe7b71b2507f0640815b619f4f14aa35d73665e865cf140b2102d",
+      "experiment_id": "EXP-VECTORBT-B3-F1",
+      "hypothesis_id": "HYP-B3-RSI-MEAN-REVERSION-PROXY",
+      "hypothesis_sha256": "19086e3217e19f0130647543ee228bb16456cf79fdd4fdc94b261b647c002a20",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses Bollinger bands, not RSI; no RSI threshold or RSI calculation is present in the canonical spec.",
+        "The cited paper studies cross-sectional security-return reversal, not single-instrument intraday band reversion.",
+        "The citation motivates only a reversal hypothesis and supplies no inherited profitability proof."
+      ],
+      "run_id": "RUN-VECTORBT-B3-ACE464C75BD4828A5E77",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform a short-horizon reversal idea, requested as RSI mean reversion, into the actual canonical executable B3 rule: long BTCUSDT when close is below a 3-bar Bollinger lower band using population standard deviation, exit at the middle band, and sweep window/deviation.",
+      "source_refs": [
+        "SRC-PAPER2"
+      ],
+      "strategy_id": "STRAT-B3-bollinger-mr",
+      "strategy_version_id": "SV-73dee142966eae77",
+      "strategy_version_sha256": "03deafd19ca36b943da8f568796d22000f0432b9d636d2326cf74e48934fcac6",
+      "trial_key": "window=20,deviation=1",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "523b5f6a61afe7b71b2507f0640815b619f4f14aa35d73665e865cf140b2102d",
+      "experiment_id": "EXP-VECTORBT-B3-F1",
+      "hypothesis_id": "HYP-B3-RSI-MEAN-REVERSION-PROXY",
+      "hypothesis_sha256": "19086e3217e19f0130647543ee228bb16456cf79fdd4fdc94b261b647c002a20",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses Bollinger bands, not RSI; no RSI threshold or RSI calculation is present in the canonical spec.",
+        "The cited paper studies cross-sectional security-return reversal, not single-instrument intraday band reversion.",
+        "The citation motivates only a reversal hypothesis and supplies no inherited profitability proof."
+      ],
+      "run_id": "RUN-VECTORBT-B3-BC89D2C41B7D0D4B1C54",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform a short-horizon reversal idea, requested as RSI mean reversion, into the actual canonical executable B3 rule: long BTCUSDT when close is below a 3-bar Bollinger lower band using population standard deviation, exit at the middle band, and sweep window/deviation.",
+      "source_refs": [
+        "SRC-PAPER2"
+      ],
+      "strategy_id": "STRAT-B3-bollinger-mr",
+      "strategy_version_id": "SV-73dee142966eae77",
+      "strategy_version_sha256": "03deafd19ca36b943da8f568796d22000f0432b9d636d2326cf74e48934fcac6",
+      "trial_key": "window=3,deviation=0.5",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "523b5f6a61afe7b71b2507f0640815b619f4f14aa35d73665e865cf140b2102d",
+      "experiment_id": "EXP-VECTORBT-B3-F1",
+      "hypothesis_id": "HYP-B3-RSI-MEAN-REVERSION-PROXY",
+      "hypothesis_sha256": "19086e3217e19f0130647543ee228bb16456cf79fdd4fdc94b261b647c002a20",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses Bollinger bands, not RSI; no RSI threshold or RSI calculation is present in the canonical spec.",
+        "The cited paper studies cross-sectional security-return reversal, not single-instrument intraday band reversion.",
+        "The citation motivates only a reversal hypothesis and supplies no inherited profitability proof."
+      ],
+      "run_id": "RUN-VECTORBT-B3-C120017A98BE6A887821",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform a short-horizon reversal idea, requested as RSI mean reversion, into the actual canonical executable B3 rule: long BTCUSDT when close is below a 3-bar Bollinger lower band using population standard deviation, exit at the middle band, and sweep window/deviation.",
+      "source_refs": [
+        "SRC-PAPER2"
+      ],
+      "strategy_id": "STRAT-B3-bollinger-mr",
+      "strategy_version_id": "SV-73dee142966eae77",
+      "strategy_version_sha256": "03deafd19ca36b943da8f568796d22000f0432b9d636d2326cf74e48934fcac6",
+      "trial_key": "window=10,deviation=0.5",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "523b5f6a61afe7b71b2507f0640815b619f4f14aa35d73665e865cf140b2102d",
+      "experiment_id": "EXP-VECTORBT-B3-F1",
+      "hypothesis_id": "HYP-B3-RSI-MEAN-REVERSION-PROXY",
+      "hypothesis_sha256": "19086e3217e19f0130647543ee228bb16456cf79fdd4fdc94b261b647c002a20",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses Bollinger bands, not RSI; no RSI threshold or RSI calculation is present in the canonical spec.",
+        "The cited paper studies cross-sectional security-return reversal, not single-instrument intraday band reversion.",
+        "The citation motivates only a reversal hypothesis and supplies no inherited profitability proof."
+      ],
+      "run_id": "RUN-VECTORBT-B3-CC26C33041DDEFB7E7D5",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform a short-horizon reversal idea, requested as RSI mean reversion, into the actual canonical executable B3 rule: long BTCUSDT when close is below a 3-bar Bollinger lower band using population standard deviation, exit at the middle band, and sweep window/deviation.",
+      "source_refs": [
+        "SRC-PAPER2"
+      ],
+      "strategy_id": "STRAT-B3-bollinger-mr",
+      "strategy_version_id": "SV-73dee142966eae77",
+      "strategy_version_sha256": "03deafd19ca36b943da8f568796d22000f0432b9d636d2326cf74e48934fcac6",
+      "trial_key": "window=5,deviation=0.5",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "523b5f6a61afe7b71b2507f0640815b619f4f14aa35d73665e865cf140b2102d",
+      "experiment_id": "EXP-VECTORBT-B3-F1",
+      "hypothesis_id": "HYP-B3-RSI-MEAN-REVERSION-PROXY",
+      "hypothesis_sha256": "19086e3217e19f0130647543ee228bb16456cf79fdd4fdc94b261b647c002a20",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses Bollinger bands, not RSI; no RSI threshold or RSI calculation is present in the canonical spec.",
+        "The cited paper studies cross-sectional security-return reversal, not single-instrument intraday band reversion.",
+        "The citation motivates only a reversal hypothesis and supplies no inherited profitability proof."
+      ],
+      "run_id": "RUN-VECTORBT-B3-D1242940F93A20B0B19B",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform a short-horizon reversal idea, requested as RSI mean reversion, into the actual canonical executable B3 rule: long BTCUSDT when close is below a 3-bar Bollinger lower band using population standard deviation, exit at the middle band, and sweep window/deviation.",
+      "source_refs": [
+        "SRC-PAPER2"
+      ],
+      "strategy_id": "STRAT-B3-bollinger-mr",
+      "strategy_version_id": "SV-73dee142966eae77",
+      "strategy_version_sha256": "03deafd19ca36b943da8f568796d22000f0432b9d636d2326cf74e48934fcac6",
+      "trial_key": "window=20,deviation=0.5",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "523b5f6a61afe7b71b2507f0640815b619f4f14aa35d73665e865cf140b2102d",
+      "experiment_id": "EXP-VECTORBT-B3-F1",
+      "hypothesis_id": "HYP-B3-RSI-MEAN-REVERSION-PROXY",
+      "hypothesis_sha256": "19086e3217e19f0130647543ee228bb16456cf79fdd4fdc94b261b647c002a20",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses Bollinger bands, not RSI; no RSI threshold or RSI calculation is present in the canonical spec.",
+        "The cited paper studies cross-sectional security-return reversal, not single-instrument intraday band reversion.",
+        "The citation motivates only a reversal hypothesis and supplies no inherited profitability proof."
+      ],
+      "run_id": "RUN-VECTORBT-B3-DE4A8AC01270D8754F00",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform a short-horizon reversal idea, requested as RSI mean reversion, into the actual canonical executable B3 rule: long BTCUSDT when close is below a 3-bar Bollinger lower band using population standard deviation, exit at the middle band, and sweep window/deviation.",
+      "source_refs": [
+        "SRC-PAPER2"
+      ],
+      "strategy_id": "STRAT-B3-bollinger-mr",
+      "strategy_version_id": "SV-73dee142966eae77",
+      "strategy_version_sha256": "03deafd19ca36b943da8f568796d22000f0432b9d636d2326cf74e48934fcac6",
+      "trial_key": "window=3,deviation=1.5",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "523b5f6a61afe7b71b2507f0640815b619f4f14aa35d73665e865cf140b2102d",
+      "experiment_id": "EXP-VECTORBT-B3-F1",
+      "hypothesis_id": "HYP-B3-RSI-MEAN-REVERSION-PROXY",
+      "hypothesis_sha256": "19086e3217e19f0130647543ee228bb16456cf79fdd4fdc94b261b647c002a20",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses Bollinger bands, not RSI; no RSI threshold or RSI calculation is present in the canonical spec.",
+        "The cited paper studies cross-sectional security-return reversal, not single-instrument intraday band reversion.",
+        "The citation motivates only a reversal hypothesis and supplies no inherited profitability proof."
+      ],
+      "run_id": "RUN-VECTORBT-B3-E1B78E5B44964484B494",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform a short-horizon reversal idea, requested as RSI mean reversion, into the actual canonical executable B3 rule: long BTCUSDT when close is below a 3-bar Bollinger lower band using population standard deviation, exit at the middle band, and sweep window/deviation.",
+      "source_refs": [
+        "SRC-PAPER2"
+      ],
+      "strategy_id": "STRAT-B3-bollinger-mr",
+      "strategy_version_id": "SV-73dee142966eae77",
+      "strategy_version_sha256": "03deafd19ca36b943da8f568796d22000f0432b9d636d2326cf74e48934fcac6",
+      "trial_key": "window=10,deviation=2",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "dce462ca70fd6f479a7bbb068837718d9e5ce7bf3a01e2b040a11af58935c046",
+      "experiment_id": "EXP-VECTORBT-B4-F1",
+      "hypothesis_id": "HYP-B4-ATR-BREAKOUT-PROXY",
+      "hypothesis_sha256": "001339f60343eee8dd0c928f06e58c3a2bd61846d1aaebcab9140a3bf4b54154",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses no ATR calculation, true-range threshold, or ATR-based sizing; it is a prior-high channel breakout.",
+        "The cited time-series-momentum paper is relevant only to directional persistence, not to ATR or this channel rule.",
+        "The citation supplies no inherited profitability proof for this breakout."
+      ],
+      "run_id": "RUN-VECTORBT-B4-13522577F017FD81602B",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform an ATR-breakout idea into the actual canonical executable B4 rule: enter long BTCUSDT when close exceeds the maximum high of the previous 5 bars, exit below SMA(3), and sweep channel lookback/exit windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B4-vol-breakout",
+      "strategy_version_id": "SV-b7a50e1188dc4c99",
+      "strategy_version_sha256": "d9cf4b4ebafd5d925a9542a28734ac138618b305497c3fe7fe8dcb96b780706d",
+      "trial_key": "lookback=20,exit_window=3",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "dce462ca70fd6f479a7bbb068837718d9e5ce7bf3a01e2b040a11af58935c046",
+      "experiment_id": "EXP-VECTORBT-B4-F1",
+      "hypothesis_id": "HYP-B4-ATR-BREAKOUT-PROXY",
+      "hypothesis_sha256": "001339f60343eee8dd0c928f06e58c3a2bd61846d1aaebcab9140a3bf4b54154",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses no ATR calculation, true-range threshold, or ATR-based sizing; it is a prior-high channel breakout.",
+        "The cited time-series-momentum paper is relevant only to directional persistence, not to ATR or this channel rule.",
+        "The citation supplies no inherited profitability proof for this breakout."
+      ],
+      "run_id": "RUN-VECTORBT-B4-29D7BB68478D40F16C6E",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform an ATR-breakout idea into the actual canonical executable B4 rule: enter long BTCUSDT when close exceeds the maximum high of the previous 5 bars, exit below SMA(3), and sweep channel lookback/exit windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B4-vol-breakout",
+      "strategy_version_id": "SV-b7a50e1188dc4c99",
+      "strategy_version_sha256": "d9cf4b4ebafd5d925a9542a28734ac138618b305497c3fe7fe8dcb96b780706d",
+      "trial_key": "lookback=10,exit_window=5",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "dce462ca70fd6f479a7bbb068837718d9e5ce7bf3a01e2b040a11af58935c046",
+      "experiment_id": "EXP-VECTORBT-B4-F1",
+      "hypothesis_id": "HYP-B4-ATR-BREAKOUT-PROXY",
+      "hypothesis_sha256": "001339f60343eee8dd0c928f06e58c3a2bd61846d1aaebcab9140a3bf4b54154",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses no ATR calculation, true-range threshold, or ATR-based sizing; it is a prior-high channel breakout.",
+        "The cited time-series-momentum paper is relevant only to directional persistence, not to ATR or this channel rule.",
+        "The citation supplies no inherited profitability proof for this breakout."
+      ],
+      "run_id": "RUN-VECTORBT-B4-2BBF47948BFF3922AD4B",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform an ATR-breakout idea into the actual canonical executable B4 rule: enter long BTCUSDT when close exceeds the maximum high of the previous 5 bars, exit below SMA(3), and sweep channel lookback/exit windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B4-vol-breakout",
+      "strategy_version_id": "SV-b7a50e1188dc4c99",
+      "strategy_version_sha256": "d9cf4b4ebafd5d925a9542a28734ac138618b305497c3fe7fe8dcb96b780706d",
+      "trial_key": "lookback=5,exit_window=5",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "dce462ca70fd6f479a7bbb068837718d9e5ce7bf3a01e2b040a11af58935c046",
+      "experiment_id": "EXP-VECTORBT-B4-F1",
+      "hypothesis_id": "HYP-B4-ATR-BREAKOUT-PROXY",
+      "hypothesis_sha256": "001339f60343eee8dd0c928f06e58c3a2bd61846d1aaebcab9140a3bf4b54154",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses no ATR calculation, true-range threshold, or ATR-based sizing; it is a prior-high channel breakout.",
+        "The cited time-series-momentum paper is relevant only to directional persistence, not to ATR or this channel rule.",
+        "The citation supplies no inherited profitability proof for this breakout."
+      ],
+      "run_id": "RUN-VECTORBT-B4-2DD1892F375400029B38",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform an ATR-breakout idea into the actual canonical executable B4 rule: enter long BTCUSDT when close exceeds the maximum high of the previous 5 bars, exit below SMA(3), and sweep channel lookback/exit windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B4-vol-breakout",
+      "strategy_version_id": "SV-b7a50e1188dc4c99",
+      "strategy_version_sha256": "d9cf4b4ebafd5d925a9542a28734ac138618b305497c3fe7fe8dcb96b780706d",
+      "trial_key": "lookback=10,exit_window=3",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "dce462ca70fd6f479a7bbb068837718d9e5ce7bf3a01e2b040a11af58935c046",
+      "experiment_id": "EXP-VECTORBT-B4-F1",
+      "hypothesis_id": "HYP-B4-ATR-BREAKOUT-PROXY",
+      "hypothesis_sha256": "001339f60343eee8dd0c928f06e58c3a2bd61846d1aaebcab9140a3bf4b54154",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses no ATR calculation, true-range threshold, or ATR-based sizing; it is a prior-high channel breakout.",
+        "The cited time-series-momentum paper is relevant only to directional persistence, not to ATR or this channel rule.",
+        "The citation supplies no inherited profitability proof for this breakout."
+      ],
+      "run_id": "RUN-VECTORBT-B4-4F9B6D3FC5503E9008FE",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform an ATR-breakout idea into the actual canonical executable B4 rule: enter long BTCUSDT when close exceeds the maximum high of the previous 5 bars, exit below SMA(3), and sweep channel lookback/exit windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B4-vol-breakout",
+      "strategy_version_id": "SV-b7a50e1188dc4c99",
+      "strategy_version_sha256": "d9cf4b4ebafd5d925a9542a28734ac138618b305497c3fe7fe8dcb96b780706d",
+      "trial_key": "lookback=20,exit_window=2",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "dce462ca70fd6f479a7bbb068837718d9e5ce7bf3a01e2b040a11af58935c046",
+      "experiment_id": "EXP-VECTORBT-B4-F1",
+      "hypothesis_id": "HYP-B4-ATR-BREAKOUT-PROXY",
+      "hypothesis_sha256": "001339f60343eee8dd0c928f06e58c3a2bd61846d1aaebcab9140a3bf4b54154",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses no ATR calculation, true-range threshold, or ATR-based sizing; it is a prior-high channel breakout.",
+        "The cited time-series-momentum paper is relevant only to directional persistence, not to ATR or this channel rule.",
+        "The citation supplies no inherited profitability proof for this breakout."
+      ],
+      "run_id": "RUN-VECTORBT-B4-5032DD5E29194C0E674C",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform an ATR-breakout idea into the actual canonical executable B4 rule: enter long BTCUSDT when close exceeds the maximum high of the previous 5 bars, exit below SMA(3), and sweep channel lookback/exit windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B4-vol-breakout",
+      "strategy_version_id": "SV-b7a50e1188dc4c99",
+      "strategy_version_sha256": "d9cf4b4ebafd5d925a9542a28734ac138618b305497c3fe7fe8dcb96b780706d",
+      "trial_key": "lookback=5,exit_window=3",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "dce462ca70fd6f479a7bbb068837718d9e5ce7bf3a01e2b040a11af58935c046",
+      "experiment_id": "EXP-VECTORBT-B4-F1",
+      "hypothesis_id": "HYP-B4-ATR-BREAKOUT-PROXY",
+      "hypothesis_sha256": "001339f60343eee8dd0c928f06e58c3a2bd61846d1aaebcab9140a3bf4b54154",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses no ATR calculation, true-range threshold, or ATR-based sizing; it is a prior-high channel breakout.",
+        "The cited time-series-momentum paper is relevant only to directional persistence, not to ATR or this channel rule.",
+        "The citation supplies no inherited profitability proof for this breakout."
+      ],
+      "run_id": "RUN-VECTORBT-B4-5AEE383FFD642D1BDA2B",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform an ATR-breakout idea into the actual canonical executable B4 rule: enter long BTCUSDT when close exceeds the maximum high of the previous 5 bars, exit below SMA(3), and sweep channel lookback/exit windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B4-vol-breakout",
+      "strategy_version_id": "SV-b7a50e1188dc4c99",
+      "strategy_version_sha256": "d9cf4b4ebafd5d925a9542a28734ac138618b305497c3fe7fe8dcb96b780706d",
+      "trial_key": "lookback=5,exit_window=2",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "dce462ca70fd6f479a7bbb068837718d9e5ce7bf3a01e2b040a11af58935c046",
+      "experiment_id": "EXP-VECTORBT-B4-F1",
+      "hypothesis_id": "HYP-B4-ATR-BREAKOUT-PROXY",
+      "hypothesis_sha256": "001339f60343eee8dd0c928f06e58c3a2bd61846d1aaebcab9140a3bf4b54154",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses no ATR calculation, true-range threshold, or ATR-based sizing; it is a prior-high channel breakout.",
+        "The cited time-series-momentum paper is relevant only to directional persistence, not to ATR or this channel rule.",
+        "The citation supplies no inherited profitability proof for this breakout."
+      ],
+      "run_id": "RUN-VECTORBT-B4-63B97436FC13F829E737",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform an ATR-breakout idea into the actual canonical executable B4 rule: enter long BTCUSDT when close exceeds the maximum high of the previous 5 bars, exit below SMA(3), and sweep channel lookback/exit windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B4-vol-breakout",
+      "strategy_version_id": "SV-b7a50e1188dc4c99",
+      "strategy_version_sha256": "d9cf4b4ebafd5d925a9542a28734ac138618b305497c3fe7fe8dcb96b780706d",
+      "trial_key": "lookback=20,exit_window=5",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "dce462ca70fd6f479a7bbb068837718d9e5ce7bf3a01e2b040a11af58935c046",
+      "experiment_id": "EXP-VECTORBT-B4-F1",
+      "hypothesis_id": "HYP-B4-ATR-BREAKOUT-PROXY",
+      "hypothesis_sha256": "001339f60343eee8dd0c928f06e58c3a2bd61846d1aaebcab9140a3bf4b54154",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses no ATR calculation, true-range threshold, or ATR-based sizing; it is a prior-high channel breakout.",
+        "The cited time-series-momentum paper is relevant only to directional persistence, not to ATR or this channel rule.",
+        "The citation supplies no inherited profitability proof for this breakout."
+      ],
+      "run_id": "RUN-VECTORBT-B4-63E1DE5C654EF6F73CC2",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform an ATR-breakout idea into the actual canonical executable B4 rule: enter long BTCUSDT when close exceeds the maximum high of the previous 5 bars, exit below SMA(3), and sweep channel lookback/exit windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B4-vol-breakout",
+      "strategy_version_id": "SV-b7a50e1188dc4c99",
+      "strategy_version_sha256": "d9cf4b4ebafd5d925a9542a28734ac138618b305497c3fe7fe8dcb96b780706d",
+      "trial_key": "lookback=10,exit_window=2",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "dce462ca70fd6f479a7bbb068837718d9e5ce7bf3a01e2b040a11af58935c046",
+      "experiment_id": "EXP-VECTORBT-B4-F1",
+      "hypothesis_id": "HYP-B4-ATR-BREAKOUT-PROXY",
+      "hypothesis_sha256": "001339f60343eee8dd0c928f06e58c3a2bd61846d1aaebcab9140a3bf4b54154",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses no ATR calculation, true-range threshold, or ATR-based sizing; it is a prior-high channel breakout.",
+        "The cited time-series-momentum paper is relevant only to directional persistence, not to ATR or this channel rule.",
+        "The citation supplies no inherited profitability proof for this breakout."
+      ],
+      "run_id": "RUN-VECTORBT-B4-7655877544C0F726EB2D",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform an ATR-breakout idea into the actual canonical executable B4 rule: enter long BTCUSDT when close exceeds the maximum high of the previous 5 bars, exit below SMA(3), and sweep channel lookback/exit windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B4-vol-breakout",
+      "strategy_version_id": "SV-b7a50e1188dc4c99",
+      "strategy_version_sha256": "d9cf4b4ebafd5d925a9542a28734ac138618b305497c3fe7fe8dcb96b780706d",
+      "trial_key": "lookback=5,exit_window=10",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "dce462ca70fd6f479a7bbb068837718d9e5ce7bf3a01e2b040a11af58935c046",
+      "experiment_id": "EXP-VECTORBT-B4-F1",
+      "hypothesis_id": "HYP-B4-ATR-BREAKOUT-PROXY",
+      "hypothesis_sha256": "001339f60343eee8dd0c928f06e58c3a2bd61846d1aaebcab9140a3bf4b54154",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses no ATR calculation, true-range threshold, or ATR-based sizing; it is a prior-high channel breakout.",
+        "The cited time-series-momentum paper is relevant only to directional persistence, not to ATR or this channel rule.",
+        "The citation supplies no inherited profitability proof for this breakout."
+      ],
+      "run_id": "RUN-VECTORBT-B4-931215073FDB35713FD2",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform an ATR-breakout idea into the actual canonical executable B4 rule: enter long BTCUSDT when close exceeds the maximum high of the previous 5 bars, exit below SMA(3), and sweep channel lookback/exit windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B4-vol-breakout",
+      "strategy_version_id": "SV-b7a50e1188dc4c99",
+      "strategy_version_sha256": "d9cf4b4ebafd5d925a9542a28734ac138618b305497c3fe7fe8dcb96b780706d",
+      "trial_key": "lookback=20,exit_window=10",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "dce462ca70fd6f479a7bbb068837718d9e5ce7bf3a01e2b040a11af58935c046",
+      "experiment_id": "EXP-VECTORBT-B4-F1",
+      "hypothesis_id": "HYP-B4-ATR-BREAKOUT-PROXY",
+      "hypothesis_sha256": "001339f60343eee8dd0c928f06e58c3a2bd61846d1aaebcab9140a3bf4b54154",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses no ATR calculation, true-range threshold, or ATR-based sizing; it is a prior-high channel breakout.",
+        "The cited time-series-momentum paper is relevant only to directional persistence, not to ATR or this channel rule.",
+        "The citation supplies no inherited profitability proof for this breakout."
+      ],
+      "run_id": "RUN-VECTORBT-B4-ABBC76D9E9F28856EEFF",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform an ATR-breakout idea into the actual canonical executable B4 rule: enter long BTCUSDT when close exceeds the maximum high of the previous 5 bars, exit below SMA(3), and sweep channel lookback/exit windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B4-vol-breakout",
+      "strategy_version_id": "SV-b7a50e1188dc4c99",
+      "strategy_version_sha256": "d9cf4b4ebafd5d925a9542a28734ac138618b305497c3fe7fe8dcb96b780706d",
+      "trial_key": "lookback=3,exit_window=3",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "dce462ca70fd6f479a7bbb068837718d9e5ce7bf3a01e2b040a11af58935c046",
+      "experiment_id": "EXP-VECTORBT-B4-F1",
+      "hypothesis_id": "HYP-B4-ATR-BREAKOUT-PROXY",
+      "hypothesis_sha256": "001339f60343eee8dd0c928f06e58c3a2bd61846d1aaebcab9140a3bf4b54154",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses no ATR calculation, true-range threshold, or ATR-based sizing; it is a prior-high channel breakout.",
+        "The cited time-series-momentum paper is relevant only to directional persistence, not to ATR or this channel rule.",
+        "The citation supplies no inherited profitability proof for this breakout."
+      ],
+      "run_id": "RUN-VECTORBT-B4-B7D1EF9F3E48DF0FD69B",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform an ATR-breakout idea into the actual canonical executable B4 rule: enter long BTCUSDT when close exceeds the maximum high of the previous 5 bars, exit below SMA(3), and sweep channel lookback/exit windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B4-vol-breakout",
+      "strategy_version_id": "SV-b7a50e1188dc4c99",
+      "strategy_version_sha256": "d9cf4b4ebafd5d925a9542a28734ac138618b305497c3fe7fe8dcb96b780706d",
+      "trial_key": "lookback=3,exit_window=10",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "dce462ca70fd6f479a7bbb068837718d9e5ce7bf3a01e2b040a11af58935c046",
+      "experiment_id": "EXP-VECTORBT-B4-F1",
+      "hypothesis_id": "HYP-B4-ATR-BREAKOUT-PROXY",
+      "hypothesis_sha256": "001339f60343eee8dd0c928f06e58c3a2bd61846d1aaebcab9140a3bf4b54154",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses no ATR calculation, true-range threshold, or ATR-based sizing; it is a prior-high channel breakout.",
+        "The cited time-series-momentum paper is relevant only to directional persistence, not to ATR or this channel rule.",
+        "The citation supplies no inherited profitability proof for this breakout."
+      ],
+      "run_id": "RUN-VECTORBT-B4-BF992652F4108E9F30E3",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform an ATR-breakout idea into the actual canonical executable B4 rule: enter long BTCUSDT when close exceeds the maximum high of the previous 5 bars, exit below SMA(3), and sweep channel lookback/exit windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B4-vol-breakout",
+      "strategy_version_id": "SV-b7a50e1188dc4c99",
+      "strategy_version_sha256": "d9cf4b4ebafd5d925a9542a28734ac138618b305497c3fe7fe8dcb96b780706d",
+      "trial_key": "lookback=10,exit_window=10",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "dce462ca70fd6f479a7bbb068837718d9e5ce7bf3a01e2b040a11af58935c046",
+      "experiment_id": "EXP-VECTORBT-B4-F1",
+      "hypothesis_id": "HYP-B4-ATR-BREAKOUT-PROXY",
+      "hypothesis_sha256": "001339f60343eee8dd0c928f06e58c3a2bd61846d1aaebcab9140a3bf4b54154",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses no ATR calculation, true-range threshold, or ATR-based sizing; it is a prior-high channel breakout.",
+        "The cited time-series-momentum paper is relevant only to directional persistence, not to ATR or this channel rule.",
+        "The citation supplies no inherited profitability proof for this breakout."
+      ],
+      "run_id": "RUN-VECTORBT-B4-C3B855B052A41DB5586D",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform an ATR-breakout idea into the actual canonical executable B4 rule: enter long BTCUSDT when close exceeds the maximum high of the previous 5 bars, exit below SMA(3), and sweep channel lookback/exit windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B4-vol-breakout",
+      "strategy_version_id": "SV-b7a50e1188dc4c99",
+      "strategy_version_sha256": "d9cf4b4ebafd5d925a9542a28734ac138618b305497c3fe7fe8dcb96b780706d",
+      "trial_key": "lookback=3,exit_window=5",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "canonical_spec_sha256": "dce462ca70fd6f479a7bbb068837718d9e5ce7bf3a01e2b040a11af58935c046",
+      "experiment_id": "EXP-VECTORBT-B4-F1",
+      "hypothesis_id": "HYP-B4-ATR-BREAKOUT-PROXY",
+      "hypothesis_sha256": "001339f60343eee8dd0c928f06e58c3a2bd61846d1aaebcab9140a3bf4b54154",
+      "proxy_notes": [
+        "This is a simplified executable proxy, not a faithful paper reproduction.",
+        "The executable strategy uses no ATR calculation, true-range threshold, or ATR-based sizing; it is a prior-high channel breakout.",
+        "The cited time-series-momentum paper is relevant only to directional persistence, not to ATR or this channel rule.",
+        "The citation supplies no inherited profitability proof for this breakout."
+      ],
+      "run_id": "RUN-VECTORBT-B4-FE94C339D64A48C6AF2F",
+      "run_status": "COMPLETED",
+      "semantic_transformation": "Transform an ATR-breakout idea into the actual canonical executable B4 rule: enter long BTCUSDT when close exceeds the maximum high of the previous 5 bars, exit below SMA(3), and sweep channel lookback/exit windows.",
+      "source_refs": [
+        "SRC-TSMOM-MOP2012"
+      ],
+      "strategy_id": "STRAT-B4-vol-breakout",
+      "strategy_version_id": "SV-b7a50e1188dc4c99",
+      "strategy_version_sha256": "d9cf4b4ebafd5d925a9542a28734ac138618b305497c3fe7fe8dcb96b780706d",
+      "trial_key": "lookback=3,exit_window=2",
+      "validation_state": "UNVALIDATED"
+    }
+  ],
+  "profit_claims_inherited": false,
+  "validation_state": "UNVALIDATED"
+}

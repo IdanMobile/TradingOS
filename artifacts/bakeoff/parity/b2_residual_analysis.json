@@ -1,0 +1,79 @@
+{
+  "schema": "tios-b2-parity-residual-v1",
+  "status": "EXPLAINED_NOT_FILL_IDENTICAL",
+  "full_period": {
+    "freqtrade": {
+      "fills": 132770,
+      "buys": 66385,
+      "sells": 66385
+    },
+    "hummingbot": {
+      "fills": 132924,
+      "buys": 66462,
+      "sells": 66462
+    },
+    "roundtrip_residual": 77
+  },
+  "canonical_data_gaps": {
+    "gap_events": 7,
+    "missing_5m_bars": 213,
+    "largest_gap_bars": 56,
+    "effect": "Freqtrade advances a regular synthetic clock and consumes at most one source row per clock step; gaps can lag row time and leave trailing rows unprocessed. Hummingbot iterates retained candle timestamps directly."
+  },
+  "gap_free_first_segment": {
+    "buy": {
+      "freqtrade": 1335,
+      "hummingbot_shifted_next_open": 1337,
+      "hummingbot_only": 3,
+      "freqtrade_only": 1,
+      "hummingbot_only_examples": [
+        "2021-01-01 08:05:00+02",
+        "2021-01-11 10:05:00+02",
+        "2021-01-22 21:25:00+02"
+      ],
+      "freqtrade_only_examples": [
+        "2021-01-11 10:10:00+02"
+      ]
+    },
+    "sell": {
+      "freqtrade": 1336,
+      "hummingbot_shifted_next_open": 1338,
+      "hummingbot_only": 5,
+      "freqtrade_only": 3,
+      "hummingbot_only_examples": [
+        "2021-01-01 08:00:00+02",
+        "2021-01-01 08:20:00+02",
+        "2021-01-11 10:30:00+02",
+        "2021-01-22 21:20:00+02",
+        "2021-02-08 00:10:00+02"
+      ],
+      "freqtrade_only_examples": [
+        "2021-01-01 08:15:00+02",
+        "2021-01-11 10:35:00+02",
+        "2021-02-08 00:15:00+02"
+      ]
+    }
+  },
+  "order_semantics_probe": {
+    "default_limit_counts": {
+      "fills": 132770,
+      "buys": 66385,
+      "sells": 66385
+    },
+    "explicit_market_counts": {
+      "fills": 132770,
+      "buys": 66385,
+      "sells": 66385
+    },
+    "count_changed": false,
+    "delayed_exit_example": {
+      "reported_fill_timestamp": "2021-01-01 08:15:00+02",
+      "reported_fill_price": "29187.01000000",
+      "matching_source_open_timestamp": "2021-01-01 08:00:00+02",
+      "matching_source_open_price": "29187.01000000"
+    },
+    "interpretation": "Explicit market order configuration does not change Freqtrade's count. Its simulator still reports delayed exit timestamps at an earlier source open price, suppressing some intervening entries."
+  },
+  "classification": "EXPLAINED_ENGINE_EXECUTION_AND_DATA_GAP_DIVERGENCE",
+  "decision": "Do not force fill equality or compare PnL across these lanes. Use contiguous windows for future signal parity and retain Freqtrade/Hummingbot for their different role-fit evidence."
+}

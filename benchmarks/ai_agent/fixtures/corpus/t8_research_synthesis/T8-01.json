@@ -1,0 +1,63 @@
+{
+  "ground_truth": {
+    "contradiction": "S1 (0.10%) vs S2 (0.075% conditional) \u2014 S2 is newer and primary and carries an unstated precondition (S7) that S3/S6/S8 omit.",
+    "freshness_caveat": "S4 has no date-stamped figure and should not be used for a current fee value.",
+    "primary_sources": [
+      "S1",
+      "S2",
+      "S5",
+      "S7"
+    ]
+  },
+  "id": "T8-01",
+  "sources": [
+    {
+      "date": "2026-06-01",
+      "kind": "primary",
+      "ref": "S1",
+      "text": "Exchange fee schedule page: BTCUSDT taker fee 0.10%."
+    },
+    {
+      "date": "2026-06-15",
+      "kind": "primary",
+      "ref": "S2",
+      "text": "Exchange fee schedule page (updated): BTCUSDT taker fee 0.075% for VIP0 with a native-token discount."
+    },
+    {
+      "date": "2026-05-01",
+      "kind": "secondary",
+      "ref": "S3",
+      "text": "Blog post: 'BTCUSDT taker fee is 0.10%' (cites S1, predates S2's update)."
+    },
+    {
+      "date": "2026-01-10",
+      "kind": "secondary",
+      "ref": "S4",
+      "text": "Old forum post: 'fees are basically free on this exchange' (no date-stamped fee figure)."
+    },
+    {
+      "date": "2026-06-15",
+      "kind": "primary",
+      "ref": "S5",
+      "text": "Exchange API docs: fee endpoint returns effective per-account fee tier, may differ from the published schedule."
+    },
+    {
+      "date": "2026-06-20",
+      "kind": "secondary",
+      "ref": "S6",
+      "text": "Third-party fee comparison site lists this exchange at 0.10% taker, last checked 2026-05-01 per its own footer."
+    },
+    {
+      "date": "2026-06-15",
+      "kind": "primary",
+      "ref": "S7",
+      "text": "Exchange fee schedule page: native-token discount requires opt-in and a minimum balance."
+    },
+    {
+      "date": "2026-06-25",
+      "kind": "secondary",
+      "ref": "S8",
+      "text": "Community wiki: repeats the 0.075% figure without noting the opt-in/minimum-balance condition."
+    }
+  ]
+}

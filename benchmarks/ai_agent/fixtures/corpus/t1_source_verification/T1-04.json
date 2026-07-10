@@ -1,0 +1,9 @@
+{
+  "claim": "The blueprint's canonical evaluation unit is the model name alone.",
+  "evidence_span": "Never score model name alone.",
+  "id": "T1-04",
+  "label": "contradicted",
+  "publication_date": "2026-07-05",
+  "source_ref": "specs/AI_AGENT_EVALUATION_BLUEPRINT_V1.md",
+  "source_text": "Never score model name alone."
+}

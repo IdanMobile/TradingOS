@@ -1,0 +1,25 @@
+{
+  "engine": "hummingbot",
+  "baseline": "B2",
+  "trades_roundtrips": 66462,
+  "fills": 132924,
+  "left_open_executors": 0,
+  "net_pnl_quote": "-2456.7355953846413",
+  "max_drawdown_usd": "-2716.6678022841206",
+  "sharpe_ratio": "-2.687243176526811",
+  "total_fees_quote": "0.0",
+  "close_types": {
+    "EARLY_STOP": 66461,
+    "TIME_LIMIT": 1
+  },
+  "fee_audit": {
+    "max_pnl_deviation_quote": "1.127907758965638534609556198E-12",
+    "status": "PASS"
+  },
+  "semantic_notes": [
+    "ts_signal not exposed per executor; controller evaluates signal at current bar and the engine fills at the same bar's close (no separate order-placement lag modeled by BacktestingEngineBase)",
+    "fee per leg recomputed as trade_cost * entry_price * qty (matches PositionExecutorSimulator's fixed-notional fee model exactly)",
+    "equity_curve reconstructed as configured total_amount_quote + cumulative total_pnl (no native account-balance series exposed by BacktestingEngineBase)",
+    "prices float64 at engine boundary (declared converter loss, C-hb)"
+  ]
+}

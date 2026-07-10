@@ -1,0 +1,12 @@
+{
+  "available_datasets": [
+    "DS-CRYPTO-SPOT-BAKEOFF-V1 (frozen, 5m bars)"
+  ],
+  "ground_truth_checklist": [
+    "current-bar inclusion in the rolling high/low window resolved and stated",
+    "per-trade taker fee applied on both entry and exit",
+    "missing-dependency check: donchian channel indicator availability confirmed"
+  ],
+  "id": "T4-02",
+  "strategy_ref": "T2-03 (breakout Donchian)"
+}

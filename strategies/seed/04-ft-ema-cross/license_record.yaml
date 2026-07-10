@@ -1,0 +1,7 @@
+source_id: SRC-FT2
+license_class: copyleft
+license_name: GPL-3.0
+evidence_url: https://github.com/freqtrade/freqtrade/blob/develop/LICENSE
+code_reuse_allowed: true
+requires_attribution: true
+notes: freqtrade documentation ships in the same GPL-3.0 repository as the code; same license class/evidence as SRC-FT1.

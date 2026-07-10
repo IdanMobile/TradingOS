@@ -1,0 +1,17 @@
+{
+  "schema": "tios-validation-status-v1",
+  "status": "INCOMPLETE_NOT_APPROVABLE",
+  "production_complete": false,
+  "latest_package": "artifacts/validation/B2_F0_S0/validation_summary.json",
+  "latest_research_lab_batch": "artifacts/research_lab/v0/LAB-799f7d81843d15aaf3b161036a4cd543ac37a709cb1e2ecc72a161f7348488fa/lab_run.json",
+  "implemented_gates": ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9", "G10_RETENTION", "G11"],
+  "implemented_planners": ["G5_GRID", "G6_CHRONOLOGICAL_SPLIT", "G7_WALK_FORWARD", "G8_PARAMETER_NEIGHBORHOOD", "G9_REGIME_SEGMENTATION", "G11_BASELINE_COMPARISON"],
+  "implemented_hard_fail_rule": "zero_cost_only_profitability",
+  "not_implemented": ["G10"],
+  "promotion_eligible": false,
+  "notes": [
+    "G5-G9 and G11 now have retained B2 evidence, but the evidence is negative or descriptive and does not support promotion.",
+    "G10 retention evidence is retained and tested; production PBO/DSR estimator activation remains blocked until estimator choices, small-sample behavior, known-answer fixtures, and independent recomputation are validated.",
+    "No validation gate promotes a strategy, claims production readiness, or authorizes paper/demo/live execution."
+  ]
+}

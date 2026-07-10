@@ -1,0 +1,9 @@
+{
+  "claim": "A model judging its own outputs is sufficient evaluation for critical tasks.",
+  "evidence_span": "same-model self-judging is not sufficient for critical tasks.",
+  "id": "T1-05",
+  "label": "contradicted",
+  "publication_date": "2026-07-05",
+  "source_ref": "specs/AI_AGENT_EVALUATION_BLUEPRINT_V1.md",
+  "source_text": "same-model self-judging is not sufficient for critical tasks."
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "prompt_key": "PRM-t1-source-verification",
+    "version": "0.1.0",
+    "task_class": "T1",
+    "template": "Classify the CLAIM against the SOURCE as one of supported / contradicted / insufficient. Cite the exact evidence span. Do not use outside knowledge.\n\nSOURCE ({source_ref}, published {publication_date}):\n{source_text}\n\nCLAIM:\n{claim}\n\nRespond as JSON: {{\"label\": ..., \"evidence_span\": ...}}",
+    "notes": []
+  },
+  {
+    "prompt_key": "PRM-t2-strategy-extraction",
+    "version": "0.1.0",
+    "task_class": "T2",
+    "template": "Extract a canonical strategy specification (family, entry/exit rules, assumptions, ambiguities) from the description below.\n\nDESCRIPTION:\n{description}\n\nRespond as JSON matching the CanonicalStrategySpec-like schema.",
+    "notes": []
+  },
+  {
+    "prompt_key": "PRM-t3-semantic-review",
+    "version": "0.1.0",
+    "task_class": "T3",
+    "template": "Compare the STRATEGY description to the IMPLEMENTATION snippet and list semantic mismatches, each with a suggested executable test.\n\nSTRATEGY:\n{strategy}\n\nIMPLEMENTATION:\n{implementation}\n\nRespond as JSON: {{\"mismatches\": [...]}}",
+    "notes": []
+  },
+  {
+    "prompt_key": "PRM-t4-backtest-plan",
+    "version": "0.1.0",
+    "task_class": "T4",
+    "template": "Given the STRATEGY and AVAILABLE_DATASETS, produce a reproducible backtest plan covering leakage prevention, cost assumptions, OOS design, and missing dependencies.\n\nSTRATEGY:\n{strategy}\n\nAVAILABLE_DATASETS:\n{datasets}\n\nRespond as JSON: {{\"plan\": {{...}}}}",
+    "notes": []
+  },
+  {
+    "prompt_key": "PRM-t5-redteam-critique",
+    "version": "0.1.0",
+    "task_class": "T5",
+    "template": "Given the BACKTEST_REPORT, produce the strongest falsification plan: list material failure modes by severity and recommended tests.\n\nBACKTEST_REPORT:\n{backtest_report}\n\nRespond as JSON: {{\"failure_modes\": [...], \"recommended_tests\": [...]}}",
+    "notes": []
+  },
+  {
+    "prompt_key": "PRM-t6-tool-comparison",
+    "version": "0.1.0",
+    "task_class": "T6",
+    "template": "Given official doc excerpts for tools {tool_names}, produce a capability matrix and a decision, citing only the given excerpts.\n\nDOCS:\n{docs}\n\nRespond as JSON: {{\"matrix\": {{...}}, \"decision\": ...}}",
+    "notes": []
+  },
+  {
+    "prompt_key": "PRM-t7-dictionary-ontology",
+    "version": "0.1.0",
+    "task_class": "T7",
+    "template": "Given venue docs using an overloaded TERM, extract canonical concepts, aliases, and context-specific meanings without merging distinct meanings.\n\nTERM: {term}\nDOCS:\n{docs}\n\nRespond as JSON: {{\"concepts\": [...]}}",
+    "notes": []
+  },
+  {
+    "prompt_key": "PRM-t8-research-synthesis",
+    "version": "0.1.0",
+    "task_class": "T8",
+    "template": "Given SOURCES (some conflicting), synthesize a reusable research asset: weight primary sources, flag contradictions, and note freshness caveats.\n\nSOURCES:\n{sources}\n\nRespond as JSON: {{\"asset\": {{...}}, \"contradictions\": [...]}}",
+    "notes": []
+  }
+]

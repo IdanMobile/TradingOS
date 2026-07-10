@@ -1,0 +1,17 @@
+source_id: SRC-FT2
+source_class: official_framework
+url: https://www.freqtrade.io/en/stable/strategy-customization/
+title: "Strategy Customization -- EMA short/long crossover example (freqtrade official documentation)"
+author: freqtrade maintainers
+published_at: "unknown (long-standing documentation example)"
+retrieved_at: "2026-07-07"
+license: GPL-3.0
+version_or_commit: "stable docs, exact commit not pinned in this pass"
+market_claimed: "spot crypto (freqtrade default market)"
+timeframe_claimed: "5m (freqtrade default template timeframe)"
+profit_claims_inherited: false
+notes: >
+  Recalled from public knowledge of freqtrade's documented EMA-crossover
+  customization example; no live fetch performed in this pass -- exact
+  current wording/window lengths should be reviewer-confirmed before any
+  code reuse.

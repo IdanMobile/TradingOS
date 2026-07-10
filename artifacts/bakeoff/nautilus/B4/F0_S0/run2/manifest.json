@@ -1,0 +1,46 @@
+{
+  "artifact_id": "nautilus-B4-F0_S0-run2",
+  "produced_by": "T-006-03",
+  "status": "OK",
+  "engine": "nautilus",
+  "engine_version": "1.230.0",
+  "command": [
+    "/Users/user/Downloads/trading_os_project_package/engines/nautilus/.venv/bin/python",
+    "/Users/user/Downloads/trading_os_project_package/engines/nautilus/lane/run_backtest.py",
+    "--strategy",
+    "B4",
+    "--scenario",
+    "F0_S0",
+    "--run-dir",
+    "artifacts/bakeoff/nautilus/B4/F0_S0/run2"
+  ],
+  "started_utc": "2026-07-10T01:54:24.515372+00:00",
+  "scenario": "F0/S0",
+  "fee_rate_per_side": "0",
+  "slippage_note": "no slippage model applied (fills at matching-engine next-bar-open price), matching Freqtrade lane's F0/S0,F1/S1 convention for direct comparability; Nautilus additionally supports FillModel/LatencyModel configuration (capability present, not exercised in this matrix run) per the NautilusTrader-specific probe requirement.",
+  "evidence_window_utc": [
+    "2024-01-01 00:00:00+00:00",
+    "2024-01-14 23:55:00+00:00"
+  ],
+  "converter_losses": [
+    "decimal128->float64 (Nautilus Price/Quantity model)"
+  ],
+  "input_refs": [
+    "DS-CRYPTO-SPOT-BAKEOFF-V1"
+  ],
+  "files": [
+    {
+      "path": "trades.parquet",
+      "sha256": "d0568b8901c2b6aaf7433a37124f9a7c8d1cb14ea4b4fadf70e4b45ce6985f96"
+    },
+    {
+      "path": "equity.parquet",
+      "sha256": "d0a9203e41b2e6699f34b41ca8203e3e2085025f45ee605c7688178f9374e4d3"
+    },
+    {
+      "path": "normalized_metrics.json",
+      "sha256": "2fdd97785e413ae9c64ea075173d9be0f169848d3f4fb6f5d125c594fc8772ca"
+    }
+  ],
+  "schema_version": 1
+}

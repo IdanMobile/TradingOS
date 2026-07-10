@@ -1,0 +1,12 @@
+{
+  "available_datasets": [
+    "DS-CRYPTO-SPOT-BAKEOFF-V1 (frozen, 5m bars)"
+  ],
+  "ground_truth_checklist": [
+    "warm-up bars excluded from P&L (longest SMA window)",
+    "signal-bar-close vs next-bar-open execution timing stated explicitly",
+    "OOS split date recorded before any parameter search"
+  ],
+  "id": "T4-01",
+  "strategy_ref": "T2-01 (trend_following SMA cross)"
+}

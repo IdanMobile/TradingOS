@@ -1,0 +1,9 @@
+{
+  "claim": "T-011-05 may run before any AI-provider credential is configured.",
+  "evidence_span": "Precondition: intake-gate credential disposition = configured",
+  "id": "T1-11",
+  "label": "contradicted",
+  "publication_date": "2026-07-06",
+  "source_ref": "todos/11_ai_agent_eval.md",
+  "source_text": "Precondition: intake-gate credential disposition = configured; T-001-04 pricing verification."
+}

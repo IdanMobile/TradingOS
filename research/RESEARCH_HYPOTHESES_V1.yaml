@@ -1,0 +1,86 @@
+registry_version: 1
+hypotheses:
+  - hypothesis_id: HYP-B2-MA-CROSSOVER-PROXY
+    candidate_id: B2
+    title: Moving-average crossover proxy for own-return trend persistence
+    source_refs: [SRC-TSMOM-MOP2012]
+    expected_strategy_id: STRAT-B2-ma-crossover
+    expected_spec_sha256: c79cf7b9d635feb8d7d6d5db88713aad2f47028d247362b811aed2742f103f06
+    semantic_transformation: >-
+      Transform the paper's diversified, monthly time-series-momentum construction into a
+      long-only 5-minute BTCUSDT rule that enters when SMA(3) exceeds SMA(5) and exits when
+      SMA(3) falls below SMA(5), then sweep alternate fast/slow windows.
+    proxy_notes:
+      - This is a simplified executable proxy, not a faithful paper reproduction.
+      - It omits the paper's asset universe, return-sign formation horizon, volatility scaling, short positions, and portfolio aggregation.
+      - The citation motivates only an own-past-return trend hypothesis; it supplies no inherited profitability proof for this crossover.
+    target_market: crypto_spot
+    target_instrument: BTCUSDT
+    target_timeframe: 5m
+    assumptions:
+      - Canonical B2 signal and next-bar execution semantics are authoritative for the lab.
+      - Parameter sweeps are sensitivity observations and do not select or validate a winner.
+    ambiguities:
+      - No primary source in the registry specifies this SMA(3)/SMA(5), BTCUSDT, or 5-minute implementation.
+    faithful_paper_reproduction: false
+    profit_claims_inherited: false
+    locally_reproduced: false
+    approval_eligible: false
+
+  - hypothesis_id: HYP-B3-RSI-MEAN-REVERSION-PROXY
+    candidate_id: B3
+    title: RSI mean-reversion idea transformed to the executable B3 band proxy
+    source_refs: [SRC-PAPER2]
+    expected_strategy_id: STRAT-B3-bollinger-mr
+    expected_spec_sha256: 523b5f6a61afe7b71b2507f0640815b619f4f14aa35d73665e865cf140b2102d
+    semantic_transformation: >-
+      Transform a short-horizon reversal idea, requested as RSI mean reversion, into the actual
+      canonical executable B3 rule: long BTCUSDT when close is below a 3-bar Bollinger lower band
+      using population standard deviation, exit at the middle band, and sweep window/deviation.
+    proxy_notes:
+      - This is a simplified executable proxy, not a faithful paper reproduction.
+      - The executable strategy uses Bollinger bands, not RSI; no RSI threshold or RSI calculation is present in the canonical spec.
+      - The cited paper studies cross-sectional security-return reversal, not single-instrument intraday band reversion.
+      - The citation motivates only a reversal hypothesis and supplies no inherited profitability proof.
+    target_market: crypto_spot
+    target_instrument: BTCUSDT
+    target_timeframe: 5m
+    assumptions:
+      - Canonical B3 Bollinger signal and next-bar execution semantics are authoritative for the lab.
+      - Parameter sweeps are sensitivity observations and do not select or validate a winner.
+    ambiguities:
+      - The requested RSI formulation has no executable RSI mapping in the current canonical B3 spec.
+      - No primary source in the registry specifies this BTCUSDT, Bollinger, or 5-minute implementation.
+    faithful_paper_reproduction: false
+    profit_claims_inherited: false
+    locally_reproduced: false
+    approval_eligible: false
+
+  - hypothesis_id: HYP-B4-ATR-BREAKOUT-PROXY
+    candidate_id: B4
+    title: ATR breakout idea transformed to the executable B4 channel proxy
+    source_refs: [SRC-TSMOM-MOP2012]
+    expected_strategy_id: STRAT-B4-vol-breakout
+    expected_spec_sha256: dce462ca70fd6f479a7bbb068837718d9e5ce7bf3a01e2b040a11af58935c046
+    semantic_transformation: >-
+      Transform an ATR-breakout idea into the actual canonical executable B4 rule: enter long
+      BTCUSDT when close exceeds the maximum high of the previous 5 bars, exit below SMA(3), and
+      sweep channel lookback/exit windows.
+    proxy_notes:
+      - This is a simplified executable proxy, not a faithful paper reproduction.
+      - The executable strategy uses no ATR calculation, true-range threshold, or ATR-based sizing; it is a prior-high channel breakout.
+      - The cited time-series-momentum paper is relevant only to directional persistence, not to ATR or this channel rule.
+      - The citation supplies no inherited profitability proof for this breakout.
+    target_market: crypto_spot
+    target_instrument: BTCUSDT
+    target_timeframe: 5m
+    assumptions:
+      - Canonical B4 channel signal and next-bar execution semantics are authoritative for the lab.
+      - Parameter sweeps are sensitivity observations and do not select or validate a winner.
+    ambiguities:
+      - The requested ATR formulation has no executable ATR mapping in the current canonical B4 spec.
+      - No primary source in the registry specifies this BTCUSDT, channel, or 5-minute implementation.
+    faithful_paper_reproduction: false
+    profit_claims_inherited: false
+    locally_reproduced: false
+    approval_eligible: false

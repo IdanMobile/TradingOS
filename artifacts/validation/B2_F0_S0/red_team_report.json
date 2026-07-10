@@ -1,0 +1,61 @@
+{
+  "schema": "tios-backtest-red-team-v1",
+  "verdict": "NO_APPROVAL_MATERIAL_ISSUES_REMAIN",
+  "scope": "B2 F0/S0 retained Freqtrade validation package",
+  "attacks_attempted": [
+    {
+      "id": "RT-01",
+      "category": "provenance",
+      "severity": "HIGH",
+      "finding": "Frozen dataset, normalized run artifacts, rerun evidence, and lineage references are present; cross-tool MLflow/DVC restore parity is not claimed.",
+      "falsification_test": "Recompute dataset manifest and normalized metric hashes from a clean checkout, then compare run1/run2 and lineage records byte-for-byte.",
+      "status": "PARTIAL_PASS"
+    },
+    {
+      "id": "RT-02",
+      "category": "costs",
+      "severity": "HIGH",
+      "finding": "The complete six-cell fee/slippage surface is negative in every retained scenario.",
+      "falsification_test": "Recompute net PnL across F0/S0, F1/S1, F1/S2, F1/S3, F2/S2, and F2/S3 and fail if any cell is omitted or changes without provenance.",
+      "status": "PASS_NEGATIVE_RESULT"
+    },
+    {
+      "id": "RT-03",
+      "category": "timing",
+      "severity": "HIGH",
+      "finding": "Signal and fill timing are documented; the engine lookahead follow-up remains WARN because Freqtrade overrides requested stake and trade-limit settings.",
+      "falsification_test": "Run the engine lookahead analysis with fixed stake and max-open-trade controls, inspect effective configuration, and reject if the controls are overridden or leakage is detected.",
+      "status": "OPEN_WARN"
+    },
+    {
+      "id": "RT-04",
+      "category": "leakage",
+      "severity": "HIGH",
+      "finding": "Temporal and signal-parity checks pass for the retained fixtures, but the engine-specific lookahead warning is not resolved.",
+      "falsification_test": "Run clean and deliberately leaky fixtures through temporal checks and compare feature availability timestamps against decision timestamps.",
+      "status": "PARTIAL_PASS_OPEN_ENGINE_LIMITATION"
+    },
+    {
+      "id": "RT-05",
+      "category": "regime",
+      "severity": "MEDIUM",
+      "finding": "Holdout trades are segmented across eight descriptive ex-post volatility/trend/volume combinations; no causal or predictive regime claim is made.",
+      "falsification_test": "Rebuild the holdout regime labels from canonical bars and verify every trade is assigned only from information available at or before its entry bar.",
+      "status": "PASS_DESCRIPTIVE_ONLY"
+    },
+    {
+      "id": "RT-06",
+      "category": "multiple_testing",
+      "severity": "HIGH",
+      "finding": "PBO/DSR remain deferred method candidates pending primary-literature review and known-answer fixtures.",
+      "falsification_test": "Do not activate G10 until independent fixture outputs match documented estimators and all tried configurations and selection rules are retained.",
+      "status": "DEFERRED"
+    }
+  ],
+  "hard_fail_demonstration": {
+    "predicate": "evaluate_cost_hard_fail",
+    "fixture": "tests/test_validation_gates.py::test_cost_rule_hard_fails_zero_cost_only_profit",
+    "expected": "FAIL with hard_fail=true"
+  },
+  "operator_decision": "Keep B2 as a rejected infrastructure baseline; do not promote to paper or live trading. Resolve G4 and complete engine parity before any prototype approval decision."
+}

@@ -1,0 +1,8 @@
+{
+  "ground_truth_mismatches": [
+    "implementation executes on the signal bar's close instead of the next bar's open (lookahead)"
+  ],
+  "id": "T3-01",
+  "implementation": "entry: close > sma_30 (evaluated and executed on the same bar's close)",
+  "strategy": "Buy when close crosses above the 30-period SMA; sell when it crosses back below."
+}

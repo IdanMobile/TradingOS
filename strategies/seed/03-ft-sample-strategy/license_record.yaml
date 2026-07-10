@@ -1,0 +1,7 @@
+source_id: SRC-FT1
+license_class: copyleft
+license_name: GPL-3.0
+evidence_url: https://github.com/freqtrade/freqtrade/blob/develop/LICENSE
+code_reuse_allowed: true
+requires_attribution: true
+notes: freqtrade repository (including bundled templates) is GPL-3.0; code reuse permitted with attribution/copyleft obligations per license_gate().

@@ -1,0 +1,13 @@
+{
+  "description": "Continuously quote both sides around the mid-price with a fixed spread; cancel and re-quote whenever the mid-price moves by more than half a tick.",
+  "family": "market_making",
+  "ground_truth": {
+    "ambiguities": [
+      "inventory-skew adjustment to the spread is not described"
+    ],
+    "entry_rule": "always_in_market",
+    "exit_rule": "n/a (continuous quoting)",
+    "family": "market_making"
+  },
+  "id": "T2-05"
+}

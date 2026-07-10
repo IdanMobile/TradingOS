@@ -1,0 +1,18 @@
+{
+  "docs": {
+    "perp_venue_doc": "Perpetual futures leverage lets a trader open a position larger than their posted margin, up to an exchange-defined maximum multiple.",
+    "spot_venue_doc": "Spot trading does not offer leverage; all positions are fully collateralized by the held asset."
+  },
+  "ground_truth_concepts": [
+    {
+      "concept": "leverage (spot)",
+      "meaning": "not applicable / always 1x"
+    },
+    {
+      "concept": "leverage (perpetual futures)",
+      "meaning": "margin multiple up to an exchange maximum"
+    }
+  ],
+  "id": "T7-01",
+  "term": "leverage"
+}

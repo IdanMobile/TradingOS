@@ -1,0 +1,63 @@
+{
+  "status": "COMPLETE_EX_POST_SEGMENTATION",
+  "dataset": "DS-CRYPTO-SPOT-BAKEOFF-V1",
+  "strategy": "B2MaCrossover",
+  "window": "2025-05-25 to 2026-06-30",
+  "method": "12-bar realized volatility, 12-bar close trend, and volume medians; descriptive ex-post labels only",
+  "thresholds": {
+    "realized_vol_median": "0.0011212135296249574",
+    "absolute_trend_median": "0.0023291655256144628",
+    "volume_median": "195.37246"
+  },
+  "regimes": [
+    {
+      "regime": "vol_high_trend_neg_volume_high",
+      "trades": 69,
+      "net_pnl_quote": "-169.2445921100000000",
+      "average_pnl_quote": "-2.452820175507246376811594203"
+    },
+    {
+      "regime": "vol_high_trend_neg_volume_low",
+      "trades": 39,
+      "net_pnl_quote": "-84.8953300600000000",
+      "average_pnl_quote": "-2.176803334871794871794871795"
+    },
+    {
+      "regime": "vol_high_trend_pos_volume_high",
+      "trades": 82,
+      "net_pnl_quote": "-159.7748458400000000",
+      "average_pnl_quote": "-1.948473729756097560975609756"
+    },
+    {
+      "regime": "vol_high_trend_pos_volume_low",
+      "trades": 29,
+      "net_pnl_quote": "-41.8503165600000000",
+      "average_pnl_quote": "-1.443114364137931034482758621"
+    },
+    {
+      "regime": "vol_low_trend_neg_volume_high",
+      "trades": 16,
+      "net_pnl_quote": "-39.1577458800000000",
+      "average_pnl_quote": "-2.4473591175000000"
+    },
+    {
+      "regime": "vol_low_trend_neg_volume_low",
+      "trades": 98,
+      "net_pnl_quote": "-219.8738856400000000",
+      "average_pnl_quote": "-2.243611077959183673469387755"
+    },
+    {
+      "regime": "vol_low_trend_pos_volume_high",
+      "trades": 27,
+      "net_pnl_quote": "-40.9770749800000000",
+      "average_pnl_quote": "-1.517669443703703703703703704"
+    },
+    {
+      "regime": "vol_low_trend_pos_volume_low",
+      "trades": 114,
+      "net_pnl_quote": "-235.3832145200000000",
+      "average_pnl_quote": "-2.064765039649122807017543860"
+    }
+  ],
+  "interpretation": "Regime labels describe observed conditions; they are not predictive claims."
+}

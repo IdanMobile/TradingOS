@@ -1,0 +1,7 @@
+source_id: SRC-QC1
+license_class: permissive
+license_name: Apache-2.0
+evidence_url: https://github.com/QuantConnect/Lean/blob/master/LICENSE
+code_reuse_allowed: true
+requires_attribution: false
+notes: LEAN repository is Apache-2.0 licensed; permissive class per license_gate().

@@ -1,0 +1,174 @@
+{
+  "notes": "Sample drawn from the null-provider seed run (runs/null_seed_run.jsonl); outputs are the deterministic null stub, not real model output, so no calibration judgment is meaningful yet. This file exists to freeze the sample+rubric structure T-011-05's real runs will populate for review.",
+  "review_status": "PENDING_HUMAN_REVIEW",
+  "reviewed_at": null,
+  "reviewer": null,
+  "rubric": {
+    "criteria": [
+      "instruction_adherence: did the output follow the requested JSON schema exactly?",
+      "factual_accuracy: does the output correctly reflect the fixture (not outside knowledge)?",
+      "completeness: are all required fields present and non-trivially filled?",
+      "hallucination: does the output assert anything not present in the fixture?"
+    ],
+    "scale": "1 (fails) - 5 (fully meets criterion), per criterion"
+  },
+  "sample": [
+    {
+      "agent_key": "AGT-null-selfcheck",
+      "context_package_hash": "1003b2e055924f72d76eabb8c2333e20f27020c3cd476b95315f11587b5bdc05",
+      "cost_usd": 0.0,
+      "downstream_links": [],
+      "evaluator_results": {},
+      "fixture_path": "t1_source_verification/T1-01.json",
+      "latency_ms": 0.0,
+      "model_identifier": "null-v1",
+      "normalized_output": {
+        "evidence_span": "",
+        "label": "insufficient"
+      },
+      "prompt_key": "PRM-t1",
+      "provider": "null",
+      "raw_output": {
+        "evidence_span": "",
+        "label": "insufficient"
+      },
+      "schema_errors": [],
+      "source_corpus_hash": "0eafba9d1e3fddd5cd6de1322e944d913e1242e7395409d3974a49732866cb4c",
+      "task_class": "T1",
+      "task_id": "T1-01",
+      "timestamp": "2026-07-07T00:00:00Z",
+      "tool_versions": {}
+    },
+    {
+      "agent_key": "AGT-null-selfcheck",
+      "context_package_hash": "0fb12fb823bd24640a105a7471efc0381f918c75ef8c36a614e23191028b15f5",
+      "cost_usd": 0.0,
+      "downstream_links": [],
+      "evaluator_results": {},
+      "fixture_path": "t1_source_verification/T1-02.json",
+      "latency_ms": 0.0,
+      "model_identifier": "null-v1",
+      "normalized_output": {
+        "evidence_span": "",
+        "label": "insufficient"
+      },
+      "prompt_key": "PRM-t1",
+      "provider": "null",
+      "raw_output": {
+        "evidence_span": "",
+        "label": "insufficient"
+      },
+      "schema_errors": [],
+      "source_corpus_hash": "0eafba9d1e3fddd5cd6de1322e944d913e1242e7395409d3974a49732866cb4c",
+      "task_class": "T1",
+      "task_id": "T1-02",
+      "timestamp": "2026-07-07T00:00:00Z",
+      "tool_versions": {}
+    },
+    {
+      "agent_key": "AGT-null-selfcheck",
+      "context_package_hash": "f366cabde48caf5ded747b0d92f12f825dad3e00c2031370b3634a98f71f6f1b",
+      "cost_usd": 0.0,
+      "downstream_links": [],
+      "evaluator_results": {},
+      "fixture_path": "t1_source_verification/T1-03.json",
+      "latency_ms": 0.0,
+      "model_identifier": "null-v1",
+      "normalized_output": {
+        "evidence_span": "",
+        "label": "insufficient"
+      },
+      "prompt_key": "PRM-t1",
+      "provider": "null",
+      "raw_output": {
+        "evidence_span": "",
+        "label": "insufficient"
+      },
+      "schema_errors": [],
+      "source_corpus_hash": "0eafba9d1e3fddd5cd6de1322e944d913e1242e7395409d3974a49732866cb4c",
+      "task_class": "T1",
+      "task_id": "T1-03",
+      "timestamp": "2026-07-07T00:00:00Z",
+      "tool_versions": {}
+    },
+    {
+      "agent_key": "AGT-null-selfcheck",
+      "context_package_hash": "f94ab990d6b5d00849b6672af288bb80855d3eea27f3e5b7192c87d91ee8c4db",
+      "cost_usd": 0.0,
+      "downstream_links": [],
+      "evaluator_results": {},
+      "fixture_path": "t1_source_verification/T1-04.json",
+      "latency_ms": 0.0,
+      "model_identifier": "null-v1",
+      "normalized_output": {
+        "evidence_span": "",
+        "label": "insufficient"
+      },
+      "prompt_key": "PRM-t1",
+      "provider": "null",
+      "raw_output": {
+        "evidence_span": "",
+        "label": "insufficient"
+      },
+      "schema_errors": [],
+      "source_corpus_hash": "0eafba9d1e3fddd5cd6de1322e944d913e1242e7395409d3974a49732866cb4c",
+      "task_class": "T1",
+      "task_id": "T1-04",
+      "timestamp": "2026-07-07T00:00:00Z",
+      "tool_versions": {}
+    },
+    {
+      "agent_key": "AGT-null-selfcheck",
+      "context_package_hash": "8bd9eaa79c4d04b8762f976dd90b586b9c3b1e7c65b7b62d48fbc810dded2202",
+      "cost_usd": 0.0,
+      "downstream_links": [],
+      "evaluator_results": {},
+      "fixture_path": "t1_source_verification/T1-05.json",
+      "latency_ms": 0.0,
+      "model_identifier": "null-v1",
+      "normalized_output": {
+        "evidence_span": "",
+        "label": "insufficient"
+      },
+      "prompt_key": "PRM-t1",
+      "provider": "null",
+      "raw_output": {
+        "evidence_span": "",
+        "label": "insufficient"
+      },
+      "schema_errors": [],
+      "source_corpus_hash": "0eafba9d1e3fddd5cd6de1322e944d913e1242e7395409d3974a49732866cb4c",
+      "task_class": "T1",
+      "task_id": "T1-05",
+      "timestamp": "2026-07-07T00:00:00Z",
+      "tool_versions": {}
+    },
+    {
+      "agent_key": "AGT-null-selfcheck",
+      "context_package_hash": "1b088a56885907d79bec0d28719b254c71351ed47f2fe23eee94f0f8cb302f35",
+      "cost_usd": 0.0,
+      "downstream_links": [],
+      "evaluator_results": {},
+      "fixture_path": "t1_source_verification/T1-06.json",
+      "latency_ms": 0.0,
+      "model_identifier": "null-v1",
+      "normalized_output": {
+        "evidence_span": "",
+        "label": "insufficient"
+      },
+      "prompt_key": "PRM-t1",
+      "provider": "null",
+      "raw_output": {
+        "evidence_span": "",
+        "label": "insufficient"
+      },
+      "schema_errors": [],
+      "source_corpus_hash": "0eafba9d1e3fddd5cd6de1322e944d913e1242e7395409d3974a49732866cb4c",
+      "task_class": "T1",
+      "task_id": "T1-06",
+      "timestamp": "2026-07-07T00:00:00Z",
+      "tool_versions": {}
+    }
+  ],
+  "set_hash": "9f3d22104e4f5da316ff58037fd4ec189ce47620e7372d62ac01a6901ab523af"
+}

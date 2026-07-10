@@ -1,0 +1,9 @@
+{
+  "claim": "LLM-as-judge scores are used without any human calibration step.",
+  "evidence_span": "LLM-as-judge scores require calibration and spot human review.",
+  "id": "T1-06",
+  "label": "contradicted",
+  "publication_date": "2026-07-05",
+  "source_ref": "specs/AI_AGENT_EVALUATION_BLUEPRINT_V1.md",
+  "source_text": "LLM-as-judge scores require calibration and spot human review."
+}

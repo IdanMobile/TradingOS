@@ -1,0 +1,7 @@
+source_id: SRC-PINE2
+license_class: copyleft
+license_name: Mozilla Public License 2.0
+evidence_url: https://www.tradingview.com/policies/house-rules/#open-source
+code_reuse_allowed: true
+requires_attribution: true
+notes: Same MPL-2.0 file-level-copyleft rationale as SRC-PINE1.

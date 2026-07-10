@@ -1,0 +1,24 @@
+[
+  {
+    "agent_key": "AGT-controlled-baseline",
+    "version": "0.1.0",
+    "workflow_ref": "harness.pipeline.run_fixture",
+    "tools": [],
+    "reasoning_settings": {"mode": "controlled", "temperature": 0},
+    "budget": {"max_tokens": 4000, "max_cost_usd": 0.5},
+    "notes": [
+      "Mode A (Controlled) per FROZEN_BENCHMARK_SUITE_V1.md: frozen prompt/tools/budget/timeout/schema, isolates model effect."
+    ]
+  },
+  {
+    "agent_key": "AGT-null-selfcheck",
+    "version": "0.1.0",
+    "workflow_ref": "harness.provider.NullProvider",
+    "tools": [],
+    "reasoning_settings": {"mode": "null"},
+    "budget": {"max_tokens": 0, "max_cost_usd": 0.0},
+    "notes": [
+      "T-011-03 harness self-test agent: no network, no credentials, deterministic stub output."
+    ]
+  }
+]

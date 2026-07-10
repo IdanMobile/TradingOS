@@ -1,0 +1,21 @@
+{
+  "engine": "freqtrade",
+  "strategy": "B2Neighborhood36",
+  "trades_roundtrips": 470,
+  "fills": 940,
+  "left_open_trades": 0,
+  "profit_total_abs": "-990.35720098",
+  "cagr": "-0.46322938723504514",
+  "max_drawdown_abs": "990.3572009800004",
+  "wins": 60,
+  "losses": 410,
+  "fee_audit": {
+    "max_pnl_deviation_quote": "5.0E-9",
+    "status": "PASS"
+  },
+  "semantic_notes": [
+    "ts_signal not exposed per trade; freqtrade evaluates signals at prior bar close and fills at next bar open (open_date == fill time)",
+    "fees converted from freqtrade per-side ratios to absolute quote amounts",
+    "prices float64 at engine boundary (declared converter loss)"
+  ]
+}
