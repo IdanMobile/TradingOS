@@ -53,3 +53,9 @@ mlartifacts/
 # --- Engine lane working dirs (rebuilt from code; artifacts live in artifacts/) ---
 engines/*/lane/
 artifacts/**/*.zip
+
+# --- Raw bakeoff engine dumps (100s of MB; manifest/metrics/parquet summaries are committed) ---
+artifacts/bakeoff/**/raw.json
+
+# --- DVC lineage prototype demo data (regenerable scratch, not evidence) ---
+artifacts/lineage/prototype/
