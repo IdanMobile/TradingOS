@@ -1,0 +1,25 @@
+candidate_id: EXT-3COMMAS-DCA-CONFIG
+strategy_id: STRAT-EXT-3COMMAS-DCA-CONFIG
+replay_hypothesis_id: RPH-3COMMAS-DCA-CONFIG
+source_ref: SRC-3COMMAS-DCA-BOT
+status: LOCAL_REPLAY_RETAINED
+validation_state: UNVALIDATED
+promotion_eligible: false
+execution_authority: NONE
+artifact_refs:
+  - strategies/external/3commas-dca-config/canonical_strategy_spec.yaml
+  - artifacts/source_intake/3commas_dca_bot/config_hypotheses.json
+  - artifacts/external_replay/3commas_dca/EXTDCA-9ed0a866cc1ddb5f7f4e7a94b5c5e48b/replay_run.json
+  - artifacts/external_replay/3commas_dca/EXTDCA-9ed0a866cc1ddb5f7f4e7a94b5c5e48b/scorecard.json
+required_next_artifact: validation_package_if_future_positive_candidate_survives
+blocked_on:
+  - cross-engine reproduction for the local DCA add-on model
+  - temporal/G10 validation package if a candidate survives first-pass replay
+  - normal validation gates including G10
+prohibited:
+  - credential_request
+  - account_connection
+  - platform_bot_execution
+  - order_routing
+  - paper_demo_or_live_activation
+  - profit_claim_inheritance

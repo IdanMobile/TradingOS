@@ -17,6 +17,12 @@ import pyarrow.parquet as pq
 
 ROOT = Path(__file__).resolve().parents[1]
 DATASET = ROOT / "data" / "normalized" / "BTCUSDT_5m.parquet"
+# D-040: the cycle compares every reproduced candidate across the full frozen grid.
+DATASETS = {
+    f"{instrument}_{timeframe}": ROOT / "data" / "normalized" / f"{instrument}_{timeframe}.parquet"
+    for instrument in ("BTCUSDT", "ETHUSDT")
+    for timeframe in ("5m", "15m", "1h")
+}
 FROZEN_MANIFEST = ROOT / "artifacts" / "datasets" / "DS-CRYPTO-SPOT-BAKEOFF-V1.manifest.json"
 QUALITY_REPORT = ROOT / "artifacts" / "datasets" / "QUALITY_REPORT.json"
 OUTPUT_ROOT = ROOT / "artifacts" / "research_lab" / "seed_cycle_v0"
@@ -25,6 +31,14 @@ INITIAL_CASH = Decimal("1000")
 QC1_FAST = (3, 5, 8, 10)
 QC1_SLOW = (20, 30, 50)
 QC2_WINDOW = (10, 20, 40, 80)
+PINE1_WINDOW = (10, 20, 40)
+PINE1_STD = (Decimal("1.5"), Decimal("2"), Decimal("2.5"))
+FT1_RSI_WINDOW = (7, 14, 21)
+FT1_RSI_THRESHOLD = (Decimal("20"), Decimal("30"), Decimal("40"))
+FT1_BB_WINDOW = 20
+FT1_BB_STD = Decimal("2")
+FT2_SHORT = (3, 5, 8)
+FT2_LONG = (10, 20, 30)
 
 
 @dataclass(frozen=True)
@@ -90,6 +104,154 @@ def simulate_next_open(
             trades += 1
     final_equity = cash if quantity == 0 else quantity * opens[-1] * (Decimal("1") - FEES)
     return final_equity, trades
+
+
+def rolling_bollinger(
+    values: list[Decimal], window: int, deviations: Decimal
+) -> list[tuple[Decimal, Decimal, Decimal] | None]:
+    """Rolling (lower, mid, upper) with population std via incremental sums."""
+    result: list[tuple[Decimal, Decimal, Decimal] | None] = [None] * len(values)
+    total = Decimal("0")
+    total_squares = Decimal("0")
+    for index, value in enumerate(values):
+        total += value
+        total_squares += value * value
+        if index >= window:
+            leaving = values[index - window]
+            total -= leaving
+            total_squares -= leaving * leaving
+        if index + 1 >= window:
+            mid = total / Decimal(window)
+            variance = total_squares / Decimal(window) - mid * mid
+            std = max(variance, Decimal("0")).sqrt()
+            result[index] = (mid - deviations * std, mid, mid + deviations * std)
+    return result
+
+
+def wilder_rsi(values: list[Decimal], window: int) -> list[Decimal | None]:
+    """Wilder-smoothed RSI (the talib/freqtrade convention)."""
+    result: list[Decimal | None] = [None] * len(values)
+    average_gain = Decimal("0")
+    average_loss = Decimal("0")
+    hundred = Decimal("100")
+    for index in range(1, len(values)):
+        delta = values[index] - values[index - 1]
+        gain = delta if delta > 0 else Decimal("0")
+        loss = -delta if delta < 0 else Decimal("0")
+        if index <= window:
+            average_gain += gain / Decimal(window)
+            average_loss += loss / Decimal(window)
+            if index < window:
+                continue
+        else:
+            average_gain = (average_gain * (window - 1) + gain) / Decimal(window)
+            average_loss = (average_loss * (window - 1) + loss) / Decimal(window)
+        if average_loss == 0:
+            result[index] = hundred
+        else:
+            result[index] = hundred - hundred / (1 + average_gain / average_loss)
+    return result
+
+
+def rolling_ema(values: list[Decimal], window: int) -> list[Decimal | None]:
+    """True recursive EMA, talib convention: SMA seed, alpha = 2/(window+1)."""
+    result: list[Decimal | None] = [None] * len(values)
+    alpha = Decimal(2) / Decimal(window + 1)
+    total = Decimal("0")
+    for index, value in enumerate(values):
+        if index + 1 < window:
+            total += value
+            continue
+        if index + 1 == window:
+            total += value
+            result[index] = total / Decimal(window)
+        else:
+            previous = result[index - 1]
+            assert previous is not None
+            result[index] = alpha * value + (1 - alpha) * previous
+    return result
+
+
+def ft2_trials(candles: dict[str, list[Decimal]]) -> list[Trial]:
+    """STRAT-FT2-ema-cross: enter ema_short>ema_long, exit ema_short<ema_long."""
+    close, opens = candles["close"], candles["open"]
+    rows: list[Trial] = []
+    for short_window, long_window in product(FT2_SHORT, FT2_LONG):
+        if short_window >= long_window:
+            continue
+        key = f"short={short_window},long={long_window}"
+        short_ema = rolling_ema(close, short_window)
+        long_ema = rolling_ema(close, long_window)
+        entries = [
+            fast is not None and slow is not None and fast > slow
+            for fast, slow in zip(short_ema, long_ema, strict=True)
+        ]
+        exits = [
+            fast is not None and slow is not None and fast < slow
+            for fast, slow in zip(short_ema, long_ema, strict=True)
+        ]
+        equity, trades = simulate_next_open(opens, entries, exits)
+        rows.append(
+            Trial(
+                candidate_id="STRAT-FT2-ema-cross",
+                trial_key=key,
+                status="COMPLETED",
+                total_return=str((equity / INITIAL_CASH) - Decimal("1")),
+                final_equity=str(equity),
+                trades=trades,
+            )
+        )
+    return rows
+
+
+def pine1_trials(candles: dict[str, list[Decimal]]) -> list[Trial]:
+    """STRAT-PINE1-bb-strategy: enter close<bb_lower, exit close>bb_upper."""
+    close, opens = candles["close"], candles["open"]
+    rows: list[Trial] = []
+    for window, deviations in product(PINE1_WINDOW, PINE1_STD):
+        key = f"window={window},std={deviations}"
+        bands = rolling_bollinger(close, window, deviations)
+        entries = [b is not None and price < b[0] for price, b in zip(close, bands, strict=True)]
+        exits = [b is not None and price > b[2] for price, b in zip(close, bands, strict=True)]
+        equity, trades = simulate_next_open(opens, entries, exits)
+        rows.append(
+            Trial(
+                candidate_id="STRAT-PINE1-bb-strategy",
+                trial_key=key,
+                status="COMPLETED",
+                total_return=str((equity / INITIAL_CASH) - Decimal("1")),
+                final_equity=str(equity),
+                trades=trades,
+            )
+        )
+    return rows
+
+
+def ft1_trials(candles: dict[str, list[Decimal]]) -> list[Trial]:
+    """STRAT-FT1-sample-strategy: enter close<bb_lower and rsi<threshold, exit close>bb_mid."""
+    close, opens = candles["close"], candles["open"]
+    bands = rolling_bollinger(close, FT1_BB_WINDOW, FT1_BB_STD)
+    rows: list[Trial] = []
+    for rsi_window, threshold in product(FT1_RSI_WINDOW, FT1_RSI_THRESHOLD):
+        key = f"rsi_window={rsi_window},rsi_threshold={threshold}"
+        rsi = wilder_rsi(close, rsi_window)
+        entries = [
+            b is not None and r is not None and price < b[0] and r < threshold
+            for price, b, r in zip(close, bands, rsi, strict=True)
+        ]
+        exits = [b is not None and price > b[1] for price, b in zip(close, bands, strict=True)]
+        equity, trades = simulate_next_open(opens, entries, exits)
+        rows.append(
+            Trial(
+                candidate_id="STRAT-FT1-sample-strategy",
+                trial_key=key,
+                status="COMPLETED",
+                total_return=str((equity / INITIAL_CASH) - Decimal("1")),
+                final_equity=str(equity),
+                trades=trades,
+            )
+        )
+    return rows
 
 
 def qc1_trials(candles: dict[str, list[Decimal]]) -> list[Trial]:
@@ -159,6 +321,7 @@ def write_trials(path: Path, rows: list[Trial]) -> None:
 def build_hashes() -> dict[str, str]:
     return {
         "dataset": sha256(DATASET),
+        **{f"dataset_{name}": sha256(path) for name, path in DATASETS.items()},
         "frozen_manifest": sha256(FROZEN_MANIFEST),
         "quality_report": sha256(QUALITY_REPORT),
         "runner": sha256(Path(__file__)),
@@ -169,6 +332,13 @@ def build_hashes() -> dict[str, str]:
                 "qc1_fast": QC1_FAST,
                 "qc1_slow": QC1_SLOW,
                 "qc2_window": QC2_WINDOW,
+                "pine1_window": PINE1_WINDOW,
+                "pine1_std": [str(value) for value in PINE1_STD],
+                "ft1_rsi_window": FT1_RSI_WINDOW,
+                "ft1_rsi_threshold": [str(value) for value in FT1_RSI_THRESHOLD],
+                "ft1_bb": [FT1_BB_WINDOW, str(FT1_BB_STD)],
+                "ft2_short": FT2_SHORT,
+                "ft2_long": FT2_LONG,
             }
         ),
     }
@@ -185,11 +355,21 @@ def run_cycle() -> dict[str, Any]:
         return result
     out.mkdir(parents=True, exist_ok=True)
     started = datetime.now(tz=UTC).isoformat()
-    candles = load_candles()
-    qc1 = qc1_trials(candles)
-    qc2 = qc2_trials(candles)
-    write_trials(out / "qc1_trials.parquet", qc1)
-    write_trials(out / "qc2_trials.parquet", qc2)
+    family_runners = {
+        "qc1": ("STRAT-QC1-dual-ma-cross", qc1_trials),
+        "qc2": ("STRAT-QC2-donchian-breakout", qc2_trials),
+        "pine1": ("STRAT-PINE1-bb-strategy", pine1_trials),
+        "ft1": ("STRAT-FT1-sample-strategy", ft1_trials),
+        "ft2": ("STRAT-FT2-ema-cross", ft2_trials),
+    }
+    # families: family name -> (candidate_id, {dataset name -> trials})
+    families: dict[str, tuple[str, dict[str, list[Trial]]]] = {}
+    for dataset_name, dataset_path in DATASETS.items():
+        candles = load_candles(dataset_path)
+        for name, (candidate, runner) in family_runners.items():
+            trials = runner(candles)
+            families.setdefault(name, (candidate, {}))[1][dataset_name] = trials
+            write_trials(out / f"{name}_{dataset_name}_trials.parquet", trials)
     evidence = [
         {
             "candidate_id": candidate,
@@ -197,7 +377,7 @@ def run_cycle() -> dict[str, Any]:
             "approval_status": "NOT_ELIGIBLE",
             "execution_authority": "NONE",
         }
-        for candidate in ("STRAT-QC1-dual-ma-cross", "STRAT-QC2-donchian-breakout")
+        for candidate, _ in families.values()
     ]
     (out / "evidence.jsonl").write_text(
         "".join(json.dumps(row, sort_keys=True) + "\n" for row in evidence),
@@ -207,14 +387,22 @@ def run_cycle() -> dict[str, Any]:
         "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
         "winner_selected": False,
         "candidates": {
-            "STRAT-QC1-dual-ma-cross": {
-                "trials": len(qc1),
-                "best_total_return": max(row.total_return for row in qc1),
-            },
-            "STRAT-QC2-donchian-breakout": {
-                "trials": len(qc2),
-                "best_total_return": max(row.total_return for row in qc2),
-            },
+            candidate: {
+                "trials": sum(len(rows) for rows in by_dataset.values()),
+                "best_total_return": max(
+                    row.total_return for rows in by_dataset.values() for row in rows
+                ),
+                "by_dataset": {
+                    dataset_name: {
+                        "trials": len(rows),
+                        "best_total_return": max(row.total_return for row in rows),
+                        "max_trades": max(row.trades for row in rows),
+                        "min_trades": min(row.trades for row in rows),
+                    }
+                    for dataset_name, rows in by_dataset.items()
+                },
+            }
+            for candidate, by_dataset in families.values()
         },
         "blockers": [
             "no temporal validation package exists for these seed candidates",
@@ -254,7 +442,14 @@ def run_cycle() -> dict[str, Any]:
         **manifest,
         "schema": "tios-seed-cycle-v0-run",
         "reused": False,
-        "counts": {"candidates": 2, "trials": len(qc1) + len(qc2), "evidence_records": 2},
+        "counts": {
+            "candidates": len(families),
+            "datasets": len(DATASETS),
+            "trials": sum(
+                len(rows) for _, by_dataset in families.values() for rows in by_dataset.values()
+            ),
+            "evidence_records": len(evidence),
+        },
         "artifact_manifest_sha256": sha256(out / "manifest.json"),
         "content_sha256": canonical_hash({"manifest": manifest, "scorecards": scorecards}),
     }

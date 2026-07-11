@@ -1,0 +1,95 @@
+{
+  "approval_state": "NOT_ELIGIBLE",
+  "candidates": [
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "blockers": [
+        "baseline superiority failed; candidate underperforms cash and B1",
+        "cross-engine reproduction is signal-level with quantified residuals; fill/P&L parity across engines is not claimed",
+        "drawdown/loss severity remains material",
+        "economic performance after declared costs is negative",
+        "multiple-testing control failed: candidate-specific PBO/DSR with independent recomputation rejects the selected configuration",
+        "parameter-neighborhood evidence is complete but all neighbors remain negative",
+        "regime evidence is descriptive only and does not support promotion",
+        "walk-forward evidence is complete but zero windows are positive"
+      ],
+      "candidate_id": "B2",
+      "dimensions": {
+        "baseline_superiority": "FAIL",
+        "cross_engine_reproduction": "PASS_WITH_SCOPE_NOTE",
+        "data_integrity_and_freshness": "PASS",
+        "drawdown_and_loss_severity": "FAIL",
+        "economic_performance_after_declared_costs": "FAIL",
+        "multiple_testing_selection_bias_control": "FAIL",
+        "operational_and_evidence_completeness": "PASS",
+        "parameter_neighborhood_robustness": "FAIL",
+        "regime_stability": "PASS_WITH_SCOPE_NOTE",
+        "temporal_walk_forward_stability": "FAIL"
+      },
+      "hypothesis_id": "HYP-B2-MA-CROSSOVER-PROXY",
+      "strategy_version_id": "SV-d562c2e6a4fadaa9",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "blockers": [
+        "baseline superiority failed; candidate underperforms cash and B1",
+        "cross-engine reproduction is signal-level with quantified residuals; fill/P&L parity across engines is not claimed",
+        "drawdown/loss severity remains material",
+        "economic performance after declared costs is negative",
+        "multiple-testing control failed: candidate-specific PBO/DSR with independent recomputation rejects the selected configuration",
+        "parameter-neighborhood evidence is complete but all neighbors remain negative",
+        "regime evidence is descriptive only and does not support promotion",
+        "walk-forward evidence is complete but zero windows are positive"
+      ],
+      "candidate_id": "B3",
+      "dimensions": {
+        "baseline_superiority": "FAIL",
+        "cross_engine_reproduction": "PASS_WITH_SCOPE_NOTE",
+        "data_integrity_and_freshness": "PASS",
+        "drawdown_and_loss_severity": "FAIL",
+        "economic_performance_after_declared_costs": "FAIL",
+        "multiple_testing_selection_bias_control": "FAIL",
+        "operational_and_evidence_completeness": "PASS",
+        "parameter_neighborhood_robustness": "FAIL",
+        "regime_stability": "PASS_WITH_SCOPE_NOTE",
+        "temporal_walk_forward_stability": "FAIL"
+      },
+      "hypothesis_id": "HYP-B3-RSI-MEAN-REVERSION-PROXY",
+      "strategy_version_id": "SV-73dee142966eae77",
+      "validation_state": "UNVALIDATED"
+    },
+    {
+      "approval_state": "NOT_ELIGIBLE",
+      "blockers": [
+        "baseline superiority failed; candidate underperforms cash and B1",
+        "cross-engine reproduction is signal-level with quantified residuals; fill/P&L parity across engines is not claimed",
+        "drawdown/loss severity remains material",
+        "economic performance after declared costs is negative",
+        "multiple-testing control failed: candidate-specific PBO/DSR with independent recomputation rejects the selected configuration",
+        "parameter-neighborhood evidence is complete but all neighbors remain negative",
+        "regime evidence is descriptive only and does not support promotion",
+        "walk-forward evidence is complete but zero windows are positive"
+      ],
+      "candidate_id": "B4",
+      "dimensions": {
+        "baseline_superiority": "FAIL",
+        "cross_engine_reproduction": "PASS_WITH_SCOPE_NOTE",
+        "data_integrity_and_freshness": "PASS",
+        "drawdown_and_loss_severity": "FAIL",
+        "economic_performance_after_declared_costs": "FAIL",
+        "multiple_testing_selection_bias_control": "FAIL",
+        "operational_and_evidence_completeness": "PASS",
+        "parameter_neighborhood_robustness": "FAIL",
+        "regime_stability": "PASS_WITH_SCOPE_NOTE",
+        "temporal_walk_forward_stability": "FAIL"
+      },
+      "hypothesis_id": "HYP-B4-ATR-BREAKOUT-PROXY",
+      "strategy_version_id": "SV-b7a50e1188dc4c99",
+      "validation_state": "UNVALIDATED"
+    }
+  ],
+  "lab_id": "LAB-c9578b6b45cdbf1f3c2f6ba1320f993f6f149fb83d17905e9070bc07079c7aea",
+  "scoring_policy": "independent dimensions only; no blended approval score",
+  "validation_state": "UNVALIDATED"
+}

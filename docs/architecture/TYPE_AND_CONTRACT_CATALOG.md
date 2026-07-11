@@ -183,7 +183,7 @@ Every artifact directory contains `manifest.json`:
 
 ## 7. API contracts (dashboard, MVP)
 
-Read-only HTTP+JSON, versioned path prefix `/api/v1/`, limited to the Research Lab, candidates/sources, comparisons, historical market workspace, automation status, and inert trading-domain read models in §3. Responses obey §0 serialization and carry `schema_version`. Only GET/HEAD/OPTIONS are allowed; no POST/PUT/PATCH/DELETE endpoint, manual-trigger endpoint, order endpoint, approval transition endpoint, venue control, or demo/paper/live control exists. Contract tests pin response schemas and prohibited methods (see TEST_MASTER_PLAN §contract).
+Read-only HTTP+JSON, versioned path prefix `/api/v1/`, limited to the Research Lab, candidates/sources, comparisons, historical market workspace, automation status, local registry/report search, stage-gate readiness, and inert trading-domain read models in §3. Responses obey §0 serialization and carry `schema_version`. GET/HEAD/OPTIONS are the general rule, with **exactly one audited write exception per D-038**: `POST /api/v1/workspace-actions/decision` — operator-driven workspace-decision recording only, loopback-only, payload validated against a fixed task/option allowlist, append-only to `artifacts/human_decisions/workspace_decisions.jsonl`, and test-pinned as the sole write path. No other POST/PUT/PATCH/DELETE endpoint, no manual-trigger endpoint, order endpoint, approval transition endpoint, venue control, stage-gate transition, or demo/paper/live control exists; expanding the exception's payloads, write targets, or methods requires a new decision gate. Contract tests pin response schemas and prohibited methods (see TEST_MASTER_PLAN §contract).
 
 ## 8. Versioning & compatibility rules
 

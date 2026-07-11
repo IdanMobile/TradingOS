@@ -20,6 +20,34 @@ def read_json(path: Path) -> dict:
     return json.loads(path.read_text())
 
 
+def g10_candidate_evidence_path() -> Path | None:
+    candidates = sorted((ROOT / "artifacts/validation").glob("G10_CANDIDATE_EVIDENCE_*.json"))
+    return candidates[-1] if candidates else None
+
+
+def g10_gate() -> dict:
+    evidence_path = g10_candidate_evidence_path()
+    if evidence_path is None:
+        return {
+            "status": "NOT_RUN",
+            "reason": (
+                "PBO/DSR method fixtures pass, but production G10 remains inactive "
+                "pending candidate-specific integration and independent recomputation"
+            ),
+        }
+    evidence = read_json(evidence_path)
+    b2 = evidence["families"]["b2"]
+    return {
+        "status": evidence["g10_gate_status"],
+        "reason": (
+            "candidate-specific PBO/DSR with independent recomputation on the retained "
+            f"B2 trial population: PBO={b2['pbo']['primary']['pbo']:.4f}, "
+            f"DSR={b2['dsr']['primary']['dsr']:.6f} for selected "
+            f"{b2['selected_trial_key']}; method fixtures pass"
+        ),
+    }
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     metrics = read_json(RUN / "normalized_metrics.json")
@@ -70,13 +98,7 @@ def main() -> None:
                 "status": "PASS",
                 "reason": "holdout trades segmented by ex-post volatility, trend, and volume labels",
             },
-            "G10": {
-                "status": "NOT_RUN",
-                "reason": (
-                    "PBO/DSR method fixtures pass, but production G10 remains inactive "
-                    "pending candidate-specific integration and independent recomputation"
-                ),
-            },
+            "G10": g10_gate(),
             "G11": {
                 "status": "PASS",
                 "reason": "B2 compared with cash and B1 buy-and-hold; candidate underperforms both",
@@ -96,6 +118,11 @@ def main() -> None:
                 (ROOT / "artifacts/validation/G10_METHOD_FIXTURES_2026_07_11.json").relative_to(
                     ROOT
                 )
+            ),
+            **(
+                {"g10_candidate_evidence": str(path.relative_to(ROOT))}
+                if (path := g10_candidate_evidence_path()) is not None
+                else {}
             ),
         },
     }

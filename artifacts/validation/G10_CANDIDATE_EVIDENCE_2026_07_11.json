@@ -1,0 +1,172 @@
+{
+  "assumptions": [
+    "slice matrix uses 16 equal contiguous time slices of per-bar mean returns; the tail remainder bars are excluded from slices and documented per family",
+    "Sharpe is per-bar (not annualized) so DSR sample_count equals bar count",
+    "selection procedure is max in-sample total_return, matching the retained accelerator sweep's implicit ranking; no winner is thereby selected",
+    "population is the vectorbt accelerator sweep; cross-engine reproduction remains a separate, still-blocked dimension",
+    "trials share one dataset/period, so 'independent_trials = trial count' is the conservative upper bound used by the false-strategy theorem"
+  ],
+  "effect": "This activates production G10 for the retained candidate populations. It approves no strategy, selects no winner, and enables no execution path.",
+  "failure_modes": [
+    "parity mismatch vs retained Parquet aborts the run (no partial evidence)",
+    "primary-vs-independent disagreement beyond tolerance aborts the run",
+    "non-COMPLETED trials abort the run"
+  ],
+  "families": {
+    "b2": {
+      "bars_excluded_tail": 11,
+      "dsr": {
+        "independent": {
+          "dsr": 0.0,
+          "expected_maximum_noise_sharpe": 0.007721023426252687,
+          "z_score": -18.555391738818162
+        },
+        "max_abs_delta": 7.105427357601002e-15,
+        "primary": {
+          "dsr": 0.0,
+          "expected_maximum_noise_sharpe": 0.007721023426252689,
+          "z_score": -18.55539173881817
+        }
+      },
+      "pbo": {
+        "independent": {
+          "mean_logit": -2.23440386027309,
+          "pbo": 0.8684537684537684,
+          "split_count": 12870
+        },
+        "max_abs_delta": 0.0,
+        "primary": {
+          "pbo": 0.8684537684537684,
+          "split_count": 12870
+        }
+      },
+      "sample_count": 577803,
+      "selected_returns_kurtosis": 78.03942641656673,
+      "selected_returns_skewness": 0.9190177214687036,
+      "selected_sharpe_per_bar": -0.01661699676401509,
+      "selected_total_return": -0.9999973429551194,
+      "selected_trial_key": "fast=15,slow=60",
+      "selection_procedure": "max in-sample total_return over the declared grid",
+      "sharpe_variance_across_trials": 1.3207911267005887e-05,
+      "slice_count": 16,
+      "slice_length_bars": 36112,
+      "trial_count": 34,
+      "verdict": "FAIL",
+      "verdict_rule": "PASS requires DSR >= 0.95 and PBO <= 0.5; a PASS additionally requires validation-stats-specialist review before promotion use (RG-07)"
+    },
+    "b3": {
+      "bars_excluded_tail": 11,
+      "dsr": {
+        "independent": {
+          "dsr": 0.0,
+          "expected_maximum_noise_sharpe": 0.02222669921822068,
+          "z_score": -16.893158672240066
+        },
+        "max_abs_delta": 3.552713678800501e-15,
+        "primary": {
+          "dsr": 0.0,
+          "expected_maximum_noise_sharpe": 0.022226699218220687,
+          "z_score": -16.89315867224007
+        }
+      },
+      "pbo": {
+        "independent": {
+          "mean_logit": 1.480192601719528,
+          "pbo": 0.016317016317016316,
+          "split_count": 12870
+        },
+        "max_abs_delta": 0.0,
+        "primary": {
+          "pbo": 0.016317016317016316,
+          "split_count": 12870
+        }
+      },
+      "sample_count": 577803,
+      "selected_returns_kurtosis": 3.0,
+      "selected_returns_skewness": 0.0,
+      "selected_sharpe_per_bar": 0.0,
+      "selected_total_return": 0.0,
+      "selected_trial_key": "window=3,deviation=1.5",
+      "selection_procedure": "max in-sample total_return over the declared grid",
+      "sharpe_variance_across_trials": 0.0001524002815976385,
+      "slice_count": 16,
+      "slice_length_bars": 36112,
+      "trial_count": 16,
+      "verdict": "FAIL",
+      "verdict_rule": "PASS requires DSR >= 0.95 and PBO <= 0.5; a PASS additionally requires validation-stats-specialist review before promotion use (RG-07)"
+    },
+    "b4": {
+      "bars_excluded_tail": 11,
+      "dsr": {
+        "independent": {
+          "dsr": 0.0,
+          "expected_maximum_noise_sharpe": 0.012365146326119097,
+          "z_score": -35.955159347713625
+        },
+        "max_abs_delta": 3.469446951953614e-18,
+        "primary": {
+          "dsr": 0.0,
+          "expected_maximum_noise_sharpe": 0.012365146326119101,
+          "z_score": -35.955159347713625
+        }
+      },
+      "pbo": {
+        "independent": {
+          "mean_logit": -2.4106325427274893,
+          "pbo": 1.0,
+          "split_count": 12870
+        },
+        "max_abs_delta": 0.0,
+        "primary": {
+          "pbo": 1.0,
+          "split_count": 12870
+        }
+      },
+      "sample_count": 577803,
+      "selected_returns_kurtosis": 386.09907230434334,
+      "selected_returns_skewness": 3.911272835347441,
+      "selected_sharpe_per_bar": -0.03413351143147991,
+      "selected_total_return": -0.9999996611217918,
+      "selected_trial_key": "lookback=20,exit_window=10",
+      "selection_procedure": "max in-sample total_return over the declared grid",
+      "sharpe_variance_across_trials": 4.7166575385399146e-05,
+      "slice_count": 16,
+      "slice_length_bars": 36112,
+      "trial_count": 16,
+      "verdict": "FAIL",
+      "verdict_rule": "PASS requires DSR >= 0.95 and PBO <= 0.5; a PASS additionally requires validation-stats-specialist review before promotion use (RG-07)"
+    }
+  },
+  "g10_gate_status": "FAIL",
+  "gate": "G10",
+  "generated_at_utc": "2026-07-11T10:42:07.666813+00:00",
+  "provenance": {
+    "dataset_file": "BTCUSDT_5m.parquet",
+    "dataset_id": "DS-CRYPTO-SPOT-BAKEOFF-V1",
+    "dataset_sha256": "d4d6b3306c44e242f3fb7f71c44bacabf9a6af1f1f8d507ca2de0853b6a727d0",
+    "engine_env_manifest_sha256": "c55ce4ec3b333a7872da99424ed6187222cc3f70e0ed5ad40825e755c36407d8",
+    "extractor": "engines/vectorbt/g10_returns.py",
+    "extractor_sha256": "903b7daa7c316887573ca6204c5d0f7e06f879e7412c79ed82348907790f22ba",
+    "frozen_manifest_sha256": "f2b729627adb5d75a99c90dd7dd25ea6dcabf83de4baea5784397424034dfc56",
+    "g10_returns_input_sha256": {
+      "b2": "ae12cc8e13fff19d6e69be03cdb0aa0285596d551927ac0dfd1e641e5efa41cc",
+      "b3": "a41a968f985169928a7bd914c54de2ca68f39bf06e8342c38c9555dc735bfacc",
+      "b4": "d1051b1b0aa796975d64da888968a02b19fe859cfc81404f35e12891f2b5583e"
+    },
+    "method_fixtures": "artifacts/validation/G10_METHOD_FIXTURES_2026_07_11.json",
+    "methods_implementation": "src/tios/validation/multiple_testing.py",
+    "research_lab_batch": "LAB-f99dcc214f377ecca4710bbb41d445c8331d2a1b06f93931ed1c88bdf3af5924",
+    "retained_trial_parquet_sha256": {
+      "b2": "f0e419b8c2b1bfeaca58d391508a492c1eff510afeeb76d66135ccee65f10550",
+      "b3": "c188b898082191579e2bbc235553c8fbd697bb4145344234224a3dec40434ada",
+      "b4": "ffea44805e07a4000d03949c5984055691fcbeb62264f3df92256d1e8a0dde92"
+    },
+    "strategy_spec_sha256": {
+      "b2": "da3b238432f5e7085f901a87ca6ac3b527055382abacd3d4c21f0476ed15356a"
+    }
+  },
+  "schema": "tios-g10-candidate-evidence-v1",
+  "status": "COMPLETE",
+  "task": "T-009-04 candidate-specific integration (RG-07)",
+  "validation_package_family": "b2"
+}

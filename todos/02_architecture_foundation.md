@@ -18,3 +18,22 @@ Boundary: architecture work may define inert contracts and research operations o
 It may not approve a strategy; B2 remains `INCOMPLETE_NOT_APPROVABLE` and rejected for
 paper. It may not activate a synthetic wallet, venue connection, credentials, order
 routing, live trading, real money, or AI approval/trading authority.
+
+## T-002-05 Resolve dashboard workspace-decision write path vs AD §AI GET-only lock
+- Purpose: `POST /api/v1/workspace-actions/decision` exists (test-pinned in
+  `tests/test_dashboard.py` as the only allowed write path; used by the operator —
+  9 records in `artifacts/human_decisions/workspace_decisions.jsonl`), but AD §AI and
+  `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md` §API lock `/api/v1/` to
+  GET/HEAD/OPTIONS with no POST route. Requirement: REQ-048 (contract integrity).
+- Actions: operator chooses one: (a) record a decision-log entry (next free D-nnn)
+  amending AD §AI + type catalog §API to permit exactly one loopback human-decision
+  recording route (no order/approval/job mutation authority), or (b) remove the POST
+  route and move workspace-decision recording to a local CLI command.
+- Outputs: decision-log entry + AD §AI/type-catalog §API update, or route removal PR
+  with CLI replacement; updated `tests/test_dashboard.py` either way.
+- Acceptance: AD, type catalog, tests, and implementation agree; gap note in AD §AI
+  removed. Failure: contract and implementation continue to disagree.
+- Human approval: **Yes (architecture change decision)**. Credentials: none.
+- Skill: R9 architect review + operator. Complexity: S.
+- Source: `artifacts/reports/AD_IMPLEMENTATION_GAP_AUDIT_2026_07_11.md`.
+- Status: **DONE 2026-07-11 (D-038)** — operator approved keeping the single audited loopback workspace-decision POST route; AD §AI and TYPE_AND_CONTRACT_CATALOG §7 now record the scoped exception (operator-driven, allowlist-validated, append-only audited, test-pinned sole write path; no trading/order/credential/paper/demo/live mutation; any expansion requires a new decision gate). Gap note removed from AD §AI.

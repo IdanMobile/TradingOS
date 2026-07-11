@@ -1,0 +1,86 @@
+{
+  "allowed_uses": [
+    "record visible lead-trader or portfolio metadata if publicly available",
+    "design an offline replay model for historical actions or allocations",
+    "retain risk and survivorship caveats beside any hypothesis"
+  ],
+  "approval_eligible": false,
+  "bias_risks": [
+    "lead-trader survivorship and self-selection bias",
+    "hidden leverage, fees, risk limits, and liquidation behavior",
+    "copied trade sizing may not be recoverable from public data"
+  ],
+  "canonical_url": "https://www.binance.com/en/copy-trading",
+  "capture_mode": "allocation_replay",
+  "captured_at_utc": "2026-07-11T00:00:00Z",
+  "content_capture_status": "METADATA_ONLY_PENDING_PLATFORM_CAPTURE",
+  "evidence_strength": "hypothesis_only",
+  "intake_status": "design_only",
+  "notes": [
+    "This plan is design-only because copy trading can imply live account behavior.",
+    "Public performance cannot be imported as strategy evidence."
+  ],
+  "plan_id": "INTAKE-BINANCE-COPY-TRADING",
+  "prohibited_actions": [
+    "credential_request",
+    "account_connection",
+    "subscription_or_copy_action",
+    "order_routing",
+    "paper_demo_or_live_activation",
+    "profit_claim_inheritance"
+  ],
+  "required_capture_fields": {
+    "allocation_or_trade_timestamp_semantics": {
+      "evidence_url": "https://www.binance.com/en/copy-trading",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "FAQ states copied portfolios duplicate lead-trader trades in real time; some detail pages state figures are refreshed every 1-2 hours."
+    },
+    "canonical_url": {
+      "status": "KNOWN_FROM_REGISTRY",
+      "value": "https://www.binance.com/en/copy-trading"
+    },
+    "captured_at_utc": {
+      "status": "KNOWN_FROM_REGISTRY",
+      "value": "2026-07-11T00:00:00Z"
+    },
+    "copy_controls_present": {
+      "evidence_url": "https://www.binance.com/en/copy-trading",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Public copy-trading pages advertise replicating lead-trader portfolios and one-click copy behavior."
+    },
+    "leader_or_portfolio_identifier": {
+      "evidence_url": "https://www.binance.com/en/copy-trading",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Public lead-trader and portfolio surfaces expose lead-trader or portfolio identifiers when detail pages are visible."
+    },
+    "platform": {
+      "status": "KNOWN_FROM_REGISTRY",
+      "value": "Binance"
+    },
+    "terms_review_status": {
+      "evidence_url": "https://www.binance.com/en/copy-trading",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "PUBLIC_SOURCE_RECHECKED_TERMS_NOT_REVIEWED"
+    },
+    "visible_performance_window": {
+      "evidence_url": "https://www.binance.com/en/copy-trading",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Public copy-trading surfaces expose performance windows such as 7-day ROI/PnL on some lead-trader detail pages."
+    },
+    "visible_risk_metrics": {
+      "evidence_url": "https://www.binance.com/en/copy-trading",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Public surfaces can expose maximum drawdown, Sharpe ratio, win rate, AUM, profit share, and minimum copy amount fields."
+    }
+  },
+  "schema": "tios-external-source-intake-snapshot-v1",
+  "source_class": "copy_trading_leaderboard",
+  "source_ref": "SRC-BINANCE-COPY-TRADING",
+  "source_title": "Binance Copy Trading public lead-trader surface",
+  "validation_prerequisites": [
+    "reconstructable historical actions or explicit non-reconstructable status",
+    "local replay on frozen market data where possible",
+    "divergence model before any future paper copy comparison",
+    "human gate before any account-specific eligibility check"
+  ]
+}

@@ -13,11 +13,11 @@ claims — every `source_record.yaml` sets `profit_claims_inherited: false`).
 |---|---|---|---|---|---|
 | 1 | STRAT-QC1-dual-ma-cross | trend_following | official_framework (QuantConnect/LEAN) | permissive (Apache-2.0) | REPRODUCED |
 | 2 | STRAT-QC2-donchian-breakout | breakout | official_framework (QuantConnect/LEAN) | permissive (Apache-2.0) | REPRODUCED |
-| 3 | STRAT-FT1-sample-strategy | mean_reversion | official_framework (freqtrade) | copyleft (GPL-3.0) | NOT_REPRODUCED (deferred — fixture too short for 20-bar warm-up) |
-| 4 | STRAT-FT2-ema-cross | trend_following | official_framework (freqtrade docs) | copyleft (GPL-3.0) | NOT_REPRODUCED (deferred — no EMA primitive) |
+| 3 | STRAT-FT1-sample-strategy | mean_reversion | official_framework (freqtrade) | copyleft (GPL-3.0) | REPRODUCED (2026-07-11, 32-bar fixture) |
+| 4 | STRAT-FT2-ema-cross | trend_following | official_framework (freqtrade docs) | copyleft (GPL-3.0) | REPRODUCED (2026-07-11, true recursive EMA) |
 | 5 | STRAT-HB1-supertrend-directional | trend_following | official_framework (Hummingbot V2) | permissive (Apache-2.0) | NOT_REPRODUCED (deferred — signal-level simplification) |
 | 6 | STRAT-HB2-pmm-simple | market_making | official_framework (Hummingbot V2) | permissive (Apache-2.0) | NOT_REPRODUCED (not applicable — schema cannot express two-sided quoting) |
-| 7 | STRAT-PINE1-bb-strategy | mean_reversion | maintained_open_source (Pine/TradingView) | copyleft (MPL-2.0) | NOT_REPRODUCED (deferred — fixture too short for 20-bar warm-up) |
+| 7 | STRAT-PINE1-bb-strategy | mean_reversion | maintained_open_source (Pine/TradingView) | copyleft (MPL-2.0) | REPRODUCED (2026-07-11, 32-bar fixture) |
 | 8 | STRAT-PINE2-supertrend-strategy | trend_following | maintained_open_source (Pine/TradingView) | copyleft (MPL-2.0) | NOT_REPRODUCED (deferred — mechanically identical to item 5) |
 | 9 | STRAT-PAPER1-momentum-jt1993 | trend_following | primary_academic_paper (Jegadeesh & Titman 1993) | unclear | NOT_REPRODUCED (not applicable — no per-bar result to reproduce) |
 | 10 | STRAT-PAPER2-reversal-jegadeesh1990 | mean_reversion | primary_academic_paper (Jegadeesh 1990) | unclear | NOT_REPRODUCED (not applicable — no per-bar result to reproduce) |
@@ -55,17 +55,21 @@ All 10 `canonical_strategy_spec.yaml` files parse and validate as
 records genuine, justified ambiguities per the seed spec's acceptance
 criterion).
 
-## Reproduction spot-check (task verification gate)
+## Reproduction spot-checks and seed cycles
 
-`tests/test_strategy_seed_reproduction.py` independently recomputes items 1
-and 2 (`test_qc1_dual_ma_cross_reproduction`, `test_qc2_donchian_breakout_reproduction`)
-against `fixtures/micro/bars.csv` and asserts they agree with each item's own
-`RuleTree` evaluation bar-by-bar — satisfying "spot-check 2 of the 10 seed
-items reproduce their stated original result within documented tolerance."
-Items 3-10 are honestly recorded as `NOT_REPRODUCED` (deferred or not
-applicable, with justification per item) rather than a padded reproduction
-count — see each item's `reproduction_status.md` and
-`artifacts/reports/STRATEGY_INGESTION_REPORT.md` for why.
+`tests/test_strategy_seed_reproduction.py` independently recomputes items 1 and 2
+against `fixtures/micro/bars.csv`, then items 3, 4, and 7 against the 32-bar
+`fixtures/micro/bars_long.csv` warm-up fixture. The widened reproduction set now
+covers five items: QC1, QC2, FT1, FT2, and PINE1. Items 5/8 remain deferred on the
+same supertrend semantic simplification, item 6 is not applicable to one-sided
+bar-strategy reproduction, and items 9/10 are cross-sectional paper sources rather
+than per-bar executable rules.
+
+The latest retained seed cycle is
+`SEEDCYCLE-9b1652a62996fda4b753c6695f43569ab860acd8decb48c9c5994566f4a6488f`,
+covering those five reproduced candidates across BTCUSDT/ETHUSDT x 5m/15m/1h.
+The lower-frequency A/B produced positive proxy rows, but every row remains
+`UNVALIDATED` / `NOT_ELIGIBLE` until full validation evidence exists.
 
 ## Relationship to V0
 

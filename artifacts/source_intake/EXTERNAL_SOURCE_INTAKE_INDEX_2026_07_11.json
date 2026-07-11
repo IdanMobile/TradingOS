@@ -1,0 +1,39 @@
+{
+  "captured_at_utc": "2026-07-11T00:00:00Z",
+  "execution_authority": "NONE",
+  "paper_demo_live": "DISABLED",
+  "plan_count": 4,
+  "ready_count": 4,
+  "rows": [
+    {
+      "approval_eligible": false,
+      "artifact": "artifacts/source_intake/3commas_dca_bot/config_hypotheses.json",
+      "content_capture_status": "METADATA_ONLY_PENDING_PLATFORM_CAPTURE",
+      "plan_id": "INTAKE-3COMMAS-DCA-BOT",
+      "source_ref": "SRC-3COMMAS-DCA-BOT"
+    },
+    {
+      "approval_eligible": false,
+      "artifact": "artifacts/source_intake/binance_copy_trading/replay_design.json",
+      "content_capture_status": "METADATA_ONLY_PENDING_PLATFORM_CAPTURE",
+      "plan_id": "INTAKE-BINANCE-COPY-TRADING",
+      "source_ref": "SRC-BINANCE-COPY-TRADING"
+    },
+    {
+      "approval_eligible": false,
+      "artifact": "artifacts/source_intake/binance_trading_bots/metadata_snapshot.json",
+      "content_capture_status": "METADATA_ONLY_PENDING_PLATFORM_CAPTURE",
+      "plan_id": "INTAKE-BINANCE-TRADING-BOTS",
+      "source_ref": "SRC-BINANCE-TRADING-BOTS"
+    },
+    {
+      "approval_eligible": false,
+      "artifact": "artifacts/source_intake/tradingview_ideas/signal_candidates.json",
+      "content_capture_status": "METADATA_ONLY_PENDING_PLATFORM_CAPTURE",
+      "plan_id": "INTAKE-TRADINGVIEW-IDEAS",
+      "source_ref": "SRC-TRADINGVIEW-IDEAS"
+    }
+  ],
+  "schema": "tios-external-source-intake-index-v1",
+  "venue_connection": "NONE"
+}

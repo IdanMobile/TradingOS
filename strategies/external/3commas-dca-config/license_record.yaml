@@ -1,0 +1,17 @@
+license_ref: LIC-EXT-3COMMAS-DCA-CONFIG
+source_id: SRC-3COMMAS-DCA-BOT
+license_class: proprietary_public_page
+reuse_allowed: adapted_metadata_only
+lawful_use_scope:
+  - citation metadata
+  - public product concepts paraphrased as local hypothesis assumptions
+  - no copied proprietary text, screenshots, platform code, or account data
+prohibited:
+  - account_connection
+  - credential_request
+  - subscription_or_copy_action
+  - platform_bot_execution
+  - order_routing
+  - paper_demo_or_live_activation
+  - profit_claim_inheritance
+checked_at_utc: "2026-07-11T00:00:00Z"

@@ -1,0 +1,109 @@
+{
+  "approval_status": "NOT_ELIGIBLE",
+  "best_total_return": "-0.9999630908644724930631595825",
+  "blockers": [
+    "local external-source replay only; no platform reproduction",
+    "no cross-engine reproduction exists for this DCA add-on model",
+    "no temporal/G10 validation package exists for this external candidate",
+    "candidate remains unvalidated and not promotion eligible"
+  ],
+  "execution_authority": "NONE",
+  "fee_rate": "0.001",
+  "initial_cash": "1000",
+  "paper_demo_live": "DISABLED",
+  "prohibited": [
+    "credential_request",
+    "account_connection",
+    "platform_bot_execution",
+    "order_routing",
+    "paper_demo_or_live_activation",
+    "profit_claim_inheritance"
+  ],
+  "promotion_eligible": false,
+  "schema": "tios-external-dca-replay-scorecard-v1",
+  "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+  "strategy_id": "STRAT-EXT-3COMMAS-DCA-CONFIG",
+  "trials": [
+    {
+      "adds": 240,
+      "bars": 577803,
+      "dataset": "BTCUSDT_5m",
+      "entries": 7319,
+      "event_count": 14878,
+      "events_path": "artifacts/external_replay/3commas_dca/EXTDCA-517e759cbff3af53c8cbca3ab4c7c3d0/BTCUSDT_5m_events.jsonl",
+      "exits": 7319,
+      "final_equity": "0.05527965469260155172471835748",
+      "open_position_at_end": false,
+      "status": "COMPLETED",
+      "total_return": "-0.9999447203453073984482752816"
+    },
+    {
+      "adds": 264,
+      "bars": 192602,
+      "dataset": "BTCUSDT_15m",
+      "entries": 2414,
+      "event_count": 5092,
+      "events_path": "artifacts/external_replay/3commas_dca/EXTDCA-517e759cbff3af53c8cbca3ab4c7c3d0/BTCUSDT_15m_events.jsonl",
+      "exits": 2414,
+      "final_equity": "345.2217398177726460206565810",
+      "open_position_at_end": false,
+      "status": "COMPLETED",
+      "total_return": "-0.654778260182227353979343419"
+    },
+    {
+      "adds": 198,
+      "bars": 48154,
+      "dataset": "BTCUSDT_1h",
+      "entries": 640,
+      "event_count": 1477,
+      "events_path": "artifacts/external_replay/3commas_dca/EXTDCA-517e759cbff3af53c8cbca3ab4c7c3d0/BTCUSDT_1h_events.jsonl",
+      "exits": 639,
+      "final_equity": "773.5891986688816143556434019",
+      "open_position_at_end": true,
+      "status": "COMPLETED",
+      "total_return": "-0.2264108013311183856443565981"
+    },
+    {
+      "adds": 468,
+      "bars": 577803,
+      "dataset": "ETHUSDT_5m",
+      "entries": 7371,
+      "event_count": 15210,
+      "events_path": "artifacts/external_replay/3commas_dca/EXTDCA-517e759cbff3af53c8cbca3ab4c7c3d0/ETHUSDT_5m_events.jsonl",
+      "exits": 7371,
+      "final_equity": "0.03690913552750693684041751559",
+      "open_position_at_end": false,
+      "status": "COMPLETED",
+      "total_return": "-0.9999630908644724930631595825"
+    },
+    {
+      "adds": 441,
+      "bars": 192602,
+      "dataset": "ETHUSDT_15m",
+      "entries": 2502,
+      "event_count": 5445,
+      "events_path": "artifacts/external_replay/3commas_dca/EXTDCA-517e759cbff3af53c8cbca3ab4c7c3d0/ETHUSDT_15m_events.jsonl",
+      "exits": 2502,
+      "final_equity": "280.5843588777770544272228071",
+      "open_position_at_end": false,
+      "status": "COMPLETED",
+      "total_return": "-0.7194156411222229455727771929"
+    },
+    {
+      "adds": 321,
+      "bars": 48154,
+      "dataset": "ETHUSDT_1h",
+      "entries": 658,
+      "event_count": 1636,
+      "events_path": "artifacts/external_replay/3commas_dca/EXTDCA-517e759cbff3af53c8cbca3ab4c7c3d0/ETHUSDT_1h_events.jsonl",
+      "exits": 657,
+      "final_equity": "694.1647095461330865303453777",
+      "open_position_at_end": true,
+      "status": "COMPLETED",
+      "total_return": "-0.3058352904538669134696546223"
+    }
+  ],
+  "validation_state": "UNVALIDATED",
+  "venue_connection": "NONE",
+  "winner_selected": false
+}

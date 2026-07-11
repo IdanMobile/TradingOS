@@ -1,0 +1,60 @@
+{
+  "candidate": "STRAT-B2-ma-crossover (canonical spec, fast=3/slow=5, BTCUSDT 5m)",
+  "core_derivation": {
+    "bars": 577803,
+    "entries": 66462,
+    "method": "engine-independent window-mean SMA crossover"
+  },
+  "dimension": "cross_engine_reproduction",
+  "economic_direction_agreement": true,
+  "effect": "This reconciles the retained candidate across engines. It approves no strategy, selects no winner, and enables no execution path.",
+  "freqtrade_single_pair": {
+    "all_exits_signal_driven": true,
+    "exit_reasons": {
+      "exit_signal": 66385
+    },
+    "expected_fills_in_window": 66459,
+    "fill_match_ratio": 0.9990359267906906,
+    "matched": 66321,
+    "offset_model": "fill at next bar open after the signal bar (event-lane semantics)",
+    "profit_total_abs": -900.367661,
+    "residual_explanation": "indicator-arithmetic differences between the canonical decimal128 pipeline and freqtrade's float64 feather dataframe (converter loss recorded in the retained run manifest); residual crossings sit at relative SMA margins below ~3e-3 and shift signal timing by single bars",
+    "residual_margin_max_relative": 0.005773590713413427,
+    "residuals_near_data_gaps": 3,
+    "run": "single-pair BTCUSDT full-history backtest (artifacts/validation/repro/)",
+    "signals_without_fill_count": 138,
+    "trades": 66385,
+    "unexplained_fill_count": 64,
+    "why_not_retained_run": "the retained S1 run is a two-pair portfolio with max_open_trades=1; cross-pair order-slot contention suppresses/adds entries by design (documented execution/order-state divergence in the parity reports)"
+  },
+  "generated_at_utc": "2026-07-11T11:03:32.556741+00:00",
+  "provenance": {
+    "dataset_id": "DS-CRYPTO-SPOT-BAKEOFF-V1",
+    "dataset_sha256": "d4d6b3306c44e242f3fb7f71c44bacabf9a6af1f1f8d507ca2de0853b6a727d0",
+    "engine_env_manifest_sha256": "c55ce4ec3b333a7872da99424ed6187222cc3f70e0ed5ad40825e755c36407d8",
+    "frozen_manifest_sha256": "f2b729627adb5d75a99c90dd7dd25ea6dcabf83de4baea5784397424034dfc56",
+    "repro_script_sha256": "a3eff9f8c62357bb6bf67cbfafd293638c11d69c0e20c69cb59dc8175b52ebd6",
+    "retained_two_pair_run": "artifacts/bakeoff/freqtrade/B2/F0_S0/run1",
+    "single_pair_backtest_zip_sha256": "48e47dcd88473d049a0a3a8c1979d19c62053649d3dd316a0b3ee8493d9850b1",
+    "single_pair_entries_sha256": "2d5e1307f9d79a486ec3dc992aa8d2dac48e2812b48e8976d691682b71ab6a07",
+    "spec_sha256": "da3b238432f5e7085f901a87ca6ac3b527055382abacd3d4c21f0476ed15356a"
+  },
+  "schema": "tios-cross-engine-reproduction-v2",
+  "scope_notes": [
+    "signal-bar reproduction with quantified residuals and economic-direction agreement only; fill-price and P&L parity across engines is NOT claimed",
+    "residual signal-timing differences (<0.5% of entries) trace to indicator arithmetic, not strategy semantics",
+    "the two-pair retained S1 run remains reconciled only via the parity reports' order-state explanation, not 1:1 fills"
+  ],
+  "vectorbt": {
+    "artifact": "artifacts/validation/b2_repro_vectorbt.json",
+    "core_entries": 66462,
+    "differing_bars": 2,
+    "differing_explained_as_float_ties": 2,
+    "entries": 66462,
+    "exact_or_tie_explained": true,
+    "total_return": -0.9999998427506132,
+    "trades": 7533,
+    "unexplained_differing_bars": 0
+  },
+  "verdict": "PASS_WITH_SCOPE_NOTE"
+}

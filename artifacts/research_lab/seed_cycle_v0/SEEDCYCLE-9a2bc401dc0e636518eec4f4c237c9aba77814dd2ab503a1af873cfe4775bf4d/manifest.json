@@ -1,0 +1,28 @@
+{
+  "artifacts": {
+    "evidence.jsonl": "d1ab88c25a4139e33d44375d19fc301f149b921d8f763544fd6060ce9f639178",
+    "ft1_trials.parquet": "6de3dfc988edb644389b5c603546b3d7d072f63f739242fe2f1937e31c75a62b",
+    "pine1_trials.parquet": "714bf8606dbca368b173aebadec4b173ce33e18192527bbd1d69ccabca73608d",
+    "qc1_trials.parquet": "393960b122de9b9f75917680d1113dd5e394161d2c4f192299305b30650faa73",
+    "qc2_trials.parquet": "b66d14c75d3aaa632f291438c6007d1fe6778bbb7be8b2c0b41b06bcbd2364b3",
+    "scorecards.json": "72c2f3b2e84f90e79a7d5b3ee259658cb1610a3b768b904dbab2074c204f88cf"
+  },
+  "cycle_id": "SEEDCYCLE-9a2bc401dc0e636518eec4f4c237c9aba77814dd2ab503a1af873cfe4775bf4d",
+  "execution_authority": "NONE",
+  "finished_at_utc": "2026-07-11T11:19:33.486592+00:00",
+  "hashes": {
+    "config": "7d69cd9cd33ac5448cf639a47a462ff89efe7efb642b15adbb00d46c62a7e9ba",
+    "dataset": "d4d6b3306c44e242f3fb7f71c44bacabf9a6af1f1f8d507ca2de0853b6a727d0",
+    "frozen_manifest": "f2b729627adb5d75a99c90dd7dd25ea6dcabf83de4baea5784397424034dfc56",
+    "quality_report": "0f83a1073836708d60138e4aca76c81c20e749136c88571babc550a176fe5cd3",
+    "runner": "3edf44f64edb0c5a2ed5355b335e10bb1dce0e09b804039f3546cc0cf0a27924"
+  },
+  "live_orders": "DISABLED",
+  "mode": "OFFLINE_RESEARCH_ONLY",
+  "paper_orders": "DISABLED",
+  "schema": "tios-seed-cycle-v0-manifest",
+  "started_at_utc": "2026-07-11T11:18:56.720968+00:00",
+  "status": "COMPLETED",
+  "venue_connection": "NONE",
+  "winner_selected": false
+}

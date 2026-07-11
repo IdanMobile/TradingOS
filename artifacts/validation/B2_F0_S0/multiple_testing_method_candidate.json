@@ -1,31 +1,49 @@
 {
-  "schema": "tios-multiple-testing-method-evidence-v1",
-  "status": "METHOD_EVIDENCE_RETAINED",
-  "g10_gate_status": "NOT_RUN",
-  "production_gate_activated": false,
+  "candidate_evidence": {
+    "artifact": "artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_11.json",
+    "independent_recomputation": "AGREES",
+    "note": "candidate-specific PBO/CSCV and DSR computed on the retained trial populations with an independent second implementation; all families FAIL",
+    "verdicts": {
+      "b2": "FAIL",
+      "b3": "FAIL",
+      "b4": "FAIL"
+    }
+  },
+  "effect": "G10 remains NOT_RUN for production validation; this package cannot claim full production validation or strategy approval.",
+  "g10_gate_status": "FAIL",
+  "method_fixture_evidence": {
+    "artifact": "artifacts/validation/G10_METHOD_FIXTURES_2026_07_11.json",
+    "scope": "synthetic known-answer fixtures for PBO/CSCV and DSR arithmetic only",
+    "status": "PASS",
+    "tests": "tests/test_multiple_testing_methods.py"
+  },
   "methods": [
     {
       "name": "Probability of Backtest Overfitting / CSCV",
-      "status": "ESTIMATOR_NOT_VALIDATED",
+      "primary_reference": "Bailey et al., The Probability of Backtest Overfitting",
       "source_id": "SRC-PBO-2016",
-      "primary_reference": "Bailey et al., The Probability of Backtest Overfitting"
+      "status": "ESTIMATOR_NOT_VALIDATED"
     },
     {
       "name": "Deflated Sharpe Ratio",
-      "status": "ESTIMATOR_NOT_VALIDATED",
+      "primary_reference": "Bailey and Lopez de Prado, The Deflated Sharpe Ratio",
       "source_id": "SRC-DSR-2014",
-      "primary_reference": "Bailey and Lopez de Prado, The Deflated Sharpe Ratio"
+      "status": "ESTIMATOR_NOT_VALIDATED"
     }
   ],
+  "next_required_evidence": [
+    "primary-literature implementation review",
+    "independent recomputation of estimator outputs",
+    "documented integration into validation gates"
+  ],
+  "production_gate_activated": true,
+  "reason": "Concrete local multiple-testing evidence is retained and synthetic PBO/DSR method fixtures now pass, but production G10 remains inactive until candidate-specific estimator integration and independent recomputation are reviewed.",
   "retained_method_evidence": {
-    "status": "PASS",
-    "gate": "G10_RETENTION",
-    "trial_count": 66,
+    "all_sweep_tables_retained": true,
+    "all_trials_registered": true,
     "expected_trial_count": 66,
     "experiments": 3,
-    "all_trials_registered": true,
-    "all_sweep_tables_retained": true,
-    "winner_selected": false,
+    "gate": "G10_RETENTION",
     "selection_procedure": "No winner selected; vectorbt B2/B3/B4 accelerator sweeps are retained as candidate-population evidence only, and in-sample return is never a promotion criterion.",
     "source_artifacts": [
       "artifacts/bakeoff/vectorbt/trial_ledger_summary.json",
@@ -36,19 +54,11 @@
       "artifacts/bakeoff/vectorbt/b2_sweep_meta.json",
       "artifacts/bakeoff/vectorbt/b3_sweep_meta.json",
       "artifacts/bakeoff/vectorbt/b4_sweep_meta.json"
-    ]
-  },
-  "method_fixture_evidence": {
+    ],
     "status": "PASS",
-    "artifact": "artifacts/validation/G10_METHOD_FIXTURES_2026_07_11.json",
-    "tests": "tests/test_multiple_testing_methods.py",
-    "scope": "synthetic known-answer fixtures for PBO/CSCV and DSR arithmetic only"
+    "trial_count": 66,
+    "winner_selected": false
   },
-  "reason": "Concrete local multiple-testing evidence is retained and synthetic PBO/DSR method fixtures now pass, but production G10 remains inactive until candidate-specific estimator integration and independent recomputation are reviewed.",
-  "effect": "G10 remains NOT_RUN for production validation; this package cannot claim full production validation or strategy approval.",
-  "next_required_evidence": [
-    "primary-literature implementation review",
-    "independent recomputation of estimator outputs",
-    "documented integration into validation gates"
-  ]
+  "schema": "tios-multiple-testing-method-evidence-v1",
+  "status": "METHOD_EVIDENCE_RETAINED"
 }

@@ -1,0 +1,45 @@
+{
+  "artifact_manifest_sha256": "15d54b518458de9e1c733aa0eeafe5efd6d05f3febea16234793acc03abafb8f",
+  "artifacts": {
+    "BTCUSDT_15m_events.jsonl": "a19d7fd2ac719d89099d5356a1aaeda7be87feb794127686173f1ff2004c5882",
+    "BTCUSDT_1h_events.jsonl": "03597d320812385a6cd318957044072f0c85dac8df6108459da1fd0d4fa983fe",
+    "BTCUSDT_5m_events.jsonl": "946de85be45760a637bd3794459d93364661fc13c671af5c2c447713b53f2dcd",
+    "ETHUSDT_15m_events.jsonl": "ce49b05a10415eda3617e549f583064da92adf6edb635f89504b70ae80637b8e",
+    "ETHUSDT_1h_events.jsonl": "110a3397bc04ae520470c2b17c31fa0e3cc8dd6ac89c309b273a4faafdd5d7aa",
+    "ETHUSDT_5m_events.jsonl": "6878e7836e7f03e2996f98e15325fb6288471ebe927f272f1541745605761239",
+    "scorecard.json": "c58f9dd029595b93ab99a09db0e312b84c28ea57e39661678fe68bb5055af256"
+  },
+  "content_sha256": "48d8033b34360957645c7e42605ff26a010f8cdf71d2e535f19b975494f7d0ae",
+  "counts": {
+    "datasets": 6,
+    "events": 43738,
+    "trials": 6
+  },
+  "execution_authority": "NONE",
+  "finished_at_utc": "2026-07-11T13:57:10.641745+00:00",
+  "hashes": {
+    "config": "ea0f9da3888a916a1c4eb649b925f8f20c5d27b5fcc234ebc710d8dc006c3f71",
+    "dataset_BTCUSDT_15m": "3c39eb7e988f5f9740260ce89cb53ea2e4ad152df576e4691f483997b6151821",
+    "dataset_BTCUSDT_1h": "d44c70c3c87a3e342dd0496c3975d3b54a2b50dd4c5c1b8873ef84eece99947c",
+    "dataset_BTCUSDT_5m": "d4d6b3306c44e242f3fb7f71c44bacabf9a6af1f1f8d507ca2de0853b6a727d0",
+    "dataset_ETHUSDT_15m": "230e7ef993e70ffc708ab61bb18fbfdbe9de6d71ae31d9a78535cde20e1d5759",
+    "dataset_ETHUSDT_1h": "324b3a704560103d9d49453e48d5b24839df6ab2ca67c6fcd5da2d2365d3b1da",
+    "dataset_ETHUSDT_5m": "79c4678cebf490b82e3adb34c31f8e696bf14f6d35ddd3bdfa09658078d68dff",
+    "frozen_manifest": "f2b729627adb5d75a99c90dd7dd25ea6dcabf83de4baea5784397424034dfc56",
+    "quality_report": "0f83a1073836708d60138e4aca76c81c20e749136c88571babc550a176fe5cd3",
+    "runner": "486b89b24fd9c4f8c6954dff36fa1a398e376d4c27d4758bbc6c3f82f3d63e63",
+    "spec": "10cd3a9f39ac16cb2d5c2e74e8937f8a75dcb06029fb4355f7454c674fcd63f7"
+  },
+  "live_orders": "DISABLED",
+  "manifest_path": "artifacts/external_replay/3commas_dca/EXTDCA-517e759cbff3af53c8cbca3ab4c7c3d0/manifest.json",
+  "mode": "OFFLINE_RESEARCH_ONLY",
+  "paper_orders": "DISABLED",
+  "replay_id": "EXTDCA-517e759cbff3af53c8cbca3ab4c7c3d0",
+  "reused": false,
+  "schema": "tios-external-dca-replay-run-v1",
+  "scorecard_path": "artifacts/external_replay/3commas_dca/EXTDCA-517e759cbff3af53c8cbca3ab4c7c3d0/scorecard.json",
+  "started_at_utc": "2026-07-11T13:57:02.935270+00:00",
+  "status": "COMPLETED",
+  "strategy_id": "STRAT-EXT-3COMMAS-DCA-CONFIG",
+  "venue_connection": "NONE"
+}

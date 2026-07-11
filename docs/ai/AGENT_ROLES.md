@@ -34,11 +34,11 @@ Role → AgentConfiguration (`AGT-`) → ModelSnapshot (`MDL-`) binding lives in
 - Benchmark: T1 fixtures. Routing: mid tier; accuracy-critical.
 
 ### R3 — Strategy Extractor
-- Mission: convert external strategy material (paper, Pine, Freqtrade/LEAN/Hummingbot code, prose) into CanonicalStrategySpec with explicit ambiguities.
+- Mission: convert external strategy material (paper, Pine, Freqtrade/LEAN/Hummingbot code, exchange bot marketplace records, copy-trading records, signal feeds, third-party bot-platform descriptions, prose) into CanonicalStrategySpec or an explicit non-spec replay/hypothesis record with ambiguities.
 - Task classes: T2; semantic extraction; hidden-assumption hunting.
 - Tools: read-only source access; spec validator.
-- Outputs: canonical spec YAML + ambiguities list + framework assumptions; never resolves an ambiguity by guessing — records it.
-- Prohibited: importing profit claims; inventing parameters not in source; executing code.
+- Outputs: canonical spec YAML or replay-source record + ambiguities list + framework assumptions; never resolves an ambiguity by guessing — records it.
+- Prohibited: importing profit claims; inventing parameters not in source; executing code; copying live trades; treating signal/copy/bot sources as execution authority.
 - Benchmark: T2 fixtures (rule completeness, timing correctness, ambiguity detection).
 
 ### R4 — Strategy Red-Teamer

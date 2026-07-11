@@ -1,0 +1,41 @@
+# External replay hypothesis -- 3Commas DCA public product concept
+strategy_id: STRAT-EXT-3COMMAS-DCA-CONFIG
+family: mean_reversion
+inputs: [close]
+indicators:
+  - name: rsi
+    parameters: {window: 14, source: close}
+    outputs: [rsi]
+  - name: sma_recovery
+    parameters: {window: 20, source: close}
+    outputs: [sma_recovery]
+  - name: drawdown_from_entry
+    parameters: {reference: entry_price, source: close}
+    outputs: [drawdown_from_entry]
+entry_long:
+  all:
+    - rsi < 35
+exit_long:
+  any:
+    - close > sma_recovery
+    - drawdown_from_entry <= -0.12
+position_sizing:
+  type: fixed_fraction
+  fraction: 0.25
+  dca_add_fraction: 0.25
+  max_position_fraction: 1.0
+  add_on_drawdown_steps: [-0.03, -0.06, -0.09]
+risk:
+  stop_loss: 0.12
+  take_profit: null
+assumptions:
+  - "signal evaluated at bar close; execution at next bar open"
+  - "warm-up: no signal until RSI(14) and SMA(20) are both seeded (bars 1-19 produce no signal)"
+  - "DCA add-ons are local simulation semantics: add 25% notional at each -3%, -6%, and -9% drawdown from the initial entry price, capped at 100% notional"
+  - "stop-loss is modeled as a local risk exit at 12% drawdown from initial entry; no platform order, exchange order, bot, or account is created"
+ambiguities:
+  - "3Commas public pages describe DCA-bot concepts but do not provide one canonical entry trigger; RSI(14)<35 is an OS-local hypothesis choice, not a copied platform default"
+  - "Exact safety-order spacing, sizing, take-profit, stop, exchange fee, and execution details are platform/account configurable and are therefore fixed here only for a local replay candidate"
+  - "CanonicalStrategySpec has no native multi-fill DCA primitive; DCA fields are retained inside position_sizing for downstream replay tooling and are not executable by current engine adapters"
+source_refs: [SRC-3COMMAS-DCA-BOT]
+license_ref: LIC-EXT-3COMMAS-DCA-CONFIG

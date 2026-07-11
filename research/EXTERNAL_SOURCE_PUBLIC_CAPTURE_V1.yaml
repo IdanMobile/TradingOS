@@ -1,0 +1,81 @@
+registry_version: 1
+captured_at_utc: "2026-07-11T00:00:00Z"
+captures:
+  - source_ref: SRC-BINANCE-TRADING-BOTS
+    evidence_url: "https://www.binance.com/en/trading-bots"
+    fields:
+      bot_family: >-
+        Spot Grid, Futures Grid, Arbitrage Bot, Rebalancing Bot, Spot DCA,
+        Spot Algo Orders, Futures TWAP, and Futures VP are visible bot families.
+      symbol_or_market: >-
+        Public surface separates All, Spot, and Futures, with Hot Coin Leaderboard,
+        Available Coins, Volatility, and Daily Picks sections.
+      visible_parameters: >-
+        Public bot marketplace exposes family/market metadata; pair-specific pages may
+        expose shared/manual parameter controls, but account-specific values remain out
+        of scope.
+      fee_and_slippage_disclaimer: >-
+        Pair pages may display profit-per-grid after fees; exact fee tier and slippage
+        assumptions remain account/context specific.
+      copy_or_create_controls_present: >-
+        Public UI advertises discovering and replicating strategies and may show copy,
+        create, register, or login controls.
+      terms_review_status: PUBLIC_SOURCE_RECHECKED_TERMS_NOT_REVIEWED
+
+  - source_ref: SRC-BINANCE-COPY-TRADING
+    evidence_url: "https://www.binance.com/en/copy-trading"
+    fields:
+      leader_or_portfolio_identifier: >-
+        Public lead-trader and portfolio surfaces expose lead-trader or portfolio
+        identifiers when detail pages are visible.
+      visible_performance_window: >-
+        Public copy-trading surfaces expose performance windows such as 7-day ROI/PnL
+        on some lead-trader detail pages.
+      visible_risk_metrics: >-
+        Public surfaces can expose maximum drawdown, Sharpe ratio, win rate, AUM,
+        profit share, and minimum copy amount fields.
+      allocation_or_trade_timestamp_semantics: >-
+        FAQ states copied portfolios duplicate lead-trader trades in real time; some
+        detail pages state figures are refreshed every 1-2 hours.
+      copy_controls_present: >-
+        Public copy-trading pages advertise replicating lead-trader portfolios and
+        one-click copy behavior.
+      terms_review_status: PUBLIC_SOURCE_RECHECKED_TERMS_NOT_REVIEWED
+
+  - source_ref: SRC-TRADINGVIEW-IDEAS
+    evidence_url: "https://www.tradingview.com/ideas/"
+    fields:
+      symbol: >-
+        Public idea/category pages cover variable symbols and markets; exact symbol
+        must be captured per individual idea URL.
+      published_at_or_observed_at: >-
+        Idea pages may expose publication/update metadata; per-idea timestamps must be
+        captured from individual URLs.
+      signal_direction_or_thesis: >-
+        Public idea pages can include directional thesis text, long/short tags, entry
+        zones, take-profit levels, and stop-loss levels.
+      entry_exit_rule_visibility: >-
+        Mixed. Some ideas are prose-only; others expose rule-like entry, target, stop,
+        or trade-management details.
+      edited_or_deleted_visibility: >-
+        Some public pages show updated markers; deletion visibility is not guaranteed
+        from the listing surface.
+      terms_review_status: PUBLIC_SOURCE_RECHECKED_TERMS_NOT_REVIEWED
+
+  - source_ref: SRC-3COMMAS-DCA-BOT
+    evidence_url: "https://3commas.io/dca-bots"
+    fields:
+      bot_family: DCA Bot.
+      visible_parameters: >-
+        Public product/help surfaces describe naming a bot, selecting an exchange,
+        choosing bot type, selecting trading pairs, and configuring DCA settings.
+      exchange_dependency_visibility: >-
+        Public product page states integration with multiple exchanges such as Binance,
+        Bybit, OKX, Coinbase Advanced, KuCoin, and Kraken.
+      backtest_claim_visibility: >-
+        Public product surface advertises historical-data backtesting and strategy
+        refinement, but local validation evidence is not inherited.
+      credential_or_account_controls_present: >-
+        Platform operation depends on linked exchange accounts; S2 capture remains
+        metadata-only with no account or API-key path.
+      terms_review_status: PUBLIC_SOURCE_RECHECKED_TERMS_NOT_REVIEWED

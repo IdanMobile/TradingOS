@@ -1,0 +1,11 @@
+source_id: SRC-3COMMAS-DCA-BOT
+replay_hypothesis_id: RPH-3COMMAS-DCA-CONFIG
+source_class: third_party_bot_platform
+url: "https://3commas.io/dca-bots"
+captured_artifact: artifacts/source_intake/3commas_dca_bot/config_hypotheses.json
+profit_claims_inherited: false
+execution_authority: NONE
+approval_eligible: false
+notes:
+  - "Public product metadata is used only to define a local DCA hypothesis shape."
+  - "No 3Commas account, trial signup, exchange link, bot execution, or API key is used."

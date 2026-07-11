@@ -1,0 +1,222 @@
+{
+  "blockers": [
+    "no temporal validation package exists for these seed candidates",
+    "no cross-engine reproduction exists for these seed candidates",
+    "no multiple-testing production estimator is activated",
+    "no candidate is promotion eligible"
+  ],
+  "candidates": {
+    "STRAT-FT1-sample-strategy": {
+      "best_total_return": "0.193760903499680659100117039",
+      "by_dataset": {
+        "BTCUSDT_15m": {
+          "best_total_return": "-0.9975405577967726707460961312",
+          "max_trades": 7464,
+          "min_trades": 146,
+          "trials": 9
+        },
+        "BTCUSDT_1h": {
+          "best_total_return": "0.069458499301700490947797183",
+          "max_trades": 1879,
+          "min_trades": 32,
+          "trials": 9
+        },
+        "BTCUSDT_5m": {
+          "best_total_return": "-0.9999999933542231438876952839",
+          "max_trades": 21808,
+          "min_trades": 420,
+          "trials": 9
+        },
+        "ETHUSDT_15m": {
+          "best_total_return": "0.193760903499680659100117039",
+          "max_trades": 7542,
+          "min_trades": 184,
+          "trials": 9
+        },
+        "ETHUSDT_1h": {
+          "best_total_return": "-0.9296220012861232991599006104",
+          "max_trades": 1877,
+          "min_trades": 38,
+          "trials": 9
+        },
+        "ETHUSDT_5m": {
+          "best_total_return": "0.138057824440541631314353972",
+          "max_trades": 22020,
+          "min_trades": 510,
+          "trials": 9
+        }
+      },
+      "trials": 54
+    },
+    "STRAT-FT2-ema-cross": {
+      "best_total_return": "-1.000000000000000000000000000",
+      "by_dataset": {
+        "BTCUSDT_15m": {
+          "best_total_return": "-0.9999999999101746112815702018",
+          "max_trades": 23228,
+          "min_trades": 8160,
+          "trials": 9
+        },
+        "BTCUSDT_1h": {
+          "best_total_return": "-0.9928642761110640941315988682",
+          "max_trades": 5668,
+          "min_trades": 1918,
+          "trials": 9
+        },
+        "BTCUSDT_5m": {
+          "best_total_return": "-1.000000000000000000000000000",
+          "max_trades": 69073,
+          "min_trades": 24872,
+          "trials": 9
+        },
+        "ETHUSDT_15m": {
+          "best_total_return": "-0.9999999993493839445840290425",
+          "max_trades": 23142,
+          "min_trades": 7836,
+          "trials": 9
+        },
+        "ETHUSDT_1h": {
+          "best_total_return": "-0.9724600772042614162469164079",
+          "max_trades": 5468,
+          "min_trades": 1980,
+          "trials": 9
+        },
+        "ETHUSDT_5m": {
+          "best_total_return": "-1.000000000000000000000000000",
+          "max_trades": 69627,
+          "min_trades": 24514,
+          "trials": 9
+        }
+      },
+      "trials": 54
+    },
+    "STRAT-PINE1-bb-strategy": {
+      "best_total_return": "-0.9999999999999977030588004764",
+      "by_dataset": {
+        "BTCUSDT_15m": {
+          "best_total_return": "-0.9999017150709427335223840255",
+          "max_trades": 11759,
+          "min_trades": 1421,
+          "trials": 9
+        },
+        "BTCUSDT_1h": {
+          "best_total_return": "-0.9342318575546229512550756882",
+          "max_trades": 2821,
+          "min_trades": 461,
+          "trials": 9
+        },
+        "BTCUSDT_5m": {
+          "best_total_return": "-0.9999999999999520072909946268",
+          "max_trades": 34839,
+          "min_trades": 3771,
+          "trials": 9
+        },
+        "ETHUSDT_15m": {
+          "best_total_return": "-0.9999783810261458237544888089",
+          "max_trades": 11585,
+          "min_trades": 1541,
+          "trials": 9
+        },
+        "ETHUSDT_1h": {
+          "best_total_return": "-0.9715916330591839110919137786",
+          "max_trades": 2881,
+          "min_trades": 420,
+          "trials": 9
+        },
+        "ETHUSDT_5m": {
+          "best_total_return": "-0.9999999999999977030588004764",
+          "max_trades": 34434,
+          "min_trades": 3776,
+          "trials": 9
+        }
+      },
+      "trials": 54
+    },
+    "STRAT-QC1-dual-ma-cross": {
+      "best_total_return": "-0.9999999999999999999982810524",
+      "by_dataset": {
+        "BTCUSDT_15m": {
+          "best_total_return": "-0.9999998684320500595417521142",
+          "max_trades": 15618,
+          "min_trades": 5644,
+          "trials": 12
+        },
+        "BTCUSDT_1h": {
+          "best_total_return": "-0.9636515800370986533801175679",
+          "max_trades": 3798,
+          "min_trades": 1346,
+          "trials": 12
+        },
+        "BTCUSDT_5m": {
+          "best_total_return": "-0.9999999999999999999982810524",
+          "max_trades": 46217,
+          "min_trades": 16730,
+          "trials": 12
+        },
+        "ETHUSDT_15m": {
+          "best_total_return": "-0.9999996391420881252328022118",
+          "max_trades": 15638,
+          "min_trades": 5388,
+          "trials": 12
+        },
+        "ETHUSDT_1h": {
+          "best_total_return": "-0.8619561780736346022223138644",
+          "max_trades": 3658,
+          "min_trades": 1350,
+          "trials": 12
+        },
+        "ETHUSDT_5m": {
+          "best_total_return": "-0.9999999999999999999275792380",
+          "max_trades": 46079,
+          "min_trades": 16834,
+          "trials": 12
+        }
+      },
+      "trials": 72
+    },
+    "STRAT-QC2-donchian-breakout": {
+      "best_total_return": "1.491165943202296528856325916",
+      "by_dataset": {
+        "BTCUSDT_15m": {
+          "best_total_return": "-0.9999723267209412022903342427",
+          "max_trades": 8151,
+          "min_trades": 1276,
+          "trials": 4
+        },
+        "BTCUSDT_1h": {
+          "best_total_return": "0.207173141589984959115942511",
+          "max_trades": 1860,
+          "min_trades": 284,
+          "trials": 4
+        },
+        "BTCUSDT_5m": {
+          "best_total_return": "-0.9999999999998993142447920240",
+          "max_trades": 25651,
+          "min_trades": 3834,
+          "trials": 4
+        },
+        "ETHUSDT_15m": {
+          "best_total_return": "-0.9998168558957404684706373430",
+          "max_trades": 7942,
+          "min_trades": 1224,
+          "trials": 4
+        },
+        "ETHUSDT_1h": {
+          "best_total_return": "1.491165943202296528856325916",
+          "max_trades": 1838,
+          "min_trades": 307,
+          "trials": 4
+        },
+        "ETHUSDT_5m": {
+          "best_total_return": "-0.9999999999953568204956986816",
+          "max_trades": 25039,
+          "min_trades": 3792,
+          "trials": 4
+        }
+      },
+      "trials": 24
+    }
+  },
+  "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+  "winner_selected": false
+}

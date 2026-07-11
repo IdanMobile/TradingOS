@@ -11,8 +11,10 @@ import duckdb
 import pytest
 
 from tios.services.dashboard_api.market import build_market_snapshot
+from tios.services.dashboard_api.search import build_search_results
 from tios.services.dashboard_api.status import (
     build_dashboard_data,
+    build_stage_gate_readiness,
     build_status,
     record_workspace_decision,
 )
@@ -119,7 +121,15 @@ def test_dashboard_evidence_surface_reads_real_project_artifacts() -> None:
     assert data["schema_version"] == 1
     assert data["datasets"][0]["id"] == "DS-CRYPTO-SPOT-BAKEOFF-V1"
     assert data["datasets"][0]["rows"] > 1_000_000
-    assert len(data["strategies"]) == 4
+    assert len(data["strategies"]) == 5
+    external = next(
+        item for item in data["strategies"] if item["id"] == "STRAT-EXT-3COMMAS-DCA-CONFIG"
+    )
+    assert external["family"] == "external_replay"
+    assert external["status"] == "LOCAL_REPLAY_RETAINED"
+    assert external["validation_state"] == "UNVALIDATED"
+    assert external["promotion_eligible"] is False
+    assert external["execution_authority"] == "NONE"
     assert len(data["engines"]) == 5
     assert data["validation"]["status"] == "INCOMPLETE_NOT_APPROVABLE"
     assert data["validation"]["risk_preconditions"]["no_live_capability"] is True
@@ -130,6 +140,136 @@ def test_dashboard_evidence_surface_reads_real_project_artifacts() -> None:
         "scope": "S2 OFFLINE RESEARCH ONLY",
         "report": "artifacts/reports/PROTOTYPE_READINESS_REPORT.md",
     }
+
+
+def test_dashboard_projects_inert_trading_domain_read_model() -> None:
+    root = Path(__file__).resolve().parents[1]
+    data = build_dashboard_data(root)
+    trading = data["trading_domain"]
+    assert trading["schema_version"] == 1
+    assert trading["environment"] == "HISTORICAL_RESEARCH"
+    assert trading["mode"] == "INERT_READ_MODEL"
+    assert trading["execution_authority"] == "NONE"
+    assert trading["venue_connection"] == "NONE"
+    assert trading["capabilities"] == {
+        "credential_access": "ABSENT",
+        "order_endpoint": "ABSENT",
+        "account_mutation": "DISABLED",
+        "synthetic_wallet": "ABSENT",
+        "demo_orders": "DISABLED",
+        "paper_orders": "DISABLED",
+        "live_orders": "DISABLED",
+        "risk_engine": "VALIDATION_PRECONDITIONS_ONLY",
+    }
+    assert trading["counts"]["retained_run_artifacts"] == len(data["runs"])
+    assert trading["counts"]["retained_backtest_fills"] > 0
+    assert trading["counts"]["order_intents"] == 0
+    assert trading["counts"]["order_states"] == 0
+    assert trading["counts"]["accounts"] == 0
+    assert trading["counts"]["portfolios"] == 0
+    assert trading["risk_preconditions"]["promotion_eligible"] is False
+    demo_wallet = trading["demo_wallet_design"]
+    assert demo_wallet["status"] == "DESIGN_ONLY_NOT_ACTIVATED"
+    assert demo_wallet["ledger_state"] == "ABSENT"
+    assert demo_wallet["synthetic_capital"] == "NOT_CREATED"
+    assert demo_wallet["mutation_api"] == "ABSENT"
+    assert demo_wallet["order_route"] == "ABSENT"
+    assert demo_wallet["execution_authority"] == "NONE"
+    assert "HG_3_APPROVED" in demo_wallet["required_gates"]
+    assert "paper_lane_architecture_decision" in demo_wallet["required_gates"]
+    assert "exchange credential" in demo_wallet["must_never_include"]
+    assert "venue order routing" in demo_wallet["must_never_include"]
+    assert "real-money balance" in demo_wallet["must_never_include"]
+    assert (
+        "synthetic wallets cannot be constructed in current domain contracts"
+        in demo_wallet["invariants"]
+    )
+    assert "HG_3_APPROVED" in trading["activation_predicate"]
+    readiness = trading["stage_gate_readiness"]
+    assert readiness["status"] == "BLOCKED_BY_GATES"
+    assert readiness["execution_authority"] == "NONE"
+    assert readiness["s3_paper_demo"]["status"] == "NOT_READY"
+    assert readiness["s4_live"]["status"] == "NOT_READY"
+    assert "S2_EXIT_PASS" in readiness["s3_paper_demo"]["blocked_by"]
+    assert "one COMPLETE_APPROVABLE strategy context" in readiness["s3_paper_demo"]["blocked_by"]
+    assert "HG_5_OPERATOR_APPROVAL" in readiness["s4_live"]["blocked_by"]
+    assert "synthetic_wallet_mutation" in trading["prohibited"]
+    assert "venue_order_routing" in trading["prohibited"]
+    assert "live_order_capability" in trading["prohibited"]
+
+
+def test_stage_gate_readiness_is_read_only_and_blocked() -> None:
+    payload = build_stage_gate_readiness()
+    assert payload["schema_version"] == 1
+    assert payload["mode"] == "LOCAL_READ_ONLY"
+    assert payload["status"] == "BLOCKED_BY_GATES"
+    assert payload["execution_authority"] == "NONE"
+    assert payload["capabilities"] == {
+        "writes": "DISABLED",
+        "credential_access": "ABSENT",
+        "order_endpoint": "ABSENT",
+        "venue_connection": "NONE",
+        "demo_paper_control": "ABSENT",
+        "live_control": "ABSENT",
+    }
+    assert payload["s3_paper_demo"]["status"] == "NOT_READY"
+    assert payload["s4_live"]["status"] == "NOT_READY"
+    assert "S2_EXIT_PASS" in payload["s3_paper_demo"]["blocked_by"]
+    assert "HG_5_OPERATOR_APPROVAL" in payload["s4_live"]["blocked_by"]
+
+
+def test_dashboard_projects_read_only_comparison_evidence() -> None:
+    root = Path(__file__).resolve().parents[1]
+    data = build_dashboard_data(root)
+    comparisons = data["comparisons"]
+    assert comparisons["schema_version"] == 1
+    assert comparisons["mode"] == "LOCAL_READ_ONLY"
+    assert comparisons["status"] == "NO_PROMOTION_CANDIDATE"
+    assert comparisons["execution_authority"] == "NONE"
+    assert comparisons["winner_selected"] is False
+    assert comparisons["capabilities"] == {
+        "writes": "DISABLED",
+        "paper_orders": "DISABLED",
+        "live_orders": "DISABLED",
+        "approval_mutation": "DISABLED",
+    }
+    candidate = next(row for row in comparisons["candidate_rows"] if row["candidate_id"] == "B2")
+    assert candidate["validation_state"] == "UNVALIDATED"
+    assert candidate["approval_state"] == "NOT_ELIGIBLE"
+    assert candidate["dimensions"]["multiple_testing_selection_bias_control"] == "FAIL"
+    assert candidate["dimensions"]["cross_engine_reproduction"] == "PASS_WITH_SCOPE_NOTE"
+    assert any(
+        row["gate"] == "G10" and row["status"] == "FAIL" for row in comparisons["validation_gates"]
+    )
+    assert any(
+        row["family"] == "B2" and row["verdict"] == "FAIL" for row in comparisons["g10_rows"]
+    )
+    assert comparisons["cross_engine"]["verdict"] == "PASS_WITH_SCOPE_NOTE"
+    assert comparisons["cross_engine"]["economic_direction_agreement"] is True
+    assert comparisons["seed_g10"]["status"] == "FAIL"
+    assert comparisons["seed_contexts"]
+    assert all(ref.startswith("artifacts/") for ref in comparisons["evidence_refs"])
+
+
+def test_dashboard_search_projects_registry_and_report_artifacts() -> None:
+    root = Path(__file__).resolve().parents[1]
+    payload = build_search_results(root, "DCA risk", limit=20)
+    assert payload["schema_version"] == 1
+    assert payload["mode"] == "LOCAL_READ_ONLY"
+    assert payload["capabilities"] == {
+        "writes": "DISABLED",
+        "credential_access": "ABSENT",
+        "order_endpoint": "ABSENT",
+        "venue_connection": "NONE",
+        "execution_authority": "NONE",
+    }
+    assert payload["counts"]["returned"] == len(payload["results"])
+    kinds = {row["kind"] for row in payload["results"]}
+    assert {"research_source", "strategy", "report"} <= kinds
+    assert any(row["id"] == "SRC-3COMMAS-DCA-BOT" for row in payload["results"])
+    assert any(row["id"] == "STRAT-EXT-3COMMAS-DCA-CONFIG" for row in payload["results"])
+    assert all(row["path"] and row["score"] > 0 for row in payload["results"])
+    assert all("secret" not in row["snippet"].casefold() for row in payload["results"])
 
 
 def test_research_lab_projection_is_stable_before_a_batch_exists(tmp_path: Path) -> None:
@@ -268,15 +408,16 @@ def test_research_lab_selects_latest_artifact_timestamp_not_batch_name(tmp_path:
 def test_real_research_lab_batch_is_projected_automatically() -> None:
     root = Path(__file__).resolve().parents[1]
     lab = build_dashboard_data(root)["research_lab"]
-    assert lab["latest_batch_id"].startswith("LAB-f99dcc")
+    assert lab["latest_batch_id"].startswith("LAB-f04ef5")
     assert lab["runs"] == 66
     assert lab["completed"] == 66
     # Payload-derived (not base-default) safety facts of the retained batch.
     assert lab["state"] == "COMPLETE"
     assert lab["winner_selected"] is False
     assert lab["all_trials_retained"] is True
-    assert lab["latest_seed_cycle"]["cycle_id"].startswith("SEEDCYCLE-5bd3")
-    assert lab["latest_seed_cycle"]["trials"] == 16
+    assert lab["latest_seed_cycle"]["cycle_id"].startswith("SEEDCYCLE-9b1652")
+    assert lab["latest_seed_cycle"]["trials"] == 258
+    assert lab["latest_seed_cycle"]["candidates"] == 5
 
 
 @pytest.mark.parametrize(
@@ -305,15 +446,31 @@ def test_research_lab_malformed_or_failed_batch_fails_closed(
     assert lab["approval_status"] == "NOT_APPROVED"
 
 
-def test_dashboard_projects_typed_primary_research_sources() -> None:
+def test_dashboard_projects_typed_research_sources() -> None:
     root = Path(__file__).resolve().parents[1]
     sources = build_dashboard_data(root)["research_sources"]
-    assert sources["source_count"] == 10
-    assert sources["hypothesis_only_count"] == 10
-    assert sources["noneligible_count"] == 10
-    assert sources["checked_date"] == "2026-07-10"
+    assert sources["source_count"] == 14
+    assert sources["hypothesis_only_count"] == 14
+    assert sources["noneligible_count"] == 14
+    assert sources["intake_plans"] == {
+        "plan_count": 4,
+        "ready_count": 3,
+        "design_only_count": 1,
+    }
+    assert sources["replay_hypotheses"] == {
+        "hypothesis_count": 4,
+        "spec_candidate_count": 2,
+        "replay_candidate_count": 1,
+        "non_reconstructable_count": 1,
+        "noneligible_count": 4,
+    }
+    assert sources["checked_date"] == "2026-07-11"
     assert len(sources["digest"]) == 64
     assert sources["family_counts"]["multiple_testing_controls"] == 4
+    assert sources["family_counts"]["exchange_bot_replay"] == 1
+    assert sources["family_counts"]["copy_trading_replay"] == 1
+    assert sources["family_counts"]["signal_replay"] == 1
+    assert sources["family_counts"]["bot_platform_replay"] == 1
     paper = next(row for row in sources["rows"] if row["source_id"] == "SRC-PAPER1")
     assert paper["year"] == 1993
     assert paper["doi"] == "10.1111/j.1540-6261.1993.tb04702.x"
@@ -321,6 +478,12 @@ def test_dashboard_projects_typed_primary_research_sources() -> None:
     assert paper["families"] == ["cross_sectional_momentum"]
     assert paper["reproduction"] == "NOT_REPRODUCED"
     assert paper["eligibility"] == "NOT_ELIGIBLE"
+    bot_source = next(
+        row for row in sources["rows"] if row["source_id"] == "SRC-BINANCE-TRADING-BOTS"
+    )
+    assert bot_source["doi"] is None
+    assert bot_source["families"] == ["exchange_bot_replay"]
+    assert bot_source["eligibility"] == "NOT_ELIGIBLE"
 
 
 def test_dashboard_projects_dictionary_concepts() -> None:
@@ -360,9 +523,28 @@ def test_dashboard_includes_read_only_tradingview_market_monitor() -> None:
         "Demo trading",
         "Paper trading",
         "Live trading",
+        "Trading Domain",
+        "Orders, portfolio & risk",
+        "Demo wallet boundary",
+        "S3 paper/demo readiness",
+        "S4 live readiness",
+        "blocked gate chain",
+        "human-only future stage",
+        "Demo wallet readiness",
+        "Demo wallet invariants",
+        "DESIGN_ONLY_NOT_ACTIVATED",
+        "synthetic capital not authorized",
         "Dictionary",
         "Concept registry",
         "Ontology boundary",
+        "Strategy comparisons",
+        "Candidate dimension matrix",
+        "Comparison boundary",
+        "comparison is not approval",
+        "Registry & artifact search",
+        "No write or execution path",
+        "/api/v1/search",
+        "search API response is malformed or unsafe",
         "Next command / work",
         "No POST or write control",
         "Actionable open",
@@ -705,6 +887,54 @@ def test_live_market_api_error_schema_contract_without_listening_server(tmp_path
     payload = json.loads(body)
     assert payload["schema_version"] == 1
     assert "manifest" in payload["error"]
+
+
+def test_live_search_api_schema_contract_without_listening_server() -> None:
+    root = Path(__file__).resolve().parents[1]
+    response = _handle_request(
+        b"GET /api/v1/search?q=DCA&limit=10 HTTP/1.1\r\nHost: localhost\r\n\r\n",
+        root,
+    )
+    headers, body = response.split(b"\r\n\r\n", 1)
+    assert b" 200 " in headers
+    assert b"Content-Type: application/json" in headers
+    payload = json.loads(body)
+    assert payload["schema_version"] == 1
+    assert payload["capabilities"]["writes"] == "DISABLED"
+    assert payload["capabilities"]["order_endpoint"] == "ABSENT"
+    assert payload["results"]
+    assert any(row["kind"] == "strategy" for row in payload["results"])
+
+
+def test_live_search_api_error_schema_contract_without_listening_server() -> None:
+    root = Path(__file__).resolve().parents[1]
+    response = _handle_request(
+        b"GET /api/v1/search?q=toolong&limit=0 HTTP/1.1\r\nHost: localhost\r\n\r\n",
+        root,
+    )
+    headers, body = response.split(b"\r\n\r\n", 1)
+    assert b" 400 " in headers
+    payload = json.loads(body)
+    assert payload["schema_version"] == 1
+    assert "limit" in payload["error"]
+
+
+def test_live_stage_gates_api_schema_contract_without_listening_server() -> None:
+    root = Path(__file__).resolve().parents[1]
+    response = _handle_request(
+        b"GET /api/v1/stage-gates HTTP/1.1\r\nHost: localhost\r\n\r\n",
+        root,
+    )
+    headers, body = response.split(b"\r\n\r\n", 1)
+    assert b" 200 " in headers
+    assert b"Content-Type: application/json" in headers
+    payload = json.loads(body)
+    assert payload["schema_version"] == 1
+    assert payload["status"] == "BLOCKED_BY_GATES"
+    assert payload["capabilities"]["writes"] == "DISABLED"
+    assert payload["capabilities"]["order_endpoint"] == "ABSENT"
+    assert payload["s3_paper_demo"]["status"] == "NOT_READY"
+    assert payload["s4_live"]["status"] == "NOT_READY"
 
 
 def test_legacy_api_paths_are_explicitly_removed(tmp_path: Path) -> None:

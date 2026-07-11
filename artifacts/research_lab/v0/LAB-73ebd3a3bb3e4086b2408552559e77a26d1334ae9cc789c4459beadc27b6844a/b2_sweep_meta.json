@@ -1,0 +1,14 @@
+{
+  "probe": "T-006-06 vectorbt B2 retained sweep",
+  "engine": "vectorbt 1.1.0",
+  "dataset": "DS-CRYPTO-SPOT-BAKEOFF-V1 BTCUSDT_5m (577,803 bars)",
+  "fees_per_side": 0.001,
+  "combos": 34,
+  "elapsed_seconds": 5.0,
+  "bars_x_combos_per_second": 3928898,
+  "all_trials_retained": true,
+  "started_at_utc": "2026-07-11T10:44:52.682855+00:00",
+  "finished_at_utc": "2026-07-11T10:44:57.683085+00:00",
+  "ran_utc": "2026-07-11T10:44:57.683085+00:00",
+  "note": "accelerator probe; in-sample return is never a promotion criterion"
+}

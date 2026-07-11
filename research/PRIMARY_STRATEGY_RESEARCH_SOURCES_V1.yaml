@@ -279,3 +279,127 @@ sources:
     reverify_trigger: Recheck if bibliographic metadata, publisher access, or the DOI target changes.
     supersedes: []
     related_source_ids: [SRC-PBO-2016, SRC-DSR-2014, SRC-WRC-2000]
+
+  - source_id: SRC-BINANCE-TRADING-BOTS
+    source_class: exchange_bot_marketplace
+    title: Binance Trading Bots public marketplace
+    authors: [Binance]
+    publication: Binance
+    year: 2026
+    volume: "n/a"
+    issue: "n/a"
+    pages: "n/a"
+    doi: null
+    canonical_publisher_url: "https://www.binance.com/en/trading-bots"
+    lawful_full_text_url: null
+    checked_at: "2026-07-11T00:00:00Z"
+    access_license_status: public_page_only
+    hypothesis_families: [exchange_bot_replay]
+    claim_summary: >-
+      Public exchange-hosted bot marketplace source for grid, DCA, arbitrage, and
+      rebalancing strategy-family hypotheses; visible metadata can inspire offline
+      replay candidates but does not prove local profitability or authorize copying.
+    exact_span_status: not_captured
+    evidence_strength: hypothesis_only
+    profit_claims_inherited: false
+    locally_reproduced: false
+    approval_eligible: false
+    contradictions:
+      - Platform pages may expose performance, copy, or creation actions that are outside S2 authority.
+      - Shared parameters and leaderboard outcomes can be selection-biased and non-reproducible.
+    reverify_trigger: Recheck before any bot-marketplace ingestion pass, terms review, or S3 paper-lane design.
+    supersedes: []
+    related_source_ids: [SRC-PBO-2016, SRC-DSR-2014]
+
+  - source_id: SRC-BINANCE-COPY-TRADING
+    source_class: copy_trading_leaderboard
+    title: Binance Copy Trading public lead-trader surface
+    authors: [Binance]
+    publication: Binance
+    year: 2026
+    volume: "n/a"
+    issue: "n/a"
+    pages: "n/a"
+    doi: null
+    canonical_publisher_url: "https://www.binance.com/en/copy-trading"
+    lawful_full_text_url: null
+    checked_at: "2026-07-11T00:00:00Z"
+    access_license_status: public_page_only
+    hypothesis_families: [copy_trading_replay]
+    claim_summary: >-
+      Public copy-trading surface for lead-trader, portfolio, and historical-performance
+      hypotheses; the OS may only retain replay or allocation hypotheses with provenance,
+      not subscribe, mirror, or execute copied trades.
+    exact_span_status: not_captured
+    evidence_strength: hypothesis_only
+    profit_claims_inherited: false
+    locally_reproduced: false
+    approval_eligible: false
+    contradictions:
+      - Live one-click replication and portfolio copying are explicitly outside S2 authority.
+      - Leaderboard survival and risk metrics require local validation before any comparison value.
+    reverify_trigger: Recheck terms, public visibility, and account gating before any copy-source replay design.
+    supersedes: []
+    related_source_ids: [SRC-PBO-2016, SRC-DSR-2014, SRC-BINANCE-TRADING-BOTS]
+
+  - source_id: SRC-TRADINGVIEW-IDEAS
+    source_class: online_signal_feed
+    title: TradingView Ideas public strategy and analysis feed
+    authors: [TradingView]
+    publication: TradingView
+    year: 2026
+    volume: "n/a"
+    issue: "n/a"
+    pages: "n/a"
+    doi: null
+    canonical_publisher_url: "https://www.tradingview.com/ideas/"
+    lawful_full_text_url: null
+    checked_at: "2026-07-11T00:00:00Z"
+    access_license_status: public_page_only
+    hypothesis_families: [signal_replay]
+    claim_summary: >-
+      Public trading-ideas and analysis surface for timestamped signal or thesis
+      hypotheses; any future use must capture source time, author, symbol, and rule
+      ambiguity before offline replay.
+    exact_span_status: not_captured
+    evidence_strength: hypothesis_only
+    profit_claims_inherited: false
+    locally_reproduced: false
+    approval_eligible: false
+    contradictions:
+      - Ideas may be prose-only, subjective, edited, or educational rather than executable rules.
+      - Public popularity or recency is not evidence of strategy quality.
+    reverify_trigger: Recheck public access, terms, and capture mechanics before any signal-feed ingestion run.
+    supersedes: []
+    related_source_ids: [SRC-PBO-2016, SRC-SPA-2005]
+
+  - source_id: SRC-3COMMAS-DCA-BOT
+    source_class: third_party_bot_platform
+    title: 3Commas DCA Bot public product surface
+    authors: [3Commas]
+    publication: 3Commas
+    year: 2026
+    volume: "n/a"
+    issue: "n/a"
+    pages: "n/a"
+    doi: null
+    canonical_publisher_url: "https://3commas.io/dca-bots"
+    lawful_full_text_url: null
+    checked_at: "2026-07-11T00:00:00Z"
+    access_license_status: public_page_only
+    hypothesis_families: [bot_platform_replay]
+    claim_summary: >-
+      Public third-party bot-platform source for DCA-bot configuration and backtest
+      workflow hypotheses; any future strategy use must be reconstructed offline and
+      cannot connect platform accounts or execute bot actions in S2.
+    exact_span_status: not_captured
+    evidence_strength: hypothesis_only
+    profit_claims_inherited: false
+    locally_reproduced: false
+    approval_eligible: false
+    contradictions:
+      - Product claims, trials, and exchange-account integrations are not local validation evidence.
+      - Platform automation requires credentials and venue links that remain gated.
+    reverify_trigger: Recheck product terms, public configuration visibility, and credential boundaries before ingestion.
+    supersedes: []
+    related_source_ids: [SRC-PBO-2016, SRC-DSR-2014]

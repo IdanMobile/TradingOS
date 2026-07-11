@@ -1,0 +1,28 @@
+{
+  "blockers": [
+    "no temporal validation package exists for these seed candidates",
+    "no cross-engine reproduction exists for these seed candidates",
+    "no multiple-testing production estimator is activated",
+    "no candidate is promotion eligible"
+  ],
+  "candidates": {
+    "STRAT-FT1-sample-strategy": {
+      "best_total_return": "-0.9999999933542231438876952839",
+      "trials": 9
+    },
+    "STRAT-PINE1-bb-strategy": {
+      "best_total_return": "-0.9999999999999520072909946268",
+      "trials": 9
+    },
+    "STRAT-QC1-dual-ma-cross": {
+      "best_total_return": "-0.9999999999999999999982810524",
+      "trials": 12
+    },
+    "STRAT-QC2-donchian-breakout": {
+      "best_total_return": "-0.9999999999998993142447920240",
+      "trials": 4
+    }
+  },
+  "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+  "winner_selected": false
+}

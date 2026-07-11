@@ -25,11 +25,17 @@ class ResearchSourceError(ValueError):
 
 class SourceClass(StrEnum):
     PRIMARY_ACADEMIC_PAPER = "primary_academic_paper"
+    EXCHANGE_BOT_MARKETPLACE = "exchange_bot_marketplace"
+    COPY_TRADING_LEADERBOARD = "copy_trading_leaderboard"
+    ONLINE_SIGNAL_FEED = "online_signal_feed"
+    THIRD_PARTY_BOT_PLATFORM = "third_party_bot_platform"
 
 
 class AccessLicenseStatus(StrEnum):
     PUBLISHER_PAGE_ONLY = "publisher_page_only"
     LAWFUL_FULL_TEXT_LINKED = "lawful_full_text_linked"
+    PUBLIC_PAGE_ONLY = "public_page_only"
+    PLATFORM_TERMS_REQUIRED = "platform_terms_required"
 
 
 class HypothesisFamily(StrEnum):
@@ -39,6 +45,10 @@ class HypothesisFamily(StrEnum):
     VOLATILITY_SCALING = "volatility_scaling"
     TRANSACTION_COSTS = "transaction_costs"
     MULTIPLE_TESTING_CONTROLS = "multiple_testing_controls"
+    EXCHANGE_BOT_REPLAY = "exchange_bot_replay"
+    COPY_TRADING_REPLAY = "copy_trading_replay"
+    SIGNAL_REPLAY = "signal_replay"
+    BOT_PLATFORM_REPLAY = "bot_platform_replay"
 
 
 class ExactSpanStatus(StrEnum):
@@ -96,7 +106,7 @@ class ResearchSourceRecord:
     volume: str
     issue: str
     pages: str
-    doi: str
+    doi: str | None
     canonical_publisher_url: str
     lawful_full_text_url: str | None
     checked_at: str
@@ -141,7 +151,12 @@ class ResearchSourceRecord:
             raise ResearchSourceError("hypothesis_families must not be empty")
         if any(not isinstance(family, HypothesisFamily) for family in self.hypothesis_families):
             raise ResearchSourceError("hypothesis_families contains an invalid family")
-        if not isinstance(self.doi, str) or not _DOI.fullmatch(self.doi):
+        if self.source_class is SourceClass.PRIMARY_ACADEMIC_PAPER:
+            if not isinstance(self.doi, str) or not _DOI.fullmatch(self.doi):
+                raise ResearchSourceError(f"invalid DOI: {self.doi}")
+        elif self.doi is not None and (
+            not isinstance(self.doi, str) or not _DOI.fullmatch(self.doi)
+        ):
             raise ResearchSourceError(f"invalid DOI: {self.doi}")
         _https_url("canonical_publisher_url", self.canonical_publisher_url)
         if self.lawful_full_text_url is not None:
@@ -172,7 +187,7 @@ class ResearchSourceRecord:
         if any(not isinstance(getattr(self, field), bool) for field in bool_fields):
             raise ResearchSourceError(f"{', '.join(bool_fields)} must be booleans")
         if self.profit_claims_inherited:
-            raise ResearchSourceError("primary sources cannot provide inherited profit proof")
+            raise ResearchSourceError("research sources cannot provide inherited profit proof")
         if self.locally_reproduced:
             raise ResearchSourceError("initial sources cannot claim local reproduction")
         if self.approval_eligible:
@@ -226,7 +241,7 @@ class ResearchSourceRecord:
             volume=string("volume"),
             issue=string("issue"),
             pages=string("pages"),
-            doi=string("doi"),
+            doi=string("doi") if raw["doi"] is not None else None,
             canonical_publisher_url=string("canonical_publisher_url"),
             lawful_full_text_url=full_text,
             checked_at=string("checked_at"),
@@ -257,7 +272,7 @@ class ResearchSourceRegistry:
     def __init__(self, records: Iterable[ResearchSourceRecord]) -> None:
         ordered = tuple(sorted(records, key=lambda record: record.source_id))
         ids = [record.source_id for record in ordered]
-        dois = [record.doi.casefold() for record in ordered]
+        dois = [record.doi.casefold() for record in ordered if record.doi is not None]
         if len(ids) != len(set(ids)):
             raise ResearchSourceError("duplicate source_id")
         if len(dois) != len(set(dois)):

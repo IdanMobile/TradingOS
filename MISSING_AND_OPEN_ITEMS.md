@@ -8,8 +8,10 @@ Last updated: 2026-07-11
   2026-07-11 recheck. Human/account-specific venue eligibility, permissions,
   terms, product availability, and fee-tier checks remain before S3 paper venue
   selection.
-- RG-07 G10 PBO/DSR candidate-specific integration and independent recomputation
-  before production G10 activation. Synthetic method fixtures now pass.
+- RG-07 is closed for production activation (2026-07-11): candidate-specific G10
+  PBO/DSR with independent recomputation ran on the retained trial populations and
+  FAILED all families (`artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_11.json`).
+  Remaining slice: stats-specialist review before honoring any future G10 PASS.
 
 ## Current environment/coverage constraints
 
@@ -32,6 +34,15 @@ NautilusTrader remains bounded-window evidence; full-history parity and latency/
 evidence remain open. Deferred adapters and normalized artifacts are retained as
 evidence-only/deferred assets under D-037.
 
+## Resolved architecture decisions (2026-07-11)
+
+- **T-002-05: RESOLVED by D-038.** The operator approved keeping the single audited
+  loopback `POST /api/v1/workspace-actions/decision` route as a narrowly scoped
+  clarification, not broad write-API approval. AD §AI and
+  `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md` §7 now record the exception and its
+  binding constraints; any expansion requires a new decision gate. Evidence: D-038,
+  `artifacts/reports/AD_IMPLEMENTATION_GAP_AUDIT_2026_07_11.md`.
+
 ## Open S2 evidence and exit items
 
 0. Repo-wide open-marker audit is retained at
@@ -40,23 +51,67 @@ evidence-only/deferred assets under D-037.
    classified as throughput/scope tracks, validation blockers, or human/credential/S3
    gates. The supervised Hummingbot full-history retry is now closed as a
    documented throughput timeout, not an active running job.
+0a. Agent-executable product/platform inventory is now exhausted for the current
+    constrained S2 scope. Live `/api/v1/status` projects 0 actionable open tasks,
+    7 gated tasks, and 4 recurring tasks. Evidence:
+    `artifacts/reports/AGENT_EXECUTABLE_COMPLETION_AUDIT_2026_07_11.md`.
 1. Real retained Research Lab evidence now exists: LAB-799 completed and the persisted
    jobs/dashboard projection show three succeeded `RESEARCH_LAB_V0` jobs plus the
    six-hour offline schedule. Continue the next S2 evidence cycle from the recorded
-   blockers; do not treat the batch or scheduler as strategy approval. A follow-on
-   seed-candidate cycle also retained 16 trials for the two reproduced QuantConnect seed
-   specs and selected no winner. A 2026-07-11 refresh after G10 fixture evidence
+   blockers; do not treat the batch or scheduler as strategy approval. Follow-on
+   seed cycles now retain 258 trials for five reproduced seed candidates across
+   BTCUSDT/ETHUSDT x 5m/15m/1h. The lower-frequency A/B produced positive proxy
+   rows, led by QC2 Donchian ETHUSDT 1h window=40 (+149.1%), but no candidate is
+   validated or eligible. Evidence:
+   `artifacts/reports/SEED_CYCLE_MULTI_GRID_REPORT_2026_07_11.md`.
+   A 2026-07-11 refresh after G10 fixture evidence
    produced `LAB-f99dcc214f377ecca4710bbb41d445c8331d2a1b06f93931ed1c88bdf3af5924`,
    again with 66 trials, no winner, and `execution_authority=NONE`.
 2. Strategy validation remains `INCOMPLETE_NOT_APPROVABLE`: B2 is rejected for paper,
-   G4 remains WARN, and G10 remains inactive despite passing synthetic method
-   fixtures because candidate-specific integration and independent recomputation
-   are still required.
-3. Preserve and close only with evidence the remaining Hummingbot, NautilusTrader,
-   and cross-engine signal/order/fill semantic gaps described above.
+   G4 remains WARN, and production G10 now returns an evidence-backed **FAIL**
+   (candidate-specific PBO/DSR with independent recomputation; B2 PBO 0.8685,
+   DSR≈0). The multiple-testing dimension is no longer BLOCKED — it is FAIL in
+   `LAB-73ebd3a3bb3e4086b2408552559e77a26d1334ae9cc789c4459beadc27b6844a`.
+3. The research-lab `cross_engine_reproduction` dimension is closed
+   PASS_WITH_SCOPE_NOTE (2026-07-11): three-way B2 signal reproduction with 99.904%
+   event-lane reconciliation; fill/P&L parity is NOT claimed. Remaining Hummingbot
+   full-history and NautilusTrader full-history/latency gaps stay open as
+   throughput/scope tracks; retained two-pair order-state divergences remain
+   explained parity evidence. Evidence:
+   `artifacts/validation/CROSS_ENGINE_REPRODUCTION_2026_07_11.json`.
 4. S2 exit/HG-3 remains blocked: the verification package is retained, but the
    requirement audit says not to prepare HG-3 because no strategy is complete,
    approvable, or promotion-eligible.
+5. Seed validation-probe evidence is now retained in
+   `artifacts/validation/seed_candidates/SEED_VALIDATION_PROBE_2026_07_11.json`.
+   QC2 ETHUSDT 1h window=40 is the only positive proxy context that remains
+   positive across chronological thirds and beats buy-and-hold under normal fees,
+   but it is parameter-fragile and now fails seed-context G10
+   (`SEED_G10_QC2_ETHUSDT_1H_2026_07_11.json`: PBO 0.2614, DSR 0.7564 < 0.95).
+   Next agent-executable work is failure confirmation/cross-engine reproduction or a
+   D-039 AI decision to move to new source-family ingestion.
+6. New source-family ingestion has begun in read-only form. The primary research
+   source registry now includes four external source classes — Binance Trading Bots,
+   Binance Copy Trading, TradingView Ideas, and 3Commas DCA Bot — all as
+   `hypothesis_only`, non-reproduced, non-eligible records with no copy/credential/
+   venue/order authority. `EXTERNAL_SOURCE_INTAKE_PLANS_V1.yaml` also records one
+   validated offline capture/replay plan per source and the dashboard read model
+   exposes the plan counts. Metadata-only snapshots are retained under
+   `artifacts/source_intake/`, with first public-source fields filled from
+   `EXTERNAL_SOURCE_PUBLIC_CAPTURE_V1.yaml`. `EXTERNAL_REPLAY_HYPOTHESES_V1.yaml`
+   now records four non-eligible replay hypotheses, including one copy-trading
+   `non_reconstructable` row. The 3Commas DCA hypothesis is specified as the first
+   canonical non-executing external replay candidate under
+   `strategies/external/3commas-dca-config/`. The first local-only DCA replay is now
+   retained at
+   `artifacts/external_replay/3commas_dca/EXTDCA-9ed0a866cc1ddb5f7f4e7a94b5c5e48b/`
+   with 6 frozen-data trials and 43,738 simulated events. It remains
+   `UNVALIDATED`, non-eligible, and `execution_authority=NONE`; no platform bot,
+   account, paper/demo/live venue, credential, or order route was used. Evidence:
+   `artifacts/reports/EXTERNAL_SOURCE_INTAKE_SEED_2026_07_11.md`. Remaining
+   agent-executable work is to open a new external source-family replay seed or build
+   normal validation/cross-engine evidence only if a DCA variant survives first-pass
+   replay; this is not execution.
 
 ## Resolved authorized decision slices (2026-07-11)
 
@@ -71,6 +126,16 @@ evidence-only/deferred assets under D-037.
 - `T-017-05` was rechecked after an operator decision, but credentials are not
   visible in the current environment. Evidence:
   `artifacts/reports/AI_COST_TELEMETRY_CREDENTIAL_RECHECK_2026_07_11.md`.
+- Future exchange/data-provider intake prep is retained in
+  `artifacts/reports/OPERATOR_ACCESS_PREP_CHECKLIST_2026_07_11.md`. It reserves
+  inactive `.env.example` names for candidate exchanges and market-data vendors,
+  but does not request or enable any credential, connection, order route, paper/demo
+  venue, live trading, or real-money capability.
+- AD §U now explicitly includes exchange-hosted bot marketplaces, copy-trading/
+  copy-investing records, online signal feeds, public leaderboards, and third-party
+  bot platforms as future strategy/source inputs to the lab. This is a development
+  requirement for the full Trading OS, not current execution authority; each source
+  still enters as untrusted hypothesis/replay material.
 
 ## Resolved bounded S2 research-asset evidence
 
@@ -110,6 +175,34 @@ evidence-only/deferred assets under D-037.
   reopen triggers occur; global search is done through the Dictionary view; approvals UI
   remains human-gated and unauthorized. Evidence:
   `artifacts/reports/DASHBOARD_BOUNDARY_REPORT.md`.
+- The inert trading-domain product surface is now projected in the dashboard:
+  orders, positions, portfolio, risk, and the future demo-wallet rail are visible as
+  read-only contracts, while all execution/account/synthetic-wallet capabilities are
+  absent or disabled. This closes the agent-executable S2 UI slice for typed trading
+  projections without crossing into S3 paper/demo implementation.
+- The future demo-wallet rail now includes a design-only readiness projection:
+  no ledger, no synthetic capital, no mutation API, no order route, no venue
+  connection, and `execution_authority=NONE`. It lists the required future gates,
+  allowed isolated-simulation scope, and prohibited credential/venue/real-money
+  ingredients so future agents can continue from the decision record without
+  activating demo/paper infrastructure in S2.
+- S3/S4 gate readiness is now projected as read-only Trading Domain evidence:
+  S3 paper/demo and S4 live are both `NOT_READY`, with blocked predicates and next
+  human actions visible. This is product continuity only; it does not authorize or
+  implement paper/demo/live execution.
+- `GET /api/v1/stage-gates` now exposes the same blocked S3/S4 gate chain as a
+  standalone read-only machine contract. It has no write, transition, order, venue,
+  credential, demo/paper, or live control.
+- The broader local discovery surface is now projected in the dashboard:
+  `GET /api/v1/search` and the Search view cover concepts, research assets, source
+  records, strategies, and retained reports. This closes the roadmap's bounded
+  registry/report search slice as a read-only projection; no write, credential, venue,
+  order, or execution capability is exposed.
+- The bounded comparison surface is now projected in the dashboard:
+  retained lab scorecards, validation gates, production G10 rows, seed probe evidence,
+  seed G10, cross-engine scope notes, and evidence refs are visible side by side. This
+  closes the agent-executable S2 comparison UI slice without selecting a winner or
+  exposing approval, job, credential, venue, paper/demo/live, or order controls.
 
 ## Resolved AI provider source re-check evidence
 
@@ -174,6 +267,14 @@ evidence-only/deferred assets under D-037.
   is frozen but `review_status: PENDING_HUMAN_REVIEW` — needs an operator to
   review samples and record `reviewer`/`reviewed_at` (T-011-04 human-approval
   requirement).
+
+## Current non-recurring blocked task inventory
+
+- Credential-gated: `T-011-05` first real AI benchmark runs; `T-017-05` AI cost
+  telemetry.
+- S3-gated: `T-015-01` paper-lane architecture decision, `T-015-02` paper deployment,
+  `T-015-03` backtest-vs-paper divergence tracking, `T-015-04` operational drills.
+- S4/human-gated: `T-015-05` human-only venue gates package.
 
 ## Re-verification required
 

@@ -1,0 +1,161 @@
+registry_version: 1
+plans:
+  - plan_id: INTAKE-BINANCE-TRADING-BOTS
+    source_ref: SRC-BINANCE-TRADING-BOTS
+    capture_mode: config_reconstruction
+    status: ready_for_offline_capture
+    target_artifact: artifacts/source_intake/binance_trading_bots/metadata_snapshot.json
+    allowed_uses:
+      - record bot family, symbol, visible parameters, and timestamped public metadata
+      - propose offline strategy hypotheses for canonical reconstruction
+      - compare reconstructed rules only after local validation evidence exists
+    prohibited_actions:
+      - credential_request
+      - account_connection
+      - subscription_or_copy_action
+      - order_routing
+      - paper_demo_or_live_activation
+      - profit_claim_inheritance
+    required_capture_fields:
+      - captured_at_utc
+      - canonical_url
+      - platform
+      - bot_family
+      - symbol_or_market
+      - visible_parameters
+      - fee_and_slippage_disclaimer
+      - copy_or_create_controls_present
+      - terms_review_status
+    bias_risks:
+      - leaderboard survivorship and recency bias
+      - shared parameters may not reproduce across market regimes
+      - exchange UI may hide execution details needed for local replay
+    validation_prerequisites:
+      - source snapshot hash
+      - canonical strategy spec or explicit non-spec replay record
+      - frozen-data backtest on approved instruments and timeframes
+      - G10 multiple-testing evidence before any promotion claim
+    notes:
+      - Capture is metadata-only until source terms and replay mechanics are reviewed.
+      - No Binance account, API key, copy action, or bot creation is allowed in S2.
+    approval_eligible: false
+
+  - plan_id: INTAKE-BINANCE-COPY-TRADING
+    source_ref: SRC-BINANCE-COPY-TRADING
+    capture_mode: allocation_replay
+    status: design_only
+    target_artifact: artifacts/source_intake/binance_copy_trading/replay_design.json
+    allowed_uses:
+      - record visible lead-trader or portfolio metadata if publicly available
+      - design an offline replay model for historical actions or allocations
+      - retain risk and survivorship caveats beside any hypothesis
+    prohibited_actions:
+      - credential_request
+      - account_connection
+      - subscription_or_copy_action
+      - order_routing
+      - paper_demo_or_live_activation
+      - profit_claim_inheritance
+    required_capture_fields:
+      - captured_at_utc
+      - canonical_url
+      - platform
+      - leader_or_portfolio_identifier
+      - visible_performance_window
+      - visible_risk_metrics
+      - allocation_or_trade_timestamp_semantics
+      - copy_controls_present
+      - terms_review_status
+    bias_risks:
+      - lead-trader survivorship and self-selection bias
+      - hidden leverage, fees, risk limits, and liquidation behavior
+      - copied trade sizing may not be recoverable from public data
+    validation_prerequisites:
+      - reconstructable historical actions or explicit non-reconstructable status
+      - local replay on frozen market data where possible
+      - divergence model before any future paper copy comparison
+      - human gate before any account-specific eligibility check
+    notes:
+      - This plan is design-only because copy trading can imply live account behavior.
+      - Public performance cannot be imported as strategy evidence.
+    approval_eligible: false
+
+  - plan_id: INTAKE-TRADINGVIEW-IDEAS
+    source_ref: SRC-TRADINGVIEW-IDEAS
+    capture_mode: historical_signal_replay
+    status: ready_for_offline_capture
+    target_artifact: artifacts/source_intake/tradingview_ideas/signal_candidates.json
+    allowed_uses:
+      - record public idea metadata and source timestamps
+      - classify whether an idea contains executable rules or prose-only thesis
+      - propose offline replay hypotheses with ambiguities retained
+    prohibited_actions:
+      - credential_request
+      - account_connection
+      - subscription_or_copy_action
+      - order_routing
+      - paper_demo_or_live_activation
+      - profit_claim_inheritance
+    required_capture_fields:
+      - captured_at_utc
+      - canonical_url
+      - author_or_publisher
+      - symbol
+      - published_at_or_observed_at
+      - signal_direction_or_thesis
+      - entry_exit_rule_visibility
+      - edited_or_deleted_visibility
+      - terms_review_status
+    bias_risks:
+      - prose ideas may be non-executable or edited after publication
+      - popularity and recency are not performance evidence
+      - missing stop, sizing, or exit semantics can make replay invalid
+    validation_prerequisites:
+      - canonical source snapshot
+      - explicit ambiguity record
+      - canonical strategy spec or non-spec signal replay record
+      - local backtest/replay before any comparison
+    notes:
+      - Public ideas are untrusted research inputs, not signals to follow.
+      - Copyrighted text must not be copied into artifacts beyond minimal citation metadata.
+    approval_eligible: false
+
+  - plan_id: INTAKE-3COMMAS-DCA-BOT
+    source_ref: SRC-3COMMAS-DCA-BOT
+    capture_mode: config_reconstruction
+    status: ready_for_offline_capture
+    target_artifact: artifacts/source_intake/3commas_dca_bot/config_hypotheses.json
+    allowed_uses:
+      - record public DCA bot configuration concepts and required parameter names
+      - design canonical DCA reconstruction candidates for frozen-data testing
+      - compare only local offline results after validation gates are complete
+    prohibited_actions:
+      - credential_request
+      - account_connection
+      - subscription_or_copy_action
+      - order_routing
+      - paper_demo_or_live_activation
+      - profit_claim_inheritance
+    required_capture_fields:
+      - captured_at_utc
+      - canonical_url
+      - platform
+      - bot_family
+      - visible_parameters
+      - exchange_dependency_visibility
+      - backtest_claim_visibility
+      - credential_or_account_controls_present
+      - terms_review_status
+    bias_risks:
+      - product backtest claims may use unavailable assumptions or data
+      - platform exchange integrations are credential-bearing and unavailable in S2
+      - DCA variants require explicit sizing, safety-order, and exit semantics
+    validation_prerequisites:
+      - source snapshot hash
+      - canonical DCA strategy specification
+      - local replay with declared cost grid
+      - independent validation package before any promotion claim
+    notes:
+      - No 3Commas account, exchange link, trial signup, or bot execution is allowed in S2.
+      - This plan captures configuration hypotheses only.
+    approval_eligible: false

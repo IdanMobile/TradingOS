@@ -13,7 +13,15 @@ from pathlib import Path
 from typing import Any, cast
 
 from tios.knowledge import ConceptError, ConceptRegistry
-from tios.research_assets import ResearchSourceError, ResearchSourceRegistry
+from tios.research_assets import (
+    ReplayHypothesis,
+    ReplayHypothesisRegistry,
+    ResearchSourceError,
+    ResearchSourceRegistry,
+    SourceIntakePlan,
+    SourceIntakePlanError,
+    SourceIntakePlanRegistry,
+)
 from tios.services.jobs.projection import build_jobs_projection
 
 STATUS_RE = re.compile(r"Status:\s*\*?\*?([^\n]+)")
@@ -496,6 +504,8 @@ def _latest_seed_cycle(root: Path) -> dict[str, Any] | None:
 
 def _research_sources(root: Path) -> dict[str, Any]:
     path = root / "research" / "PRIMARY_STRATEGY_RESEARCH_SOURCES_V1.yaml"
+    intake_path = root / "research" / "EXTERNAL_SOURCE_INTAKE_PLANS_V1.yaml"
+    replay_path = root / "research" / "EXTERNAL_REPLAY_HYPOTHESES_V1.yaml"
     base: dict[str, Any] = {
         "source_count": 0,
         "family_counts": {},
@@ -503,6 +513,14 @@ def _research_sources(root: Path) -> dict[str, Any]:
         "noneligible_count": 0,
         "checked_date": None,
         "digest": None,
+        "intake_plans": {"plan_count": 0, "ready_count": 0, "design_only_count": 0},
+        "replay_hypotheses": {
+            "hypothesis_count": 0,
+            "spec_candidate_count": 0,
+            "replay_candidate_count": 0,
+            "non_reconstructable_count": 0,
+            "noneligible_count": 0,
+        },
         "rows": [],
     }
     try:
@@ -510,6 +528,24 @@ def _research_sources(root: Path) -> dict[str, Any]:
     except (OSError, ResearchSourceError):
         return base
     records = registry.list()
+    intake_plans: tuple[SourceIntakePlan, ...]
+    try:
+        intake_registry = SourceIntakePlanRegistry.load(intake_path, source_registry=registry)
+        intake_plans = intake_registry.list()
+    except (OSError, SourceIntakePlanError):
+        intake_plans = ()
+        intake_registry = None
+    replay_hypotheses: tuple[ReplayHypothesis, ...] = ()
+    if intake_registry is not None:
+        try:
+            replay_registry = ReplayHypothesisRegistry.load(
+                replay_path,
+                source_registry=registry,
+                intake_registry=intake_registry,
+            )
+            replay_hypotheses = replay_registry.list()
+        except (OSError, SourceIntakePlanError):
+            replay_hypotheses = ()
     family_counts: dict[str, int] = {}
     for record in records:
         for family in record.hypothesis_families:
@@ -523,6 +559,26 @@ def _research_sources(root: Path) -> dict[str, Any]:
         "noneligible_count": sum(not record.approval_eligible for record in records),
         "checked_date": max((record.checked_at[:10] for record in records), default=None),
         "digest": registry.digest(),
+        "intake_plans": {
+            "plan_count": len(intake_plans),
+            "ready_count": sum(
+                plan.status.value == "ready_for_offline_capture" for plan in intake_plans
+            ),
+            "design_only_count": sum(plan.status.value == "design_only" for plan in intake_plans),
+        },
+        "replay_hypotheses": {
+            "hypothesis_count": len(replay_hypotheses),
+            "spec_candidate_count": sum(
+                item.status.value == "spec_candidate" for item in replay_hypotheses
+            ),
+            "replay_candidate_count": sum(
+                item.status.value == "replay_candidate" for item in replay_hypotheses
+            ),
+            "non_reconstructable_count": sum(
+                item.status.value == "non_reconstructable" for item in replay_hypotheses
+            ),
+            "noneligible_count": sum(not item.approval_eligible for item in replay_hypotheses),
+        },
         "rows": [
             {
                 "source_id": record.source_id,
@@ -579,6 +635,388 @@ def _dictionary_concepts(root: Path) -> dict[str, Any]:
     }
 
 
+def _trading_domain(
+    runs: list[dict[str, Any]], validation_package: dict[str, Any]
+) -> dict[str, Any]:
+    retained_fills = sum(
+        int(run.get("fills", 0))
+        for run in runs
+        if isinstance(run.get("fills", 0), int) and not isinstance(run.get("fills", 0), bool)
+    )
+    risk_preconditions = validation_package.get("risk_preconditions", {})
+    if not isinstance(risk_preconditions, dict):
+        risk_preconditions = {}
+    return {
+        "schema_version": 1,
+        "environment": "HISTORICAL_RESEARCH",
+        "mode": "INERT_READ_MODEL",
+        "execution_authority": "NONE",
+        "venue_connection": "NONE",
+        "capabilities": {
+            "credential_access": "ABSENT",
+            "order_endpoint": "ABSENT",
+            "account_mutation": "DISABLED",
+            "synthetic_wallet": "ABSENT",
+            "demo_orders": "DISABLED",
+            "paper_orders": "DISABLED",
+            "live_orders": "DISABLED",
+            "risk_engine": "VALIDATION_PRECONDITIONS_ONLY",
+        },
+        "counts": {
+            "retained_run_artifacts": len(runs),
+            "retained_backtest_fills": retained_fills,
+            "order_intents": 0,
+            "order_states": 0,
+            "accounts": 0,
+            "portfolios": 0,
+            "positions": 0,
+            "risk_decisions": 0,
+        },
+        "read_models": [
+            {
+                "name": "Order intents and states",
+                "status": "DISABLED",
+                "detail": "No order submit, cancel, replace, or route command exists in S2.",
+            },
+            {
+                "name": "Account and demo wallet",
+                "status": "ABSENT",
+                "detail": "No synthetic wallet ledger or account mutation exists before S3 gates.",
+            },
+            {
+                "name": "Positions and portfolio",
+                "status": "EMPTY",
+                "detail": (
+                    "Only retained historical fills exist; no paper/live position state exists."
+                ),
+            },
+            {
+                "name": "Risk decisions",
+                "status": "PRECONDITIONS_ONLY",
+                "detail": "Risk is currently validation evidence, not a runtime execution engine.",
+            },
+        ],
+        "demo_wallet_design": {
+            "schema_version": 1,
+            "status": "DESIGN_ONLY_NOT_ACTIVATED",
+            "ledger_state": "ABSENT",
+            "environment": "RESERVED_FOR_S3",
+            "synthetic_capital": "NOT_CREATED",
+            "mutation_api": "ABSENT",
+            "order_route": "ABSENT",
+            "venue_connection": "NONE",
+            "execution_authority": "NONE",
+            "allowed_future_scope": [
+                "isolated synthetic ledger",
+                "deterministic local fill simulator",
+                "typed account and portfolio snapshots",
+                "backtest-versus-demo divergence reports",
+                "operator-visible kill-switch drill evidence",
+            ],
+            "required_gates": [
+                "S2_EXIT_PASS",
+                "HG_3_APPROVED",
+                "one COMPLETE_APPROVABLE strategy context",
+                "paper_lane_architecture_decision",
+                "security_review_pass",
+                "operator activation decision for a specific isolated demo mode",
+            ],
+            "must_never_include": [
+                "exchange credential",
+                "venue account connection",
+                "funds-transfer permission",
+                "real-money balance",
+                "venue order routing",
+                "copy-trading action",
+            ],
+            "invariants": [
+                "demo records cannot exist in S2",
+                "synthetic wallets cannot be constructed in current domain contracts",
+                "every future synthetic balance must be tagged non-real-money",
+                "demo fills must be derived locally from retained market data",
+                "demo divergence cannot promote a strategy without human gates",
+            ],
+        },
+        "stage_gate_readiness": build_stage_gate_readiness(),
+        "risk_preconditions": {
+            "status": risk_preconditions.get("status", "NOT_RUN"),
+            "no_live_capability": risk_preconditions.get("no_live_capability") is True,
+            "complete_cost_grid": risk_preconditions.get("complete_cost_grid") is True,
+            "promotion_eligible": risk_preconditions.get("promotion_eligible") is True,
+        },
+        "activation_predicate": [
+            "S2_EXIT_PASS",
+            "HG_3_APPROVED",
+            "validation.status == COMPLETE_APPROVABLE",
+            "validation.promotion_eligible == true",
+            "paper_lane_architecture_decision_exists",
+            "security_review_passes",
+            "operator_approved_specific_demo_or_testnet_integration",
+        ],
+        "prohibited": [
+            "credential_request",
+            "account_connection",
+            "synthetic_wallet_mutation",
+            "demo_or_paper_order",
+            "venue_order_routing",
+            "live_order_capability",
+            "real_money",
+        ],
+    }
+
+
+def build_stage_gate_readiness() -> dict[str, Any]:
+    """Project the S3/S4 gate chain without exposing any activation control."""
+    return {
+        "schema_version": 1,
+        "mode": "LOCAL_READ_ONLY",
+        "status": "BLOCKED_BY_GATES",
+        "execution_authority": "NONE",
+        "capabilities": {
+            "writes": "DISABLED",
+            "credential_access": "ABSENT",
+            "order_endpoint": "ABSENT",
+            "venue_connection": "NONE",
+            "demo_paper_control": "ABSENT",
+            "live_control": "ABSENT",
+        },
+        "s3_paper_demo": {
+            "stage": "S3",
+            "status": "NOT_READY",
+            "satisfied": [
+                "S2 research console implemented",
+                "no-live/no-order boundary verified",
+                "design-only demo-wallet readiness visible",
+            ],
+            "blocked_by": [
+                "S2_EXIT_PASS",
+                "HG_3_APPROVED",
+                "one COMPLETE_APPROVABLE strategy context",
+                "paper_lane_architecture_decision",
+                "security_review_pass",
+                "operator activation decision for a specific isolated demo mode",
+            ],
+            "next_human_actions": [
+                "approve HG-3 only after S2 exit evidence supports it",
+                "choose a paper-lane architecture after a validated strategy exists",
+                "approve a specific isolated demo/paper integration",
+            ],
+        },
+        "s4_live": {
+            "stage": "S4",
+            "status": "NOT_READY",
+            "satisfied": [
+                "live states are unreachable in S2",
+                "venue/source prep is documented as human-gated",
+            ],
+            "blocked_by": [
+                "S3_EXIT_PASS",
+                "paper stability period",
+                "quantified backtest-versus-paper divergence",
+                "independent live risk and kill-switch package",
+                "specific limited-capital venue proposal",
+                "HG_5_OPERATOR_APPROVAL",
+            ],
+            "next_human_actions": [
+                "complete human venue/account eligibility checks",
+                "approve restricted credentials only after S4 gate evidence",
+                "approve limited capital and drawdown limits",
+            ],
+        },
+    }
+
+
+def _latest_scorecards(root: Path) -> tuple[Path | None, dict[str, Any]]:
+    candidates = [
+        path
+        for path in (root / "artifacts" / "research_lab" / "v0").glob("LAB-*/scorecards.json")
+        if path.is_file()
+    ]
+    if not candidates:
+        return None, {}
+    path = max(candidates, key=lambda candidate: candidate.stat().st_mtime_ns)
+    return path, _json(path)
+
+
+def _comparisons(root: Path, validation_package: dict[str, Any]) -> dict[str, Any]:
+    scorecards_path, scorecards = _latest_scorecards(root)
+    candidate_rows = []
+    scorecard_candidates = scorecards.get("candidates")
+    if isinstance(scorecard_candidates, list):
+        for candidate in scorecard_candidates:
+            if not isinstance(candidate, dict):
+                continue
+            dimensions = candidate.get("dimensions")
+            if not isinstance(dimensions, dict):
+                dimensions = {}
+            candidate_rows.append(
+                {
+                    "candidate_id": candidate.get("candidate_id", "UNKNOWN"),
+                    "validation_state": candidate.get("validation_state", "UNKNOWN"),
+                    "approval_state": candidate.get("approval_state", "UNKNOWN"),
+                    "pass_count": sum(str(value) == "PASS" for value in dimensions.values()),
+                    "fail_count": sum(str(value) == "FAIL" for value in dimensions.values()),
+                    "scope_note_count": sum(
+                        str(value) == "PASS_WITH_SCOPE_NOTE" for value in dimensions.values()
+                    ),
+                    "dimensions": dict(
+                        sorted((str(key), str(value)) for key, value in dimensions.items())
+                    ),
+                    "blockers": [
+                        str(item) for item in candidate.get("blockers", []) if isinstance(item, str)
+                    ],
+                }
+            )
+
+    gates_raw = validation_package.get("gates")
+    gates = gates_raw if isinstance(gates_raw, dict) else {}
+    validation_gates = [
+        {
+            "gate": str(gate),
+            "status": str(value.get("status", "UNKNOWN")) if isinstance(value, dict) else "UNKNOWN",
+            "reason": str(value.get("reason", "")) if isinstance(value, dict) else "",
+        }
+        for gate, value in sorted(gates.items())
+    ]
+
+    g10_path = root / "artifacts" / "validation" / "G10_CANDIDATE_EVIDENCE_2026_07_11.json"
+    g10 = _json(g10_path)
+    families_raw = g10.get("families")
+    families = families_raw if isinstance(families_raw, dict) else {}
+    g10_rows = []
+    for family, value in sorted(families.items()):
+        if not isinstance(value, dict):
+            continue
+        pbo = value.get("pbo")
+        dsr = value.get("dsr")
+        primary_pbo = pbo.get("primary", {}) if isinstance(pbo, dict) else {}
+        primary_dsr = dsr.get("primary", {}) if isinstance(dsr, dict) else {}
+        g10_rows.append(
+            {
+                "family": str(family).upper(),
+                "verdict": value.get("verdict", "UNKNOWN"),
+                "selected_trial_key": value.get("selected_trial_key", "UNKNOWN"),
+                "trial_count": value.get("trial_count", 0),
+                "pbo": primary_pbo.get("pbo"),
+                "dsr": primary_dsr.get("dsr"),
+            }
+        )
+
+    cross_path = root / "artifacts" / "validation" / "CROSS_ENGINE_REPRODUCTION_2026_07_11.json"
+    cross = _json(cross_path)
+    seed_probe_path = (
+        root
+        / "artifacts"
+        / "validation"
+        / "seed_candidates"
+        / "SEED_VALIDATION_PROBE_2026_07_11.json"
+    )
+    seed_probe = _json(seed_probe_path)
+    seed_contexts = []
+    contexts = seed_probe.get("contexts")
+    if isinstance(contexts, list):
+        for context in contexts:
+            if not isinstance(context, dict):
+                continue
+            identity = context.get("context")
+            full_period = context.get("full_period")
+            holdout = context.get("temporal_splits", {})
+            holdout_final = (
+                holdout.get("holdout_final_third", {}) if isinstance(holdout, dict) else {}
+            )
+            seed_contexts.append(
+                {
+                    "candidate_id": (
+                        identity.get("candidate_id", "UNKNOWN")
+                        if isinstance(identity, dict)
+                        else "UNKNOWN"
+                    ),
+                    "dataset": identity.get("dataset", "UNKNOWN")
+                    if isinstance(identity, dict)
+                    else "UNKNOWN",
+                    "trial_key": (
+                        identity.get("trial_key", "UNKNOWN")
+                        if isinstance(identity, dict)
+                        else "UNKNOWN"
+                    ),
+                    "status": context.get("status", "UNKNOWN"),
+                    "approval_status": context.get("approval_status", "UNKNOWN"),
+                    "total_return": (
+                        full_period.get("total_return") if isinstance(full_period, dict) else None
+                    ),
+                    "holdout_return": (
+                        holdout_final.get("total_return")
+                        if isinstance(holdout_final, dict)
+                        else None
+                    ),
+                    "blocker_count": len(
+                        [item for item in context.get("blockers", []) if isinstance(item, str)]
+                    ),
+                }
+            )
+
+    seed_g10_path = (
+        root
+        / "artifacts"
+        / "validation"
+        / "seed_candidates"
+        / "SEED_G10_QC2_ETHUSDT_1H_2026_07_11.json"
+    )
+    seed_g10 = _json(seed_g10_path)
+    seed_pbo = seed_g10.get("pbo")
+    seed_dsr = seed_g10.get("dsr")
+    seed_pbo_primary = seed_pbo.get("primary", {}) if isinstance(seed_pbo, dict) else {}
+    seed_dsr_primary = seed_dsr.get("primary", {}) if isinstance(seed_dsr, dict) else {}
+    refs = [
+        "artifacts/validation/B2_F0_S0/validation_summary.json",
+        str(g10_path.relative_to(root)),
+        str(cross_path.relative_to(root)),
+        str(seed_probe_path.relative_to(root)),
+        str(seed_g10_path.relative_to(root)),
+    ]
+    if scorecards_path is not None:
+        refs.append(str(scorecards_path.relative_to(root)))
+    return {
+        "schema_version": 1,
+        "mode": "LOCAL_READ_ONLY",
+        "status": "NO_PROMOTION_CANDIDATE",
+        "execution_authority": "NONE",
+        "winner_selected": False,
+        "capabilities": {
+            "writes": "DISABLED",
+            "paper_orders": "DISABLED",
+            "live_orders": "DISABLED",
+            "approval_mutation": "DISABLED",
+        },
+        "candidate_rows": candidate_rows,
+        "validation_gates": validation_gates,
+        "g10_rows": g10_rows,
+        "cross_engine": {
+            "verdict": cross.get("verdict", "UNKNOWN"),
+            "candidate": cross.get("candidate", "UNKNOWN"),
+            "fill_match_ratio": (
+                cross.get("freqtrade_single_pair", {}).get("fill_match_ratio")
+                if isinstance(cross.get("freqtrade_single_pair"), dict)
+                else None
+            ),
+            "economic_direction_agreement": cross.get("economic_direction_agreement") is True,
+            "scope_notes": [
+                str(item) for item in cross.get("scope_notes", []) if isinstance(item, str)
+            ],
+        },
+        "seed_contexts": seed_contexts,
+        "seed_g10": {
+            "candidate_id": seed_g10.get("candidate_id", "UNKNOWN"),
+            "dataset": seed_g10.get("dataset", "UNKNOWN"),
+            "selected_trial_key": seed_g10.get("selected_trial_key", "UNKNOWN"),
+            "status": seed_g10.get("g10_gate_status", "UNKNOWN"),
+            "pbo": seed_pbo_primary.get("pbo"),
+            "dsr": seed_dsr_primary.get("dsr"),
+        },
+        "evidence_refs": refs,
+    }
+
+
 def build_dashboard_data(root: Path | None = None) -> dict[str, Any]:
     """Build the current evidence-operations surface from repository artifacts."""
     root = root or Path(__file__).resolve().parents[4]
@@ -615,6 +1053,43 @@ def build_dashboard_data(root: Path | None = None) -> dict[str, Any]:
                 "family": family.group(1).strip() if family else "baseline",
                 "status": "VALID",
                 "spec": str(path.relative_to(root)),
+            }
+        )
+    for path in sorted((root / "strategies" / "external").glob("*/replay_candidate.yaml")):
+        text = path.read_text(encoding="utf-8")
+        strategy_id_match = re.search(r"^strategy_id:\s*([^\n]+)$", text, re.MULTILINE)
+        status_match = re.search(r"^status:\s*([^\n]+)$", text, re.MULTILINE)
+        validation_state_match = re.search(r"^validation_state:\s*([^\n]+)$", text, re.MULTILINE)
+        execution_authority_match = re.search(
+            r"^execution_authority:\s*([^\n]+)$", text, re.MULTILINE
+        )
+        promotion_eligible_match = re.search(
+            r"^promotion_eligible:\s*(true|false)$", text, re.MULTILINE
+        )
+        strategies.append(
+            {
+                "id": strategy_id_match.group(1).strip() if strategy_id_match else path.parent.name,
+                "name": path.parent.name,
+                "family": "external_replay",
+                "status": (
+                    status_match.group(1).strip() if status_match else "SPECIFIED_NOT_REPRODUCED"
+                ),
+                "validation_state": (
+                    validation_state_match.group(1).strip()
+                    if validation_state_match
+                    else "UNVALIDATED"
+                ),
+                "promotion_eligible": (
+                    promotion_eligible_match.group(1).strip() == "true"
+                    if promotion_eligible_match
+                    else False
+                ),
+                "execution_authority": (
+                    execution_authority_match.group(1).strip()
+                    if execution_authority_match
+                    else "NONE"
+                ),
+                "spec": str((path.parent / "canonical_strategy_spec.yaml").relative_to(root)),
             }
         )
 
@@ -708,6 +1183,8 @@ def build_dashboard_data(root: Path | None = None) -> dict[str, Any]:
         "research_lab": research_lab,
         "research_sources": _research_sources(root),
         "dictionary_concepts": _dictionary_concepts(root),
+        "trading_domain": _trading_domain(runs, validation_package),
+        "comparisons": _comparisons(root, validation_package),
         "datasets": datasets,
         "strategies": strategies,
         "runs": runs,

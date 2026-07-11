@@ -1,0 +1,86 @@
+{
+  "allowed_uses": [
+    "record public idea metadata and source timestamps",
+    "classify whether an idea contains executable rules or prose-only thesis",
+    "propose offline replay hypotheses with ambiguities retained"
+  ],
+  "approval_eligible": false,
+  "bias_risks": [
+    "prose ideas may be non-executable or edited after publication",
+    "popularity and recency are not performance evidence",
+    "missing stop, sizing, or exit semantics can make replay invalid"
+  ],
+  "canonical_url": "https://www.tradingview.com/ideas/",
+  "capture_mode": "historical_signal_replay",
+  "captured_at_utc": "2026-07-11T00:00:00Z",
+  "content_capture_status": "METADATA_ONLY_PENDING_PLATFORM_CAPTURE",
+  "evidence_strength": "hypothesis_only",
+  "intake_status": "ready_for_offline_capture",
+  "notes": [
+    "Public ideas are untrusted research inputs, not signals to follow.",
+    "Copyrighted text must not be copied into artifacts beyond minimal citation metadata."
+  ],
+  "plan_id": "INTAKE-TRADINGVIEW-IDEAS",
+  "prohibited_actions": [
+    "credential_request",
+    "account_connection",
+    "subscription_or_copy_action",
+    "order_routing",
+    "paper_demo_or_live_activation",
+    "profit_claim_inheritance"
+  ],
+  "required_capture_fields": {
+    "author_or_publisher": {
+      "status": "KNOWN_FROM_REGISTRY",
+      "value": "TradingView"
+    },
+    "canonical_url": {
+      "status": "KNOWN_FROM_REGISTRY",
+      "value": "https://www.tradingview.com/ideas/"
+    },
+    "captured_at_utc": {
+      "status": "KNOWN_FROM_REGISTRY",
+      "value": "2026-07-11T00:00:00Z"
+    },
+    "edited_or_deleted_visibility": {
+      "evidence_url": "https://www.tradingview.com/ideas/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Some public pages show updated markers; deletion visibility is not guaranteed from the listing surface."
+    },
+    "entry_exit_rule_visibility": {
+      "evidence_url": "https://www.tradingview.com/ideas/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Mixed. Some ideas are prose-only; others expose rule-like entry, target, stop, or trade-management details."
+    },
+    "published_at_or_observed_at": {
+      "evidence_url": "https://www.tradingview.com/ideas/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Idea pages may expose publication/update metadata; per-idea timestamps must be captured from individual URLs."
+    },
+    "signal_direction_or_thesis": {
+      "evidence_url": "https://www.tradingview.com/ideas/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Public idea pages can include directional thesis text, long/short tags, entry zones, take-profit levels, and stop-loss levels."
+    },
+    "symbol": {
+      "evidence_url": "https://www.tradingview.com/ideas/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Public idea/category pages cover variable symbols and markets; exact symbol must be captured per individual idea URL."
+    },
+    "terms_review_status": {
+      "evidence_url": "https://www.tradingview.com/ideas/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "PUBLIC_SOURCE_RECHECKED_TERMS_NOT_REVIEWED"
+    }
+  },
+  "schema": "tios-external-source-intake-snapshot-v1",
+  "source_class": "online_signal_feed",
+  "source_ref": "SRC-TRADINGVIEW-IDEAS",
+  "source_title": "TradingView Ideas public strategy and analysis feed",
+  "validation_prerequisites": [
+    "canonical source snapshot",
+    "explicit ambiguity record",
+    "canonical strategy spec or non-spec signal replay record",
+    "local backtest/replay before any comparison"
+  ]
+}

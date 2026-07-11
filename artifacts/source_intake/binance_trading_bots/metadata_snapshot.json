@@ -1,0 +1,86 @@
+{
+  "allowed_uses": [
+    "record bot family, symbol, visible parameters, and timestamped public metadata",
+    "propose offline strategy hypotheses for canonical reconstruction",
+    "compare reconstructed rules only after local validation evidence exists"
+  ],
+  "approval_eligible": false,
+  "bias_risks": [
+    "leaderboard survivorship and recency bias",
+    "shared parameters may not reproduce across market regimes",
+    "exchange UI may hide execution details needed for local replay"
+  ],
+  "canonical_url": "https://www.binance.com/en/trading-bots",
+  "capture_mode": "config_reconstruction",
+  "captured_at_utc": "2026-07-11T00:00:00Z",
+  "content_capture_status": "METADATA_ONLY_PENDING_PLATFORM_CAPTURE",
+  "evidence_strength": "hypothesis_only",
+  "intake_status": "ready_for_offline_capture",
+  "notes": [
+    "Capture is metadata-only until source terms and replay mechanics are reviewed.",
+    "No Binance account, API key, copy action, or bot creation is allowed in S2."
+  ],
+  "plan_id": "INTAKE-BINANCE-TRADING-BOTS",
+  "prohibited_actions": [
+    "credential_request",
+    "account_connection",
+    "subscription_or_copy_action",
+    "order_routing",
+    "paper_demo_or_live_activation",
+    "profit_claim_inheritance"
+  ],
+  "required_capture_fields": {
+    "bot_family": {
+      "evidence_url": "https://www.binance.com/en/trading-bots",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Spot Grid, Futures Grid, Arbitrage Bot, Rebalancing Bot, Spot DCA, Spot Algo Orders, Futures TWAP, and Futures VP are visible bot families."
+    },
+    "canonical_url": {
+      "status": "KNOWN_FROM_REGISTRY",
+      "value": "https://www.binance.com/en/trading-bots"
+    },
+    "captured_at_utc": {
+      "status": "KNOWN_FROM_REGISTRY",
+      "value": "2026-07-11T00:00:00Z"
+    },
+    "copy_or_create_controls_present": {
+      "evidence_url": "https://www.binance.com/en/trading-bots",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Public UI advertises discovering and replicating strategies and may show copy, create, register, or login controls."
+    },
+    "fee_and_slippage_disclaimer": {
+      "evidence_url": "https://www.binance.com/en/trading-bots",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Pair pages may display profit-per-grid after fees; exact fee tier and slippage assumptions remain account/context specific."
+    },
+    "platform": {
+      "status": "KNOWN_FROM_REGISTRY",
+      "value": "Binance"
+    },
+    "symbol_or_market": {
+      "evidence_url": "https://www.binance.com/en/trading-bots",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Public surface separates All, Spot, and Futures, with Hot Coin Leaderboard, Available Coins, Volatility, and Daily Picks sections."
+    },
+    "terms_review_status": {
+      "evidence_url": "https://www.binance.com/en/trading-bots",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "PUBLIC_SOURCE_RECHECKED_TERMS_NOT_REVIEWED"
+    },
+    "visible_parameters": {
+      "evidence_url": "https://www.binance.com/en/trading-bots",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Public bot marketplace exposes family/market metadata; pair-specific pages may expose shared/manual parameter controls, but account-specific values remain out of scope."
+    }
+  },
+  "schema": "tios-external-source-intake-snapshot-v1",
+  "source_class": "exchange_bot_marketplace",
+  "source_ref": "SRC-BINANCE-TRADING-BOTS",
+  "source_title": "Binance Trading Bots public marketplace",
+  "validation_prerequisites": [
+    "source snapshot hash",
+    "canonical strategy spec or explicit non-spec replay record",
+    "frozen-data backtest on approved instruments and timeframes",
+    "G10 multiple-testing evidence before any promotion claim"
+  ]
+}

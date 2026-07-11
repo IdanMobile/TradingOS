@@ -1,0 +1,37 @@
+{
+  "artifact_manifest_sha256": "b5f9afa28abccd4c17bdea9c0e5ed31d854d5b31174914d104240153f839ba59",
+  "artifacts": {
+    "evidence.jsonl": "4618252e57ad7d6d50cba3be6ee5873a9d218a0699eed9ace9d1cf76e8af6512",
+    "ft1_trials.parquet": "6de3dfc988edb644389b5c603546b3d7d072f63f739242fe2f1937e31c75a62b",
+    "ft2_trials.parquet": "8ac4d2e04c1798523e879b121e4c7298aa7daa9efaffe2fed94caf60984e8c3f",
+    "pine1_trials.parquet": "714bf8606dbca368b173aebadec4b173ce33e18192527bbd1d69ccabca73608d",
+    "qc1_trials.parquet": "393960b122de9b9f75917680d1113dd5e394161d2c4f192299305b30650faa73",
+    "qc2_trials.parquet": "b66d14c75d3aaa632f291438c6007d1fe6778bbb7be8b2c0b41b06bcbd2364b3",
+    "scorecards.json": "c74318a5e361bac11302b3ba19570c089934a4b882440840b40733732d5ed3a7"
+  },
+  "content_sha256": "00edc4de78fe1b3d387769c2122add28a3a8873379e45f7981bed7541a9caada",
+  "counts": {
+    "candidates": 5,
+    "evidence_records": 5,
+    "trials": 43
+  },
+  "cycle_id": "SEEDCYCLE-25fc2ebb9059701791a121b3cebd621e1874408f388a3b1ce371804ef16356e2",
+  "execution_authority": "NONE",
+  "finished_at_utc": "2026-07-11T11:23:09.840129+00:00",
+  "hashes": {
+    "config": "5facafe8c082e6e446ca625178438e3dcb4532e8b350a52511b11ef813823858",
+    "dataset": "d4d6b3306c44e242f3fb7f71c44bacabf9a6af1f1f8d507ca2de0853b6a727d0",
+    "frozen_manifest": "f2b729627adb5d75a99c90dd7dd25ea6dcabf83de4baea5784397424034dfc56",
+    "quality_report": "0f83a1073836708d60138e4aca76c81c20e749136c88571babc550a176fe5cd3",
+    "runner": "a2ee2addbf285dc2ebfd38a21c210d87a9b0b8042d94b6f7e538c85d62ac11db"
+  },
+  "live_orders": "DISABLED",
+  "mode": "OFFLINE_RESEARCH_ONLY",
+  "paper_orders": "DISABLED",
+  "reused": false,
+  "schema": "tios-seed-cycle-v0-run",
+  "started_at_utc": "2026-07-11T11:22:30.831309+00:00",
+  "status": "COMPLETED",
+  "venue_connection": "NONE",
+  "winner_selected": false
+}

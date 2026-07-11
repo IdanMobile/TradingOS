@@ -224,3 +224,60 @@ evidence; the completed five-track S2 architecture audit; `docs/architecture/AD.
 Status: **APPROVED FOR S2.** This closes the architecture-lock decision. Later retained
 S2 evidence includes real LAB-702/LAB-799 research batches and persisted read-only jobs,
 but strategy validation remains incomplete/not approvable and S2 has not exited.
+
+## 2026-07-11 — API contract clarification
+
+### D-038 — Single audited operator workspace-decision route (AD §AI / type catalog §7 clarification)
+Decision: the operator approves keeping `POST /api/v1/workspace-actions/decision` and
+clarifies the intended "no write route" rule. The desired architecture is: no
+unrestricted POST/write routes; no AI-autonomous mutation routes; no hidden write
+paths; no trading/order-routing writes; no credential, broker, exchange,
+paper/demo/live, or real-money mutation through this route. Exactly one narrowly
+scoped exception exists: operator-confirmed workspace decisions may use this audited
+POST route. Constraints (binding): explicitly operator-driven; payloads validated
+against a fixed task/option allowlist; writes limited to appending workspace
+decision/task state (`artifacts/human_decisions/workspace_decisions.jsonl`);
+append-only logged/audited; loopback-only; test-covered
+(`tests/test_dashboard.py` pins it as the only allowed write path and rejects all
+other POST targets). Any future expansion of this route — new payloads, new write
+targets, new methods, or any additional write route — requires a new decision gate.
+This is an architecture clarification, not broad approval for write APIs.
+Evidence: `artifacts/reports/AD_IMPLEMENTATION_GAP_AUDIT_2026_07_11.md` (T-002-05),
+`artifacts/human_decisions/workspace_decisions.jsonl`, operator approval message of
+2026-07-11.
+Status: **Approved.** Resolves T-002-05; supersedes the blanket GET-only wording in
+AD §AI and TYPE_AND_CONTRACT_CATALOG §7 with the scoped rule above.
+
+### D-039 — Delegation of research-direction and reviewer-class decisions to AI
+Decision: the operator's 2026-07-11 message delegates to the AI agent the classes of
+decision previously flagged as operator-owned where they concern offline research
+judgment: research direction/prioritization, seed-reproduction scope rulings (e.g.
+accepting or properly modeling the 05/08 tri-state supertrend semantics), evidence
+A/B comparisons (timeframe/instrument/fee sensitivity), and analogous
+reviewer-class calls. Each AI-made decision of these classes must still be recorded
+(decision log or evidence artifact) with rationale and remain reversible.
+Human-only actions remain exactly: placing credentials/configuration values into
+`.env` (keys, provider/venue config) and starting any wallet-bearing run — demo/
+testnet/paper or real money. All existing evidence predicates and gates are
+unchanged and still binding: AD §AA's paper/demo/live predicate chain, D-036/D-037
+boundaries, the no-real-money rule, and the requirement that no strategy is
+promoted without complete approvable validation. Delegation lets the AI *choose
+among authorized offline research work*; it does not unlock execution, credentials,
+or capital.
+Evidence: operator chat message of 2026-07-11 ("human actions are mainly update
+values in .env like keys and configurations, and starting real runs with wallet").
+Status: **Approved (operator-granted delegation).**
+
+### D-040 — AI-decided research direction: multi-timeframe/instrument seed comparison
+Decision (made under D-039): the next offline evidence cycle extends the five
+reproduced seed candidates across the full frozen dataset grid — BTCUSDT and
+ETHUSDT × 5m/15m/1h — instead of ingesting new sources first. Rationale: the
+retained 5m evidence shows uniform ≈ −100% outcomes dominated by fee churn
+(tens of thousands of round trips at 20 bps round-trip); the frozen dataset
+already contains the lower-frequency tables, so testing whether any reproduced
+family survives reduced trading frequency is the cheapest decisive experiment
+(an A/B across timeframes with identical rules, fees, and execution model), and
+it reuses only already-authorized data and candidates. New-source ingestion
+(D-020, manual) remains the follow-up if lower frequencies also fail.
+Status: **Approved (AI decision under D-039); evidence cycle recorded in the seed
+cycle artifacts.**

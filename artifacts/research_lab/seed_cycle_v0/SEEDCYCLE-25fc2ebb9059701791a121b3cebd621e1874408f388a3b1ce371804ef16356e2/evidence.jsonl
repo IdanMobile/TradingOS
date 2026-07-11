@@ -1,0 +1,5 @@
+{"approval_status": "NOT_ELIGIBLE", "candidate_id": "STRAT-QC1-dual-ma-cross", "execution_authority": "NONE", "validation_status": "UNVALIDATED"}
+{"approval_status": "NOT_ELIGIBLE", "candidate_id": "STRAT-QC2-donchian-breakout", "execution_authority": "NONE", "validation_status": "UNVALIDATED"}
+{"approval_status": "NOT_ELIGIBLE", "candidate_id": "STRAT-PINE1-bb-strategy", "execution_authority": "NONE", "validation_status": "UNVALIDATED"}
+{"approval_status": "NOT_ELIGIBLE", "candidate_id": "STRAT-FT1-sample-strategy", "execution_authority": "NONE", "validation_status": "UNVALIDATED"}
+{"approval_status": "NOT_ELIGIBLE", "candidate_id": "STRAT-FT2-ema-cross", "execution_authority": "NONE", "validation_status": "UNVALIDATED"}

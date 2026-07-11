@@ -1,0 +1,86 @@
+{
+  "allowed_uses": [
+    "record public DCA bot configuration concepts and required parameter names",
+    "design canonical DCA reconstruction candidates for frozen-data testing",
+    "compare only local offline results after validation gates are complete"
+  ],
+  "approval_eligible": false,
+  "bias_risks": [
+    "product backtest claims may use unavailable assumptions or data",
+    "platform exchange integrations are credential-bearing and unavailable in S2",
+    "DCA variants require explicit sizing, safety-order, and exit semantics"
+  ],
+  "canonical_url": "https://3commas.io/dca-bots",
+  "capture_mode": "config_reconstruction",
+  "captured_at_utc": "2026-07-11T00:00:00Z",
+  "content_capture_status": "METADATA_ONLY_PENDING_PLATFORM_CAPTURE",
+  "evidence_strength": "hypothesis_only",
+  "intake_status": "ready_for_offline_capture",
+  "notes": [
+    "No 3Commas account, exchange link, trial signup, or bot execution is allowed in S2.",
+    "This plan captures configuration hypotheses only."
+  ],
+  "plan_id": "INTAKE-3COMMAS-DCA-BOT",
+  "prohibited_actions": [
+    "credential_request",
+    "account_connection",
+    "subscription_or_copy_action",
+    "order_routing",
+    "paper_demo_or_live_activation",
+    "profit_claim_inheritance"
+  ],
+  "required_capture_fields": {
+    "backtest_claim_visibility": {
+      "evidence_url": "https://3commas.io/dca-bots",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Public product surface advertises historical-data backtesting and strategy refinement, but local validation evidence is not inherited."
+    },
+    "bot_family": {
+      "evidence_url": "https://3commas.io/dca-bots",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "DCA Bot."
+    },
+    "canonical_url": {
+      "status": "KNOWN_FROM_REGISTRY",
+      "value": "https://3commas.io/dca-bots"
+    },
+    "captured_at_utc": {
+      "status": "KNOWN_FROM_REGISTRY",
+      "value": "2026-07-11T00:00:00Z"
+    },
+    "credential_or_account_controls_present": {
+      "evidence_url": "https://3commas.io/dca-bots",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Platform operation depends on linked exchange accounts; S2 capture remains metadata-only with no account or API-key path."
+    },
+    "exchange_dependency_visibility": {
+      "evidence_url": "https://3commas.io/dca-bots",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Public product page states integration with multiple exchanges such as Binance, Bybit, OKX, Coinbase Advanced, KuCoin, and Kraken."
+    },
+    "platform": {
+      "status": "KNOWN_FROM_REGISTRY",
+      "value": "3Commas"
+    },
+    "terms_review_status": {
+      "evidence_url": "https://3commas.io/dca-bots",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "PUBLIC_SOURCE_RECHECKED_TERMS_NOT_REVIEWED"
+    },
+    "visible_parameters": {
+      "evidence_url": "https://3commas.io/dca-bots",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Public product/help surfaces describe naming a bot, selecting an exchange, choosing bot type, selecting trading pairs, and configuring DCA settings."
+    }
+  },
+  "schema": "tios-external-source-intake-snapshot-v1",
+  "source_class": "third_party_bot_platform",
+  "source_ref": "SRC-3COMMAS-DCA-BOT",
+  "source_title": "3Commas DCA Bot public product surface",
+  "validation_prerequisites": [
+    "source snapshot hash",
+    "canonical DCA strategy specification",
+    "local replay with declared cost grid",
+    "independent validation package before any promotion claim"
+  ]
+}

@@ -46,8 +46,8 @@
       "reason": "holdout trades segmented by ex-post volatility, trend, and volume labels"
     },
     "G10": {
-      "status": "NOT_RUN",
-      "reason": "PBO/DSR method fixtures pass, but production G10 remains inactive pending candidate-specific integration and independent recomputation"
+      "status": "FAIL",
+      "reason": "candidate-specific PBO/DSR with independent recomputation on the retained B2 trial population: PBO=0.8685, DSR=0.000000 for selected fast=15,slow=60; method fixtures pass"
     },
     "G11": {
       "status": "PASS",
@@ -80,7 +80,8 @@
     "rerun_artifact": "artifacts/bakeoff/freqtrade/B2/F0_S0/run2",
     "dataset_quality": "artifacts/datasets/QUALITY_REPORT.json",
     "signal_parity": "artifacts/bakeoff/freqtrade/signal_parity/results.json",
-    "g10_method_fixtures": "artifacts/validation/G10_METHOD_FIXTURES_2026_07_11.json"
+    "g10_method_fixtures": "artifacts/validation/G10_METHOD_FIXTURES_2026_07_11.json",
+    "g10_candidate_evidence": "artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_11.json"
   },
   "risk_preconditions": {
     "status": "PASS",

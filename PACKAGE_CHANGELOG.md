@@ -208,3 +208,276 @@ Key outcomes:
   legacy `/api/*` paths return `410`.
 - Regenerated all changed controlled-input SHA-256 entries in
   `PACKAGE_INTEGRITY_MANIFEST.md`; manifest verification passes.
+
+## v8.10 — 2026-07-11 — Full AD/docs/TODO/env audit pass
+
+- Added four audit reports: `AD_IMPLEMENTATION_GAP_AUDIT_2026_07_11.md`,
+  `OPEN_TASKS_AND_DOCS_AUDIT_2026_07_11.md`, `ENV_AND_CREDENTIALS_AUDIT_2026_07_11.md`,
+  `WORKSPACE_TODO_API_SYNC_2026_07_11.md`.
+- Added `TIOS_AI_MODE`/`TIOS_AI_PROVIDER` (names/comments only) to `.env.example`;
+  verified `.env` git-ignore and zero secrets.
+- Recorded the dashboard workspace-decision POST route vs AD §AI/type-catalog GET-only
+  contract mismatch as a Current Implementation Gap note in AD §AI and new task
+  **T-002-05 (DECISION REQUIRED)** in `todos/02_architecture_foundation.md`. Desired
+  architecture was not changed; no defect was normalized into AD.
+- Updated `PROJECT_STATE.md` and `MISSING_AND_OPEN_ITEMS.md`; regenerated
+  `PACKAGE_INTEGRITY_MANIFEST.md` hashes for the controlled files edited in this pass.
+
+## v8.11 — 2026-07-11 — D-038 API clarification and authorized S2 cycle
+
+- Recorded D-038: the operator-approved clarification keeping
+  `POST /api/v1/workspace-actions/decision` as the single audited, operator-driven,
+  loopback, allowlist-validated, append-only write exception; AD §AI and
+  `TYPE_AND_CONTRACT_CATALOG.md` §7 updated; T-002-05 marked DONE; gap note removed.
+- Ran the authorized offline S2 Research Lab v0 cycle: idempotent reuse of LAB-f99d
+  (66 trials, no winner, execution_authority=NONE); executed the due six-hour
+  scheduled job via the local worker (succeeded, result_reused=true).
+- Updated `PROJECT_STATE.md`, `MISSING_AND_OPEN_ITEMS.md`, `DECISION_LOG.md`,
+  `todos/02_architecture_foundation.md`; regenerated integrity manifest hashes.
+
+## v8.12 — 2026-07-11 — Operator access prep checklist
+
+- Added `OPERATOR_ACCESS_PREP_CHECKLIST_2026_07_11.md` so future agents have one
+  source for exchange and market-data account preparation without re-asking the
+  same setup questions before every platform task.
+- Reserved commented, inactive `.env.example` names for later Binance Spot Testnet,
+  OKX Demo, Kraken, Coinbase CDP, CoinAPI, Kaiko, Tardis.dev, and Databento gates.
+- Preserved all S2 boundaries: no credentials requested, no connections enabled, no
+  paper/demo/testnet activation, no order routing, no live trading, and no real-money
+  capability.
+- Updated `PROJECT_STATE.md` and `MISSING_AND_OPEN_ITEMS.md`; regenerated integrity
+  manifest hashes for controlled files.
+
+## v8.12 — 2026-07-11 — Production G10 candidate integration (T-009-04 / RG-07)
+
+- Added candidate-specific G10: `engines/vectorbt/g10_returns.py` (per-trial slice
+  returns, subprocess-isolated) and `scripts/run_g10_candidate.py` (PBO/CSCV + DSR via
+  the validated methods, exact parity check against the retained LAB Parquet, and an
+  independent second implementation with ≤1e-9/≤1e-6 agreement).
+- Retained `artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_11.json`: all families
+  FAIL (B2 PBO 0.8685, DSR≈0). B2 package gate G10 is now FAIL (was NOT_RUN);
+  `multiple_testing_selection_bias_control` is FAIL (was BLOCKED) in refreshed batch
+  `LAB-73ebd3a3bb3e4086b2408552559e77a26d1334ae9cc789c4459beadc27b6844a`.
+- Updated validation package builder, lab score mapping, retained method-candidate and
+  validation-status artifacts, tests (`tests/test_g10_candidate.py` added), RG-07 row,
+  T-009-04 status, PROJECT_STATE, and MISSING_AND_OPEN_ITEMS. No strategy approved;
+  no execution path enabled.
+
+## v8.13 — 2026-07-11 — Cross-engine reproduction dimension closed
+
+- Added three-way B2 reproduction: engine-independent core derivation,
+  `engines/vectorbt/repro_b2.py` (exact signal match, one explained float tie), and a
+  dedicated single-pair BTCUSDT full-history Freqtrade backtest
+  (`artifacts/validation/repro/`, 66,385 trades, all exit_signal, 99.904% exact
+  fill↔signal reconciliation; residuals quantified as decimal128→float64 indicator
+  arithmetic). Verdict PASS_WITH_SCOPE_NOTE — fill/P&L parity NOT claimed.
+- `scripts/run_cross_engine_reproduction.py` + `tests/test_cross_engine_reproduction.py`;
+  lab dimension now binds to the evidence artifact (added to lab input hashes).
+- Batch `LAB-c9578b6b45cdbf1f3c2f6ba1320f993f6f149fb83d17905e9070bc07079c7aea`
+  retains zero BLOCKED score dimensions; candidate remains rejected; no winner,
+  no execution authority. Updated state/docs/tests; manifest regenerated.
+
+## v8.14 — 2026-07-11 — Chunking design, session handoff
+
+- Added `specs/HUMMINGBOT_FULL_HISTORY_CHUNKING_DESIGN_V1.md` (30-day warm-up-prefixed
+  windows, seam-audited stitching, per-window timeouts, operator rerun framing);
+  T-006-05 throughput track now references it.
+- Added `handoffs/CONTINUE_S2_2026-07-11_VALIDATION_DIMENSIONS_COMPLETE.md` — full
+  continuation handoff: completed work, verification state, batch-pin mechanics,
+  prioritized remaining work, and exact next action (operator research-direction
+  decision). PROJECT_STATE "Exact next action" updated to match.
+
+## v8.15 — 2026-07-11 — Seeds 03/07 reproduced; seed cycle widened to 4 candidates
+
+- Added `fixtures/micro/bars_long.csv` (32 bars, designed dip/rally around a 20-bar
+  Bollinger warm-up) and two reproduction spot-checks in
+  `tests/test_strategy_seed_reproduction.py` (BB population-std + Wilder RSI,
+  double-derived expected bars). Seeds 03 (STRAT-FT1-sample-strategy) and 07
+  (STRAT-PINE1-bb-strategy) are REPRODUCED; registry and status docs updated.
+- Extended `scripts/run_seed_research_cycle_v0.py` with PINE1 (BB window/std sweep)
+  and FT1 (RSI window/threshold sweep) candidates:
+  `SEEDCYCLE-9a2bc401…` retains 34 trials across 4 candidates, all ≈ −100% on the
+  proxy, no winner, no execution authority. Dashboard seed-cycle pin updated.
+
+## v8.16 — 2026-07-11 — Seed 04 reproduced (true EMA); seed cycle at 5 candidates
+
+- Added true recursive EMA (SMA seed, talib convention) to the reproduction tests
+  and the seed cycle; seed 04 (STRAT-FT2-ema-cross) is REPRODUCED — the flagged
+  EMA-approximation deferral is closed. Registry and status doc updated.
+- `SEEDCYCLE-25fc2ebb…` retains 43 trials across 5 reproduced candidates, all
+  ≈ −100% on the proxy, no winner, no execution authority. Only agent-closable
+  seeds remaining: none (05/08 await a human tri-state decision; 06/09/10 are
+  not applicable).
+
+## v8.17 — 2026-07-11 — External bot/signal source architecture
+
+- Updated AD §U to explicitly include exchange-hosted bot marketplaces, copy-trading
+  records, online signal feeds, public leaderboards, and third-party bot platforms as
+  core future Research Lab source classes.
+- Updated `AGENT_ROLES.md` and `STRATEGY_SEED_BATCH_V1.md` so future strategy
+  extraction handles bot/copy/signal sources as hypothesis/replay inputs with
+  platform terms, timestamp semantics, parameter visibility, and bias risks.
+- Preserved the execution boundary: external bots/signals may inspire or replay
+  candidates, but cannot directly copy trades, control the wallet, or bypass
+  validation, paper/demo, risk/security, and human gates.
+
+## v8.18 — 2026-07-11 — D-040 multi-grid seed A/B retained
+
+- Recorded the AI-delegated D-040 offline research decision: extend the five
+  reproduced seed candidates across BTCUSDT/ETHUSDT x 5m/15m/1h.
+- Retained `SEEDCYCLE-9b1652…` with 258 trials, no winner, and
+  `execution_authority=NONE`; `uv run python scripts/run_seed_research_cycle_v0.py`
+  reuses the completed cycle.
+- Added `SEED_CYCLE_MULTI_GRID_REPORT_2026_07_11.md`; lower-frequency contexts
+  produced positive proxy rows led by QC2 Donchian ETHUSDT 1h window=40, but no
+  candidate is validated or eligible.
+- Updated project state, open items, strategy registry, and continuation handoff;
+  next offline work is validation evidence for the top positive proxy contexts.
+
+## v8.19 — 2026-07-11 — Seed positive-context validation probe
+
+- Added `scripts/run_seed_candidate_validation_probe.py` and retained
+  `artifacts/validation/seed_candidates/SEED_VALIDATION_PROBE_2026_07_11.json`.
+- The probe covers the top three D-040 positive proxy contexts with chronological
+  thirds, fee stress, buy-and-hold comparison, and parameter-neighborhood evidence.
+- QC2 Donchian ETHUSDT 1h window=40 survives the first probe but is parameter-fragile
+  and still lacks production G10, cross-engine reproduction, paper/demo divergence,
+  and red-team evidence; all contexts remain `UNVALIDATED` / `NOT_ELIGIBLE`.
+- Added focused tests for the retained probe artifact and updated state/open-items/
+  handoff records. No execution capability was enabled.
+
+## v8.20 — 2026-07-11 — Seed-context G10 failure retained
+
+- Added `scripts/run_seed_candidate_g10.py` and retained
+  `artifacts/validation/seed_candidates/SEED_G10_QC2_ETHUSDT_1H_2026_07_11.json`.
+- The strongest D-040 seed context, QC2 ETHUSDT 1h window=40, fails G10: PBO 0.2614
+  but DSR 0.7564 below the 0.95 rule. Independent recomputation agrees.
+- Updated the multi-grid report, project state, open items, and continuation handoff;
+  no strategy is validated or eligible.
+
+## v8.21 — 2026-07-11 — External source-intake seed retained
+
+- Widened `ResearchSourceRegistry` beyond primary papers to accept read-only,
+  DOI-optional platform sources for exchange bot marketplaces, copy-trading
+  leaderboards, online signal feeds, and third-party bot platforms.
+- Added four hypothesis-only source records: Binance Trading Bots, Binance Copy
+  Trading, TradingView Ideas, and 3Commas DCA Bot. All remain non-reproduced,
+  non-eligible, and carry no credential, copy, venue, order, paper/demo/live, or
+  real-money authority.
+- Added `EXTERNAL_SOURCE_INTAKE_PLANS_V1.yaml` plus a typed validator and dashboard
+  read-model counts for 4 offline capture/replay plans. Each plan must carry the full
+  S2 prohibition set before it can be retained.
+- Added `scripts/build_external_source_intake_snapshots.py` and retained the first
+  metadata-only source-intake artifacts under `artifacts/source_intake/`.
+- Added `EXTERNAL_SOURCE_PUBLIC_CAPTURE_V1.yaml` and filled first lawful public-source
+  metadata fields for the four source snapshots without fetching content at runtime or
+  enabling any credential/copy/order path.
+- Added `EXTERNAL_REPLAY_HYPOTHESES_V1.yaml` plus typed validation for four source-linked
+  replay hypotheses; all are non-eligible and `execution_authority=NONE`, with Binance
+  copy trading deliberately marked non-reconstructable until historical actions exist.
+- Dashboard source projection now includes replay-hypothesis counts.
+- Added the first canonical non-executing external replay candidate under
+  `strategies/external/3commas-dca-config/`; it validates with ambiguities but remains
+  `SPECIFIED_NOT_REPRODUCED`, `UNVALIDATED`, and `execution_authority=NONE`.
+- Dashboard strategy projection now includes the external replay candidate without
+  marking it valid or eligible.
+- Retained `artifacts/reports/EXTERNAL_SOURCE_INTAKE_SEED_2026_07_11.md` and reran
+  the offline lab as
+  `LAB-f04ef5d705e0de4d3fff5fe83ada90b2d91223dc89cfa35364c5fd8439ca3121`; no
+  winner was selected and `execution_authority=NONE` remains binding.
+
+## v8.22 — 2026-07-11 — External DCA local replay retained
+
+- Added `scripts/run_external_dca_replay.py`, a local-only replay runner for the
+  3Commas-style DCA hypothesis. It reads frozen candle Parquet files and writes
+  evidence artifacts only; it has no account, credential, paper/demo/live, venue, or
+  order-routing path.
+- Retained
+  `artifacts/external_replay/3commas_dca/EXTDCA-9ed0a866cc1ddb5f7f4e7a94b5c5e48b/`
+  with 6 BTCUSDT/ETHUSDT x 5m/15m/1h trials and 43,738 local simulated events.
+- Updated the external DCA replay candidate status to `LOCAL_REPLAY_RETAINED` while
+  keeping `UNVALIDATED`, `promotion_eligible=false`, and `execution_authority=NONE`.
+- Added focused replay tests and retained-artifact boundary tests; no strategy is
+  validated or eligible.
+
+## v8.23 — 2026-07-11 — Inert trading-domain dashboard surface
+
+- Added a structured `/api/v1/dashboard` `trading_domain` projection for the S2
+  product rails: order intents/states, accounts, positions, portfolio, risk decisions,
+  demo wallet, and paper/live capability status.
+- Added a dedicated dashboard view, "Trading Domain", that shows the future
+  demo-wallet/paper rails as read-only and explicitly absent/disabled in S2.
+- Pinned the contract in tests: `execution_authority=NONE`, no venue connection,
+  no order endpoint, no credential access, no synthetic wallet mutation, and no
+  demo/paper/live orders.
+- Browser smoke passed at 375, 768, 1024, and 1440 px with no console/page errors
+  or horizontal overflow.
+
+## v8.24 — 2026-07-11 — Local registry and artifact search surface
+
+- Added `GET /api/v1/search`, a read-only dashboard API projection over bounded
+  concepts, ResearchAsset records, ResearchSource records, seed/external strategies,
+  and retained Markdown reports.
+- Added the dashboard Search view with local result counts, evidence paths, snippets,
+  and explicit no-write/no-execution boundary text.
+- Pinned focused tests for the search builder, HTTP schema/error contract, UI strings,
+  and disabled writes, credentials, venue connection, order endpoint, and execution
+  authority.
+- Updated state/open-items/type-catalog/TODO records to mark the roadmap's bounded
+  registry/report search slice complete without adding any trading capability.
+
+## v8.25 — 2026-07-11 — Read-only comparison evidence surface
+
+- Added `/api/v1/dashboard` `comparisons`, a local projection over retained lab
+  scorecards, validation gates, production G10 evidence, seed validation probes,
+  seed-context G10, cross-engine scope notes, and local evidence refs.
+- Added the dashboard "Comparisons" view with candidate dimension matrix, validation
+  gate table, G10 table, seed-context table, cross-engine scope notes, and artifact
+  refs.
+- Pinned focused tests that no winner is selected, no promotion candidate exists,
+  `execution_authority=NONE`, and approval/job/credential/venue/paper/live/order
+  controls remain disabled or absent.
+- Updated state/open-items/TODO records to mark the bounded S2 comparison UI slice
+  complete without running new strategy operations.
+
+## v8.26 — 2026-07-11 — Demo-wallet readiness projection
+
+- Added a design-only `trading_domain.demo_wallet_design` projection to
+  `/api/v1/dashboard` with ledger, synthetic capital, mutation API, order route,
+  venue connection, and execution authority all absent/disabled/NONE.
+- Extended the Trading Domain dashboard view with "Demo wallet readiness" and
+  "Demo wallet invariants" sections that show required future gates, allowed
+  isolated-simulation scope, and must-never-include guardrails.
+- Pinned focused tests that the future demo-wallet rail remains S2 design-only and
+  cannot create wallet state, venue/order routing, credentials, or real-money paths.
+
+## v8.27 — 2026-07-11 — Agent-executable completion audit
+
+- Added `artifacts/reports/AGENT_EXECUTABLE_COMPLETION_AUDIT_2026_07_11.md` to record
+  the current post-v8.26 inventory: 0 actionable open tasks, 7 gated tasks, and 4
+  recurring tasks from the live workspace status API.
+- Updated `PROJECT_STATE.md` and `MISSING_AND_OPEN_ITEMS.md` so the exact next action
+  points to credential/S3/HG/human gates instead of implying more open S2 platform
+  product work.
+- Reaffirmed that no strategy is validated or promotion-eligible, `execution_authority`
+  remains `NONE`, and no demo/paper/live/venue/order/credential path is enabled.
+
+## v8.28 — 2026-07-11 — S3/S4 gate-readiness surface
+
+- Added a read-only `trading_domain.stage_gate_readiness` projection distinguishing
+  S3 paper/demo readiness from S4 live readiness.
+- Added Trading Domain UI cards for "S3 paper/demo readiness" and "S4 live readiness"
+  showing satisfied design evidence, blocked predicates, and next human actions.
+- Pinned focused tests that both stages remain `NOT_READY`, `BLOCKED_BY_GATES`, and
+  `execution_authority=NONE`; no activation, credential, venue, paper/demo/live, or
+  order route was added.
+
+## v8.29 — 2026-07-11 — Standalone stage-gates API
+
+- Added `GET /api/v1/stage-gates`, a standalone read-only machine contract for S3/S4
+  readiness. It mirrors the Trading Domain gate chain without exposing any transition
+  or activation command.
+- Updated the type-catalog API contract to include stage-gate readiness and explicitly
+  prohibit stage-gate transitions plus demo/paper/live controls.
+- Added focused tests for the builder and HTTP schema: writes disabled, credentials
+  absent, order endpoint absent, S3/S4 both `NOT_READY`.

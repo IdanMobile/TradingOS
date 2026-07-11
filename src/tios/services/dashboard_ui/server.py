@@ -10,8 +10,10 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from tios.services.dashboard_api.market import build_market_snapshot
+from tios.services.dashboard_api.search import build_search_results
 from tios.services.dashboard_api.status import (
     build_dashboard_data,
+    build_stage_gate_readiness,
     build_status,
     record_workspace_decision,
 )
@@ -29,6 +31,28 @@ class Handler(BaseHTTPRequestHandler):
             self._send(200, "application/json", body)
         elif path == "/api/v1/status":
             self._send(200, "application/json", json.dumps(build_status(self.root)).encode())
+        elif path == "/api/v1/stage-gates":
+            self._send(
+                200,
+                "application/json",
+                json.dumps(build_stage_gate_readiness()).encode(),
+            )
+        elif path == "/api/v1/search":
+            query = parse_qs(request.query)
+            try:
+                payload = build_search_results(
+                    self.root,
+                    query.get("q", [""])[0],
+                    int(query.get("limit", ["25"])[0]),
+                )
+            except (ValueError, TypeError) as error:
+                self._send(
+                    400,
+                    "application/json",
+                    json.dumps({"schema_version": 1, "error": str(error)}).encode(),
+                )
+                return
+            self._send(200, "application/json", json.dumps(payload).encode())
         elif path == "/api/v1/market":
             query = parse_qs(request.query)
             try:

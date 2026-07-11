@@ -759,7 +759,7 @@ def test_retained_latest_batch_declares_no_winner_and_no_execution_authority() -
     batch = (
         Path(__file__).resolve().parents[1]
         / "artifacts/research_lab/v0"
-        / "LAB-f99dcc214f377ecca4710bbb41d445c8331d2a1b06f93931ed1c88bdf3af5924"
+        / "LAB-f04ef5d705e0de4d3fff5fe83ada90b2d91223dc89cfa35364c5fd8439ca3121"
     )
     lab_run = json.loads((batch / "lab_run.json").read_text())
     assert lab_run["status"] == "COMPLETED"

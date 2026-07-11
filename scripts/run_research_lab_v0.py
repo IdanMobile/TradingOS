@@ -104,8 +104,10 @@ EXPECTED_RESULT_FIELDS = {
 }
 RunCommand = Callable[..., subprocess.CompletedProcess[str]]
 VALIDATION_SUMMARY = Path("artifacts/validation/B2_F0_S0/validation_summary.json")
+CROSS_ENGINE_EVIDENCE = Path("artifacts/validation/CROSS_ENGINE_REPRODUCTION_2026_07_11.json")
 VALIDATION_EVIDENCE_FILES = (
     VALIDATION_SUMMARY,
+    CROSS_ENGINE_EVIDENCE,
     Path("artifacts/validation/B2_F0_S0/cost_sensitivity.json"),
     Path("artifacts/validation/B2_F0_S0/parameter_robustness.json"),
     Path("artifacts/validation/B2_F0_S0/walk_forward/summary.json"),
@@ -171,10 +173,7 @@ def _score_assessment(repo_root: Path) -> dict[str, Any]:
         return {"score_states": dict(SCORE_STATES), "blockers": list(BLOCKERS)}
 
     states = dict(SCORE_STATES)
-    blockers = [
-        "multiple-testing and selection-bias controls are incomplete",
-        "cross-engine reproduction is incomplete",
-    ]
+    blockers = []
     profit = _metric(metrics.get("profit_total_abs", "0"), "profit_total_abs")
     drawdown = _metric(metrics.get("max_drawdown_abs", "0"), "max_drawdown_abs")
     states["economic_performance_after_declared_costs"] = "PASS" if profit > 0 else "FAIL"
@@ -213,10 +212,39 @@ def _score_assessment(repo_root: Path) -> dict[str, Any]:
         else:
             states[dimension] = "PASS_WITH_SCOPE_NOTE"
             blockers.append(blocker)
-    states["multiple_testing_selection_bias_control"] = (
-        "PASS" if gates.get("G10", {}).get("status") == "PASS" else "BLOCKED"
-    )
-    states["cross_engine_reproduction"] = "BLOCKED"
+    g10_status = gates.get("G10", {}).get("status")
+    if g10_status == "PASS":
+        states["multiple_testing_selection_bias_control"] = "PASS"
+    elif g10_status == "FAIL":
+        states["multiple_testing_selection_bias_control"] = "FAIL"
+        blockers.append(
+            "multiple-testing control failed: candidate-specific PBO/DSR with "
+            "independent recomputation rejects the selected configuration"
+        )
+    else:
+        states["multiple_testing_selection_bias_control"] = "BLOCKED"
+        blockers.append("multiple-testing and selection-bias controls are incomplete")
+    reproduction_path = repo_root / CROSS_ENGINE_EVIDENCE
+    reproduction_verdict = None
+    if reproduction_path.is_file():
+        try:
+            reproduction_verdict = json.loads(reproduction_path.read_text(encoding="utf-8"))[
+                "verdict"
+            ]
+        except (KeyError, ValueError, TypeError):
+            reproduction_verdict = None
+    if reproduction_verdict in {"PASS_WITH_SCOPE_NOTE", "PARTIAL", "FAIL"}:
+        states["cross_engine_reproduction"] = reproduction_verdict
+        blockers.append(
+            "cross-engine reproduction is signal-level with quantified residuals; "
+            "fill/P&L parity across engines is not claimed"
+            if reproduction_verdict == "PASS_WITH_SCOPE_NOTE"
+            else "cross-engine reproduction is incomplete or failing; see "
+            "CROSS_ENGINE_REPRODUCTION evidence"
+        )
+    else:
+        states["cross_engine_reproduction"] = "BLOCKED"
+        blockers.append("cross-engine reproduction is incomplete")
     return {"score_states": states, "blockers": sorted(set(blockers))}
 
 

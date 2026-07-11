@@ -19,11 +19,12 @@ import yaml
 from tios.strategy.spec import Comparison, RuleTree, parse_spec
 
 FIXTURE = Path(__file__).parent.parent / "fixtures" / "micro" / "bars.csv"
+FIXTURE_LONG = Path(__file__).parent.parent / "fixtures" / "micro" / "bars_long.csv"
 SEED = Path(__file__).parent.parent / "strategies" / "seed"
 
 
-def _rows() -> list[dict[str, float]]:
-    with FIXTURE.open() as f:
+def _rows(path: Path = FIXTURE) -> list[dict[str, float]]:
+    with path.open() as f:
         return [
             {k: float(v) for k, v in row.items() if k != "timestamp_open_utc"}
             for row in csv.DictReader(f)
@@ -99,6 +100,139 @@ def test_qc1_dual_ma_cross_reproduction() -> None:
             assert entry and not exit_, f"bar{bar}: expected long entry signal"
         else:
             assert exit_ and not entry, f"bar{bar}: expected exit signal after crossover"
+
+
+def _bollinger(
+    closes: list[float], window: int, deviations: float, idx: int
+) -> tuple[float, float, float] | None:
+    """BB over `window` bars ending at idx (population std, the talib/Pine default)."""
+    if idx + 1 < window:
+        return None
+    values = closes[idx + 1 - window : idx + 1]
+    mid = sum(values) / window
+    std = (sum((value - mid) ** 2 for value in values) / window) ** 0.5
+    return mid - deviations * std, mid, mid + deviations * std
+
+
+def _wilder_rsi(closes: list[float], window: int) -> list[float | None]:
+    """Wilder-smoothed RSI (the talib/freqtrade convention)."""
+    result: list[float | None] = [None] * len(closes)
+    average_gain = average_loss = 0.0
+    for index in range(1, len(closes)):
+        delta = closes[index] - closes[index - 1]
+        gain, loss = max(delta, 0.0), max(-delta, 0.0)
+        if index <= window:
+            average_gain += gain / window
+            average_loss += loss / window
+            if index < window:
+                continue
+        else:
+            average_gain = (average_gain * (window - 1) + gain) / window
+            average_loss = (average_loss * (window - 1) + loss) / window
+        result[index] = (
+            100.0 if average_loss == 0 else 100.0 - 100.0 / (1 + average_gain / average_loss)
+        )
+    return result
+
+
+def test_pine1_bb_strategy_reproduction() -> None:
+    # bars_long.csv is designed so BB(20,2) completes warm-up: a dip below the
+    # lower band (bars 21-23), a recovery, then a rally through the upper band
+    # (bars 27-29). Entry/exit bars are double-derived: designed analytically,
+    # recomputed here independently, and asserted exactly.
+    spec = _spec("07-pine-bb-strategy")
+    closes = [r["close"] for r in _rows(FIXTURE_LONG)]
+    window = int(spec.indicators[0].parameters["window"])
+    deviations = float(spec.indicators[0].parameters["std"])
+    entry_bars, exit_bars = {21, 22, 23}, {27, 28, 29}
+    for i, close in enumerate(closes):
+        bar = i + 1
+        band = _bollinger(closes, window, deviations, i)
+        if band is None:
+            assert bar < window, f"bar{bar}: warm-up must end at the window boundary"
+            continue
+        lower, mid, upper = band
+        ctx = {"close": close, "bb_lower": lower, "bb_mid": mid, "bb_upper": upper}
+        entry = _eval_tree(spec.entry_long, ctx)
+        exit_ = _eval_tree(spec.exit_long, ctx)
+        assert entry == (bar in entry_bars), f"bar{bar}: entry mismatch"
+        assert exit_ == (bar in exit_bars), f"bar{bar}: exit mismatch"
+
+
+def test_ft1_sample_strategy_reproduction() -> None:
+    # Same fixture as PINE1; the RSI(14)<30 guard admits only the deepest dip
+    # bar (23), and the mid-band exit convention fires earlier (bar 25 onward)
+    # than PINE1's upper-band exit — both differentiators are asserted exactly.
+    spec = _spec("03-ft-sample-strategy")
+    closes = [r["close"] for r in _rows(FIXTURE_LONG)]
+    window = int(spec.indicators[0].parameters["window"])
+    deviations = float(spec.indicators[0].parameters["std"])
+    rsi = _wilder_rsi(closes, int(spec.indicators[1].parameters["window"]))
+    entry_bars, exit_bars = {23}, {20, 25, 26, 27, 28, 29, 30, 31, 32}
+    for i, close in enumerate(closes):
+        bar = i + 1
+        band = _bollinger(closes, window, deviations, i)
+        if band is None or rsi[i] is None:
+            continue
+        lower, mid, upper = band
+        ctx = {
+            "close": close,
+            "bb_lower": lower,
+            "bb_mid": mid,
+            "bb_upper": upper,
+            "rsi": rsi[i],
+        }
+        entry = _eval_tree(spec.entry_long, ctx)
+        exit_ = _eval_tree(spec.exit_long, ctx)
+        assert entry == (bar in entry_bars), f"bar{bar}: entry mismatch (rsi={rsi[i]:.1f})"
+        assert exit_ == (bar in exit_bars), f"bar{bar}: exit mismatch"
+
+
+def _ema(values: list[float], window: int) -> list[float | None]:
+    """True recursive EMA, talib convention: SMA seed, alpha = 2/(window+1)."""
+    result: list[float | None] = [None] * len(values)
+    alpha = 2.0 / (window + 1)
+    for index in range(len(values)):
+        if index + 1 < window:
+            continue
+        if index + 1 == window:
+            result[index] = sum(values[:window]) / window
+        else:
+            previous = result[index - 1]
+            assert previous is not None
+            result[index] = alpha * values[index] + (1 - alpha) * previous
+    return result
+
+
+def test_ft2_ema_cross_reproduction() -> None:
+    # True recursive EMA (SMA seed) replaces the spec's flagged "treat like SMA
+    # warm-up" approximation. On bars_long.csv the state-based signals whipsaw
+    # deterministically during the 100/101 oscillation (fast EMA flips around
+    # the slow one each bar), then hold EXIT through the dip and ENTRY through
+    # the rally — all three regimes are asserted exactly.
+    spec = _spec("04-ft-ema-cross")
+    closes = [r["close"] for r in _rows(FIXTURE_LONG)]
+    short_window = int(spec.indicators[0].parameters["window"])
+    long_window = int(spec.indicators[1].parameters["window"])
+    ema_short = _ema(closes, short_window)
+    ema_long = _ema(closes, long_window)
+    for i, close in enumerate(closes):
+        bar = i + 1
+        if ema_long[i] is None:
+            assert bar < long_window + 1, f"bar{bar}: warm-up must end at the long window"
+            continue
+        assert ema_short[i] is not None
+        ctx = {"close": close, "ema_short": ema_short[i], "ema_long": ema_long[i]}
+        entry = _eval_tree(spec.entry_long, ctx)
+        exit_ = _eval_tree(spec.exit_long, ctx)
+        if 10 <= bar <= 20:
+            expected_entry = bar % 2 == 0  # oscillation: fast EMA above on 101-closes
+        elif 21 <= bar <= 25:
+            expected_entry = False  # dip: fast EMA below slow
+        else:
+            expected_entry = True  # rally from bar 26 onward
+        assert entry == expected_entry, f"bar{bar}: entry mismatch"
+        assert exit_ == (not expected_entry), f"bar{bar}: exit mismatch"
 
 
 def test_qc2_donchian_breakout_reproduction() -> None:

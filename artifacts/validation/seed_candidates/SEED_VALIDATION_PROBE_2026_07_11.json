@@ -1,0 +1,319 @@
+{
+  "contexts": [
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "blockers": [
+        "probe artifact only; not a promotion-grade validation package",
+        "no cross-engine reproduction for this seed context",
+        "no production G10/PBO/DSR over this seed context's searched population",
+        "no paper/demo divergence evidence"
+      ],
+      "buy_hold_benchmark": {
+        "total_return": "1.124475554221775617174981668"
+      },
+      "context": {
+        "candidate_id": "STRAT-QC2-donchian-breakout",
+        "dataset": "ETHUSDT_1h",
+        "runner_name": "qc2",
+        "trial_key": "window=40"
+      },
+      "cost_stress": {
+        "0": {
+          "final_equity": "4336.328559109608654054561038",
+          "total_return": "3.336328559109608654054561038",
+          "trades": 553
+        },
+        "0.001": {
+          "final_equity": "2491.165943202296528856325916",
+          "total_return": "1.491165943202296528856325916",
+          "trades": 553
+        },
+        "0.002": {
+          "final_equity": "1430.349122977176131801532545",
+          "total_return": "0.430349122977176131801532545",
+          "trades": 553
+        },
+        "0.003": {
+          "final_equity": "820.8047961857289518554525964",
+          "total_return": "-0.1791952038142710481445474036",
+          "trades": 553
+        }
+      },
+      "execution_authority": "NONE",
+      "full_period": {
+        "final_equity": "2491.165943202296528856325916",
+        "total_return": "1.491165943202296528856325916",
+        "trades": 553
+      },
+      "parameter_neighborhood_top": [
+        {
+          "final_equity": "2491.165943202296528856325916",
+          "total_return": "1.491165943202296528856325916",
+          "trades": 553,
+          "trial_key": "window=40"
+        },
+        {
+          "final_equity": "741.7831765755502529865351034",
+          "total_return": "-0.2582168234244497470134648966",
+          "trades": 307,
+          "trial_key": "window=80"
+        },
+        {
+          "final_equity": "678.3315468327847096627816334",
+          "total_return": "-0.3216684531672152903372183666",
+          "trades": 1838,
+          "trial_key": "window=10"
+        },
+        {
+          "final_equity": "422.8261973319449248119368667",
+          "total_return": "-0.5771738026680550751880631333",
+          "trades": 1058,
+          "trial_key": "window=20"
+        }
+      ],
+      "status": "UNVALIDATED",
+      "temporal_splits": {
+        "holdout_final_third": {
+          "bars": 16052,
+          "final_equity": "1204.639309286490491266956661",
+          "total_return": "0.204639309286490491266956661",
+          "trades": 177
+        },
+        "train_first_third": {
+          "bars": 16051,
+          "final_equity": "1865.013654316940590491447930",
+          "total_return": "0.86501365431694059049144793",
+          "trades": 198
+        },
+        "validation_middle_third": {
+          "bars": 16051,
+          "final_equity": "1108.826537837462229042402647",
+          "total_return": "0.108826537837462229042402647",
+          "trades": 178
+        }
+      }
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "blockers": [
+        "probe artifact only; not a promotion-grade validation package",
+        "no cross-engine reproduction for this seed context",
+        "no production G10/PBO/DSR over this seed context's searched population",
+        "no paper/demo divergence evidence",
+        "final-third holdout return is not positive",
+        "full-period proxy does not beat buy-and-hold"
+      ],
+      "buy_hold_benchmark": {
+        "total_return": "1.022250755800361157987431038"
+      },
+      "context": {
+        "candidate_id": "STRAT-QC2-donchian-breakout",
+        "dataset": "BTCUSDT_1h",
+        "runner_name": "qc2",
+        "trial_key": "window=80"
+      },
+      "cost_stress": {
+        "0": {
+          "final_equity": "1603.876440619513778567676867",
+          "total_return": "0.603876440619513778567676867",
+          "trades": 284
+        },
+        "0.001": {
+          "final_equity": "1207.173141589984959115942511",
+          "total_return": "0.207173141589984959115942511",
+          "trades": 284
+        },
+        "0.002": {
+          "final_equity": "908.3320403455788082083345488",
+          "total_return": "-0.0916679596544211917916654512",
+          "trades": 284
+        },
+        "0.003": {
+          "final_equity": "683.2755313797355747051702613",
+          "total_return": "-0.3167244686202644252948297387",
+          "trades": 284
+        }
+      },
+      "execution_authority": "NONE",
+      "full_period": {
+        "final_equity": "1207.173141589984959115942511",
+        "total_return": "0.207173141589984959115942511",
+        "trades": 284
+      },
+      "parameter_neighborhood_top": [
+        {
+          "final_equity": "1207.173141589984959115942511",
+          "total_return": "0.207173141589984959115942511",
+          "trades": 284,
+          "trial_key": "window=80"
+        },
+        {
+          "final_equity": "701.8492840119249855106670744",
+          "total_return": "-0.2981507159880750144893329256",
+          "trades": 566,
+          "trial_key": "window=40"
+        },
+        {
+          "final_equity": "317.2174820208500841884820808",
+          "total_return": "-0.6827825179791499158115179192",
+          "trades": 1052,
+          "trial_key": "window=20"
+        },
+        {
+          "final_equity": "202.7066144839294170644429034",
+          "total_return": "-0.7972933855160705829355570966",
+          "trades": 1860,
+          "trial_key": "window=10"
+        }
+      ],
+      "status": "UNVALIDATED",
+      "temporal_splits": {
+        "holdout_final_third": {
+          "bars": 16052,
+          "final_equity": "865.2942174053958570284237260",
+          "total_return": "-0.134705782594604142971576274",
+          "trades": 104
+        },
+        "train_first_third": {
+          "bars": 16051,
+          "final_equity": "449.5977989414748637693755027",
+          "total_return": "-0.5504022010585251362306244973",
+          "trades": 101
+        },
+        "validation_middle_third": {
+          "bars": 16051,
+          "final_equity": "2979.941697682625758640241482",
+          "total_return": "1.979941697682625758640241482",
+          "trades": 80
+        }
+      }
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "blockers": [
+        "probe artifact only; not a promotion-grade validation package",
+        "no cross-engine reproduction for this seed context",
+        "no production G10/PBO/DSR over this seed context's searched population",
+        "no paper/demo divergence evidence",
+        "final-third holdout return is not positive",
+        "full-period proxy does not beat buy-and-hold"
+      ],
+      "buy_hold_benchmark": {
+        "total_return": "1.128852870467939491051302247"
+      },
+      "context": {
+        "candidate_id": "STRAT-FT1-sample-strategy",
+        "dataset": "ETHUSDT_15m",
+        "runner_name": "ft1",
+        "trial_key": "rsi_window=21,rsi_threshold=20"
+      },
+      "cost_stress": {
+        "0": {
+          "final_equity": "1435.051601749219477882942191",
+          "total_return": "0.435051601749219477882942191",
+          "trades": 184
+        },
+        "0.001": {
+          "final_equity": "1193.760903499680659100117039",
+          "total_return": "0.193760903499680659100117039",
+          "trades": 184
+        },
+        "0.002": {
+          "final_equity": "992.8579431469355365051529275",
+          "total_return": "-0.0071420568530644634948470725",
+          "trades": 184
+        },
+        "0.003": {
+          "final_equity": "825.6132365315484342102148785",
+          "total_return": "-0.1743867634684515657897851215",
+          "trades": 184
+        }
+      },
+      "execution_authority": "NONE",
+      "full_period": {
+        "final_equity": "1193.760903499680659100117039",
+        "total_return": "0.193760903499680659100117039",
+        "trades": 184
+      },
+      "parameter_neighborhood_top": [
+        {
+          "final_equity": "1193.760903499680659100117039",
+          "total_return": "0.193760903499680659100117039",
+          "trades": 184,
+          "trial_key": "rsi_window=21,rsi_threshold=20"
+        },
+        {
+          "final_equity": "499.9733927835144134392691932",
+          "total_return": "-0.5000266072164855865607308068",
+          "trades": 580,
+          "trial_key": "rsi_window=14,rsi_threshold=20"
+        },
+        {
+          "final_equity": "264.0876795029442382255198355",
+          "total_return": "-0.7359123204970557617744801645",
+          "trades": 1312,
+          "trial_key": "rsi_window=21,rsi_threshold=30"
+        },
+        {
+          "final_equity": "55.20386755340056990334673629",
+          "total_return": "-0.9447961324465994300966532637",
+          "trades": 2784,
+          "trial_key": "rsi_window=14,rsi_threshold=30"
+        },
+        {
+          "final_equity": "27.57601198433301473436683987",
+          "total_return": "-0.9724239880156669852656331601",
+          "trades": 3268,
+          "trial_key": "rsi_window=7,rsi_threshold=20"
+        },
+        {
+          "final_equity": "8.181911044394489841819005700",
+          "total_return": "-0.9918180889556055101581809943",
+          "trades": 4848,
+          "trial_key": "rsi_window=21,rsi_threshold=40"
+        },
+        {
+          "final_equity": "1.794577614070513453085024369",
+          "total_return": "-0.9982054223859294865469149756",
+          "trades": 6578,
+          "trial_key": "rsi_window=14,rsi_threshold=40"
+        },
+        {
+          "final_equity": "1.521007335437154140501886224",
+          "total_return": "-0.9984789926645628458594981138",
+          "trades": 6646,
+          "trial_key": "rsi_window=7,rsi_threshold=30"
+        }
+      ],
+      "status": "UNVALIDATED",
+      "temporal_splits": {
+        "holdout_final_third": {
+          "bars": 64201,
+          "final_equity": "858.5521852004728016333269587",
+          "total_return": "-0.1414478147995271983666730413",
+          "trades": 54
+        },
+        "train_first_third": {
+          "bars": 64200,
+          "final_equity": "1456.242258134717430768380947",
+          "total_return": "0.456242258134717430768380947",
+          "trades": 58
+        },
+        "validation_middle_third": {
+          "bars": 64201,
+          "final_equity": "954.8101429881231910010010185",
+          "total_return": "-0.0451898570118768089989989815",
+          "trades": 72
+        }
+      }
+    }
+  ],
+  "execution_authority": "NONE",
+  "live_orders": "DISABLED",
+  "paper_orders": "DISABLED",
+  "schema": "tios-seed-validation-probe-v1",
+  "source_cycle": "artifacts/research_lab/seed_cycle_v0/SEEDCYCLE-9b1652a62996fda4b753c6695f43569ab860acd8decb48c9c5994566f4a6488f",
+  "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+  "venue_connection": "NONE",
+  "winner_selected": false
+}

@@ -1,0 +1,160 @@
+registry_version: 1
+hypotheses:
+  - hypothesis_id: RPH-BINANCE-SPOT-GRID-CONFIG
+    source_ref: SRC-BINANCE-TRADING-BOTS
+    intake_plan_ref: INTAKE-BINANCE-TRADING-BOTS
+    kind: config_reconstruction
+    status: spec_candidate
+    title: Binance visible spot-grid family reconstructed as offline grid hypothesis
+    statement: >-
+      Visible Binance Trading Bots grid-family metadata can be translated into an
+      offline long-only spot-grid configuration hypothesis for approved crypto-spot
+      instruments, but only after price range, grid count, sizing, fee assumptions,
+      and trigger semantics are explicitly specified locally.
+    reconstruction_scope:
+      - spot-grid family only
+      - BTCUSDT and ETHUSDT frozen-data replay only
+      - no Binance account, bot creation, shared-parameter copy, or API use
+    required_inputs:
+      - source snapshot hash
+      - explicit symbol
+      - price range rule
+      - grid count rule
+      - sizing rule
+      - fee and slippage scenario
+      - entry and exit timestamp semantics
+    missing_inputs:
+      - exact price range rule
+      - exact grid count rule
+      - exact sizing rule
+      - executable trigger semantics
+    assumptions:
+      - Public bot-family metadata is enough to propose a hypothesis family, not a strategy.
+      - Any future grid replay must use frozen OS market data and local cost assumptions.
+    validation_plan:
+      - build a canonical non-executing grid replay spec
+      - replay on BTCUSDT and ETHUSDT frozen data across 5m, 15m, and 1h
+      - retain full parameter population and run G10 before any promotion discussion
+    artifact_refs:
+      - artifacts/source_intake/binance_trading_bots/metadata_snapshot.json
+    execution_authority: NONE
+    profit_claims_inherited: false
+    approval_eligible: false
+
+  - hypothesis_id: RPH-BINANCE-COPY-TRADING-OPAQUE
+    source_ref: SRC-BINANCE-COPY-TRADING
+    intake_plan_ref: INTAKE-BINANCE-COPY-TRADING
+    kind: allocation_replay
+    status: non_reconstructable
+    title: Binance copy-trading public leader data retained as non-reconstructable
+    statement: >-
+      Public copy-trading metadata can describe lead-trader risk and performance
+      surfaces, but without historical account actions, sizing, symbol exposure,
+      and fee/leverage state it cannot become a replayable or approvable strategy.
+    reconstruction_scope:
+      - public metadata and risk-field taxonomy only
+      - no following, copying, account linking, or portfolio replication
+    required_inputs:
+      - timestamped historical actions or allocation weights
+      - symbol-level exposure history
+      - sizing semantics
+      - fee and leverage context
+      - survivorship and leaderboard membership history
+    missing_inputs:
+      - historical actions
+      - symbol-level exposure history
+      - sizing semantics
+      - fee and leverage context
+      - survivorship history
+    assumptions:
+      - Public leader metrics are source metadata and not inherited evidence.
+      - This row can become replayable only if lawful historical action data is available.
+    validation_plan:
+      - keep as non-spec research asset until reconstructable history exists
+      - if reconstructable data appears, create a separate replay candidate with no copy path
+      - require divergence/risk review before any future paper comparison
+    artifact_refs:
+      - artifacts/source_intake/binance_copy_trading/replay_design.json
+    execution_authority: NONE
+    profit_claims_inherited: false
+    approval_eligible: false
+
+  - hypothesis_id: RPH-TRADINGVIEW-RULED-SIGNAL-REPLAY
+    source_ref: SRC-TRADINGVIEW-IDEAS
+    intake_plan_ref: INTAKE-TRADINGVIEW-IDEAS
+    kind: historical_signal_replay
+    status: replay_candidate
+    title: TradingView ruled idea captured as timestamped offline signal replay
+    statement: >-
+      A TradingView idea that exposes symbol, publication time, direction, entry,
+      target, stop, and invalidation semantics can be represented as a timestamped
+      offline signal replay candidate, while prose-only ideas remain non-spec.
+    reconstruction_scope:
+      - individual idea URL only
+      - citation metadata and extracted rule fields only
+      - no live alert subscription, webhook, or signal following
+    required_inputs:
+      - individual idea URL
+      - publication or observed timestamp
+      - symbol
+      - direction
+      - entry rule
+      - exit or target rule
+      - stop or invalidation rule
+    missing_inputs:
+      - individual idea URL
+      - publication or observed timestamp
+      - exact symbol
+      - exact entry and exit rules
+    assumptions:
+      - Copyrighted prose is not copied into artifacts beyond minimal citation metadata.
+      - Popularity, author reputation, and recency are not performance evidence.
+    validation_plan:
+      - capture one individual idea's metadata and rule fields if lawful
+      - replay on matching frozen OS data with timestamp alignment
+      - compare against baseline and retain all failures
+    artifact_refs:
+      - artifacts/source_intake/tradingview_ideas/signal_candidates.json
+    execution_authority: NONE
+    profit_claims_inherited: false
+    approval_eligible: false
+
+  - hypothesis_id: RPH-3COMMAS-DCA-CONFIG
+    source_ref: SRC-3COMMAS-DCA-BOT
+    intake_plan_ref: INTAKE-3COMMAS-DCA-BOT
+    kind: config_reconstruction
+    status: spec_candidate
+    title: 3Commas DCA bot concept reconstructed as offline DCA hypothesis
+    statement: >-
+      Public 3Commas DCA bot configuration concepts can be translated into a local
+      DCA strategy-spec hypothesis only after entry trigger, base order, safety
+      order, take-profit, stop, and maximum exposure semantics are explicitly fixed.
+    reconstruction_scope:
+      - DCA bot concept only
+      - local frozen-data replay only
+      - no 3Commas account, trial signup, exchange link, or bot execution
+    required_inputs:
+      - source snapshot hash
+      - pair selection rule
+      - entry trigger
+      - base order sizing
+      - safety order spacing and sizing
+      - take-profit rule
+      - stop or max-exposure rule
+    missing_inputs:
+      - exact entry trigger
+      - exact safety order spacing and sizing
+      - exact take-profit rule
+      - exact stop or max-exposure rule
+    assumptions:
+      - Platform backtest and automation claims are not inherited.
+      - Any future DCA replay must be implemented as local simulation with no exchange link.
+    validation_plan:
+      - build a canonical non-executing DCA spec candidate
+      - replay on approved frozen crypto-spot instruments and cost grids
+      - require neighborhood, walk-forward, baseline, and G10 evidence before promotion
+    artifact_refs:
+      - artifacts/source_intake/3commas_dca_bot/config_hypotheses.json
+    execution_authority: NONE
+    profit_claims_inherited: false
+    approval_eligible: false
