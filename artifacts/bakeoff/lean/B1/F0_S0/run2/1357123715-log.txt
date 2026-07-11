@@ -1,0 +1,5 @@
+2026-05-01 00:00:00 Launching analysis for 1357123715 with LEAN Engine v2.5.0.0
+2026-05-01 00:00:00 Algorithm starting warm up...
+2026-05-01 00:00:00 Algorithm finished warming up.
+2026-07-01 00:00:00 {"fills": [{"ts_fill": "2026-05-02T04:00:00", "side": "buy", "pair": "ETHUSDT", "price": 2295.63, "qty": 21.0, "fee": 0.0}]}
+2026-07-01 00:00:00 Algorithm Id:(1357123715) completed in 3.43 seconds at 10k data points per second. Processing total of 34,467 data points.

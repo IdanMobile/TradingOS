@@ -32,8 +32,10 @@ architecture authority remains the SSOT handoff and `PROJECT_STATE.md`.
    client or mutation endpoint remain the boundary.
 3. DONE FOR CURRENT SLICE — real LAB-799 exists, retains all current trials, selects no
    winner, and remains `UNVALIDATED` / `NOT_ELIGIBLE`.
-4. PARTIAL — sourced hypothesis provenance is visible in the dashboard; the broader RA
-   registry/freshness slice remains bounded S2 work.
+4. DONE FOR BOUNDED S2 — sourced hypothesis provenance is visible in the dashboard, and
+   `research/RESEARCH_ASSETS_V1.json` backfills 8 retained RA records with freshness,
+   consumer tracking, human-review flags, dependencies, and validator tests. Cost
+   amortization remains deferred until AI/provider cost work is authorized.
 5. DONE FOR CURRENT SLICE — bounded allowlisted local jobs and the read-only Automation
    dashboard exist after idempotent reuse evidence; S2 verification/HG-3 evidence remains open.
 
@@ -55,9 +57,14 @@ architecture authority remains the SSOT handoff and `PROJECT_STATE.md`.
 - Strategy ingestion seed batch: evidence exists; maintain the report and record schema-fit lessons.
 - AI benchmark seed: null-provider harness is complete; constrained S2 remains mock-only and real-provider credentials/runs are out of scope.
 - Research gaps: close only when their S2 dependency is reached; sourced claims remain hypotheses until locally reproduced.
-- Active initiatives are limited to the remaining bounded slices in 13, 14, 17, and 19.
-  Initiative 13 has source-provenance evidence but not the full RA lifecycle; Initiative
-  17 has bounded dashboard/job visibility but not a general observability stack.
+- Active initiatives are limited to the remaining bounded slices in 12, 13, 14, 17, and 19.
+  Initiative 12 now has bounded dictionary concepts and FTS evidence while full ontology
+  import remains deferred. Initiative 13 now has bounded RA registry/backfill and cost-amortization evidence;
+  Initiative 17 has bounded dashboard/job visibility, a structured-record standard, and
+  evidence-backed rejection of a general observability stack until reopen triggers occur.
+  Initiative 14 now includes the bounded read-only Dictionary/global-search surface;
+  full console rewrite, entity-detail pages, and richer comparisons are rejected for
+  bounded S2 by `DASHBOARD_BOUNDARY_REPORT.md`; approvals UI remains human-gated.
   Initiative 12 ontology work remains deferred unless a concrete dependency is recorded.
 
 ## Human gates and explicit blockers

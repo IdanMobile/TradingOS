@@ -24,12 +24,12 @@ Status: S2 architecture lock recorded 2026-07-10 (D-037). This is the task index
 | 09 | `todos/09_validation.md` | S1 | WS6 gates G1–G11 harness | **yes** |
 | 10 | `todos/10_strategy_ingestion.md` | S1 | WS7 10-item seed batch | no |
 | 11 | `todos/11_ai_agent_eval.md` | S1 | WS8 benchmark harness + fixtures | no |
-| 12 | `todos/12_dictionary_ontology.md` | deferred | concept tables + FIBO seed; activate only on a concrete ontology dependency | no |
-| 13 | `todos/13_research_assets.md` | S2 active | sourced research/hypothesis and RA registry slice | S2 |
+| 12 | `todos/12_dictionary_ontology.md` | S2 bounded done | concept tables + FIBO-provenance seed; full ontology deferred | no |
+| 13 | `todos/13_research_assets.md` | S2 bounded done / deferred cost view | sourced research/hypothesis and RA registry slice | S2 |
 | 14 | `todos/14_dashboard.md` | S1 done / S2 active | existing read-only evidence and research console; no write controls | S2 |
 | 15 | `todos/15_paper_trading.md` | S3 | paper lane + divergence tracking | S3 |
 | 16 | `todos/16_risk_approvals.md` | S1 thin / deferred | approval evidence model retained; runtime risk rules await later gate | no |
-| 17 | `todos/17_observability.md` | S2 active | bounded batch/job visibility; no always-on observability stack | S2 |
+| 17 | `todos/17_observability.md` | S2 bounded done | bounded batch/job visibility; no always-on observability stack | S2 |
 | 18 | `todos/18_security.md` | S1 | secret hygiene, sandbox policy, audits | **gate** |
 | 19 | `todos/19_operations.md` | S1 done / S2 active | bounded jobs only after proved idempotency; reports and state automation | S2 |
 | 20 | `todos/20_future_market_expansion.md` | S3+ | perps/US-equities design-only | no |

@@ -121,10 +121,10 @@ Role-based composition (D-012), resolved by the S1 bake-off:
 - **vectorbt — selected research accelerator** for bounded B2/B3/B4 parameter sweeps. It has no execution or approval authority; every trial is retained and binding overfit controls plus event-engine reproduction remain promotion preconditions.
 - **Freqtrade — selected Crypto Spot event/reproduction lane** through CLI/subprocess only. Its B1–B4 evidence, fee audit, timing semantics, G4 warning, and slippage gap are retained; trade/dry-run and venue modes are prohibited in S2.
 - **NautilusTrader — capability-supported bounded event-simulation lane** only. Deterministic, fee-audited B1–B4 evidence supports this role; full-history parity and latency/fill evidence are still gaps.
-- **Hummingbot — deferred bot-operations/market-making candidate** only. B1/B2 evidence does not support general S2 research use; B3/B4 and determinism coverage are absent.
-- **LEAN — deferred multi-asset portability candidate** only. No completed local backtest exists because Docker was unavailable.
+- **Hummingbot — bounded bot-operations capability/regression lane** only. BTCUSDT 30-day B1–B4 x `{F0/S0,F1/S1}` x `{run1,run2}` is normalized, fee-audited, and deterministic; full-history completion remains a throughput track, not a credential or approval blocker.
+- **LEAN — bounded multi-asset portability candidate** only. Local Docker B1–B4 x `{F0/S0,F1/S1}` evidence is retained without QuantConnect cloud/account use; full-range parity remains a throughput/scope expansion.
 
-No engine is a strategy selector, risk authority, approver, venue gateway, or universal engine. A deferred engine is invoked only for a capability-specific evidence task after its recorded blocker is closed.
+No engine is a strategy selector, risk authority, approver, venue gateway, or universal engine. A bounded/deferred engine is invoked only for a capability-specific evidence task inside its retained scope, or after its recorded blocker is closed.
 - Common contract: EngineAdapter port (type catalog §4). Semantic mismatches → CapabilityGap records + parity diagnosis (WS4).
 - Version pinning: exact version/commit per run; upgrade requires golden parity rerun (type catalog §8).
 - License boundary: Freqtrade GPL-3.0 → subprocess/CLI integration only, no code-linking; Nautilus LGPL-3.0 → import permissible, keep abstraction anyway; backtesting.py AGPL + Backtrader dead → rejected (REG §1).

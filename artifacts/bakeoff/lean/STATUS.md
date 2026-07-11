@@ -1,10 +1,10 @@
-# T-006-04 LEAN lane — status (2026-07-07, attempt 3)
+# T-006-04 LEAN lane — status (updated 2026-07-11)
 
-**Outcome: incomplete.** Environment/mechanism proven; no backtest executed yet.
-Prior attempts 1-2 failed on session rate limits before any lane work started.
-This attempt ran out of task budget mid-implementation, after the (slow, ~35min)
-`quantconnect/lean:latest` Docker pull finally completed. Recorded here so the
-next attempt does not repeat the investigation.
+**Outcome: complete for the bounded Docker evidence matrix.** Docker was made
+available and the local LEAN CLI path ran B1-B4 over `{F0/S0,F1/S1}` using the
+hand-assembled local `lean.json` and custom CSV data. No QuantConnect account,
+cloud project sync, broker connection, paper/demo/testnet venue, order-routing,
+live trading, or real-money path was used.
 
 ## RG-02 finding (local-vs-cloud data/pricing boundary) — RESOLVED for this lane
 `lean init` / `lean login` require a QuantConnect account (user id + API token) —
@@ -42,26 +42,26 @@ subset of DS-CRYPTO-SPOT-BAKEOFF-V1, not a different dataset. If full-range
 parity with the other lanes is required, increase `LEAN_WINDOW_DAYS` (or remove
 the filter) and expect a much longer per-run time.
 
-## Not done — what the next attempt should do first
-1. Run `engines/lean/.venv/bin/lean backtest engines/lean/lane/B1 --parameter fee_rate 0 --parameter slippage_bps 0 --parameter scenario_id F0_S0 --parameter run_tag run1` (image is already pulled, so this should compile+run without a further multi-GB download).
-2. This is unverified: whether `self.history(symbol, N, Resolution.MINUTE)` returns a
-   DataFrame with `"close"`/`"high"` columns for a *custom* `PythonData` symbol (used
-   in B2-B4's indicator logic) has not been confirmed against a real run — B1 (no
-   history() call) is the right first smoke test before trusting B2-B4.
-3. Once B1 runs clean, repeat for B2-B4 x {F0/S0, F1/S1}, then call
-   `normalize_result()` in `engines/lean/scripts/lane.py` per run to produce the
-   canonical `trades`/`manifest.json` artifacts under `artifacts/bakeoff/lean/<baseline>/<scenario>/<run_tag>/`,
-   then rerun one config a second time to check byte-identical determinism
-   (blueprint gate).
-4. If `history()` on custom data doesn't expose named columns, the fallback is to
-   maintain per-symbol Python `deque`s of the last N closes/highs manually inside
-   `on_data` instead of calling `self.history()` — more code, but removes the
-   dependency on that API's behavior with custom data types.
+## 2026-07-11 run evidence
+
+- B1-B4 x `{F0/S0,F1/S1}` run1 all exited `0` through local Docker with
+  `--lean-config engines/lean/lane/lean.json --no-update`.
+- Normalized manifests are retained under
+  `artifacts/bakeoff/lean/<baseline>/<scenario>/run1/manifest.json`.
+- Fill counts: B1=1, B2=3991, B3=5234, B4=2166 for both scenarios.
+- B1 F0/S0 was rerun as `run2`; retained fills match run1 exactly in
+  `artifacts/bakeoff/lean/B1/F0_S0/determinism_run1_run2.json`.
+- LEAN's built-in post-analysis packet logged a non-fatal exception
+  (`Sequence contains no elements`) while still emitting statistics, order events,
+  logs, and a successful CLI exit. This is retained in the per-run logs.
+
+## Remaining constraints
+
+The lane remains a bounded 60-day evidence window because LEAN's Python custom
+data reader is line-oriented and materially slower than vectorized lanes over the
+full 2021-2026 dataset. This is a documented scope reduction, not a silent pass.
 
 ## Blocker record (per acceptance criterion 3)
-No QuantConnect credential blocker exists: the lane is designed for local Docker
-execution with custom data. The current environment does have an execution blocker:
-the first smoke command using `--lean-config engines/lean/lane/lean.json` returned
-`Please make sure Docker is installed and running` on 2026-07-10. Resume T-006-04
-by starting Docker, then rerun B1 before attempting B2-B4. This is an environment
-state blocker, not a missing account or data-source decision.
+No QuantConnect credential blocker exists. The prior Docker-stopped blocker was
+cleared on 2026-07-11; bounded local Docker evidence is now retained. Full-range
+LEAN parity remains a throughput/scope expansion question only.

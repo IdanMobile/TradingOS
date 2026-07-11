@@ -11,7 +11,11 @@ import duckdb
 import pytest
 
 from tios.services.dashboard_api.market import build_market_snapshot
-from tios.services.dashboard_api.status import build_dashboard_data, build_status
+from tios.services.dashboard_api.status import (
+    build_dashboard_data,
+    build_status,
+    record_workspace_decision,
+)
 from tios.services.dashboard_ui.server import Handler, is_loopback_host
 
 
@@ -84,6 +88,25 @@ def test_dashboard_status_is_read_only_projection() -> None:
     assert status["project"] == "Trading Intelligence OS"
     assert status["schema_version"] == 1
     assert status["summary"]["total"] > 0
+    assert status["summary"]["open"] == len(status["open_tasks"])
+    assert status["summary"]["gated"] == len(status["gated_tasks"])
+    assert status["summary"]["recurring"] == len(status["recurring_tasks"])
+    assert status["open_tasks"] == []
+    assert status["gated_tasks"]
+    assert status["recurring_tasks"]
+    assert status["workspace_actions"]
+    assert status["workspace_decisions"]["artifact"] == (
+        "artifacts/human_decisions/workspace_decisions.jsonl"
+    )
+    assert all(task["bucket"] == "gated" for task in status["gated_tasks"])
+    assert all(task["bucket"] == "recurring" for task in status["recurring_tasks"])
+    assert any(task["status"].startswith("DEFERRED") for task in status["gated_tasks"])
+    assert any(task["status"].startswith("ONGOING") for task in status["recurring_tasks"])
+    ai_run = next(action for action in status["workspace_actions"] if action["id"] == "T-011-05")
+    assert {option["id"] for option in ai_run["options"]} == {
+        "keep_deferred",
+        "credentials_configured",
+    }
     assert any(item["file"] == "14_dashboard.md" for item in status["initiatives"])
     assert status["checks"]["status"] in {"PASS", "UNKNOWN"}
     assert status["checks"]["known_passing"] is (status["checks"]["status"] == "PASS")
@@ -245,9 +268,13 @@ def test_research_lab_selects_latest_artifact_timestamp_not_batch_name(tmp_path:
 def test_real_research_lab_batch_is_projected_automatically() -> None:
     root = Path(__file__).resolve().parents[1]
     lab = build_dashboard_data(root)["research_lab"]
-    assert lab["latest_batch_id"].startswith("LAB-799")
+    assert lab["latest_batch_id"].startswith("LAB-f99dcc")
     assert lab["runs"] == 66
     assert lab["completed"] == 66
+    # Payload-derived (not base-default) safety facts of the retained batch.
+    assert lab["state"] == "COMPLETE"
+    assert lab["winner_selected"] is False
+    assert lab["all_trials_retained"] is True
     assert lab["latest_seed_cycle"]["cycle_id"].startswith("SEEDCYCLE-5bd3")
     assert lab["latest_seed_cycle"]["trials"] == 16
 
@@ -296,6 +323,20 @@ def test_dashboard_projects_typed_primary_research_sources() -> None:
     assert paper["eligibility"] == "NOT_ELIGIBLE"
 
 
+def test_dashboard_projects_dictionary_concepts() -> None:
+    root = Path(__file__).resolve().parents[1]
+    concepts = build_dashboard_data(root)["dictionary_concepts"]
+
+    assert concepts["concept_count"] == 16
+    assert concepts["fibo_provenance_count"] >= 3
+    assert concepts["categories"]["trading_domain"] >= 3
+    assert concepts["gaps"]
+    dataset = next(row for row in concepts["rows"] if row["concept_id"] == "CON-DATASET")
+    assert "canonical dataset" in dataset["aliases"]
+    assert dataset["evidence_status"] == "LOCAL_CONTRACT"
+    assert dataset["freshness"] == "CURRENT"
+
+
 def test_dashboard_includes_read_only_tradingview_market_monitor() -> None:
     html = (
         Path(__file__).resolve().parents[1]
@@ -313,16 +354,29 @@ def test_dashboard_includes_read_only_tradingview_market_monitor() -> None:
         "Research Lab",
         "Autonomous evidence cycle",
         "All trials retained",
+        "Seed candidate cycle",
         "Independent score dimensions",
         "Source provenance",
         "Demo trading",
         "Paper trading",
         "Live trading",
+        "Dictionary",
+        "Concept registry",
+        "Ontology boundary",
         "Next command / work",
         "No POST or write control",
+        "Actionable open",
+        "Gated / recurring",
+        "No actionable open tasks are projected",
+        "Deferred or human/credential/stage-gated tasks",
+        "Recurring governance discipline",
+        "Human decisions",
+        "data-workspace-task",
+        "/api/v1/workspace-actions/decision",
     ):
         assert label in html
-    assert not hasattr(Handler, "do_POST")
+    assert "Changed files" not in html
+    assert "No venue connectivity, paper/live execution, credentials, or order execution" in html
 
 
 def test_dashboard_activity_maps_one_to_one_to_real_artifacts() -> None:
@@ -357,6 +411,9 @@ def test_dashboard_ui_a11y_responsive_and_state_contracts() -> None:
         'aria-describedby="marketProvenance candleTable"',
         'aria-details="candleTable"',
         "STALE_MS=15000",
+        "MARKET_POLL_MS=15000",
+        "setInterval(()=>{if(document.querySelector('#market').classList.contains('active'))loadMarket()}",
+        "marketLoading=true",
         "last successful refresh",
         "returned malformed JSON",
         'id="retry"',
@@ -569,6 +626,26 @@ def test_dashboard_check_state_fails_closed_to_unknown(
     assert checks["known_passing"] is False
 
 
+def test_workspace_decision_recording_is_validated_and_retained(tmp_path: Path) -> None:
+    (tmp_path / "todos").mkdir()
+    (tmp_path / "todos/11_ai_agent_eval.md").write_text(
+        "# Initiative 11\n\n## T-011-05 First real runs\n- Status: **DEFERRED-CREDENTIALS**.\n"
+    )
+    result = record_workspace_decision(
+        tmp_path,
+        {"task_id": "T-011-05", "choice": "keep_deferred"},
+    )
+    assert result["recorded"]["choice_label"] == "Keep deferred"
+    decision_path = tmp_path / "artifacts/human_decisions/workspace_decisions.jsonl"
+    assert decision_path.is_file()
+    status = build_status(tmp_path)
+    action = status["workspace_actions"][0]
+    assert action["latest_decision"]["choice"] == "keep_deferred"
+
+    with pytest.raises(ValueError, match="unknown workspace action choice"):
+        record_workspace_decision(tmp_path, {"task_id": "T-011-05", "choice": "place_order"})
+
+
 @pytest.mark.parametrize("host", ["127.0.0.1", "127.0.0.2", "::1", "localhost"])
 def test_dashboard_accepts_loopback_hosts(host: str) -> None:
     assert is_loopback_host(host)
@@ -630,7 +707,15 @@ def test_live_market_api_error_schema_contract_without_listening_server(tmp_path
     assert "manifest" in payload["error"]
 
 
-@pytest.mark.parametrize("method", ["POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"])
+def test_legacy_api_paths_are_explicitly_removed(tmp_path: Path) -> None:
+    response = _handle_request(b"GET /api/status HTTP/1.1\r\nHost: localhost\r\n\r\n", tmp_path)
+    headers, body = response.split(b"\r\n\r\n", 1)
+    assert b" 410 " in headers
+    payload = json.loads(body)
+    assert payload == {"schema_version": 1, "error": "legacy API removed; use /api/v1"}
+
+
+@pytest.mark.parametrize("method", ["PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"])
 def test_dashboard_api_rejects_prohibited_methods_without_listening_server(
     tmp_path: Path, method: str
 ) -> None:
@@ -638,3 +723,28 @@ def test_dashboard_api_rejects_prohibited_methods_without_listening_server(
         f"{method} /api/v1/status HTTP/1.1\r\nHost: localhost\r\n\r\n".encode(), tmp_path
     )
     assert response.startswith(b"HTTP/1.0 501")
+
+
+def test_workspace_decision_post_is_the_only_allowed_write_path(tmp_path: Path) -> None:
+    (tmp_path / "todos").mkdir()
+    (tmp_path / "todos/11_ai_agent_eval.md").write_text(
+        "# Initiative 11\n\n## T-011-05 First real runs\n- Status: **DEFERRED-CREDENTIALS**.\n"
+    )
+    body = b'{"task_id":"T-011-05","choice":"keep_deferred"}'
+    response = _handle_request(
+        b"POST /api/v1/workspace-actions/decision HTTP/1.1\r\n"
+        b"Host: localhost\r\n"
+        b"Content-Type: application/json\r\n"
+        + f"Content-Length: {len(body)}\r\n\r\n".encode()
+        + body,
+        tmp_path,
+    )
+    headers, payload = response.split(b"\r\n\r\n", 1)
+    assert b" 201 " in headers
+    assert json.loads(payload)["recorded"]["choice"] == "keep_deferred"
+
+    blocked = _handle_request(
+        b"POST /api/v1/orders HTTP/1.1\r\nHost: localhost\r\nContent-Length: 2\r\n\r\n{}",
+        tmp_path,
+    )
+    assert b" 404 " in blocked.split(b"\r\n\r\n", 1)[0]

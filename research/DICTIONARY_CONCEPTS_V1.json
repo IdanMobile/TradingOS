@@ -1,0 +1,522 @@
+{
+  "registry_version": 1,
+  "gaps": [
+    "Full FIBO class import is intentionally not performed in S2; only local concepts with FIBO URI provenance are seeded.",
+    "Venue-specific meanings stay generic until S3 account and venue evidence exists.",
+    "Concept definitions are local paraphrases from project contracts, not scraped copyrighted definitions."
+  ],
+  "concepts": [
+    {
+      "concept_id": "CON-DATASET",
+      "canonical_name": "Dataset",
+      "abbreviations": [
+        "DS"
+      ],
+      "aliases": [
+        "data freeze",
+        "canonical dataset"
+      ],
+      "definition": "An immutable collection of normalized market data and quality evidence used as a reproducible research input.",
+      "category": "market_data",
+      "market_contexts": [
+        "crypto spot",
+        "historical research"
+      ],
+      "venue_variants": [
+        "none in S2"
+      ],
+      "related": [
+        "CON-EVIDENCE-RECORD"
+      ],
+      "sources": [
+        "docs/architecture/TYPE_AND_CONTRACT_CATALOG.md",
+        "artifacts/datasets/DS-CRYPTO-SPOT-BAKEOFF-V1.manifest.json"
+      ],
+      "fibo_uri": null,
+      "examples": [
+        "DS-CRYPTO-SPOT-BAKEOFF-V1"
+      ],
+      "evidence_status": "LOCAL_CONTRACT",
+      "freshness": "CURRENT"
+    },
+    {
+      "concept_id": "CON-STRATEGY",
+      "canonical_name": "Strategy",
+      "abbreviations": [
+        "STRAT"
+      ],
+      "aliases": [
+        "canonical strategy spec",
+        "strategy definition"
+      ],
+      "definition": "A framework-neutral trading idea expressed as validated rules, provenance, assumptions, and ambiguity notes.",
+      "category": "strategy",
+      "market_contexts": [
+        "crypto spot",
+        "historical research"
+      ],
+      "venue_variants": [
+        "engine projection only"
+      ],
+      "related": [
+        "CON-STRATEGY-VERSION",
+        "CON-RESEARCH-SOURCE"
+      ],
+      "sources": [
+        "docs/architecture/TYPE_AND_CONTRACT_CATALOG.md",
+        "docs/architecture/AD.md"
+      ],
+      "fibo_uri": null,
+      "examples": [
+        "STRAT-B2-ma-crossover"
+      ],
+      "evidence_status": "LOCAL_CONTRACT",
+      "freshness": "CURRENT"
+    },
+    {
+      "concept_id": "CON-STRATEGY-VERSION",
+      "canonical_name": "Strategy version",
+      "abbreviations": [
+        "SV"
+      ],
+      "aliases": [
+        "immutable strategy version"
+      ],
+      "definition": "A content-addressed immutable version of a strategy specification used by experiments and validation.",
+      "category": "strategy",
+      "market_contexts": [
+        "historical research"
+      ],
+      "venue_variants": [],
+      "related": [
+        "CON-STRATEGY",
+        "CON-EXPERIMENT-RUN"
+      ],
+      "sources": [
+        "docs/architecture/TYPE_AND_CONTRACT_CATALOG.md"
+      ],
+      "fibo_uri": null,
+      "examples": [
+        "SV-prefixed strategy identity"
+      ],
+      "evidence_status": "LOCAL_CONTRACT",
+      "freshness": "CURRENT"
+    },
+    {
+      "concept_id": "CON-EVIDENCE-RECORD",
+      "canonical_name": "Evidence record",
+      "abbreviations": [
+        "EV"
+      ],
+      "aliases": [
+        "retained evidence",
+        "artifact evidence"
+      ],
+      "definition": "An immutable reference to retained artifacts, decisions, or measurements used to prove or reject a claim.",
+      "category": "evidence",
+      "market_contexts": [
+        "historical research",
+        "validation"
+      ],
+      "venue_variants": [],
+      "related": [
+        "CON-VALIDATION-PACKAGE",
+        "CON-RESEARCH-ASSET"
+      ],
+      "sources": [
+        "docs/architecture/TYPE_AND_CONTRACT_CATALOG.md",
+        "artifacts/reports/S2_RESTORE_REPLAY_REPORT.md"
+      ],
+      "fibo_uri": null,
+      "examples": [
+        "retained lab_run.json artifact reference"
+      ],
+      "evidence_status": "LOCAL_CONTRACT",
+      "freshness": "CURRENT"
+    },
+    {
+      "concept_id": "CON-RESEARCH-ASSET",
+      "canonical_name": "Research asset",
+      "abbreviations": [
+        "RA"
+      ],
+      "aliases": [
+        "research artifact",
+        "RA registry item"
+      ],
+      "definition": "A retained research artifact with sources, review state, freshness, dependencies, and consumers.",
+      "category": "knowledge",
+      "market_contexts": [
+        "historical research"
+      ],
+      "venue_variants": [],
+      "related": [
+        "CON-EVIDENCE-RECORD",
+        "CON-RESEARCH-SOURCE"
+      ],
+      "sources": [
+        "docs/architecture/TYPE_AND_CONTRACT_CATALOG.md",
+        "research/RESEARCH_ASSETS_V1.json"
+      ],
+      "fibo_uri": null,
+      "examples": [
+        "RA-S2-RESEARCH-LAB-799"
+      ],
+      "evidence_status": "LOCAL_CONTRACT",
+      "freshness": "CURRENT"
+    },
+    {
+      "concept_id": "CON-RESEARCH-SOURCE",
+      "canonical_name": "Research source",
+      "abbreviations": [
+        "SRC"
+      ],
+      "aliases": [
+        "primary source",
+        "bibliographic source"
+      ],
+      "definition": "A bibliographic or primary-source record that can inspire hypotheses but cannot inherit profit proof.",
+      "category": "knowledge",
+      "market_contexts": [
+        "strategy research"
+      ],
+      "venue_variants": [],
+      "related": [
+        "CON-RESEARCH-ASSET",
+        "CON-STRATEGY"
+      ],
+      "sources": [
+        "research/PRIMARY_STRATEGY_RESEARCH_SOURCES_V1.yaml",
+        "docs/program/S2_AUTONOMOUS_RESEARCH_LAB_PLAN.md"
+      ],
+      "fibo_uri": null,
+      "examples": [
+        "SRC-DSR-2014"
+      ],
+      "evidence_status": "LOCAL_CONTRACT",
+      "freshness": "CURRENT"
+    },
+    {
+      "concept_id": "CON-EXPERIMENT-RUN",
+      "canonical_name": "Experiment run",
+      "abbreviations": [
+        "RUN",
+        "EXP"
+      ],
+      "aliases": [
+        "backtest run",
+        "research run"
+      ],
+      "definition": "A retained historical execution of a strategy or trial over frozen inputs, producing metrics and artifacts.",
+      "category": "experimentation",
+      "market_contexts": [
+        "historical research"
+      ],
+      "venue_variants": [
+        "no venue connection in S2"
+      ],
+      "related": [
+        "CON-STRATEGY-VERSION",
+        "CON-ENGINE-ADAPTER",
+        "CON-FILL"
+      ],
+      "sources": [
+        "docs/architecture/TYPE_AND_CONTRACT_CATALOG.md",
+        "artifacts/reports/ENGINE_BAKEOFF_REPORT.md"
+      ],
+      "fibo_uri": null,
+      "examples": [
+        "normalized engine run artifact"
+      ],
+      "evidence_status": "LOCAL_CONTRACT",
+      "freshness": "CURRENT"
+    },
+    {
+      "concept_id": "CON-ENGINE-ADAPTER",
+      "canonical_name": "Engine adapter",
+      "abbreviations": [],
+      "aliases": [
+        "backtesting engine adapter",
+        "engine lane"
+      ],
+      "definition": "A port-bound adapter that invokes an external engine while preserving local evidence contracts and capability gaps.",
+      "category": "experimentation",
+      "market_contexts": [
+        "historical research"
+      ],
+      "venue_variants": [
+        "subprocess boundary"
+      ],
+      "related": [
+        "CON-EXPERIMENT-RUN"
+      ],
+      "sources": [
+        "docs/architecture/AD.md",
+        "artifacts/reports/ENGINE_BAKEOFF_REPORT.md"
+      ],
+      "fibo_uri": null,
+      "examples": [
+        "Freqtrade event/reproduction lane"
+      ],
+      "evidence_status": "LOCAL_CONTRACT",
+      "freshness": "CURRENT"
+    },
+    {
+      "concept_id": "CON-VALIDATION-PACKAGE",
+      "canonical_name": "Validation package",
+      "abbreviations": [
+        "VAL"
+      ],
+      "aliases": [
+        "gate package",
+        "validation evidence"
+      ],
+      "definition": "A bundle of independent validation gates and risk preconditions that can reject but cannot approve trading by itself.",
+      "category": "validation",
+      "market_contexts": [
+        "validation",
+        "historical research"
+      ],
+      "venue_variants": [],
+      "related": [
+        "CON-EVIDENCE-RECORD",
+        "CON-RISK-DECISION",
+        "CON-APPROVAL-GATE"
+      ],
+      "sources": [
+        "docs/architecture/TYPE_AND_CONTRACT_CATALOG.md",
+        "artifacts/validation/validation_status.json"
+      ],
+      "fibo_uri": null,
+      "examples": [
+        "B2_F0_S0 validation summary"
+      ],
+      "evidence_status": "LOCAL_CONTRACT",
+      "freshness": "CURRENT"
+    },
+    {
+      "concept_id": "CON-APPROVAL-GATE",
+      "canonical_name": "Approval gate",
+      "abbreviations": [
+        "HG"
+      ],
+      "aliases": [
+        "human gate",
+        "approval transition"
+      ],
+      "definition": "A human-governed decision boundary that records approval state separately from validation metrics.",
+      "category": "approval",
+      "market_contexts": [
+        "validation",
+        "operations"
+      ],
+      "venue_variants": [
+        "human-only before live trading"
+      ],
+      "related": [
+        "CON-VALIDATION-PACKAGE",
+        "CON-RISK-DECISION"
+      ],
+      "sources": [
+        "docs/architecture/AD.md",
+        "PROJECT_STATE.md"
+      ],
+      "fibo_uri": null,
+      "examples": [
+        "HG-3"
+      ],
+      "evidence_status": "LOCAL_CONTRACT",
+      "freshness": "CURRENT"
+    },
+    {
+      "concept_id": "CON-SIGNAL",
+      "canonical_name": "Signal",
+      "abbreviations": [],
+      "aliases": [
+        "strategy signal",
+        "chart signal"
+      ],
+      "definition": "An evidence-backed historical observation of a strategy side or state; it is not an order.",
+      "category": "trading_domain",
+      "market_contexts": [
+        "historical research",
+        "chart annotation"
+      ],
+      "venue_variants": [
+        "not executable in S2"
+      ],
+      "related": [
+        "CON-INERT-ORDER",
+        "CON-EXPERIMENT-RUN"
+      ],
+      "sources": [
+        "docs/architecture/TYPE_AND_CONTRACT_CATALOG.md"
+      ],
+      "fibo_uri": null,
+      "examples": [
+        "BUY signal annotation from retained backtest fills"
+      ],
+      "evidence_status": "LOCAL_CONTRACT",
+      "freshness": "CURRENT"
+    },
+    {
+      "concept_id": "CON-INERT-ORDER",
+      "canonical_name": "Inert order intent",
+      "abbreviations": [],
+      "aliases": [
+        "order",
+        "order intent"
+      ],
+      "definition": "A non-executable historical order-intent record with no venue order identifier and no submit or cancel command.",
+      "category": "trading_domain",
+      "market_contexts": [
+        "historical research"
+      ],
+      "venue_variants": [
+        "future paper/live variants are gated"
+      ],
+      "related": [
+        "CON-SIGNAL",
+        "CON-FILL"
+      ],
+      "sources": [
+        "docs/architecture/TYPE_AND_CONTRACT_CATALOG.md"
+      ],
+      "fibo_uri": "https://spec.edmcouncil.org/fibo/ontology/FBC/FinancialInstruments/FinancialInstruments/FinancialInstrument",
+      "examples": [
+        "S2 historical order intent with execution authority NONE"
+      ],
+      "evidence_status": "FIBO_PROVENANCE",
+      "freshness": "CURRENT"
+    },
+    {
+      "concept_id": "CON-FILL",
+      "canonical_name": "Fill",
+      "abbreviations": [],
+      "aliases": [
+        "execution fill",
+        "trade fill"
+      ],
+      "definition": "A retained historical normalized execution result from a backtest or simulation artifact, not venue confirmation.",
+      "category": "trading_domain",
+      "market_contexts": [
+        "historical research",
+        "chart annotation"
+      ],
+      "venue_variants": [
+        "future venue fills require human-gated evidence"
+      ],
+      "related": [
+        "CON-INERT-ORDER",
+        "CON-EXPERIMENT-RUN"
+      ],
+      "sources": [
+        "docs/architecture/TYPE_AND_CONTRACT_CATALOG.md",
+        "artifacts/reports/ENGINE_PARITY_REPORT.md"
+      ],
+      "fibo_uri": "https://spec.edmcouncil.org/fibo/ontology/FBC/FinancialInstruments/FinancialInstruments/FinancialInstrument",
+      "examples": [
+        "retained B2 fill marker"
+      ],
+      "evidence_status": "FIBO_PROVENANCE",
+      "freshness": "CURRENT"
+    },
+    {
+      "concept_id": "CON-RISK-DECISION",
+      "canonical_name": "Risk decision",
+      "abbreviations": [],
+      "aliases": [
+        "risk precondition",
+        "risk gate"
+      ],
+      "definition": "An independent blocking decision over evidence refs; it can block eligibility but cannot authorize execution.",
+      "category": "validation",
+      "market_contexts": [
+        "validation",
+        "approval"
+      ],
+      "venue_variants": [
+        "future live risk remains human-gated"
+      ],
+      "related": [
+        "CON-VALIDATION-PACKAGE",
+        "CON-APPROVAL-GATE"
+      ],
+      "sources": [
+        "docs/architecture/TYPE_AND_CONTRACT_CATALOG.md",
+        "artifacts/reports/BACKTEST_RED_TEAM_REPORT.md"
+      ],
+      "fibo_uri": "https://spec.edmcouncil.org/fibo/ontology/FND/Accounting/CurrencyAmount/MonetaryAmount",
+      "examples": [
+        "promotion eligibility NOT_ELIGIBLE"
+      ],
+      "evidence_status": "FIBO_PROVENANCE",
+      "freshness": "CURRENT"
+    },
+    {
+      "concept_id": "CON-RESEARCH-LAB-BATCH",
+      "canonical_name": "Research Lab batch",
+      "abbreviations": [
+        "LAB"
+      ],
+      "aliases": [
+        "offline evidence cycle",
+        "research batch"
+      ],
+      "definition": "A bounded offline command that retains all trial evidence and may reject every candidate without selecting a winner.",
+      "category": "operations",
+      "market_contexts": [
+        "historical research"
+      ],
+      "venue_variants": [
+        "no venue connection in S2"
+      ],
+      "related": [
+        "CON-EXPERIMENT-RUN",
+        "CON-JOB-SCHEDULE"
+      ],
+      "sources": [
+        "docs/program/S2_AUTONOMOUS_RESEARCH_LAB_PLAN.md",
+        "artifacts/research_lab/v0/LAB-799f7d81843d15aaf3b161036a4cd543ac37a709cb1e2ecc72a161f7348488fa/lab_run.json"
+      ],
+      "fibo_uri": null,
+      "examples": [
+        "LAB-799f7d81843d15aaf3b161036a4cd543ac37a709cb1e2ecc72a161f7348488fa"
+      ],
+      "evidence_status": "LOCAL_CONTRACT",
+      "freshness": "CURRENT"
+    },
+    {
+      "concept_id": "CON-JOB-SCHEDULE",
+      "canonical_name": "Job schedule",
+      "abbreviations": [
+        "JOB"
+      ],
+      "aliases": [
+        "automation schedule",
+        "offline job"
+      ],
+      "definition": "A local allowlisted schedule or persisted job row for offline research operations, with no HTTP mutation or trading command.",
+      "category": "operations",
+      "market_contexts": [
+        "local operations"
+      ],
+      "venue_variants": [
+        "no venue command"
+      ],
+      "related": [
+        "CON-RESEARCH-LAB-BATCH"
+      ],
+      "sources": [
+        "artifacts/reports/OBSERVABILITY_BOUNDARY_REPORT.md",
+        "todos/19_operations.md"
+      ],
+      "fibo_uri": null,
+      "examples": [
+        "six-hour offline research cadence"
+      ],
+      "evidence_status": "LOCAL_CONTRACT",
+      "freshness": "CURRENT"
+    }
+  ]
+}

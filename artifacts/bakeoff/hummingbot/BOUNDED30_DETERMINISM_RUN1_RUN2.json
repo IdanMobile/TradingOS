@@ -1,0 +1,42 @@
+{
+  "B1/F0_S0": {
+    "trades.parquet": true,
+    "equity.parquet": true,
+    "normalized_metrics.json": true
+  },
+  "B1/F1_S1": {
+    "trades.parquet": true,
+    "equity.parquet": true,
+    "normalized_metrics.json": true
+  },
+  "B2/F0_S0": {
+    "trades.parquet": true,
+    "equity.parquet": true,
+    "normalized_metrics.json": true
+  },
+  "B2/F1_S1": {
+    "trades.parquet": true,
+    "equity.parquet": true,
+    "normalized_metrics.json": true
+  },
+  "B3/F0_S0": {
+    "trades.parquet": true,
+    "equity.parquet": true,
+    "normalized_metrics.json": true
+  },
+  "B3/F1_S1": {
+    "trades.parquet": true,
+    "equity.parquet": true,
+    "normalized_metrics.json": true
+  },
+  "B4/F0_S0": {
+    "trades.parquet": true,
+    "equity.parquet": true,
+    "normalized_metrics.json": true
+  },
+  "B4/F1_S1": {
+    "trades.parquet": true,
+    "equity.parquet": true,
+    "normalized_metrics.json": true
+  }
+}

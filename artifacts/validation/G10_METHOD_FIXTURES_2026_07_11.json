@@ -1,0 +1,45 @@
+{
+  "schema": "tios-g10-method-fixtures-v1",
+  "status": "METHOD_FIXTURES_PASS",
+  "production_gate_activated": false,
+  "sources": [
+    "SRC-PBO-2016",
+    "SRC-DSR-2014"
+  ],
+  "implementation": "src/tios/validation/multiple_testing.py",
+  "tests": "tests/test_multiple_testing_methods.py",
+  "fixtures": {
+    "pbo_cscv": {
+      "performance_by_trial_slice": [
+        [10, 10, -10, -10],
+        [1, 1, 1, 1],
+        [-10, -10, 10, 10]
+      ],
+      "expected_split_count": 6,
+      "expected_pbo": 0.3333333333333333,
+      "expected_lambda_logits": [
+        -1.0986122886681098,
+        1.0986122886681098,
+        1.0986122886681098,
+        1.0986122886681098,
+        1.0986122886681098,
+        -1.0986122886681098
+      ]
+    },
+    "dsr": {
+      "trial_sharpes": [0.1, 0.2, 0.3, 0.4],
+      "sample_count": 36,
+      "skewness": 0,
+      "kurtosis": 3,
+      "expected_sharpe_variance": 0.016666666666666666,
+      "expected_maximum_noise_sharpe": 0.1358284725416625,
+      "strong_observed_sharpe": 0.5,
+      "strong_expected_z_score": 2.144598891621087,
+      "strong_expected_dsr": 0.9840075344965666,
+      "weak_observed_sharpe": 0.1,
+      "weak_expected_z_score": -0.210993163132767,
+      "weak_expected_dsr": 0.4164463031498148
+    }
+  },
+  "effect": "This validates local PBO/CSCV and DSR arithmetic on synthetic known-answer fixtures only. It does not approve any strategy, select any winner, authorize paper/demo/live execution, or make any candidate promotion-eligible."
+}

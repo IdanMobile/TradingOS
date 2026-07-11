@@ -1,0 +1,26 @@
+{
+  "fill_count_equal": true,
+  "fills_equal": true,
+  "run1_files": [
+    "1292346875-log.txt",
+    "1292346875-order-events.json",
+    "1292346875-summary.json",
+    "1292346875.json",
+    "config",
+    "data-monitor-report-20260710215336599.json",
+    "failed-data-requests-20260710215329955.txt",
+    "log.txt",
+    "succeeded-data-requests-20260710215329955.txt"
+  ],
+  "run2_files": [
+    "1357123715-log.txt",
+    "1357123715-order-events.json",
+    "1357123715-summary.json",
+    "1357123715.json",
+    "config",
+    "data-monitor-report-20260710215549450.json",
+    "failed-data-requests-20260710215543051.txt",
+    "log.txt",
+    "succeeded-data-requests-20260710215543051.txt"
+  ]
+}

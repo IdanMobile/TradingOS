@@ -1,6 +1,6 @@
 # Trading Intelligence OS — Project State
 
-Last updated: 2026-07-10 (HG-2 approved; constrained S2 active)
+Last updated: 2026-07-11 (HG-2 approved; constrained S2 active)
 Package version: v8 (planning system) + S1 evidence + S2 governance entry
 Status: **S2 AUTONOMOUS RESEARCH LAB ACTIVE (CONSTRAINED).** No strategy, venue connection, or real-money trading is approved.
 
@@ -16,14 +16,14 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
 - **Initiative 04 (data foundation): DONE — EG-1 evidence complete.** DS-CRYPTO-SPOT-BAKEOFF-V1 frozen: 396 raw files (all official-checksum-verified), 1,637,118 normalized rows across 6 tables (BTCUSDT/ETHUSDT × 5m/15m/1h, 2021-01-01→2026-06-30), decimal128 precision, Amendment A1 µs/ms detection (48 ms + 18 µs files per table, boundary goldens on real rows), quality PASS, double-regeneration identical hashes, independent audit PASS_WITH_NOTES zero discrepancies. Artifacts: `artifacts/datasets/` (frozen manifest, quality report, audit).
 - **Initiative 05 (strategy domain): DONE.** Canonical spec model + validator (property-tested), immutable StrategyVersion, baselines B1–B4 VALID with hand-derived + independently recomputed micro-fixture goldens (`fixtures/strategies/baselines/`, `fixtures/micro/`).
 - **Initiative 18: T-018-01/03 DONE** (secret hygiene incl. artifacts; license audit — core venv copyleft-free, planted AGPL flagged); T-018-02 awaits T-010-01; T-018-04 recurring.
-- **Initiative 06 (bake-off): T-006-01 DONE** (EngineAdapter port, NormalizedResult, CapabilityReport, mandatory F/S grid, fee recomputation audit). Freqtrade and Nautilus have B1–B4 evidence; Hummingbot and LEAN retain explicit gaps.
+- **Initiative 06 (bake-off): T-006-01 DONE** (EngineAdapter port, NormalizedResult, CapabilityReport, mandatory F/S grid, fee recomputation audit). Freqtrade, Nautilus, and bounded LEAN have B1–B4 evidence; Hummingbot retains explicit full-history runtime gaps.
 - **T-006-02 Freqtrade lane DONE WITH CONSTRAINTS**: full matrix B1–B4 × {F0/S0, F1/S1}, exact micro signal parity, determinism, recursive analysis, bounded hyperopt retention, dry-run, precision/failure probes, fee audits, and export pass. Native lookahead forced-state behavior and slippage remain explicit WARN/capability gaps.
 - **T-006-06 vectorbt probe DONE**: B2/B3/B4 ran 66 trials over 577,803 bars; all 66 are retained in Parquet and the append-only ledger, no winner selected, and binding overfit controls keep vectorbt an accelerator only.
 - **T-006-03 Nautilus lane:** bounded B1–B4 × {F0/S0, F1/S1} × {run1,run2} is now physically present; all 16 runs are byte-deterministic across normalized trade/equity/metric artifacts and all fee audits pass.
 - **Cross-engine parity:** three full-period BTC contexts are comparable with zero unexplained available-lane residuals. B1 timing differences and B2 execution/order-state plus missing-data behavior are retained; B2 is not fill/P&L parity.
 - **Initiative 07 (lineage): DONE.** Local MLflow 3.14.0 + DVC 3.66.1 Tests A/B/C pass reproduce, compare, trace, domain-link, local-first, and replaceability gates; AI trace is explicitly null-provider/mock-only. The fresh clone restored the exact 577,803-row BTC dataset and matched deterministic reproduction output. Decision D-035 selects the composition for S2 architecture input.
 - **S1 approval/risk/security closure:** contextual approval transitions require evidence, paper states require a human decision, and all live states are unreachable; every validation package now carries independent no-live/cost-grid/drawdown-tail/promotion preconditions; external ingested code is subprocess-contained with no inherited secrets or network. Security Review #2 passes with zero blockers.
-- **S2 entry:** architecture/research-console work, sourced strategy research, offline backtesting, retained-trial scoring, validation, and eventual demo preparation are active. Docker-dependent LEAN and Hummingbot B3/B4 remain exact follow-up constraints.
+- **S2 entry:** architecture/research-console work, sourced strategy research, offline backtesting, retained-trial scoring, validation, and eventual demo preparation are active. LEAN's bounded Docker matrix is now retained; Hummingbot missing full-history runs remain runtime/throughput constrained.
 - **Governance re-check (gov-02, 2026-07-07): PASS.** `make check` green (63 tests, ruff, mypy-strict). Fixed a real gate gap: D-027/D-028 used `##` headings, exempting them from the decision-ID uniqueness regex (`### D-NNN` only) — normalized to `###` (D-033); all 32 IDs now covered. No invented decision-category labels found in `DECISION_LOG.md` (the 7-label taxonomy from SSOT §7 applies to the `decisions/`/`research/`/`artifacts/reports/` decision artifacts, most of which are correctly not-yet-created since bake-off (initiative 06) is still in progress). No stop-condition triggers pending or worked around.
 - **S1 execution closure (2026-07-10):** live Trading OS evidence dashboard is operational with an attributed TradingView Market Monitor plus an OS-owned canonical-candle chart and retained B2 markers; read-only APIs explicitly disable paper/live orders; staged TradingView direction is D-034; offline-first AI/provider gates are implemented; local MLflow+DVC lineage is selected in D-035; Freqtrade and vectorbt lanes are closed with constraints; bake-off contains 30 normalized runs plus 66 ledgered accelerator trials. B2 remains `INCOMPLETE_NOT_APPROVABLE`, G4 WARN, G10 deferred, and rejected for paper. Full local gate: 123 tests, ruff, format, mypy-strict.
 - **D-036 boundaries:** no strategy approval; no synthetic wallet activation; no paper/demo/testnet venue connection; no credentials, order routing, live trading, or real-money authorization. AI cannot approve or trade.
@@ -51,6 +51,70 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   reused idempotently, selected no winner, and kept both candidates `UNVALIDATED` /
   `NOT_ELIGIBLE`; the simple next-open all-in proxy is strongly negative and does not
   change S2 exit status.
+- **S2 ResearchAsset registry/backfill (2026-07-10):** `research/RESEARCH_ASSETS_V1.json`
+  now backfills 8 retained RA records from S0/S1/S2 evidence. `ResearchAssetRegistry`
+  enforces source-or-quality evidence, freshness states, dependency/supersession graph
+  validity, consumers, human-review flags, deterministic digest, and cost amortization;
+  focused tests prove the retained refs exist and invalid assets fail closed.
+- **S2 observability boundary (2026-07-10):** bounded observability uses JSON artifacts,
+  SQLite job rows, environment mode fields, and dashboard read models. Prometheus/Grafana
+  and OTel are rejected for the current single-operator local lab until documented reopen
+  triggers occur; AI cost telemetry remains credential-gated.
+- **S2 dictionary/ontology seed (2026-07-10):** `research/DICTIONARY_CONCEPTS_V1.json`
+  now covers 16 bounded S1/S2 concepts with aliases, contexts, related links, source refs,
+  FIBO URI provenance where applicable, and explicit full-ontology gap rows. `ConceptRegistry`
+  validates the graph and exposes SQLite FTS5 search; tests prevent scraped-definition and
+  strategy-parameter drift.
+- **S2 dashboard dictionary/global search (2026-07-10):** the live read-only dashboard now
+  projects the bounded concept registry and explicit ontology gaps. This closes the safe
+  FTS/global-search slice while leaving approvals UI and write paths disabled.
+- **S2 dashboard backlog boundary (2026-07-10):** the full console rewrite, entity-detail
+  layout, and richer comparisons UI are rejected for bounded S2 until documented reopen
+  triggers occur. Existing read-only dashboard views and artifact links remain sufficient;
+  approvals UI remains human-gated and unauthorized.
+- **AI provider source re-check (2026-07-10):** RG-08 is closed for planning. Official
+  OpenAI and Google AI Developers pages now provide GPT-5.6 pricing and Gemini 3.x
+  context/pricing/deprecation evidence. Real-provider benchmark execution remains blocked
+  on credentials, spend authority, and human review.
+- **LEAN/Hummingbot Docker recheck (2026-07-11):** Docker 29.0.1 was available.
+  LEAN B1-B4 x `{F0/S0,F1/S1}` run1 completed locally with custom data and no
+  cloud/account path; B1 F0/S0 run2 matched run1 fills. Hummingbot B2 BTCUSDT
+  F1/S1 full-history follow-up consumed CPU but hit the 1800 second lane timeout
+  before `raw.json`; the orphaned container was stopped. A cached full-history
+  retry later hit the 3600 second timeout but wrote a clean timeout manifest and
+  stopped its named container.
+- **Hummingbot productionization step (2026-07-11):** the container lane now has
+  explicit window/timeout controls and stops named containers on timeout. Bounded
+  BTCUSDT 30-day B1-B4 x `{F0/S0,F1/S1}` x `{run1,run2}` completed, normalized,
+  fee-audited, and byte-deterministic. Feature caching reduced a bounded B2 F1/S1
+  probe to about 32 seconds, but full-history Hummingbot remains a throughput/
+  chunking track, not a credential or approval blocker.
+- **G10 method fixtures (2026-07-11):** local PBO/CSCV and DSR arithmetic now has
+  synthetic known-answer fixtures in `tests/test_multiple_testing_methods.py` and
+  retained evidence in `artifacts/validation/G10_METHOD_FIXTURES_2026_07_11.json`.
+  Production G10 remains inactive: candidate-specific estimator integration and
+  independent recomputation are still required before any G10 PASS claim.
+- **S2 evidence-cycle refresh (2026-07-11):**
+  `LAB-f99dcc214f377ecca4710bbb41d445c8331d2a1b06f93931ed1c88bdf3af5924`
+  completed after the validation evidence changed. It retained 3 experiments / 66
+  trials, selected no winner, kept `execution_authority=NONE`, and preserved the
+  blockers: negative economics, material drawdown, failed walk-forward/robustness/
+  baseline superiority, incomplete production multiple-testing integration, and
+  incomplete cross-engine reproduction.
+- **Open-marker audit (2026-07-11):** repo-wide TODO/FIXME/TBD/PROVISIONAL/
+  BLOCKED/DEFERRED/WARN/NOT_RUN marker sweep is retained in
+  `artifacts/reports/OPEN_MARKERS_AUDIT_2026_07_11.md`. Stale architecture/report
+  wording for bounded LEAN/Hummingbot evidence was reconciled. Remaining markers are
+  Hummingbot full-history throughput/chunking work, Nautilus/Hummingbot scope expansions,
+  G4/G10 validation blockers, human/credential/S3 gates, recurring governance, or
+  retained historical evidence.
+- **Operator-decision follow-through (2026-07-11):** dashboard-recorded decisions
+  authorized a limited venue source recheck and S3 design-only expansion reviews.
+  `VENUE_ISRAEL_SOURCE_RECHECK_2026_07_11.md` completes the public-source slice for
+  Kraken/Coinbase Israel availability while preserving human account checks.
+  `FUTURE_MARKET_EXPANSION_DESIGN_REVIEW_2026_07_11.md` completes perps/equities/
+  core-spine design-only review without implementation. AI cost telemetry remains
+  credential-blocked after `AI_COST_TELEMETRY_CREDENTIAL_RECHECK_2026_07_11.md`.
 
 ## Operational SSOT (unchanged)
 
@@ -60,7 +124,7 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
 
 - Planning Complete? **YES** (this pass; see audits).
 - Research Complete Enough? **YES for constrained S2 entry** — S2 sourced research remains hypothesis input, not inherited proof or strategy approval.
-- Architecture Approved? **PARTIALLY — S2 resolution active.** Boundaries, contracts, principles, lifecycle, and rejections are APPROVED; S2-1 resolves remaining PROVISIONAL/UNRESOLVED items from S1 evidence.
+- Architecture Approved? **YES for constrained S2.** Boundaries, contracts, principles, lifecycle, and rejections are APPROVED by D-037; later paper/live architecture remains gate-controlled.
 - Prototype Execution Authorized? **YES** (D-025 + readiness gate PASS; entry condition: HG-1 intake gate).
 - Constrained S2 Architecture/Research Lab Authorized? **YES** — D-036; scope is `docs/program/S2_AUTONOMOUS_RESEARCH_LAB_PLAN.md`.
 - MVP Build Authorized? **NO beyond the constrained S2 research-lab/research-console scope.**
@@ -84,16 +148,21 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
 - vectorbt OSS reactivated (v1.1.0) → probe OSS first; Backtrader/backtesting.py rejected.
 - All four first-tier engines confirmed actively maintained; license boundaries recorded (Freqtrade GPL-3.0 → subprocess integration).
 - MLflow 3.14 GenAI tracing mature; DVC now stewarded by lakeFS (active) → D-019 hypothesis retained/strengthened.
-- Venue notes: OKX Israel-supported + demo env; Coinbase likely Israel-unavailable (RG-05); live-venue human gates unchanged.
+- Venue notes: OKX Israel-supported + demo env; Kraken not demoted for Israel availability
+  on the 2026-07-11 official-source slice; Coinbase has Israel identity-document
+  support but retail/product/API eligibility remains human/account-gated; live-venue
+  human gates unchanged.
 - AI providers: no determinism guarantees → multi-sample benchmarking (AD-11); OpenAI Evals platform EOL → not a dependency.
 
 ## Unresolved blockers
 
-No blocker prevents continuing constrained S2 evidence operations. Docker is stopped,
-so LEAN and missing Hummingbot follow-up lanes remain recorded constraints. B2 and the
-current S2 hypothesis population remain incomplete and not approvable; this blocks
-strategy promotion and demo activation, not offline research. Open items are tracked in
-`MISSING_AND_OPEN_ITEMS.md`.
+No blocker prevents continuing constrained S2 evidence operations. LEAN's bounded
+Docker evidence is retained; missing Hummingbot full-history runs are runtime/throughput
+blocked after the 2026-07-11 B2 F1/S1 timeout. B2 and the current S2 hypothesis
+population remain incomplete and not approvable, including the fresh
+`LAB-f99dcc214f377ecca4710bbb41d445c8331d2a1b06f93931ed1c88bdf3af5924`
+evidence-cycle refresh; this blocks strategy promotion and demo activation, not
+offline research. Open items are tracked in `MISSING_AND_OPEN_ITEMS.md`.
 
 ## Exact next action
 

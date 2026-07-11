@@ -78,17 +78,21 @@ class BaselineControllerConfig(DirectionalTradingControllerConfigBase):
 class BaselineController(DirectionalTradingControllerBase):
     def __init__(self, config: BaselineControllerConfig, *args, **kwargs):
         super().__init__(config, *args, **kwargs)
+        self._features_cache: pd.DataFrame | None = None
 
     async def update_processed_data(self) -> None:
-        df = self.market_data_provider.get_candles_df(
-            connector_name=self.config.connector_name,
-            trading_pair=self.config.trading_pair,
-            interval=INTERVAL,
-        ).copy()
-        sig = compute_signals(self.config.baseline, df)
-        features = df[["timestamp"]].merge(sig, on="timestamp")
-        features = features.rename(columns={"entry": "signal", "exit": "exit_signal"})
-        self.processed_data = {"signal": 0, "exit_signal": 0, "features": features}
+        if self._features_cache is None:
+            df = self.market_data_provider.get_candles_df(
+                connector_name=self.config.connector_name,
+                trading_pair=self.config.trading_pair,
+                interval=INTERVAL,
+            ).copy()
+            sig = compute_signals(self.config.baseline, df)
+            features = df[["timestamp"]].merge(sig, on="timestamp")
+            self._features_cache = features.rename(
+                columns={"entry": "signal", "exit": "exit_signal"}
+            )
+        self.processed_data = {"signal": 0, "exit_signal": 0, "features": self._features_cache}
 
     def stop_actions_proposal(self) -> list[ExecutorAction]:
         actions: list[ExecutorAction] = []

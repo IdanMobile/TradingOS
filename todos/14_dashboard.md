@@ -24,4 +24,8 @@ Requirement source: SSOT WS9, MVP_SCOPE §7, AD §AI.
   / no order / no paper-demo-live controls.
 
 ## S2 backlog (not authorized in S1 — recorded to prevent scope creep INTO S1)
-- T-014-10 console IA spike (Next.js+shadcn, AD-07), T-014-11 entity-detail layout pattern, T-014-12 global search (FTS), T-014-13 comparisons UI, T-014-14 approvals UI (write-path, HG-gated). Status: DEFERRED-S2, entry criteria: prototype decision + RG-12 contract evidence.
+- T-014-10 console IA spike (Next.js+shadcn, AD-07): Status **REJECTED FOR BOUNDED S2 2026-07-10** — `DASHBOARD_BOUNDARY_REPORT.md` records that the current local read-only dashboard satisfies the evidence surface; a rewrite adds churn without a missing workflow.
+- T-014-11 entity-detail layout pattern: Status **REJECTED FOR BOUNDED S2 2026-07-10** — existing tables/artifact links expose current entities; detail pages reopen only with repeated inspection needs or a validated candidate.
+- T-014-12 global search (FTS): Status **DONE FOR BOUNDED S2 2026-07-10** — Dictionary view projects `DICTIONARY_CONCEPTS_V1` concepts, aliases, contexts, explicit gaps, and FIBO provenance from the dashboard API; `ConceptRegistry` uses SQLite FTS5 and tests cover query behavior.
+- T-014-13 comparisons UI: Status **REJECTED FOR BOUNDED S2 2026-07-10** — comparison evidence remains visible in validation/research reports and Research Lab score dimensions; richer UI waits for a candidate with positive evidence.
+- T-014-14 approvals UI (write-path, HG-gated): Status **DEFERRED-HG** — no approval write path is authorized; dashboard remains read-only.

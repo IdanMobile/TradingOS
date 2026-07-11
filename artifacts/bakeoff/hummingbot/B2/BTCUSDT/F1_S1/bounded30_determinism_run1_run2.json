@@ -1,0 +1,17 @@
+{
+  "trades.parquet": {
+    "run1_sha256": "ee3bd83c2a2d9bbd20ef719f7541e3f11ff7e34311570ea1cec6139a00a4d719",
+    "run2_sha256": "ee3bd83c2a2d9bbd20ef719f7541e3f11ff7e34311570ea1cec6139a00a4d719",
+    "match": true
+  },
+  "equity.parquet": {
+    "run1_sha256": "046680eada871e5c02501939708cfd1195548b4b4db84e9bd7579967829989e5",
+    "run2_sha256": "046680eada871e5c02501939708cfd1195548b4b4db84e9bd7579967829989e5",
+    "match": true
+  },
+  "normalized_metrics.json": {
+    "run1_sha256": "9ca53294ffc7021cd93c279fdf8a4ac3915bfab746aa9c5a8d09c6a286c6128b",
+    "run2_sha256": "9ca53294ffc7021cd93c279fdf8a4ac3915bfab746aa9c5a8d09c6a286c6128b",
+    "match": true
+  }
+}

@@ -1,0 +1,235 @@
+{
+  "registry_version": 1,
+  "assets": [
+    {
+      "asset_id": "RA-S0-ENV-INTAKE",
+      "title": "Pre-code environment intake",
+      "question": "Which local runtime, credential, and operator constraints govern S1/S2 work?",
+      "creator": "coding-agent",
+      "created_at": "2026-07-10T00:00:00Z",
+      "cost_usd": 0.0,
+      "sources": [
+        "artifacts/reports/PRE_CODE_ENVIRONMENT_INTAKE_REPORT.md",
+        "PROJECT_STATE.md"
+      ],
+      "quality_score_refs": [
+        "artifacts/reports/SECURITY_REVIEW_01.md"
+      ],
+      "human_review": "REVIEWED",
+      "dependencies": [],
+      "consumers": [
+        "HG-1",
+        "S1",
+        "S2"
+      ],
+      "freshness": "CURRENT",
+      "contradiction_refs": [],
+      "supersedes": [],
+      "reverify_trigger": "operator changes credential, venue, or runtime authority"
+    },
+    {
+      "asset_id": "RA-S1-DATASET-FREEZE",
+      "title": "Canonical crypto spot dataset freeze",
+      "question": "Is the BTCUSDT/ETHUSDT research dataset frozen, reproducible, and quality-audited?",
+      "creator": "coding-agent",
+      "created_at": "2026-07-10T00:00:00Z",
+      "cost_usd": 0.0,
+      "sources": [
+        "artifacts/datasets/DS-CRYPTO-SPOT-BAKEOFF-V1.manifest.json",
+        "artifacts/datasets/QUALITY_REPORT.json",
+        "artifacts/reports/STAGE_EXIT_S1.md"
+      ],
+      "quality_score_refs": [
+        "artifacts/datasets/QUALITY_REPORT.json"
+      ],
+      "human_review": "REVIEWED",
+      "dependencies": [
+        "RA-S0-ENV-INTAKE"
+      ],
+      "consumers": [
+        "dashboard",
+        "research-lab",
+        "validation"
+      ],
+      "freshness": "CURRENT",
+      "contradiction_refs": [],
+      "supersedes": [],
+      "reverify_trigger": "dataset manifest or quality report hash changes"
+    },
+    {
+      "asset_id": "RA-S1-ENGINE-BAKEOFF",
+      "title": "Engine bake-off and parity evidence",
+      "question": "Which engines produced retained evidence and which lanes remain constrained?",
+      "creator": "coding-agent",
+      "created_at": "2026-07-10T00:00:00Z",
+      "cost_usd": 0.0,
+      "sources": [
+        "artifacts/reports/ENGINE_BAKEOFF_REPORT.md",
+        "artifacts/reports/ENGINE_PARITY_REPORT.md",
+        "artifacts/bakeoff/manifest.json"
+      ],
+      "quality_score_refs": [
+        "artifacts/bakeoff/parity/engine_parity.json"
+      ],
+      "human_review": "REVIEWED",
+      "dependencies": [
+        "RA-S1-DATASET-FREEZE"
+      ],
+      "consumers": [
+        "research-lab",
+        "validation",
+        "S2-architecture-lock"
+      ],
+      "freshness": "AGING",
+      "contradiction_refs": [],
+      "supersedes": [],
+      "reverify_trigger": "engine version, Docker availability, or parity artifact changes"
+    },
+    {
+      "asset_id": "RA-S1-VALIDATION-PACKAGE",
+      "title": "Backtest validation and red-team package",
+      "question": "Does the retained B2 validation package support promotion or paper readiness?",
+      "creator": "coding-agent",
+      "created_at": "2026-07-10T00:00:00Z",
+      "cost_usd": 0.0,
+      "sources": [
+        "artifacts/reports/BACKTEST_VALIDATION_REPORT.md",
+        "artifacts/reports/BACKTEST_RED_TEAM_REPORT.md",
+        "artifacts/validation/validation_status.json"
+      ],
+      "quality_score_refs": [
+        "artifacts/validation/B2_F0_S0/validation_summary.json",
+        "artifacts/validation/B2_F0_S0/red_team_report.json"
+      ],
+      "human_review": "REVIEWED",
+      "dependencies": [
+        "RA-S1-ENGINE-BAKEOFF"
+      ],
+      "consumers": [
+        "research-lab",
+        "dashboard",
+        "S2-exit-audit"
+      ],
+      "freshness": "CURRENT",
+      "contradiction_refs": [],
+      "supersedes": [],
+      "reverify_trigger": "new validation gate evidence or candidate promotion claim appears"
+    },
+    {
+      "asset_id": "RA-S1-LINEAGE-PROTOTYPE",
+      "title": "MLflow and DVC lineage prototype",
+      "question": "Can local-first experiment lineage restore and trace retained evidence?",
+      "creator": "coding-agent",
+      "created_at": "2026-07-10T00:00:00Z",
+      "cost_usd": 0.0,
+      "sources": [
+        "artifacts/reports/LINEAGE_PROTOTYPE_REPORT.md",
+        "artifacts/lineage/manifest.json",
+        "DECISION_LOG.md"
+      ],
+      "quality_score_refs": [
+        "artifacts/reports/S2_RESTORE_REPLAY_REPORT.md",
+        "artifacts/quality/s2_restore_replay.json"
+      ],
+      "human_review": "REVIEWED",
+      "dependencies": [
+        "RA-S1-DATASET-FREEZE"
+      ],
+      "consumers": [
+        "S2-architecture-lock",
+        "restore-replay",
+        "research-lab"
+      ],
+      "freshness": "CURRENT",
+      "contradiction_refs": [],
+      "supersedes": [],
+      "reverify_trigger": "lineage tool version, artifact store, or restore path changes"
+    },
+    {
+      "asset_id": "RA-S1-STRATEGY-SEED-BATCH",
+      "title": "Strategy ingestion seed batch lessons",
+      "question": "Which externally sourced seed strategies are schema-fit hypotheses rather than approvals?",
+      "creator": "coding-agent",
+      "created_at": "2026-07-10T00:00:00Z",
+      "cost_usd": 0.0,
+      "sources": [
+        "artifacts/reports/STRATEGY_INGESTION_REPORT.md",
+        "artifacts/strategy_ingestion/manifest.json"
+      ],
+      "quality_score_refs": [
+        "artifacts/research_lab/seed_cycle_v0/SEEDCYCLE-5bd3faa48ad47e23f0af45e12c0e613c843215fda324b3821b58b35d53da5c1a/scorecards.json"
+      ],
+      "human_review": "PENDING_HUMAN_REVIEW",
+      "dependencies": [
+        "RA-S1-DATASET-FREEZE"
+      ],
+      "consumers": [
+        "research-lab",
+        "seed-cycle"
+      ],
+      "freshness": "CURRENT",
+      "contradiction_refs": [],
+      "supersedes": [],
+      "reverify_trigger": "seed strategy source, license, or local reproduction evidence changes"
+    },
+    {
+      "asset_id": "RA-S2-RESEARCH-LAB-799",
+      "title": "S2 Research Lab retained batch",
+      "question": "Did the autonomous offline research batch retain all trials and avoid false promotion?",
+      "creator": "coding-agent",
+      "created_at": "2026-07-10T00:00:00Z",
+      "cost_usd": 0.0,
+      "sources": [
+        "artifacts/research_lab/v0/LAB-799f7d81843d15aaf3b161036a4cd543ac37a709cb1e2ecc72a161f7348488fa/lab_run.json",
+        "artifacts/research_lab/v0/LAB-799f7d81843d15aaf3b161036a4cd543ac37a709cb1e2ecc72a161f7348488fa/scorecards.json",
+        "artifacts/reports/S2_REQUIREMENT_AUDIT.md"
+      ],
+      "quality_score_refs": [
+        "artifacts/research_lab/v0/LAB-799f7d81843d15aaf3b161036a4cd543ac37a709cb1e2ecc72a161f7348488fa/trial_ledger_summary.json"
+      ],
+      "human_review": "NOT_REQUIRED",
+      "dependencies": [
+        "RA-S1-VALIDATION-PACKAGE",
+        "RA-S1-LINEAGE-PROTOTYPE"
+      ],
+      "consumers": [
+        "research-lab",
+        "automation-dashboard",
+        "S2-exit-audit"
+      ],
+      "freshness": "CURRENT",
+      "contradiction_refs": [],
+      "supersedes": [],
+      "reverify_trigger": "new LAB batch supersedes LAB-799 or validation status changes"
+    },
+    {
+      "asset_id": "RA-S2-SEED-CYCLE-QC",
+      "title": "S2 seed candidate cycle for reproduced QuantConnect specs",
+      "question": "Do reproduced seed candidates produce any eligible winner under the offline proxy cycle?",
+      "creator": "coding-agent",
+      "created_at": "2026-07-10T00:00:00Z",
+      "cost_usd": 0.0,
+      "sources": [
+        "artifacts/research_lab/seed_cycle_v0/SEEDCYCLE-5bd3faa48ad47e23f0af45e12c0e613c843215fda324b3821b58b35d53da5c1a/cycle_run.json",
+        "artifacts/research_lab/seed_cycle_v0/SEEDCYCLE-5bd3faa48ad47e23f0af45e12c0e613c843215fda324b3821b58b35d53da5c1a/evidence.jsonl",
+        "artifacts/research_lab/seed_cycle_v0/SEEDCYCLE-5bd3faa48ad47e23f0af45e12c0e613c843215fda324b3821b58b35d53da5c1a/scorecards.json"
+      ],
+      "quality_score_refs": [
+        "artifacts/research_lab/seed_cycle_v0/SEEDCYCLE-5bd3faa48ad47e23f0af45e12c0e613c843215fda324b3821b58b35d53da5c1a/manifest.json"
+      ],
+      "human_review": "NOT_REQUIRED",
+      "dependencies": [
+        "RA-S1-STRATEGY-SEED-BATCH",
+        "RA-S2-RESEARCH-LAB-799"
+      ],
+      "consumers": [
+        "research-lab",
+        "dashboard"
+      ],
+      "freshness": "CURRENT",
+      "contradiction_refs": [],
+      "supersedes": [],
+      "reverify_trigger": "new seed cycle, changed candidate spec, or changed validation gate appears"
+    }
+  ]
+}

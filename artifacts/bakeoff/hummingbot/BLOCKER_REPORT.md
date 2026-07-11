@@ -1,11 +1,32 @@
-# T-006-05 Hummingbot lane — blocker report (RESOLVED)
+# T-006-05 Hummingbot lane — blocker report (PARTIAL, updated 2026-07-11)
 
-Status: **RESOLVED**, 2026-07-07. A prior attempt on this task hit a reproducible
+Status: **PARTIAL**, 2026-07-11. A prior attempt on this task hit a reproducible
 `TypeError` in every attempted baseline and stopped short of a completed run. This
 attempt found the precise root cause and fixed it without patching engine
 internals. The current worktree retains complete B1 F0/S0 and F1/S1 runs plus a
 complete B2 F0/S0 raw result recovered and normalized with an explicit recovery
 manifest. B3/B4 artifacts are absent and are not claimed complete.
+
+Docker was made available on 2026-07-11 and the first missing full-history run
+(`B2 BTCUSDT F1/S1 run1`) was retried. The container consumed roughly one full
+CPU core but hit the lane's 1800 second timeout before producing `raw.json`.
+The orphaned Docker container was stopped manually. This is a runtime/throughput
+blocker for the current full-history Hummingbot lane, not a credential or
+paper/live blocker. Evidence:
+`artifacts/reports/HUMMINGBOT_FULL_HISTORY_TIMEOUT_2026_07_11.md`.
+
+Follow-up productionization on 2026-07-11 added bounded-window controls,
+timeout cleanup with named containers, and a deterministic 30-day BTCUSDT
+B1-B4 x `{F0/S0,F1/S1}` matrix across `bounded30_run1` and `bounded30_run2`.
+This closes the bounded capability/regression lane while leaving full-history
+completion as a throughput optimization track. Evidence:
+`artifacts/reports/HUMMINGBOT_PRODUCTIONIZATION_STEP_2026_07_11.md`.
+
+A cached full-history retry of `B2 BTCUSDT F1/S1` with a 3600 second timeout also
+timed out, but wrote a `TIMEOUT` manifest and stopped the named container. The
+same cache path completed the bounded 30-day B2 F1/S1 probe in about 32 seconds,
+so the remaining gap is full-history throughput/chunking, not the bounded
+capability lane.
 
 ## What blocked execution (prior attempts)
 `BacktestingEngineBase.run_backtesting()` failed inside
@@ -76,4 +97,8 @@ project's "supported extension points only" convention. Marked with a
 - `engines/hummingbot/_run_template.py` — in-container runner with the fix.
 - `artifacts/bakeoff/hummingbot/B1/BTCUSDT/{F0_S0,F1_S1}/run1/` — complete normalized runs.
 - `artifacts/bakeoff/hummingbot/B2/BTCUSDT/F0_S0/run1/` — complete raw result plus recovered normalized artifacts; host command provenance was interrupted and is explicitly unavailable.
-- B3/B4 and Hummingbot determinism reruns remain open.
+- Full-history B2 F1/S1, B3/B4, and Hummingbot full-history determinism reruns
+  remain open under the 2026-07-11 runtime/throughput blocker, including the
+  cached 3600 second timeout.
+- Bounded 30-day B1-B4 x `{F0/S0,F1/S1}` run1/run2 evidence is complete and
+  deterministic.

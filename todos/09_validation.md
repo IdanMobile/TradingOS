@@ -16,7 +16,7 @@ Requirement source: `specs/BACKTESTING_VALIDATION_BLUEPRINT_V1.md`. Skills: R7 +
 
 ## T-009-04 G10 method-candidate work (PBO/DSR)
 - Requirement: REQ-037 (RG-07). Actions: SKILL_VALIDATION_STATS_SPECIALIST review vs primary papers; known-answer fixtures; implement only after method validation; else record method-candidate status honestly (SSOT: do not claim full production validation).
-- Acceptance: METHOD_VALIDATED verdict or explicit deferral record. Complexity: L. Parallelizable: Yes. Status: **DONE — DEFERRED_METHOD_CANDIDATE** — `artifacts/validation/B2_F0_S0/multiple_testing_method_candidate.json` records the primary-literature, known-answer-fixture, and independent-recomputation work required before G10 can be activated.
+- Acceptance: METHOD_VALIDATED verdict or explicit deferral record. Complexity: L. Parallelizable: Yes. Status: **DONE — METHOD FIXTURES VALIDATED / PRODUCTION G10 STILL INACTIVE** — `src/tios/validation/multiple_testing.py` and `tests/test_multiple_testing_methods.py` retain synthetic known-answer fixtures for PBO/CSCV and DSR arithmetic. `artifacts/validation/G10_METHOD_FIXTURES_2026_07_11.json` records fixture evidence. Candidate-specific integration and independent recomputation remain required before production G10 can PASS.
 
 ## T-009-05 Validation report + red-team pass
 - Requirement: REQ-038. Actions: assemble `artifacts/reports/BACKTEST_VALIDATION_REPORT.md` (EG-4); run SKILL_BACKTEST_RED_TEAM on the package; attach red-team report.

@@ -46,7 +46,7 @@ S2 infrastructure allocation: SQLite owns operational rows and read models; Parq
 
 ### 4. `engine_adapters`
 - Responsibility: one adapter per engine implementing EngineAdapter port; result normalization; capability reports.
-- S2 roles: `vectorbt_probe` is the selected bounded research accelerator; `freqtrade_adapter` is the selected Crypto Spot event/reproduction lane; `nautilus_adapter` is limited to its evidenced bounded event-simulation capability; `hummingbot_adapter` and `lean_adapter` remain deferred capability candidates until their recorded gaps close. Each is independently removable.
+- S2 roles: `vectorbt_probe` is the selected bounded research accelerator; `freqtrade_adapter` is the selected Crypto Spot event/reproduction lane; `nautilus_adapter` is limited to its evidenced bounded event-simulation capability; `hummingbot_adapter` is a bounded bot-operations capability/regression lane; `lean_adapter` is a bounded local-Docker portability lane. Full-history/expanded roles remain explicit follow-up tracks. Each is independently removable.
 - Invocation: isolated subprocess/CLI environments only for S2 Research Lab work; adapters receive allowlisted plans and return normalized results. Freqtrade trade/dry-run, testnet/sandbox, venue, paper, and live modes are rejected.
 - Forbidden deps: adapters may not import each other; parity logic lives in `parity`, not in adapters.
 - Tests: per-adapter integration tests against frozen mini-fixture dataset; normalization golden tests.

@@ -70,7 +70,13 @@ def main() -> None:
                 "status": "PASS",
                 "reason": "holdout trades segmented by ex-post volatility, trend, and volume labels",
             },
-            "G10": {"status": "NOT_RUN", "reason": "method candidate only; PBO/DSR not validated"},
+            "G10": {
+                "status": "NOT_RUN",
+                "reason": (
+                    "PBO/DSR method fixtures pass, but production G10 remains inactive "
+                    "pending candidate-specific integration and independent recomputation"
+                ),
+            },
             "G11": {
                 "status": "PASS",
                 "reason": "B2 compared with cash and B1 buy-and-hold; candidate underperforms both",
@@ -85,6 +91,11 @@ def main() -> None:
             ),
             "signal_parity": str(
                 (ROOT / "artifacts/bakeoff/freqtrade/signal_parity/results.json").relative_to(ROOT)
+            ),
+            "g10_method_fixtures": str(
+                (ROOT / "artifacts/validation/G10_METHOD_FIXTURES_2026_07_11.json").relative_to(
+                    ROOT
+                )
             ),
         },
     }

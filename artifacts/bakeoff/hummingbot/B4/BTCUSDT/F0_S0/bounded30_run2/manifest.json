@@ -1,0 +1,69 @@
+{
+  "artifact_id": "hummingbot-B4-BTCUSDT-F0/S0-bounded30_run2",
+  "produced_by": "T-006-05",
+  "status": "OK",
+  "engine": "hummingbot",
+  "engine_version": "2.15.0",
+  "image_digest_ref": "/Users/user/Downloads/trading_os_project_package/engines/hummingbot/env_manifest.txt",
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--name",
+    "tios-hb-b4-btcusdt-f0-s0-bounded30-run2",
+    "-v",
+    "/Users/user/Downloads/trading_os_project_package/engines/hummingbot/lane:/lane:ro",
+    "-v",
+    "/Users/user/Downloads/trading_os_project_package/artifacts/bakeoff/hummingbot/B4/BTCUSDT/F0_S0/bounded30_run2:/out",
+    "--entrypoint",
+    "/bin/bash",
+    "hummingbot/hummingbot:version-2.15.0",
+    "-lc",
+    "source /opt/conda/etc/profile.d/conda.sh && conda activate hummingbot && export PYTHONPATH=/home/hummingbot && python /lane/_run.py --baseline B4 --trading-pair BTC-USDT --csv /lane/data/BTCUSDT_5m.csv --start 1780272000 --end 1782864000 --trade-cost 0 --out /out/raw.json"
+  ],
+  "returncode": 0,
+  "timed_out": false,
+  "timeout_seconds": 900,
+  "stopped_container": false,
+  "started_utc": "2026-07-10T22:46:04.963202+00:00",
+  "window": {
+    "label": "last_30_days",
+    "start": "2026-06-01T00:00:00+00:00",
+    "end": "2026-07-01T00:00:00+00:00"
+  },
+  "scenario": "F0/S0",
+  "fee_rate_per_side": "0",
+  "capability_gaps": [
+    "DirectionalTradingControllerBase's native exit path is triple-barrier (stop-loss/take-profit/time-limit), not signal-based; disabled via stop_loss=take_profit=time_limit=None and replaced with an overridden stop_actions_proposal driven by the canonical exit rule (supported extension point, not an internals patch).",
+    "No native per-side bps slippage model in run_backtesting()/PositionExecutorSimulator; S-scenarios applied post-hoc in parity analysis, same convention as the Freqtrade lane.",
+    "leverage forced to 1 and position_mode forced to ONEWAY to adapt the perpetual-oriented DirectionalTradingControllerConfigBase defaults (leverage=20, HEDGE) to the Crypto Spot MVP slice."
+  ],
+  "engine_bug_workarounds": [
+    "hummingbot 2.15.0 + pandas 3.0.3: DataFrame.set_index() silently collapses an evenly-spaced int64 column into a RangeIndex; BacktestingEngineBase.prepare_market_data() hits this on its post-merge_asof timestamp index, then position_executor_simulator.simulate()'s bare `df[:tl_timestamp]` slice throws TypeError because tl_timestamp is a float (iterrows() upcasts a mixed int/float row). Fix: keep the injected timestamp column float64 end-to-end (engines/hummingbot/_run_template.py load_candles) so the index never collapses to RangeIndex \u2014 no engine-internals patch."
+  ],
+  "converter_losses": [
+    "decimal128->float64 (pandas/hummingbot dataframe model)"
+  ],
+  "input_refs": [
+    "DS-CRYPTO-SPOT-BAKEOFF-V1"
+  ],
+  "files": [
+    {
+      "path": "raw.json",
+      "sha256": "057620b81dd6cd3782b48d2f3977731864c5f3857965a902de510b2aa314d355"
+    },
+    {
+      "path": "trades.parquet",
+      "sha256": "b7f130cb9606227fbb2ab220e0f4d058e35ec6edfac85a28f375310665d73499"
+    },
+    {
+      "path": "equity.parquet",
+      "sha256": "461ae2696f9b9429ac02d65eddcc5a887694c8d201b4b418e58d94cdde4292f2"
+    },
+    {
+      "path": "normalized_metrics.json",
+      "sha256": "2bea7fc3cd5b6c0830212722cbbc0fd4804e5c59df79391c2461632480cb2b0f"
+    }
+  ],
+  "schema_version": 1
+}

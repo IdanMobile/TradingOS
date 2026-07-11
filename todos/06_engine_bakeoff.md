@@ -17,10 +17,10 @@ Requirement source: `specs/ENGINE_BAKEOFF_BLUEPRINT_V1.md`. Skills: R7 + SKILL_E
 - Same contract as T-006-02 with Nautilus-specific probes (bar backtest, fee/fill/latency config, catalog export, Binance-adapter surface). Requirement: REQ-016. Complexity: L. Status: **DONE 2026-07-07** for bounded matrix evidence; full-history expansion and latency-model exercise remain explicit follow-ups in the lane notes.
 
 ## T-006-04 LEAN lane
-- Same contract; LEAN-specific probes (local Docker engine, crypto baseline, fill/brokerage models, local-vs-cloud boundary per RG-02 findings). Requirement: REQ-017. Complexity: L. Status: **BLOCKED WITH RETAINED EVIDENCE** — local mechanism and boundary are proven; Docker is stopped, so no run is fabricated. Follow-up begins with B1 when Docker is available.
+- Same contract; LEAN-specific probes (local Docker engine, crypto baseline, fill/brokerage models, local-vs-cloud boundary per RG-02 findings). Requirement: REQ-017. Complexity: L. Status: **DONE 2026-07-11 FOR BOUNDED LOCAL DOCKER EVIDENCE** — B1-B4 x `{F0/S0,F1/S1}` run1 all completed through local Docker with custom data and no cloud/account path; B1 F0/S0 run2 matched run1 fills exactly. Full-range parity remains a throughput/scope expansion question. Evidence: `artifacts/bakeoff/lean/STATUS.md`.
 
 ## T-006-05 Hummingbot lane
-- Same contract; Hummingbot-specific probes (V2 controller config, Dashboard/API backtest path, bot lifecycle, artifact extraction). Requirement: REQ-018. Complexity: L. Status: **BLOCKED WITH PARTIAL EVIDENCE** — B1 F0/S0 and F1/S1 are normalized; complete B2 F0/S0 raw evidence is transparently recovered and normalized; B3/B4 and determinism reruns require Docker. Compatibility behavior and exact missing coverage are retained in `BLOCKER_REPORT.md`.
+- Same contract; Hummingbot-specific probes (V2 controller config, Dashboard/API backtest path, bot lifecycle, artifact extraction). Requirement: REQ-018. Complexity: L. Status: **DONE FOR BOUNDED CAPABILITY / FULL-HISTORY THROUGHPUT BLOCKED** — Bounded BTCUSDT 30-day B1-B4 x `{F0/S0,F1/S1}` x `{run1,run2}` evidence is complete, normalized, fee-audited, and deterministic; Docker timeout cleanup now stops named containers and writes timeout manifests. Full-history B2 F1/S1, B3/B4, and full-history determinism remain throughput-blocked after the 2026-07-11 full-history retry hit 1800 seconds before `raw.json`, and a cached full-history retry still hit the 3600 second timeout with clean container cleanup. Evidence: `artifacts/reports/HUMMINGBOT_PRODUCTIONIZATION_STEP_2026_07_11.md`, `artifacts/bakeoff/hummingbot/BLOCKER_REPORT.md`, and `artifacts/reports/HUMMINGBOT_FULL_HISTORY_TIMEOUT_2026_07_11.md`.
 
 ## T-006-06 vectorbt accelerator probe (separate, not a peer)
 - Purpose: research-accelerator fit behind anti-overfit controls. Requirement: REQ-019. Precondition: T-001-01 (license).
@@ -30,7 +30,7 @@ Requirement source: `specs/ENGINE_BAKEOFF_BLUEPRINT_V1.md`. Skills: R7 + SKILL_E
 ## T-006-07 Cross-engine parity analysis (WS4)
 - Purpose: semantic diagnosis of every divergence. Requirement: REQ-020 (EG-2 input).
 - Actions: SKILL_ENGINE_PARITY_AUDITOR process over all completed lanes on B1–B4; fee recomputation audit; divergence classification.
-- Outputs: parity reports per engine pair. Acceptance: zero UNEXPLAINED residuals for PASS; else itemized. Complexity: L. Dependencies: ≥2 lanes done. Status: **DONE 2026-07-10 FOR AVAILABLE LANES** — three Freqtrade/Hummingbot contexts have zero unexplained residuals; B1 timing and B2 execution/order-state/data-gap divergences are retained. Nautilus bounded scope and blocked LEAN/Hummingbot coverage remain explicit.
+- Outputs: parity reports per engine pair. Acceptance: zero UNEXPLAINED residuals for PASS; else itemized. Complexity: L. Dependencies: ≥2 lanes done. Status: **DONE 2026-07-10 FOR AVAILABLE LANES** — three Freqtrade/Hummingbot contexts have zero unexplained residuals; B1 timing and B2 execution/order-state/data-gap divergences are retained. Nautilus/LEAN bounded scope and Hummingbot runtime-blocked coverage remain explicit.
 
 ## T-006-08 Bake-off report + role recommendations
 - Purpose: `artifacts/reports/ENGINE_BAKEOFF_REPORT.md` (EG-2). Requirement: REQ-021.

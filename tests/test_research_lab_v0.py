@@ -750,3 +750,21 @@ def test_command_allowlist_accepts_only_isolated_sweep(tmp_path: Path) -> None:
     assert lab.command_allowed(command, dataset, out)
     assert not lab.command_allowed([*command, "--dry-run"], dataset, out)
     assert not lab.command_allowed(["freqtrade", "trade"], dataset, out)
+
+
+def test_retained_latest_batch_declares_no_winner_and_no_execution_authority() -> None:
+    # Guards the actual retained evidence the dashboard points at, not just tmp-generated
+    # batches: the dashboard read model injects the safety flags from base defaults, so only
+    # reading the artifact itself proves the retained batch declares them.
+    batch = (
+        Path(__file__).resolve().parents[1]
+        / "artifacts/research_lab/v0"
+        / "LAB-f99dcc214f377ecca4710bbb41d445c8331d2a1b06f93931ed1c88bdf3af5924"
+    )
+    lab_run = json.loads((batch / "lab_run.json").read_text())
+    assert lab_run["status"] == "COMPLETED"
+    assert {key: lab_run[key] for key in lab.SAFETY} == lab.SAFETY
+    scorecards = json.loads((batch / "scorecards.json").read_text())
+    assert scorecards["validation_state"] == "UNVALIDATED"
+    assert scorecards["approval_state"] == "NOT_ELIGIBLE"
+    assert {card["approval_state"] for card in scorecards["candidates"]} == {"NOT_ELIGIBLE"}

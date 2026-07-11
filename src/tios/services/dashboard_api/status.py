@@ -5,12 +5,14 @@
 
 from __future__ import annotations
 
+import json
 import re
 import subprocess
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, cast
 
+from tios.knowledge import ConceptError, ConceptRegistry
 from tios.research_assets import ResearchSourceError, ResearchSourceRegistry
 from tios.services.jobs.projection import build_jobs_projection
 
@@ -18,6 +20,71 @@ STATUS_RE = re.compile(r"Status:\s*\*?\*?([^\n]+)")
 TASK_RE = re.compile(r"^## (T-\d{3}-\d{2}) (.+)$", re.MULTILINE)
 TASK_STATUS_RE = re.compile(r"Status:\s*\*?\*?([^\n]+)")
 CHECK_ARTIFACT_MAX_AGE = timedelta(hours=24)
+WORKSPACE_DECISIONS_PATH = Path("artifacts/human_decisions/workspace_decisions.jsonl")
+DEFAULT_GATED_ACTIONS = [
+    {
+        "id": "keep_deferred",
+        "label": "Keep deferred",
+        "effect": "Leave this item gated; future agents must not work it.",
+    }
+]
+WORKSPACE_ACTION_OPTIONS = {
+    "T-001-03": [
+        *DEFAULT_GATED_ACTIONS,
+        {
+            "id": "authorize_source_recheck",
+            "label": "Authorize source recheck",
+            "effect": "Future agents may do official-source venue availability research only.",
+        },
+    ],
+    "T-011-05": [
+        *DEFAULT_GATED_ACTIONS,
+        {
+            "id": "credentials_configured",
+            "label": "Credentials configured",
+            "effect": "Future agents may verify env presence and run controlled benchmark only.",
+        },
+    ],
+    "T-017-05": [
+        *DEFAULT_GATED_ACTIONS,
+        {
+            "id": "credentials_configured",
+            "label": "Credentials configured",
+            "effect": "Future agents may wire cost telemetry for authorized provider runs only.",
+        },
+    ],
+    "T-020-01": [
+        *DEFAULT_GATED_ACTIONS,
+        {
+            "id": "authorize_design_only",
+            "label": "Authorize design only",
+            "effect": "Future agents may draft S3 design research; no implementation.",
+        },
+    ],
+    "T-020-02": [
+        *DEFAULT_GATED_ACTIONS,
+        {
+            "id": "authorize_design_only",
+            "label": "Authorize design only",
+            "effect": "Future agents may refresh S3 landscape research; no implementation.",
+        },
+    ],
+    "T-020-03": [
+        *DEFAULT_GATED_ACTIONS,
+        {
+            "id": "authorize_design_only",
+            "label": "Authorize design only",
+            "effect": "Future agents may audit expansion contracts; no implementation.",
+        },
+    ],
+}
+DEFAULT_RECURRING_ACTIONS = [
+    {
+        "id": "acknowledge_recurring",
+        "label": "Acknowledge recurring",
+        "effect": "Keep this visible as ongoing governance discipline.",
+    }
+]
 
 
 def _automation(root: Path) -> dict[str, Any]:
@@ -103,6 +170,18 @@ def _git(root: Path) -> dict[str, Any]:
     return {"changed_files": len(lines), "clean": not lines, "entries": lines[:20]}
 
 
+def _task_bucket(status: str) -> str:
+    if status.startswith(("DONE", "NOT APPLICABLE", "REJECTED")):
+        return "closed"
+    if status.startswith("ONGOING") or "recurring" in status.lower():
+        return "recurring"
+    if status.startswith("DEFERRED") or any(
+        token in status for token in ("CREDENTIAL", "HUMAN", "HG-", "S3", "S4")
+    ):
+        return "gated"
+    return "open"
+
+
 def _check_status(root: Path, now: datetime) -> dict[str, Any]:
     path = root / "artifacts" / "quality" / "check.json"
     payload = _json(path)
@@ -132,6 +211,45 @@ def _check_status(root: Path, now: datetime) -> dict[str, Any]:
     }
 
 
+def _workspace_decision_records(root: Path) -> list[dict[str, Any]]:
+    path = root / WORKSPACE_DECISIONS_PATH
+    if not path.is_file():
+        return []
+    records = []
+    for line in path.read_text().splitlines():
+        try:
+            payload = json.loads(line)
+        except ValueError:
+            continue
+        if isinstance(payload, dict):
+            records.append(payload)
+    return records
+
+
+def _latest_workspace_decisions(root: Path) -> dict[str, dict[str, Any]]:
+    latest = {}
+    for record in _workspace_decision_records(root):
+        task_id = record.get("task_id")
+        if isinstance(task_id, str):
+            latest[task_id] = record
+    return latest
+
+
+def _workspace_actions(root: Path, rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    latest = _latest_workspace_decisions(root)
+    actions = []
+    for row in rows:
+        task_id = str(row["id"])
+        if row["bucket"] == "gated":
+            options = WORKSPACE_ACTION_OPTIONS.get(task_id, DEFAULT_GATED_ACTIONS)
+        elif row["bucket"] == "recurring":
+            options = DEFAULT_RECURRING_ACTIONS
+        else:
+            continue
+        actions.append({**row, "options": options, "latest_decision": latest.get(task_id)})
+    return actions
+
+
 def build_status(root: Path | None = None) -> dict[str, Any]:
     """Build a fresh status snapshot. No state is written."""
     root = root or Path(__file__).resolve().parents[4]
@@ -140,6 +258,22 @@ def build_status(root: Path | None = None) -> dict[str, Any]:
     done = sum(task["status"].startswith("DONE") for task in tasks)
     in_progress = sum(task["status"].startswith("IN PROGRESS") for task in tasks)
     todo = sum(task["status"] == "TODO" for task in tasks)
+    task_rows = [
+        {
+            "id": task["id"],
+            "title": task["title"],
+            "status": task["status"],
+            "initiative": item["title"],
+            "file": item["file"],
+            "bucket": _task_bucket(task["status"]),
+        }
+        for item in initiatives
+        for task in item["tasks"]
+    ]
+    open_tasks = [task for task in task_rows if task["bucket"] == "open"]
+    gated_tasks = [task for task in task_rows if task["bucket"] == "gated"]
+    recurring_tasks = [task for task in task_rows if task["bucket"] == "recurring"]
+    workspace_actions = _workspace_actions(root, [*gated_tasks, *recurring_tasks])
     artifact_files = (
         [
             path
@@ -159,7 +293,23 @@ def build_status(root: Path | None = None) -> dict[str, Any]:
         "generated_at": now.isoformat(),
         "project": "Trading Intelligence OS",
         "stage": _status_label(state_match.group(1)) if state_match else "UNKNOWN",
-        "summary": {"total": len(tasks), "done": done, "in_progress": in_progress, "todo": todo},
+        "summary": {
+            "total": len(tasks),
+            "done": done,
+            "in_progress": in_progress,
+            "todo": todo,
+            "open": len(open_tasks),
+            "gated": len(gated_tasks),
+            "recurring": len(recurring_tasks),
+        },
+        "open_tasks": open_tasks,
+        "gated_tasks": gated_tasks,
+        "recurring_tasks": recurring_tasks,
+        "workspace_actions": workspace_actions,
+        "workspace_decisions": {
+            "artifact": str(WORKSPACE_DECISIONS_PATH),
+            "count": len(_workspace_decision_records(root)),
+        },
         "initiatives": initiatives,
         "artifacts": {"files": len([path for path in artifact_files if path.is_file()])},
         "git": _git(root),
@@ -167,10 +317,43 @@ def build_status(root: Path | None = None) -> dict[str, Any]:
     }
 
 
+def record_workspace_decision(root: Path, payload: dict[str, Any]) -> dict[str, Any]:
+    status = build_status(root)
+    task_id = str(payload.get("task_id", "")).strip()
+    choice = str(payload.get("choice", "")).strip()
+    note = str(payload.get("note", "")).strip()
+    if len(note) > 500:
+        raise ValueError("note is too long")
+    action = next(
+        (row for row in status["workspace_actions"] if row["id"] == task_id),
+        None,
+    )
+    if action is None:
+        raise ValueError("unknown workspace action task")
+    option = next((item for item in action["options"] if item["id"] == choice), None)
+    if option is None:
+        raise ValueError("unknown workspace action choice")
+    record = {
+        "schema_version": 1,
+        "decided_at": datetime.now(tz=UTC).isoformat(),
+        "source": "local_dashboard_operator",
+        "task_id": task_id,
+        "task_title": action["title"],
+        "task_status": action["status"],
+        "choice": choice,
+        "choice_label": option["label"],
+        "effect": option["effect"],
+        "note": note,
+    }
+    path = root / WORKSPACE_DECISIONS_PATH
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(record, sort_keys=True) + "\n")
+    return {"schema_version": 1, "recorded": record, "status": build_status(root)}
+
+
 def _json(path: Path) -> dict[str, Any]:
     try:
-        import json
-
         payload = json.loads(path.read_text())
         return cast(dict[str, Any], payload) if isinstance(payload, dict) else {}
     except (OSError, ValueError):
@@ -356,6 +539,46 @@ def _research_sources(root: Path) -> dict[str, Any]:
     }
 
 
+def _dictionary_concepts(root: Path) -> dict[str, Any]:
+    path = root / "research" / "DICTIONARY_CONCEPTS_V1.json"
+    base: dict[str, Any] = {
+        "concept_count": 0,
+        "fibo_provenance_count": 0,
+        "categories": {},
+        "gaps": [],
+        "rows": [],
+    }
+    try:
+        registry = ConceptRegistry.load(path)
+    except (OSError, ConceptError):
+        return base
+    records = registry.list()
+    categories: dict[str, int] = {}
+    for record in records:
+        categories[record.category] = categories.get(record.category, 0) + 1
+    return {
+        "concept_count": len(records),
+        "fibo_provenance_count": sum(
+            record.evidence_status.value == "FIBO_PROVENANCE" for record in records
+        ),
+        "categories": dict(sorted(categories.items())),
+        "gaps": list(registry.gaps()),
+        "rows": [
+            {
+                "concept_id": record.concept_id,
+                "name": record.canonical_name,
+                "aliases": [*record.abbreviations, *record.aliases],
+                "category": record.category,
+                "contexts": [*record.market_contexts, *record.venue_variants],
+                "evidence_status": record.evidence_status.value,
+                "freshness": record.freshness.value,
+                "sources": list(record.sources),
+            }
+            for record in records
+        ],
+    }
+
+
 def build_dashboard_data(root: Path | None = None) -> dict[str, Any]:
     """Build the current evidence-operations surface from repository artifacts."""
     root = root or Path(__file__).resolve().parents[4]
@@ -484,6 +707,7 @@ def build_dashboard_data(root: Path | None = None) -> dict[str, Any]:
         "automation": _automation(root),
         "research_lab": research_lab,
         "research_sources": _research_sources(root),
+        "dictionary_concepts": _dictionary_concepts(root),
         "datasets": datasets,
         "strategies": strategies,
         "runs": runs,

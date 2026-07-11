@@ -191,3 +191,20 @@ Key outcomes:
 - Enqueued and executed `s2-production-offline-research-lab-v0-cycle-003`; the local
   worker reused LAB-799 and retained a third succeeded `RESEARCH_LAB_V0` job without
   enabling any paper/demo/live or order capability.
+
+## v8.9 — 2026-07-11 — S2 decision follow-through and dashboard governance
+
+- Added Workspace human-decision recording for gated/recurring tasks:
+  `artifacts/human_decisions/workspace_decisions.jsonl` records operator choices for
+  future coding agents, while all trading/job/order controls remain absent.
+- Completed the authorized official-source venue recheck and S3 design-only expansion
+  slices: `VENUE_ISRAEL_SOURCE_RECHECK_2026_07_11.md` and
+  `FUTURE_MARKET_EXPANSION_DESIGN_REVIEW_2026_07_11.md`.
+- Rechecked AI cost telemetry credentials after the operator decision; no provider
+  keys are visible, so `T-017-05` remains credential-blocked with evidence in
+  `AI_COST_TELEMETRY_CREDENTIAL_RECHECK_2026_07_11.md`.
+- Tightened dashboard freshness and API boundaries: core data auto-refreshes,
+  Market Monitor refreshes while visible, `/api/v1/*` is the only active API, and
+  legacy `/api/*` paths return `410`.
+- Regenerated all changed controlled-input SHA-256 entries in
+  `PACKAGE_INTEGRITY_MANIFEST.md`; manifest verification passes.

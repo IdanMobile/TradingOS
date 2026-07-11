@@ -1,0 +1,4 @@
+/custom_bakeoff/ETHUSDT.csv
+/custom_bakeoff/BTCUSDT.csv
+/custom_bakeoff/BTCUSDT.csv
+/custom_bakeoff/ETHUSDT.csv

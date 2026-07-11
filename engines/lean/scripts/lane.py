@@ -266,15 +266,25 @@ def write_algorithm(baseline: str, project_dir: Path) -> None:
     (project_dir / "main.py").write_text(src.lstrip())
 
 
-def normalize_result(baseline: str, scenario: FeeSlippageScenario, run_tag: str) -> dict[str, Any]:
+def normalize_result(
+    baseline: str,
+    scenario: FeeSlippageScenario,
+    run_tag: str,
+    source_run_dir: Path | None = None,
+) -> dict[str, Any]:
     """Read the latest LEAN backtest output for `baseline` and emit NormalizedResult-shaped
     artifacts (mirrors tios.adapters.freqtrade.normalize_result)."""
     project_dir = LANE / baseline
     backtests_dir = project_dir / "backtests"
-    runs = sorted(p for p in backtests_dir.iterdir() if p.is_dir()) if backtests_dir.is_dir() else []
-    if not runs:
-        raise SystemExit(f"no backtest output dir under {backtests_dir}")
-    run_dir = runs[-1]
+    if source_run_dir is None:
+        runs = sorted(p for p in backtests_dir.iterdir() if p.is_dir()) if backtests_dir.is_dir() else []
+        if not runs:
+            raise SystemExit(f"no backtest output dir under {backtests_dir}")
+        run_dir = runs[-1]
+    else:
+        run_dir = source_run_dir
+        if not run_dir.is_dir():
+            raise SystemExit(f"backtest output dir does not exist: {run_dir}")
     log_files = list(run_dir.glob("*-log.txt"))
     fills: list[dict[str, Any]] = []
     if log_files:

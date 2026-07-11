@@ -1,0 +1,68 @@
+{
+  "artifact_id": "lean-B1-F0/S0-run2",
+  "produced_by": "T-006-04",
+  "status": "OK",
+  "engine": "lean",
+  "scenario": "F0/S0",
+  "fee_rate_per_side": "0",
+  "slippage_bps_per_side": "0",
+  "window_days": 60,
+  "scope_reduction": "bounded to last 60 days of DS-CRYPTO-SPOT-BAKEOFF-V1 (full 5.5y range not run \u2014 Python custom-data Reader throughput ceiling)",
+  "converter_losses": [
+    "decimal128->float64 (LEAN double-precision data model)"
+  ],
+  "input_refs": [
+    "DS-CRYPTO-SPOT-BAKEOFF-V1"
+  ],
+  "fills": [
+    {
+      "ts_fill": "2026-05-02T04:00:00",
+      "side": "buy",
+      "pair": "ETHUSDT",
+      "price": 2295.63,
+      "qty": 21.0,
+      "fee": 0.0
+    }
+  ],
+  "fill_count": 1,
+  "files": [
+    {
+      "path": "1357123715.json",
+      "sha256": "01d804f1aa422fedc70a5722454cf3da61a11cb5aebb6e1e91c78d84187be6ce"
+    },
+    {
+      "path": "failed-data-requests-20260710215543051.txt",
+      "sha256": "3bff0e3a5f5558661a66a1ee8c5b0be6fd700da5baa9affb55be98298b89b1fb"
+    },
+    {
+      "path": "1357123715-summary.json",
+      "sha256": "22414372924fcbbf5953f14662bc93fe69783f4c69d94e205a62fb54fa8a6608"
+    },
+    {
+      "path": "config",
+      "sha256": "fe8d33f9aa8fafe29dcaba9374a7e1f2c2e7f4e497eb3d450687c54259022a98"
+    },
+    {
+      "path": "1357123715-order-events.json",
+      "sha256": "c7019be03016d43974e759cffc212b33780fc4ed8932449c6f083c025cf67dda"
+    },
+    {
+      "path": "log.txt",
+      "sha256": "b98bf41554c2d3e71f9471a9049f925a83894e2115dbcba7f30987987aa2f924"
+    },
+    {
+      "path": "data-monitor-report-20260710215549450.json",
+      "sha256": "55d7b9e2d2740892406412b76fb07d2f9188b25e8fe6a2a572008fbbb84a1fbd"
+    },
+    {
+      "path": "1357123715-log.txt",
+      "sha256": "0aff55a8d7b0ba464e0438c375892b89dc3675ed56d454653c77bb768a3e0ec3"
+    },
+    {
+      "path": "succeeded-data-requests-20260710215543051.txt",
+      "sha256": "30d16afd9631eb81e6c058d494c7a4d94968968fafcb3010384abe2b659203bc"
+    }
+  ],
+  "schema_version": 1,
+  "generated_utc": "2026-07-10T21:56:05.766686+00:00"
+}

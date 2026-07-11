@@ -47,7 +47,7 @@
     },
     "G10": {
       "status": "NOT_RUN",
-      "reason": "method candidate only; PBO/DSR not validated"
+      "reason": "PBO/DSR method fixtures pass, but production G10 remains inactive pending candidate-specific integration and independent recomputation"
     },
     "G11": {
       "status": "PASS",
@@ -79,7 +79,8 @@
     "run_artifact": "artifacts/bakeoff/freqtrade/B2/F0_S0/run1",
     "rerun_artifact": "artifacts/bakeoff/freqtrade/B2/F0_S0/run2",
     "dataset_quality": "artifacts/datasets/QUALITY_REPORT.json",
-    "signal_parity": "artifacts/bakeoff/freqtrade/signal_parity/results.json"
+    "signal_parity": "artifacts/bakeoff/freqtrade/signal_parity/results.json",
+    "g10_method_fixtures": "artifacts/validation/G10_METHOD_FIXTURES_2026_07_11.json"
   },
   "risk_preconditions": {
     "status": "PASS",

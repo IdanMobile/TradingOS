@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.8 S2 automation dashboard and scorecard evidence (2026-07-10). Supersedes v8.7 hashes.
+Package version: v8.9 S2 decision-follow-through and dashboard governance evidence (2026-07-11). Supersedes v8.8 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `4d21c7c4c134029e39905fed8d993a7e64fab4a2b628b5b1a5bc25a8ee32a694` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `75a4a2f4cee2626cf41ce5f630430cb1948538458a90a7f55483985b47b5215c` |
-| `DECISION_LOG.md` | `d7a2414dc12e418e4cb80cd25a47df573785a6fbb3cd49964720dd985f7ecd4d` |
+| `PROJECT_STATE.md` | `b28835bb22a489dc65cd92e57bae0a3b46867ca410cf11c371850d4313417640` |
+| `DECISION_LOG.md` | `a2981a10f7465106385857324298eb5ef2e8ce016ac08fdb11767eb435dc3b0e` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,49 +27,49 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `aae084bf1689ce2481cc3415e8f970c0626f3c17cebeaeab0dba8dc0d4d7029c` |
+| `MISSING_AND_OPEN_ITEMS.md` | `9526714bd396917b81b9c7460abd450dd54dd975e6d04cef10d29b6f3ac15f3d` |
 
 ## Required handoff inputs — planning system (added v8)
 
 | Path | SHA-256 |
 |---|---|
-| `docs/architecture/AD.md` | `9e633acaeaef52277005ad219edd95db117befd86cf2edddf7c8c73db6fe1c55` |
-| `docs/architecture/MODULE_CATALOG.md` | `bd4fcc735ebfba09fec6fdba01c67878245f5320b73e599bec47319af2f50d88` |
+| `docs/architecture/AD.md` | `0fc15939f34e90b7a9afbfb61ea8d729c05aa484d1b699e91b2ea0a7fdf28378` |
+| `docs/architecture/MODULE_CATALOG.md` | `6030d38e7765193d0e656db56afe65ce659b5301aa32e13ff23a0b32390092e9` |
 | `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md` | `33f2c3024ad619cc36d16ccc8beb20a6ef172fa1b397ea58b0b9b1f2781b9e63` |
 | `docs/program/PROGRAM_PLAN.md` | `b491591bc5376a4bf3b93f7c42f68c25200f7e4420c05445a925bca7bd60f298` |
 | `docs/product/MVP_SCOPE.md` | `5cdcc8a4249951117baee31cb0ac1b9b5141a150272abe920db3a93a6a9cfc54` |
 | `docs/testing/TEST_MASTER_PLAN.md` | `fb4bd18aed50ff4367c1fb15ff8dbfe33b4399ca7f74ee78e06ed365af350b54` |
 | `docs/traceability/TRACEABILITY_MATRIX.md` | `cc4b43ba2613ecd1948cd86f5c243243546e2340944cb346cc232b80fa1513e9` |
 | `docs/ai/AGENT_ROLES.md` | `87fcdc8f5a92a4ee98f4262c0c06e10022534353452c30321e6bdfdd643cd99d` |
-| `TODO.md` | `d83525f6b8bf227829d9b0a125e002f7ca352db5610b98a20219b218e0ea9ec5` |
+| `TODO.md` | `1fb17c285d3b3f837c15c749e950aadc25925aac0c2a38bb171844ca1f301645` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `034953642ebd11143366f65a0d892041120aacbb333fffc49c5d2c220e01b93d` |
+| `research/RESEARCH_GAP_MATRIX.md` | `b977482c440d84b666f29f52f39a622b748d0d5de0cab65f23bc7261d8be9c10` |
 | `audits/ARCHITECTURE_COMPLETENESS_AUDIT.md` | `729af643828c44b8b59d6dd95a209d9bfe53ed90e9ffd9a404e62db60944cef0` |
 | `audits/TODO_COMPLETENESS_AUDIT.md` | `22ca004dfd4049637db6be5128186a3e51411e2b606c45413d344d46508ad666` |
 | `audits/RED_TEAM_PLAN_REVIEW.md` | `a8d0f8850fdce2fbcfa985016b69d8755a52ed16b8c01e7d8652f6bcb9ee833c` |
 | `audits/PLANNING_HANDOFF_SIMULATION.md` | `99f70334d411ebbeb58039f95d6e8a20636700269e5b8755b72f4d71316694b3` |
 | `skills/README.md` | `3d84002f72c58dc744fa8beb582701cd610e766e992c2ddd4d8de3fa1ef134c7` |
 | `todos/00_program.md` | `8e9a11b37f5728c8260eb96b0f4a9382a09a1da9bee25393d4fb1515e3d9082e` |
-| `todos/01_research_completion.md` | `ecefcf56408bd9141f8d199547f810649f6b3bb06791b23f85532c5d68faa60b` |
+| `todos/01_research_completion.md` | `20d8f8d5fad0f26ff9dd07efd65270163dbf2203f9d1c61029f0b5444df1b95b` |
 | `todos/02_architecture_foundation.md` | `9f88444f3706e86a3a866d9b2f47b4c21438ee98d414510bb4fb09b057fc5b27` |
 | `todos/03_repository_foundation.md` | `180208e84db8c3a55007aadbf125e8b9e454a1bcf7c0fcb277d521ada5221a6d` |
 | `todos/04_data_foundation.md` | `7510144b128ba2e0f1b14882b2bb617f457d5487a8d6a4d7dead67f62247bb19` |
 | `todos/05_strategy_domain.md` | `e11b0f27f518eddf521b8250e27624279b14782b20e80284d6923c21b914934a` |
-| `todos/06_engine_bakeoff.md` | `085e89583dc7f5f51364d4cbd3efbe2b5cbc2bd081f1f75c323e8aa66a9355c8` |
+| `todos/06_engine_bakeoff.md` | `b240a7cc461c38b81ba1f84f21e755f16a31059ddeea3cd30b3eae3905797117` |
 | `todos/07_experiment_lineage.md` | `25bf4a12071412136ef52bcd1bf537def3eda56367557d013232bd0303836282` |
 | `todos/08_backtesting.md` | `85bf5bc925fa217fc4bff13352ff586ab0753a71de5b528eb6db717ce942486f` |
-| `todos/09_validation.md` | `09678da01f1a502d09ccdf4c54e748a4150ab3e919850abe7fbddaa4be07905b` |
+| `todos/09_validation.md` | `53a783aa227abf6d173de72fe889b2adad172d7d3329886e49dfdbf6452b6f08` |
 | `todos/10_strategy_ingestion.md` | `544ffeb89068e553b5ca8bb75a1710812fa733eee087e64b56bef1d29a77bf5f` |
 | `todos/11_ai_agent_eval.md` | `f32abb43c847f3c609192abbf127a43b7edb330ddbb455ab217301176c0cc80b` |
-| `todos/12_dictionary_ontology.md` | `52aaa0283f70d5955aba96d1b3a912e31cc4f7670f1a36fc51d0268d847018c5` |
-| `todos/13_research_assets.md` | `ed05d26c4a802e5e3499c8afc36ae089af6cb6120cacbb34fa6aa2f0d7e41058` |
-| `todos/14_dashboard.md` | `7a742d758705bc6597f6468eadb6b50e1ac4743b81358dcc775704b8b93f7636` |
+| `todos/12_dictionary_ontology.md` | `f1f19b5250ad1aaefecc7dbb87bb9d837a0f1f12e48af99d490e26cc6038ce4f` |
+| `todos/13_research_assets.md` | `423f9814bfc6e920324cbc827ebd4ad65e7fb51cb50a6af72b42ae9eac2a40ee` |
+| `todos/14_dashboard.md` | `ac461bb798e1f907e97df5c0b71e2df382ed92cc68f1b9719780ea5ca1f4955e` |
 | `todos/15_paper_trading.md` | `a7cc6233f537ca2c58a37d5fa442f1257dc6c09126626c61877c2b75171a1b76` |
 | `todos/16_risk_approvals.md` | `7f51e1758a0d16e306d9adff39720c6d1eeaba4c0e7f240cfedc0799f2291c6d` |
-| `todos/17_observability.md` | `d04f87e3d3ea67e3770a720ad77f20126998ec69dcae6cfdae623788c41cee5f` |
-| `todos/18_security.md` | `15456744f617e88b56483f7a2ddb1ba4feeb09517a95bdab5df6992afeff2df4` |
+| `todos/17_observability.md` | `242400130779daef1be64c532ba3dd883f68aacbf1eb12841cd82997798a9326` |
+| `todos/18_security.md` | `8d396293d3336bed7568dc950dde6bbe14aed7f8059039a69c0fae76bd497771` |
 | `todos/19_operations.md` | `68f73a470e79241098afec113b99274ef498da7691169269eb7f9ce14188a260` |
-| `todos/20_future_market_expansion.md` | `ab79c401b9d9f1cc7726ed81dc4e50c5e93d8df4bc994cecbcda513ee94f8915` |
+| `todos/20_future_market_expansion.md` | `97cb7ff36f065aca69de5dce6493d02fa0e3fb67564ccc93d9884208122d1436` |
 | `skills/SKILL_ARCHITECTURE_GUARDIAN.md` | `c11eb205b3dc89bf3ed9be4436aaabbc1883488c2c8a4b47d911496c39a19a82` |
 | `skills/SKILL_BACKTEST_RED_TEAM.md` | `bca1de4923f49505532fbb83f4ec1c746afe5ec82f69120bc6c5b6d9f137d5a9` |
 | `skills/SKILL_BENCHMARK_RUNNER.md` | `591f83a0901a87af858a4b191c6b5ae18989c14cdb1b25756c7eaad42d648a98` |

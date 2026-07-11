@@ -19,7 +19,7 @@ import hashlib
 import json
 import shutil
 import subprocess
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -42,7 +42,22 @@ END = datetime(2026, 7, 1, tzinfo=UTC)
 BASELINES = ("B1", "B2", "B3", "B4")
 
 
-def convert_data(pairs: list[str]) -> list[str]:
+def parse_date(value: str) -> datetime:
+    return datetime.fromisoformat(value).replace(tzinfo=UTC)
+
+
+def selected_window(args: argparse.Namespace) -> tuple[datetime, datetime, str]:
+    end = parse_date(args.end_date) if args.end_date else END
+    if args.window_days is not None:
+        start = end - timedelta(days=args.window_days)
+        return start, end, f"last_{args.window_days}_days"
+    start = parse_date(args.start_date) if args.start_date else START
+    if start >= end:
+        raise SystemExit("--start-date must be before --end-date")
+    return start, end, "custom" if args.start_date or args.end_date else "full"
+
+
+def convert_data(pairs: list[str], start: datetime, end: datetime) -> list[str]:
     """Canonical parquet -> CSV(timestamp_epoch_s, OHLCV float) for in-container
     injection into BacktestingDataProvider.candles_feeds (no network fetch)."""
     DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -56,9 +71,12 @@ def convert_data(pairs: list[str]) -> list[str]:
             for row in table.select(
                 ["timestamp_open_utc", "open", "high", "low", "close", "volume_base"]
             ).to_pylist():
+                ts = row["timestamp_open_utc"]
+                if ts < start or ts >= end:
+                    continue
                 w.writerow(
                     [
-                        int(row["timestamp_open_utc"].timestamp()),
+                        int(ts.timestamp()),
                         float(row["open"]),
                         float(row["high"]),
                         float(row["low"]),
@@ -66,22 +84,37 @@ def convert_data(pairs: list[str]) -> list[str]:
                         float(row["volume_base"]),
                     ]
                 )
-        notes.append(f"{dest.name}: {table.num_rows} rows from {sym}_{TIMEFRAME}.parquet")
+        row_count = sum(1 for _ in dest.open()) - 1
+        notes.append(
+            f"{dest.name}: {row_count} rows from {sym}_{TIMEFRAME}.parquet "
+            f"for {start.date()}..{end.date()}"
+        )
     return notes
 
 
 def run_backtest(
-    baseline: str, sym: str, scenario: FeeSlippageScenario, run_tag: str
+    baseline: str,
+    sym: str,
+    scenario: FeeSlippageScenario,
+    run_tag: str,
+    start: datetime,
+    end: datetime,
+    window_label: str,
+    timeout_seconds: int,
 ) -> dict[str, Any]:
     trading_pair = PAIRS[sym]
     out_dir = ARTIFACTS / baseline / sym / scenario.scenario_id.replace("/", "_") / run_tag
     out_dir.mkdir(parents=True, exist_ok=True)
     raw_out = out_dir / "raw.json"
+    scenario_tag = scenario.scenario_id.replace("/", "_")
+    container_name = f"tios-hb-{baseline}-{sym}-{scenario_tag}-{run_tag}".lower().replace("_", "-")
 
     cmd = [
         "docker",
         "run",
         "--rm",
+        "--name",
+        container_name,
         "-v",
         f"{LANE}:/lane:ro",
         "-v",
@@ -95,16 +128,38 @@ def run_backtest(
             "export PYTHONPATH=/home/hummingbot && "
             f"python /lane/_run.py --baseline {baseline} --trading-pair {trading_pair} "
             f"--csv /lane/data/{sym}_{TIMEFRAME}.csv "
-            f"--start {int(START.timestamp())} --end {int(END.timestamp())} "
+            f"--start {int(start.timestamp())} --end {int(end.timestamp())} "
             f"--trade-cost {scenario.fee_rate_per_side} --out /out/raw.json"
         ),
     ]
     started = datetime.now(tz=UTC).isoformat()
-    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=1800)
-    (out_dir / "stdout.log").write_text(proc.stdout)
-    (out_dir / "stderr.log").write_text(proc.stderr)
+    timed_out = False
+    stopped_container = False
+    try:
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_seconds)
+        stdout = proc.stdout
+        stderr = proc.stderr
+        returncode: int | None = proc.returncode
+    except subprocess.TimeoutExpired as exc:
+        timed_out = True
+        stdout = exc.stdout if isinstance(exc.stdout, str) else (exc.stdout or b"").decode()
+        stderr = exc.stderr if isinstance(exc.stderr, str) else (exc.stderr or b"").decode()
+        stop = subprocess.run(
+            ["docker", "stop", container_name],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        stopped_container = stop.returncode == 0
+        stderr += f"\nTIMEOUT after {timeout_seconds}s; docker stop rc={stop.returncode}\n"
+        stderr += stop.stdout + stop.stderr
+        returncode = None
+    (out_dir / "stdout.log").write_text(stdout)
+    (out_dir / "stderr.log").write_text(stderr)
 
-    status = "OK" if proc.returncode == 0 and raw_out.exists() else "FAILED"
+    status = (
+        "TIMEOUT" if timed_out else ("OK" if returncode == 0 and raw_out.exists() else "FAILED")
+    )
     manifest = {
         "artifact_id": f"hummingbot-{baseline}-{sym}-{scenario.scenario_id}-{run_tag}",
         "produced_by": "T-006-05",
@@ -113,8 +168,16 @@ def run_backtest(
         "engine_version": "2.15.0",
         "image_digest_ref": str(ENGINE_DIR / "env_manifest.txt"),
         "command": cmd,
-        "returncode": proc.returncode,
+        "returncode": returncode,
+        "timed_out": timed_out,
+        "timeout_seconds": timeout_seconds,
+        "stopped_container": stopped_container,
         "started_utc": started,
+        "window": {
+            "label": window_label,
+            "start": start.isoformat(),
+            "end": end.isoformat(),
+        },
         "scenario": scenario.scenario_id,
         "fee_rate_per_side": str(scenario.fee_rate_per_side),
         "capability_gaps": [
@@ -159,22 +222,36 @@ def main() -> None:
     parser.add_argument("--baselines", default=",".join(BASELINES))
     parser.add_argument("--pairs", default=",".join(PAIRS))
     parser.add_argument("--run-tag", default="run1")
+    parser.add_argument("--start-date")
+    parser.add_argument("--end-date")
+    parser.add_argument("--window-days", type=int)
+    parser.add_argument("--timeout-seconds", type=int, default=1800)
     args = parser.parse_args()
     wanted = args.scenarios.split(",")
     scenarios = [s for s in MANDATORY_GRID if s.scenario_id in wanted]
     pairs = args.pairs.split(",")
+    start, end, window_label = selected_window(args)
 
     LANE.mkdir(parents=True, exist_ok=True)
     shutil.copy2(ENGINE_DIR / "_run_template.py", LANE / "_run.py")
 
-    notes = convert_data(pairs)
+    notes = convert_data(pairs, start, end)
     for n in notes:
         print("data:", n)
 
     for baseline in args.baselines.split(","):
         for sym in pairs:
             for scenario in scenarios:
-                m = run_backtest(baseline, sym, scenario, args.run_tag)
+                m = run_backtest(
+                    baseline,
+                    sym,
+                    scenario,
+                    args.run_tag,
+                    start,
+                    end,
+                    window_label,
+                    args.timeout_seconds,
+                )
                 print(
                     f"{baseline} {sym} {scenario.scenario_id}: {m['status']} (rc={m['returncode']})"
                 )
