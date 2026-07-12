@@ -21,6 +21,7 @@ ApprovalState = Literal[
 
 LIVE_STATES = frozenset({"LIMITED_LIVE_REVIEW", "LIMITED_LIVE_APPROVED", "LIVE_APPROVED"})
 HUMAN_PAPER_STATES = frozenset({"PAPER_APPROVED", "PAPER_ACTIVE"})
+CURRENT_PHASE_STATES = frozenset({"NOT_ELIGIBLE", "RESEARCH", "VALIDATION", "RETIRED"})
 TRANSITIONS: dict[str, frozenset[str]] = {
     "NOT_ELIGIBLE": frozenset({"RESEARCH", "RETIRED"}),
     "RESEARCH": frozenset({"VALIDATION", "RETIRED"}),
@@ -71,8 +72,8 @@ def transition(
     human_decision_ref: str | None = None,
 ) -> Approval:
     """Apply one S1-safe transition; all live-family states are unreachable."""
-    if target in LIVE_STATES:
-        raise ApprovalError("live-family approval states are unreachable in the current phase")
+    if target not in CURRENT_PHASE_STATES:
+        raise ApprovalError("paper/live approval states are unreachable in the current phase")
     if target not in TRANSITIONS[approval.state]:
         raise ApprovalError(f"forbidden transition: {approval.state} -> {target}")
     if not evidence_refs:

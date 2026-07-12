@@ -281,3 +281,20 @@ it reuses only already-authorized data and candidates. New-source ingestion
 (D-020, manual) remains the follow-up if lower frequencies also fail.
 Status: **Approved (AI decision under D-039); evidence cycle recorded in the seed
 cycle artifacts.**
+
+### D-041 — Second audited console write: the data-refresh trigger
+Decision (operator-requested, 2026-07-12): the local dashboard gains a second write
+action beyond D-038's decision route — `POST /api/v1/workspace-actions/data-update`,
+which launches ONLY the local `tios.dataset.daily_update` module (a fixed argv; no
+parameters, no arbitrary command, no venue/order/credential/money path). It is
+loopback-bound like the rest of the console, appends an audit line to
+`artifacts/operations/data_update_triggers.jsonl`, and returns immediately. Rationale:
+the operator wants to refresh the frozen dataset on demand and see the last-update
+timestamp on the console; the action is a bounded, offline data refresh whose only
+effect is appending newer bars to the frozen parquet (deterministic from source, so
+reproducibility holds). The paired read view `GET /api/v1/operations` (data freshness
++ per-strategy results and last-tested time) writes nothing. Any wider console action
+(anything touching venues, orders, credentials, or non-`daily_update` commands)
+requires its own decision gate.
+Status: **Approved (operator); implemented in `dashboard_api/operations.py` +
+`dashboard_ui/server.py`, gate-verified.**

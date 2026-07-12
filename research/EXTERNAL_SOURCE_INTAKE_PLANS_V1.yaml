@@ -120,6 +120,59 @@ plans:
       - Copyrighted text must not be copied into artifacts beyond minimal citation metadata.
     approval_eligible: false
 
+  - plan_id: INTAKE-TRADINGVIEW-PUBLIC-STRATEGIES
+    source_ref: SRC-TRADINGVIEW-PUBLIC-STRATEGIES
+    capture_mode: strategy_tester_reproduction
+    status: ready_for_offline_capture
+    target_artifact: artifacts/source_intake/tradingview_public_strategies/strategy_tester_candidates.json
+    allowed_uses:
+      - record open-source Pine strategy metadata, license, parameters, and attribution
+      - capture TradingView Strategy Tester summary metrics as external evidence
+      - translate visible Pine rules into local specs for OS reproduction
+    prohibited_actions:
+      - credential_request
+      - account_connection
+      - subscription_or_copy_action
+      - order_routing
+      - paper_demo_or_live_activation
+      - profit_claim_inheritance
+    required_capture_fields:
+      - captured_at_utc
+      - canonical_url
+      - author_or_publisher
+      - script_title
+      - script_access_type
+      - license_or_reuse_status
+      - pine_version
+      - symbol
+      - timeframe
+      - tester_date_range
+      - initial_capital
+      - commission_and_slippage
+      - net_profit
+      - max_drawdown
+      - trade_count
+      - win_rate
+      - profit_factor
+      - parameter_visibility
+      - terms_review_status
+    bias_risks:
+      - public-library selection and popularity bias
+      - author-optimized parameters and undisclosed overfitting
+      - TradingView data and broker-emulator fills can diverge from OS canonical data
+      - open-source license may permit private study but still require attribution or reuse limits
+    validation_prerequisites:
+      - canonical source snapshot and license/attribution record
+      - exact Pine-to-local rule translation with ambiguity record
+      - local backtest on approved frozen data using declared cost grid
+      - TradingView-versus-OS metric divergence report
+      - G10 multiple-testing evidence before any promotion claim
+    notes:
+      - Only open-source/visible-code strategies are eligible for code reproduction.
+      - Protected and invite-only scripts remain metadata-only or excluded unless explicit permission exists.
+      - TradingView Strategy Tester metrics are retained as external evidence, never approval proof.
+    approval_eligible: false
+
   - plan_id: INTAKE-3COMMAS-DCA-BOT
     source_ref: SRC-3COMMAS-DCA-BOT
     capture_mode: config_reconstruction

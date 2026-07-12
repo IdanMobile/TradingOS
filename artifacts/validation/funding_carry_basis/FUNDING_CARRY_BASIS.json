@@ -1,0 +1,69 @@
+{
+  "best": {
+    "ann_return_pct": 12.7,
+    "lookback": 21,
+    "max_drawdown_pct": -0.5,
+    "rebalance": 3,
+    "sharpe_ann": 9.17,
+    "threshold": 0.0,
+    "total_return_pct": 92.6
+  },
+  "execution_authority": "NONE",
+  "g10_dsr": {
+    "dsr": 1.0,
+    "expected_max_noise_sharpe": 0.1171,
+    "note": "Basis-aware (funding + spot-perp divergence) \u2014 and the carry SURVIVES basis risk (that is real: a well-arbitraged perp tracks spot within ~0.1%). But Sharpe ~9 is still inflated: it omits execution slippage, intraperiod basis spikes (8h closes), leverage/liquidation, and exchange COUNTERPARTY risk (the actual 2022 killer). Real-world carry Sharpe is ~2-4. The remaining validation is EXECUTION-level \u2014 it needs S3 paper trading to measure real fills/slippage \u2014 and counterparty risk is an operator/venue decision, not a backtest number.",
+    "threshold": 0.95,
+    "verdict": "PASS",
+    "verdict_is_genuine": false
+  },
+  "mode": "OFFLINE_RESEARCH_ONLY",
+  "periods": 6021,
+  "schema": "tios-funding-carry-basis-v1",
+  "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+  "top_configs": [
+    {
+      "ann_return_pct": 12.7,
+      "lookback": 21,
+      "max_drawdown_pct": -0.5,
+      "rebalance": 3,
+      "sharpe_ann": 9.17,
+      "threshold": 0.0
+    },
+    {
+      "ann_return_pct": 12.2,
+      "lookback": 63,
+      "max_drawdown_pct": -0.5,
+      "rebalance": 3,
+      "sharpe_ann": 9.12,
+      "threshold": 0.0
+    },
+    {
+      "ann_return_pct": 12.3,
+      "lookback": 9,
+      "max_drawdown_pct": -0.6,
+      "rebalance": 21,
+      "sharpe_ann": 8.98,
+      "threshold": 0.0
+    },
+    {
+      "ann_return_pct": 12.4,
+      "lookback": 9,
+      "max_drawdown_pct": -0.8,
+      "rebalance": 3,
+      "sharpe_ann": 8.55,
+      "threshold": 0.0
+    },
+    {
+      "ann_return_pct": 12.3,
+      "lookback": 9,
+      "max_drawdown_pct": -2.6,
+      "rebalance": 9,
+      "sharpe_ann": 6.77,
+      "threshold": 0.0
+    }
+  ],
+  "tradeability": "RESEARCH_ONLY \u2014 perps/margin S4-gated; 1x (no liquidation modelled); exchange counterparty risk out of scope",
+  "trials_searched": 18,
+  "universe_pairs": 12
+}

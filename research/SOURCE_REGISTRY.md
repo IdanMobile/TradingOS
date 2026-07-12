@@ -70,3 +70,28 @@ Curated GitHub lists and topic pages may be used to discover candidates, but nev
 | https://arxiv.org/abs/2604.15151 | Research paper | QuantCode-Bench | Primary research |
 | https://arxiv.org/abs/2605.17937 | Research paper | BacktestBench | Primary research |
 | https://arxiv.org/abs/2605.28359 | Research paper | KTD-Fin leakage/attribution | Primary research |
+
+## Strategy-discovery & methodology research — added 2026-07-12
+
+Web research on how professional quants, funds, and bots discover and run
+strategies (feeds future research/strategy/signal features). Methodology &
+discovery sources — NOT production validation; every strategy still owes the
+project's own G1–G11 + DSR gates.
+
+| Source | URL | Category | Use | Evidence strength |
+|---|---|---|---|---|
+| ML for Trading — Alpha Factor Research (S. Jansen) | https://stefan-jansen.github.io/machine-learning-for-trading/04_alpha_factor_research/ | Methodology | alpha-factor research, feature engineering, PCA | Strong (reference text) |
+| Quant Hedge Funds: Strategies, Trends & AI | https://quantmatter.com/quant-hedge-funds/ | Methodology | factor/statarb/trend/ML strategy taxonomy | Secondary |
+| "Great Autonomous Strategy or Fooling Yourself?" (arXiv 2101.07217) | https://ar5iv.labs.arxiv.org/html/2101.07217 | Validation | self-deception/overfitting in automated strategy search | Primary research |
+| Backtesting AI Crypto Strategies: overfitting/lookahead/leakage | https://www.blockchain-council.org/cryptocurrency/backtesting-ai-crypto-trading-strategies-avoiding-overfitting-lookahead-bias-data-leakage/ | Validation | crypto backtest pitfalls + defenses | Secondary |
+| Retail Mistakes That Pros Exploit | https://medium.com/@vince_71816/retail-trading-mistakes-that-pros-exploit-and-how-algorithmic-systems-avoid-them-2bce5957bdad | Methodology | execution/risk edge, continuous sizing, adaptive weighting | Secondary |
+| Kraken — Funding Rate Arbitrage | https://www.kraken.com/learn/futures-trading-funding-rate-arbitrage | Strategy (funding) | delta-neutral basis-carry mechanics | Official venue edu |
+| Funding Rate Arbitrage: Delta-Neutral Guide | https://arbitragescanner.io/blog/crypto-funding-rate-arbitrage-guide | Strategy (funding) | carry returns (~11–33% APR), risks | Secondary |
+| QuantPedia — Multi-Timeframe Trend on BTC | https://quantpedia.com/how-to-design-a-simple-multi-timeframe-trend-strategy-on-bitcoin/ | Signal design | multi-timeframe confluence | Research-secondary |
+| Ensemble Methods for Crypto Trading (arXiv 2501.10709) | https://arxiv.org/html/2501.10709v1 | Signal design | ensemble/DRL agent aggregation | Primary research |
+
+Key takeaways feeding future features: (1) edge is usually an ENSEMBLE of weak
+signals + execution/risk engineering, not one strategy; (2) multi-timeframe
+confluence and multi-source data fusion are standard; (3) crypto's most robust
+documented edge is NON-predictive funding-rate carry (delta-neutral), which
+sidesteps the price-prediction problem our DSR tests keep failing.

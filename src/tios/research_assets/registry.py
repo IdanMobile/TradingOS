@@ -25,6 +25,7 @@ class ResearchSourceError(ValueError):
 
 class SourceClass(StrEnum):
     PRIMARY_ACADEMIC_PAPER = "primary_academic_paper"
+    PUBLIC_STRATEGY_LIBRARY = "public_strategy_library"
     EXCHANGE_BOT_MARKETPLACE = "exchange_bot_marketplace"
     COPY_TRADING_LEADERBOARD = "copy_trading_leaderboard"
     ONLINE_SIGNAL_FEED = "online_signal_feed"
@@ -48,6 +49,7 @@ class HypothesisFamily(StrEnum):
     EXCHANGE_BOT_REPLAY = "exchange_bot_replay"
     COPY_TRADING_REPLAY = "copy_trading_replay"
     SIGNAL_REPLAY = "signal_replay"
+    PUBLIC_STRATEGY_REPRODUCTION = "public_strategy_reproduction"
     BOT_PLATFORM_REPLAY = "bot_platform_replay"
 
 

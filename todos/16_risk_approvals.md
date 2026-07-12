@@ -10,4 +10,11 @@ Requirement source: AD §Y/§Z, type catalog §2 APR. Skill: R7.
 - Purpose: encode MVP risk posture (no live, cost-stress mandatory, drawdown/tail metrics reported) as checks consumed by validation packages. Requirement: REQ-051.
 - Acceptance: rules evaluated in every VAL package. Complexity: S. Status: **DONE 2026-07-10** — B2 package records no-live, complete-cost-grid, drawdown/tail metrics, and promotion-ineligibility independently of strategy logic.
 
-## S2/S3 backlog (deferred; design in AD §Z): independent runtime risk engine, kill-switch drills, portfolio caps, per-strategy budgets. Entry: S3 paper lane existence.
+## S2/S3 backlog (deferred activation; design in AD §Z)
+
+Pure preparation is **DONE 2026-07-12**: bounded synthetic runtime, portfolio,
+per-strategy, and market-condition policies plus an independent deterministic
+`RiskDecision` evaluator are implemented and tested. Ledger transitions now enforce
+credit/debit conservation and reject overdrafts. Active risk enforcement, wallet
+mutation, kill-switch operation, and paper/live routing remain deferred until an
+authorized S3 paper lane exists.

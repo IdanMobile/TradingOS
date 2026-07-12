@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import subprocess
@@ -502,10 +503,48 @@ def _latest_seed_cycle(root: Path) -> dict[str, Any] | None:
     }
 
 
+def _latest_tradingview_public_strategy_replay(root: Path) -> dict[str, Any] | None:
+    replay_root = root / "artifacts" / "external_replay" / "tradingview_public_strategies"
+    if not replay_root.exists():
+        return None
+    confined_root = replay_root.resolve()
+    candidates = [
+        path
+        for path in replay_root.glob("TVPINE-*/replay_run.json")
+        if path.is_file() and path.resolve().is_relative_to(confined_root)
+    ]
+    if not candidates:
+        return None
+    path = max(candidates, key=lambda candidate: candidate.stat().st_mtime_ns)
+    payload = _json(path)
+    counts = payload.get("counts")
+    counts = counts if isinstance(counts, dict) else {}
+    return {
+        "replay_id": path.parent.name,
+        "status": payload.get("status", "UNKNOWN"),
+        "mode": payload.get("mode", "OFFLINE_RESEARCH_ONLY"),
+        "execution_authority": payload.get("execution_authority", "NONE"),
+        "venue_connection": payload.get("venue_connection", "NONE"),
+        "paper_orders": payload.get("paper_orders", "DISABLED"),
+        "live_orders": payload.get("live_orders", "DISABLED"),
+        "counts": counts,
+        "scorecard_path": payload.get("scorecard_path"),
+        "artifact_ref": str(path.relative_to(root)),
+    }
+
+
 def _research_sources(root: Path) -> dict[str, Any]:
     path = root / "research" / "PRIMARY_STRATEGY_RESEARCH_SOURCES_V1.yaml"
     intake_path = root / "research" / "EXTERNAL_SOURCE_INTAKE_PLANS_V1.yaml"
     replay_path = root / "research" / "EXTERNAL_REPLAY_HYPOTHESES_V1.yaml"
+    tv_candidate_path = (
+        root / "artifacts/source_intake/tradingview_public_strategies/"
+        "selected_candidates_2026_07_11.json"
+    )
+    tv_candidate_batch = _json(tv_candidate_path)
+    tv_candidates_raw = tv_candidate_batch.get("candidates")
+    tv_candidates = tv_candidates_raw if isinstance(tv_candidates_raw, list) else []
+    latest_tv_replay = _latest_tradingview_public_strategy_replay(root)
     base: dict[str, Any] = {
         "source_count": 0,
         "family_counts": {},
@@ -520,6 +559,15 @@ def _research_sources(root: Path) -> dict[str, Any]:
             "replay_candidate_count": 0,
             "non_reconstructable_count": 0,
             "noneligible_count": 0,
+        },
+        "tradingview_public_strategy_batch": {
+            "candidate_count": 0,
+            "status": "NO_BATCH",
+            "artifact_ref": None,
+            "execution_authority": "NONE",
+            "approval_eligible": False,
+            "latest_replay": None,
+            "rows": [],
         },
         "rows": [],
     }
@@ -579,6 +627,27 @@ def _research_sources(root: Path) -> dict[str, Any]:
             ),
             "noneligible_count": sum(not item.approval_eligible for item in replay_hypotheses),
         },
+        "tradingview_public_strategy_batch": {
+            "candidate_count": len(tv_candidates),
+            "status": tv_candidate_batch.get("capture_status", "NO_BATCH"),
+            "artifact_ref": (
+                str(tv_candidate_path.relative_to(root)) if tv_candidate_path.is_file() else None
+            ),
+            "execution_authority": tv_candidate_batch.get("execution_authority", "NONE"),
+            "approval_eligible": tv_candidate_batch.get("approval_eligible") is True,
+            "latest_replay": latest_tv_replay,
+            "rows": [
+                {
+                    "candidate_id": str(row.get("candidate_id", "")),
+                    "title": str(row.get("title", "")),
+                    "family": str(row.get("family", "")),
+                    "tester_status": str(row.get("tester_status", "")),
+                    "url": str(row.get("canonical_url", "")),
+                }
+                for row in tv_candidates[:8]
+                if isinstance(row, dict)
+            ],
+        },
         "rows": [
             {
                 "source_id": record.source_id,
@@ -635,8 +704,78 @@ def _dictionary_concepts(root: Path) -> dict[str, Any]:
     }
 
 
+def _s3_s4_control_plane_report(root: Path) -> dict[str, Any]:
+    path = root / "artifacts" / "reports" / "S3_S4_CONTROL_PLANE_READINESS_2026_07_11.json"
+    payload = _json(path)
+    if not payload:
+        return {
+            "status": "NO_ARTIFACT",
+            "artifact_ref": None,
+            "content_sha256": None,
+            "active_record_counts": {
+                "stage_gate_records": 0,
+                "paper_lane_proposals": 0,
+                "paper_divergence_reports": 0,
+                "paper_fill_policies": 0,
+                "operational_drill_records": 0,
+                "synthetic_ledgers": 0,
+                "synthetic_accounts": 0,
+                "synthetic_portfolios": 0,
+                "runtime_risk_policies": 0,
+                "portfolio_risk_policies": 0,
+                "strategy_budget_policies": 0,
+                "market_condition_policies": 0,
+                "restricted_credential_policies": 0,
+                "paper_operations_runbooks": 0,
+                "paper_operations_events": 0,
+                "operational_incidents": 0,
+                "durable_evidence_events": 0,
+                "paper_stability_reports": 0,
+                "limited_live_risk_packages": 0,
+                "live_operations_runbooks": 0,
+                "live_operations_events": 0,
+                "live_readiness_proposals": 0,
+            },
+            "s3_blockers": [],
+            "s4_blockers": [],
+        }
+    retained_hash = payload.get("content_sha256")
+    hash_input = dict(payload)
+    hash_input.pop("content_sha256", None)
+    calculated_hash = hashlib.sha256(
+        json.dumps(hash_input, sort_keys=True, separators=(",", ":"), default=str).encode()
+    ).hexdigest()
+    if retained_hash != calculated_hash:
+        return {
+            "status": "INVALID_ARTIFACT",
+            "artifact_ref": str(path.relative_to(root)),
+            "markdown_artifact_ref": str(path.with_suffix(".md").relative_to(root)),
+            "content_sha256": retained_hash,
+            "mode": "CONTROL_PLANE_PROBE_ONLY",
+            "execution_authority": "NONE",
+            "paper_orders": "DISABLED",
+            "live_orders": "DISABLED",
+            "active_record_counts": {},
+            "s3_blockers": ["readiness artifact integrity check failed"],
+            "s4_blockers": ["readiness artifact integrity check failed"],
+        }
+    return {
+        "status": payload.get("status", "UNKNOWN"),
+        "artifact_ref": str(path.relative_to(root)),
+        "markdown_artifact_ref": str(path.with_suffix(".md").relative_to(root)),
+        "content_sha256": payload.get("content_sha256"),
+        "mode": payload.get("mode", "CONTROL_PLANE_PROBE_ONLY"),
+        "execution_authority": payload.get("execution_authority", "NONE"),
+        "paper_orders": payload.get("paper_orders", "DISABLED"),
+        "live_orders": payload.get("live_orders", "DISABLED"),
+        "active_record_counts": payload.get("active_record_counts", {}),
+        "s3_blockers": payload.get("s3_blockers", []),
+        "s4_blockers": payload.get("s4_blockers", []),
+    }
+
+
 def _trading_domain(
-    runs: list[dict[str, Any]], validation_package: dict[str, Any]
+    root: Path, runs: list[dict[str, Any]], validation_package: dict[str, Any]
 ) -> dict[str, Any]:
     retained_fills = sum(
         int(run.get("fills", 0))
@@ -646,6 +785,7 @@ def _trading_domain(
     risk_preconditions = validation_package.get("risk_preconditions", {})
     if not isinstance(risk_preconditions, dict):
         risk_preconditions = {}
+    control_plane_report = _s3_s4_control_plane_report(root)
     return {
         "schema_version": 1,
         "environment": "HISTORICAL_RESEARCH",
@@ -661,6 +801,7 @@ def _trading_domain(
             "paper_orders": "DISABLED",
             "live_orders": "DISABLED",
             "risk_engine": "VALIDATION_PRECONDITIONS_ONLY",
+            "s3_s4_contracts": "MODELED_INERT",
         },
         "counts": {
             "retained_run_artifacts": len(runs),
@@ -671,6 +812,28 @@ def _trading_domain(
             "portfolios": 0,
             "positions": 0,
             "risk_decisions": 0,
+            "stage_gate_records": 0,
+            "paper_lane_proposals": 0,
+            "paper_divergence_reports": 0,
+            "paper_fill_policies": 0,
+            "operational_drill_records": 0,
+            "synthetic_ledgers": 0,
+            "synthetic_accounts": 0,
+            "synthetic_portfolios": 0,
+            "runtime_risk_policies": 0,
+            "portfolio_risk_policies": 0,
+            "strategy_budget_policies": 0,
+            "market_condition_policies": 0,
+            "restricted_credential_policies": 0,
+            "paper_operations_runbooks": 0,
+            "paper_operations_events": 0,
+            "operational_incidents": 0,
+            "durable_evidence_events": 0,
+            "paper_stability_reports": 0,
+            "limited_live_risk_packages": 0,
+            "live_operations_runbooks": 0,
+            "live_operations_events": 0,
+            "live_readiness_proposals": 0,
         },
         "read_models": [
             {
@@ -694,6 +857,177 @@ def _trading_domain(
                 "name": "Risk decisions",
                 "status": "PRECONDITIONS_ONLY",
                 "detail": "Risk is currently validation evidence, not a runtime execution engine.",
+            },
+            {
+                "name": "S3/S4 readiness control plane",
+                "status": "MODELED_INERT",
+                "detail": (
+                    "Immutable stage-gate, paper-lane, and live-readiness contracts "
+                    "exist; no active records or controls exist before gates."
+                ),
+            },
+            {
+                "name": "Backtest-versus-paper divergence",
+                "status": "MODELED_INERT",
+                "detail": (
+                    "Divergence report contracts exist for S3 reconciliation; no "
+                    "paper observations exist before a paper lane is approved."
+                ),
+            },
+            {
+                "name": "Operational drills",
+                "status": "MODELED_INERT",
+                "detail": (
+                    "Feed-loss, stale-data, engine-failure, kill-switch, and credential "
+                    "revocation drill contracts exist; no active drills exist before gates."
+                ),
+            },
+            {
+                "name": "Synthetic demo ledger",
+                "status": "MODELED_INERT",
+                "detail": (
+                    "Mock-money ledger contracts exist for S3 paper/demo accounting; "
+                    "no active ledger exists before gates."
+                ),
+            },
+            {
+                "name": "Synthetic paper fill policy",
+                "status": "MODELED_INERT",
+                "detail": (
+                    "Deterministic local fill-policy contracts exist for future demo "
+                    "reconciliation; no active fill policy exists before gates."
+                ),
+            },
+            {
+                "name": "Synthetic execution reducers",
+                "status": "AVAILABLE_OFFLINE_INERT",
+                "detail": (
+                    "Deterministic fill pricing, idempotent ledger replay, fee-aware "
+                    "position P&L, and ledger-backed portfolio projection are available "
+                    "as pure local functions; no mutation or order route exists."
+                ),
+            },
+            {
+                "name": "Canonical signal evaluator",
+                "status": "AVAILABLE_OFFLINE_INERT",
+                "detail": (
+                    "Canonical rule trees and source-specific seed indicators, including "
+                    "TradingView and pandas-ta Supertrend conventions, emit retained "
+                    "bar-close signals only; signals cannot become orders."
+                ),
+            },
+            {
+                "name": "Durable synthetic evidence ledger",
+                "status": "AVAILABLE_OFFLINE_INERT",
+                "detail": (
+                    "A confined append-only SQLite ledger provides hashed, idempotent local "
+                    "evidence retention; no active ledger or scheduler integration exists."
+                ),
+            },
+            {
+                "name": "Synthetic account and portfolio",
+                "status": "MODELED_INERT",
+                "detail": (
+                    "Mock-money account and portfolio snapshot contracts exist for future "
+                    "demo accounting; no active account or portfolio exists before gates."
+                ),
+            },
+            {
+                "name": "Synthetic runtime risk policy",
+                "status": "MODELED_INERT",
+                "detail": (
+                    "Runtime capital, drawdown, position, daily-loss, and kill-switch "
+                    "policy contracts exist; no active risk policy exists before gates."
+                ),
+            },
+            {
+                "name": "Synthetic portfolio risk policy",
+                "status": "MODELED_INERT",
+                "detail": (
+                    "Portfolio concentration, correlated-exposure, strategy-budget, and "
+                    "open-position cap contracts exist; no active policy exists before gates."
+                ),
+            },
+            {
+                "name": "Synthetic strategy budget policy",
+                "status": "MODELED_INERT",
+                "detail": (
+                    "Context-specific allocation, notional, daily-loss, and position-cap "
+                    "contracts exist; no active strategy budget exists before gates."
+                ),
+            },
+            {
+                "name": "Synthetic market-condition policy",
+                "status": "MODELED_INERT",
+                "detail": (
+                    "Stale-data, spread, venue-health, and timestamp guards exist and "
+                    "fail closed; no active market guard exists before gates."
+                ),
+            },
+            {
+                "name": "Restricted credential policy",
+                "status": "MODELED_INERT",
+                "detail": (
+                    "S4 credential-boundary contracts exist with secret material absent; "
+                    "no active credential policy or venue connection exists before gates."
+                ),
+            },
+            {
+                "name": "Paper operations runbook",
+                "status": "MODELED_INERT",
+                "detail": (
+                    "Heartbeat, timeout, logging, and manual intervention runbook "
+                    "contracts exist; no active paper operations runbook exists before gates."
+                ),
+            },
+            {
+                "name": "Paper operations event log",
+                "status": "MODELED_INERT",
+                "detail": (
+                    "Heartbeat, process, manual-intervention, and log-retention event "
+                    "contracts exist; no active paper operations events exist before gates."
+                ),
+            },
+            {
+                "name": "Operational incident lifecycle",
+                "status": "MODELED_INERT",
+                "detail": (
+                    "S3/S4 incidents can be opened, acknowledged, assigned, resolved, "
+                    "and linked to post-incident evidence; no active incidents exist."
+                ),
+            },
+            {
+                "name": "Paper stability report",
+                "status": "MODELED_INERT",
+                "detail": (
+                    "Paper stability-window report contracts exist for future S3 exit; "
+                    "no active stability report exists before a paper lane runs."
+                ),
+            },
+            {
+                "name": "Limited live risk package",
+                "status": "MODELED_INERT",
+                "detail": (
+                    "S4 capital, order-notional, daily-loss, kill-switch, paper-stability, "
+                    "and credential-boundary package contracts exist; no active package "
+                    "exists before gates."
+                ),
+            },
+            {
+                "name": "Live operations runbook",
+                "status": "MODELED_INERT",
+                "detail": (
+                    "S4 heartbeat, incident-response, log-retention, and escalation "
+                    "runbook contracts exist; no active runbook exists before gates."
+                ),
+            },
+            {
+                "name": "Live operations event log",
+                "status": "MODELED_INERT",
+                "detail": (
+                    "S4 heartbeat, risk-limit, kill-switch, escalation, and log-retention "
+                    "event contracts exist; no active live operations events exist before gates."
+                ),
             },
         ],
         "demo_wallet_design": {
@@ -737,7 +1071,8 @@ def _trading_domain(
                 "demo divergence cannot promote a strategy without human gates",
             ],
         },
-        "stage_gate_readiness": build_stage_gate_readiness(),
+        "s3_s4_control_plane_report": control_plane_report,
+        "stage_gate_readiness": build_stage_gate_readiness(root),
         "risk_preconditions": {
             "status": risk_preconditions.get("status", "NOT_RUN"),
             "no_live_capability": risk_preconditions.get("no_live_capability") is True,
@@ -765,9 +1100,9 @@ def _trading_domain(
     }
 
 
-def build_stage_gate_readiness() -> dict[str, Any]:
+def build_stage_gate_readiness(root: Path | None = None) -> dict[str, Any]:
     """Project the S3/S4 gate chain without exposing any activation control."""
-    return {
+    projection: dict[str, Any] = {
         "schema_version": 1,
         "mode": "LOCAL_READ_ONLY",
         "status": "BLOCKED_BY_GATES",
@@ -787,6 +1122,7 @@ def build_stage_gate_readiness() -> dict[str, Any]:
                 "S2 research console implemented",
                 "no-live/no-order boundary verified",
                 "design-only demo-wallet readiness visible",
+                "inert S3/S4 readiness contracts implemented",
             ],
             "blocked_by": [
                 "S2_EXIT_PASS",
@@ -824,6 +1160,20 @@ def build_stage_gate_readiness() -> dict[str, Any]:
             ],
         },
     }
+    if root is not None:
+        artifact = _s3_s4_control_plane_report(root)
+        projection["evidence_artifact"] = {
+            "status": artifact["status"],
+            "artifact_ref": artifact["artifact_ref"],
+            "content_sha256": artifact["content_sha256"],
+        }
+        if artifact["status"] == "INVALID_ARTIFACT":
+            projection["status"] = "INVALID_ARTIFACT"
+            projection["s3_paper_demo"]["blocked_by"].append(
+                "readiness artifact integrity check failed"
+            )
+            projection["s4_live"]["blocked_by"].append("readiness artifact integrity check failed")
+    return projection
 
 
 def _latest_scorecards(root: Path) -> tuple[Path | None, dict[str, Any]]:
@@ -1183,7 +1533,7 @@ def build_dashboard_data(root: Path | None = None) -> dict[str, Any]:
         "research_lab": research_lab,
         "research_sources": _research_sources(root),
         "dictionary_concepts": _dictionary_concepts(root),
-        "trading_domain": _trading_domain(runs, validation_package),
+        "trading_domain": _trading_domain(root, runs, validation_package),
         "comparisons": _comparisons(root, validation_package),
         "datasets": datasets,
         "strategies": strategies,

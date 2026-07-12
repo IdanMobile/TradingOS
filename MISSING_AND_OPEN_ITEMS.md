@@ -112,6 +112,15 @@ evidence-only/deferred assets under D-037.
    agent-executable work is to open a new external source-family replay seed or build
    normal validation/cross-engine evidence only if a DCA variant survives first-pass
    replay; this is not execution.
+7. TradingView public-strategy intake has advanced from metadata selection to a first
+   local-only replay for the two candidates whose public pages supplied enough
+   explicit rules: RSI mean reversion and Bollinger/ATR/EMA. Evidence:
+   `artifacts/external_replay/tradingview_public_strategies/TVPINE-9f7d3fc15ece2785a4296e9eb3b15548/`.
+   The run retained 12 frozen-data trials and 57,046 local events, but remains
+   `UNVALIDATED`, non-eligible, and `execution_authority=NONE`. Remaining work is
+   exact Pine source/body hash capture where lawful, complete TradingView Strategy
+   Tester export capture, divergence reporting, cross-engine reproduction, and normal
+   validation only if a candidate survives first-pass evidence.
 
 ## Resolved authorized decision slices (2026-07-11)
 
@@ -193,6 +202,110 @@ evidence-only/deferred assets under D-037.
 - `GET /api/v1/stage-gates` now exposes the same blocked S3/S4 gate chain as a
   standalone read-only machine contract. It has no write, transition, order, venue,
   credential, demo/paper, or live control.
+- S3/S4 inert control-plane contracts are implemented and tested in
+  `tios.trading_domain`: stage-gate readiness records, requirement rows, synthetic-local
+  paper-lane proposals, backtest-versus-paper divergence reports, and limited-live
+  readiness proposals. They are future evidence records only; venue demo/testnet
+  proposal construction is rejected before credential gates, and all records retain
+  `execution_authority=NONE` with paper/live orders disabled. The dashboard shows the
+  contracts as `MODELED_INERT` and active record counts remain zero.
+- The S3/S4 control-plane readiness artifact is retained at
+  `artifacts/reports/S3_S4_CONTROL_PLANE_READINESS_2026_07_11.{json,md}`. It validates
+  probe-only S3/S4 records and exposes the remaining blockers to the dashboard without
+  creating active stage-gate, paper-lane, divergence, or live-readiness records.
+- S3/S4 operational-drill records are implemented as inert contracts for feed loss,
+  stale data, engine crash, manual kill switch, and credential revocation. The retained
+  readiness artifact includes PASS/BLOCKED probe rows, but no active drill record or
+  execution control exists before S3/S4 gates.
+- Synthetic demo-ledger contracts are implemented for future mock-money wallet
+  accounting. The retained readiness artifact includes a probe ledger with initial
+  capital and fee debit, but no active synthetic ledger, wallet mutation, order route,
+  venue connection, or real-money capability exists before S3 gates.
+- Synthetic paper-fill policy contracts are implemented for future local demo/paper
+  reconciliation. The retained readiness artifact includes a deterministic fill-policy
+  probe, but no active paper fill policy, fill engine, wallet mutation, order route,
+  venue connection, or real-money capability exists before S3 gates.
+- Synthetic account/portfolio snapshot contracts are implemented for future
+  mock-money demo projections. The retained readiness artifact includes probe account
+  and portfolio snapshots linked to the synthetic ledger, but no active synthetic
+  account, portfolio, wallet mutation, order route, venue connection, or real-money
+  capability exists before S3 gates.
+- Synthetic runtime-risk policy contracts are implemented for future demo/paper
+  limits. The retained readiness artifact includes a probe policy for capital,
+  position, daily-loss, drawdown, and kill-switch mode, but no active risk engine,
+  wallet mutation, order route, venue connection, or real-money capability exists
+  before S3 gates.
+- Synthetic portfolio-risk policy contracts are implemented for future demo/paper
+  caps. The retained readiness artifact includes a probe policy for symbol
+  concentration, correlated exposure, strategy budget, and open-position count, but
+  no active risk engine, wallet mutation, order route, venue connection, or
+  real-money capability exists before S3 gates.
+- Synthetic per-strategy budget and market-condition guard contracts plus a pure
+  independent risk evaluator are implemented. The evaluator can only produce
+  evidence-backed PASS/BLOCK records; it checks capital, notional, daily loss,
+  drawdown, exposure, strategy allocation, stale data, spread, venue health,
+  timestamp order, and kill-switch state without routing or mutating anything.
+  Synthetic ledger snapshots now enforce arithmetic conservation and reject
+  overdrafts. Active risk policies and ledgers remain zero before S3 gates.
+- Pure synthetic execution reducers are implemented for deterministic fill pricing,
+  fee/slippage treatment, idempotent ledger replay, insufficient-funds rejection,
+  fee-aware long-only position P&L, and ledger-backed account/portfolio equity.
+  Canonical rule/signal evaluation emits transition-only evidence and now implements
+  the distinct TradingView and pandas-ta/Hummingbot Supertrend direction conventions,
+  including Hummingbot's proximity gate. Independent external known-answer comparison
+  remains evidence work, not a semantic or implementation blocker. No reducer exposes
+  an order route or state-mutation API.
+- Signed P&L, computed divergence/stability, limited-live cross-record validation,
+  and operational incident lifecycle are implemented. Losing positions retain signed
+  realized/unrealized values without weakening nonnegative cash/fee/limit contracts.
+  Paper stability is derived from heartbeat cadence, incidents, duration, and
+  divergence; future limited-live readiness resolves all linked policies and drills.
+  Incident records require ownership, ordered acknowledgement/resolution, and
+  post-incident evidence. All remain inactive before gates.
+- Paper-stability PASS records now require the declared observation duration, full
+  recorded uptime, and zero incidents/missed heartbeats. S4 readiness records require
+  the complete named prerequisite chain, and the dashboard fails closed when the
+  retained readiness artifact hash is invalid.
+- Restricted credential boundary contracts are implemented for future S4 scope
+  control without secret material. The retained readiness artifact includes a probe
+  policy with funds movement forbidden, but no active credential policy, credential
+  value, venue connection, order route, or real-money capability exists before gates.
+- Paper operations runbook contracts are implemented for future S3 paper/demo
+  operational discipline. The retained readiness artifact includes a probe runbook
+  for heartbeat cadence, timeout, log retention, and intervention mode, but no active
+  runbook, venue connection, order route, or real-money capability exists before gates.
+- Paper operations event-log contracts are implemented for future S3 paper/demo
+  evidence rows. The retained readiness artifact includes a heartbeat event probe,
+  but no active operations event log, venue connection, order route, or real-money
+  capability exists before gates.
+- Paper stability report contracts are implemented for future S3 exit evidence. The
+  retained readiness artifact includes a blocked stability-window probe, but no active
+  paper stability report, venue connection, order route, or real-money capability
+  exists before gates.
+- Limited live risk-package contracts are implemented for future S4 readiness. The
+  retained readiness artifact includes a blocked package probe linked to paper
+  stability, credential policy, operations runbook, and runtime risk policy, but no
+  active live risk package, venue connection, order route, or real-money capability
+  exists before gates.
+- Live operations runbook contracts are implemented for future S4 operational
+  discipline. The retained readiness artifact includes a probe runbook for heartbeat,
+  incident response, log retention, and escalation mode, but no active live runbook,
+  venue connection, order route, or real-money capability exists before gates.
+- Live operations event-log contracts are implemented for future S4 operational
+  evidence. The retained readiness artifact includes a heartbeat probe linked to the
+  live runbook and limited-live risk package, but no active live event log,
+  credential access, venue connection, order route, or real-money capability exists
+  before gates.
+- TradingView open-source public strategies and Strategy Tester summaries are now a
+  first-class external-source intake lane, separate from prose TradingView Ideas:
+  the registry captures license/attribution, source visibility, parameters, tester
+  assumptions, and metrics as external comparison evidence only. Local OS reproduction,
+  divergence analysis, G10, and normal validation gates remain mandatory before S3.
+- The first TradingView public-strategy candidate batch is selected and retained with
+  eight metadata-only URLs/families. Remaining executable work is per-candidate
+  capture of Pine source hashes, license/attribution notes, Strategy Tester settings
+  and metrics, followed by local OS reproduction; the retained selection itself
+  does not validate or approve any strategy.
 - The broader local discovery surface is now projected in the dashboard:
   `GET /api/v1/search` and the Search view cover concepts, research assets, source
   records, strategies, and retained reports. This closes the roadmap's bounded
@@ -222,6 +335,12 @@ evidence-only/deferred assets under D-037.
   `artifacts/reports/S2_LIVE_UNREACHABILITY_REPORT.md`.
 - S2 requirement audit is complete and blocks exit/HG-3 on evidence grounds. Evidence:
   `artifacts/reports/S2_REQUIREMENT_AUDIT.md`.
+- Durable local evidence retention and gated approval history are implemented but
+  inactive. The confined append-only SQLite store provides canonical hashes,
+  idempotency, concurrent-writer serialization, bounded reads, and integrity checks;
+  typed human decisions expire and exact S3/S4 predicates are enforced. Active
+  evidence/approval counts remain zero and no scheduler, HTTP mutation, credential,
+  venue, wallet, or order route is enabled.
 
 ## Human-only before live trading
 

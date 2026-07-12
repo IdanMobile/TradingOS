@@ -119,6 +119,49 @@ hypotheses:
     profit_claims_inherited: false
     approval_eligible: false
 
+  - hypothesis_id: RPH-TRADINGVIEW-PUBLIC-STRATEGY-TESTER
+    source_ref: SRC-TRADINGVIEW-PUBLIC-STRATEGIES
+    intake_plan_ref: INTAKE-TRADINGVIEW-PUBLIC-STRATEGIES
+    kind: strategy_reproduction
+    status: spec_candidate
+    title: TradingView open-source Pine strategy retained for TV-vs-OS reproduction
+    statement: >-
+      A visible open-source TradingView Pine strategy with captured Strategy Tester
+      settings and metrics can become a local strategy-spec candidate, provided the
+      OS records license/attribution, translates the rules exactly, and treats the
+      TradingView report only as external comparison evidence.
+    reconstruction_scope:
+      - individual open-source Pine strategy URL only
+      - captured Strategy Tester report and strategy properties only
+      - local frozen-data reproduction before any validation claim
+      - no protected-code scraping, invite-only access bypass, alert subscription, or broker action
+    required_inputs:
+      - individual strategy URL
+      - open-source/visible-code confirmation
+      - license or reuse status
+      - Pine source snapshot hash or exact attributed local translation
+      - Strategy Tester symbol, timeframe, date range, capital, commission, and slippage
+      - Strategy Tester net profit, drawdown, trade count, win rate, and profit factor
+      - local OS reproduction artifact
+    missing_inputs:
+      - individual strategy URL
+      - source snapshot hash
+      - Strategy Tester report fields
+      - local OS reproduction artifact
+    assumptions:
+      - TradingView broker-emulator and data assumptions may not match OS canonical data.
+      - External green Strategy Tester results are not approval evidence until reproduced locally.
+    validation_plan:
+      - capture source metadata, license, source hash, and Strategy Tester metrics
+      - translate Pine rules to canonical spec or an engine implementation with ambiguity notes
+      - run OS backtests across approved frozen instruments and timeframes
+      - produce a TV-versus-OS divergence report before G10 validation
+    artifact_refs:
+      - artifacts/source_intake/tradingview_public_strategies/strategy_tester_candidates.json
+    execution_authority: NONE
+    profit_claims_inherited: false
+    approval_eligible: false
+
   - hypothesis_id: RPH-3COMMAS-DCA-CONFIG
     source_ref: SRC-3COMMAS-DCA-BOT
     intake_plan_ref: INTAKE-3COMMAS-DCA-BOT

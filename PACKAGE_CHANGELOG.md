@@ -481,3 +481,254 @@ Key outcomes:
   prohibit stage-gate transitions plus demo/paper/live controls.
 - Added focused tests for the builder and HTTP schema: writes disabled, credentials
   absent, order endpoint absent, S3/S4 both `NOT_READY`.
+
+## v8.30 — 2026-07-11 — TradingView public-strategy intake lane
+
+- Added `SRC-TRADINGVIEW-PUBLIC-STRATEGIES`,
+  `INTAKE-TRADINGVIEW-PUBLIC-STRATEGIES`, and
+  `RPH-TRADINGVIEW-PUBLIC-STRATEGY-TESTER` so open-source Pine strategies and
+  TradingView Strategy Tester summaries are first-class research inputs.
+- Captured required Strategy Tester fields: symbol, timeframe, date range, capital,
+  commission/slippage, net profit, drawdown, trade count, win rate, and profit factor.
+- Pinned the boundary that protected/invite-only scripts are excluded, TradingView
+  results are external comparison evidence only, local OS reproduction is required,
+  and `execution_authority=NONE` remains unchanged.
+
+## v8.31 — 2026-07-11 — TradingView candidate selection batch
+
+- Selected and retained eight public/open-source TradingView strategy candidates for
+  offline reproduction under
+  `artifacts/source_intake/tradingview_public_strategies/selected_candidates_2026_07_11.json`.
+- Added read-only dashboard/search projection for the selected batch so candidate IDs,
+  families, URLs, and tester-capture status are visible locally.
+- Added tests pinning that the batch is metadata-only, not approval eligible, has
+  `execution_authority=NONE`, requires Strategy Tester/source-hash capture, and does
+  not enable paper/demo/live/order behavior.
+
+## v8.32 — 2026-07-11 — TradingView prose-derived replay evidence
+
+- Added `scripts/run_tradingview_public_strategy_replay.py`, an offline-only replay
+  runner for the two TradingView candidates whose public pages expose enough rule
+  detail for a first prose-derived local hypothesis.
+- Retained the first replay under
+  `artifacts/external_replay/tradingview_public_strategies/TVPINE-9f7d3fc15ece2785a4296e9eb3b15548/`
+  with 2 candidates, 6 frozen datasets, 12 trials, and 57,046 local events.
+- Projected the latest TradingView replay through the dashboard research-sources read
+  model and tests. The scorecard remains `UNVALIDATED`, `NOT_ELIGIBLE`, no winner,
+  `execution_authority=NONE`, no venue/account/credential, and no paper/demo/live or
+  order route.
+
+## v8.33 — 2026-07-11 — S3/S4 inert control-plane contracts
+
+- Added immutable S3/S4 readiness contracts to `tios.trading_domain`:
+  `StageGateReadinessRecord`, `StageGateRequirement`, `PaperLaneProposal`, and
+  `PaperDivergenceReport`, and `LiveReadinessProposal`.
+- Added tests proving the contracts validate prerequisite evidence and proposal shape
+  while keeping `execution_authority=NONE`, venue connection `NONE`, paper/live orders
+  disabled, venue demo/testnet proposals rejected before a later credential gate, and
+  backtest-versus-paper divergence classified without activating a paper lane.
+- Updated the dashboard read model, AD, and type catalog to project the contracts as
+  `MODELED_INERT` with zero active paper/live records or controls.
+
+## v8.34 — 2026-07-11 — S3/S4 retained readiness artifact
+
+- Added `scripts/build_s3_s4_readiness_artifacts.py` to materialize deterministic,
+  probe-only S3/S4 control-plane readiness evidence.
+- Retained `artifacts/reports/S3_S4_CONTROL_PLANE_READINESS_2026_07_11.json` and
+  `.md`, validating representative S3 gate, S4 gate, paper-lane, divergence, and
+  live-readiness probe records while keeping all active record counts at zero.
+- Projected the retained report through `/api/v1/dashboard`; execution authority,
+  venue connection, paper orders, and live orders remain disabled/NONE.
+
+## v8.35 — 2026-07-11 — S3/S4 operational-drill contracts
+
+- Added `OperationalDrillRecord` contracts for future feed-loss, stale-data,
+  engine-crash, manual kill-switch, and credential-revocation drills.
+- Extended the retained S3/S4 readiness artifact with PASS/BLOCKED operational-drill
+  probes while keeping active drill records at zero and all execution capabilities
+  disabled.
+- Projected operational drills in the Trading Domain read model as `MODELED_INERT`.
+
+## v8.36 — 2026-07-11 — Synthetic demo-ledger contracts
+
+- Added `SyntheticLedgerSnapshot` and `SyntheticLedgerEntry` contracts for future
+  mock-money demo/paper wallet accounting.
+- Extended the retained S3/S4 readiness artifact with a synthetic ledger probe:
+  initial mock capital, fee debit, final mock balance, `synthetic=true`, and
+  `real_money=false`.
+- Projected the synthetic demo ledger in the Trading Domain read model as
+  `MODELED_INERT`; active synthetic-ledger count remains zero and no wallet/order
+  activation path exists.
+
+## v8.37 — 2026-07-11 — Synthetic paper-fill policy contracts
+
+- Added `SyntheticPaperFillPolicy` plus bounded price-source and fee-model enums for
+  future deterministic local demo/paper fill assumptions.
+- Extended the retained S3/S4 readiness artifact with a synthetic paper-fill-policy
+  probe covering midpoint pricing, fixed bps fees, slippage bps, and fill-latency
+  ceiling.
+- Projected the synthetic paper-fill policy in the Trading Domain read model as
+  `MODELED_INERT`; active paper-fill-policy count remains zero and no fill engine,
+  wallet mutation, venue route, or order capability exists.
+
+## v8.38 — 2026-07-11 — Synthetic account and portfolio contracts
+
+- Added `SyntheticAccountSnapshot` and `SyntheticPortfolioSnapshot` contracts for
+  future mock-money demo account and portfolio projections linked to a synthetic
+  ledger.
+- Extended the retained S3/S4 readiness artifact with probe account/portfolio
+  snapshots while keeping active synthetic-account and synthetic-portfolio counts at
+  zero.
+- Projected the synthetic account and portfolio read model as `MODELED_INERT`; no
+  active balances, wallet mutation, venue route, paper/demo/live order, or real-money
+  capability exists.
+
+## v8.39 — 2026-07-11 — Synthetic runtime-risk policy contracts
+
+- Added `SyntheticRuntimeRiskPolicy` and `KillSwitchMode` for future paper/demo
+  runtime limits covering capital-at-risk, position notional, daily loss, drawdown,
+  and kill-switch requirements.
+- Extended the retained S3/S4 readiness artifact with a synthetic runtime-risk-policy
+  probe while keeping active runtime-risk-policy count at zero.
+- Projected the synthetic runtime risk policy in the Trading Domain read model as
+  `MODELED_INERT`; no active risk engine, wallet mutation, venue route, paper/demo/live
+  order, or real-money capability exists.
+
+## v8.40 — 2026-07-11 — Restricted credential boundary contracts
+
+- Added `RestrictedCredentialPolicy` and `CredentialPermission` for future S4
+  credential-scope records without secret material.
+- Extended the retained S3/S4 readiness artifact with a restricted credential-policy
+  probe that forbids funds movement and keeps credential material absent.
+- Projected the restricted credential policy in the Trading Domain read model as
+  `MODELED_INERT`; active credential-policy count remains zero and no venue connection,
+  order route, live order, or real-money capability exists.
+
+## v8.41 — 2026-07-11 — Paper operations runbook contracts
+
+- Added `PaperOperationsRunbook` and `PaperRunbookInterventionMode` for future S3
+  paper/demo operational discipline.
+- Extended the retained S3/S4 readiness artifact with a paper operations runbook probe
+  covering heartbeat interval, heartbeat timeout, log retention, manual intervention,
+  and runtime-risk-policy linkage.
+- Projected the paper operations runbook in the Trading Domain read model as
+  `MODELED_INERT`; active runbook count remains zero and no venue route, order
+  capability, or execution authority exists.
+
+## v8.42 — 2026-07-11 — Paper operations event-log contracts
+
+- Added `PaperOperationsEventRecord`, `PaperOperationsEventKind`, and
+  `PaperOperationsEventSeverity` for future S3 paper/demo operational evidence rows.
+- Extended the retained S3/S4 readiness artifact with a heartbeat event probe linked
+  to the paper operations runbook probe.
+- Projected the paper operations event log in the Trading Domain read model as
+  `MODELED_INERT`; active event count remains zero and no venue route, order
+  capability, or execution authority exists.
+
+## v8.43 — 2026-07-11 — Paper stability report contracts
+
+- Added `PaperStabilityReport` and `PaperStabilityStatus` for future S3 exit stability
+  evidence across observation windows, uptime, incidents, missed heartbeats, and
+  linked divergence/runbook/risk records.
+- Extended the retained S3/S4 readiness artifact with a blocked paper-stability probe
+  explaining that no active paper lane has run a stability window.
+- Projected the paper stability report in the Trading Domain read model as
+  `MODELED_INERT`; active report count remains zero and no venue route, order
+  capability, or execution authority exists.
+
+## v8.44 — 2026-07-11 — Limited live risk-package contracts
+
+- Added `LimitedLiveRiskPackage` and `LimitedLiveRiskPackageStatus` for future S4
+  risk packaging across paper stability, credential boundaries, operations runbook,
+  runtime risk policy, capital-at-risk, order-notional limit, daily-loss limit, and
+  kill-switch mode.
+- Extended the retained S3/S4 readiness artifact with a blocked limited-live-risk
+  package probe explaining that S3 paper stability evidence is incomplete.
+- Projected the limited live risk package in the Trading Domain read model as
+  `MODELED_INERT`; active package count remains zero and no venue route, order
+  capability, or execution authority exists.
+
+## v8.47 — 2026-07-11 — Synthetic portfolio-risk policy contracts
+
+- Added `SyntheticPortfolioRiskPolicy` for future S3 demo/paper portfolio caps:
+  symbol concentration, correlated exposure, strategy budget, and open-position count.
+- Extended the retained S3/S4 readiness artifact with a portfolio-risk policy probe.
+- Projected the portfolio-risk policy in the Trading Domain read model as
+  `MODELED_INERT`; active policy count remains zero and no risk engine, wallet
+  mutation, venue route, order capability, or execution authority exists.
+
+## v8.46 — 2026-07-11 — Live operations event-log contracts
+
+- Added `LiveOperationsEventRecord`, `LiveOperationsEventKind`, and
+  `LiveOperationsEventSeverity` for future S4 operational evidence.
+- Extended the retained S3/S4 readiness artifact with a live operations heartbeat
+  probe linked to the live operations runbook and limited-live risk package.
+- Projected the live operations event log in the Trading Domain read model as
+  `MODELED_INERT`; active live event count remains zero and no credential access,
+  venue route, order capability, or execution authority exists.
+
+## v8.45 — 2026-07-11 — Live operations runbook contracts
+
+- Added `LiveOperationsRunbook` and `LiveRunbookEscalationMode` for future S4
+  operational discipline.
+- Extended the retained S3/S4 readiness artifact with a live operations runbook probe
+  covering heartbeat interval, incident-response target, log retention, escalation mode,
+  limited-live-risk-package linkage, and restricted-credential-policy linkage.
+- Projected the live operations runbook in the Trading Domain read model as
+  `MODELED_INERT`; active runbook count remains zero and no venue route, order
+  capability, or execution authority exists.
+
+## v8.48 — 2026-07-12 — Synthetic risk evaluator and fail-closed readiness
+
+- Added explicit synthetic per-strategy budget and market-condition guard contracts.
+- Added a pure independent synthetic risk evaluator covering runtime, portfolio,
+  strategy, stale-data, spread, venue-health, timestamp, and kill-switch checks.
+- Strengthened synthetic ledger snapshots with credit/debit conservation and
+  overdraft rejection.
+- Prevented paper-stability PASS on an undersized/zero-uptime window, required the
+  complete S4 prerequisite chain, and made dashboard readiness projection reject a
+  retained artifact whose content hash does not verify.
+- Active S3/S4 record counts remain zero; execution authority, venue connection,
+  credentials, wallet mutation, and paper/live order capabilities remain absent.
+
+## v8.49 — 2026-07-12 — Synthetic execution and canonical signal reducers
+
+- Added deterministic synthetic fill calculation with adverse slippage, maker/taker
+  fees, limit/stop eligibility, and explicit non-fill outcomes.
+- Added idempotent append-only mock-ledger initialization/change reducers with
+  conservation, time-order, currency-initialization, and overdraft guards.
+- Added fee-aware long-only spot position projection and ledger-backed synthetic
+  account/portfolio equity reconciliation.
+- Added canonical RuleTree and signal evaluation for the unambiguous seed indicator
+  vocabulary. Donchian now follows its reproduced prior-high/low contract;
+  unresolved Supertrend semantics fail closed.
+- Dashboard read models expose these services as `AVAILABLE_OFFLINE_INERT`; no active
+  synthetic state, order route, credential, venue connection, or execution authority
+  exists.
+
+## v8.50 — 2026-07-12 — Computed stability, live evidence resolution, and incidents
+
+- Added signed-money P&L so losing positions can be represented without allowing
+  negative balances, fees, notionals, or risk limits.
+- Added deterministic divergence-report assembly and heartbeat/incident-derived
+  paper-stability evaluation.
+- Added cross-record limited-live readiness validation for paper stability,
+  credential caps, runbook/runtime references, manual kill switches, risk limits,
+  and all required drills.
+- Added immutable operational incident open/acknowledge/resolve transitions with
+  ownership and post-incident evidence.
+- Extended retained readiness and dashboard projections with zero active operational
+  incidents. No credential, venue connection, mutation API, order route, or execution
+  authority was enabled.
+
+## v8.51 — 2026-07-12 — Gated approval history and durable evidence
+
+- Added typed, expiring human-decision records and immutable approval history with
+  exact S3/S4 gate predicates; current S2 transitions cannot reach paper/live states.
+- Added a confined append-only SQLite synthetic-evidence ledger with canonical hashes,
+  idempotency, concurrent-writer serialization, bounded reads, and integrity checks.
+- Resolved Supertrend semantics from primary sources: Hummingbot/pandas-ta bullish
+  `+1` plus proximity gating and TradingView bullish `-1` are modeled separately.
+- Extended readiness/dashboard projections with the available inert evidence ledger
+  and zero active evidence events. No execution, credential, venue, wallet mutation,
+  scheduler, paper order, or live order capability was enabled.

@@ -62,6 +62,50 @@ captures:
         from the listing surface.
       terms_review_status: PUBLIC_SOURCE_RECHECKED_TERMS_NOT_REVIEWED
 
+  - source_ref: SRC-TRADINGVIEW-PUBLIC-STRATEGIES
+    evidence_url: "https://www.tradingview.com/scripts/strategy/"
+    fields:
+      script_title: >-
+        Public strategy-library entries expose per-script titles; exact title must be
+        captured from each individual strategy URL.
+      script_access_type: >-
+        TradingView publications can be open-source, protected, or invite-only; only
+        visible open-source code is eligible for local code reproduction.
+      license_or_reuse_status: >-
+        Open-source Pine publications require attribution/license capture before any
+        local reuse; protected and invite-only code must not be copied.
+      pine_version: >-
+        Pine version must be captured from the visible strategy source when available.
+      symbol: >-
+        Strategy Tester evidence is chart-specific; symbol must be captured from the
+        tested chart or report.
+      timeframe: >-
+        Strategy Tester evidence is timeframe-specific and must be captured with the
+        report.
+      tester_date_range: >-
+        Strategy Tester reports depend on the chart's available history and configured
+        date range; both must be retained when visible.
+      initial_capital: >-
+        Strategy properties expose capital assumptions that must be captured.
+      commission_and_slippage: >-
+        Strategy properties expose commission and slippage settings that must be
+        captured beside every external result.
+      net_profit: >-
+        Performance Summary exposes net profit; this is external evidence only.
+      max_drawdown: >-
+        Performance Summary exposes drawdown metrics; local OS validation remains
+        authoritative.
+      trade_count: >-
+        Strategy Tester exposes trade counts that help compare TV and OS fills.
+      win_rate: >-
+        Strategy Tester exposes win-rate metrics; they are not inherited proof.
+      profit_factor: >-
+        Strategy Tester exposes profit factor where enough trades exist.
+      parameter_visibility: >-
+        Input parameters must be captured when visible; hidden or protected parameters
+        block faithful reproduction.
+      terms_review_status: PUBLIC_SOURCE_RECHECKED_TERMS_NOT_REVIEWED
+
   - source_ref: SRC-3COMMAS-DCA-BOT
     evidence_url: "https://3commas.io/dca-bots"
     fields:

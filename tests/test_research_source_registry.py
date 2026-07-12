@@ -28,7 +28,7 @@ def registry() -> ResearchSourceRegistry:
 
 
 def test_parses_all_verified_primary_sources(registry: ResearchSourceRegistry) -> None:
-    assert len(registry.list()) == 14
+    assert len(registry.list()) == 15
     assert {record.doi.casefold() for record in registry.list() if record.doi is not None} == {
         "10.1111/j.1540-6261.1993.tb04702.x",
         "10.1016/j.jfineco.2011.11.003",
@@ -104,6 +104,7 @@ def test_family_queries_keep_research_hypotheses_distinct(
         HypothesisFamily.EXCHANGE_BOT_REPLAY: {"SRC-BINANCE-TRADING-BOTS"},
         HypothesisFamily.COPY_TRADING_REPLAY: {"SRC-BINANCE-COPY-TRADING"},
         HypothesisFamily.SIGNAL_REPLAY: {"SRC-TRADINGVIEW-IDEAS"},
+        HypothesisFamily.PUBLIC_STRATEGY_REPRODUCTION: {"SRC-TRADINGVIEW-PUBLIC-STRATEGIES"},
         HypothesisFamily.BOT_PLATFORM_REPLAY: {"SRC-3COMMAS-DCA-BOT"},
     }
     for family, source_ids in expected.items():
@@ -138,6 +139,7 @@ def test_external_bot_signal_and_copy_sources_are_read_only_hypothesis_inputs(
         SourceClass.EXCHANGE_BOT_MARKETPLACE,
         SourceClass.COPY_TRADING_LEADERBOARD,
         SourceClass.ONLINE_SIGNAL_FEED,
+        SourceClass.PUBLIC_STRATEGY_LIBRARY,
         SourceClass.THIRD_PARTY_BOT_PLATFORM,
     }
     records = [record for record in registry.list() if record.source_class in external]
@@ -145,6 +147,7 @@ def test_external_bot_signal_and_copy_sources_are_read_only_hypothesis_inputs(
         "SRC-BINANCE-TRADING-BOTS",
         "SRC-BINANCE-COPY-TRADING",
         "SRC-TRADINGVIEW-IDEAS",
+        "SRC-TRADINGVIEW-PUBLIC-STRATEGIES",
         "SRC-3COMMAS-DCA-BOT",
     }
     for record in records:

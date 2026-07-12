@@ -1,0 +1,137 @@
+{
+  "best": {
+    "ann_return_pct": 17.7,
+    "ann_vol_pct": 11.7,
+    "bars": 2007,
+    "dataset": "SOLUSDT_1d",
+    "max_drawdown_pct": -15.2,
+    "sharpe_ann": 1.4556276470885308,
+    "strategy_id": "EXT-ROC-20",
+    "trades": 151,
+    "variant": "roc|window=26"
+  },
+  "execution_authority": "NONE",
+  "g10_dsr": {
+    "dsr": 0.6903,
+    "expected_max_noise_sharpe": 0.0655,
+    "note": "PASS still requires stats-specialist review (RG-07) before promotion.",
+    "threshold": 0.95,
+    "verdict": "FAIL",
+    "z_score": 0.497
+  },
+  "mode": "OFFLINE_RESEARCH_ONLY",
+  "schema": "tios-trend-validation-v1",
+  "sizing": "volatility-targeted 15% annualized, no leverage",
+  "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+  "top_contexts": [
+    {
+      "ann_return_pct": 17.7,
+      "dataset": "SOLUSDT_1d",
+      "max_drawdown_pct": -15.2,
+      "sharpe_ann": 1.4556276470885308,
+      "strategy_id": "EXT-ROC-20",
+      "trades": 151,
+      "variant": "roc|window=26"
+    },
+    {
+      "ann_return_pct": 14.0,
+      "dataset": "SOLUSDT_1d",
+      "max_drawdown_pct": -14.1,
+      "sharpe_ann": 1.4367467402528256,
+      "strategy_id": "EXT-BB-BREAKOUT",
+      "trades": 66,
+      "variant": "bb|window=20,std=2"
+    },
+    {
+      "ann_return_pct": 15.0,
+      "dataset": "SOLUSDT_1d",
+      "max_drawdown_pct": -12.5,
+      "sharpe_ann": 1.4141138786752006,
+      "strategy_id": "EXT-BB-BREAKOUT",
+      "trades": 87,
+      "variant": "bb|window=20,std=1.5"
+    },
+    {
+      "ann_return_pct": 17.2,
+      "dataset": "SOLUSDT_1d",
+      "max_drawdown_pct": -15.0,
+      "sharpe_ann": 1.4019123198526062,
+      "strategy_id": "EXT-SMA-10-30",
+      "trades": 54,
+      "variant": "sma|fast=12,slow=36"
+    },
+    {
+      "ann_return_pct": 19.5,
+      "dataset": "BNBUSDT_1d",
+      "max_drawdown_pct": -10.6,
+      "sharpe_ann": 1.3893353507117148,
+      "strategy_id": "EXT-EMA-12-26",
+      "trades": 56,
+      "variant": "ema|fast=12,slow=26"
+    },
+    {
+      "ann_return_pct": 13.5,
+      "dataset": "SOLUSDT_1d",
+      "max_drawdown_pct": -13.4,
+      "sharpe_ann": 1.3729680279646574,
+      "strategy_id": "EXT-BB-BREAKOUT",
+      "trades": 56,
+      "variant": "bb|window=25,std=2"
+    },
+    {
+      "ann_return_pct": 23.4,
+      "dataset": "TRXUSDT_1d",
+      "max_drawdown_pct": -14.6,
+      "sharpe_ann": 1.3523683261706883,
+      "strategy_id": "EXT-ROC-12",
+      "trades": 228,
+      "variant": "roc|window=15"
+    },
+    {
+      "ann_return_pct": 23.9,
+      "dataset": "TRXUSDT_1d",
+      "max_drawdown_pct": -22.4,
+      "sharpe_ann": 1.3517537901616237,
+      "strategy_id": "EXT-EMA-8-21",
+      "trades": 76,
+      "variant": "ema|fast=9,slow=26"
+    },
+    {
+      "ann_return_pct": 23.8,
+      "dataset": "TRXUSDT_1d",
+      "max_drawdown_pct": -18.3,
+      "sharpe_ann": 1.3485496500230651,
+      "strategy_id": "EXT-EMA-12-26",
+      "trades": 80,
+      "variant": "ema|fast=10,slow=21"
+    },
+    {
+      "ann_return_pct": 18.7,
+      "dataset": "BNBUSDT_1d",
+      "max_drawdown_pct": -11.1,
+      "sharpe_ann": 1.3484774048607877,
+      "strategy_id": "EXT-EMA-8-21",
+      "trades": 72,
+      "variant": "ema|fast=9,slow=26"
+    },
+    {
+      "ann_return_pct": 23.8,
+      "dataset": "TRXUSDT_1d",
+      "max_drawdown_pct": -17.9,
+      "sharpe_ann": 1.3342154881964385,
+      "strategy_id": "EXT-SMA-10-30",
+      "trades": 61,
+      "variant": "sma|fast=10,slow=30"
+    },
+    {
+      "ann_return_pct": 23.8,
+      "dataset": "TRXUSDT_1d",
+      "max_drawdown_pct": -17.9,
+      "sharpe_ann": 1.3342154881964385,
+      "strategy_id": "SIG-VOL-REGIME-TREND",
+      "trades": 61,
+      "variant": "fast=10,slow=30,atr_window=14,atr_floor=0.005"
+    }
+  ],
+  "trials_searched": 2142
+}

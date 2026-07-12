@@ -1,0 +1,81 @@
+{
+  "best": {
+    "ann_return_pct": 17.9,
+    "entry_z": 2.5,
+    "max_drawdown_pct": -84.7,
+    "pair": "AVAXUSDT/SOLUSDT",
+    "sharpe_ann": 0.58,
+    "total_return_pct": 147.7,
+    "trades": 105,
+    "window": 30
+  },
+  "execution_authority": "NONE",
+  "g10_dsr": {
+    "dsr": 0.1538,
+    "expected_max_noise_sharpe": 0.0534,
+    "note": "PASS still requires RG-07 review; models spread P&L + fees, not short-borrow/funding cost or execution slippage.",
+    "threshold": 0.95,
+    "verdict": "FAIL"
+  },
+  "mode": "OFFLINE_RESEARCH_ONLY",
+  "schema": "tios-stat-arb-v1",
+  "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+  "top_configs": [
+    {
+      "ann_return_pct": 17.9,
+      "entry_z": 2.5,
+      "max_drawdown_pct": -84.7,
+      "pair": "AVAXUSDT/SOLUSDT",
+      "sharpe_ann": 0.58,
+      "trades": 105,
+      "window": 30
+    },
+    {
+      "ann_return_pct": 17.4,
+      "entry_z": 2.0,
+      "max_drawdown_pct": -68.8,
+      "pair": "ADAUSDT/DOTUSDT",
+      "sharpe_ann": 0.56,
+      "trades": 134,
+      "window": 30
+    },
+    {
+      "ann_return_pct": 9.2,
+      "entry_z": 2.0,
+      "max_drawdown_pct": -71.9,
+      "pair": "XRPUSDT/XLMUSDT",
+      "sharpe_ann": 0.43,
+      "trades": 77,
+      "window": 60
+    },
+    {
+      "ann_return_pct": 9.6,
+      "entry_z": 2.0,
+      "max_drawdown_pct": -63.1,
+      "pair": "ADAUSDT/DOTUSDT",
+      "sharpe_ann": 0.42,
+      "trades": 69,
+      "window": 60
+    },
+    {
+      "ann_return_pct": 5.3,
+      "entry_z": 2.0,
+      "max_drawdown_pct": -61.3,
+      "pair": "LTCUSDT/BTCUSDT",
+      "sharpe_ann": 0.33,
+      "trades": 74,
+      "window": 60
+    },
+    {
+      "ann_return_pct": 3.8,
+      "entry_z": 2.5,
+      "max_drawdown_pct": -67.0,
+      "pair": "ADAUSDT/DOTUSDT",
+      "sharpe_ann": 0.3,
+      "trades": 96,
+      "window": 30
+    }
+  ],
+  "tradeability": "RESEARCH_ONLY \u2014 short leg needs perps/margin (S4-gated)",
+  "trials_searched": 40
+}

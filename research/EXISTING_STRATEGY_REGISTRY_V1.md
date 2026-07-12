@@ -15,10 +15,10 @@ claims — every `source_record.yaml` sets `profit_claims_inherited: false`).
 | 2 | STRAT-QC2-donchian-breakout | breakout | official_framework (QuantConnect/LEAN) | permissive (Apache-2.0) | REPRODUCED |
 | 3 | STRAT-FT1-sample-strategy | mean_reversion | official_framework (freqtrade) | copyleft (GPL-3.0) | REPRODUCED (2026-07-11, 32-bar fixture) |
 | 4 | STRAT-FT2-ema-cross | trend_following | official_framework (freqtrade docs) | copyleft (GPL-3.0) | REPRODUCED (2026-07-11, true recursive EMA) |
-| 5 | STRAT-HB1-supertrend-directional | trend_following | official_framework (Hummingbot V2) | permissive (Apache-2.0) | NOT_REPRODUCED (deferred — signal-level simplification) |
+| 5 | STRAT-HB1-supertrend-directional | trend_following | official_framework (Hummingbot V2) | permissive (Apache-2.0) | SPECIFIED_AND_IMPLEMENTED; NOT_INDEPENDENTLY_REPRODUCED |
 | 6 | STRAT-HB2-pmm-simple | market_making | official_framework (Hummingbot V2) | permissive (Apache-2.0) | NOT_REPRODUCED (not applicable — schema cannot express two-sided quoting) |
 | 7 | STRAT-PINE1-bb-strategy | mean_reversion | maintained_open_source (Pine/TradingView) | copyleft (MPL-2.0) | REPRODUCED (2026-07-11, 32-bar fixture) |
-| 8 | STRAT-PINE2-supertrend-strategy | trend_following | maintained_open_source (Pine/TradingView) | copyleft (MPL-2.0) | NOT_REPRODUCED (deferred — mechanically identical to item 5) |
+| 8 | STRAT-PINE2-supertrend-strategy | trend_following | maintained_open_source (Pine/TradingView) | copyleft (MPL-2.0) | SPECIFIED_AND_IMPLEMENTED; NOT_INDEPENDENTLY_REPRODUCED |
 | 9 | STRAT-PAPER1-momentum-jt1993 | trend_following | primary_academic_paper (Jegadeesh & Titman 1993) | unclear | NOT_REPRODUCED (not applicable — no per-bar result to reproduce) |
 | 10 | STRAT-PAPER2-reversal-jegadeesh1990 | mean_reversion | primary_academic_paper (Jegadeesh 1990) | unclear | NOT_REPRODUCED (not applicable — no per-bar result to reproduce) |
 

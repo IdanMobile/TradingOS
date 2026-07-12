@@ -1,0 +1,2161 @@
+{
+  "execution_authority": "NONE",
+  "live_orders": "DISABLED",
+  "mode": "OFFLINE_RESEARCH_ONLY",
+  "paper_orders": "DISABLED",
+  "schema": "tios-external-strategy-search-v1",
+  "screen": {
+    "min_neighbourhood_positive": "0.6",
+    "min_trades": 10,
+    "note": "A screen PASS is a promotion-PROBE candidate only; production G10 (DSR>=0.95, PBO) and cross-engine reproduction remain mandatory before HG-3.",
+    "rule": "best>0 AND beats_buy_hold AND all_three_thirds_positive AND neighbourhood_positive_fraction>=0.6 AND trades>=10"
+  },
+  "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+  "strategies": [
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999927919422924362292036",
+          "best_trades": 15422,
+          "best_trial_key": "donchian|entry_w=25,exit_w=12",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9962285132556163877198629400",
+            "train": "-0.9996036114085644217787055063",
+            "validation": "-0.9951784738910257945202909650"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9975516869873767605127801252",
+          "best_trades": 4860,
+          "best_trial_key": "donchian|entry_w=25,exit_w=12",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.896218705773219294344966283",
+            "train": "-0.9292345843248341904657023783",
+            "validation": "-0.6649289106426154327233885484"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.60182569716352948640789484",
+          "best_trades": 1350,
+          "best_trial_key": "donchian|entry_w=20,exit_w=10",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.4515717129065460238036682911",
+            "train": "-0.3725580976517203024472758391",
+            "validation": "0.157123896686886680464844917"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999996549115764868474868898",
+          "best_trades": 14968,
+          "best_trial_key": "donchian|entry_w=25,exit_w=12",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9919341845287197083316940363",
+            "train": "-0.9937821822617478096175546064",
+            "validation": "-0.9930799097858266436592050840"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9869594592937300842065793544",
+          "best_trades": 4738,
+          "best_trial_key": "donchian|entry_w=25,exit_w=12",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.8244806286487342353254844524",
+            "train": "-0.7718622323258442702802522913",
+            "validation": "-0.6704427078144286437009948407"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "0.085538406563471574142303713",
+          "best_trades": 1364,
+          "best_trial_key": "donchian|entry_w=20,exit_w=10",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "0.3333333333333333333333333333",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.3016744953616956471157770244",
+            "train": "1.208049017149571987057503049",
+            "validation": "-0.2959904030642119025408393743"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "breakout",
+      "screen_pass_contexts": [],
+      "source": "Dennis/Eckhardt Turtle System 1 (public)",
+      "strategy_id": "EXT-TURTLE-S1",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9995455663181556853714769034",
+          "best_trades": 6592,
+          "best_trial_key": "donchian|entry_w=70,exit_w=25",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9288487336955077666409307434",
+            "train": "-0.9656059532243172876612085216",
+            "validation": "-0.8133060270747943289066662193"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9319061502963014630909543939",
+          "best_trades": 2162,
+          "best_trial_key": "donchian|entry_w=70,exit_w=25",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.623768416724008650106965069",
+            "train": "-0.7982145414485381154064384413",
+            "validation": "-0.1030612819411605281115489395"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.1230163383946506736777392306",
+          "best_trades": 502,
+          "best_trial_key": "donchian|entry_w=70,exit_w=25",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.0025864203511805063432892563",
+            "train": "-0.5755851694780419419091576357",
+            "validation": "1.071694315608133123572462576"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9991630624551679181113170113",
+          "best_trades": 6582,
+          "best_trial_key": "donchian|entry_w=70,exit_w=25",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9007749179912515092675892368",
+            "train": "-0.9308897838344408530468099033",
+            "validation": "-0.8764826984123075732727677882"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.7453853919956826221672747349",
+          "best_trades": 2552,
+          "best_trial_key": "donchian|entry_w=55,exit_w=20",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.5189173881151089099015025819",
+            "train": "-0.247471647548909426022886732",
+            "validation": "-0.2966997213572681309609181181"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "0.154141973207457505922557569",
+          "best_trades": 754,
+          "best_trial_key": "donchian|entry_w=40,exit_w=20",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "0.6666666666666666666666666667",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.2282969133724871737292179437",
+            "train": "0.531031923672991373635801969",
+            "validation": "-0.0231570379047084807544999382"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "breakout",
+      "screen_pass_contexts": [],
+      "source": "Dennis/Eckhardt Turtle System 2 (public)",
+      "strategy_id": "EXT-TURTLE-S2",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999461740907841234090764620",
+          "best_trades": 8090,
+          "best_trial_key": "donchian|entry_w=50,exit_w=25",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9488485772251408589966664131",
+            "train": "-0.9888588205799887355941686216",
+            "validation": "-0.9050427378692730192730909576"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9371911102629335944988401195",
+          "best_trades": 2552,
+          "best_trial_key": "donchian|entry_w=50,exit_w=25",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.6274381434756446236347701489",
+            "train": "-0.8045564736067181711426717179",
+            "validation": "-0.1312928725460769201999123709"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.2021610235474907827796204664",
+          "best_trades": 594,
+          "best_trial_key": "donchian|entry_w=50,exit_w=25",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.1018118327498301739333163235",
+            "train": "-0.4931596821615683309525064272",
+            "validation": "0.75257561587620421426698735"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9998424974436912381118949916",
+          "best_trades": 7994,
+          "best_trial_key": "donchian|entry_w=50,exit_w=25",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9351024255860098385295275157",
+            "train": "-0.9740760599029002648565726123",
+            "validation": "-0.9052549356437772047497211465"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.8158428040304018141312995906",
+          "best_trades": 3038,
+          "best_trial_key": "donchian|entry_w=40,exit_w=20",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.5783761742693178157589360369",
+            "train": "-0.257552497747811727314447224",
+            "validation": "-0.404673290738270278648264067"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "0.744556259970122463270911941",
+          "best_trades": 588,
+          "best_trial_key": "donchian|entry_w=50,exit_w=25",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "1",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.0435508214762887345067938728",
+            "train": "0.580788130641041459906693438",
+            "validation": "0.153850160153586615973371416"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "breakout",
+      "screen_pass_contexts": [],
+      "source": "Donchian channel breakout, Ken-variant (public)",
+      "strategy_id": "EXT-DONCHIAN-40",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.8767992178640288025169563211",
+          "best_trades": 3406,
+          "best_trial_key": "sma|fast=60,slow=220",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.6502173950331736934077487543",
+            "train": "-0.5847292084846029111419574946",
+            "validation": "-0.1427454791789158210092463"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.0961235930810649871744281443",
+          "best_trades": 1066,
+          "best_trial_key": "sma|fast=60,slow=220",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.2206279049455681151151373441",
+            "train": "-0.3714236685510083293578313199",
+            "validation": "0.845041650460191158224862872"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "0.412127617634237596879072872",
+          "best_trades": 328,
+          "best_trial_key": "sma|fast=50,slow=200",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0.6666666666666666666666666667",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "0.063276856135127170180424603",
+            "train": "-0.3275793571500435282639186268",
+            "validation": "1.170154085570248470747883831"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "0.002445932908801648927214868",
+          "best_trades": 3252,
+          "best_trial_key": "sma|fast=60,slow=220",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0.3333333333333333333333333333",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.2013902718349547145518770813",
+            "train": "0.699078220633222216365971013",
+            "validation": "-0.2431942719831336490644764976"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "0.270817614441763728184936317",
+          "best_trades": 1090,
+          "best_trial_key": "sma|fast=60,slow=220",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0.6666666666666666666666666667",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.1024764478385262683231655802",
+            "train": "0.520970943268664428728036775",
+            "validation": "-0.0723463841628071441686896478"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "0.843541591705603339904196902",
+          "best_trades": 348,
+          "best_trial_key": "sma|fast=40,slow=180",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "1",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.0051789650916103859079326338",
+            "train": "0.363825223731697660725660883",
+            "validation": "0.572751137793581876329582899"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "trend",
+      "screen_pass_contexts": [],
+      "source": "Golden/Death Cross SMA50/200 (classic public)",
+      "strategy_id": "EXT-GOLDEN-CROSS",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999937010829029431962207",
+          "best_trades": 19636,
+          "best_trial_key": "sma|fast=12,slow=36",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9980559665606691039323616992",
+            "train": "-0.9988688843541586861830132150",
+            "validation": "-0.9971192841464113770608978044"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9993733804259536237078015410",
+          "best_trades": 6779,
+          "best_trial_key": "sma|fast=12,slow=36",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.8731575751405038821533832078",
+            "train": "-0.9616092381469846462196461200",
+            "validation": "-0.8705780792509568720386347411"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.5949871816149323092096743495",
+          "best_trades": 1938,
+          "best_trial_key": "sma|fast=10,slow=30",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.4692830030337547535461044854",
+            "train": "-0.3140791905626220821208920011",
+            "validation": "0.131377025312205419742364086"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999538190312135245969837",
+          "best_trades": 19698,
+          "best_trial_key": "sma|fast=12,slow=36",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9972359867927313116784642175",
+            "train": "-0.9922665593654219162894116175",
+            "validation": "-0.9978266671143739371084465453"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9933703807431735529245268901",
+          "best_trades": 6526,
+          "best_trial_key": "sma|fast=12,slow=36",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.7838334768911930183125665719",
+            "train": "-0.8050929118030669425641204023",
+            "validation": "-0.8406142292409303955442773922"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.4309821945686993143768483221",
+          "best_trades": 2358,
+          "best_trial_key": "sma|fast=8,slow=24",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.4965660970130528065059018543",
+            "train": "0.359016903759218622833672064",
+            "validation": "-0.1441993245310549242826920706"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "trend",
+      "screen_pass_contexts": [],
+      "source": "SMA 10/30 crossover (classic public)",
+      "strategy_id": "EXT-SMA-10-30",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999933309234118145418134895",
+          "best_trades": 11632,
+          "best_trial_key": "sma|fast=24,slow=60",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9811407746629968135426017274",
+            "train": "-0.9906511797543978066953457343",
+            "validation": "-0.9619736618980528249526219430"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9449348577574375767446286791",
+          "best_trades": 3866,
+          "best_trial_key": "sma|fast=24,slow=60",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.7211734298277912147616151948",
+            "train": "-0.6382553840079543000279939021",
+            "validation": "-0.4469613286262924712681490703"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "0.191246245653360341521547056",
+          "best_trades": 920,
+          "best_trial_key": "sma|fast=24,slow=60",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0.3333333333333333333333333333",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "0.294463525172631950447710063",
+            "train": "-0.5022395608095521311275584543",
+            "validation": "0.848806036076598088446055575"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999721140939916164875802994",
+          "best_trades": 11566,
+          "best_trial_key": "sma|fast=24,slow=60",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9786696241509931559637985987",
+            "train": "-0.9618724186477811269682144513",
+            "validation": "-0.9655542630032735791430126588"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.5339463490984726452346033365",
+          "best_trades": 3705,
+          "best_trial_key": "sma|fast=24,slow=60",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.410318634414161170403867852",
+            "train": "0.949423015190862607528832834",
+            "validation": "-0.5865768281406607531985873937"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.1230863341633391571716152829",
+          "best_trades": 934,
+          "best_trial_key": "sma|fast=24,slow=60",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.0392861072460861855987638594",
+            "train": "-0.0475330717188606792368162946",
+            "validation": "-0.0313419717436169757030316799"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "trend",
+      "screen_pass_contexts": [],
+      "source": "SMA 20/50 crossover (classic public)",
+      "strategy_id": "EXT-SMA-20-50",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999888066883601263892778",
+          "best_trades": 18042,
+          "best_trial_key": "ema|fast=15,slow=30",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9972342743365804476636405521",
+            "train": "-0.9990883276733780115512856020",
+            "validation": "-0.9955361036725815925748304987"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9955679029410469558658518622",
+          "best_trades": 5964,
+          "best_trial_key": "ema|fast=15,slow=30",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.8581935052131378939377238926",
+            "train": "-0.8807132524514291643051394103",
+            "validation": "-0.7358188241071834760781428755"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.3506651622089506654834748608",
+          "best_trades": 1346,
+          "best_trial_key": "ema|fast=15,slow=30",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.3927064950162775754824519209",
+            "train": "-0.134259328716285805168223576",
+            "validation": "0.253602040042095422390379943"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999998975770389594607667976",
+          "best_trades": 18072,
+          "best_trial_key": "ema|fast=15,slow=30",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9963566413671538037735019641",
+            "train": "-0.9945100762130350607462913515",
+            "validation": "-0.9948432110197621143444595023"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9533589150322614070624193321",
+          "best_trades": 5716,
+          "best_trial_key": "ema|fast=15,slow=30",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.6922050705049429039153520273",
+            "train": "-0.4351731432845574376378258884",
+            "validation": "-0.7272237442847609530810127411"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "0.19224050201084269756657557",
+          "best_trades": 1428,
+          "best_trial_key": "ema|fast=15,slow=30",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "0.3333333333333333333333333333",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.4002997889528155043230210444",
+            "train": "1.093653945940784795178145978",
+            "validation": "-0.0037629025504335652496105574"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "trend",
+      "screen_pass_contexts": [],
+      "source": "EMA 12/26 crossover, MACD trend proxy (Appel, public)",
+      "strategy_id": "EXT-EMA-12-26",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999999930478098789715854",
+          "best_trades": 25330,
+          "best_trial_key": "ema|fast=9,slow=26",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9997856580545880851549637139",
+            "train": "-0.9998978274135130779341052155",
+            "validation": "-0.9996812668654639301408967745"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9997321716863069814540016654",
+          "best_trades": 8398,
+          "best_trial_key": "ema|fast=9,slow=26",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9264593482599167654862842046",
+            "train": "-0.9684628244296686392219536992",
+            "validation": "-0.8834033508849379343024725141"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.7806500929098619833544857832",
+          "best_trades": 2004,
+          "best_trial_key": "ema|fast=9,slow=26",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.3880483510289153582106629906",
+            "train": "-0.6424598085667383215650595855",
+            "validation": "0.01980239899315039149266554"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999997823931835530346343",
+          "best_trades": 24842,
+          "best_trial_key": "ema|fast=9,slow=26",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9995753457056765334873168116",
+            "train": "-0.9982953750226488173297318825",
+            "validation": "-0.9996952144955362284886500586"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9972105031777422194392567542",
+          "best_trades": 7934,
+          "best_trial_key": "ema|fast=9,slow=26",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.8273557252119642418733842145",
+            "train": "-0.8887046551001282910487802058",
+            "validation": "-0.8528174486714605158674295347"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.556854996395697688271742305",
+          "best_trades": 2826,
+          "best_trial_key": "ema|fast=6,slow=18",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.64573418974887472015737773",
+            "train": "0.852219121761093595886095258",
+            "validation": "-0.3056979454847967733921691021"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "trend",
+      "screen_pass_contexts": [],
+      "source": "EMA 8/21 crossover (classic public)",
+      "strategy_id": "EXT-EMA-8-21",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999503458214316033604965660",
+          "best_trades": 10148,
+          "best_trial_key": "ema|fast=24,slow=60",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9589697841126200443412999752",
+            "train": "-0.9803122067883763133040736951",
+            "validation": "-0.9379153289340298358884674205"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.8733075957388179720936740177",
+          "best_trades": 3246,
+          "best_trial_key": "ema|fast=24,slow=60",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.5766015012752507053427795121",
+            "train": "-0.6313431579581372861250089557",
+            "validation": "-0.1718662130985989999891102524"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.0746586570808793767581233629",
+          "best_trades": 762,
+          "best_trial_key": "ema|fast=24,slow=60",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.3033550723196783976751228525",
+            "train": "-0.2129226434389193470319816735",
+            "validation": "0.68066320020831097244991712"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9997601080782548100697794828",
+          "best_trades": 9928,
+          "best_trial_key": "ema|fast=24,slow=60",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9408466196872857996563519248",
+            "train": "-0.9379767757216455803227895479",
+            "validation": "-0.9333427787475518213453065903"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.3392771100017442282605087867",
+          "best_trades": 3124,
+          "best_trial_key": "ema|fast=24,slow=60",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.4782692004096246350455146746",
+            "train": "0.941188980963624810222871186",
+            "validation": "-0.3318315529374631459489001439"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": true,
+          "best_total_return": "1.983154072071658331242396642",
+          "best_trades": 1116,
+          "best_trial_key": "ema|fast=16,slow=40",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "1",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.211827590674361366814816234",
+            "train": "2.3352621495906580657402791",
+            "validation": "0.178585218606388344170039406"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "trend",
+      "screen_pass_contexts": [],
+      "source": "EMA 20/50 crossover (classic public)",
+      "strategy_id": "EXT-EMA-20-50",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999242259118925676388210564",
+          "best_trades": 12666,
+          "best_trial_key": "bb|window=20,std=2.5",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9724004343626783462867881935",
+            "train": "-0.9282311185245344495264338553",
+            "validation": "-0.9617277421376747043123475158"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9626353959025534343907560812",
+          "best_trades": 4640,
+          "best_trial_key": "bb|window=20,std=2.5",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.7003783849480321108218995791",
+            "train": "-0.526465037858529101938944024",
+            "validation": "-0.7372924202663550306568755802"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.7858856678499129738949063236",
+          "best_trades": 1257,
+          "best_trial_key": "bb|window=20,std=2.5",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.4343564673241499559179507352",
+            "train": "-0.3505640453346506646006093227",
+            "validation": "-0.4171368703664612501469200501"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999852662514033205918384512",
+          "best_trades": 13204,
+          "best_trial_key": "bb|window=20,std=2.5",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9867562779600062336901337413",
+            "train": "-0.9324855204355638912267719722",
+            "validation": "-0.9835604514612351064406376877"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9849114736648590494525614301",
+          "best_trades": 4860,
+          "best_trial_key": "bb|window=20,std=2.5",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.7878816700520422061496251984",
+            "train": "-0.6576139421436219812662629761",
+            "validation": "-0.7933065852003885875437497377"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.849548367924143432436159522",
+          "best_trades": 1268,
+          "best_trial_key": "bb|window=20,std=2.5",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.4534322787533552832218306564",
+            "train": "-0.4543007389330399033033846719",
+            "validation": "-0.4964601718286224518738995374"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "reversion",
+      "screen_pass_contexts": [],
+      "source": "Bollinger Band mean reversion 20/2 (Bollinger, public)",
+      "strategy_id": "EXT-BB-REVERSION",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999978974006371455868190",
+          "best_trades": 18266,
+          "best_trial_key": "bb|window=25,std=2",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9981605163273827262431369681",
+            "train": "-0.9994107683375067522292150108",
+            "validation": "-0.9980580977061608512410421094"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9982638145446284682403654208",
+          "best_trades": 6208,
+          "best_trial_key": "bb|window=25,std=2",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9032415887563805920704431651",
+            "train": "-0.9113058645024232554458451094",
+            "validation": "-0.7973338191096174365613568794"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.5565122640260724315353313591",
+          "best_trades": 1546,
+          "best_trial_key": "bb|window=25,std=2",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.4929704342519622846389936319",
+            "train": "-0.2838273860575174217480721718",
+            "validation": "0.221323237318775343100362744"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999765922354220669597195",
+          "best_trades": 18154,
+          "best_trial_key": "bb|window=25,std=2",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9974665976911097604118274080",
+            "train": "-0.9942801868122688757694278059",
+            "validation": "-0.9983754182529716400259401674"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9926920026193995712586312212",
+          "best_trades": 6086,
+          "best_trial_key": "bb|window=25,std=2",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.8342127513129982829904753649",
+            "train": "-0.7770967605814111841845838742",
+            "validation": "-0.8004583547159719068565681265"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.1576020703840438440822659758",
+          "best_trades": 1806,
+          "best_trial_key": "bb|window=20,std=2",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.3555483856279637511986006108",
+            "train": "0.561975263466543170206988167",
+            "validation": "-0.1631399749880565888475716957"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "breakout",
+      "screen_pass_contexts": [],
+      "source": "Bollinger Band breakout 20/2 (Bollinger, public)",
+      "strategy_id": "EXT-BB-BREAKOUT",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999895452760083647213818062",
+          "best_trades": 12700,
+          "best_trial_key": "rsi2|rsi_w=2,trend_w=200,rsi_buy=5,exit_sma=5",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9868014659050842753221560362",
+            "train": "-0.9590813017799709147522596903",
+            "validation": "-0.9804619605537215421420946057"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9554732860241366754053799089",
+          "best_trades": 4086,
+          "best_trial_key": "rsi2|rsi_w=2,trend_w=200,rsi_buy=5,exit_sma=5",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.6361177733461891624791162741",
+            "train": "-0.6270767266167618513505757312",
+            "validation": "-0.6718742490830116355355212944"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.6007360299957948002698162885",
+          "best_trades": 956,
+          "best_trial_key": "rsi2|rsi_w=2,trend_w=200,rsi_buy=5,exit_sma=5",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.2651558495740517589812196168",
+            "train": "-0.3407871263515450656085412392",
+            "validation": "-0.1773487995669400430009543385"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999876958500717040810484399",
+          "best_trades": 12724,
+          "best_trial_key": "rsi2|rsi_w=2,trend_w=200,rsi_buy=5,exit_sma=5",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9817042672822946556121433815",
+            "train": "-0.9546751915574835533019674702",
+            "validation": "-0.9850623656313951766540475290"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9508511955298751372440346675",
+          "best_trades": 4134,
+          "best_trial_key": "rsi2|rsi_w=2,trend_w=200,rsi_buy=5,exit_sma=5",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.673997474864055632875072408",
+            "train": "-0.5457603093929476048518684133",
+            "validation": "-0.668100257994519258199210821"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.5422169744948347288827412465",
+          "best_trades": 974,
+          "best_trial_key": "rsi2|rsi_w=2,trend_w=200,rsi_buy=5,exit_sma=5",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.2182946534187817229069400668",
+            "train": "-0.0765843068866836107665506983",
+            "validation": "-0.3542412313886233744129959497"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "reversion",
+      "screen_pass_contexts": [],
+      "source": "Larry Connors RSI(2) pullback (public)",
+      "strategy_id": "EXT-CONNORS-RSI2",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9091790656609316975303183067",
+          "best_trades": 3358,
+          "best_trial_key": "rsi|window=14,low=25,high=60",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.645427606875311715369621883",
+            "train": "-0.4896098580274484162005165571",
+            "validation": "-0.5016172748942212624725994074"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.8232692863654365109244007882",
+          "best_trades": 1129,
+          "best_trial_key": "rsi|window=14,low=25,high=60",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.4779898499918839475265442673",
+            "train": "-0.5466707513918530781874791011",
+            "validation": "-0.2511295522147543437284897232"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.4188855889043772307978276601",
+          "best_trades": 330,
+          "best_trial_key": "rsi|window=14,low=25,high=60",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.2933077877949010888862670677",
+            "train": "-0.2527936948364452149321174416",
+            "validation": "0.11735668446732767272149561"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9546489400703384149024923440",
+          "best_trades": 3548,
+          "best_trial_key": "rsi|window=14,low=25,high=60",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.7795523572132697475025123547",
+            "train": "-0.5308665144015922693087845803",
+            "validation": "-0.5614838935092417129390176121"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9269361531758173687399677251",
+          "best_trades": 1216,
+          "best_trial_key": "rsi|window=14,low=25,high=60",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.5992355691816095311954819383",
+            "train": "-0.7270829366929179402528453849",
+            "validation": "-0.3259636392151019721350104006"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.5490571964109307068511099341",
+          "best_trades": 637,
+          "best_trial_key": "rsi|window=14,low=30,high=55",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.5022232676933512522752211616",
+            "train": "-0.0618388375909736221615610814",
+            "validation": "-0.0419218293087954190101021181"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "reversion",
+      "screen_pass_contexts": [],
+      "source": "RSI(14) 30/55 reversion (Wilder, public)",
+      "strategy_id": "EXT-RSI14",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999999951517148036699305",
+          "best_trades": 29520,
+          "best_trial_key": "rsi|window=4,low=20,high=60",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9999315511515414151337343172",
+            "train": "-0.9995071174088617120571003193",
+            "validation": "-0.9998565040867617963405781903"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9996785624177654083985138638",
+          "best_trades": 9642,
+          "best_trial_key": "rsi|window=5,low=25,high=55",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9380968920810466357731573695",
+            "train": "-0.9208376869874544766815156974",
+            "validation": "-0.9346647059530914304138458031"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.8657848940106603042066144173",
+          "best_trades": 2412,
+          "best_trial_key": "rsi|window=4,low=20,high=60",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.5221466885870348612943631285",
+            "train": "-0.4601614423832917852057910294",
+            "validation": "-0.4804429402811107991135093379"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999999992477452326729955",
+          "best_trades": 29392,
+          "best_trial_key": "rsi|window=4,low=20,high=60",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9999494101627026251923286242",
+            "train": "-0.9998235629599210378626869662",
+            "validation": "-0.9999156820057283295241092120"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9998286590396677241044162588",
+          "best_trades": 9679,
+          "best_trial_key": "rsi|window=4,low=20,high=60",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9634932788573145337144618779",
+            "train": "-0.9197703353292786187152865387",
+            "validation": "-0.9413650958184523468710422504"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9512597708322173294944839866",
+          "best_trades": 2388,
+          "best_trial_key": "rsi|window=4,low=20,high=60",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.6157192675572738782932854458",
+            "train": "-0.6769726039595681394349278763",
+            "validation": "-0.6100144783398455204786985772"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "reversion",
+      "screen_pass_contexts": [],
+      "source": "RSI(4) 25/55 reversion (public short-RSI)",
+      "strategy_id": "EXT-RSI4",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-1.000000000000000000000000000",
+          "best_trades": 81949,
+          "best_trial_key": "roc|window=12",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9999999999963086934298644597",
+            "train": "-0.9999999999997950836946964714",
+            "validation": "-0.9999999999992862719967116915"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999999919960864098706468",
+          "best_trades": 25496,
+          "best_trial_key": "roc|window=15",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9997869093897841282374125940",
+            "train": "-0.9998775077572966956196013581",
+            "validation": "-0.9996904402635308745368334867"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9907247653566622028465917794",
+          "best_trades": 6208,
+          "best_trial_key": "roc|window=15",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.8470920622779060818220424941",
+            "train": "-0.8184627324694996153184537794",
+            "validation": "-0.6569569617342787524978321042"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-1.000000000000000000000000000",
+          "best_trades": 81511,
+          "best_trial_key": "roc|window=12",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9999999999966051881218199671",
+            "train": "-0.9999999999935288061974594883",
+            "validation": "-0.9999999999990830961460590797"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999999254832779580174195",
+          "best_trades": 24848,
+          "best_trial_key": "roc|window=15",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9996921771315832614810978704",
+            "train": "-0.9994230555276705953165516602",
+            "validation": "-0.9995737407704508549976229969"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9720247179386628590063741242",
+          "best_trades": 6676,
+          "best_trial_key": "roc|window=12",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.8076975031526282079566172855",
+            "train": "-0.2712128581264990258941120063",
+            "validation": "-0.7972042532698316936876656683"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "momentum",
+      "screen_pass_contexts": [],
+      "source": "12-period Rate-of-Change momentum (public)",
+      "strategy_id": "EXT-ROC-12",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999999999999999999999414",
+          "best_trades": 57545,
+          "best_trial_key": "roc|window=26",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9999999920041649971411637092",
+            "train": "-0.9999999980093792830656900797",
+            "validation": "-0.9999999962940894227680939301"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999981151972727696749842",
+          "best_trades": 19907,
+          "best_trial_key": "roc|window=26",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9983384211933813224109925994",
+            "train": "-0.9993161897097324182509647481",
+            "validation": "-0.9983351236657423677511102515"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9845288176632592415103643310",
+          "best_trades": 5348,
+          "best_trial_key": "roc|window=20",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.8152909459962248955915161332",
+            "train": "-0.8467406925866089346358905147",
+            "validation": "-0.4416675552068059131098234092"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999999999999999999978145",
+          "best_trades": 56607,
+          "best_trial_key": "roc|window=26",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9999999862310770809645580082",
+            "train": "-0.9999999737423633535155108987",
+            "validation": "-0.9999999938592388853722274391"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999656495736430434726060",
+          "best_trades": 18929,
+          "best_trial_key": "roc|window=26",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9967852000527854059676349919",
+            "train": "-0.9963825049764239960167927157",
+            "validation": "-0.9970034935162185710322654733"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.8697621935434913954115557721",
+          "best_trades": 5006,
+          "best_trial_key": "roc|window=20",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.6672538208253977585355355246",
+            "train": "-0.0040008465669084660631696576",
+            "validation": "-0.590882808097654871535322862"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "momentum",
+      "screen_pass_contexts": [],
+      "source": "20-period Rate-of-Change momentum (public)",
+      "strategy_id": "EXT-ROC-20",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999935898631745259255367",
+          "best_trades": 18680,
+          "best_trial_key": "tma|fast=12,mid=26,slow=50",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9983486629143922340257875848",
+            "train": "-0.9981058596688399213509800964",
+            "validation": "-0.9979333565379006755133251451"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9977508739292103115977141430",
+          "best_trades": 6314,
+          "best_trial_key": "tma|fast=12,mid=26,slow=50",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.8244324466352315953821684004",
+            "train": "-0.9349179213148268284171625387",
+            "validation": "-0.8018660574074997794414645824"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.415407124431942899634603091",
+          "best_trades": 1524,
+          "best_trial_key": "tma|fast=12,mid=26,slow=50",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.1839597023270515942311759033",
+            "train": "-0.4776467877034843589544370704",
+            "validation": "0.371442623437019276693698765"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999523087315519752498288",
+          "best_trades": 18756,
+          "best_trial_key": "tma|fast=12,mid=26,slow=50",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9967616750642191654217656432",
+            "train": "-0.9938398587849717873268900062",
+            "validation": "-0.9975870743394454159168299400"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9883370918532969650826616187",
+          "best_trades": 6128,
+          "best_trial_key": "tma|fast=12,mid=26,slow=50",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.673426059559370819852331314",
+            "train": "-0.7664076432628825659238893696",
+            "validation": "-0.8455385440357284898820598761"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.401662166320705032351748616",
+          "best_trades": 1800,
+          "best_trial_key": "tma|fast=8,mid=21,slow=55",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.2766432127056982657218301104",
+            "train": "0.361423644325596235059814098",
+            "validation": "-0.3748407046717602371470742573"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "trend",
+      "screen_pass_contexts": [],
+      "source": "Triple SMA 10/20/50 alignment (classic public)",
+      "strategy_id": "EXT-TRIPLE-MA",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999994900160190834871447",
+          "best_trades": 22318,
+          "best_trial_key": "trend|window=200",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9985995992986224527779767189",
+            "train": "-0.9996257638509787731989355179",
+            "validation": "-0.9989846593802368545340724153"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9978346089804551341605118612",
+          "best_trades": 7136,
+          "best_trial_key": "trend|window=200",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.8863108395177291913645854972",
+            "train": "-0.8709680534395197810332162968",
+            "validation": "-0.8455478694782124114239094866"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.7004009944239320740270983489",
+          "best_trades": 1674,
+          "best_trial_key": "trend|window=200",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.4458615595240745555556366889",
+            "train": "-0.616957044113204672365143888",
+            "validation": "0.471170302348586530702769961"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9999999919390277417166150805",
+          "best_trades": 21748,
+          "best_trial_key": "trend|window=200",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9975363366080307179794960743",
+            "train": "-0.9959637013651580562530304056",
+            "validation": "-0.9991674830076253336344234369"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9959425477380160363115315654",
+          "best_trades": 7004,
+          "best_trial_key": "trend|window=200",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.851777641260888008629662352",
+            "train": "-0.7117837650421731701590277388",
+            "validation": "-0.8978870499519257450616440563"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.4538063908687450771381386329",
+          "best_trades": 1636,
+          "best_trial_key": "trend|window=200",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.558002454953954808257929964",
+            "train": "0.642740938315351142919309566",
+            "validation": "-0.1780896517166185277781949584"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "trend",
+      "screen_pass_contexts": [],
+      "source": "Price>SMA200 long-only trend filter (classic public)",
+      "strategy_id": "EXT-TREND-SMA200",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9990620032965150860443472405",
+          "best_trades": 9586,
+          "best_trial_key": "bbrsi|window=20,std=2.5,rsi_w=3,rsi_buy=10",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.937737484065122039693475901",
+            "train": "-0.8281660389773357785771993137",
+            "validation": "-0.9122862991576553722561951970"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9256530534697941722375072653",
+          "best_trades": 3406,
+          "best_trial_key": "bbrsi|window=20,std=2.5,rsi_w=3,rsi_buy=10",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.5885893811835482756148223146",
+            "train": "-0.5230735506032750852913833017",
+            "validation": "-0.6220158057036986117580513812"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.5780485252378529025818537163",
+          "best_trades": 949,
+          "best_trial_key": "bbrsi|window=20,std=2.5,rsi_w=3,rsi_buy=10",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.3841734913760410154244457226",
+            "train": "-0.1885067382204250417806683872",
+            "validation": "-0.1556564081124750275721314917"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9998179438907753429420698122",
+          "best_trades": 10084,
+          "best_trial_key": "bbrsi|window=20,std=2.5,rsi_w=3,rsi_buy=10",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.9624583005397677309281547988",
+            "train": "-0.8919185260948614775749364868",
+            "validation": "-0.9552365363984641834408547884"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.9776993626197666529827494680",
+          "best_trades": 3640,
+          "best_trial_key": "bbrsi|window=20,std=2.5,rsi_w=3,rsi_buy=10",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.7096471301498827587082805708",
+            "train": "-0.7348440269180386750285654281",
+            "validation": "-0.7112723191096722544163966592"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.600161911515377485663587482",
+          "best_trades": 982,
+          "best_trial_key": "bbrsi|window=20,std=2.5,rsi_w=3,rsi_buy=10",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.4576548969081677843898738372",
+            "train": "-0.1221279621427522426592106284",
+            "validation": "-0.1657673889398729679561199337"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "reversion",
+      "screen_pass_contexts": [],
+      "source": "Bollinger + RSI(3) confluence (Connors-style, public)",
+      "strategy_id": "EXT-BB-RSI",
+      "variant_count": 3
+    },
+    {
+      "approval_status": "NOT_ELIGIBLE",
+      "contexts": [
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.8191254136587704657627509878",
+          "best_trades": 3150,
+          "best_trial_key": "ema|fast=60,slow=220",
+          "buy_hold_return": "1.023217232276861514270511689",
+          "dataset": "BTCUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.567047679819946044042965969",
+            "train": "-0.5096932683105683423840741943",
+            "validation": "-0.1278231551194384763053395034"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.2141627090388068852078304024",
+          "best_trades": 988,
+          "best_trial_key": "ema|fast=60,slow=220",
+          "buy_hold_return": "1.022388774576012761883622491",
+          "dataset": "BTCUSDT_15m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.2140263252872901048854112261",
+            "train": "-0.3375498128609609142851295204",
+            "validation": "0.510533565614688209561925567"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "0.16137601925420647884765425",
+          "best_trades": 250,
+          "best_trial_key": "ema|fast=60,slow=220",
+          "buy_hold_return": "1.022250755800361157987431038",
+          "dataset": "BTCUSDT_1h",
+          "neighbourhood_positive_fraction": "0.3333333333333333333333333333",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "0.031937064897729678180250898",
+            "train": "-0.5100101157845383093385471592",
+            "validation": "1.364081893429576799435115385"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "-0.4446012776369310030890353123",
+          "best_trades": 3138,
+          "best_trial_key": "ema|fast=60,slow=220",
+          "buy_hold_return": "1.129733754542244914586784716",
+          "dataset": "ETHUSDT_5m",
+          "neighbourhood_positive_fraction": "0",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.5173151366267465097456020064",
+            "train": "0.844312295070092184421281812",
+            "validation": "-0.3552104001335362182086086368"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": true,
+          "best_total_return": "1.228706918612629972744723717",
+          "best_trades": 1126,
+          "best_trial_key": "ema|fast=50,slow=200",
+          "buy_hold_return": "1.128852870467939491051302247",
+          "dataset": "ETHUSDT_15m",
+          "neighbourhood_positive_fraction": "1",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.290463643578942808659496425",
+            "train": "2.545647339606176970855789085",
+            "validation": "-0.0823495790017732991012544579"
+          },
+          "thirds_all_positive": false
+        },
+        {
+          "beats_buy_hold": false,
+          "best_total_return": "1.08175468913901927378777758",
+          "best_trades": 294,
+          "best_trial_key": "ema|fast=50,slow=200",
+          "buy_hold_return": "1.124475554221775617174981668",
+          "dataset": "ETHUSDT_1h",
+          "neighbourhood_positive_fraction": "1",
+          "screen_pass": false,
+          "thirds": {
+            "holdout": "-0.1806234597071198277072016043",
+            "train": "1.075907949841857921096154008",
+            "validation": "0.304907415807627197865760267"
+          },
+          "thirds_all_positive": false
+        }
+      ],
+      "execution_authority": "NONE",
+      "family": "trend",
+      "screen_pass_contexts": [],
+      "source": "EMA 50/200 golden-cross variant (classic public)",
+      "strategy_id": "EXT-EMA-50-200",
+      "variant_count": 3
+    }
+  ],
+  "strategy_count": 20,
+  "survivor_count": 0,
+  "survivors": [],
+  "venue_connection": "NONE",
+  "winner_selected": false
+}

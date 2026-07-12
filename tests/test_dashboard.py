@@ -13,6 +13,7 @@ import pytest
 from tios.services.dashboard_api.market import build_market_snapshot
 from tios.services.dashboard_api.search import build_search_results
 from tios.services.dashboard_api.status import (
+    _s3_s4_control_plane_report,
     build_dashboard_data,
     build_stage_gate_readiness,
     build_status,
@@ -23,6 +24,24 @@ from tios.services.dashboard_ui.server import Handler, is_loopback_host
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def test_s3_s4_control_plane_projection_fails_closed_on_bad_hash(tmp_path: Path) -> None:
+    report = tmp_path / "artifacts/reports/S3_S4_CONTROL_PLANE_READINESS_2026_07_11.json"
+    report.parent.mkdir(parents=True)
+    report.write_text(
+        json.dumps({"status": "READY", "content_sha256": "not-the-payload-hash"}),
+        encoding="utf-8",
+    )
+    projection = _s3_s4_control_plane_report(tmp_path)
+    assert projection["status"] == "INVALID_ARTIFACT"
+    assert projection["execution_authority"] == "NONE"
+    assert projection["active_record_counts"] == {}
+    assert projection["s3_blockers"] == ["readiness artifact integrity check failed"]
+    readiness = build_stage_gate_readiness(tmp_path)
+    assert readiness["status"] == "INVALID_ARTIFACT"
+    assert readiness["evidence_artifact"]["status"] == "INVALID_ARTIFACT"
+    assert "readiness artifact integrity check failed" in readiness["s4_live"]["blocked_by"]
 
 
 def _write_market_fixture(root: Path, fills: int | None = 1, candles: int = 60) -> None:
@@ -160,6 +179,7 @@ def test_dashboard_projects_inert_trading_domain_read_model() -> None:
         "paper_orders": "DISABLED",
         "live_orders": "DISABLED",
         "risk_engine": "VALIDATION_PRECONDITIONS_ONLY",
+        "s3_s4_contracts": "MODELED_INERT",
     }
     assert trading["counts"]["retained_run_artifacts"] == len(data["runs"])
     assert trading["counts"]["retained_backtest_fills"] > 0
@@ -167,6 +187,29 @@ def test_dashboard_projects_inert_trading_domain_read_model() -> None:
     assert trading["counts"]["order_states"] == 0
     assert trading["counts"]["accounts"] == 0
     assert trading["counts"]["portfolios"] == 0
+    assert trading["counts"]["positions"] == 0
+    assert trading["counts"]["stage_gate_records"] == 0
+    assert trading["counts"]["paper_lane_proposals"] == 0
+    assert trading["counts"]["paper_divergence_reports"] == 0
+    assert trading["counts"]["paper_fill_policies"] == 0
+    assert trading["counts"]["operational_drill_records"] == 0
+    assert trading["counts"]["synthetic_ledgers"] == 0
+    assert trading["counts"]["synthetic_accounts"] == 0
+    assert trading["counts"]["synthetic_portfolios"] == 0
+    assert trading["counts"]["runtime_risk_policies"] == 0
+    assert trading["counts"]["portfolio_risk_policies"] == 0
+    assert trading["counts"]["strategy_budget_policies"] == 0
+    assert trading["counts"]["market_condition_policies"] == 0
+    assert trading["counts"]["restricted_credential_policies"] == 0
+    assert trading["counts"]["paper_operations_runbooks"] == 0
+    assert trading["counts"]["paper_operations_events"] == 0
+    assert trading["counts"]["operational_incidents"] == 0
+    assert trading["counts"]["durable_evidence_events"] == 0
+    assert trading["counts"]["paper_stability_reports"] == 0
+    assert trading["counts"]["limited_live_risk_packages"] == 0
+    assert trading["counts"]["live_operations_runbooks"] == 0
+    assert trading["counts"]["live_operations_events"] == 0
+    assert trading["counts"]["live_readiness_proposals"] == 0
     assert trading["risk_preconditions"]["promotion_eligible"] is False
     demo_wallet = trading["demo_wallet_design"]
     assert demo_wallet["status"] == "DESIGN_ONLY_NOT_ACTIVATED"
@@ -185,17 +228,138 @@ def test_dashboard_projects_inert_trading_domain_read_model() -> None:
         in demo_wallet["invariants"]
     )
     assert "HG_3_APPROVED" in trading["activation_predicate"]
+    control_plane = trading["s3_s4_control_plane_report"]
+    assert control_plane["status"] == "BLOCKED_BY_GATES"
+    assert control_plane["artifact_ref"] == (
+        "artifacts/reports/S3_S4_CONTROL_PLANE_READINESS_2026_07_11.json"
+    )
+    assert control_plane["mode"] == "CONTROL_PLANE_PROBE_ONLY"
+    assert control_plane["execution_authority"] == "NONE"
+    assert control_plane["paper_orders"] == "DISABLED"
+    assert control_plane["live_orders"] == "DISABLED"
+    assert control_plane["active_record_counts"] == {
+        "live_readiness_proposals": 0,
+        "operational_drill_records": 0,
+        "paper_divergence_reports": 0,
+        "paper_fill_policies": 0,
+        "paper_lane_proposals": 0,
+        "paper_operations_runbooks": 0,
+        "paper_operations_events": 0,
+        "operational_incidents": 0,
+        "durable_evidence_events": 0,
+        "paper_stability_reports": 0,
+        "limited_live_risk_packages": 0,
+        "live_operations_runbooks": 0,
+        "live_operations_events": 0,
+        "runtime_risk_policies": 0,
+        "portfolio_risk_policies": 0,
+        "strategy_budget_policies": 0,
+        "market_condition_policies": 0,
+        "restricted_credential_policies": 0,
+        "stage_gate_records": 0,
+        "synthetic_accounts": 0,
+        "synthetic_ledgers": 0,
+        "synthetic_portfolios": 0,
+    }
+    assert "no candidate is validated or promotion eligible" in control_plane["s3_blockers"]
+    assert "no venue credential is requested or configured" in control_plane["s4_blockers"]
     readiness = trading["stage_gate_readiness"]
     assert readiness["status"] == "BLOCKED_BY_GATES"
     assert readiness["execution_authority"] == "NONE"
     assert readiness["s3_paper_demo"]["status"] == "NOT_READY"
     assert readiness["s4_live"]["status"] == "NOT_READY"
     assert "S2_EXIT_PASS" in readiness["s3_paper_demo"]["blocked_by"]
+    assert "inert S3/S4 readiness contracts implemented" in readiness["s3_paper_demo"]["satisfied"]
     assert "one COMPLETE_APPROVABLE strategy context" in readiness["s3_paper_demo"]["blocked_by"]
     assert "HG_5_OPERATOR_APPROVAL" in readiness["s4_live"]["blocked_by"]
     assert "synthetic_wallet_mutation" in trading["prohibited"]
     assert "venue_order_routing" in trading["prohibited"]
     assert "live_order_capability" in trading["prohibited"]
+    assert any(
+        row["name"] == "S3/S4 readiness control plane" and row["status"] == "MODELED_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Backtest-versus-paper divergence" and row["status"] == "MODELED_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Operational drills" and row["status"] == "MODELED_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Synthetic demo ledger" and row["status"] == "MODELED_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Synthetic paper fill policy" and row["status"] == "MODELED_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Synthetic execution reducers" and row["status"] == "AVAILABLE_OFFLINE_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Canonical signal evaluator" and row["status"] == "AVAILABLE_OFFLINE_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Durable synthetic evidence ledger"
+        and row["status"] == "AVAILABLE_OFFLINE_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Synthetic account and portfolio" and row["status"] == "MODELED_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Synthetic runtime risk policy" and row["status"] == "MODELED_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Synthetic portfolio risk policy" and row["status"] == "MODELED_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Synthetic strategy budget policy" and row["status"] == "MODELED_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Synthetic market-condition policy" and row["status"] == "MODELED_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Restricted credential policy" and row["status"] == "MODELED_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Paper operations runbook" and row["status"] == "MODELED_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Paper operations event log" and row["status"] == "MODELED_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Operational incident lifecycle" and row["status"] == "MODELED_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Paper stability report" and row["status"] == "MODELED_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Limited live risk package" and row["status"] == "MODELED_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Live operations runbook" and row["status"] == "MODELED_INERT"
+        for row in trading["read_models"]
+    )
+    assert any(
+        row["name"] == "Live operations event log" and row["status"] == "MODELED_INERT"
+        for row in trading["read_models"]
+    )
 
 
 def test_stage_gate_readiness_is_read_only_and_blocked() -> None:
@@ -215,6 +379,7 @@ def test_stage_gate_readiness_is_read_only_and_blocked() -> None:
     assert payload["s3_paper_demo"]["status"] == "NOT_READY"
     assert payload["s4_live"]["status"] == "NOT_READY"
     assert "S2_EXIT_PASS" in payload["s3_paper_demo"]["blocked_by"]
+    assert "inert S3/S4 readiness contracts implemented" in payload["s3_paper_demo"]["satisfied"]
     assert "HG_5_OPERATOR_APPROVAL" in payload["s4_live"]["blocked_by"]
 
 
@@ -270,6 +435,19 @@ def test_dashboard_search_projects_registry_and_report_artifacts() -> None:
     assert any(row["id"] == "STRAT-EXT-3COMMAS-DCA-CONFIG" for row in payload["results"])
     assert all(row["path"] and row["score"] > 0 for row in payload["results"])
     assert all("secret" not in row["snippet"].casefold() for row in payload["results"])
+
+
+def test_dashboard_search_projects_tradingview_candidate_batch() -> None:
+    root = Path(__file__).resolve().parents[1]
+    payload = build_search_results(root, "TVPINE Kivanc SuperTrend", limit=10)
+    assert payload["capabilities"]["writes"] == "DISABLED"
+    assert payload["capabilities"]["order_endpoint"] == "ABSENT"
+    row = next(item for item in payload["results"] if item["id"] == "TVPINE-KIVANC-SUPERTREND")
+    assert row["kind"] == "tradingview_candidate"
+    assert row["status"] == "STRATEGY_REPORT_AVAILABLE_NOT_CAPTURED"
+    assert row["path"] == (
+        "artifacts/source_intake/tradingview_public_strategies/selected_candidates_2026_07_11.json"
+    )
 
 
 def test_research_lab_projection_is_stable_before_a_batch_exists(tmp_path: Path) -> None:
@@ -449,27 +627,54 @@ def test_research_lab_malformed_or_failed_batch_fails_closed(
 def test_dashboard_projects_typed_research_sources() -> None:
     root = Path(__file__).resolve().parents[1]
     sources = build_dashboard_data(root)["research_sources"]
-    assert sources["source_count"] == 14
-    assert sources["hypothesis_only_count"] == 14
-    assert sources["noneligible_count"] == 14
+    assert sources["source_count"] == 15
+    assert sources["hypothesis_only_count"] == 15
+    assert sources["noneligible_count"] == 15
     assert sources["intake_plans"] == {
-        "plan_count": 4,
-        "ready_count": 3,
+        "plan_count": 5,
+        "ready_count": 4,
         "design_only_count": 1,
     }
     assert sources["replay_hypotheses"] == {
-        "hypothesis_count": 4,
-        "spec_candidate_count": 2,
+        "hypothesis_count": 5,
+        "spec_candidate_count": 3,
         "replay_candidate_count": 1,
         "non_reconstructable_count": 1,
-        "noneligible_count": 4,
+        "noneligible_count": 5,
     }
+    tv_batch = sources["tradingview_public_strategy_batch"]
+    assert tv_batch["candidate_count"] == 8
+    assert tv_batch["status"] == "CANDIDATE_URLS_SELECTED_METADATA_ONLY"
+    assert tv_batch["artifact_ref"] == (
+        "artifacts/source_intake/tradingview_public_strategies/selected_candidates_2026_07_11.json"
+    )
+    assert tv_batch["execution_authority"] == "NONE"
+    assert tv_batch["approval_eligible"] is False
+    tv_replay = tv_batch["latest_replay"]
+    assert tv_replay["status"] == "COMPLETED"
+    assert tv_replay["mode"] == "OFFLINE_RESEARCH_ONLY"
+    assert tv_replay["execution_authority"] == "NONE"
+    assert tv_replay["paper_orders"] == "DISABLED"
+    assert tv_replay["live_orders"] == "DISABLED"
+    assert tv_replay["counts"]["trials"] == 12
+    assert tv_replay["scorecard_path"].endswith("/scorecard.json")
+    assert [row["candidate_id"] for row in tv_batch["rows"]] == [
+        "TVPINE-KIVANC-SUPERTREND",
+        "TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION",
+        "TVPINE-SKYREXIO-BB-ENHANCED",
+        "TVPINE-PINEINDICATORS-TSI-BTC-2H",
+        "TVPINE-FREE990-RSI-TP-SL",
+        "TVPINE-FAYTTERRO-RSI-DIVERGENCE",
+        "TVPINE-ASSASSINSGRID-SUPER8-BTC",
+        "TVPINE-PRESENTTRADING-AI-SUPERTREND-PIVOT",
+    ]
     assert sources["checked_date"] == "2026-07-11"
     assert len(sources["digest"]) == 64
     assert sources["family_counts"]["multiple_testing_controls"] == 4
     assert sources["family_counts"]["exchange_bot_replay"] == 1
     assert sources["family_counts"]["copy_trading_replay"] == 1
     assert sources["family_counts"]["signal_replay"] == 1
+    assert sources["family_counts"]["public_strategy_reproduction"] == 1
     assert sources["family_counts"]["bot_platform_replay"] == 1
     paper = next(row for row in sources["rows"] if row["source_id"] == "SRC-PAPER1")
     assert paper["year"] == 1993

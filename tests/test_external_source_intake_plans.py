@@ -70,18 +70,25 @@ def test_external_source_intake_plans_resolve_seeded_sources(
         "INTAKE-BINANCE-TRADING-BOTS",
         "INTAKE-BINANCE-COPY-TRADING",
         "INTAKE-TRADINGVIEW-IDEAS",
+        "INTAKE-TRADINGVIEW-PUBLIC-STRATEGIES",
         "INTAKE-3COMMAS-DCA-BOT",
     }
     assert {plan.source_ref for plan in plans} == {
         "SRC-BINANCE-TRADING-BOTS",
         "SRC-BINANCE-COPY-TRADING",
         "SRC-TRADINGVIEW-IDEAS",
+        "SRC-TRADINGVIEW-PUBLIC-STRATEGIES",
         "SRC-3COMMAS-DCA-BOT",
     }
     assert registry.get("INTAKE-BINANCE-TRADING-BOTS").capture_mode is (
         CaptureMode.CONFIG_RECONSTRUCTION
     )
     assert registry.get("INTAKE-BINANCE-COPY-TRADING").status is IntakeStatus.DESIGN_ONLY
+    tv_public = registry.get("INTAKE-TRADINGVIEW-PUBLIC-STRATEGIES")
+    assert tv_public.capture_mode is CaptureMode.STRATEGY_TESTER_REPRODUCTION
+    assert "license_or_reuse_status" in tv_public.required_capture_fields
+    assert "profit_factor" in tv_public.required_capture_fields
+    assert any("Protected and invite-only" in note for note in tv_public.notes)
 
 
 def test_external_source_intake_plans_are_not_execution_authority(
@@ -132,7 +139,7 @@ def test_external_source_intake_snapshot_builder_retains_nonexecution_boundary(
     registry: SourceIntakePlanRegistry,
 ) -> None:
     index = snapshot_module.build_snapshots("2026-07-11T00:00:00Z")
-    assert index["plan_count"] == 4
+    assert index["plan_count"] == 5
     assert index["execution_authority"] == "NONE"
     assert index["venue_connection"] == "NONE"
     assert index["paper_demo_live"] == "DISABLED"
@@ -164,6 +171,7 @@ def test_external_replay_hypotheses_are_source_linked_and_noneligible(
         "RPH-BINANCE-SPOT-GRID-CONFIG",
         "RPH-BINANCE-COPY-TRADING-OPAQUE",
         "RPH-TRADINGVIEW-RULED-SIGNAL-REPLAY",
+        "RPH-TRADINGVIEW-PUBLIC-STRATEGY-TESTER",
         "RPH-3COMMAS-DCA-CONFIG",
     }
     for item in hypotheses:
@@ -172,6 +180,10 @@ def test_external_replay_hypotheses_are_source_linked_and_noneligible(
         assert item.approval_eligible is False
         assert item.artifact_refs
         assert item.validation_plan
+    tv_public = replay_registry.get("RPH-TRADINGVIEW-PUBLIC-STRATEGY-TESTER")
+    assert tv_public.status is ReplayHypothesisStatus.SPEC_CANDIDATE
+    assert "open-source/visible-code confirmation" in tv_public.required_inputs
+    assert any("TV-versus-OS divergence report" in step for step in tv_public.validation_plan)
 
 
 def test_copy_trading_replay_hypothesis_fails_closed_until_action_history_exists(

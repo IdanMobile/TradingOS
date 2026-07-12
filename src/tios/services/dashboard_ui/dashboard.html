@@ -28,6 +28,7 @@
       <button data-view="market">Market Monitor</button>
       <button data-view="datasets">Datasets</button>
       <button data-view="strategies">Strategies</button>
+      <button data-view="operations">Operations</button>
 	      <button data-view="runs">Experiments & Runs</button>
 	      <button data-view="engines">Engine Lab</button>
 	      <button data-view="comparisons">Comparisons</button>
@@ -41,6 +42,22 @@
     <div class="sidebar-foot">Read-only S2 operations<br>Crypto Spot · BTCUSDT / ETHUSDT</div>
   </aside>
   <main class="main" id="main-content" tabindex="-1">
+    <section class="view" id="operations">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap">
+          <div><h2>Data freshness</h2><p id="opsDataFresh" class="muted">loading…</p></div>
+          <button id="opsRefresh" type="button">Refresh data now</button>
+        </div>
+        <p id="opsTriggerMsg" class="muted" role="status"></p>
+      </div>
+      <div class="card">
+        <h2>Strategies — results &amp; last tested</h2>
+        <div style="overflow-x:auto"><table id="opsStrategies"><thead><tr>
+          <th>Strategy</th><th>Search</th><th>Best return</th><th>Dataset</th>
+          <th>Screen</th><th>Last tested</th><th>Authority</th>
+        </tr></thead><tbody></tbody></table></div>
+      </div>
+    </section>
     <header class="topbar"><div class="crumb">S2 OPS / <span id="crumb">OVERVIEW</span></div><div class="env"><span class="dot" aria-hidden="true"></span><span>LOCAL · READ ONLY</span><span class="refresh" id="refresh" role="status" aria-live="polite">Loading dashboard…</span><button class="retry" id="retry" hidden>Retry</button></div></header>
     <div class="content" id="dashboardContent" aria-busy="true">
       <section id="overview" class="view active"><div class="title-row"><div><div class="eyebrow">Trading evidence registry</div><h1>Research command center</h1><p class="subtitle">A read-only view of the evidence spine: frozen data, canonical strategies, engine behavior, validation gates, and the links that connect them.</p></div><button class="action" onclick="loadAll()">Refresh evidence</button></div>
@@ -112,7 +129,7 @@ document.querySelector('#activityTable').innerHTML=d.activity.length?`<table><ca
 const seed=lab.latest_seed_cycle;document.querySelector('#labState').innerHTML=badge(lab.state);document.querySelector('#labMetrics').innerHTML=`<div class="card metric"><div class="label">Autonomous evidence cycle</div><div class="value">${esc(lab.state)}</div><div class="meta">${esc(lab.latest_batch_id||'No batch yet')} · ${esc(lab.mode)}</div></div><div class="card metric"><div class="label">Experiments / runs</div><div class="value">${lab.experiments} / ${lab.runs}</div><div class="meta">${lab.completed} completed · ${lab.failed} failed</div></div><div class="card metric"><div class="label">All trials retained</div><div class="value ${lab.all_trials_retained?'up':'warn'}">${lab.all_trials_retained?'YES':'NOT YET'}</div><div class="meta">Failures remain evidence</div></div><div class="card metric"><div class="label">Seed candidate cycle</div><div class="value">${seed?seed.trials:0}</div><div class="meta">${seed?`${esc(seed.candidates)} candidates · ${esc(seed.approval_status)}`:'No seed cycle yet'}</div></div><div class="card metric"><div class="label">Winner selected</div><div class="value warn">${lab.winner_selected||seed?.winner_selected?'YES':'NO'}</div><div class="meta">No strategy approval</div></div>`;
 document.querySelector('#labScores').innerHTML=Object.entries(lab.score_dimensions).length?Object.entries(lab.score_dimensions).map(([name,state])=>`<div class="list-item"><div><strong>${esc(name.replaceAll('_',' '))}</strong></div>${badge(state)}</div>`).join(''):'<div class="empty">No batch score dimensions are available yet.</div>';
 document.querySelector('#labBlockers').innerHTML=`${lab.blockers.map(x=>`<div class="list-item"><div><strong>Evidence blocker</strong><small>${esc(x)}</small></div>${badge('BLOCKED')}</div>`).join('')}<div class="list-item"><div><strong>Validation / approval</strong><small>Independent human-governed gates</small></div>${badge(`${lab.validation_status} · ${lab.approval_status}`)}</div><div class="list-item"><div><strong>Execution / venue</strong><small>${esc(lab.execution_authority)} authority · ${esc(lab.venue_connection)} connection</small></div>${badge('NONE')}</div><div class="list-item"><div><strong>Demo trading</strong></div>${badge(lab.demo_orders)}</div><div class="list-item"><div><strong>Paper trading</strong></div>${badge(lab.paper_orders)}</div><div class="list-item"><div><strong>Live trading</strong></div>${badge(lab.live_orders)}</div>`;
-document.querySelector('#sourceSummary').textContent=`${sources.source_count} sources · ${sources.hypothesis_only_count} hypothesis-only · ${sources.noneligible_count} noneligible · checked ${sources.checked_date||'—'}`;document.querySelector('#sourceRows').innerHTML=sources.rows.map(x=>`<tr><td><a href="${esc(x.canonical_url)}" target="_blank" rel="noopener">${esc(x.title)}</a><small class="mono">${esc(x.source_id)}</small></td><td><span>${x.year}</span><small class="mono">${esc(x.doi)}</small></td><td>${x.families.map(f=>badge(f)).join(' ')}</td><td>${badge(x.reproduction)}</td><td>${badge(x.eligibility)}</td></tr>`).join('');document.querySelector('#sourceDigest').textContent=`Registry digest: ${sources.digest||'unavailable'} · Intake plans: ${sources.intake_plans?.plan_count||0} (${sources.intake_plans?.ready_count||0} ready, ${sources.intake_plans?.design_only_count||0} design-only) · Replay hypotheses: ${sources.replay_hypotheses?.hypothesis_count||0} (${sources.replay_hypotheses?.non_reconstructable_count||0} non-reconstructable) · Families: ${Object.entries(sources.family_counts).map(([family,count])=>`${family} ${count}`).join(' · ')}`;
+document.querySelector('#sourceSummary').textContent=`${sources.source_count} sources · ${sources.hypothesis_only_count} hypothesis-only · ${sources.noneligible_count} noneligible · checked ${sources.checked_date||'—'}`;document.querySelector('#sourceRows').innerHTML=sources.rows.map(x=>`<tr><td><a href="${esc(x.canonical_url)}" target="_blank" rel="noopener">${esc(x.title)}</a><small class="mono">${esc(x.source_id)}</small></td><td><span>${x.year}</span><small class="mono">${esc(x.doi)}</small></td><td>${x.families.map(f=>badge(f)).join(' ')}</td><td>${badge(x.reproduction)}</td><td>${badge(x.eligibility)}</td></tr>`).join('');const tvBatch=sources.tradingview_public_strategy_batch||{candidate_count:0,status:'NO_BATCH'},tvReplay=tvBatch.latest_replay||{counts:{}};document.querySelector('#sourceDigest').textContent=`Registry digest: ${sources.digest||'unavailable'} · Intake plans: ${sources.intake_plans?.plan_count||0} (${sources.intake_plans?.ready_count||0} ready, ${sources.intake_plans?.design_only_count||0} design-only) · Replay hypotheses: ${sources.replay_hypotheses?.hypothesis_count||0} (${sources.replay_hypotheses?.non_reconstructable_count||0} non-reconstructable) · TradingView candidates: ${tvBatch.candidate_count||0} ${tvBatch.status||'NO_BATCH'} · latest replay: ${tvReplay.status||'NONE'} ${tvReplay.counts.trials||0} trials · Families: ${Object.entries(sources.family_counts).map(([family,count])=>`${family} ${count}`).join(' · ')}`;
 document.querySelector('#labArtifacts').innerHTML=(lab.artifact_refs.length||seed)?`${lab.artifact_refs.map(x=>`<div class="list-item"><span class="mono">${esc(x)}</span>${badge('RETAINED')}</div>`).join('')}${seed?`<div class="list-item"><span class="mono">${esc(seed.artifact_ref)}</span>${badge(seed.status)}</div>`:''}`:'<div class="empty">No Research Lab batch artifacts exist yet.</div>';document.querySelector('#labNextWork').innerHTML=`<strong>Next command / work — informational only:</strong> ${esc(lab.next_work)} No POST or write control is exposed here.`;
 document.querySelector('#datasetsBody').innerHTML=`<div class="card"><div class="section-title"><h2>Frozen data registry</h2>${badge(ds.status)}</div><table><thead><tr><th>Dataset</th><th>Source</th><th>Coverage</th><th>Tables</th><th>Rows</th><th>Quality</th></tr></thead><tbody><tr><td class="mono">${esc(ds.id)}</td><td>${esc(ds.source)}</td><td>${esc(ds.coverage)}</td><td>${ds.tables||0}</td><td>${(ds.rows||0).toLocaleString()}</td><td>${badge(ds.quality)}</td></tr></tbody></table><p class="mono">Manifest: ${esc(ds.manifest)}</p></div>`;
 document.querySelector('#strategiesBody').innerHTML=`<table><thead><tr><th>Strategy</th><th>Family</th><th>Reproduction</th><th>Canonical spec</th></tr></thead><tbody>${d.strategies.map(x=>`<tr><td class="mono">${esc(x.id)} · ${esc(x.name)}</td><td>${esc(x.family)}</td><td>${badge(x.status)}</td><td class="mono">${esc(x.spec)}</td></tr>`).join('')}</tbody></table>`;
@@ -246,5 +263,42 @@ async function fetchJson(url){const response=await fetch(url,{cache:'no-store'})
 function updateFreshness(){if(!lastSuccess)return;const age=Date.now()-lastSuccess;if(age>STALE_MS){refresh.textContent=`Stale: last successful refresh ${new Date(lastSuccess).toLocaleTimeString()}`;retry.hidden=false}else refresh.textContent=`Last successful refresh ${new Date(lastSuccess).toLocaleTimeString()}`}
 async function loadAll(){if(loading)return;loading=true;content.setAttribute('aria-busy','true');refresh.setAttribute('aria-busy','true');refresh.textContent='Loading dashboard…';retry.hidden=true;try{const [d,s]=await Promise.all([fetchJson('/api/v1/dashboard'),fetchJson('/api/v1/status')]);if(!Array.isArray(d.datasets)||!Array.isArray(d.activity)||!s.summary)throw new Error('dashboard API response is malformed');render(d,s);lastSuccess=Date.now();updateFreshness()}catch(error){refresh.textContent=`Dashboard unavailable: ${error.message}${lastSuccess?' · showing last successful data':''}`;retry.hidden=false}finally{loading=false;content.setAttribute('aria-busy','false');refresh.removeAttribute('aria-busy')}}
 loadAll();setInterval(loadAll,POLL_MS);setInterval(()=>{if(document.querySelector('#market').classList.contains('active'))loadMarket()},MARKET_POLL_MS);setInterval(updateFreshness,1000);
+</script>
+<script>
+/* Operations panel — self-contained (D-041 governed trigger + read-only projection). */
+(function(){
+  const $=s=>document.querySelector(s);
+  async function loadOps(){
+    try{
+      const d=await (await fetch('/api/v1/operations',{cache:'no-store'})).json();
+      const du=d.data_update||{};
+      $('#opsDataFresh').textContent=du.last_update_utc
+        ? ('Last update '+new Date(du.last_update_utc).toLocaleString()+' · '+du.files_updated+' files, +'+du.bars_added+' bars')
+        : 'No data-update has run yet.';
+      const tb=$('#opsStrategies tbody'); tb.innerHTML='';
+      (d.strategies||[]).forEach(s=>{
+        const tr=document.createElement('tr');
+        [s.strategy_id, s.search, s.best_return_pct==null?'—':(s.best_return_pct+'%'),
+         s.best_dataset||'—', s.screen_pass?'PASS':'—',
+         s.last_tested_utc?new Date(s.last_tested_utc).toLocaleString():'—',
+         s.execution_authority].forEach(c=>{const td=document.createElement('td');td.textContent=c;tr.appendChild(td)});
+        tb.appendChild(tr);
+      });
+    }catch(e){$('#opsDataFresh').textContent='operations unavailable: '+e.message}
+  }
+  const btn=$('#opsRefresh');
+  if(btn) btn.addEventListener('click',async()=>{
+    btn.setAttribute('aria-busy','true'); const msg=$('#opsTriggerMsg');
+    try{
+      const r=await fetch('/api/v1/workspace-actions/data-update',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+      const d=await r.json();
+      msg.textContent=r.ok?('Data refresh started '+new Date(d.triggered_at).toLocaleTimeString()+' — reload in a minute for the new timestamp.'):('trigger failed: '+(d.error||r.status));
+    }catch(e){msg.textContent='trigger failed: '+e.message}
+    finally{btn.removeAttribute('aria-busy')}
+  });
+  const tab=document.querySelector('[data-view="operations"]');
+  if(tab) tab.addEventListener('click',loadOps);
+  loadOps(); setInterval(loadOps,60000);
+})();
 </script>
 </body></html>

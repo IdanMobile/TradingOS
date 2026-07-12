@@ -1,0 +1,166 @@
+{
+  "approval_eligible": false,
+  "candidate_count": 8,
+  "capture_status": "CANDIDATE_URLS_SELECTED_METADATA_ONLY",
+  "captured_at_utc": "2026-07-11T00:00:00Z",
+  "execution_authority": "NONE",
+  "hypothesis_ref": "RPH-TRADINGVIEW-PUBLIC-STRATEGY-TESTER",
+  "intake_plan_ref": "INTAKE-TRADINGVIEW-PUBLIC-STRATEGIES",
+  "local_reproduction_status": "NOT_STARTED",
+  "paper_demo_live": "DISABLED",
+  "prohibited_actions": [
+    "credential_request",
+    "account_connection",
+    "subscription_or_copy_action",
+    "order_routing",
+    "paper_demo_or_live_activation",
+    "profit_claim_inheritance",
+    "protected_or_invite_only_code_copying"
+  ],
+  "schema": "tios-tradingview-public-strategy-candidate-batch-v1",
+  "selection_policy": [
+    "prefer visible open-source strategy pages",
+    "prefer diverse rule families over claimed performance",
+    "prefer crypto-compatible candidates where available",
+    "retain TradingView Strategy Tester reports only as external comparison evidence",
+    "require local OS reproduction before validation or S3 discussion"
+  ],
+  "source_ref": "SRC-TRADINGVIEW-PUBLIC-STRATEGIES",
+  "strategy_tester_metrics_status": "PENDING_PER_CANDIDATE_CAPTURE",
+  "candidates": [
+    {
+      "candidate_id": "TVPINE-KIVANC-SUPERTREND",
+      "title": "SuperTrend STRATEGY",
+      "author": "KivancOzbilgic",
+      "canonical_url": "https://www.tradingview.com/script/P5Gu6F8k/",
+      "access_status": "OPEN_SOURCE_PAGE_OBSERVED",
+      "family": "trend_following",
+      "why_selected": "Classic ATR-based SuperTrend strategy with broad community usage and configurable ATR method.",
+      "tester_status": "STRATEGY_REPORT_AVAILABLE_NOT_CAPTURED",
+      "next_steps": [
+        "capture Pine source hash and attribution/license note",
+        "capture Strategy Tester symbol, timeframe, properties, and performance summary",
+        "translate ATR/SuperTrend rules into local spec",
+        "compare TradingView report to OS frozen-data reproduction"
+      ]
+    },
+    {
+      "candidate_id": "TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION",
+      "title": "RSI Mean-Reversion Strategy",
+      "author": "RagingPorra",
+      "canonical_url": "https://www.tradingview.com/script/Hb8KwPmd-RSI-Mean-Reversion-Strategy/",
+      "access_status": "OPEN_SOURCE_PAGE_OBSERVED",
+      "family": "mean_reversion",
+      "why_selected": "Simple RSI threshold strategy with explicit TP/SL and commission/slippage assumptions visible in the page summary.",
+      "tester_status": "STRATEGY_REPORT_AVAILABLE_NOT_CAPTURED",
+      "next_steps": [
+        "capture Pine source hash and attribution/license note",
+        "capture exact RSI, stop, capital, commission, slippage, and Strategy Tester settings",
+        "translate RSI entry/exit rules into local spec",
+        "run OS reproduction on BTCUSDT and ETHUSDT frozen intervals"
+      ]
+    },
+    {
+      "candidate_id": "TVPINE-SKYREXIO-BB-ENHANCED",
+      "title": "Bollinger Bands Enhanced Strategy",
+      "author": "Skyrexio",
+      "canonical_url": "https://www.tradingview.com/script/V4B5nKIx-Bollinger-Bands-Enhanced-Strategy/",
+      "access_status": "OPEN_SOURCE_PAGE_OBSERVED",
+      "family": "mean_reversion_trend_filter",
+      "why_selected": "Combines Bollinger dip entries, ATR trailing profit, and EMA trend filtering; useful contrast against simpler BB seeds already retained.",
+      "tester_status": "STRATEGY_REPORT_AVAILABLE_NOT_CAPTURED",
+      "next_steps": [
+        "capture Pine source hash and attribution/license note",
+        "capture BB, ATR, EMA, trading-period, and tester settings",
+        "translate BB/ATR/EMA rules into local spec",
+        "compare against existing Bollinger seed reproductions"
+      ]
+    },
+    {
+      "candidate_id": "TVPINE-PINEINDICATORS-TSI-BTC-2H",
+      "title": "TSI Long/Short for BTC 2H",
+      "author": "PineIndicators",
+      "canonical_url": "https://www.tradingview.com/script/EiOQOcZd-TSI-Long-Short-for-BTC-2H/",
+      "access_status": "OPEN_SOURCE_PAGE_OBSERVED",
+      "family": "momentum_long_short",
+      "why_selected": "BTC-specific two-hour momentum strategy using True Strength Index and long/short behavior.",
+      "tester_status": "STRATEGY_REPORT_AVAILABLE_NOT_CAPTURED",
+      "next_steps": [
+        "capture Pine source hash and attribution/license note",
+        "capture BTC 2H Strategy Tester settings and leverage assumptions if present",
+        "translate TSI momentum rules into local spec",
+        "reproduce on canonical BTCUSDT 1h/available interval proxy or add documented 2h aggregation"
+      ]
+    },
+    {
+      "candidate_id": "TVPINE-FREE990-RSI-TP-SL",
+      "title": "RSI Strategy With TP/SL - Lower TF",
+      "author": "Free990",
+      "canonical_url": "https://www.tradingview.com/script/fsDrPPMP-RSI-Strategy-With-TP-SL-Lower-TF/",
+      "access_status": "OPEN_SOURCE_PAGE_OBSERVED",
+      "family": "rsi_risk_managed",
+      "why_selected": "RSI signal strategy with configurable long/short direction, take-profit, stop-loss, and monthly P/L table.",
+      "tester_status": "STRATEGY_REPORT_AVAILABLE_NOT_CAPTURED",
+      "next_steps": [
+        "capture Pine source hash and attribution/license note",
+        "capture RSI, TP, SL, direction, timeframe, and tester settings",
+        "translate RSI plus bracket-exit rules into local spec",
+        "compare fill timing and bracket behavior between TradingView and OS"
+      ]
+    },
+    {
+      "candidate_id": "TVPINE-FAYTTERRO-RSI-DIVERGENCE",
+      "title": "RSI Divergence Strategy",
+      "author": "faytterro",
+      "canonical_url": "https://www.tradingview.com/script/ASVRhqFM/",
+      "access_status": "OPEN_SOURCE_PAGE_OBSERVED",
+      "family": "divergence_reversal",
+      "why_selected": "RSI divergence strategy with take-profit, stop, and trailing-stop options; tests whether divergence logic can be reproduced faithfully.",
+      "tester_status": "STRATEGY_REPORT_AVAILABLE_NOT_CAPTURED",
+      "next_steps": [
+        "capture Pine source hash and attribution/license note",
+        "capture divergence, TP, stop, trailing-stop, and tester settings",
+        "translate divergence detection with explicit ambiguity notes",
+        "validate against a micro fixture before full frozen-data replay"
+      ]
+    },
+    {
+      "candidate_id": "TVPINE-ASSASSINSGRID-SUPER8-BTC",
+      "title": "Super 8 - 30M BTC",
+      "author": "AssassinsGrid",
+      "canonical_url": "https://www.tradingview.com/script/zFPZofwt/",
+      "access_status": "OPEN_SOURCE_PAGE_OBSERVED",
+      "family": "multi_indicator_btc",
+      "why_selected": "BTC-focused multi-indicator strategy combining EMA, ADX, SAR, MACD, volume, Bollinger Bands, Donchian, and ATR.",
+      "tester_status": "STRATEGY_REPORT_AVAILABLE_NOT_CAPTURED",
+      "next_steps": [
+        "capture Pine source hash and attribution/license note",
+        "capture all indicator toggles, timeframe, and tester settings",
+        "decide whether to translate full strategy or split into bounded sub-hypotheses",
+        "use as complexity stress test after simpler candidates reproduce"
+      ]
+    },
+    {
+      "candidate_id": "TVPINE-PRESENTTRADING-AI-SUPERTREND-PIVOT",
+      "title": "AI SuperTrend x Pivot Percentile - Strategy [PresentTrading]",
+      "author": "PresentTrading",
+      "canonical_url": "https://www.tradingview.com/script/eC3qAYNQ-AI-SuperTrend-x-Pivot-Percentile-Strategy-PresentTrading/",
+      "access_status": "OPEN_SOURCE_PAGE_OBSERVED",
+      "family": "hybrid_trend_complex",
+      "why_selected": "High-interest complex public strategy combining KNN-style trend classification with pivot-percentile context; useful as a later stress candidate.",
+      "tester_status": "STRATEGY_REPORT_AVAILABLE_NOT_CAPTURED",
+      "next_steps": [
+        "capture Pine source hash and attribution/license note",
+        "capture KNN/SuperTrend/Pivot settings and Strategy Tester fields",
+        "assess whether the KNN logic is reproducible without hidden state",
+        "defer local reproduction until simpler open candidates are verified"
+      ]
+    }
+  ],
+  "verification_notes": [
+    "Each URL was observed as a public TradingView strategy page in web research.",
+    "Open-source status was observed from page metadata/search result snippets; source code itself was not copied.",
+    "Strategy Tester metrics are not captured yet and must be captured per candidate before local reproduction comparison.",
+    "No candidate is validated, approval eligible, or promotion eligible."
+  ]
+}

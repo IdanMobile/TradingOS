@@ -373,6 +373,38 @@ sources:
     supersedes: []
     related_source_ids: [SRC-PBO-2016, SRC-SPA-2005]
 
+  - source_id: SRC-TRADINGVIEW-PUBLIC-STRATEGIES
+    source_class: public_strategy_library
+    title: TradingView open-source public strategies and Strategy Tester reports
+    authors: [TradingView community authors]
+    publication: TradingView
+    year: 2026
+    volume: "n/a"
+    issue: "n/a"
+    pages: "n/a"
+    doi: null
+    canonical_publisher_url: "https://www.tradingview.com/scripts/strategy/"
+    lawful_full_text_url: null
+    checked_at: "2026-07-11T00:00:00Z"
+    access_license_status: public_page_only
+    hypothesis_families: [public_strategy_reproduction]
+    claim_summary: >-
+      Open-source Pine strategy publications and their Strategy Tester summaries can
+      supply attributed strategy candidates and external backtest evidence, but only
+      local OS reproduction and validation can make a candidate approvable.
+    exact_span_status: not_captured
+    evidence_strength: hypothesis_only
+    profit_claims_inherited: false
+    locally_reproduced: false
+    approval_eligible: false
+    contradictions:
+      - Protected or invite-only scripts cannot be copied or reverse-engineered.
+      - TradingView Strategy Tester results are external evidence, not inherited proof.
+      - TradingView data, fill model, commission, slippage, and candle alignment can diverge from OS runs.
+    reverify_trigger: Recheck script license, source visibility, and Strategy Tester capture mechanics before each ingestion batch.
+    supersedes: []
+    related_source_ids: [SRC-TRADINGVIEW-IDEAS, SRC-PBO-2016, SRC-DSR-2014, SRC-SPA-2005]
+
   - source_id: SRC-3COMMAS-DCA-BOT
     source_class: third_party_bot_platform
     title: 3Commas DCA Bot public product surface

@@ -1,0 +1,1101 @@
+{
+  "active_record_counts": {
+    "durable_evidence_events": 0,
+    "limited_live_risk_packages": 0,
+    "live_operations_events": 0,
+    "live_operations_runbooks": 0,
+    "live_readiness_proposals": 0,
+    "market_condition_policies": 0,
+    "operational_drill_records": 0,
+    "operational_incidents": 0,
+    "paper_divergence_reports": 0,
+    "paper_fill_policies": 0,
+    "paper_lane_proposals": 0,
+    "paper_operations_events": 0,
+    "paper_operations_runbooks": 0,
+    "paper_stability_reports": 0,
+    "portfolio_risk_policies": 0,
+    "restricted_credential_policies": 0,
+    "runtime_risk_policies": 0,
+    "stage_gate_records": 0,
+    "strategy_budget_policies": 0,
+    "synthetic_accounts": 0,
+    "synthetic_ledgers": 0,
+    "synthetic_portfolios": 0
+  },
+  "content_sha256": "8978aabfed8edc6d2b819e29046f70de5ec0a61a1e7c2030249ea62023763c24",
+  "contract_probe_records": {
+    "blocked_operational_drill_probe": {
+      "blocker": "no restricted credential exists",
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "drill_id": {
+        "value": "APR-CREDENTIAL-REVOCATION-DRILL-PROBE-2026-07-11"
+      },
+      "evidence_refs": [],
+      "execution_authority": "NONE",
+      "kind": "CREDENTIAL_REVOCATION",
+      "live_orders": "DISABLED",
+      "paper_orders": "DISABLED",
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "schema_version": 1,
+      "stage": "S4_LIVE",
+      "status": "BLOCKED",
+      "venue_connection": "NONE"
+    },
+    "limited_live_risk_package_probe": {
+      "blocker": "S3 paper stability evidence is not complete",
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "credential_policy_ref": {
+        "value": "APR-RESTRICTED-CREDENTIAL-POLICY-2026-07-11"
+      },
+      "evidence_refs": [
+        {
+          "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+        }
+      ],
+      "execution_authority": "NONE",
+      "kill_switch_mode": "MANUAL_REQUIRED",
+      "live_orders": "DISABLED",
+      "maximum_capital_at_risk": {
+        "amount": "1000",
+        "currency": "USDT"
+      },
+      "maximum_daily_loss": {
+        "amount": "50",
+        "currency": "USDT"
+      },
+      "maximum_single_order_notional": {
+        "amount": "100",
+        "currency": "USDT"
+      },
+      "operations_runbook_ref": {
+        "value": "APR-PAPER-OPERATIONS-RUNBOOK-2026-07-11"
+      },
+      "package_id": {
+        "value": "APR-LIMITED-LIVE-RISK-PACKAGE-2026-07-11"
+      },
+      "paper_orders": "DISABLED",
+      "paper_stability_ref": {
+        "value": "APR-PAPER-STABILITY-PROBE-2026-07-11"
+      },
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "runtime_risk_policy_ref": {
+        "value": "RISK-SYNTHETIC-RUNTIME-POLICY-2026-07-11"
+      },
+      "schema_version": 1,
+      "stage": "S4_LIVE",
+      "status": "BLOCKED",
+      "venue_connection": "NONE"
+    },
+    "live_operations_event_probe": {
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "detail": "probe heartbeat for future limited-live operations logging contract",
+      "event_id": {
+        "value": "APR-LIVE-OPERATIONS-EVENT-HEARTBEAT-2026-07-11"
+      },
+      "evidence_refs": [
+        {
+          "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+        }
+      ],
+      "execution_authority": "NONE",
+      "kind": "HEARTBEAT",
+      "limited_live_risk_package_ref": {
+        "value": "APR-LIMITED-LIVE-RISK-PACKAGE-2026-07-11"
+      },
+      "live_orders": "DISABLED",
+      "occurred_at": "2026-07-11T00:00:00+00:00",
+      "paper_orders": "DISABLED",
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "runbook_ref": {
+        "value": "APR-LIVE-OPERATIONS-RUNBOOK-2026-07-11"
+      },
+      "schema_version": 1,
+      "severity": "INFO",
+      "stage": "S4_LIVE",
+      "venue_connection": "NONE"
+    },
+    "live_operations_runbook_probe": {
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "credential_policy_ref": {
+        "value": "APR-RESTRICTED-CREDENTIAL-POLICY-2026-07-11"
+      },
+      "escalation_mode": "OPERATOR_MANUAL_ONLY",
+      "evidence_refs": [
+        {
+          "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+        }
+      ],
+      "execution_authority": "NONE",
+      "heartbeat_interval_seconds": 60,
+      "incident_response_minutes": 15,
+      "limited_live_risk_package_ref": {
+        "value": "APR-LIMITED-LIVE-RISK-PACKAGE-2026-07-11"
+      },
+      "live_orders": "DISABLED",
+      "log_retention_days": 365,
+      "paper_orders": "DISABLED",
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "runbook_id": {
+        "value": "APR-LIVE-OPERATIONS-RUNBOOK-2026-07-11"
+      },
+      "schema_version": 1,
+      "stage": "S4_LIVE",
+      "venue_connection": "NONE"
+    },
+    "live_readiness_probe": {
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "execution_authority": "NONE",
+      "gate_ref": {
+        "value": "GATE-S4-LIVE-READINESS-2026-07-11"
+      },
+      "live_orders": "DISABLED",
+      "maximum_capital_at_risk": {
+        "amount": "1000",
+        "currency": "USDT"
+      },
+      "maximum_drawdown_fraction": "0.05",
+      "paper_context_ref": {
+        "value": "APR-PAPER-LANE-PROBE-2026-07-11"
+      },
+      "paper_orders": "DISABLED",
+      "proposal_id": {
+        "value": "APR-LIVE-READINESS-PROBE-2026-07-11"
+      },
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "schema_version": 1,
+      "venue_connection": "NONE"
+    },
+    "operational_drill_probe": {
+      "blocker": null,
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "drill_id": {
+        "value": "APR-OPERATIONAL-DRILL-PROBE-2026-07-11"
+      },
+      "evidence_refs": [
+        {
+          "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+        }
+      ],
+      "execution_authority": "NONE",
+      "kind": "MANUAL_KILL_SWITCH",
+      "live_orders": "DISABLED",
+      "paper_orders": "DISABLED",
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "schema_version": 1,
+      "stage": "S3_PAPER_DEMO",
+      "status": "PASS",
+      "venue_connection": "NONE"
+    },
+    "operational_incident_probe": {
+      "acknowledged_at": null,
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "event_refs": [
+        {
+          "value": "APR-PAPER-OPERATIONS-EVENT-HEARTBEAT-2026-07-11"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+        }
+      ],
+      "execution_authority": "NONE",
+      "incident_id": {
+        "value": "APR-OPERATIONAL-INCIDENT-PROBE-2026-07-11"
+      },
+      "live_orders": "DISABLED",
+      "opened_at": "2026-07-11T00:00:00+00:00",
+      "owner_ref": null,
+      "paper_orders": "DISABLED",
+      "post_incident_ref": null,
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "resolution_summary": null,
+      "resolved_at": null,
+      "schema_version": 1,
+      "severity": "CRITICAL",
+      "stage": "S3_PAPER_DEMO",
+      "status": "OPEN",
+      "summary": "probe incident for future paper operations lifecycle contract",
+      "venue_connection": "NONE"
+    },
+    "paper_divergence_probe": {
+      "backtest_run_ref": {
+        "value": "RUN-FUTURE-BACKTEST-CONTEXT"
+      },
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "evidence_refs": [
+        {
+          "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+        }
+      ],
+      "execution_authority": "NONE",
+      "live_orders": "DISABLED",
+      "observations": [
+        {
+          "backtest_value": "0.10",
+          "metric": "TOTAL_RETURN",
+          "paper_value": "0.095",
+          "tolerance": "0.01"
+        },
+        {
+          "backtest_value": "10",
+          "metric": "FEE_TOTAL",
+          "paper_value": "15",
+          "tolerance": "1"
+        }
+      ],
+      "paper_context_ref": {
+        "value": "APR-PAPER-LANE-PROBE-2026-07-11"
+      },
+      "paper_orders": "DISABLED",
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "report_id": {
+        "value": "APR-PAPER-DIVERGENCE-PROBE-2026-07-11"
+      },
+      "schema_version": 1,
+      "status": "OUTSIDE_TOLERANCE",
+      "strategy_context_ref": {
+        "value": "SV-FUTURE-VALIDATED-CONTEXT"
+      },
+      "venue_connection": "NONE"
+    },
+    "paper_lane_probe": {
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "execution_authority": "NONE",
+      "gate_ref": {
+        "value": "GATE-S3-PAPER-DEMO-READINESS-2026-07-11"
+      },
+      "live_orders": "DISABLED",
+      "mode": "SYNTHETIC_LOCAL_SIMULATOR",
+      "paper_orders": "DISABLED",
+      "proposal_id": {
+        "value": "APR-PAPER-LANE-PROBE-2026-07-11"
+      },
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "requested_synthetic_capital": {
+        "amount": "10000",
+        "currency": "USDT"
+      },
+      "schema_version": 1,
+      "strategy_context_ref": {
+        "value": "SV-FUTURE-VALIDATED-CONTEXT"
+      },
+      "venue_connection": "NONE"
+    },
+    "paper_operations_event_probe": {
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "detail": "probe heartbeat for future paper operations logging contract",
+      "event_id": {
+        "value": "APR-PAPER-OPERATIONS-EVENT-HEARTBEAT-2026-07-11"
+      },
+      "evidence_refs": [
+        {
+          "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+        }
+      ],
+      "execution_authority": "NONE",
+      "kind": "HEARTBEAT",
+      "live_orders": "DISABLED",
+      "occurred_at": "2026-07-11T00:00:00+00:00",
+      "paper_orders": "DISABLED",
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "runbook_ref": {
+        "value": "APR-PAPER-OPERATIONS-RUNBOOK-2026-07-11"
+      },
+      "schema_version": 1,
+      "severity": "INFO",
+      "stage": "S3_PAPER_DEMO",
+      "venue_connection": "NONE"
+    },
+    "paper_operations_runbook_probe": {
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "evidence_refs": [
+        {
+          "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+        }
+      ],
+      "execution_authority": "NONE",
+      "heartbeat_interval_seconds": 60,
+      "heartbeat_timeout_seconds": 180,
+      "intervention_mode": "MANUAL_ONLY",
+      "live_orders": "DISABLED",
+      "log_retention_days": 90,
+      "paper_lane_ref": {
+        "value": "APR-PAPER-LANE-PROBE-2026-07-11"
+      },
+      "paper_orders": "DISABLED",
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "runbook_id": {
+        "value": "APR-PAPER-OPERATIONS-RUNBOOK-2026-07-11"
+      },
+      "runtime_risk_policy_ref": {
+        "value": "RISK-SYNTHETIC-RUNTIME-POLICY-2026-07-11"
+      },
+      "schema_version": 1,
+      "stage": "S3_PAPER_DEMO",
+      "venue_connection": "NONE"
+    },
+    "paper_stability_probe": {
+      "blocker": "no active paper lane has run a stability window",
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "divergence_report_ref": {
+        "value": "APR-PAPER-DIVERGENCE-PROBE-2026-07-11"
+      },
+      "evidence_refs": [
+        {
+          "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+        }
+      ],
+      "execution_authority": "NONE",
+      "incident_count": 0,
+      "live_orders": "DISABLED",
+      "missed_heartbeat_count": 0,
+      "observed_uptime_fraction": "0",
+      "paper_lane_ref": {
+        "value": "APR-PAPER-LANE-PROBE-2026-07-11"
+      },
+      "paper_orders": "DISABLED",
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "report_id": {
+        "value": "APR-PAPER-STABILITY-PROBE-2026-07-11"
+      },
+      "required_observation_hours": "168",
+      "runbook_ref": {
+        "value": "APR-PAPER-OPERATIONS-RUNBOOK-2026-07-11"
+      },
+      "runtime_risk_policy_ref": {
+        "value": "RISK-SYNTHETIC-RUNTIME-POLICY-2026-07-11"
+      },
+      "schema_version": 1,
+      "stage": "S3_PAPER_DEMO",
+      "status": "BLOCKED",
+      "venue_connection": "NONE",
+      "window_ended_at": "2026-07-11T01:00:00+00:00",
+      "window_started_at": "2026-07-11T00:00:00+00:00"
+    },
+    "restricted_credential_policy_probe": {
+      "allowed_future_permissions": [
+        "READ_MARKET_DATA",
+        "READ_ACCOUNT",
+        "PLACE_SPOT_ORDERS",
+        "CANCEL_SPOT_ORDERS"
+      ],
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "credential_material_present": false,
+      "evidence_refs": [
+        {
+          "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+        }
+      ],
+      "execution_authority": "NONE",
+      "live_orders": "DISABLED",
+      "max_order_notional": {
+        "amount": "100",
+        "currency": "USDT"
+      },
+      "outbound_funds_allowed": false,
+      "paper_orders": "DISABLED",
+      "policy_id": {
+        "value": "APR-RESTRICTED-CREDENTIAL-POLICY-2026-07-11"
+      },
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "schema_version": 1,
+      "stage": "S4_LIVE",
+      "transfers_allowed": false,
+      "venue_connection": "NONE",
+      "venue_family": {
+        "value": "BINANCE_SPOT"
+      }
+    },
+    "s3_gate": {
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "execution_authority": "NONE",
+      "gate_id": {
+        "value": "GATE-S3-PAPER-DEMO-READINESS-2026-07-11"
+      },
+      "live_orders": "DISABLED",
+      "paper_orders": "DISABLED",
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "requirements": [
+        {
+          "blocker": null,
+          "code": "S2_RESEARCH_CONSOLE_IMPLEMENTED",
+          "evidence_refs": [
+            {
+              "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+            }
+          ],
+          "kind": "EVIDENCE",
+          "satisfied": true
+        },
+        {
+          "blocker": null,
+          "code": "NO_LIVE_NO_ORDER_BOUNDARY_VERIFIED",
+          "evidence_refs": [
+            {
+              "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+            }
+          ],
+          "kind": "EVIDENCE",
+          "satisfied": true
+        },
+        {
+          "blocker": null,
+          "code": "S3_S4_CONTRACTS_IMPLEMENTED",
+          "evidence_refs": [
+            {
+              "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+            }
+          ],
+          "kind": "EVIDENCE",
+          "satisfied": true
+        },
+        {
+          "blocker": "S2 requirement audit says no strategy is complete approvable",
+          "code": "S2_EXIT_PASS",
+          "evidence_refs": [],
+          "kind": "EVIDENCE",
+          "satisfied": false
+        },
+        {
+          "blocker": "operator has not approved HG-3",
+          "code": "HG_3_APPROVED",
+          "evidence_refs": [],
+          "kind": "HUMAN_DECISION",
+          "satisfied": false
+        },
+        {
+          "blocker": "no candidate is validated or promotion eligible",
+          "code": "COMPLETE_APPROVABLE_STRATEGY_CONTEXT",
+          "evidence_refs": [],
+          "kind": "EVIDENCE",
+          "satisfied": false
+        },
+        {
+          "blocker": "paper-lane decision is deferred until S3 gates are satisfiable",
+          "code": "PAPER_LANE_ARCHITECTURE_DECISION",
+          "evidence_refs": [],
+          "kind": "HUMAN_DECISION",
+          "satisfied": false
+        },
+        {
+          "blocker": "paper integration security review has not passed",
+          "code": "SECURITY_REVIEW_PASS",
+          "evidence_refs": [],
+          "kind": "EVIDENCE",
+          "satisfied": false
+        },
+        {
+          "blocker": "operator has not approved a specific isolated paper integration",
+          "code": "SPECIFIC_INTEGRATION_OPERATOR_APPROVAL",
+          "evidence_refs": [],
+          "kind": "HUMAN_DECISION",
+          "satisfied": false
+        }
+      ],
+      "schema_version": 1,
+      "stage": "S3_PAPER_DEMO",
+      "status": "BLOCKED",
+      "subject_ref": {
+        "value": "SV-FUTURE-VALIDATED-CONTEXT"
+      },
+      "venue_connection": "NONE"
+    },
+    "s4_gate": {
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "execution_authority": "NONE",
+      "gate_id": {
+        "value": "GATE-S4-LIVE-READINESS-2026-07-11"
+      },
+      "live_orders": "DISABLED",
+      "paper_orders": "DISABLED",
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "requirements": [
+        {
+          "blocker": "S3 paper/demo operations have not started",
+          "code": "S3_EXIT_PASS",
+          "evidence_refs": [],
+          "kind": "EVIDENCE",
+          "satisfied": false
+        },
+        {
+          "blocker": "paper stability period has not been completed",
+          "code": "PAPER_STABILITY_PASS",
+          "evidence_refs": [],
+          "kind": "EVIDENCE",
+          "satisfied": false
+        },
+        {
+          "blocker": "backtest-versus-paper divergence is not quantified",
+          "code": "PAPER_DIVERGENCE_ACCEPTABLE",
+          "evidence_refs": [],
+          "kind": "EVIDENCE",
+          "satisfied": false
+        },
+        {
+          "blocker": "independent live risk, kill-switch, and security evidence is absent",
+          "code": "LIVE_RISK_SECURITY_PACKAGE_PASS",
+          "evidence_refs": [],
+          "kind": "EVIDENCE",
+          "satisfied": false
+        },
+        {
+          "blocker": "no specific limited-capital venue proposal exists",
+          "code": "LIMITED_CAPITAL_VENUE_PROPOSAL",
+          "evidence_refs": [],
+          "kind": "EVIDENCE",
+          "satisfied": false
+        },
+        {
+          "blocker": "venue and operator eligibility checks are incomplete",
+          "code": "HG_4_VENUE_OPERATOR_ELIGIBILITY",
+          "evidence_refs": [],
+          "kind": "HUMAN_DECISION",
+          "satisfied": false
+        },
+        {
+          "blocker": "operator has not approved limited live trading",
+          "code": "HG_5_OPERATOR_APPROVAL",
+          "evidence_refs": [],
+          "kind": "HUMAN_DECISION",
+          "satisfied": false
+        },
+        {
+          "blocker": "no venue credential is requested or configured",
+          "code": "RESTRICTED_CREDENTIAL_GRANT",
+          "evidence_refs": [],
+          "kind": "CREDENTIAL_GRANT",
+          "satisfied": false
+        }
+      ],
+      "schema_version": 1,
+      "stage": "S4_LIVE",
+      "status": "BLOCKED",
+      "subject_ref": {
+        "value": "APR-FUTURE-PAPER-CONTEXT"
+      },
+      "venue_connection": "NONE"
+    },
+    "synthetic_account_probe": {
+      "account_id": {
+        "value": "ACCT-SYNTHETIC-DEMO-PROBE-2026-07-11"
+      },
+      "as_of": "2026-07-11T00:00:00+00:00",
+      "balances": [
+        {
+          "amount": "9999",
+          "currency": "USDT"
+        }
+      ],
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "evidence_refs": [
+        {
+          "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+        }
+      ],
+      "execution_authority": "NONE",
+      "ledger_ref": {
+        "value": "LEDGER-SYNTHETIC-DEMO-PROBE-2026-07-11"
+      },
+      "live_orders": "DISABLED",
+      "paper_orders": "DISABLED",
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "real_money": false,
+      "schema_version": 1,
+      "stage": "S3_PAPER_DEMO",
+      "synthetic": true,
+      "venue_connection": "NONE"
+    },
+    "synthetic_ledger_probe": {
+      "as_of": "2026-07-11T00:00:00+00:00",
+      "balances": [
+        {
+          "amount": "9999",
+          "currency": "USDT"
+        }
+      ],
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "entries": [
+        {
+          "amount": {
+            "amount": "10000",
+            "currency": "USDT"
+          },
+          "balance_after": {
+            "amount": "10000",
+            "currency": "USDT"
+          },
+          "created_at": "2026-07-11T00:00:00+00:00",
+          "creator_type": "SYSTEM",
+          "direction": "CREDIT",
+          "entry_id": {
+            "value": "APR-SYNTHETIC-LEDGER-ENTRY-INITIAL-2026-07-11"
+          },
+          "evidence_refs": [
+            {
+              "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+            }
+          ],
+          "kind": "INITIAL_CAPITAL",
+          "occurred_at": "2026-07-11T00:00:00+00:00",
+          "provenance": {
+            "refs": [
+              {
+                "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+              }
+            ]
+          },
+          "schema_version": 1,
+          "source_ref": {
+            "value": "APR-PAPER-LANE-PROBE-2026-07-11"
+          }
+        },
+        {
+          "amount": {
+            "amount": "1",
+            "currency": "USDT"
+          },
+          "balance_after": {
+            "amount": "9999",
+            "currency": "USDT"
+          },
+          "created_at": "2026-07-11T00:00:00+00:00",
+          "creator_type": "SYSTEM",
+          "direction": "DEBIT",
+          "entry_id": {
+            "value": "APR-SYNTHETIC-LEDGER-ENTRY-FEE-2026-07-11"
+          },
+          "evidence_refs": [
+            {
+              "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+            }
+          ],
+          "kind": "FEE",
+          "occurred_at": "2026-07-11T00:00:00+00:00",
+          "provenance": {
+            "refs": [
+              {
+                "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+              }
+            ]
+          },
+          "schema_version": 1,
+          "source_ref": {
+            "value": "APR-PAPER-DIVERGENCE-PROBE-2026-07-11"
+          }
+        }
+      ],
+      "evidence_refs": [
+        {
+          "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+        }
+      ],
+      "execution_authority": "NONE",
+      "ledger_id": {
+        "value": "LEDGER-SYNTHETIC-DEMO-PROBE-2026-07-11"
+      },
+      "live_orders": "DISABLED",
+      "paper_orders": "DISABLED",
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "real_money": false,
+      "schema_version": 1,
+      "stage": "S3_PAPER_DEMO",
+      "synthetic": true,
+      "venue_connection": "NONE"
+    },
+    "synthetic_market_condition_policy_probe": {
+      "block_when_venue_health_degraded": true,
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "evidence_refs": [
+        {
+          "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+        }
+      ],
+      "execution_authority": "NONE",
+      "live_orders": "DISABLED",
+      "max_market_data_age_seconds": 30,
+      "max_quote_spread_bps": "25",
+      "paper_orders": "DISABLED",
+      "policy_id": {
+        "value": "RISK-SYNTHETIC-MARKET-CONDITION-2026-07-11"
+      },
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "real_money": false,
+      "require_monotonic_timestamps": true,
+      "schema_version": 1,
+      "stage": "S3_PAPER_DEMO",
+      "strategy_context_ref": {
+        "value": "SV-FUTURE-VALIDATED-CONTEXT"
+      },
+      "synthetic": true,
+      "venue_connection": "NONE"
+    },
+    "synthetic_paper_fill_policy_probe": {
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "evidence_refs": [
+        {
+          "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+        }
+      ],
+      "execution_authority": "NONE",
+      "fee_model": "FIXED_BPS",
+      "live_orders": "DISABLED",
+      "maker_fee_bps": "10",
+      "max_fill_latency_seconds": 60,
+      "paper_orders": "DISABLED",
+      "policy_id": {
+        "value": "APR-SYNTHETIC-PAPER-FILL-POLICY-2026-07-11"
+      },
+      "price_source": "BAR_MIDPOINT",
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "real_money": false,
+      "schema_version": 1,
+      "slippage_bps": "2",
+      "stage": "S3_PAPER_DEMO",
+      "synthetic": true,
+      "taker_fee_bps": "10",
+      "venue_connection": "NONE"
+    },
+    "synthetic_portfolio_probe": {
+      "account_ref": {
+        "value": "ACCT-SYNTHETIC-DEMO-PROBE-2026-07-11"
+      },
+      "as_of": "2026-07-11T00:00:00+00:00",
+      "cash": [
+        {
+          "amount": "9999",
+          "currency": "USDT"
+        }
+      ],
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "equity": [
+        {
+          "amount": "9999",
+          "currency": "USDT"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+        }
+      ],
+      "execution_authority": "NONE",
+      "ledger_ref": {
+        "value": "LEDGER-SYNTHETIC-DEMO-PROBE-2026-07-11"
+      },
+      "live_orders": "DISABLED",
+      "paper_orders": "DISABLED",
+      "portfolio_id": {
+        "value": "PF-SYNTHETIC-DEMO-PROBE-2026-07-11"
+      },
+      "positions": [],
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "real_money": false,
+      "reporting_currency": "USDT",
+      "schema_version": 1,
+      "stage": "S3_PAPER_DEMO",
+      "synthetic": true,
+      "venue_connection": "NONE"
+    },
+    "synthetic_portfolio_risk_policy_probe": {
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "evidence_refs": [
+        {
+          "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+        }
+      ],
+      "execution_authority": "NONE",
+      "live_orders": "DISABLED",
+      "max_correlated_exposure_fraction": "0.60",
+      "max_open_positions": 8,
+      "max_strategy_budget_fraction": "0.25",
+      "max_symbol_concentration_fraction": "0.40",
+      "paper_orders": "DISABLED",
+      "policy_id": {
+        "value": "RISK-SYNTHETIC-PORTFOLIO-POLICY-2026-07-11"
+      },
+      "portfolio_ref": {
+        "value": "PF-SYNTHETIC-DEMO-PROBE-2026-07-11"
+      },
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "real_money": false,
+      "schema_version": 1,
+      "stage": "S3_PAPER_DEMO",
+      "synthetic": true,
+      "venue_connection": "NONE"
+    },
+    "synthetic_runtime_risk_policy_probe": {
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "evidence_refs": [
+        {
+          "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+        }
+      ],
+      "execution_authority": "NONE",
+      "kill_switch_mode": "MANUAL_REQUIRED",
+      "live_orders": "DISABLED",
+      "max_capital_at_risk": {
+        "amount": "10000",
+        "currency": "USDT"
+      },
+      "max_daily_loss": {
+        "amount": "250",
+        "currency": "USDT"
+      },
+      "max_drawdown_fraction": "0.10",
+      "max_position_notional": {
+        "amount": "2500",
+        "currency": "USDT"
+      },
+      "paper_orders": "DISABLED",
+      "policy_id": {
+        "value": "RISK-SYNTHETIC-RUNTIME-POLICY-2026-07-11"
+      },
+      "portfolio_ref": {
+        "value": "PF-SYNTHETIC-DEMO-PROBE-2026-07-11"
+      },
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "real_money": false,
+      "schema_version": 1,
+      "stage": "S3_PAPER_DEMO",
+      "strategy_context_ref": {
+        "value": "SV-FUTURE-VALIDATED-CONTEXT"
+      },
+      "synthetic": true,
+      "venue_connection": "NONE"
+    },
+    "synthetic_strategy_budget_policy_probe": {
+      "created_at": "2026-07-11T00:00:00+00:00",
+      "creator_type": "SYSTEM",
+      "evidence_refs": [
+        {
+          "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+        }
+      ],
+      "execution_authority": "NONE",
+      "live_orders": "DISABLED",
+      "max_daily_loss": {
+        "amount": "100",
+        "currency": "USDT"
+      },
+      "max_notional": {
+        "amount": "2500",
+        "currency": "USDT"
+      },
+      "max_open_positions": 2,
+      "max_portfolio_fraction": "0.25",
+      "paper_orders": "DISABLED",
+      "policy_id": {
+        "value": "RISK-SYNTHETIC-STRATEGY-BUDGET-2026-07-11"
+      },
+      "portfolio_ref": {
+        "value": "PF-SYNTHETIC-DEMO-PROBE-2026-07-11"
+      },
+      "provenance": {
+        "refs": [
+          {
+            "value": "EV-S3S4-CONTROL-PLANE-READINESS-2026-07-11"
+          }
+        ]
+      },
+      "real_money": false,
+      "schema_version": 1,
+      "stage": "S3_PAPER_DEMO",
+      "strategy_context_ref": {
+        "value": "SV-FUTURE-VALIDATED-CONTEXT"
+      },
+      "synthetic": true,
+      "venue_connection": "NONE"
+    }
+  },
+  "created_at": "2026-07-11T00:00:00+00:00",
+  "demo_orders": "DISABLED",
+  "execution_authority": "NONE",
+  "live_orders": "DISABLED",
+  "mode": "CONTROL_PLANE_PROBE_ONLY",
+  "paper_orders": "DISABLED",
+  "prohibited": [
+    "credential_request",
+    "venue_account_connection",
+    "synthetic_wallet_mutation",
+    "order_submit_cancel_replace",
+    "paper_demo_live_activation",
+    "real_money"
+  ],
+  "s3_blockers": [
+    "S2 requirement audit says no strategy is complete approvable",
+    "operator has not approved HG-3",
+    "no candidate is validated or promotion eligible",
+    "paper-lane decision is deferred until S3 gates are satisfiable",
+    "paper integration security review has not passed",
+    "operator has not approved a specific isolated paper integration"
+  ],
+  "s4_blockers": [
+    "S3 paper/demo operations have not started",
+    "paper stability period has not been completed",
+    "backtest-versus-paper divergence is not quantified",
+    "independent live risk, kill-switch, and security evidence is absent",
+    "no specific limited-capital venue proposal exists",
+    "venue and operator eligibility checks are incomplete",
+    "operator has not approved limited live trading",
+    "no venue credential is requested or configured"
+  ],
+  "schema": "tios-s3-s4-control-plane-readiness-v1",
+  "status": "BLOCKED_BY_GATES",
+  "venue_connection": "NONE"
+}

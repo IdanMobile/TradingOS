@@ -2,8 +2,8 @@
   "captured_at_utc": "2026-07-11T00:00:00Z",
   "execution_authority": "NONE",
   "paper_demo_live": "DISABLED",
-  "plan_count": 4,
-  "ready_count": 4,
+  "plan_count": 5,
+  "ready_count": 5,
   "rows": [
     {
       "approval_eligible": false,
@@ -32,6 +32,13 @@
       "content_capture_status": "METADATA_ONLY_PENDING_PLATFORM_CAPTURE",
       "plan_id": "INTAKE-TRADINGVIEW-IDEAS",
       "source_ref": "SRC-TRADINGVIEW-IDEAS"
+    },
+    {
+      "approval_eligible": false,
+      "artifact": "artifacts/source_intake/tradingview_public_strategies/strategy_tester_candidates.json",
+      "content_capture_status": "METADATA_ONLY_PENDING_PLATFORM_CAPTURE",
+      "plan_id": "INTAKE-TRADINGVIEW-PUBLIC-STRATEGIES",
+      "source_ref": "SRC-TRADINGVIEW-PUBLIC-STRATEGIES"
     }
   ],
   "schema": "tios-external-source-intake-index-v1",

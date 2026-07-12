@@ -1,0 +1,242 @@
+{
+  "approval_status": "NOT_ELIGIBLE",
+  "best_total_return": "-0.9999914968009919014101775480",
+  "blockers": [
+    "prose-derived replay; exact Pine source body not captured",
+    "TradingView Strategy Tester platform export not captured for every candidate",
+    "no cross-engine reproduction exists for these TradingView candidates",
+    "no temporal/G10 validation package exists for these TradingView candidates",
+    "candidate remains unvalidated and not promotion eligible"
+  ],
+  "candidate_configs": [
+    {
+      "candidate_id": "TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION",
+      "notes": [
+        "Page summary states RSI<=30 long entry, RSI>=70 exit, 100% equity, 0.1% commission, 1 tick slippage, optional 2% stop.",
+        "Local replay uses close signal and next-open execution; this is a prose-derived hypothesis, not exact Pine parity."
+      ],
+      "parameters": {
+        "commission_rate": "0.001",
+        "entry_rsi_lte": "30",
+        "exit_rsi_gte": "70",
+        "position_fraction": "1.0",
+        "rsi_window": "14",
+        "slippage_ticks": "1",
+        "stop_loss_pct": "0.02",
+        "tick_size": "0.01"
+      },
+      "rule_capture_status": "PUBLIC_PAGE_RULES_SUFFICIENT_FOR_PROSE_REPLAY",
+      "source_code_status": "OPEN_SOURCE_PAGE_OBSERVED_SOURCE_BODY_NOT_CAPTURED",
+      "source_evidence_refs": [
+        "tradingview:Hb8KwPmd:lines14-36"
+      ],
+      "source_url": "https://www.tradingview.com/script/Hb8KwPmd-RSI-Mean-Reversion-Strategy/",
+      "strategy_family": "rsi_mean_reversion",
+      "strategy_tester_status": "SUMMARY_FIELDS_PARTIAL_NOT_PLATFORM_EXPORT"
+    },
+    {
+      "candidate_id": "TVPINE-SKYREXIO-BB-ENHANCED",
+      "notes": [
+        "Page summary gives BB(20,2), EMA trend filter, ATR stop/trailing activation, 0.1% commission, 5 ticks slippage, 10000 USDT capital, 30% position.",
+        "Page text mentions both 200 EMA and 100 EMA; local replay chooses 200 EMA from the methodology section and records this ambiguity.",
+        "TradingView-reported 4h BTC/USDT result is external comparison evidence only."
+      ],
+      "parameters": {
+        "atr_window": "14",
+        "bb_stddev_mult": "2",
+        "bb_window": "20",
+        "commission_rate": "0.001",
+        "ema_window": "200",
+        "position_fraction": "0.30",
+        "slippage_ticks": "5",
+        "stop_loss_atr_mult": "1.75",
+        "tick_size": "0.01",
+        "trail_activation_atr_mult": "2.25"
+      },
+      "rule_capture_status": "PUBLIC_PAGE_RULES_SUFFICIENT_FOR_PROSE_REPLAY_WITH_AMBIGUITIES",
+      "source_code_status": "OPEN_SOURCE_PAGE_OBSERVED_SOURCE_BODY_NOT_CAPTURED",
+      "source_evidence_refs": [
+        "tradingview:V4B5nKIx:lines33-68"
+      ],
+      "source_url": "https://www.tradingview.com/script/V4B5nKIx-Bollinger-Bands-Enhanced-Strategy/",
+      "strategy_family": "bb_atr_ema",
+      "strategy_tester_status": "PAGE_BACKTEST_SUMMARY_CAPTURED_NOT_PLATFORM_EXPORT"
+    }
+  ],
+  "execution_authority": "NONE",
+  "paper_demo_live": "DISABLED",
+  "prohibited": [
+    "credential_request",
+    "account_connection",
+    "protected_or_invite_only_code_copying",
+    "alert_subscription",
+    "order_routing",
+    "paper_demo_or_live_activation",
+    "profit_claim_inheritance"
+  ],
+  "promotion_eligible": false,
+  "schema": "tios-tradingview-public-strategy-replay-scorecard-v1",
+  "selected_candidates_artifact": "artifacts/source_intake/tradingview_public_strategies/selected_candidates_2026_07_11.json",
+  "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+  "trials": [
+    {
+      "bars": 577803,
+      "candidate_id": "TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION",
+      "dataset": "BTCUSDT_5m",
+      "entries": 2816,
+      "event_count": 5631,
+      "events_path": "artifacts/external_replay/tradingview_public_strategies/TVPINE-5f5748f62348c07bc21c57c03222a612/TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION_BTCUSDT_5m_events.jsonl",
+      "exits": 2815,
+      "final_equity": "24.35535120577329328028918569",
+      "open_position_at_end": true,
+      "status": "COMPLETED",
+      "total_return": "-0.9975644648794226706719710814"
+    },
+    {
+      "bars": 192602,
+      "candidate_id": "TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION",
+      "dataset": "BTCUSDT_15m",
+      "entries": 1254,
+      "event_count": 2507,
+      "events_path": "artifacts/external_replay/tradingview_public_strategies/TVPINE-5f5748f62348c07bc21c57c03222a612/TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION_BTCUSDT_15m_events.jsonl",
+      "exits": 1253,
+      "final_equity": "638.8682485926358919512966489",
+      "open_position_at_end": true,
+      "status": "COMPLETED",
+      "total_return": "-0.9361131751407364108048703351"
+    },
+    {
+      "bars": 48154,
+      "candidate_id": "TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION",
+      "dataset": "BTCUSDT_1h",
+      "entries": 538,
+      "event_count": 1075,
+      "events_path": "artifacts/external_replay/tradingview_public_strategies/TVPINE-5f5748f62348c07bc21c57c03222a612/TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION_BTCUSDT_1h_events.jsonl",
+      "exits": 537,
+      "final_equity": "444.9265657056721387696113999",
+      "open_position_at_end": true,
+      "status": "COMPLETED",
+      "total_return": "-0.9555073434294327861230388600"
+    },
+    {
+      "bars": 577803,
+      "candidate_id": "TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION",
+      "dataset": "ETHUSDT_5m",
+      "entries": 3306,
+      "event_count": 6611,
+      "events_path": "artifacts/external_replay/tradingview_public_strategies/TVPINE-5f5748f62348c07bc21c57c03222a612/TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION_ETHUSDT_5m_events.jsonl",
+      "exits": 3305,
+      "final_equity": "0.5025109999374198923235952820",
+      "open_position_at_end": true,
+      "status": "COMPLETED",
+      "total_return": "-0.9999497489000062580107676405"
+    },
+    {
+      "bars": 192602,
+      "candidate_id": "TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION",
+      "dataset": "ETHUSDT_15m",
+      "entries": 1581,
+      "event_count": 3161,
+      "events_path": "artifacts/external_replay/tradingview_public_strategies/TVPINE-5f5748f62348c07bc21c57c03222a612/TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION_ETHUSDT_15m_events.jsonl",
+      "exits": 1580,
+      "final_equity": "102.4141488902237343384720683",
+      "open_position_at_end": true,
+      "status": "COMPLETED",
+      "total_return": "-0.9897585851109776265661527932"
+    },
+    {
+      "bars": 48154,
+      "candidate_id": "TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION",
+      "dataset": "ETHUSDT_1h",
+      "entries": 661,
+      "event_count": 1321,
+      "events_path": "artifacts/external_replay/tradingview_public_strategies/TVPINE-5f5748f62348c07bc21c57c03222a612/TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION_ETHUSDT_1h_events.jsonl",
+      "exits": 660,
+      "final_equity": "1272.832032419111771377171230",
+      "open_position_at_end": true,
+      "status": "COMPLETED",
+      "total_return": "-0.872716796758088822862282877"
+    },
+    {
+      "bars": 577803,
+      "candidate_id": "TVPINE-SKYREXIO-BB-ENHANCED",
+      "dataset": "BTCUSDT_5m",
+      "entries": 6361,
+      "event_count": 12722,
+      "events_path": "artifacts/external_replay/tradingview_public_strategies/TVPINE-5f5748f62348c07bc21c57c03222a612/TVPINE-SKYREXIO-BB-ENHANCED_BTCUSDT_5m_events.jsonl",
+      "exits": 6361,
+      "final_equity": "0.08503199008098589822452012373",
+      "open_position_at_end": false,
+      "status": "COMPLETED",
+      "total_return": "-0.9999914968009919014101775480"
+    },
+    {
+      "bars": 192602,
+      "candidate_id": "TVPINE-SKYREXIO-BB-ENHANCED",
+      "dataset": "BTCUSDT_15m",
+      "entries": 2178,
+      "event_count": 4356,
+      "events_path": "artifacts/external_replay/tradingview_public_strategies/TVPINE-5f5748f62348c07bc21c57c03222a612/TVPINE-SKYREXIO-BB-ENHANCED_BTCUSDT_15m_events.jsonl",
+      "exits": 2178,
+      "final_equity": "441.4046588808316912799535026",
+      "open_position_at_end": false,
+      "status": "COMPLETED",
+      "total_return": "-0.9558595341119168308720046497"
+    },
+    {
+      "bars": 48154,
+      "candidate_id": "TVPINE-SKYREXIO-BB-ENHANCED",
+      "dataset": "BTCUSDT_1h",
+      "entries": 545,
+      "event_count": 1090,
+      "events_path": "artifacts/external_replay/tradingview_public_strategies/TVPINE-5f5748f62348c07bc21c57c03222a612/TVPINE-SKYREXIO-BB-ENHANCED_BTCUSDT_1h_events.jsonl",
+      "exits": 545,
+      "final_equity": "6851.263209925552607288567442",
+      "open_position_at_end": false,
+      "status": "COMPLETED",
+      "total_return": "-0.3148736790074447392711432558"
+    },
+    {
+      "bars": 577803,
+      "candidate_id": "TVPINE-SKYREXIO-BB-ENHANCED",
+      "dataset": "ETHUSDT_5m",
+      "entries": 6513,
+      "event_count": 13026,
+      "events_path": "artifacts/external_replay/tradingview_public_strategies/TVPINE-5f5748f62348c07bc21c57c03222a612/TVPINE-SKYREXIO-BB-ENHANCED_ETHUSDT_5m_events.jsonl",
+      "exits": 6513,
+      "final_equity": "0.1272749246913065366587567739",
+      "open_position_at_end": false,
+      "status": "COMPLETED",
+      "total_return": "-0.9999872725075308693463341243"
+    },
+    {
+      "bars": 192602,
+      "candidate_id": "TVPINE-SKYREXIO-BB-ENHANCED",
+      "dataset": "ETHUSDT_15m",
+      "entries": 2229,
+      "event_count": 4458,
+      "events_path": "artifacts/external_replay/tradingview_public_strategies/TVPINE-5f5748f62348c07bc21c57c03222a612/TVPINE-SKYREXIO-BB-ENHANCED_ETHUSDT_15m_events.jsonl",
+      "exits": 2229,
+      "final_equity": "2113.288353172054411179837665",
+      "open_position_at_end": false,
+      "status": "COMPLETED",
+      "total_return": "-0.7886711646827945588820162335"
+    },
+    {
+      "bars": 48154,
+      "candidate_id": "TVPINE-SKYREXIO-BB-ENHANCED",
+      "dataset": "ETHUSDT_1h",
+      "entries": 544,
+      "event_count": 1088,
+      "events_path": "artifacts/external_replay/tradingview_public_strategies/TVPINE-5f5748f62348c07bc21c57c03222a612/TVPINE-SKYREXIO-BB-ENHANCED_ETHUSDT_1h_events.jsonl",
+      "exits": 544,
+      "final_equity": "6641.689611606700313507859528",
+      "open_position_at_end": false,
+      "status": "COMPLETED",
+      "total_return": "-0.3358310388393299686492140472"
+    }
+  ],
+  "validation_state": "UNVALIDATED",
+  "venue_connection": "NONE",
+  "winner_selected": false
+}

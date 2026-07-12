@@ -1,0 +1,15 @@
+{
+  "dataset_id": "DS-CRYPTO-MULTI-V1-TICKFEATURES",
+  "pairs": [
+    {
+      "symbol": "BTCUSDT",
+      "months": 18,
+      "missing": 48,
+      "rows": 785166,
+      "parquet_mb": 41.9,
+      "parquet_sha256": "cb004a4f346173cd46e4ccbb5f0ceb00253bca08122614ef976fc414789e72eb",
+      "coverage_start_utc": "2021-01-01 00:00:00+00:00",
+      "coverage_end_utc": "2022-06-30 23:59:00+00:00"
+    }
+  ]
+}

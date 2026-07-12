@@ -1,0 +1,75 @@
+{
+  "always_on_basket": {
+    "ann_return_pct": -11.0,
+    "max_drawdown_pct": -75.6,
+    "sharpe_ann": -4.29,
+    "total_return_pct": -65.1
+  },
+  "best_selective": {
+    "ann_return_pct": 8.8,
+    "lookback": 63,
+    "max_drawdown_pct": -0.7,
+    "rebalance": 3,
+    "sharpe_ann": 10.99,
+    "threshold": 0.0,
+    "total_return_pct": 113.8
+  },
+  "execution_authority": "NONE",
+  "funding_periods": 9851,
+  "g10_dsr": {
+    "dsr": 1.0,
+    "expected_max_noise_sharpe": 0.0861,
+    "note": "A PASS here is NOT a genuine validation. This models ONLY the funding leg; it omits basis divergence, liquidation, and execution/slippage \u2014 the dominant real risks. The smooth low-vol yield inflates Sharpe/DSR. The ~8-9% carry is real and literature-consistent, but honest validation needs perp-price/basis modelling, and trading needs perps/margin (S4-gated).",
+    "threshold": 0.95,
+    "verdict": "PASS",
+    "verdict_is_genuine": false
+  },
+  "mode": "OFFLINE_RESEARCH_ONLY",
+  "schema": "tios-funding-carry-v1",
+  "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+  "top_configs": [
+    {
+      "ann_return_pct": 8.8,
+      "lookback": 63,
+      "max_drawdown_pct": -0.7,
+      "rebalance": 3,
+      "sharpe_ann": 10.99,
+      "threshold": 0.0
+    },
+    {
+      "ann_return_pct": 8.8,
+      "lookback": 21,
+      "max_drawdown_pct": -1.4,
+      "rebalance": 3,
+      "sharpe_ann": 10.61,
+      "threshold": 0.0
+    },
+    {
+      "ann_return_pct": 8.3,
+      "lookback": 9,
+      "max_drawdown_pct": -2.9,
+      "rebalance": 3,
+      "sharpe_ann": 9.69,
+      "threshold": 0.0
+    },
+    {
+      "ann_return_pct": 8.3,
+      "lookback": 9,
+      "max_drawdown_pct": -1.8,
+      "rebalance": 21,
+      "sharpe_ann": 9.47,
+      "threshold": 0.0
+    },
+    {
+      "ann_return_pct": 8.5,
+      "lookback": 63,
+      "max_drawdown_pct": -2.3,
+      "rebalance": 9,
+      "sharpe_ann": 7.99,
+      "threshold": 0.0
+    }
+  ],
+  "tradeability": "RESEARCH_ONLY \u2014 needs perps/margin (S4-gated); funding leg only",
+  "trials_searched": 18,
+  "universe_pairs": 50
+}

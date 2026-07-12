@@ -1,0 +1,51 @@
+{
+  "artifact_manifest_sha256": "15ecc3d3b573c3d4a9d71b7033b5df964b3984b480e1b360359887e450df7a6a",
+  "artifacts": {
+    "TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION_BTCUSDT_15m_events.jsonl": "dacefcca7e7096d83098d88b9b27a800373fa13c6ccf4fd2f14258581fbb8cfb",
+    "TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION_BTCUSDT_1h_events.jsonl": "186dea8f1df2b06cbb01676ce91cbf722d3dff31f0aebeba5882e3aece83e604",
+    "TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION_BTCUSDT_5m_events.jsonl": "a5aea48b47905356db035eaffcd63c6d9a27ea5b4224d5ba8a8cf86d8818963f",
+    "TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION_ETHUSDT_15m_events.jsonl": "412661c48016c4edd3ca256a3dca10b8224e035b67dfffe90646bb72c2562b1f",
+    "TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION_ETHUSDT_1h_events.jsonl": "9a64aa503c62030305386dbcbc4b9cc40326ddd7642692d6ff3aedc837407a22",
+    "TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION_ETHUSDT_5m_events.jsonl": "3efb200357438d526513e72100bbf8ab81020b51532fda1b986447ae9e4b080e",
+    "TVPINE-SKYREXIO-BB-ENHANCED_BTCUSDT_15m_events.jsonl": "679e4b0d07c974f8cd1eb6ea194d5bf9ae34cde8f6a2b1c4723ba81ccc4510db",
+    "TVPINE-SKYREXIO-BB-ENHANCED_BTCUSDT_1h_events.jsonl": "47e4cea80dcf4e38713cb6f95e763878641020cf76342abb067249a96a5d6b35",
+    "TVPINE-SKYREXIO-BB-ENHANCED_BTCUSDT_5m_events.jsonl": "ebe71eada3947c5f2dfcf4c68188ee87042e2c52b562ccfa096e22e5893e5595",
+    "TVPINE-SKYREXIO-BB-ENHANCED_ETHUSDT_15m_events.jsonl": "dc009fb24e1d299f899b549449ebc7635d535ce3ebfc59415bc5c1c1d9ea83d7",
+    "TVPINE-SKYREXIO-BB-ENHANCED_ETHUSDT_1h_events.jsonl": "b045c2f8836a4f066adc8cf00ec3ddab419f07ca1afd78239223be215c8a6117",
+    "TVPINE-SKYREXIO-BB-ENHANCED_ETHUSDT_5m_events.jsonl": "486215cd2dd19d45c5effad0067839b4747b8059726c567d04654545c6e4b382",
+    "scorecard.json": "dc7da60120ded5b9df0c18266eec3c7385d16e4e8c8dd253be9a1db985a7f1ce"
+  },
+  "content_sha256": "4920a3f79958d8777e884168f6fcd144488fb1f0e46a563deeba7e555341b8ec",
+  "counts": {
+    "candidates": 2,
+    "datasets": 6,
+    "events": 57046,
+    "trials": 12
+  },
+  "execution_authority": "NONE",
+  "finished_at_utc": "2026-07-11T17:01:22.005267+00:00",
+  "hashes": {
+    "configs": "1485e2eab064eb5cb8ae3a5bd2fe9f7d4e5db1bcb399d439f2a4d58b8ea262f9",
+    "dataset_BTCUSDT_15m": "3c39eb7e988f5f9740260ce89cb53ea2e4ad152df576e4691f483997b6151821",
+    "dataset_BTCUSDT_1h": "d44c70c3c87a3e342dd0496c3975d3b54a2b50dd4c5c1b8873ef84eece99947c",
+    "dataset_BTCUSDT_5m": "d4d6b3306c44e242f3fb7f71c44bacabf9a6af1f1f8d507ca2de0853b6a727d0",
+    "dataset_ETHUSDT_15m": "230e7ef993e70ffc708ab61bb18fbfdbe9de6d71ae31d9a78535cde20e1d5759",
+    "dataset_ETHUSDT_1h": "324b3a704560103d9d49453e48d5b24839df6ab2ca67c6fcd5da2d2365d3b1da",
+    "dataset_ETHUSDT_5m": "79c4678cebf490b82e3adb34c31f8e696bf14f6d35ddd3bdfa09658078d68dff",
+    "frozen_manifest": "f2b729627adb5d75a99c90dd7dd25ea6dcabf83de4baea5784397424034dfc56",
+    "quality_report": "0f83a1073836708d60138e4aca76c81c20e749136c88571babc550a176fe5cd3",
+    "runner": "360c679536ea496cbd99c7afec4e45cd4883e8176e4bf0e405091e71c1e5fcd9",
+    "selected_candidates": "9a3f90f898a95588d4a757778ee9ca030fbef4d6cd580d3f142fe388d2034245"
+  },
+  "live_orders": "DISABLED",
+  "manifest_path": "artifacts/external_replay/tradingview_public_strategies/TVPINE-9f7d3fc15ece2785a4296e9eb3b15548/manifest.json",
+  "mode": "OFFLINE_RESEARCH_ONLY",
+  "paper_orders": "DISABLED",
+  "replay_id": "TVPINE-9f7d3fc15ece2785a4296e9eb3b15548",
+  "reused": false,
+  "schema": "tios-tradingview-public-strategy-replay-run-v1",
+  "scorecard_path": "artifacts/external_replay/tradingview_public_strategies/TVPINE-9f7d3fc15ece2785a4296e9eb3b15548/scorecard.json",
+  "started_at_utc": "2026-07-11T17:00:57.488153+00:00",
+  "status": "COMPLETED",
+  "venue_connection": "NONE"
+}

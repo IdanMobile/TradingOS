@@ -1,0 +1,62 @@
+{
+  "approval_status": "NOT_ELIGIBLE",
+  "backtest_baseline": {
+    "fee_total": "1348.695499628912306806956631",
+    "total_return": "1.491165943202296528856325916",
+    "trade_count": 553
+  },
+  "candidate": {
+    "dataset": "ETHUSDT_1h",
+    "donchian_window": 40,
+    "strategy_id": "STRAT-QC2-donchian-breakout",
+    "validation_note": "FAILED validation (G10 DSR 0.7564 < 0.95); plumbing input only"
+  },
+  "divergence_report": {
+    "observations": [
+      {
+        "backtest_value": "1348.695499628912306806956631",
+        "metric": "FEE_TOTAL",
+        "paper_value": "11972.96664187666050639861012",
+        "tolerance": "50",
+        "within_tolerance": false
+      },
+      {
+        "backtest_value": "553",
+        "metric": "TRADE_COUNT",
+        "paper_value": "553",
+        "tolerance": "4",
+        "within_tolerance": true
+      }
+    ],
+    "status": "OUTSIDE_TOLERANCE"
+  },
+  "execution_authority": "NONE",
+  "live_orders": "DISABLED",
+  "mode": "SYNTHETIC_LOCAL_SIMULATOR",
+  "paper_lane_proposal": {
+    "mode": "SYNTHETIC_LOCAL_SIMULATOR",
+    "proposal_id": "APR-S3-PAPER-PROBE-LANE",
+    "requested_synthetic_capital": "10000"
+  },
+  "paper_orders": "DISABLED",
+  "paper_result": {
+    "fee_total": "11972.96664187666050639861012",
+    "final_equity": "20361.37079531011833483786664",
+    "final_position_status": "OPEN",
+    "initial_capital": "10000",
+    "ledger_entries": 1107,
+    "total_return": "1.036137079531011833483786664",
+    "trade_count": 553
+  },
+  "paper_vs_backtest_return_gap": "-0.455028863671284695372539252",
+  "prohibited": [
+    "credential_request",
+    "venue_account_connection",
+    "order_submit_cancel_replace",
+    "paper_demo_live_activation",
+    "real_money"
+  ],
+  "schema": "tios-s3-paper-probe-v1",
+  "status": "PAPER_LANE_RAN_SYNTHETICALLY_NOT_VALIDATED",
+  "venue_connection": "NONE"
+}

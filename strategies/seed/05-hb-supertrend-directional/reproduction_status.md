@@ -1,10 +1,9 @@
 # Reproduction status -- SRC-HB1 (Hummingbot supertrend_v1)
 
-**Status: NOT_REPRODUCED (deferred).**
+**Status: SPECIFIED_AND_IMPLEMENTED; NOT_INDEPENDENTLY_REPRODUCED.**
 
-Justification: the signal-level simplification (ambiguity 1) means a
-reproduction run would spot-check this project's simplified two-state rule,
-not Hummingbot's actual tri-state signal semantics -- of limited value for
-this seed batch's effort budget. Deferred to a future pass that either models
-the tri-state signal properly or accepts the simplification as in-scope.
-Spec validates (`VALID_WITH_AMBIGUITIES`).
+Justification: the canonical evaluator now models the current controller's
+pandas-ta direction level plus proximity threshold and has deterministic local
+tests. It is not labeled reproduced because no independently generated pandas-ta/
+Hummingbot known-answer sequence has yet been retained. Spec validates
+(`VALID_WITH_AMBIGUITIES`).

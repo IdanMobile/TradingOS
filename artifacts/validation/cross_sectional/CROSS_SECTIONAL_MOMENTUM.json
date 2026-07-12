@@ -1,0 +1,139 @@
+{
+  "benchmark_equal_weight_all": {
+    "ann_return_pct": 18.6,
+    "bars": 2007,
+    "max_drawdown_pct": -83.9,
+    "sharpe_ann": 0.62,
+    "sharpe_bar": 0.03264534993566367,
+    "total_return_pct": 155.5
+  },
+  "days": 2007,
+  "execution_authority": "NONE",
+  "long_only": {
+    "best": {
+      "ann_return_pct": 33.7,
+      "lookback": 20,
+      "max_drawdown_pct": -51.6,
+      "rebalance": 7,
+      "sharpe_ann": 1.01,
+      "top_k": 8,
+      "total_return_pct": 393.7
+    },
+    "g10_dsr": {
+      "dsr": 0.9091,
+      "expected_max_noise_sharpe": 0.0233,
+      "note": "PASS still requires stats-specialist review (RG-07) before promotion.",
+      "threshold": 0.95,
+      "verdict": "FAIL"
+    },
+    "top_configs": [
+      {
+        "ann_return_pct": 33.7,
+        "lookback": 20,
+        "max_drawdown_pct": -51.6,
+        "rebalance": 7,
+        "sharpe_ann": 1.01,
+        "top_k": 8
+      },
+      {
+        "ann_return_pct": 32.2,
+        "lookback": 20,
+        "max_drawdown_pct": -49.9,
+        "rebalance": 7,
+        "sharpe_ann": 0.96,
+        "top_k": 3
+      },
+      {
+        "ann_return_pct": 31.1,
+        "lookback": 20,
+        "max_drawdown_pct": -49.9,
+        "rebalance": 7,
+        "sharpe_ann": 0.95,
+        "top_k": 5
+      },
+      {
+        "ann_return_pct": 30.2,
+        "lookback": 20,
+        "max_drawdown_pct": -50.6,
+        "rebalance": 30,
+        "sharpe_ann": 0.9,
+        "top_k": 8
+      },
+      {
+        "ann_return_pct": 25.4,
+        "lookback": 40,
+        "max_drawdown_pct": -51.2,
+        "rebalance": 7,
+        "sharpe_ann": 0.82,
+        "top_k": 5
+      }
+    ],
+    "trials_searched": 36
+  },
+  "long_short": {
+    "best": {
+      "ann_return_pct": 23.5,
+      "lookback": 20,
+      "max_drawdown_pct": -25.9,
+      "rebalance": 7,
+      "sharpe_ann": 1.0,
+      "top_k": 8,
+      "total_return_pct": 219.1
+    },
+    "g10_dsr": {
+      "dsr": 0.7115,
+      "expected_max_noise_sharpe": 0.0393,
+      "note": "PASS still requires stats-specialist review (RG-07) before promotion.",
+      "threshold": 0.95,
+      "verdict": "FAIL"
+    },
+    "top_configs": [
+      {
+        "ann_return_pct": 23.5,
+        "lookback": 20,
+        "max_drawdown_pct": -25.9,
+        "rebalance": 7,
+        "sharpe_ann": 1.0,
+        "top_k": 8
+      },
+      {
+        "ann_return_pct": 17.8,
+        "lookback": 20,
+        "max_drawdown_pct": -33.5,
+        "rebalance": 14,
+        "sharpe_ann": 0.85,
+        "top_k": 8
+      },
+      {
+        "ann_return_pct": 22.6,
+        "lookback": 20,
+        "max_drawdown_pct": -33.4,
+        "rebalance": 30,
+        "sharpe_ann": 0.85,
+        "top_k": 3
+      },
+      {
+        "ann_return_pct": 23.2,
+        "lookback": 20,
+        "max_drawdown_pct": -41.0,
+        "rebalance": 7,
+        "sharpe_ann": 0.84,
+        "top_k": 5
+      },
+      {
+        "ann_return_pct": 20.9,
+        "lookback": 40,
+        "max_drawdown_pct": -37.7,
+        "rebalance": 7,
+        "sharpe_ann": 0.84,
+        "top_k": 5
+      }
+    ],
+    "tradeability": "RESEARCH_ONLY \u2014 shorting needs perps/margin (S4-gated)",
+    "trials_searched": 36
+  },
+  "mode": "OFFLINE_RESEARCH_ONLY",
+  "schema": "tios-cross-sectional-momentum-v2",
+  "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+  "universe_pairs": 34
+}

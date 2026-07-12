@@ -13,10 +13,15 @@ Requirement source: AD §AA, PROGRAM_PLAN S3, North Star G12. Entry criteria: S2
 ## T-015-03 Backtest-vs-paper divergence tracking (RG-13)
 - Acceptance: divergence model (signal frequency, fills, costs, P&L) quantified per G12.
 - Status: **DEFERRED-S3** — requires an active paper lane.
+- Preparation: **PURE COMPUTATION DONE 2026-07-12** — like-for-like metric maps now
+  build typed divergence reports; real paper observations remain gate-dependent.
 
 ## T-015-04 Operational drills
 - Acceptance: feed-loss/crash/stale-data drills documented; manual kill switch drill (paper).
 - Status: **DEFERRED-S3** — requires an active paper lane.
+- Preparation: **LIFECYCLE/EVALUATION DONE 2026-07-12** — heartbeat-derived stability,
+  immutable operational incidents, and drill evidence validation are implemented;
+  producing real operational evidence remains gate-dependent.
 
 ## T-015-05 Human-only venue gates package (HG-4 prep)
 - The ten items in MISSING_AND_OPEN_ITEMS "Human-only before live trading". Human approval: **Yes, entirely operator-owned**.

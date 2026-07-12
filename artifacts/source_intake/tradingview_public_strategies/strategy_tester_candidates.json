@@ -1,0 +1,139 @@
+{
+  "allowed_uses": [
+    "record open-source Pine strategy metadata, license, parameters, and attribution",
+    "capture TradingView Strategy Tester summary metrics as external evidence",
+    "translate visible Pine rules into local specs for OS reproduction"
+  ],
+  "approval_eligible": false,
+  "bias_risks": [
+    "public-library selection and popularity bias",
+    "author-optimized parameters and undisclosed overfitting",
+    "TradingView data and broker-emulator fills can diverge from OS canonical data",
+    "open-source license may permit private study but still require attribution or reuse limits"
+  ],
+  "canonical_url": "https://www.tradingview.com/scripts/strategy/",
+  "capture_mode": "strategy_tester_reproduction",
+  "captured_at_utc": "2026-07-11T00:00:00Z",
+  "content_capture_status": "METADATA_ONLY_PENDING_PLATFORM_CAPTURE",
+  "evidence_strength": "hypothesis_only",
+  "intake_status": "ready_for_offline_capture",
+  "notes": [
+    "Only open-source/visible-code strategies are eligible for code reproduction.",
+    "Protected and invite-only scripts remain metadata-only or excluded unless explicit permission exists.",
+    "TradingView Strategy Tester metrics are retained as external evidence, never approval proof."
+  ],
+  "plan_id": "INTAKE-TRADINGVIEW-PUBLIC-STRATEGIES",
+  "prohibited_actions": [
+    "credential_request",
+    "account_connection",
+    "subscription_or_copy_action",
+    "order_routing",
+    "paper_demo_or_live_activation",
+    "profit_claim_inheritance"
+  ],
+  "required_capture_fields": {
+    "author_or_publisher": {
+      "status": "KNOWN_FROM_REGISTRY",
+      "value": "TradingView community authors"
+    },
+    "canonical_url": {
+      "status": "KNOWN_FROM_REGISTRY",
+      "value": "https://www.tradingview.com/scripts/strategy/"
+    },
+    "captured_at_utc": {
+      "status": "KNOWN_FROM_REGISTRY",
+      "value": "2026-07-11T00:00:00Z"
+    },
+    "commission_and_slippage": {
+      "evidence_url": "https://www.tradingview.com/scripts/strategy/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Strategy properties expose commission and slippage settings that must be captured beside every external result."
+    },
+    "initial_capital": {
+      "evidence_url": "https://www.tradingview.com/scripts/strategy/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Strategy properties expose capital assumptions that must be captured."
+    },
+    "license_or_reuse_status": {
+      "evidence_url": "https://www.tradingview.com/scripts/strategy/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Open-source Pine publications require attribution/license capture before any local reuse; protected and invite-only code must not be copied."
+    },
+    "max_drawdown": {
+      "evidence_url": "https://www.tradingview.com/scripts/strategy/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Performance Summary exposes drawdown metrics; local OS validation remains authoritative."
+    },
+    "net_profit": {
+      "evidence_url": "https://www.tradingview.com/scripts/strategy/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Performance Summary exposes net profit; this is external evidence only."
+    },
+    "parameter_visibility": {
+      "evidence_url": "https://www.tradingview.com/scripts/strategy/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Input parameters must be captured when visible; hidden or protected parameters block faithful reproduction."
+    },
+    "pine_version": {
+      "evidence_url": "https://www.tradingview.com/scripts/strategy/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Pine version must be captured from the visible strategy source when available."
+    },
+    "profit_factor": {
+      "evidence_url": "https://www.tradingview.com/scripts/strategy/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Strategy Tester exposes profit factor where enough trades exist."
+    },
+    "script_access_type": {
+      "evidence_url": "https://www.tradingview.com/scripts/strategy/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "TradingView publications can be open-source, protected, or invite-only; only visible open-source code is eligible for local code reproduction."
+    },
+    "script_title": {
+      "evidence_url": "https://www.tradingview.com/scripts/strategy/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Public strategy-library entries expose per-script titles; exact title must be captured from each individual strategy URL."
+    },
+    "symbol": {
+      "evidence_url": "https://www.tradingview.com/scripts/strategy/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Strategy Tester evidence is chart-specific; symbol must be captured from the tested chart or report."
+    },
+    "terms_review_status": {
+      "evidence_url": "https://www.tradingview.com/scripts/strategy/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "PUBLIC_SOURCE_RECHECKED_TERMS_NOT_REVIEWED"
+    },
+    "tester_date_range": {
+      "evidence_url": "https://www.tradingview.com/scripts/strategy/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Strategy Tester reports depend on the chart's available history and configured date range; both must be retained when visible."
+    },
+    "timeframe": {
+      "evidence_url": "https://www.tradingview.com/scripts/strategy/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Strategy Tester evidence is timeframe-specific and must be captured with the report."
+    },
+    "trade_count": {
+      "evidence_url": "https://www.tradingview.com/scripts/strategy/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Strategy Tester exposes trade counts that help compare TV and OS fills."
+    },
+    "win_rate": {
+      "evidence_url": "https://www.tradingview.com/scripts/strategy/",
+      "status": "PUBLIC_SOURCE_CAPTURED",
+      "value": "Strategy Tester exposes win-rate metrics; they are not inherited proof."
+    }
+  },
+  "schema": "tios-external-source-intake-snapshot-v1",
+  "source_class": "public_strategy_library",
+  "source_ref": "SRC-TRADINGVIEW-PUBLIC-STRATEGIES",
+  "source_title": "TradingView open-source public strategies and Strategy Tester reports",
+  "validation_prerequisites": [
+    "canonical source snapshot and license/attribution record",
+    "exact Pine-to-local rule translation with ambiguity record",
+    "local backtest on approved frozen data using declared cost grid",
+    "TradingView-versus-OS metric divergence report",
+    "G10 multiple-testing evidence before any promotion claim"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "last_run_utc": "2026-07-12T11:17:35.619966+00:00",
+  "files_updated": 1,
+  "bars_added": 0,
+  "target": "/Users/user/Downloads/trading_os_project_package/data/normalized_multi",
+  "updated": [
+    {
+      "file": "BTCUSDT_1d.parquet",
+      "added_rows": 0,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "0275db9746866c7e02523ef6ee4121d4b9ffda4cf39cdcb214f73d11221b2e2a"
+    }
+  ]
+}

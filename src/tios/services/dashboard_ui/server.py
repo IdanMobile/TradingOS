@@ -10,6 +10,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from tios.services.dashboard_api.market import build_market_snapshot
+from tios.services.dashboard_api.operations import build_operations, trigger_data_update
 from tios.services.dashboard_api.search import build_search_results
 from tios.services.dashboard_api.status import (
     build_dashboard_data,
@@ -31,11 +32,13 @@ class Handler(BaseHTTPRequestHandler):
             self._send(200, "application/json", body)
         elif path == "/api/v1/status":
             self._send(200, "application/json", json.dumps(build_status(self.root)).encode())
+        elif path == "/api/v1/operations":
+            self._send(200, "application/json", json.dumps(build_operations(self.root)).encode())
         elif path == "/api/v1/stage-gates":
             self._send(
                 200,
                 "application/json",
-                json.dumps(build_stage_gate_readiness()).encode(),
+                json.dumps(build_stage_gate_readiness(self.root)).encode(),
             )
         elif path == "/api/v1/search":
             query = parse_qs(request.query)
@@ -89,6 +92,11 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:  # noqa: N802
         request = urlparse(self.path)
+        if request.path == "/api/v1/workspace-actions/data-update":
+            # Governed action (D-041): launch the local, offline data refresh only.
+            body = json.dumps(trigger_data_update(self.root)).encode()
+            self._send(202, "application/json", body)
+            return
         if request.path != "/api/v1/workspace-actions/decision":
             self._send(404, "application/json", b'{"schema_version":1,"error":"not found"}')
             return

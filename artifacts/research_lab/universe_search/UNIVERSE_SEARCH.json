@@ -1,0 +1,3318 @@
+{
+  "dataset_count": 43,
+  "execution_authority": "NONE",
+  "mode": "OFFLINE_RESEARCH_ONLY",
+  "pairs": [
+    "ADAUSDT",
+    "ATOMUSDT",
+    "AVAXUSDT",
+    "BNBUSDT",
+    "BTCUSDT",
+    "DOGEUSDT",
+    "DOTUSDT",
+    "ETHUSDT",
+    "LINKUSDT",
+    "LTCUSDT",
+    "MATICUSDT",
+    "SOLUSDT",
+    "TRXUSDT",
+    "UNIUSDT",
+    "XRPUSDT"
+  ],
+  "schema": "tios-universe-search-v1",
+  "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+  "strategies": [
+    {
+      "best_context": {
+        "best_return_pct": 6495.3,
+        "best_trial_key": "donchian|entry_w=15,exit_w=7",
+        "buy_hold_pct": 4872.1,
+        "dataset": "SOLUSDT_1d",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "-0.1535765309443814238986442037",
+          "train": "15.59594775132662490315998865",
+          "validation": "4.219760664842427932488500886"
+        },
+        "thirds_all_positive": false,
+        "trades": 66
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 2001.3,
+          "best_trial_key": "donchian|entry_w=25,exit_w=12",
+          "buy_hold_pct": 1394.6,
+          "dataset": "BNBUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.066830765382254033493629733",
+            "train": "11.54299216909734775300884651",
+            "validation": "0.987485355180947616744036245"
+          },
+          "thirds_all_positive": true,
+          "trades": 40
+        },
+        {
+          "best_return_pct": 441.6,
+          "best_trial_key": "donchian|entry_w=25,exit_w=12",
+          "buy_hold_pct": 381.4,
+          "dataset": "XRPUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.983369714975845856771986397",
+            "train": "0.905357739818087294854104688",
+            "validation": "0.617956253061386158548736934"
+          },
+          "thirds_all_positive": true,
+          "trades": 42
+        }
+      ],
+      "strategy_id": "EXT-TURTLE-S1"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 3418.9,
+        "best_trial_key": "donchian|entry_w=40,exit_w=20",
+        "buy_hold_pct": 106.0,
+        "dataset": "AVAXUSDT_4h",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "-0.2196994526841103632067521551",
+          "train": "23.40908391990086941492989471",
+          "validation": "1.198237798023634839837039988"
+        },
+        "thirds_all_positive": false,
+        "trades": 155
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 74.5,
+          "best_trial_key": "donchian|entry_w=70,exit_w=25",
+          "buy_hold_pct": -20.6,
+          "dataset": "ADAUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.174836870164992495762200802",
+            "train": "0.237272918383594769246856359",
+            "validation": "0.200718784274473729853581465"
+          },
+          "thirds_all_positive": true,
+          "trades": 482
+        },
+        {
+          "best_return_pct": 212.3,
+          "best_trial_key": "donchian|entry_w=70,exit_w=25",
+          "buy_hold_pct": -20.3,
+          "dataset": "ADAUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.009935939615667755567039938",
+            "train": "0.383124087124217685290470071",
+            "validation": "0.150314004863473671002652374"
+          },
+          "thirds_all_positive": true,
+          "trades": 116
+        },
+        {
+          "best_return_pct": 178.4,
+          "best_trial_key": "donchian|entry_w=70,exit_w=25",
+          "buy_hold_pct": 114.2,
+          "dataset": "ETHUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.072887968454192653717235482",
+            "train": "1.266601019578425343058103296",
+            "validation": "0.165715119806664468592001856"
+          },
+          "thirds_all_positive": true,
+          "trades": 124
+        }
+      ],
+      "strategy_id": "EXT-TURTLE-S2"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 4654.4,
+        "best_trial_key": "donchian|entry_w=30,exit_w=15",
+        "buy_hold_pct": 106.0,
+        "dataset": "AVAXUSDT_4h",
+        "screen_pass": true,
+        "thirds": {
+          "holdout": "0.069063265058639431410312194",
+          "train": "20.60412598269522828214674932",
+          "validation": "1.387454858432906673202697902"
+        },
+        "thirds_all_positive": true,
+        "trades": 213
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 4654.4,
+          "best_trial_key": "donchian|entry_w=30,exit_w=15",
+          "buy_hold_pct": 106.0,
+          "dataset": "AVAXUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.069063265058639431410312194",
+            "train": "20.60412598269522828214674932",
+            "validation": "1.387454858432906673202697902"
+          },
+          "thirds_all_positive": true,
+          "trades": 213
+        },
+        {
+          "best_return_pct": 3018.2,
+          "best_trial_key": "donchian|entry_w=30,exit_w=15",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.235080837723073004563960068",
+            "train": "23.9165479847253154624721336",
+            "validation": "0.067098029996315859132395337"
+          },
+          "thirds_all_positive": true,
+          "trades": 206
+        }
+      ],
+      "strategy_id": "EXT-DONCHIAN-40"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 10014.4,
+        "best_trial_key": "sma|fast=60,slow=220",
+        "buy_hold_pct": 4757.7,
+        "dataset": "SOLUSDT_1h",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "-0.179346724635005724160616809",
+          "train": "23.15049785890836613643340382",
+          "validation": "5.594014073134060017859596852"
+        },
+        "thirds_all_positive": false,
+        "trades": 257
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 118.5,
+          "best_trial_key": "sma|fast=50,slow=200",
+          "buy_hold_pct": -20.6,
+          "dataset": "ADAUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.023958540513752577893755711",
+            "train": "0.926525223349222201798073874",
+            "validation": "0.294842816684209814847904726"
+          },
+          "thirds_all_positive": true,
+          "trades": 298
+        },
+        {
+          "best_return_pct": 148.4,
+          "best_trial_key": "sma|fast=60,slow=220",
+          "buy_hold_pct": -20.3,
+          "dataset": "ADAUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.335986662007234811447087558",
+            "train": "0.382624726201890180833722888",
+            "validation": "0.862439045113521691082677567"
+          },
+          "thirds_all_positive": true,
+          "trades": 70
+        },
+        {
+          "best_return_pct": 1687.7,
+          "best_trial_key": "sma|fast=60,slow=220",
+          "buy_hold_pct": 1362.2,
+          "dataset": "BNBUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.356091004865806323752928877",
+            "train": "10.17370202251059733523654113",
+            "validation": "0.441410514978161215933958119"
+          },
+          "thirds_all_positive": true,
+          "trades": 66
+        },
+        {
+          "best_return_pct": 7727.6,
+          "best_trial_key": "sma|fast=40,slow=180",
+          "buy_hold_pct": 1437.7,
+          "dataset": "DOGEUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.280545237506838445533295866",
+            "train": "40.73651725204194170050734755",
+            "validation": "0.65555132313621520336245098"
+          },
+          "thirds_all_positive": true,
+          "trades": 338
+        },
+        {
+          "best_return_pct": 2097.3,
+          "best_trial_key": "sma|fast=40,slow=180",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.426731812743234765545210438",
+            "train": "10.03960812031346957105005739",
+            "validation": "0.677385624158108317119265252"
+          },
+          "thirds_all_positive": true,
+          "trades": 84
+        },
+        {
+          "best_return_pct": 300.5,
+          "best_trial_key": "sma|fast=60,slow=220",
+          "buy_hold_pct": 114.2,
+          "dataset": "ETHUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.053799500924922676492517015",
+            "train": "0.723907521905735059453941744",
+            "validation": "0.492050985560073499350586016"
+          },
+          "thirds_all_positive": true,
+          "trades": 60
+        },
+        {
+          "best_return_pct": 3224.8,
+          "best_trial_key": "sma|fast=60,slow=220",
+          "buy_hold_pct": 2069.1,
+          "dataset": "MATICUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.000682439819265517130071075",
+            "train": "32.11268331269237834984893009",
+            "validation": "0.049606832524012962851210003"
+          },
+          "thirds_all_positive": true,
+          "trades": 40
+        },
+        {
+          "best_return_pct": 695.3,
+          "best_trial_key": "sma|fast=60,slow=220",
+          "buy_hold_pct": 373.1,
+          "dataset": "XRPUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.085329667213305644148935929",
+            "train": "2.993433853173233784712176083",
+            "validation": "0.092180109210883451558404064"
+          },
+          "thirds_all_positive": true,
+          "trades": 292
+        }
+      ],
+      "strategy_id": "EXT-GOLDEN-CROSS"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 18656.6,
+        "best_trial_key": "sma|fast=12,slow=36",
+        "buy_hold_pct": 4777.6,
+        "dataset": "SOLUSDT_4h",
+        "screen_pass": true,
+        "thirds": {
+          "holdout": "0.027501768679955150622204646",
+          "train": "36.04663532437277501192700188",
+          "validation": "4.532394395446072748365484474"
+        },
+        "thirds_all_positive": true,
+        "trades": 369
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 311.5,
+          "best_trial_key": "sma|fast=12,slow=36",
+          "buy_hold_pct": -19.8,
+          "dataset": "ADAUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.151072261755884534243387468",
+            "train": "1.370552810645690081193788742",
+            "validation": "1.169790197691693352893140396"
+          },
+          "thirds_all_positive": true,
+          "trades": 60
+        },
+        {
+          "best_return_pct": 223.8,
+          "best_trial_key": "sma|fast=12,slow=36",
+          "buy_hold_pct": 107.9,
+          "dataset": "BTCUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.565604258985494434396333223",
+            "train": "0.123553154137349613005429964",
+            "validation": "1.382564932887416917662005822"
+          },
+          "thirds_all_positive": true,
+          "trades": 56
+        },
+        {
+          "best_return_pct": 3305.9,
+          "best_trial_key": "sma|fast=10,slow=30",
+          "buy_hold_pct": 1468.9,
+          "dataset": "DOGEUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.483644717505167003364909512",
+            "train": "12.353662113093349864985926",
+            "validation": "0.164239290032716993784861354"
+          },
+          "thirds_all_positive": true,
+          "trades": 70
+        },
+        {
+          "best_return_pct": 2438.2,
+          "best_trial_key": "sma|fast=8,slow=24",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.598737776580974458762647371",
+            "train": "8.776624011432967372664355283",
+            "validation": "0.638609501118883730850915383"
+          },
+          "thirds_all_positive": true,
+          "trades": 586
+        },
+        {
+          "best_return_pct": 256.8,
+          "best_trial_key": "sma|fast=12,slow=36",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.490027437162003695899749465",
+            "train": "1.294954492611711931268365606",
+            "validation": "0.426278822862213029423836642"
+          },
+          "thirds_all_positive": true,
+          "trades": 60
+        },
+        {
+          "best_return_pct": 7265.0,
+          "best_trial_key": "sma|fast=12,slow=36",
+          "buy_hold_pct": 4872.1,
+          "dataset": "SOLUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.15147781783140105569853739",
+            "train": "16.24920480140384415846283035",
+            "validation": "8.534424431106703667657495475"
+          },
+          "thirds_all_positive": true,
+          "trades": 54
+        },
+        {
+          "best_return_pct": 18656.6,
+          "best_trial_key": "sma|fast=12,slow=36",
+          "buy_hold_pct": 4777.6,
+          "dataset": "SOLUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.027501768679955150622204646",
+            "train": "36.04663532437277501192700188",
+            "validation": "4.532394395446072748365484474"
+          },
+          "thirds_all_positive": true,
+          "trades": 369
+        }
+      ],
+      "strategy_id": "EXT-SMA-10-30"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 12285.1,
+        "best_trial_key": "sma|fast=16,slow=40",
+        "buy_hold_pct": 4777.6,
+        "dataset": "SOLUSDT_4h",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "-0.1970927337999131954235539074",
+          "train": "18.21678952237163724311215595",
+          "validation": "7.909241145911891029395560556"
+        },
+        "thirds_all_positive": false,
+        "trades": 319
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 213.5,
+          "best_trial_key": "sma|fast=16,slow=40",
+          "buy_hold_pct": -19.8,
+          "dataset": "ADAUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.466745505152762932363526123",
+            "train": "0.894679672294806127303410843",
+            "validation": "0.475330245612645504603508446"
+          },
+          "thirds_all_positive": true,
+          "trades": 54
+        },
+        {
+          "best_return_pct": 113.6,
+          "best_trial_key": "sma|fast=16,slow=40",
+          "buy_hold_pct": 107.9,
+          "dataset": "BTCUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.425356974179943693527472204",
+            "train": "0.147923932585063465761998121",
+            "validation": "0.729246311303055754495451442"
+          },
+          "thirds_all_positive": true,
+          "trades": 48
+        },
+        {
+          "best_return_pct": 2329.1,
+          "best_trial_key": "sma|fast=16,slow=40",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.406283574403251836936161134",
+            "train": "8.840549526504928877596420483",
+            "validation": "0.75185401023433277126495096"
+          },
+          "thirds_all_positive": true,
+          "trades": 340
+        },
+        {
+          "best_return_pct": 197.1,
+          "best_trial_key": "sma|fast=24,slow=60",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.480303358759198523985405376",
+            "train": "0.540205482767302157970021917",
+            "validation": "0.675844996268122567611266963"
+          },
+          "thirds_all_positive": true,
+          "trades": 32
+        },
+        {
+          "best_return_pct": 2519.4,
+          "best_trial_key": "sma|fast=16,slow=40",
+          "buy_hold_pct": 2069.1,
+          "dataset": "MATICUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.225032906217047950476774266",
+            "train": "21.23300227057080896869994504",
+            "validation": "0.36944215808815910415466044"
+          },
+          "thirds_all_positive": true,
+          "trades": 32
+        },
+        {
+          "best_return_pct": 257.3,
+          "best_trial_key": "sma|fast=16,slow=40",
+          "buy_hold_pct": 245.0,
+          "dataset": "UNIUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.86793896459538953716352365",
+            "train": "0.058358692838836082469078335",
+            "validation": "0.524011327981007348236828599"
+          },
+          "thirds_all_positive": true,
+          "trades": 15
+        },
+        {
+          "best_return_pct": 738.5,
+          "best_trial_key": "sma|fast=20,slow=50",
+          "buy_hold_pct": 375.0,
+          "dataset": "XRPUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.985698115206540228177018986",
+            "train": "1.461264822712597503500333526",
+            "validation": "0.4077413218552565168414236"
+          },
+          "thirds_all_positive": true,
+          "trades": 282
+        }
+      ],
+      "strategy_id": "EXT-SMA-20-50"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 9541.9,
+        "best_trial_key": "ema|fast=10,slow=21",
+        "buy_hold_pct": 4872.1,
+        "dataset": "SOLUSDT_1d",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "-0.125965801693329888681882931",
+          "train": "23.14024568204634137850962853",
+          "validation": "5.216277907189828602204969841"
+        },
+        "thirds_all_positive": false,
+        "trades": 78
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 523.3,
+          "best_trial_key": "ema|fast=15,slow=30",
+          "buy_hold_pct": -19.8,
+          "dataset": "ADAUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.009319245444363857680538042",
+            "train": "2.019959616730902650705234678",
+            "validation": "0.842635882966771996036868506"
+          },
+          "thirds_all_positive": true,
+          "trades": 46
+        },
+        {
+          "best_return_pct": 407.5,
+          "best_trial_key": "ema|fast=15,slow=30",
+          "buy_hold_pct": -20.3,
+          "dataset": "ADAUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.049463144704861043243461255",
+            "train": "2.593864224680992635171854512",
+            "validation": "0.291804399759765540804253598"
+          },
+          "thirds_all_positive": true,
+          "trades": 326
+        },
+        {
+          "best_return_pct": 3319.8,
+          "best_trial_key": "ema|fast=12,slow=26",
+          "buy_hold_pct": 1394.6,
+          "dataset": "BNBUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.329096049062116802753107143",
+            "train": "13.11175865091350096490753571",
+            "validation": "1.108067864617668804452841195"
+          },
+          "thirds_all_positive": true,
+          "trades": 56
+        },
+        {
+          "best_return_pct": 3365.6,
+          "best_trial_key": "ema|fast=10,slow=21",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.557127713993900674648454324",
+            "train": "16.91649332781476025881079205",
+            "validation": "0.31651197087859628125396365"
+          },
+          "thirds_all_positive": true,
+          "trades": 500
+        },
+        {
+          "best_return_pct": 164.4,
+          "best_trial_key": "ema|fast=10,slow=21",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.313923141596855666603704365",
+            "train": "1.469532354734773935165228504",
+            "validation": "0.193926017721123632912437496"
+          },
+          "thirds_all_positive": true,
+          "trades": 78
+        }
+      ],
+      "strategy_id": "EXT-EMA-12-26"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 12194.4,
+        "best_trial_key": "ema|fast=9,slow=26",
+        "buy_hold_pct": 4872.1,
+        "dataset": "SOLUSDT_1d",
+        "screen_pass": true,
+        "thirds": {
+          "holdout": "0.083889098098957770602835255",
+          "train": "26.82490253724479287061992102",
+          "validation": "4.907506998339051069963012877"
+        },
+        "thirds_all_positive": true,
+        "trades": 68
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 3847.3,
+          "best_trial_key": "ema|fast=9,slow=26",
+          "buy_hold_pct": 1394.6,
+          "dataset": "BNBUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.111287280468062319554433208",
+            "train": "20.22076757519336359935467529",
+            "validation": "0.939015004641242274503221463"
+          },
+          "thirds_all_positive": true,
+          "trades": 72
+        },
+        {
+          "best_return_pct": 191.6,
+          "best_trial_key": "ema|fast=8,slow=21",
+          "buy_hold_pct": 107.9,
+          "dataset": "BTCUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.431623805830612961377220741",
+            "train": "0.061968035053984748061818537",
+            "validation": "1.252197736135746471589789577"
+          },
+          "thirds_all_positive": true,
+          "trades": 84
+        },
+        {
+          "best_return_pct": 4114.5,
+          "best_trial_key": "ema|fast=8,slow=21",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.747578091182732905393588784",
+            "train": "19.02619556372789107619419847",
+            "validation": "0.33323726409376771024807856"
+          },
+          "thirds_all_positive": true,
+          "trades": 552
+        },
+        {
+          "best_return_pct": 132.7,
+          "best_trial_key": "ema|fast=8,slow=21",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.347646251325319509860847407",
+            "train": "1.035139021385097273361881086",
+            "validation": "0.208816628806250009033173925"
+          },
+          "thirds_all_positive": true,
+          "trades": 84
+        },
+        {
+          "best_return_pct": 12194.4,
+          "best_trial_key": "ema|fast=9,slow=26",
+          "buy_hold_pct": 4872.1,
+          "dataset": "SOLUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.083889098098957770602835255",
+            "train": "26.82490253724479287061992102",
+            "validation": "4.907506998339051069963012877"
+          },
+          "thirds_all_positive": true,
+          "trades": 68
+        }
+      ],
+      "strategy_id": "EXT-EMA-8-21"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 9655.2,
+        "best_trial_key": "ema|fast=20,slow=50",
+        "buy_hold_pct": 4777.6,
+        "dataset": "SOLUSDT_4h",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "-0.0427934080617092297124103297",
+          "train": "21.61274981051652696096934577",
+          "validation": "4.592658069155789572294094578"
+        },
+        "thirds_all_positive": false,
+        "trades": 223
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 449.6,
+          "best_trial_key": "ema|fast=16,slow=40",
+          "buy_hold_pct": -19.8,
+          "dataset": "ADAUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.640496514368621237277009181",
+            "train": "1.199969243728477065718199194",
+            "validation": "0.567863563330719952193504397"
+          },
+          "thirds_all_positive": true,
+          "trades": 34
+        },
+        {
+          "best_return_pct": 5178.6,
+          "best_trial_key": "ema|fast=20,slow=50",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.284595962244215350159429086",
+            "train": "14.98343430094864772901689771",
+            "validation": "0.77159853618100837466587955"
+          },
+          "thirds_all_positive": true,
+          "trades": 210
+        },
+        {
+          "best_return_pct": 197.4,
+          "best_trial_key": "ema|fast=24,slow=60",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.760995586807249152242957733",
+            "train": "0.418883516965015663243463641",
+            "validation": "0.674028878921585849565788495"
+          },
+          "thirds_all_positive": true,
+          "trades": 26
+        },
+        {
+          "best_return_pct": 5816.5,
+          "best_trial_key": "ema|fast=20,slow=50",
+          "buy_hold_pct": 2053.3,
+          "dataset": "MATICUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.120215463877287292058416715",
+            "train": "42.01668087822273389342724131",
+            "validation": "0.157791451247832020699242691"
+          },
+          "thirds_all_positive": true,
+          "trades": 575
+        }
+      ],
+      "strategy_id": "EXT-EMA-20-50"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 566.0,
+        "best_trial_key": "bb|window=15,std=2",
+        "buy_hold_pct": 1468.9,
+        "dataset": "DOGEUSDT_1d",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "0.392658547962763923756033251",
+          "train": "4.367549921061348289639281776",
+          "validation": "-0.1090063255150112832747223468"
+        },
+        "thirds_all_positive": false,
+        "trades": 81
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 213.0,
+          "best_trial_key": "bb|window=15,std=2",
+          "buy_hold_pct": -65.3,
+          "dataset": "LTCUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.331065692982531529445574555",
+            "train": "1.101760086280622484414899015",
+            "validation": "0.076413556074819446871770449"
+          },
+          "thirds_all_positive": true,
+          "trades": 96
+        }
+      ],
+      "strategy_id": "EXT-BB-REVERSION"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 10568.2,
+        "best_trial_key": "bb|window=20,std=1.5",
+        "buy_hold_pct": 4872.1,
+        "dataset": "SOLUSDT_1d",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "-0.0380812135892161435529317693",
+          "train": "15.49276829663206822837491223",
+          "validation": "6.475951964594141840039748553"
+        },
+        "thirds_all_positive": false,
+        "trades": 87
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 288.4,
+          "best_trial_key": "bb|window=25,std=2",
+          "buy_hold_pct": -19.8,
+          "dataset": "ADAUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.152445977322916208821763197",
+            "train": "0.69160667677890285304419843",
+            "validation": "0.992377935548739171019906446"
+          },
+          "thirds_all_positive": true,
+          "trades": 56
+        },
+        {
+          "best_return_pct": 587.9,
+          "best_trial_key": "bb|window=25,std=2",
+          "buy_hold_pct": -20.3,
+          "dataset": "ADAUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.16847266347931721412277807",
+            "train": "1.517219044785335547978223709",
+            "validation": "0.245247984137383508085174912"
+          },
+          "thirds_all_positive": true,
+          "trades": 328
+        },
+        {
+          "best_return_pct": 1723.7,
+          "best_trial_key": "bb|window=25,std=2",
+          "buy_hold_pct": 1394.6,
+          "dataset": "BNBUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.090155744528957767415602272",
+            "train": "10.88180558461948888294523437",
+            "validation": "0.781981952293486843762603105"
+          },
+          "thirds_all_positive": true,
+          "trades": 52
+        },
+        {
+          "best_return_pct": 1591.4,
+          "best_trial_key": "bb|window=25,std=2",
+          "buy_hold_pct": 1468.9,
+          "dataset": "DOGEUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.693022282620517490872205082",
+            "train": "5.673761610909087220833983781",
+            "validation": "0.167875920721518331706540908"
+          },
+          "thirds_all_positive": true,
+          "trades": 56
+        },
+        {
+          "best_return_pct": 145.8,
+          "best_trial_key": "bb|window=20,std=2",
+          "buy_hold_pct": -91.1,
+          "dataset": "DOTUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.172577174131021981718603655",
+            "train": "0.449177560270367322581409938",
+            "validation": "0.526613315902544150801876876"
+          },
+          "thirds_all_positive": true,
+          "trades": 64
+        },
+        {
+          "best_return_pct": 210.7,
+          "best_trial_key": "bb|window=20,std=1.5",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.238276974858352259616910909",
+            "train": "1.8096198077033971906397853",
+            "validation": "0.063987221344715227708448046"
+          },
+          "thirds_all_positive": true,
+          "trades": 88
+        }
+      ],
+      "strategy_id": "EXT-BB-BREAKOUT"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 378.8,
+        "best_trial_key": "rsi2|rsi_w=3,trend_w=150,rsi_buy=15,exit_sma=5",
+        "buy_hold_pct": 2053.3,
+        "dataset": "MATICUSDT_1h",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "-0.1404382425714918942676332552",
+          "train": "3.937555992041841625482388612",
+          "validation": "0.145196153513253155772600534"
+        },
+        "thirds_all_positive": false,
+        "trades": 790
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 138.6,
+          "best_trial_key": "rsi2|rsi_w=3,trend_w=150,rsi_buy=15,exit_sma=5",
+          "buy_hold_pct": -76.7,
+          "dataset": "ATOMUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.13246966665514241519742944",
+            "train": "0.806119816730003057896089086",
+            "validation": "0.1287291012952431704604592"
+          },
+          "thirds_all_positive": true,
+          "trades": 1102
+        },
+        {
+          "best_return_pct": 5.0,
+          "best_trial_key": "rsi2|rsi_w=3,trend_w=150,rsi_buy=15,exit_sma=5",
+          "buy_hold_pct": -91.1,
+          "dataset": "DOTUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.026836238031244750545943222",
+            "train": "0.00051689558562718961942078",
+            "validation": "0.101891554178434042456489324"
+          },
+          "thirds_all_positive": true,
+          "trades": 22
+        },
+        {
+          "best_return_pct": 129.1,
+          "best_trial_key": "rsi2|rsi_w=2,trend_w=200,rsi_buy=10,exit_sma=5",
+          "buy_hold_pct": -91.1,
+          "dataset": "DOTUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.07208860924638794563907495",
+            "train": "0.866884787864454936971577253",
+            "validation": "0.146760011336485479383617058"
+          },
+          "thirds_all_positive": true,
+          "trades": 392
+        },
+        {
+          "best_return_pct": 28.0,
+          "best_trial_key": "rsi2|rsi_w=2,trend_w=200,rsi_buy=5,exit_sma=5",
+          "buy_hold_pct": -65.3,
+          "dataset": "LTCUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.099431131886208630562274323",
+            "train": "0.108998661440470357667809897",
+            "validation": "0.034911421052631578947368422"
+          },
+          "thirds_all_positive": true,
+          "trades": 20
+        }
+      ],
+      "strategy_id": "EXT-CONNORS-RSI2"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 593.0,
+        "best_trial_key": "rsi|window=14,low=25,high=60",
+        "buy_hold_pct": 1075.5,
+        "dataset": "TRXUSDT_4h",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "0.611138763643351109071901668",
+          "train": "2.288000180591480373784250478",
+          "validation": "0.28194162394874957631598094"
+        },
+        "thirds_all_positive": true,
+        "trades": 88
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 86.5,
+          "best_trial_key": "rsi|window=14,low=30,high=55",
+          "buy_hold_pct": -66.4,
+          "dataset": "LTCUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.741795537210895429102007041",
+            "train": "0.090575694655037743412941776",
+            "validation": "0.019895896958045036595265885"
+          },
+          "thirds_all_positive": true,
+          "trades": 156
+        }
+      ],
+      "strategy_id": "EXT-RSI14"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 504.7,
+        "best_trial_key": "rsi|window=4,low=20,high=60",
+        "buy_hold_pct": -34.5,
+        "dataset": "LINKUSDT_1d",
+        "screen_pass": true,
+        "thirds": {
+          "holdout": "1.692035304434359999486617656",
+          "train": "1.415832206319547692338503631",
+          "validation": "0.01030068220829997058806511"
+        },
+        "thirds_all_positive": true,
+        "trades": 103
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 97.4,
+          "best_trial_key": "rsi|window=5,low=25,high=55",
+          "buy_hold_pct": -19.8,
+          "dataset": "ADAUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.10607651299354467670053209",
+            "train": "0.346404411184199332484231035",
+            "validation": "0.393478020150024441866254534"
+          },
+          "thirds_all_positive": true,
+          "trades": 115
+        },
+        {
+          "best_return_pct": 268.0,
+          "best_trial_key": "rsi|window=4,low=20,high=60",
+          "buy_hold_pct": -76.3,
+          "dataset": "ATOMUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.292381787357443299481597327",
+            "train": "1.865874783774678649981517234",
+            "validation": "0.059076644733365105283555005"
+          },
+          "thirds_all_positive": true,
+          "trades": 113
+        },
+        {
+          "best_return_pct": 504.7,
+          "best_trial_key": "rsi|window=4,low=20,high=60",
+          "buy_hold_pct": -34.5,
+          "dataset": "LINKUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.692035304434359999486617656",
+            "train": "1.415832206319547692338503631",
+            "validation": "0.01030068220829997058806511"
+          },
+          "thirds_all_positive": true,
+          "trades": 103
+        }
+      ],
+      "strategy_id": "EXT-RSI4"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 8980.2,
+        "best_trial_key": "roc|window=10",
+        "buy_hold_pct": 109.2,
+        "dataset": "AVAXUSDT_1d",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "-0.3306450024949829931486921532",
+          "train": "43.49223131255382859744945999",
+          "validation": "1.950308447483706825058981624"
+        },
+        "thirds_all_positive": false,
+        "trades": 253
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 1468.3,
+          "best_trial_key": "roc|window=10",
+          "buy_hold_pct": 1394.6,
+          "dataset": "BNBUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.236281051511265749994449125",
+            "train": "11.09875547460412642670216233",
+            "validation": "0.231041311594101746278626825"
+          },
+          "thirds_all_positive": true,
+          "trades": 300
+        },
+        {
+          "best_return_pct": 1670.6,
+          "best_trial_key": "roc|window=15",
+          "buy_hold_pct": 1468.9,
+          "dataset": "DOGEUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.890966843919745610192637699",
+            "train": "5.773968226786357837526156573",
+            "validation": "1.02493008671887022694140534"
+          },
+          "thirds_all_positive": true,
+          "trades": 216
+        },
+        {
+          "best_return_pct": 249.8,
+          "best_trial_key": "roc|window=10",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.101345120322551356011252233",
+            "train": "2.23403236200625241822615699",
+            "validation": "0.170254277936594178127414258"
+          },
+          "thirds_all_positive": true,
+          "trades": 274
+        },
+        {
+          "best_return_pct": 6098.6,
+          "best_trial_key": "roc|window=15",
+          "buy_hold_pct": 4872.1,
+          "dataset": "SOLUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.079470691366730823948024622",
+            "train": "10.37931418170963976259540288",
+            "validation": "5.815978236850388126427887137"
+          },
+          "thirds_all_positive": true,
+          "trades": 211
+        }
+      ],
+      "strategy_id": "EXT-ROC-12"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 20179.2,
+        "best_trial_key": "roc|window=26",
+        "buy_hold_pct": 4872.1,
+        "dataset": "SOLUSDT_1d",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "-0.0139654249177884760213032659",
+          "train": "24.62573721112505041704461373",
+          "validation": "7.997132405397989177984719477"
+        },
+        "thirds_all_positive": false,
+        "trades": 151
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 1671.2,
+          "best_trial_key": "roc|window=26",
+          "buy_hold_pct": 1394.6,
+          "dataset": "BNBUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.332160787668645145206377022",
+            "train": "13.04610554416197411231301115",
+            "validation": "0.262151704235809899680117174"
+          },
+          "thirds_all_positive": true,
+          "trades": 186
+        },
+        {
+          "best_return_pct": 125.5,
+          "best_trial_key": "roc|window=26",
+          "buy_hold_pct": 107.9,
+          "dataset": "BTCUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.279487646695611901628412289",
+            "train": "0.33873475291999277847467767",
+            "validation": "0.538555140550349711333543676"
+          },
+          "thirds_all_positive": true,
+          "trades": 188
+        },
+        {
+          "best_return_pct": 5452.7,
+          "best_trial_key": "roc|window=26",
+          "buy_hold_pct": 1468.9,
+          "dataset": "DOGEUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.106101121525484091438797672",
+            "train": "31.73858073648261341920154969",
+            "validation": "0.243980972035022702623449531"
+          },
+          "thirds_all_positive": true,
+          "trades": 160
+        }
+      ],
+      "strategy_id": "EXT-ROC-20"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 4185.2,
+        "best_trial_key": "tma|fast=8,mid=21,slow=55",
+        "buy_hold_pct": 1437.7,
+        "dataset": "DOGEUSDT_1h",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "0.726956879856501320043532473",
+          "train": "49.62043949352410918979203853",
+          "validation": "-0.4342530146732010939604890289"
+        },
+        "thirds_all_positive": false,
+        "trades": 1662
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 262.3,
+          "best_trial_key": "tma|fast=10,mid=20,slow=50",
+          "buy_hold_pct": -19.8,
+          "dataset": "ADAUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.49200403461149998520767454",
+            "train": "0.47335074388356528921414178",
+            "validation": "0.82362912842787746600635581"
+          },
+          "thirds_all_positive": true,
+          "trades": 48
+        },
+        {
+          "best_return_pct": 380.8,
+          "best_trial_key": "tma|fast=8,mid=21,slow=55",
+          "buy_hold_pct": -20.3,
+          "dataset": "ADAUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.148034037365627970612386329",
+            "train": "3.232192455859273442523845994",
+            "validation": "0.066169699522334830851784503"
+          },
+          "thirds_all_positive": true,
+          "trades": 388
+        },
+        {
+          "best_return_pct": 2849.0,
+          "best_trial_key": "tma|fast=10,mid=20,slow=50",
+          "buy_hold_pct": 1468.9,
+          "dataset": "DOGEUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.106089488664371497870827322",
+            "train": "10.94019956348062291188233846",
+            "validation": "0.622427100168285781326853631"
+          },
+          "thirds_all_positive": true,
+          "trades": 58
+        },
+        {
+          "best_return_pct": 4103.6,
+          "best_trial_key": "tma|fast=8,mid=21,slow=55",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.515077661400313212194741605",
+            "train": "12.30341447789250568345192131",
+            "validation": "0.223686852193285202160045344"
+          },
+          "thirds_all_positive": true,
+          "trades": 370
+        },
+        {
+          "best_return_pct": 909.0,
+          "best_trial_key": "tma|fast=12,mid=26,slow=50",
+          "buy_hold_pct": 375.0,
+          "dataset": "XRPUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "2.678233993003340467470484166",
+            "train": "1.43280452332857175615484388",
+            "validation": "0.188656369441009824978507216"
+          },
+          "thirds_all_positive": true,
+          "trades": 352
+        }
+      ],
+      "strategy_id": "EXT-TRIPLE-MA"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 9402.6,
+        "best_trial_key": "trend|window=100",
+        "buy_hold_pct": 1444.3,
+        "dataset": "DOGEUSDT_4h",
+        "screen_pass": true,
+        "thirds": {
+          "holdout": "1.90975128476390595978327822",
+          "train": "18.0521190393844156366591801",
+          "validation": "1.220486510812875400006223918"
+        },
+        "thirds_all_positive": true,
+        "trades": 458
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 289.5,
+          "best_trial_key": "trend|window=200",
+          "buy_hold_pct": 102.9,
+          "dataset": "BTCUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.29747698744845818078143724",
+            "train": "0.335083414565267144004779831",
+            "validation": "1.312176504130224331078628759"
+          },
+          "thirds_all_positive": true,
+          "trades": 320
+        },
+        {
+          "best_return_pct": 9402.6,
+          "best_trial_key": "trend|window=100",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.90975128476390595978327822",
+            "train": "18.0521190393844156366591801",
+            "validation": "1.220486510812875400006223918"
+          },
+          "thirds_all_positive": true,
+          "trades": 458
+        },
+        {
+          "best_return_pct": 215.3,
+          "best_trial_key": "trend|window=200",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.135038014710571321624341661",
+            "train": "0.450842234092412272410290481",
+            "validation": "0.547095270504658394586040279"
+          },
+          "thirds_all_positive": true,
+          "trades": 28
+        },
+        {
+          "best_return_pct": 628.8,
+          "best_trial_key": "trend|window=150",
+          "buy_hold_pct": 114.2,
+          "dataset": "ETHUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.275132799332267716204115389",
+            "train": "2.889000912696284033541800303",
+            "validation": "0.605399242678131579256519586"
+          },
+          "thirds_all_positive": true,
+          "trades": 326
+        }
+      ],
+      "strategy_id": "EXT-TREND-SMA200"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 585.3,
+        "best_trial_key": "bbrsi|window=15,std=2,rsi_w=4,rsi_buy=15",
+        "buy_hold_pct": 1468.9,
+        "dataset": "DOGEUSDT_1d",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "0.267847006647272263340376884",
+          "train": "4.526476991239123282372848215",
+          "validation": "-0.0219588907763716343677898591"
+        },
+        "thirds_all_positive": false,
+        "trades": 61
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 181.1,
+          "best_trial_key": "bbrsi|window=20,std=2.5,rsi_w=3,rsi_buy=10",
+          "buy_hold_pct": -91.2,
+          "dataset": "DOTUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.062446652750055332283404672",
+            "train": "1.228459126805448043229733031",
+            "validation": "0.217598774307525450469657616"
+          },
+          "thirds_all_positive": true,
+          "trades": 872
+        },
+        {
+          "best_return_pct": 242.1,
+          "best_trial_key": "bbrsi|window=20,std=2.5,rsi_w=3,rsi_buy=10",
+          "buy_hold_pct": -65.3,
+          "dataset": "LTCUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.335554980379063310707968573",
+            "train": "0.340700726175101072479287092",
+            "validation": "0.910407587145551159017586488"
+          },
+          "thirds_all_positive": true,
+          "trades": 42
+        }
+      ],
+      "strategy_id": "EXT-BB-RSI"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 9674.1,
+        "best_trial_key": "ema|fast=60,slow=220",
+        "buy_hold_pct": 4757.7,
+        "dataset": "SOLUSDT_1h",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "-0.0397897006613780431298809154",
+          "train": "16.61329177754103184582631289",
+          "validation": "5.890957711245630478941645669"
+        },
+        "thirds_all_positive": false,
+        "trades": 227
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 295.1,
+          "best_trial_key": "ema|fast=60,slow=220",
+          "buy_hold_pct": -20.3,
+          "dataset": "ADAUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.185310036816816554180605576",
+            "train": "1.127310651253082380314770981",
+            "validation": "0.927528782155300547641357344"
+          },
+          "thirds_all_positive": true,
+          "trades": 50
+        },
+        {
+          "best_return_pct": 4003.4,
+          "best_trial_key": "ema|fast=40,slow=180",
+          "buy_hold_pct": 1362.2,
+          "dataset": "BNBUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.199508282387008911857230178",
+            "train": "18.82597575845924283738535597",
+            "validation": "0.935089421117562577494545944"
+          },
+          "thirds_all_positive": true,
+          "trades": 74
+        },
+        {
+          "best_return_pct": 255.4,
+          "best_trial_key": "ema|fast=50,slow=200",
+          "buy_hold_pct": 102.9,
+          "dataset": "BTCUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.553678555208329887220028056",
+            "train": "0.093010206746466478080744289",
+            "validation": "1.702445938404873044770285875"
+          },
+          "thirds_all_positive": true,
+          "trades": 58
+        },
+        {
+          "best_return_pct": 3033.8,
+          "best_trial_key": "ema|fast=60,slow=220",
+          "buy_hold_pct": 1437.7,
+          "dataset": "DOGEUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.96714780508021548708854772",
+            "train": "14.52646217537604729978209303",
+            "validation": "0.511150408048357630204816263"
+          },
+          "thirds_all_positive": true,
+          "trades": 238
+        },
+        {
+          "best_return_pct": 3626.1,
+          "best_trial_key": "ema|fast=50,slow=200",
+          "buy_hold_pct": 2053.3,
+          "dataset": "MATICUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.311458557121250816038711856",
+            "train": "22.07599279399418086022249244",
+            "validation": "0.174692002346920955827843311"
+          },
+          "thirds_all_positive": true,
+          "trades": 174
+        }
+      ],
+      "strategy_id": "EXT-EMA-50-200"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 167.0,
+        "best_trial_key": "window=24",
+        "buy_hold_pct": 1097.8,
+        "dataset": "TRXUSDT_1d",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "0.41730598240883207698542205",
+          "train": "0.674266837032230852341896853",
+          "validation": "0.276031905922023137483669609"
+        },
+        "thirds_all_positive": true,
+        "trades": 223
+      },
+      "screen_pass_contexts": [],
+      "strategy_id": "SIG-VWAP-REVERSION"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 4368.7,
+        "best_trial_key": "window=48",
+        "buy_hold_pct": 4872.1,
+        "dataset": "SOLUSDT_1d",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "-0.0895109233960368850756731053",
+          "train": "7.314730159610604785871998479",
+          "validation": "6.323049986707865123372227673"
+        },
+        "thirds_all_positive": false,
+        "trades": 127
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 143.1,
+          "best_trial_key": "window=48",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.830796965955474979870097849",
+            "train": "0.064386353261743001447150515",
+            "validation": "0.480975120712737779994146137"
+          },
+          "thirds_all_positive": true,
+          "trades": 120
+        },
+        {
+          "best_return_pct": 346.5,
+          "best_trial_key": "window=96",
+          "buy_hold_pct": 114.2,
+          "dataset": "ETHUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.134364940226059031447082662",
+            "train": "1.936435062019185536489264141",
+            "validation": "0.448794167941563842033105955"
+          },
+          "thirds_all_positive": true,
+          "trades": 536
+        },
+        {
+          "best_return_pct": 2291.1,
+          "best_trial_key": "window=24",
+          "buy_hold_pct": 2069.1,
+          "dataset": "MATICUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.144180658489396146693937968",
+            "train": "22.94149748241373378422222735",
+            "validation": "0.033918359931289423038224965"
+          },
+          "thirds_all_positive": true,
+          "trades": 108
+        }
+      ],
+      "strategy_id": "SIG-VWAP-TREND"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 8201.4,
+        "best_trial_key": "window=40,mult=1.5",
+        "buy_hold_pct": 106.0,
+        "dataset": "AVAXUSDT_4h",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "-0.074680909575155426566044266",
+          "train": "21.20497332170829893102262625",
+          "validation": "3.419696856850750541334638055"
+        },
+        "thirds_all_positive": false,
+        "trades": 104
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 141.6,
+          "best_trial_key": "window=20,mult=2",
+          "buy_hold_pct": -19.8,
+          "dataset": "ADAUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.047034791468097355033437717",
+            "train": "0.305612143298290115876480699",
+            "validation": "0.767190411261123664821616919"
+          },
+          "thirds_all_positive": true,
+          "trades": 24
+        },
+        {
+          "best_return_pct": 4165.6,
+          "best_trial_key": "window=20,mult=1.5",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.202707393764380508573046025",
+            "train": "23.9511256124023747355423229",
+            "validation": "0.496973827285282033622094885"
+          },
+          "thirds_all_positive": true,
+          "trades": 194
+        },
+        {
+          "best_return_pct": 125.0,
+          "best_trial_key": "window=20,mult=2",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.490690781695621260317950187",
+            "train": "0.087365346191787578609889433",
+            "validation": "1.002040892417284592449990681"
+          },
+          "thirds_all_positive": true,
+          "trades": 16
+        },
+        {
+          "best_return_pct": 153.9,
+          "best_trial_key": "window=40,mult=1.5",
+          "buy_hold_pct": 112.4,
+          "dataset": "ETHUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.346520648195500479632839668",
+            "train": "0.387762352531680604139005965",
+            "validation": "0.358540849767188131936239315"
+          },
+          "thirds_all_positive": true,
+          "trades": 511
+        },
+        {
+          "best_return_pct": 616.8,
+          "best_trial_key": "window=40,mult=1.5",
+          "buy_hold_pct": 114.2,
+          "dataset": "ETHUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.748577332391278578497562939",
+            "train": "2.066028673144243919068633711",
+            "validation": "0.401310353366566984135872818"
+          },
+          "thirds_all_positive": true,
+          "trades": 110
+        },
+        {
+          "best_return_pct": 400.8,
+          "best_trial_key": "window=20,mult=2",
+          "buy_hold_pct": 381.4,
+          "dataset": "XRPUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.736739791923302034832961547",
+            "train": "2.004348247243669057888805309",
+            "validation": "0.083519414206559798253130114"
+          },
+          "thirds_all_positive": true,
+          "trades": 30
+        }
+      ],
+      "strategy_id": "SIG-VOLUME-BREAKOUT"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 16539.0,
+        "best_trial_key": "window=24,buy_ratio=0.52,exit_ratio=0.48",
+        "buy_hold_pct": 1437.7,
+        "dataset": "DOGEUSDT_1h",
+        "screen_pass": true,
+        "thirds": {
+          "holdout": "2.258232007789161743116896671",
+          "train": "53.57373437522169497562657076",
+          "validation": "0.218153180734472840389381381"
+        },
+        "thirds_all_positive": true,
+        "trades": 394
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 4307.8,
+          "best_trial_key": "window=48,buy_ratio=0.52,exit_ratio=0.48",
+          "buy_hold_pct": 104.2,
+          "dataset": "AVAXUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.602712351592221715312099805",
+            "train": "26.95007211620882640427381421",
+            "validation": "0.011894012406603312410874442"
+          },
+          "thirds_all_positive": true,
+          "trades": 133
+        },
+        {
+          "best_return_pct": 2041.1,
+          "best_trial_key": "window=24,buy_ratio=0.52,exit_ratio=0.48",
+          "buy_hold_pct": 106.0,
+          "dataset": "AVAXUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.332072872077121627554420157",
+            "train": "14.60584826042040255032506942",
+            "validation": "0.029981069242610436625749756"
+          },
+          "thirds_all_positive": true,
+          "trades": 33
+        },
+        {
+          "best_return_pct": 16539.0,
+          "best_trial_key": "window=24,buy_ratio=0.52,exit_ratio=0.48",
+          "buy_hold_pct": 1437.7,
+          "dataset": "DOGEUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "2.258232007789161743116896671",
+            "train": "53.57373437522169497562657076",
+            "validation": "0.218153180734472840389381381"
+          },
+          "thirds_all_positive": true,
+          "trades": 394
+        }
+      ],
+      "strategy_id": "SIG-FLOW-MOMENTUM"
+    },
+    {
+      "best_context": {
+        "best_return_pct": 7055.2,
+        "best_trial_key": "fast=10,slow=30,atr_window=14,atr_floor=0.005",
+        "buy_hold_pct": 4872.1,
+        "dataset": "SOLUSDT_1d",
+        "screen_pass": false,
+        "thirds": {
+          "holdout": "-0.2214427361448476174305999894",
+          "train": "23.4620063515808635222374176",
+          "validation": "7.152520755045856618728631903"
+        },
+        "thirds_all_positive": false,
+        "trades": 75
+      },
+      "screen_pass_contexts": [
+        {
+          "best_return_pct": 3305.9,
+          "best_trial_key": "fast=10,slow=30,atr_window=14,atr_floor=0.005",
+          "buy_hold_pct": 1468.9,
+          "dataset": "DOGEUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.483644717505167003364909512",
+            "train": "12.353662113093349864985926",
+            "validation": "0.164239290032716993784861354"
+          },
+          "thirds_all_positive": true,
+          "trades": 70
+        },
+        {
+          "best_return_pct": 2253.9,
+          "best_trial_key": "fast=20,slow=50,atr_window=14,atr_floor=0.01",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.599150804610890692579692574",
+            "train": "8.556409201218730035518840662",
+            "validation": "0.57267447011136108649410791"
+          },
+          "thirds_all_positive": true,
+          "trades": 268
+        },
+        {
+          "best_return_pct": 804.7,
+          "best_trial_key": "fast=20,slow=50,atr_window=14,atr_floor=0.01",
+          "buy_hold_pct": 375.0,
+          "dataset": "XRPUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "2.080036654887575885944017893",
+            "train": "1.461264822712597503500333526",
+            "validation": "0.472340906166788089611257977"
+          },
+          "thirds_all_positive": true,
+          "trades": 276
+        }
+      ],
+      "strategy_id": "SIG-VOL-REGIME-TREND"
+    }
+  ],
+  "strategy_count": 25,
+  "survivor_count": 24,
+  "survivors": [
+    {
+      "contexts": [
+        {
+          "best_return_pct": 2001.3,
+          "best_trial_key": "donchian|entry_w=25,exit_w=12",
+          "buy_hold_pct": 1394.6,
+          "dataset": "BNBUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.066830765382254033493629733",
+            "train": "11.54299216909734775300884651",
+            "validation": "0.987485355180947616744036245"
+          },
+          "thirds_all_positive": true,
+          "trades": 40
+        },
+        {
+          "best_return_pct": 441.6,
+          "best_trial_key": "donchian|entry_w=25,exit_w=12",
+          "buy_hold_pct": 381.4,
+          "dataset": "XRPUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.983369714975845856771986397",
+            "train": "0.905357739818087294854104688",
+            "validation": "0.617956253061386158548736934"
+          },
+          "thirds_all_positive": true,
+          "trades": 42
+        }
+      ],
+      "strategy_id": "EXT-TURTLE-S1"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 74.5,
+          "best_trial_key": "donchian|entry_w=70,exit_w=25",
+          "buy_hold_pct": -20.6,
+          "dataset": "ADAUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.174836870164992495762200802",
+            "train": "0.237272918383594769246856359",
+            "validation": "0.200718784274473729853581465"
+          },
+          "thirds_all_positive": true,
+          "trades": 482
+        },
+        {
+          "best_return_pct": 212.3,
+          "best_trial_key": "donchian|entry_w=70,exit_w=25",
+          "buy_hold_pct": -20.3,
+          "dataset": "ADAUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.009935939615667755567039938",
+            "train": "0.383124087124217685290470071",
+            "validation": "0.150314004863473671002652374"
+          },
+          "thirds_all_positive": true,
+          "trades": 116
+        },
+        {
+          "best_return_pct": 178.4,
+          "best_trial_key": "donchian|entry_w=70,exit_w=25",
+          "buy_hold_pct": 114.2,
+          "dataset": "ETHUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.072887968454192653717235482",
+            "train": "1.266601019578425343058103296",
+            "validation": "0.165715119806664468592001856"
+          },
+          "thirds_all_positive": true,
+          "trades": 124
+        }
+      ],
+      "strategy_id": "EXT-TURTLE-S2"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 4654.4,
+          "best_trial_key": "donchian|entry_w=30,exit_w=15",
+          "buy_hold_pct": 106.0,
+          "dataset": "AVAXUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.069063265058639431410312194",
+            "train": "20.60412598269522828214674932",
+            "validation": "1.387454858432906673202697902"
+          },
+          "thirds_all_positive": true,
+          "trades": 213
+        },
+        {
+          "best_return_pct": 3018.2,
+          "best_trial_key": "donchian|entry_w=30,exit_w=15",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.235080837723073004563960068",
+            "train": "23.9165479847253154624721336",
+            "validation": "0.067098029996315859132395337"
+          },
+          "thirds_all_positive": true,
+          "trades": 206
+        }
+      ],
+      "strategy_id": "EXT-DONCHIAN-40"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 118.5,
+          "best_trial_key": "sma|fast=50,slow=200",
+          "buy_hold_pct": -20.6,
+          "dataset": "ADAUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.023958540513752577893755711",
+            "train": "0.926525223349222201798073874",
+            "validation": "0.294842816684209814847904726"
+          },
+          "thirds_all_positive": true,
+          "trades": 298
+        },
+        {
+          "best_return_pct": 148.4,
+          "best_trial_key": "sma|fast=60,slow=220",
+          "buy_hold_pct": -20.3,
+          "dataset": "ADAUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.335986662007234811447087558",
+            "train": "0.382624726201890180833722888",
+            "validation": "0.862439045113521691082677567"
+          },
+          "thirds_all_positive": true,
+          "trades": 70
+        },
+        {
+          "best_return_pct": 1687.7,
+          "best_trial_key": "sma|fast=60,slow=220",
+          "buy_hold_pct": 1362.2,
+          "dataset": "BNBUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.356091004865806323752928877",
+            "train": "10.17370202251059733523654113",
+            "validation": "0.441410514978161215933958119"
+          },
+          "thirds_all_positive": true,
+          "trades": 66
+        },
+        {
+          "best_return_pct": 7727.6,
+          "best_trial_key": "sma|fast=40,slow=180",
+          "buy_hold_pct": 1437.7,
+          "dataset": "DOGEUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.280545237506838445533295866",
+            "train": "40.73651725204194170050734755",
+            "validation": "0.65555132313621520336245098"
+          },
+          "thirds_all_positive": true,
+          "trades": 338
+        },
+        {
+          "best_return_pct": 2097.3,
+          "best_trial_key": "sma|fast=40,slow=180",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.426731812743234765545210438",
+            "train": "10.03960812031346957105005739",
+            "validation": "0.677385624158108317119265252"
+          },
+          "thirds_all_positive": true,
+          "trades": 84
+        },
+        {
+          "best_return_pct": 300.5,
+          "best_trial_key": "sma|fast=60,slow=220",
+          "buy_hold_pct": 114.2,
+          "dataset": "ETHUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.053799500924922676492517015",
+            "train": "0.723907521905735059453941744",
+            "validation": "0.492050985560073499350586016"
+          },
+          "thirds_all_positive": true,
+          "trades": 60
+        },
+        {
+          "best_return_pct": 3224.8,
+          "best_trial_key": "sma|fast=60,slow=220",
+          "buy_hold_pct": 2069.1,
+          "dataset": "MATICUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.000682439819265517130071075",
+            "train": "32.11268331269237834984893009",
+            "validation": "0.049606832524012962851210003"
+          },
+          "thirds_all_positive": true,
+          "trades": 40
+        },
+        {
+          "best_return_pct": 695.3,
+          "best_trial_key": "sma|fast=60,slow=220",
+          "buy_hold_pct": 373.1,
+          "dataset": "XRPUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.085329667213305644148935929",
+            "train": "2.993433853173233784712176083",
+            "validation": "0.092180109210883451558404064"
+          },
+          "thirds_all_positive": true,
+          "trades": 292
+        }
+      ],
+      "strategy_id": "EXT-GOLDEN-CROSS"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 311.5,
+          "best_trial_key": "sma|fast=12,slow=36",
+          "buy_hold_pct": -19.8,
+          "dataset": "ADAUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.151072261755884534243387468",
+            "train": "1.370552810645690081193788742",
+            "validation": "1.169790197691693352893140396"
+          },
+          "thirds_all_positive": true,
+          "trades": 60
+        },
+        {
+          "best_return_pct": 223.8,
+          "best_trial_key": "sma|fast=12,slow=36",
+          "buy_hold_pct": 107.9,
+          "dataset": "BTCUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.565604258985494434396333223",
+            "train": "0.123553154137349613005429964",
+            "validation": "1.382564932887416917662005822"
+          },
+          "thirds_all_positive": true,
+          "trades": 56
+        },
+        {
+          "best_return_pct": 3305.9,
+          "best_trial_key": "sma|fast=10,slow=30",
+          "buy_hold_pct": 1468.9,
+          "dataset": "DOGEUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.483644717505167003364909512",
+            "train": "12.353662113093349864985926",
+            "validation": "0.164239290032716993784861354"
+          },
+          "thirds_all_positive": true,
+          "trades": 70
+        },
+        {
+          "best_return_pct": 2438.2,
+          "best_trial_key": "sma|fast=8,slow=24",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.598737776580974458762647371",
+            "train": "8.776624011432967372664355283",
+            "validation": "0.638609501118883730850915383"
+          },
+          "thirds_all_positive": true,
+          "trades": 586
+        },
+        {
+          "best_return_pct": 256.8,
+          "best_trial_key": "sma|fast=12,slow=36",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.490027437162003695899749465",
+            "train": "1.294954492611711931268365606",
+            "validation": "0.426278822862213029423836642"
+          },
+          "thirds_all_positive": true,
+          "trades": 60
+        },
+        {
+          "best_return_pct": 7265.0,
+          "best_trial_key": "sma|fast=12,slow=36",
+          "buy_hold_pct": 4872.1,
+          "dataset": "SOLUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.15147781783140105569853739",
+            "train": "16.24920480140384415846283035",
+            "validation": "8.534424431106703667657495475"
+          },
+          "thirds_all_positive": true,
+          "trades": 54
+        },
+        {
+          "best_return_pct": 18656.6,
+          "best_trial_key": "sma|fast=12,slow=36",
+          "buy_hold_pct": 4777.6,
+          "dataset": "SOLUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.027501768679955150622204646",
+            "train": "36.04663532437277501192700188",
+            "validation": "4.532394395446072748365484474"
+          },
+          "thirds_all_positive": true,
+          "trades": 369
+        }
+      ],
+      "strategy_id": "EXT-SMA-10-30"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 213.5,
+          "best_trial_key": "sma|fast=16,slow=40",
+          "buy_hold_pct": -19.8,
+          "dataset": "ADAUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.466745505152762932363526123",
+            "train": "0.894679672294806127303410843",
+            "validation": "0.475330245612645504603508446"
+          },
+          "thirds_all_positive": true,
+          "trades": 54
+        },
+        {
+          "best_return_pct": 113.6,
+          "best_trial_key": "sma|fast=16,slow=40",
+          "buy_hold_pct": 107.9,
+          "dataset": "BTCUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.425356974179943693527472204",
+            "train": "0.147923932585063465761998121",
+            "validation": "0.729246311303055754495451442"
+          },
+          "thirds_all_positive": true,
+          "trades": 48
+        },
+        {
+          "best_return_pct": 2329.1,
+          "best_trial_key": "sma|fast=16,slow=40",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.406283574403251836936161134",
+            "train": "8.840549526504928877596420483",
+            "validation": "0.75185401023433277126495096"
+          },
+          "thirds_all_positive": true,
+          "trades": 340
+        },
+        {
+          "best_return_pct": 197.1,
+          "best_trial_key": "sma|fast=24,slow=60",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.480303358759198523985405376",
+            "train": "0.540205482767302157970021917",
+            "validation": "0.675844996268122567611266963"
+          },
+          "thirds_all_positive": true,
+          "trades": 32
+        },
+        {
+          "best_return_pct": 2519.4,
+          "best_trial_key": "sma|fast=16,slow=40",
+          "buy_hold_pct": 2069.1,
+          "dataset": "MATICUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.225032906217047950476774266",
+            "train": "21.23300227057080896869994504",
+            "validation": "0.36944215808815910415466044"
+          },
+          "thirds_all_positive": true,
+          "trades": 32
+        },
+        {
+          "best_return_pct": 257.3,
+          "best_trial_key": "sma|fast=16,slow=40",
+          "buy_hold_pct": 245.0,
+          "dataset": "UNIUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.86793896459538953716352365",
+            "train": "0.058358692838836082469078335",
+            "validation": "0.524011327981007348236828599"
+          },
+          "thirds_all_positive": true,
+          "trades": 15
+        },
+        {
+          "best_return_pct": 738.5,
+          "best_trial_key": "sma|fast=20,slow=50",
+          "buy_hold_pct": 375.0,
+          "dataset": "XRPUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.985698115206540228177018986",
+            "train": "1.461264822712597503500333526",
+            "validation": "0.4077413218552565168414236"
+          },
+          "thirds_all_positive": true,
+          "trades": 282
+        }
+      ],
+      "strategy_id": "EXT-SMA-20-50"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 523.3,
+          "best_trial_key": "ema|fast=15,slow=30",
+          "buy_hold_pct": -19.8,
+          "dataset": "ADAUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.009319245444363857680538042",
+            "train": "2.019959616730902650705234678",
+            "validation": "0.842635882966771996036868506"
+          },
+          "thirds_all_positive": true,
+          "trades": 46
+        },
+        {
+          "best_return_pct": 407.5,
+          "best_trial_key": "ema|fast=15,slow=30",
+          "buy_hold_pct": -20.3,
+          "dataset": "ADAUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.049463144704861043243461255",
+            "train": "2.593864224680992635171854512",
+            "validation": "0.291804399759765540804253598"
+          },
+          "thirds_all_positive": true,
+          "trades": 326
+        },
+        {
+          "best_return_pct": 3319.8,
+          "best_trial_key": "ema|fast=12,slow=26",
+          "buy_hold_pct": 1394.6,
+          "dataset": "BNBUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.329096049062116802753107143",
+            "train": "13.11175865091350096490753571",
+            "validation": "1.108067864617668804452841195"
+          },
+          "thirds_all_positive": true,
+          "trades": 56
+        },
+        {
+          "best_return_pct": 3365.6,
+          "best_trial_key": "ema|fast=10,slow=21",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.557127713993900674648454324",
+            "train": "16.91649332781476025881079205",
+            "validation": "0.31651197087859628125396365"
+          },
+          "thirds_all_positive": true,
+          "trades": 500
+        },
+        {
+          "best_return_pct": 164.4,
+          "best_trial_key": "ema|fast=10,slow=21",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.313923141596855666603704365",
+            "train": "1.469532354734773935165228504",
+            "validation": "0.193926017721123632912437496"
+          },
+          "thirds_all_positive": true,
+          "trades": 78
+        }
+      ],
+      "strategy_id": "EXT-EMA-12-26"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 3847.3,
+          "best_trial_key": "ema|fast=9,slow=26",
+          "buy_hold_pct": 1394.6,
+          "dataset": "BNBUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.111287280468062319554433208",
+            "train": "20.22076757519336359935467529",
+            "validation": "0.939015004641242274503221463"
+          },
+          "thirds_all_positive": true,
+          "trades": 72
+        },
+        {
+          "best_return_pct": 191.6,
+          "best_trial_key": "ema|fast=8,slow=21",
+          "buy_hold_pct": 107.9,
+          "dataset": "BTCUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.431623805830612961377220741",
+            "train": "0.061968035053984748061818537",
+            "validation": "1.252197736135746471589789577"
+          },
+          "thirds_all_positive": true,
+          "trades": 84
+        },
+        {
+          "best_return_pct": 4114.5,
+          "best_trial_key": "ema|fast=8,slow=21",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.747578091182732905393588784",
+            "train": "19.02619556372789107619419847",
+            "validation": "0.33323726409376771024807856"
+          },
+          "thirds_all_positive": true,
+          "trades": 552
+        },
+        {
+          "best_return_pct": 132.7,
+          "best_trial_key": "ema|fast=8,slow=21",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.347646251325319509860847407",
+            "train": "1.035139021385097273361881086",
+            "validation": "0.208816628806250009033173925"
+          },
+          "thirds_all_positive": true,
+          "trades": 84
+        },
+        {
+          "best_return_pct": 12194.4,
+          "best_trial_key": "ema|fast=9,slow=26",
+          "buy_hold_pct": 4872.1,
+          "dataset": "SOLUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.083889098098957770602835255",
+            "train": "26.82490253724479287061992102",
+            "validation": "4.907506998339051069963012877"
+          },
+          "thirds_all_positive": true,
+          "trades": 68
+        }
+      ],
+      "strategy_id": "EXT-EMA-8-21"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 449.6,
+          "best_trial_key": "ema|fast=16,slow=40",
+          "buy_hold_pct": -19.8,
+          "dataset": "ADAUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.640496514368621237277009181",
+            "train": "1.199969243728477065718199194",
+            "validation": "0.567863563330719952193504397"
+          },
+          "thirds_all_positive": true,
+          "trades": 34
+        },
+        {
+          "best_return_pct": 5178.6,
+          "best_trial_key": "ema|fast=20,slow=50",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.284595962244215350159429086",
+            "train": "14.98343430094864772901689771",
+            "validation": "0.77159853618100837466587955"
+          },
+          "thirds_all_positive": true,
+          "trades": 210
+        },
+        {
+          "best_return_pct": 197.4,
+          "best_trial_key": "ema|fast=24,slow=60",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.760995586807249152242957733",
+            "train": "0.418883516965015663243463641",
+            "validation": "0.674028878921585849565788495"
+          },
+          "thirds_all_positive": true,
+          "trades": 26
+        },
+        {
+          "best_return_pct": 5816.5,
+          "best_trial_key": "ema|fast=20,slow=50",
+          "buy_hold_pct": 2053.3,
+          "dataset": "MATICUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.120215463877287292058416715",
+            "train": "42.01668087822273389342724131",
+            "validation": "0.157791451247832020699242691"
+          },
+          "thirds_all_positive": true,
+          "trades": 575
+        }
+      ],
+      "strategy_id": "EXT-EMA-20-50"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 213.0,
+          "best_trial_key": "bb|window=15,std=2",
+          "buy_hold_pct": -65.3,
+          "dataset": "LTCUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.331065692982531529445574555",
+            "train": "1.101760086280622484414899015",
+            "validation": "0.076413556074819446871770449"
+          },
+          "thirds_all_positive": true,
+          "trades": 96
+        }
+      ],
+      "strategy_id": "EXT-BB-REVERSION"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 288.4,
+          "best_trial_key": "bb|window=25,std=2",
+          "buy_hold_pct": -19.8,
+          "dataset": "ADAUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.152445977322916208821763197",
+            "train": "0.69160667677890285304419843",
+            "validation": "0.992377935548739171019906446"
+          },
+          "thirds_all_positive": true,
+          "trades": 56
+        },
+        {
+          "best_return_pct": 587.9,
+          "best_trial_key": "bb|window=25,std=2",
+          "buy_hold_pct": -20.3,
+          "dataset": "ADAUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.16847266347931721412277807",
+            "train": "1.517219044785335547978223709",
+            "validation": "0.245247984137383508085174912"
+          },
+          "thirds_all_positive": true,
+          "trades": 328
+        },
+        {
+          "best_return_pct": 1723.7,
+          "best_trial_key": "bb|window=25,std=2",
+          "buy_hold_pct": 1394.6,
+          "dataset": "BNBUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.090155744528957767415602272",
+            "train": "10.88180558461948888294523437",
+            "validation": "0.781981952293486843762603105"
+          },
+          "thirds_all_positive": true,
+          "trades": 52
+        },
+        {
+          "best_return_pct": 1591.4,
+          "best_trial_key": "bb|window=25,std=2",
+          "buy_hold_pct": 1468.9,
+          "dataset": "DOGEUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.693022282620517490872205082",
+            "train": "5.673761610909087220833983781",
+            "validation": "0.167875920721518331706540908"
+          },
+          "thirds_all_positive": true,
+          "trades": 56
+        },
+        {
+          "best_return_pct": 145.8,
+          "best_trial_key": "bb|window=20,std=2",
+          "buy_hold_pct": -91.1,
+          "dataset": "DOTUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.172577174131021981718603655",
+            "train": "0.449177560270367322581409938",
+            "validation": "0.526613315902544150801876876"
+          },
+          "thirds_all_positive": true,
+          "trades": 64
+        },
+        {
+          "best_return_pct": 210.7,
+          "best_trial_key": "bb|window=20,std=1.5",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.238276974858352259616910909",
+            "train": "1.8096198077033971906397853",
+            "validation": "0.063987221344715227708448046"
+          },
+          "thirds_all_positive": true,
+          "trades": 88
+        }
+      ],
+      "strategy_id": "EXT-BB-BREAKOUT"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 138.6,
+          "best_trial_key": "rsi2|rsi_w=3,trend_w=150,rsi_buy=15,exit_sma=5",
+          "buy_hold_pct": -76.7,
+          "dataset": "ATOMUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.13246966665514241519742944",
+            "train": "0.806119816730003057896089086",
+            "validation": "0.1287291012952431704604592"
+          },
+          "thirds_all_positive": true,
+          "trades": 1102
+        },
+        {
+          "best_return_pct": 5.0,
+          "best_trial_key": "rsi2|rsi_w=3,trend_w=150,rsi_buy=15,exit_sma=5",
+          "buy_hold_pct": -91.1,
+          "dataset": "DOTUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.026836238031244750545943222",
+            "train": "0.00051689558562718961942078",
+            "validation": "0.101891554178434042456489324"
+          },
+          "thirds_all_positive": true,
+          "trades": 22
+        },
+        {
+          "best_return_pct": 129.1,
+          "best_trial_key": "rsi2|rsi_w=2,trend_w=200,rsi_buy=10,exit_sma=5",
+          "buy_hold_pct": -91.1,
+          "dataset": "DOTUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.07208860924638794563907495",
+            "train": "0.866884787864454936971577253",
+            "validation": "0.146760011336485479383617058"
+          },
+          "thirds_all_positive": true,
+          "trades": 392
+        },
+        {
+          "best_return_pct": 28.0,
+          "best_trial_key": "rsi2|rsi_w=2,trend_w=200,rsi_buy=5,exit_sma=5",
+          "buy_hold_pct": -65.3,
+          "dataset": "LTCUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.099431131886208630562274323",
+            "train": "0.108998661440470357667809897",
+            "validation": "0.034911421052631578947368422"
+          },
+          "thirds_all_positive": true,
+          "trades": 20
+        }
+      ],
+      "strategy_id": "EXT-CONNORS-RSI2"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 86.5,
+          "best_trial_key": "rsi|window=14,low=30,high=55",
+          "buy_hold_pct": -66.4,
+          "dataset": "LTCUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.741795537210895429102007041",
+            "train": "0.090575694655037743412941776",
+            "validation": "0.019895896958045036595265885"
+          },
+          "thirds_all_positive": true,
+          "trades": 156
+        }
+      ],
+      "strategy_id": "EXT-RSI14"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 97.4,
+          "best_trial_key": "rsi|window=5,low=25,high=55",
+          "buy_hold_pct": -19.8,
+          "dataset": "ADAUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.10607651299354467670053209",
+            "train": "0.346404411184199332484231035",
+            "validation": "0.393478020150024441866254534"
+          },
+          "thirds_all_positive": true,
+          "trades": 115
+        },
+        {
+          "best_return_pct": 268.0,
+          "best_trial_key": "rsi|window=4,low=20,high=60",
+          "buy_hold_pct": -76.3,
+          "dataset": "ATOMUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.292381787357443299481597327",
+            "train": "1.865874783774678649981517234",
+            "validation": "0.059076644733365105283555005"
+          },
+          "thirds_all_positive": true,
+          "trades": 113
+        },
+        {
+          "best_return_pct": 504.7,
+          "best_trial_key": "rsi|window=4,low=20,high=60",
+          "buy_hold_pct": -34.5,
+          "dataset": "LINKUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.692035304434359999486617656",
+            "train": "1.415832206319547692338503631",
+            "validation": "0.01030068220829997058806511"
+          },
+          "thirds_all_positive": true,
+          "trades": 103
+        }
+      ],
+      "strategy_id": "EXT-RSI4"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 1468.3,
+          "best_trial_key": "roc|window=10",
+          "buy_hold_pct": 1394.6,
+          "dataset": "BNBUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.236281051511265749994449125",
+            "train": "11.09875547460412642670216233",
+            "validation": "0.231041311594101746278626825"
+          },
+          "thirds_all_positive": true,
+          "trades": 300
+        },
+        {
+          "best_return_pct": 1670.6,
+          "best_trial_key": "roc|window=15",
+          "buy_hold_pct": 1468.9,
+          "dataset": "DOGEUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.890966843919745610192637699",
+            "train": "5.773968226786357837526156573",
+            "validation": "1.02493008671887022694140534"
+          },
+          "thirds_all_positive": true,
+          "trades": 216
+        },
+        {
+          "best_return_pct": 249.8,
+          "best_trial_key": "roc|window=10",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.101345120322551356011252233",
+            "train": "2.23403236200625241822615699",
+            "validation": "0.170254277936594178127414258"
+          },
+          "thirds_all_positive": true,
+          "trades": 274
+        },
+        {
+          "best_return_pct": 6098.6,
+          "best_trial_key": "roc|window=15",
+          "buy_hold_pct": 4872.1,
+          "dataset": "SOLUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.079470691366730823948024622",
+            "train": "10.37931418170963976259540288",
+            "validation": "5.815978236850388126427887137"
+          },
+          "thirds_all_positive": true,
+          "trades": 211
+        }
+      ],
+      "strategy_id": "EXT-ROC-12"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 1671.2,
+          "best_trial_key": "roc|window=26",
+          "buy_hold_pct": 1394.6,
+          "dataset": "BNBUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.332160787668645145206377022",
+            "train": "13.04610554416197411231301115",
+            "validation": "0.262151704235809899680117174"
+          },
+          "thirds_all_positive": true,
+          "trades": 186
+        },
+        {
+          "best_return_pct": 125.5,
+          "best_trial_key": "roc|window=26",
+          "buy_hold_pct": 107.9,
+          "dataset": "BTCUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.279487646695611901628412289",
+            "train": "0.33873475291999277847467767",
+            "validation": "0.538555140550349711333543676"
+          },
+          "thirds_all_positive": true,
+          "trades": 188
+        },
+        {
+          "best_return_pct": 5452.7,
+          "best_trial_key": "roc|window=26",
+          "buy_hold_pct": 1468.9,
+          "dataset": "DOGEUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.106101121525484091438797672",
+            "train": "31.73858073648261341920154969",
+            "validation": "0.243980972035022702623449531"
+          },
+          "thirds_all_positive": true,
+          "trades": 160
+        }
+      ],
+      "strategy_id": "EXT-ROC-20"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 262.3,
+          "best_trial_key": "tma|fast=10,mid=20,slow=50",
+          "buy_hold_pct": -19.8,
+          "dataset": "ADAUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.49200403461149998520767454",
+            "train": "0.47335074388356528921414178",
+            "validation": "0.82362912842787746600635581"
+          },
+          "thirds_all_positive": true,
+          "trades": 48
+        },
+        {
+          "best_return_pct": 380.8,
+          "best_trial_key": "tma|fast=8,mid=21,slow=55",
+          "buy_hold_pct": -20.3,
+          "dataset": "ADAUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.148034037365627970612386329",
+            "train": "3.232192455859273442523845994",
+            "validation": "0.066169699522334830851784503"
+          },
+          "thirds_all_positive": true,
+          "trades": 388
+        },
+        {
+          "best_return_pct": 2849.0,
+          "best_trial_key": "tma|fast=10,mid=20,slow=50",
+          "buy_hold_pct": 1468.9,
+          "dataset": "DOGEUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.106089488664371497870827322",
+            "train": "10.94019956348062291188233846",
+            "validation": "0.622427100168285781326853631"
+          },
+          "thirds_all_positive": true,
+          "trades": 58
+        },
+        {
+          "best_return_pct": 4103.6,
+          "best_trial_key": "tma|fast=8,mid=21,slow=55",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.515077661400313212194741605",
+            "train": "12.30341447789250568345192131",
+            "validation": "0.223686852193285202160045344"
+          },
+          "thirds_all_positive": true,
+          "trades": 370
+        },
+        {
+          "best_return_pct": 909.0,
+          "best_trial_key": "tma|fast=12,mid=26,slow=50",
+          "buy_hold_pct": 375.0,
+          "dataset": "XRPUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "2.678233993003340467470484166",
+            "train": "1.43280452332857175615484388",
+            "validation": "0.188656369441009824978507216"
+          },
+          "thirds_all_positive": true,
+          "trades": 352
+        }
+      ],
+      "strategy_id": "EXT-TRIPLE-MA"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 289.5,
+          "best_trial_key": "trend|window=200",
+          "buy_hold_pct": 102.9,
+          "dataset": "BTCUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.29747698744845818078143724",
+            "train": "0.335083414565267144004779831",
+            "validation": "1.312176504130224331078628759"
+          },
+          "thirds_all_positive": true,
+          "trades": 320
+        },
+        {
+          "best_return_pct": 9402.6,
+          "best_trial_key": "trend|window=100",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.90975128476390595978327822",
+            "train": "18.0521190393844156366591801",
+            "validation": "1.220486510812875400006223918"
+          },
+          "thirds_all_positive": true,
+          "trades": 458
+        },
+        {
+          "best_return_pct": 215.3,
+          "best_trial_key": "trend|window=200",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.135038014710571321624341661",
+            "train": "0.450842234092412272410290481",
+            "validation": "0.547095270504658394586040279"
+          },
+          "thirds_all_positive": true,
+          "trades": 28
+        },
+        {
+          "best_return_pct": 628.8,
+          "best_trial_key": "trend|window=150",
+          "buy_hold_pct": 114.2,
+          "dataset": "ETHUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.275132799332267716204115389",
+            "train": "2.889000912696284033541800303",
+            "validation": "0.605399242678131579256519586"
+          },
+          "thirds_all_positive": true,
+          "trades": 326
+        }
+      ],
+      "strategy_id": "EXT-TREND-SMA200"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 181.1,
+          "best_trial_key": "bbrsi|window=20,std=2.5,rsi_w=3,rsi_buy=10",
+          "buy_hold_pct": -91.2,
+          "dataset": "DOTUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.062446652750055332283404672",
+            "train": "1.228459126805448043229733031",
+            "validation": "0.217598774307525450469657616"
+          },
+          "thirds_all_positive": true,
+          "trades": 872
+        },
+        {
+          "best_return_pct": 242.1,
+          "best_trial_key": "bbrsi|window=20,std=2.5,rsi_w=3,rsi_buy=10",
+          "buy_hold_pct": -65.3,
+          "dataset": "LTCUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.335554980379063310707968573",
+            "train": "0.340700726175101072479287092",
+            "validation": "0.910407587145551159017586488"
+          },
+          "thirds_all_positive": true,
+          "trades": 42
+        }
+      ],
+      "strategy_id": "EXT-BB-RSI"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 295.1,
+          "best_trial_key": "ema|fast=60,slow=220",
+          "buy_hold_pct": -20.3,
+          "dataset": "ADAUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.185310036816816554180605576",
+            "train": "1.127310651253082380314770981",
+            "validation": "0.927528782155300547641357344"
+          },
+          "thirds_all_positive": true,
+          "trades": 50
+        },
+        {
+          "best_return_pct": 4003.4,
+          "best_trial_key": "ema|fast=40,slow=180",
+          "buy_hold_pct": 1362.2,
+          "dataset": "BNBUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.199508282387008911857230178",
+            "train": "18.82597575845924283738535597",
+            "validation": "0.935089421117562577494545944"
+          },
+          "thirds_all_positive": true,
+          "trades": 74
+        },
+        {
+          "best_return_pct": 255.4,
+          "best_trial_key": "ema|fast=50,slow=200",
+          "buy_hold_pct": 102.9,
+          "dataset": "BTCUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.553678555208329887220028056",
+            "train": "0.093010206746466478080744289",
+            "validation": "1.702445938404873044770285875"
+          },
+          "thirds_all_positive": true,
+          "trades": 58
+        },
+        {
+          "best_return_pct": 3033.8,
+          "best_trial_key": "ema|fast=60,slow=220",
+          "buy_hold_pct": 1437.7,
+          "dataset": "DOGEUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.96714780508021548708854772",
+            "train": "14.52646217537604729978209303",
+            "validation": "0.511150408048357630204816263"
+          },
+          "thirds_all_positive": true,
+          "trades": 238
+        },
+        {
+          "best_return_pct": 3626.1,
+          "best_trial_key": "ema|fast=50,slow=200",
+          "buy_hold_pct": 2053.3,
+          "dataset": "MATICUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.311458557121250816038711856",
+            "train": "22.07599279399418086022249244",
+            "validation": "0.174692002346920955827843311"
+          },
+          "thirds_all_positive": true,
+          "trades": 174
+        }
+      ],
+      "strategy_id": "EXT-EMA-50-200"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 143.1,
+          "best_trial_key": "window=48",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.830796965955474979870097849",
+            "train": "0.064386353261743001447150515",
+            "validation": "0.480975120712737779994146137"
+          },
+          "thirds_all_positive": true,
+          "trades": 120
+        },
+        {
+          "best_return_pct": 346.5,
+          "best_trial_key": "window=96",
+          "buy_hold_pct": 114.2,
+          "dataset": "ETHUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.134364940226059031447082662",
+            "train": "1.936435062019185536489264141",
+            "validation": "0.448794167941563842033105955"
+          },
+          "thirds_all_positive": true,
+          "trades": 536
+        },
+        {
+          "best_return_pct": 2291.1,
+          "best_trial_key": "window=24",
+          "buy_hold_pct": 2069.1,
+          "dataset": "MATICUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.144180658489396146693937968",
+            "train": "22.94149748241373378422222735",
+            "validation": "0.033918359931289423038224965"
+          },
+          "thirds_all_positive": true,
+          "trades": 108
+        }
+      ],
+      "strategy_id": "SIG-VWAP-TREND"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 141.6,
+          "best_trial_key": "window=20,mult=2",
+          "buy_hold_pct": -19.8,
+          "dataset": "ADAUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.047034791468097355033437717",
+            "train": "0.305612143298290115876480699",
+            "validation": "0.767190411261123664821616919"
+          },
+          "thirds_all_positive": true,
+          "trades": 24
+        },
+        {
+          "best_return_pct": 4165.6,
+          "best_trial_key": "window=20,mult=1.5",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.202707393764380508573046025",
+            "train": "23.9511256124023747355423229",
+            "validation": "0.496973827285282033622094885"
+          },
+          "thirds_all_positive": true,
+          "trades": 194
+        },
+        {
+          "best_return_pct": 125.0,
+          "best_trial_key": "window=20,mult=2",
+          "buy_hold_pct": 118.6,
+          "dataset": "ETHUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.490690781695621260317950187",
+            "train": "0.087365346191787578609889433",
+            "validation": "1.002040892417284592449990681"
+          },
+          "thirds_all_positive": true,
+          "trades": 16
+        },
+        {
+          "best_return_pct": 153.9,
+          "best_trial_key": "window=40,mult=1.5",
+          "buy_hold_pct": 112.4,
+          "dataset": "ETHUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.346520648195500479632839668",
+            "train": "0.387762352531680604139005965",
+            "validation": "0.358540849767188131936239315"
+          },
+          "thirds_all_positive": true,
+          "trades": 511
+        },
+        {
+          "best_return_pct": 616.8,
+          "best_trial_key": "window=40,mult=1.5",
+          "buy_hold_pct": 114.2,
+          "dataset": "ETHUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.748577332391278578497562939",
+            "train": "2.066028673144243919068633711",
+            "validation": "0.401310353366566984135872818"
+          },
+          "thirds_all_positive": true,
+          "trades": 110
+        },
+        {
+          "best_return_pct": 400.8,
+          "best_trial_key": "window=20,mult=2",
+          "buy_hold_pct": 381.4,
+          "dataset": "XRPUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.736739791923302034832961547",
+            "train": "2.004348247243669057888805309",
+            "validation": "0.083519414206559798253130114"
+          },
+          "thirds_all_positive": true,
+          "trades": 30
+        }
+      ],
+      "strategy_id": "SIG-VOLUME-BREAKOUT"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 4307.8,
+          "best_trial_key": "window=48,buy_ratio=0.52,exit_ratio=0.48",
+          "buy_hold_pct": 104.2,
+          "dataset": "AVAXUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.602712351592221715312099805",
+            "train": "26.95007211620882640427381421",
+            "validation": "0.011894012406603312410874442"
+          },
+          "thirds_all_positive": true,
+          "trades": 133
+        },
+        {
+          "best_return_pct": 2041.1,
+          "best_trial_key": "window=24,buy_ratio=0.52,exit_ratio=0.48",
+          "buy_hold_pct": 106.0,
+          "dataset": "AVAXUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.332072872077121627554420157",
+            "train": "14.60584826042040255032506942",
+            "validation": "0.029981069242610436625749756"
+          },
+          "thirds_all_positive": true,
+          "trades": 33
+        },
+        {
+          "best_return_pct": 16539.0,
+          "best_trial_key": "window=24,buy_ratio=0.52,exit_ratio=0.48",
+          "buy_hold_pct": 1437.7,
+          "dataset": "DOGEUSDT_1h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "2.258232007789161743116896671",
+            "train": "53.57373437522169497562657076",
+            "validation": "0.218153180734472840389381381"
+          },
+          "thirds_all_positive": true,
+          "trades": 394
+        }
+      ],
+      "strategy_id": "SIG-FLOW-MOMENTUM"
+    },
+    {
+      "contexts": [
+        {
+          "best_return_pct": 3305.9,
+          "best_trial_key": "fast=10,slow=30,atr_window=14,atr_floor=0.005",
+          "buy_hold_pct": 1468.9,
+          "dataset": "DOGEUSDT_1d",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "1.483644717505167003364909512",
+            "train": "12.353662113093349864985926",
+            "validation": "0.164239290032716993784861354"
+          },
+          "thirds_all_positive": true,
+          "trades": 70
+        },
+        {
+          "best_return_pct": 2253.9,
+          "best_trial_key": "fast=20,slow=50,atr_window=14,atr_floor=0.01",
+          "buy_hold_pct": 1444.3,
+          "dataset": "DOGEUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "0.599150804610890692579692574",
+            "train": "8.556409201218730035518840662",
+            "validation": "0.57267447011136108649410791"
+          },
+          "thirds_all_positive": true,
+          "trades": 268
+        },
+        {
+          "best_return_pct": 804.7,
+          "best_trial_key": "fast=20,slow=50,atr_window=14,atr_floor=0.01",
+          "buy_hold_pct": 375.0,
+          "dataset": "XRPUSDT_4h",
+          "screen_pass": true,
+          "thirds": {
+            "holdout": "2.080036654887575885944017893",
+            "train": "1.461264822712597503500333526",
+            "validation": "0.472340906166788089611257977"
+          },
+          "thirds_all_positive": true,
+          "trades": 276
+        }
+      ],
+      "strategy_id": "SIG-VOL-REGIME-TREND"
+    }
+  ],
+  "timeframes": [
+    "1h",
+    "4h",
+    "1d"
+  ],
+  "venue_connection": "NONE"
+}

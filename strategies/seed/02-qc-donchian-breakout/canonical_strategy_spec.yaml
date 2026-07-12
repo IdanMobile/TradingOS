@@ -1,10 +1,10 @@
 # Seed item 2/10 (T-010-03) — QuantConnect/LEAN Donchian-channel breakout
 strategy_id: STRAT-QC2-donchian-breakout
 family: breakout
-inputs: [close]
+inputs: [close, high, low]
 indicators:
   - name: donchian_channel
-    parameters: {window: 4, source: close, include_current_bar: false}
+    parameters: {window: 4, source: high_low, include_current_bar: false}
     outputs: [donchian_upper, donchian_lower]
 entry_long:
   all:

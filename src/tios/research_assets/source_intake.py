@@ -36,6 +36,7 @@ class SourceIntakePlanError(ValueError):
 class CaptureMode(StrEnum):
     PUBLIC_METADATA_SNAPSHOT = "public_metadata_snapshot"
     CONFIG_RECONSTRUCTION = "config_reconstruction"
+    STRATEGY_TESTER_REPRODUCTION = "strategy_tester_reproduction"
     HISTORICAL_SIGNAL_REPLAY = "historical_signal_replay"
     ALLOCATION_REPLAY = "allocation_replay"
 
@@ -53,6 +54,7 @@ class ReplayHypothesisStatus(StrEnum):
 
 class ReplayHypothesisKind(StrEnum):
     CONFIG_RECONSTRUCTION = "config_reconstruction"
+    STRATEGY_REPRODUCTION = "strategy_reproduction"
     HISTORICAL_SIGNAL_REPLAY = "historical_signal_replay"
     ALLOCATION_REPLAY = "allocation_replay"
 

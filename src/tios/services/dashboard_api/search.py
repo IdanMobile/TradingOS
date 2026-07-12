@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -213,6 +214,51 @@ def _strategy_documents(root: Path) -> list[SearchDocument]:
     return documents
 
 
+def _tradingview_candidate_documents(root: Path) -> list[SearchDocument]:
+    path = (
+        root / "artifacts/source_intake/tradingview_public_strategies/"
+        "selected_candidates_2026_07_11.json"
+    )
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return []
+    candidates = payload.get("candidates")
+    if not isinstance(candidates, list):
+        return []
+    rel = str(path.relative_to(root))
+    documents = []
+    for candidate in candidates:
+        if not isinstance(candidate, dict):
+            continue
+        identifier = str(candidate.get("candidate_id", ""))
+        title = str(candidate.get("title", ""))
+        family = str(candidate.get("family", ""))
+        why = str(candidate.get("why_selected", ""))
+        documents.append(
+            SearchDocument(
+                kind="tradingview_candidate",
+                identifier=identifier,
+                title=title,
+                summary=why,
+                path=rel,
+                status=str(candidate.get("tester_status", "PENDING")),
+                text=" ".join(
+                    (
+                        identifier,
+                        title,
+                        str(candidate.get("author", "")),
+                        str(candidate.get("canonical_url", "")),
+                        family,
+                        why,
+                        " ".join(str(step) for step in candidate.get("next_steps", [])),
+                    )
+                ),
+            )
+        )
+    return documents
+
+
 def _report_documents(root: Path) -> list[SearchDocument]:
     documents: list[SearchDocument] = []
     for path in sorted((root / "artifacts" / "reports").glob("*.md")):
@@ -240,6 +286,7 @@ def _documents(root: Path) -> list[SearchDocument]:
         *_research_asset_documents(root),
         *_research_source_documents(root),
         *_strategy_documents(root),
+        *_tradingview_candidate_documents(root),
         *_report_documents(root),
     ]
 

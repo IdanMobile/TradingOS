@@ -284,6 +284,262 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   same S3/S4 readiness contract as a standalone read-only API. Capabilities explicitly
   report writes disabled, credential access absent, order endpoint absent, venue
   connection `NONE`, and demo/paper/live controls absent.
+- **S3/S4 inert control-plane contracts (2026-07-11):** `tios.trading_domain` now
+  models future `StageGateReadinessRecord`, `StageGateRequirement`,
+  `PaperLaneProposal`, `PaperDivergenceReport`, and `LiveReadinessProposal` records.
+  They validate S3/S4 prerequisite evidence, human-decision evidence, synthetic-local
+  paper proposal shape, backtest-versus-paper divergence tolerance rows, and
+  limited-live risk-limit shape while rejecting venue demo/testnet proposals before
+  credential gates and keeping `execution_authority=NONE`, `venue_connection=NONE`,
+  `paper_orders=DISABLED`, and `live_orders=DISABLED`. The dashboard projects this
+  as `MODELED_INERT` with zero active records.
+- **S3/S4 control-plane readiness artifact (2026-07-11):**
+  `scripts/build_s3_s4_readiness_artifacts.py` now retains
+  `artifacts/reports/S3_S4_CONTROL_PLANE_READINESS_2026_07_11.{json,md}`. The report
+  validates representative S3 gate, S4 gate, paper-lane proposal, paper-divergence,
+  operational-drill, and live-readiness probe records while explicitly keeping active
+  record counts at zero and capabilities disabled. The dashboard exposes the retained
+  artifact, blockers, mode `CONTROL_PLANE_PROBE_ONLY`, and `execution_authority=NONE`.
+- **S3/S4 operational-drill contracts (2026-07-11):** `OperationalDrillRecord`
+  now models future feed-loss, stale-data, engine-crash, manual kill-switch, and
+  credential-revocation drill evidence. Completed drills require evidence; blocked
+  drills require blockers; not-run drills cannot carry evidence. The retained
+  S3/S4 readiness artifact includes PASS and BLOCKED probe rows while active
+  operational-drill record count remains zero.
+- **Synthetic demo-ledger contracts (2026-07-11):** `SyntheticLedgerSnapshot` and
+  `SyntheticLedgerEntry` now model future mock-money demo/paper wallet accounting.
+  Entries require evidence, balances must match the latest entry balance per currency,
+  records are explicitly `synthetic=true` / `real_money=false`, and all execution,
+  venue, paper-order, and live-order capabilities remain disabled. The retained
+  S3/S4 readiness artifact includes a probe ledger with initial mock capital and a
+  fee debit while active synthetic-ledger count remains zero.
+- **Synthetic paper-fill policy contracts (2026-07-11):** `SyntheticPaperFillPolicy`
+  now models deterministic local fill assumptions for future demo/paper reconciliation:
+  price source, fixed fee bps, slippage bps, and fill-latency ceiling. The retained
+  S3/S4 readiness artifact includes a probe policy while active paper-fill-policy
+  count remains zero and no fill engine, wallet mutation, venue route, or order
+  capability is activated.
+- **Synthetic account/portfolio snapshot contracts (2026-07-11):**
+  `SyntheticAccountSnapshot` and `SyntheticPortfolioSnapshot` now model future
+  mock-money demo account and portfolio projections linked to the synthetic ledger.
+  The retained S3/S4 readiness artifact includes probe account/portfolio snapshots
+  while active synthetic-account and synthetic-portfolio counts remain zero, with no
+  active balances, venue route, wallet mutation, or order capability.
+- **Synthetic runtime-risk policy contracts (2026-07-11):**
+  `SyntheticRuntimeRiskPolicy` now models future demo/paper runtime limits for
+  capital-at-risk, position notional, daily loss, drawdown, and kill-switch mode.
+  The retained S3/S4 readiness artifact includes a probe policy while active
+  runtime-risk-policy count remains zero, with no active risk engine, venue route,
+  wallet mutation, or order capability.
+- **Synthetic portfolio-risk policy contracts (2026-07-11):**
+  `SyntheticPortfolioRiskPolicy` now models future demo/paper portfolio caps for
+  symbol concentration, correlated exposure, per-strategy budget, and open-position
+  count. The retained S3/S4 readiness artifact includes a probe policy while active
+  portfolio-risk-policy count remains zero, with no active risk engine, venue route,
+  wallet mutation, order capability, or execution authority.
+- **Synthetic risk evaluation and fail-closed readiness (2026-07-12):**
+  per-strategy budget and market-condition policies now complement the runtime and
+  portfolio policies. A pure independent evaluator produces evidence-backed
+  `RiskDecision` PASS/BLOCK rows for capital, notional, loss, drawdown, exposure,
+  stale data, spread, venue health, timestamp order, and kill-switch state. Synthetic
+  ledger snapshots now verify every credit/debit transition and reject overdrafts.
+  Paper stability cannot pass without its full declared window, full uptime, and zero
+  incidents; S4 gate records require the full named prerequisite chain; dashboard
+  readiness artifacts fail closed on hash mismatch. Active policy/ledger counts remain
+  zero and no mutation, venue, credential, or order route exists.
+- **Synthetic execution and canonical signal reducers (2026-07-12):** pure local
+  reducers now calculate deterministic synthetic fills, apply adverse slippage and
+  maker/taker fees, replay mock-ledger changes idempotently, reject insufficient
+  funds, derive fee-aware long-only position cost/P&L, and reconcile ledger cash to
+  account/portfolio equity. A canonical strategy evaluator now executes rule trees
+  and the unambiguous SMA, EMA, Bollinger, Wilder-RSI, prior-bar Donchian,
+  rate-of-change, and reference-price vocabulary, emitting deterministic bar-close
+  transition signals. Supertrend now preserves source-specific semantics: pandas-ta/
+  Hummingbot uses bullish `+1` with its one-percent proximity gate, while TradingView
+  uses bullish `-1`. These are pure evidence functions: active
+  synthetic records remain zero and no order, credential, venue, or mutation API exists.
+- **Computed S3/S4 evidence and incident lifecycle (2026-07-12):** position P&L
+  now uses signed money so losses are representable while balances/fees/limits stay
+  nonnegative. Like-for-like metric maps now deterministically build divergence
+  reports; heartbeat and incident events compute paper uptime/stability rather than
+  accepting caller-supplied PASS. A limited-live evidence resolver checks every
+  package reference, paper stability, credential order cap, runtime limits, manual
+  kill switches, runbook linkage, and all required drills. Operational incidents now
+  have immutable open/acknowledge/resolve ownership and post-incident evidence
+  transitions. Active incident and S3/S4 record counts remain zero; no execution or
+  mutation capability exists.
+- **Durable gated evidence and approval history (2026-07-12):** a confined,
+  append-only SQLite evidence ledger now provides canonical hashing, idempotency,
+  bounded reads, concurrent-writer serialization, and integrity checks for synthetic
+  evidence. Typed human decisions have expiry and explicit approve/reject outcomes;
+  immutable gated approval history enforces the exact S3/S4 requirement sets. Current
+  S2 approval transitions cannot reach paper or live states. No active evidence ledger,
+  approval, credential, venue, scheduler, wallet, or order route was created.
+- **Restricted credential boundary contracts (2026-07-11):**
+  `RestrictedCredentialPolicy` now models future S4 credential scope without carrying
+  secret material. Funds movement is forbidden, credential material remains absent,
+  and the retained S3/S4 readiness artifact includes a probe policy while active
+  restricted-credential-policy count remains zero, with no venue connection or order
+  capability.
+- **Paper operations runbook contracts (2026-07-11):** `PaperOperationsRunbook`
+  now models future S3 paper/demo operational discipline: heartbeat cadence,
+  heartbeat timeout, log retention, manual/local intervention mode, and a runtime
+  risk-policy reference. The retained S3/S4 readiness artifact includes a probe
+  runbook while active paper-operations-runbook count remains zero, with no venue
+  route, order capability, or execution authority.
+- **Paper operations event-log contracts (2026-07-11):**
+  `PaperOperationsEventRecord` now models future S3 paper/demo evidence rows for
+  process, heartbeat, manual-intervention, kill-switch, and log-retention events.
+  The retained S3/S4 readiness artifact includes a heartbeat probe while active
+  paper-operations-event count remains zero, with no venue route, order capability,
+  or execution authority.
+- **Paper stability report contracts (2026-07-11):** `PaperStabilityReport` now
+  models future S3 exit stability evidence: observation window, required hours,
+  uptime fraction, incident counts, missed heartbeats, linked divergence/runbook/risk
+  records, and PASS/FAIL/BLOCKED status. The retained S3/S4 readiness artifact
+  includes a blocked probe while active paper-stability-report count remains zero,
+  with no venue route, order capability, or execution authority.
+- **Limited live risk-package contracts (2026-07-11):** `LimitedLiveRiskPackage`
+  now models future S4 risk packaging across paper-stability evidence, credential
+  policy, operations runbook, runtime risk policy, capital-at-risk, single-order
+  notional, daily-loss limit, and kill-switch mode. The retained S3/S4 readiness
+  artifact includes a blocked probe while active limited-live-risk-package count
+  remains zero, with no venue route, order capability, or execution authority.
+- **Live operations runbook contracts (2026-07-11):** `LiveOperationsRunbook`
+  now models future S4 operational discipline: heartbeat cadence, incident-response
+  target, log retention, escalation mode, limited-live-risk-package linkage, and
+  restricted-credential-policy linkage. The retained S3/S4 readiness artifact
+  includes a probe runbook while active live-operations-runbook count remains zero,
+  with no venue route, order capability, or execution authority.
+- **Live operations event-log contracts (2026-07-11):**
+  `LiveOperationsEventRecord` now models future S4 operational evidence rows for
+  heartbeat, risk-limit, kill-switch, escalation, and log-retention events. The
+  retained S3/S4 readiness artifact includes a probe heartbeat event while active
+  live-operations-event count remains zero, with no venue route, order capability,
+  credential access, or execution authority.
+- **TradingView public-strategy intake lane (2026-07-11):** the external-source
+  registry now distinguishes TradingView public ideas from open-source Pine strategy
+  publications with Strategy Tester summaries. `INTAKE-TRADINGVIEW-PUBLIC-STRATEGIES`
+  captures license/attribution, Pine visibility, parameters, Strategy Tester settings,
+  and summary metrics as external evidence only; `RPH-TRADINGVIEW-PUBLIC-STRATEGY-TESTER`
+  requires local OS reproduction and a TV-vs-OS divergence report before any validation
+  claim. Protected/invite-only code remains excluded, `execution_authority=NONE`, and
+  no paper/demo/live/order path is enabled.
+- **TradingView candidate selection (2026-07-11):** web research selected eight
+  open-source/public TradingView strategy candidates for offline reproduction:
+  SuperTrend, RSI mean reversion, Bollinger/ATR/EMA, BTC TSI, RSI TP/SL, RSI
+  divergence, BTC multi-indicator Super 8, and AI SuperTrend/Pivot. The retained
+  batch is metadata-only (`selected_candidates_2026_07_11.json`): Strategy Tester
+  metrics and Pine source hashes are still pending per-candidate capture, no code is
+  copied, no candidate is validated, and `execution_authority=NONE`.
+- **TradingView first local replay (2026-07-11):** two candidates with sufficiently
+  specific public-page rules now have a prose-derived offline replay against frozen
+  BTCUSDT/ETHUSDT x 5m/15m/1h candles:
+  `artifacts/external_replay/tradingview_public_strategies/TVPINE-9f7d3fc15ece2785a4296e9eb3b15548/`.
+  The run covers 12 trials and 57,046 retained local signal/execution events for
+  `TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION` and `TVPINE-SKYREXIO-BB-ENHANCED`.
+  It is explicitly `EVIDENCE_RETAINED_NOT_VALIDATED`: exact Pine source bodies and
+  complete TradingView Strategy Tester exports were not captured, no winner is
+  selected, no candidate is promotion-eligible, and `execution_authority=NONE`.
+- **Copied public-strategy search (2026-07-12):** operator asked to test copied
+  public strategies (not internally generated) until one passes. Twenty well-known
+  public systems (Turtle S1/S2, Donchian, Golden Cross, SMA/EMA crosses, Bollinger
+  reversion/breakout, Connors RSI2, RSI14/RSI4, ROC momentum, Triple-MA, SMA200 trend
+  filter, BB+RSI) were replayed across BTCUSDT/ETHUSDT x 5m/15m/1h with a parameter
+  neighborhood via `scripts/run_external_strategy_search.py`. **0 of 20 pass** the
+  honest screen (positive holdout + beats buy-and-hold net of fees + neighborhood
+  robust + >=10 trades): of 120 contexts, 13 were positive full-period, 2 beat
+  buy-and-hold, and **0 were positive in all three chronological thirds**. Best row
+  (EMA 20/50 ETH 1h, +198%) is single-regime and fails the thirds test. Artifact:
+  `artifacts/research_lab/external_strategy_search/EXTERNAL_STRATEGY_SEARCH_2026_07_12.json`.
+  No candidate is validated; `execution_authority=NONE`.
+- **S3 paper-lane synthetic probe (2026-07-12):** with no strategy passing validation,
+  the S3 paper lane was exercised END-TO-END in synthetic probe mode over frozen data
+  via `scripts/run_s3_paper_probe.py`, routing the strongest (still validation-FAILED)
+  QC2 Donchian ETHUSDT-1h-w40 signals through the real inert contracts: synthetic
+  fill -> ledger -> spot position -> portfolio -> backtest/paper divergence report.
+  553 synthetic trades; paper +103.6% vs backtest-proxy +149.1%; divergence
+  `OUTSIDE_TOLERANCE` on trade-count/fee (close-fill+slippage vs next-open — the
+  expected, meaningful signal). `mode=SYNTHETIC_LOCAL_SIMULATOR`, candidate
+  `NOT_ELIGIBLE`, `venue_connection=NONE`, paper/live orders `DISABLED`, no order
+  route. Artifact: `artifacts/trading_domain/s3_paper_probe/S3_PAPER_PROBE_2026_07_12.json`.
+  Full gate green afterward: ruff + mypy-strict + **399 tests pass**.
+
+- **Data profile + signal-based strategy search (2026-07-12):** to widen the search
+  surface, the market character of the frozen dataset was profiled
+  (`scripts/data_profile.py` -> `artifacts/research_lab/data_profile/DATA_PROFILE.json`:
+  BTC ~60% / ETH ~78% annualized vol, $2.6B/$1.4B daily USD turnover, ~49% taker buy
+  pressure, -77%/-81% buy-hold max drawdown) and five strategy families that USE the
+  previously-ignored volume/volatility/order-flow fields were tested through the same
+  honest screen (`scripts/run_signal_strategy_search.py`). **First screen survivor
+  found:** `SIG-VOLUME-BREAKOUT` (volume-confirmed Donchian, ETHUSDT 1h, window=40,
+  mult=1.5) is positive in ALL THREE chronological thirds (train +38.8% / validation
+  +35.9% / holdout +34.7%), returns +153.9% vs buy-hold +112.4%, 511 trades — the
+  consistency that all 20 price-only public strategies failed. **It passed the SCREEN,
+  not validation:** it still owes production G10 (DSR>=0.95, PBO) and cross-engine
+  reproduction, is ETHUSDT-1h-only (1/6 contexts), and stays `NOT_ELIGIBLE` /
+  `execution_authority=NONE`. Product strategy + path-to-live written at
+  `docs/product/PRODUCT_STRATEGY_AND_GTM.md`. Full gate green: 409 tests.
+
+- **Multi-dataset acquisition pipeline (2026-07-12):** operator approved a data
+  expansion (top-50 spot pairs, all timeframes, funding, BTC/ETH ticks). After measuring
+  real sizes (BTC+ETH aggTrades = 77.9 GB, not the ~55 GB estimated) and a disk review,
+  the approach was revised to keep the laptop light while preserving the checksum-frozen
+  reproducibility the gates depend on. Built + gate-green (419 tests): `acquire.py`
+  (checksum-verified resumable downloader, plan/fetch modes — validated on real files),
+  `normalize_multi.py` (klines→canonical parquet, BTCUSDT_1d full-span verified),
+  `tick_features.py` (aggTrades→1-minute microstructure bars: buy/sell imbalance, VWAP,
+  whale-trade size — validated 65.2M BTC ticks→44,640 bars, so full history freezes at
+  ~sub-GB not 78 GB), and `daily_update.py` (append-only REST refresh reusing the
+  canonical schema+dedup). Plan: `docs/product/MARKET_DATA_ACQUISITION_PLAN.md`. Free
+  public data only; paid vendors/L2/on-chain remain operator-procured (agent never
+  enters payment or credentials). Everything stays `execution_authority=NONE`.
+
+- **Strategy research arc — rigorous negative result (2026-07-12):** with the expanded
+  multi-pair data flow in place, the full strategy space was tested honestly through
+  production G10 (Deflated Sharpe Ratio, threshold 0.95). Results, all `NOT_ELIGIBLE`:
+  single-asset technical (20 public + 5 signal + 18-strategy trend cluster with realistic
+  vol-targeted sizing across 40 datasets, 2277 trials) → DSR ~0.69–0.76; cross-sectional
+  momentum long-only with dual-momentum cash filter + vol targeting → DSR **0.9456**
+  (28 pairs, the closest) but degrades to 0.9091 at 34 pairs (fragile); cross-sectional
+  long-short → DSR ~0.70 (crypto short side is noise). **Nothing clears DSR 0.95.**
+  Methodology fixes applied: realistic sizing (removed all-in-compounding fantasy
+  numbers), complete-history filter (removed a 1-month UNI listing-pump artifact), proper
+  deflation for the full search. Tooling: `scripts/run_universe_search.py`,
+  `run_trend_validation.py`, `run_cross_sectional_momentum.py`. Honest conclusion: no
+  price/technical strategy — single-asset or cross-sectional, long-only or long-short —
+  yields a DSR-validated edge on this universe. A validated edge needs structurally new
+  input (order-book/on-chain — paid; or the downloaded-but-unused funding data), not more
+  price-strategy variations (which would be p-hacking). Thresholds untouched throughout;
+  `execution_authority=NONE`.
+
+- **Funding-carry (first non-predictive strategy) + honest caveat (2026-07-12):** after
+  web research (recorded in `research/SOURCE_REGISTRY.md` + AD §R + graphify) pointed to
+  delta-neutral funding carry as crypto's most robust NON-predictive edge, it was
+  backtested from the downloaded funding data (`scripts/run_funding_carry.py`, 50 pairs,
+  9851 8h periods). The raw carry signal is REAL and literature-consistent: BTC +11.6%/yr,
+  ETH +12.5%/yr; a selective positive-funding basket ~8.8%/yr. G10 reports DSR 1.0 PASS —
+  **but this is explicitly NOT a genuine validation** (`verdict_is_genuine: false`): the
+  model includes ONLY the funding leg and omits basis divergence, liquidation, and
+  execution/slippage — the dominant real risks — so the smooth low-vol yield inflates
+  Sharpe (~11) and DSR. Naive all-pairs carry is negative (alt tail); selection is
+  required. Honest verdict: funding carry is the most promising real signal in the arc,
+  but truthful validation needs perp-price/basis modelling (funding downloaded; perp
+  klines/mark not yet), and trading needs perps/margin (S4-gated). `execution_authority=NONE`.
+
+- **Market-neutral pivot + strategy direction brief (2026-07-12):** deeper web research
+  (recorded in source registry + AD §R + graphify) established that predictive price
+  strategies are a dead end in liquid crypto, while MARKET-NEUTRAL strategies are the
+  real, documented edge (2025: dollar-neutral ~31% benchmark, stat-arb BTC-ETH Sharpe
+  ~2.2, drawdowns <1%; carry's 2022 killer was counterparty, not price). Naive daily
+  stat-arb pairs tested (`scripts/run_stat_arb_pairs.py`, 10 curated pairs, 40 trials):
+  best AVAX/SOL Sharpe 0.58, DSR 0.15 — FAIL (crypto pairs not cointegrated at daily
+  frequency; pro version needs cointegration test + hedge ratio + intraday). Full 50-pair
+  download complete. Strategic brief at `docs/product/STRATEGY_RESEARCH_DIRECTION.md`:
+  the path to a validated *tradeable* strategy runs through proving a market-neutral edge
+  in backtest, then the operator unlocking perp/margin (S4). Highest-value honest next
+  build: download (free) Binance perp klines/mark and validate funding carry WITH basis +
+  liquidation risk. Thresholds untouched; `execution_authority=NONE`.
 
 ## Operational SSOT (unchanged)
 
@@ -329,9 +585,9 @@ No blocker prevents continuing constrained S2 evidence operations. LEAN's bounde
 Docker evidence is retained; missing Hummingbot full-history runs are runtime/throughput
 blocked after the 2026-07-11 B2 F1/S1 timeout. B2 and the current S2 hypothesis
 population remain incomplete and not approvable, including the fresh
-`LAB-f04ef5d705e0de4d3fff5fe83ada90b2d91223dc89cfa35364c5fd8439ca3121`
-source-registry evidence refresh; this blocks strategy promotion and demo activation, not
-offline research. Open items are tracked in `MISSING_AND_OPEN_ITEMS.md`.
+source-registry and TradingView public-strategy replay evidence refreshes; this blocks
+strategy promotion and demo activation, not offline research. Open items are tracked in
+`MISSING_AND_OPEN_ITEMS.md`.
 
 ## Exact next action
 

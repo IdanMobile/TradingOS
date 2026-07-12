@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.29 standalone stage-gates API (2026-07-11). Supersedes v8.28 hashes.
+Package version: v8.50 Computed stability, live evidence resolution, and incidents (2026-07-12). Supersedes v8.49 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,7 +10,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `4d21c7c4c134029e39905fed8d993a7e64fab4a2b628b5b1a5bc25a8ee32a694` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `b6d9f9b9727d19b0c9904ed1580e736605d20606eb00a990b1bdfaedfe780f67` |
+| `PROJECT_STATE.md` | `10c291f863f7cdb45197a61445dd58819d540eeb8c6478675d9ff3295c79b83b` |
 | `DECISION_LOG.md` | `39167fbbd73c3daeabac58798e3efde2dca4f2d827ca1d54a71fb3cbf7cb0aa7` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
@@ -22,20 +22,20 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `specs/BACKTESTING_VALIDATION_BLUEPRINT_V1.md` | `5f4d3c6afcb81a0978b971bf65c78364ab2795dc6f3ba1ed47b6b023aad42ed8` |
 | `specs/EXPERIMENT_LINEAGE_PROTOTYPE_SPEC_V1.md` | `059eaef922083699a5ec7decfa5ef14e6a80ad98591925c867f948273b0c75ec` |
 | `specs/STRATEGY_INGESTION_AND_REPRODUCTION_WORKFLOW_V1.md` | `8a1803ca0fd74f0e06a30960583e91819ca3722703bebde22dbba6edf9b4b9c0` |
-| `specs/STRATEGY_SEED_BATCH_V1.md` | `0be0e1abadfafd3ae73d3853d1409b7847d7632e4645deb8c679237c4cf3f83e` |
+| `specs/STRATEGY_SEED_BATCH_V1.md` | `57bde741f7b90e5739b58d62df4097bc71b807af4f36b9cad4ce89c008b02446` |
 | `specs/AI_AGENT_EVALUATION_BLUEPRINT_V1.md` | `50e6f528e9e816a3f2700055f1e310554bb194c7c4b6cea3c94053d87d725626` |
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `1e535d73ba73a0ccf5f0dd720539cc1a76b021623e262e97f31031a8d47e9790` |
+| `MISSING_AND_OPEN_ITEMS.md` | `a99c24b7a74db610fab3e22a425442182ec36c55ce00ed62b24e5bb2dc2c02f3` |
 
 ## Required handoff inputs — planning system (added v8)
 
 | Path | SHA-256 |
 |---|---|
-| `docs/architecture/AD.md` | `177595f35e7f8574afdf454649592991344dd4ca31b1c4897c962330ca202e2d` |
+| `docs/architecture/AD.md` | `6acc22e67c82f0dee869d37b8af9074996774d3c089884b7e6f13e8523ef1acb` |
 | `docs/architecture/MODULE_CATALOG.md` | `6030d38e7765193d0e656db56afe65ce659b5301aa32e13ff23a0b32390092e9` |
-| `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md` | `15245bf3e91c4fb5c2b8e7441f7a540ee8b21e23fe52238426615ccd51f7cd6d` |
+| `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md` | `c77768e762e8892fef4f54475d1e0625aa0b543d2c188a11d0172bef2937b42f` |
 | `docs/program/PROGRAM_PLAN.md` | `b491591bc5376a4bf3b93f7c42f68c25200f7e4420c05445a925bca7bd60f298` |
 | `docs/product/MVP_SCOPE.md` | `5cdcc8a4249951117baee31cb0ac1b9b5141a150272abe920db3a93a6a9cfc54` |
 | `docs/testing/TEST_MASTER_PLAN.md` | `fb4bd18aed50ff4367c1fb15ff8dbfe33b4399ca7f74ee78e06ed365af350b54` |
@@ -64,8 +64,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `todos/12_dictionary_ontology.md` | `f1f19b5250ad1aaefecc7dbb87bb9d837a0f1f12e48af99d490e26cc6038ce4f` |
 | `todos/13_research_assets.md` | `423f9814bfc6e920324cbc827ebd4ad65e7fb51cb50a6af72b42ae9eac2a40ee` |
 | `todos/14_dashboard.md` | `02d09ccde77a854bed6360b7983c5b6be4ffac13c1ad4b09f6faab23bb7c8ed3` |
-| `todos/15_paper_trading.md` | `a7cc6233f537ca2c58a37d5fa442f1257dc6c09126626c61877c2b75171a1b76` |
-| `todos/16_risk_approvals.md` | `7f51e1758a0d16e306d9adff39720c6d1eeaba4c0e7f240cfedc0799f2291c6d` |
+| `todos/15_paper_trading.md` | `9cd63530fb01479b07a854a8b332f570016bfc4f0c37ff7f00d7977850500b90` |
+| `todos/16_risk_approvals.md` | `5dba2879e27ac1ce17ac3770afe21873969355ecfaef042d0775e905736966c7` |
 | `todos/17_observability.md` | `242400130779daef1be64c532ba3dd883f68aacbf1eb12841cd82997798a9326` |
 | `todos/18_security.md` | `8d396293d3336bed7568dc950dde6bbe14aed7f8059039a69c0fae76bd497771` |
 | `todos/19_operations.md` | `68f73a470e79241098afec113b99274ef498da7691169269eb7f9ce14188a260` |

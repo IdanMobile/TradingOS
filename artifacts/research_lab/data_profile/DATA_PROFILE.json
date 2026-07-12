@@ -1,0 +1,91 @@
+{
+  "dataset_id": "DS-CRYPTO-SPOT-BAKEOFF-V1",
+  "note": "Descriptive market character, derived from existing OHLCV + order-flow fields. Not a strategy. Market cap, order book, funding, on-chain and sentiment are NOT in this dataset.",
+  "profiles": [
+    {
+      "annualized_vol_pct": 63.0,
+      "avg_atr_pct": 0.222,
+      "avg_buy_pressure_pct": 48.86,
+      "avg_daily_usd_volume_musd": 2567.0,
+      "bars": 577803,
+      "buy_pressure_stdev_pct": 12.38,
+      "instrument": "BTCUSDT",
+      "median_trades_per_bar": 6112,
+      "price_max_drawdown_pct": -77.3,
+      "span_end": "2026-06-30 23:55:00+00:00",
+      "span_start": "2021-01-01 00:00:00+00:00",
+      "timeframe": "5m"
+    },
+    {
+      "annualized_vol_pct": 61.0,
+      "avg_atr_pct": 0.404,
+      "avg_buy_pressure_pct": 48.9,
+      "avg_daily_usd_volume_musd": 2567.1,
+      "bars": 192602,
+      "buy_pressure_stdev_pct": 8.97,
+      "instrument": "BTCUSDT",
+      "median_trades_per_bar": 18916,
+      "price_max_drawdown_pct": -77.2,
+      "span_end": "2026-06-30 23:45:00+00:00",
+      "span_start": "2021-01-01 00:00:00+00:00",
+      "timeframe": "15m"
+    },
+    {
+      "annualized_vol_pct": 59.0,
+      "avg_atr_pct": 0.837,
+      "avg_buy_pressure_pct": 48.96,
+      "avg_daily_usd_volume_musd": 2566.9,
+      "bars": 48154,
+      "buy_pressure_stdev_pct": 5.93,
+      "instrument": "BTCUSDT",
+      "median_trades_per_bar": 78666,
+      "price_max_drawdown_pct": -77.2,
+      "span_end": "2026-06-30 23:00:00+00:00",
+      "span_start": "2021-01-01 00:00:00+00:00",
+      "timeframe": "1h"
+    },
+    {
+      "annualized_vol_pct": 81.4,
+      "avg_atr_pct": 0.29,
+      "avg_buy_pressure_pct": 49.7,
+      "avg_daily_usd_volume_musd": 1360.3,
+      "bars": 577803,
+      "buy_pressure_stdev_pct": 12.14,
+      "instrument": "ETHUSDT",
+      "median_trades_per_bar": 3452,
+      "price_max_drawdown_pct": -81.7,
+      "span_end": "2026-06-30 23:55:00+00:00",
+      "span_start": "2021-01-01 00:00:00+00:00",
+      "timeframe": "5m"
+    },
+    {
+      "annualized_vol_pct": 79.1,
+      "avg_atr_pct": 0.527,
+      "avg_buy_pressure_pct": 49.66,
+      "avg_daily_usd_volume_musd": 1360.3,
+      "bars": 192602,
+      "buy_pressure_stdev_pct": 8.81,
+      "instrument": "ETHUSDT",
+      "median_trades_per_bar": 10762,
+      "price_max_drawdown_pct": -81.5,
+      "span_end": "2026-06-30 23:45:00+00:00",
+      "span_start": "2021-01-01 00:00:00+00:00",
+      "timeframe": "15m"
+    },
+    {
+      "annualized_vol_pct": 77.2,
+      "avg_atr_pct": 1.098,
+      "avg_buy_pressure_pct": 49.64,
+      "avg_daily_usd_volume_musd": 1360.2,
+      "bars": 48154,
+      "buy_pressure_stdev_pct": 5.81,
+      "instrument": "ETHUSDT",
+      "median_trades_per_bar": 45107,
+      "price_max_drawdown_pct": -81.3,
+      "span_end": "2026-06-30 23:00:00+00:00",
+      "span_start": "2021-01-01 00:00:00+00:00",
+      "timeframe": "1h"
+    }
+  ],
+  "schema": "tios-data-profile-v1"
+}
