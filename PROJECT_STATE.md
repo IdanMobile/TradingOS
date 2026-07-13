@@ -922,6 +922,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   `a09d308` at `19:00:07Z`. All 1h/6h/24h outcomes were not yet causally observable, so it emitted
   three `NOT_AVAILABLE` rows and made no kline request. The snapshot verifies offline. This proves
   scheduling and future-leakage prevention, not an outcome, edge, score, or promotion.
+- **Append-only label verifier V2 frozen (D-086):** a refresh after a later source window failed
+  closed before output because V1 judged an older snapshot against future source history. V2
+  reconstructs each snapshot only from windows closed by its own evaluation time. The label rule,
+  prior artifact, eligibility, and authority remain unchanged; the corrected refresh is unrun.
 
 ## Operational SSOT (unchanged)
 
@@ -980,11 +984,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-At or after `2026-07-13T19:52:00Z`, rerun the unchanged evaluator so only the now-causal 1h label
-may be requested and retained while 6h/24h remain `NOT_AVAILABLE`. Verify exact response bytes and
-the snapshot offline without aggregating or interpreting the return. Continue append-only source
-collection only under the unchanged signal hash. Do not backfill, score, access the sealed V2
-holdout, activate a bot, request credentials, or cross any human S3/S4 gate.
+Commit the D-086 operational verifier correction, then rerun the evaluator to append the second
+window's causal schedule without invalidating the first. At or after `2026-07-13T19:52:00Z`, only
+the first window's 1h label may be requested and retained while later horizons stay unavailable.
+Verify exact bytes without aggregating or interpreting returns. Do not backfill, score, access the
+sealed V2 holdout, activate a bot, request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

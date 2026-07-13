@@ -1,5 +1,13 @@
 # Package Changelog
 
+## v8.89 — 2026-07-13 — Append-only label verifier V2 freeze
+
+- Recorded a fail-closed refresh attempt that wrote no artifact and exposed no future outcome.
+- Corrected snapshot reconstruction to use only complete windows closed by that snapshot's own
+  evaluation time, so later append-only source evidence cannot invalidate prior evidence.
+- Added a regression test while preserving every frozen label, warm-up, eligibility, and authority
+  rule. The corrected evaluator refresh remains unrun until after this commit.
+
 ## v8.88 — 2026-07-13 — First causal label schedule
 
 - Ran the evaluator from clean D-084 freeze commit `a09d308` at `19:00:07Z`.

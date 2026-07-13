@@ -155,7 +155,11 @@ def verify_snapshot(path: Path, directory: Path) -> None:
     if payload.get("analysis") != "PROHIBITED_DURING_WARMUP":
         raise LiquidationStressError("warmup analysis boundary changed")
     evaluated_at = parse_utc(payload["evaluated_at"])
-    expected_windows = {(session, window) for session, window in complete_windows(directory)}
+    expected_windows = {
+        (session, window)
+        for session, window in complete_windows(directory)
+        if label_times(window, "1H").window_close <= evaluated_at
+    }
     seen: set[tuple[str, datetime, str]] = set()
     for row in payload["labels"]:
         window = parse_utc(row["window_start"])

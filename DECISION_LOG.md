@@ -803,6 +803,27 @@ Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_LABEL_FIRST_EVALUATION_
 and content-addressed label snapshot `7d96d32a…`.
 Status: **First label schedule retained; all outcomes NOT_AVAILABLE; authority NONE.**
 
+### D-086 — Append-only label verifier correction frozen before refresh
+
+Decision: after a later complete source window was retained, the unchanged label evaluator failed
+closed before writing output because V1 compared the older `19:00:07Z` snapshot with all source
+windows currently present, including a window that closed at `19:10Z`. This is an operational
+reconstruction defect: append-only future evidence must not retroactively make a valid historical
+snapshot incomplete.
+
+Verifier V2 reconstructs each immutable snapshot against only complete windows whose close is no
+later than that snapshot's own `evaluated_at`. The frozen source, entry, horizon, availability,
+return, warm-up, and authority rules are unchanged. A regression test proves an older snapshot
+remains valid after a later window is added; all early-label and authority drift tests remain.
+
+Consequence: after this correction is committed, the failed refresh may be rerun. It created no
+snapshot and exposed no future label. No backfill, analysis, score, strategy change, credential,
+venue connection, order, paper/demo/live state, promotion, or execution authority is authorized.
+
+Evidence: `research/PROSPECTIVE_BTC_LIQUIDATION_LABEL_VERIFIER_V2.yaml`, updated verifier, and
+`tests/test_prospective_liquidation_labels.py`.
+Status: **Operational verifier correction frozen and unrun; label contract unchanged.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

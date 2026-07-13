@@ -217,6 +217,12 @@ correctly `NOT_AVAILABLE`, so no kline request, price, or return exists. The 1h 
 becomes lawful at `2026-07-13T19:52Z`; 6h and 24h remain later. Causal outcome capture, continued
 prospective coverage, warm-up, review minima, costs, G1-G11, and promotion remain open.
 
+D-086 records a fail-closed label-refresh attempt after a later source window was added. No output
+or future value was written. V2 fixes only snapshot-relative reconstruction so later append-only
+windows cannot invalidate an older snapshot; every label and safety term is unchanged. A clean
+post-freeze refresh, first available outcome, continuous warm-up, and all validation gates remain
+open.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

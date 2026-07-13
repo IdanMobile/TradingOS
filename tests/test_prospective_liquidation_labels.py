@@ -74,10 +74,16 @@ def test_verifier_rejects_rehashed_future_and_authority_drift(tmp_path: Path) ->
     target = tmp_path / "prospective"
     shutil.copytree(SOURCE, target)
     shutil.rmtree(target / "labels", ignore_errors=True)
-    session_path = next(
+    complete_sessions = [
         path
         for path in target.glob("session_*.json")
         if json.loads(path.read_text())["observation"].get("complete_windows")
+    ]
+    session_path = min(
+        complete_sessions,
+        key=lambda path: json.loads(path.read_text())["observation"]["complete_windows"][0][
+            "start"
+        ],
     )
     session = json.loads(session_path.read_text())
     window = datetime.fromisoformat(session["observation"]["complete_windows"][0]["start"])
@@ -146,3 +152,18 @@ def test_verifier_rejects_rehashed_future_and_authority_drift(tmp_path: Path) ->
     authority_drift = verify(target)
     assert authority_drift.returncode != 0
     assert "authority boundary changed" in authority_drift.stderr
+
+
+def test_older_snapshot_ignores_windows_completed_after_its_evaluation(tmp_path: Path) -> None:
+    target = tmp_path / "prospective"
+    shutil.copytree(SOURCE, target)
+    snapshots = sorted((target / "labels").glob("label_snapshot_*.json"))
+    assert snapshots
+    first = json.loads(snapshots[0].read_text())
+    evaluated_at = datetime.fromisoformat(first["evaluated_at"])
+    assert any(
+        datetime.fromisoformat(row["start"]) + timedelta(minutes=5) > evaluated_at
+        for session_path in target.glob("session_*.json")
+        for row in json.loads(session_path.read_text())["observation"].get("complete_windows", [])
+    )
+    assert verify(target).returncode == 0

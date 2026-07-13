@@ -1,0 +1,30 @@
+schema_version: 1
+verifier_id: PROSPECTIVE-BTC-LIQUIDATION-LABEL-VERIFIER-V2
+decision_id: D-086
+status: FROZEN_NOT_RUN
+label_contract_id: PROSPECTIVE-BTC-LIQUIDATION-LABELS-V1
+label_contract_sha256: 4e64d0ad64161a67d4f867d8fa0351a75252e9be4a725a3ce084a031b7e85dc9
+execution_authority: NONE
+promotion_eligible: false
+
+operational_correction_only:
+  failure: an older valid label snapshot was compared with complete source windows retained later
+  observed_behavior: verifier failed closed before writing a refreshed label snapshot
+  correction: reconstruct each snapshot against only windows closed by its evaluated_at timestamp
+  preserved_history: older snapshots remain immutable and newly retained windows are append-only
+
+unchanged_label_terms:
+  symbol: BTCUSDT
+  interval: 1m
+  entry: signal_window_close_plus_one_minute_open
+  horizons: [1H, 6H, 24H]
+  available_at: exit_open_plus_one_minute
+  before_available_at: NOT_AVAILABLE_AND_DO_NOT_REQUEST
+  warmup_use: RETAIN_ONLY_DO_NOT_AGGREGATE_ANALYZE_OR_SCORE
+
+acceptance:
+  - Every snapshot reconstructs using the source history causally present at its evaluated_at.
+  - Adding a later complete window cannot invalidate an older content-addressed snapshot.
+  - An older snapshot cannot include a window that had not closed by evaluated_at.
+  - Early-label, raw-byte, timing, price, return, eligibility, and authority drift still fail.
+  - No failed refresh artifact exists and the next evaluation begins only after this freeze commit.
