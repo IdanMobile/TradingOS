@@ -1,5 +1,13 @@
 # Package Changelog
 
+## v8.88 — 2026-07-13 — First causal label schedule
+
+- Ran the evaluator from clean D-084 freeze commit `a09d308` at `19:00:07Z`.
+- Retained three explicit `NOT_AVAILABLE` rows because no frozen horizon was yet causal; made no
+  Spot kline request and retained no price or return.
+- Verified the content-addressed snapshot offline. Analysis, scoring, promotion, credentials,
+  venue connection, paper/live orders, and execution authority remain disabled.
+
 ## v8.87 — 2026-07-13 — Prospective causal label freeze
 
 - Froze Binance Spot BTCUSDT one-minute entry and 1h/6h/24h exit timestamps before evaluation;

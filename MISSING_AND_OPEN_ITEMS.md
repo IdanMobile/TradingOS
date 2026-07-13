@@ -212,6 +212,11 @@ exit candle completes. Exact raw bytes and derived labels must reconstruct, and 
 future-time and authority drift fail closed. The first causal evaluation, continued prospective
 coverage, 8,639 warm-up windows, review minima, costs, G1-G11, and promotion remain open.
 
+D-085 retains the first causal label snapshot from the clean D-084 freeze. All three horizons were
+correctly `NOT_AVAILABLE`, so no kline request, price, or return exists. The 1h outcome first
+becomes lawful at `2026-07-13T19:52Z`; 6h and 24h remain later. Causal outcome capture, continued
+prospective coverage, warm-up, review minima, costs, G1-G11, and promotion remain open.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

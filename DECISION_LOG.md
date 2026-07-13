@@ -785,6 +785,24 @@ Evidence: `research/PROSPECTIVE_BTC_LIQUIDATION_LABEL_CONTRACT_V1.yaml`,
 `scripts/run_prospective_liquidation_labels.py`, and focused causal/drift tests.
 Status: **Label contract frozen, not yet evaluated; authority NONE.**
 
+### D-085 — First causal label evaluation retained without future leakage
+
+Decision: the first evaluator run began from clean freeze commit `a09d308` at
+`2026-07-13T19:00:07.914601Z`. The 1h, 6h, and 24h labels for the retained complete signal window
+were all before their frozen availability times, so the evaluator retained three explicit
+`NOT_AVAILABLE` rows and made no Spot kline request. The content-addressed snapshot reconstructs
+offline with metric, scorecard, and promotion eligibility false.
+
+Consequence: the prospective source→window→signal→risk-denial→causal-label-scheduling path is
+proven, but no outcome or strategy edge exists. The first lawful outcome request is the 1h label
+at or after `2026-07-13T19:52:00Z`. Warm-up analysis, backfill, tuning, and scoring remain
+prohibited. No credential, venue connection, order, paper/demo/live state, human gate, promotion,
+sealed V2 holdout access, or execution authority was activated.
+
+Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_LABEL_FIRST_EVALUATION_2026_07_13.md`
+and content-addressed label snapshot `7d96d32a…`.
+Status: **First label schedule retained; all outcomes NOT_AVAILABLE; authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

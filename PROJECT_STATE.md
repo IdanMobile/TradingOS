@@ -918,6 +918,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   `NOT_AVAILABLE` without a request until its exit bar completes. The verifier reconstructs exact
   raw bytes, prices, returns, eligibility, and authority and rejects rehashed future-time or
   paper-order drift. No label evaluation has run from the freeze; warm-up analysis is prohibited.
+- **First causal label schedule retained (D-085):** the evaluator ran from clean freeze commit
+  `a09d308` at `19:00:07Z`. All 1h/6h/24h outcomes were not yet causally observable, so it emitted
+  three `NOT_AVAILABLE` rows and made no kline request. The snapshot verifies offline. This proves
+  scheduling and future-leakage prevention, not an outcome, edge, score, or promotion.
 
 ## Operational SSOT (unchanged)
 
@@ -976,11 +980,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Commit the D-084 label freeze, then run exactly one first label evaluation from that clean commit.
-Retain only causally available exact Spot observations and explicit `NOT_AVAILABLE` rows, verify
-the snapshot offline, and report status without aggregating or interpreting returns. Continue
-append-only source collection only under the unchanged signal hash. Do not backfill, score, access
-the sealed V2 holdout, activate a bot, request credentials, or cross any human S3/S4 gate.
+At or after `2026-07-13T19:52:00Z`, rerun the unchanged evaluator so only the now-causal 1h label
+may be requested and retained while 6h/24h remain `NOT_AVAILABLE`. Verify exact response bytes and
+the snapshot offline without aggregating or interpreting the return. Continue append-only source
+collection only under the unchanged signal hash. Do not backfill, score, access the sealed V2
+holdout, activate a bot, request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 
