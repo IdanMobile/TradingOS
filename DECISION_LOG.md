@@ -609,6 +609,36 @@ Evidence: `research/CFTC_BTC_POSITIONING_DATA_PACKAGE_V1.json`,
 `scripts/verify_cftc_btc_positioning_data.py`, and focused fail-closed tests.
 Status: **Verified offline data boundary; performance unobserved and authority NONE.**
 
+### D-068 — CFTC positioning campaign frozen behind the development selection barrier
+
+Decision: `CFTC-BTC-POSITIONING-SPOT-G1-G11-V1` is fully specified before scoring. Twelve
+content-derived StrategyVersions exhaust aligned-high/contrarian-low × 13/26/52-week baseline ×
+0.5/1.0 strict-z thresholds. Every pulse is unlevered BTCUSDT Spot long/cash for seven complete
+days, never stacks or extends, and exits on observable source/Spot gaps. Catch-up reports mapping
+to one open use only the newest report. The ordinary eight-day conservative availability and 30
+official exception mappings remain immutable.
+
+The implementation has four roles: canonical point-in-time semantics, an independent Decimal
+ledger, a vectorbt retained-trial accelerator, and separate Freqtrade/Nautilus environment signal
+and event-order conformance roles. Micro-goldens cover strict-later fills, high/low polarity, zero
+variance, non-extension, exact cost accounting, invalid inputs, and future-append causality. A
+two-phase runner requires a content-addressed development selection before any 2023-2026 OOS
+evaluation. It freezes six costs, full/stress/delay tests, seven regime periods, benchmark,
+drawdown, event minima, PBO/DSR, and G1-G11 thresholds.
+
+One pre-freeze worker-import smoke used only 2018-04 through 2018-06, structurally shorter than the
+minimum 13-report warm-up; it could not form any eligible trial signal or performance observation.
+No family-conditioned eligible return or selected direction was observed. The complete campaign
+remains unrun.
+
+Consequence: one clean-commit offline campaign run is authorized. Numeric output cannot
+self-promote. No bot, derivative, venue, credential, order, paper/demo/live state, human gate,
+sealed V2 holdout, or execution authority is authorized.
+
+Evidence: `research/CFTC_BTC_POSITIONING_SPOT_G1_G11_CAMPAIGN_V1.yaml`, canonical/role modules,
+and focused tests under `tests/test_cftc_positioning_*`.
+Status: **Approved constrained-S2 immutable offline campaign; preregistered and not run.**
+
 ### D-063 — Bitcoin MVRV dislocation family admitted to data/canonical construction
 
 Decision: a source-only cycle compared exactly three new mechanisms without computing local family

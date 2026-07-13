@@ -28,6 +28,7 @@ FAMILIES = (
     "funding_pressure",
     "transaction_activity",
     "mvrv_dislocation",
+    "cftc_positioning",
     "carry",
     "market_making",
     "arbitrage",

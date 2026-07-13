@@ -848,6 +848,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   Binance archives extend the existing Spot boundary to 2018, yielding 72,225 bars, 25 retained
   gaps, and 428 strict-later report mappings. Offline verification and drift tests pass; no family
   return has been computed and authority remains `NONE`.
+- **CFTC positioning campaign frozen (D-068):** 12 immutable aligned/contrarian × baseline ×
+  threshold StrategyVersions, four implementation roles, six cost cells, seven regime periods,
+  causal goldens, G1-G11 gates, and a hashed development-selection barrier pass preflight. The
+  complete campaign is unrun and no eligible signal performance, bot, venue, or authority exists.
 
 ## Operational SSOT (unchanged)
 
@@ -906,11 +910,10 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Build the immutable CFTC positioning StrategyVersions, engine-independent Decimal reference,
-vectorbt retained-trial worker, Freqtrade-environment signal role, Nautilus event/gap role, causal
-micro-goldens, and complete two-phase G1-G11 campaign. Freeze and commit the entire campaign before
-computing a positioning-conditioned return. Do not access the sealed V2 holdout, activate a bot,
-connect a venue, request credentials, or cross any human S3/S4 gate.
+Commit the complete CFTC positioning campaign freeze, then execute its one authorized offline
+historical run from that clean commit. Preserve the selection barrier, retain every trial, and
+complete independent G11 supervision without tuning or rescue. Do not access the sealed V2
+holdout, activate a bot, connect a venue, request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

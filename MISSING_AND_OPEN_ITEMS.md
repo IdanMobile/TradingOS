@@ -121,6 +121,11 @@ exceptions, 33 official-checksum early Spot archives, 72,225 combined bars, 25 r
 428 strict-later mappings pass offline verification. Canonical implementations, campaign freeze,
 G1-G11 evidence, and supervision remain open; no strategy or bot is approved.
 
+D-068 closes canonical/campaign construction. All 12 immutable StrategyVersions, four roles, six
+cost cells, seven regime periods, strict development-selection barrier, G1-G11 thresholds, and
+no-rescue constraints pass offline preflight. The single clean historical run and independent G11
+disposition remain open; no strategy or bot is approved.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

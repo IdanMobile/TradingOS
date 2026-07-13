@@ -30,6 +30,9 @@ DATASET_IDENTIFIERS = frozenset(
         "confirmed_transaction_count",
         "mvrv_source_day_utc",
         "mvrv_current_supply",
+        "cftc_report_date_utc",
+        "cftc_available_at_utc",
+        "cftc_noncommercial_net_share",
     }
 )
 

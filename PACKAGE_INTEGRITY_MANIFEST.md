@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.70 CFTC positioning data freeze (2026-07-13). Supersedes v8.69 hashes.
+Package version: v8.71 CFTC positioning campaign freeze (2026-07-13). Supersedes v8.70 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `1023bfa0d9ecca36c334d9b2b7ddeb2a7dc73f358296c540708cd31775b2d9fc` |
-| `DECISION_LOG.md` | `1ece6958f45ae6f8651f65189fd5a403ae368e11fecd80cd687efcc8240e7e5e` |
+| `PROJECT_STATE.md` | `d358a4d7bb2a83c5c4db88e9f8b36c2f1ffd19d739646b5d20486a29518a771e` |
+| `DECISION_LOG.md` | `45afaaed99bfad20564874bf3803b885b2556497efd6af8c9ecefe545c13d694` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `dcc14d552f2ff92a8eb657b780be1c4c7ce8de4e95c452d513a2ec32bb5fffdb` |
+| `MISSING_AND_OPEN_ITEMS.md` | `17b4f3db5ee817e8ca86c9881b62793cbecc69020b54ec61f19a1edb0e1fff58` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -125,7 +125,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `research/CALENDAR_UTC_G1_G11_CAMPAIGN_V1.yaml` | `dbf84679e97e892f86610e80fc735e4c4dad89942a9a3b5d6a610e634daff985` |
 | `research/source_snapshots/calendar_utc_v1/binance_public_data_README.md` | `085ab91377aa9325d44f4c7ad27cce4ab381e158403e1d7df2bad39d1a66f7c6` |
 | `strategies/research/calendar-utc-weekday/canonical_strategy_spec.yaml` | `b7f85a146818130abe330fe639b7b38c6b7f7cca7c84e1246c174d7cbc6bf9d4` |
-| `src/tios/strategy/spec.py` | `5ed0aafdd71f75cd0ab902fd9fc5ec814e535a9052cd8986d317d0233830b1ee` |
+| `src/tios/strategy/spec.py` | `e4da4db1add6d036c5c6a86088e8bec2e4da3a60f9463b6b57a09d25a25f34b7` |
 | `src/tios/strategy/evaluator.py` | `81325dc8442a97082c35852d046ff217f0eb22dc7fba6d027bdd7be9ae4d6d20` |
 | `engines/reference/calendar_utc.py` | `e7885a873d2c7e500a50c651f91c600f4534321fba6abfb2dcc669df3062733b` |
 | `engines/vectorbt/calendar_utc_returns.py` | `cd04c0a2d4933f20b7b1f4b7675d0dc2f457d001131f5ebfd0de6a320239f0e0` |
@@ -156,7 +156,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V1.yaml` | `6b4fbff8936ba678b470c8ccdbe9c4c43b9e8fce8e5a34785946692efb900bab` |
 | `strategies/research/funding-pressure-spot/canonical_strategy_spec.yaml` | `98bb073bd7c1ff46383d8837c39dee3dd2dfb2a7e303c22986afc8e2c5c742aa` |
-| `src/tios/strategy/validator.py` | `0916085cd35cf1f7a48dddb0d49a8fe6a25d4b7f2428d5b25e8389e818a117be` |
+| `src/tios/strategy/validator.py` | `0ea11749cf96fe1ccd8d50d32d21b9130634e7daf78be16abf41a262713d1dca` |
 | `src/tios/strategy/funding_pressure.py` | `2bb4bc766a54aff687824e0edc103213ce05abf8a077de29dad4975dcbe6a76a` |
 | `engines/funding_pressure_data.py` | `1dca9cde1da9657c990a6d43026c883c15e6915918496b1262f9eae7c5bf9e8a` |
 | `engines/reference/funding_pressure.py` | `8e660df18f0c001f2d06e10cd25c45b80ef71ac2399de5f163869adcaf9ef4f4` |
@@ -362,6 +362,23 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-11.zip.base64` | `b9479347ae9c9aafd257603873b2165b55a95b2c8094b5cd7ff195474c886240` |
 | `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-12.zip.CHECKSUM.base64` | `199c31b0e1d4a8845ca6247c1549e774eb4091fa540fff36a7c0d088e1c4b2e7` |
 | `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-12.zip.base64` | `9cd37215d2bd0caf7c7e654552923228210baeb8d7726296621f98c2a6e78d38` |
+
+## CFTC positioning campaign freeze (added v8.71)
+
+| Path | SHA-256 |
+|---|---|
+| `strategies/research/cftc-btc-positioning/canonical_strategy_spec.yaml` | `add699a520952953f5c9a6fa0dcaff16cad49f240290c3240a34ab5422a44c98` |
+| `src/tios/strategy/cftc_positioning.py` | `0f81b5e7b3c7488ab3829d1f75a91919e164fb291ecce9abea9fd4a0e89c8aa4` |
+| `engines/cftc_positioning_data.py` | `c6c10bfdf3b74a95d6c01265970eccfe5f11c411b2cfedc04cf88acb4699e568` |
+| `engines/reference/cftc_positioning.py` | `cebc16351b25eabfe231882a7943ea45578dcd630a815f442124a5c0d3bfdae1` |
+| `engines/vectorbt/cftc_positioning_returns.py` | `5224438f2157ddecf1dae36378ec5502624f59e3c51210420c73fc5663601af3` |
+| `engines/freqtrade/cftc_positioning_signals.py` | `d858673ea21169f055dc538b49086273d0d44521c78871d746bc7834cfe67f0a` |
+| `engines/nautilus/cftc_positioning_events.py` | `b7930dc76e482b760987ef5d143542c6751627176c405f250063ce7f379c5eff` |
+| `research/CFTC_BTC_POSITIONING_SPOT_G1_G11_CAMPAIGN_V1.yaml` | `19adfd87584bf917ff861088b600e44d2476e181552eead14f279231fed04245` |
+| `scripts/run_cftc_positioning_campaign.py` | `c9da58d6089918d8f78a10dc0fabc9ac04a31cb31e289eea029eb29c18effcfa` |
+| `tests/test_cftc_positioning_strategy.py` | `b77070aa4cb6595f3ef2c2846fd6d8918e2bc326e90133e83532800c66d68d0f` |
+| `tests/test_cftc_positioning_reference.py` | `0fb08a000f18718a2523c4262913338f93e02c2362126f599de70ce9dec33e34` |
+| `tests/test_cftc_positioning_campaign.py` | `34d4c06a6ebee211070e43f667abf3908b0e6c223d2473273a948bc349e0f19f` |
 
 ## Expected generated artifacts
 

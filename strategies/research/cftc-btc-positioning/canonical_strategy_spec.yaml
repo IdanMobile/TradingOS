@@ -1,0 +1,42 @@
+strategy_id: STRAT-CFTC-BTC-POSITIONING-SPOT
+family: cftc_positioning
+inputs: [cftc_report_date_utc, cftc_available_at_utc, cftc_noncommercial_net_share, open, close]
+indicators:
+  - name: prior_positioning_zscore
+    parameters:
+      interpretation: ALIGNED_HIGH
+      prior_baseline_weeks: 13
+      z_threshold: 0.5
+      population_std: true
+      pulse_holding_days: 7
+    outputs: [positioning_pulse_entry, positioning_pulse_exit]
+entry_long:
+  all:
+    - positioning_pulse_entry == 1
+exit_long:
+  all:
+    - positioning_pulse_exit == 1
+position_sizing: {type: all_in}
+risk:
+  stop_loss: null
+  take_profit: null
+  source_gap_exit: FIRST_OBSERVABLE_OPEN
+  spot_gap_exit: FIRST_OBSERVABLE_OPEN
+  execution_authority: NONE
+assumptions:
+  - "feature is (Legacy Futures Only non-commercial long minus short) divided by positive open interest for full-size CME Bitcoin code 133741"
+  - "ordinary availability is report date plus eight calendar days at 00:00 UTC; official exceptional publication delays override when later"
+  - "signal is evaluated at the first retained hourly Spot bar open strictly later than availability and entry fills at that open"
+  - "warm-up requires 13, 26, or 52 immediately preceding reports separated by six to eight calendar days"
+  - "z-score uses the prior-window population mean and population standard deviation and excludes the current report"
+  - "ALIGNED_HIGH requires z above threshold and CONTRARIAN_LOW requires z below negative threshold; equality and zero variance do not signal"
+  - "when multiple catch-up reports map to one Spot open, only the newest report date governs"
+  - "a held pulse ignores later signals, never extends or stacks, and exits at the first retained open at least 168 hours after entry"
+  - "a source or Spot gap exits held exposure at the first observable retained open and resets applicable warm-up"
+  - "the strategy never opens a CME future, derivative, short, margin, or leveraged position"
+ambiguities: []
+source_refs:
+  - FS6-CFTC-LEGACY-FUTURES-ONLY
+  - FS6-CFTC-PUBLICATION-EXCEPTIONS
+  - FS6-BINANCE-PUBLIC-SPOT
+license_ref: PROJECT-ORIGINAL-SPEC

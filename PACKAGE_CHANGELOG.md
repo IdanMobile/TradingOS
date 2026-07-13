@@ -1,5 +1,12 @@
 # Package Changelog
 
+## v8.71 — 2026-07-13
+
+- Froze 12 CFTC-positioning StrategyVersions and exact report-to-Spot pulse semantics.
+- Added independent Decimal, vectorbt, Freqtrade-environment, and Nautilus-environment roles.
+- Added causal goldens and a hashed development-selection barrier before all OOS evaluation.
+- Retained execution authority `NONE`; the complete campaign remains unrun.
+
 ## v8.70 — 2026-07-13
 
 - Froze exact filtered CFTC Legacy Futures Only bytes, metadata, schedules, and exception evidence.
