@@ -36,13 +36,13 @@ platform_reuse_boundary:
 
 implementation_freeze:
   - path: src/tios/validation/eligibility.py
-    sha256: 4b7209e3fdc006a4737c85ff6a9e9295e928b157d0a8dda763c965f26b125419
+    sha256: 0a9007638857ebd6d30ffd3e4d30bfa9a50b7392fa015c3bf5142faf8d9057d2
   - path: src/tios/validation/risk.py
     sha256: 00a2261bda219f3868b18b5b799cbc37c25a150ddd3fb7bf5d3287e694454f71
   - path: src/tios/validation/__init__.py
     sha256: 943f52a0a1ff31e4f750c1acffec4b091241cea1fa3db546561a5e9304c0940e
   - path: src/tios/services/dashboard_api/strategy_eligibility.py
-    sha256: 654c6b4f758eb0656e4d512d28e0f0e2aae0c530aacfe10ed3a673e82c7648b2
+    sha256: 5ebc551e285ee92c0ab484655ccbadfdff2fd10d48a0edac2b2cfbdb5d11c011
   - path: src/tios/services/dashboard_api/status.py
     sha256: a75f2c687cd7bc65f698fcdac41c78b20143871f4f3f33d1331009bcde3cc3d8
   - path: src/tios/services/dashboard_ui/dashboard.html
@@ -50,7 +50,7 @@ implementation_freeze:
   - path: tests/test_strategy_eligibility.py
     sha256: 59734ba16237eb078f821e18f5047d68c83705dbd6b907ed47088150cbc314e9
   - path: tests/test_strategy_eligibility_projection.py
-    sha256: 40ab3695254fdd1de8ab118767067f3a2120e82e978255eb40a9a805c33eb861
+    sha256: 733d071bdf7401f16e8cebced4439aca959fc8c6bf26f6eada3aac128a6da980
   - path: tests/test_risk_preconditions.py
     sha256: 15b24b25398ce2ce9238be61ba43f77ecdaa9141d8db438cf2c1d686f684e9ba
   - path: tests/test_dashboard.py

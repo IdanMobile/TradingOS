@@ -1,5 +1,14 @@
 # Package Changelog
 
+## v8.103 — 2026-07-14 — Prospective signal evidence-producer map
+
+- Mapped every current signal-eligibility blocker to an owning producer, verifier, earliest lawful
+  time, release condition, and affected gate/dimension.
+- Corrected the read-only projection: 8,640 warm-up windows are samples, not campaign trials; the
+  current campaign trial population is undeclared.
+- Froze that a risk signal is not alpha and cannot support a bot without a separately validated
+  StrategyVersion. Warm-up analysis and every execution capability remain blocked.
+
 ## v8.102 — 2026-07-14 — Deterministic strategy eligibility contract
 
 - Refreshed official-platform validation research and added QuantConnect leaderboard scoring plus

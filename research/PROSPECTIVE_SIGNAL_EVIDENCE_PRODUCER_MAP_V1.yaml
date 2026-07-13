@@ -1,0 +1,120 @@
+schema_version: 1
+map_id: PROSPECTIVE-SIGNAL-EVIDENCE-PRODUCER-MAP-V1
+subject_ref: PROSPECTIVE-BTC-LIQUIDATION-STRESS-V1
+status: ACTIVE_WARMUP_BLOCKED
+execution_authority: NONE
+paper_orders: DISABLED
+live_orders: DISABLED
+
+semantic_boundaries:
+  observation_windows_are_trials: false
+  observation_windows_are_samples: true
+  signal_is_strategy_version: false
+  signal_can_create_order: false
+  platform_score_can_satisfy_blocker: false
+  warmup_analysis: PROHIBITED
+  sealed_v2_holdout_access: PROHIBITED
+
+blockers:
+  - code: WARMUP_SAMPLE_INCOMPLETE
+    current_evidence: managed immutable five-minute checkpoints
+    producer: tios.services.observations
+    verifier: scripts/run_prospective_observation_flow.py verify
+    release_condition: 8640 complete consecutive five-minute windows in one continuity chain
+    earliest: after the thirtieth complete UTC day
+    contributes_to: [metric_eligibility, G1, G2, operational_and_evidence_completeness]
+
+  - code: PLANNED_ROTATION_NOT_PROVEN_IN_PUBLIC_RUN
+    current_evidence: synthetic overlap and failure tests only
+    producer: V5 checkpoint observer planned overlap rotation
+    verifier: scripts/run_prospective_liquidation_checkpoints.py --verify-only
+    release_condition: retained public overlap across the first 23h30m rotation with continuity preserved
+    earliest: first planned rotation boundary
+    contributes_to: [G1, G2, operational_and_evidence_completeness]
+
+  - code: CAUSAL_LABEL_SERIES_INCOMPLETE
+    current_evidence: retain-only individual labels; no aggregation
+    producer: scripts/run_prospective_liquidation_labels.py
+    verifier: scripts/run_prospective_liquidation_labels.py --verify-only
+    release_condition: every eligible 1H, 6H, and 24H label retained from exact public bytes or explicitly unavailable
+    earliest: each horizon's frozen available_at timestamp
+    contributes_to: [metric_eligibility, data_integrity_and_freshness, G2, G3]
+
+  - code: FIRST_REVIEW_MINIMA_NOT_MET
+    current_evidence: warm-up observation only
+    producer: managed observer plus immutable event/minimum counter
+    verifier: future prospective review preflight
+    release_condition: at least 180 prospective calendar days, 50 long-liquidation-stress events, complete 30-day warm-up, and terminal record for every required window
+    earliest: max(day_180, event_50, warmup_complete)
+    contributes_to: [metric_eligibility, temporal_walk_forward_stability, regime_stability]
+
+  - code: GOVERNED_SIGNAL_IDENTITY_MISSING
+    current_evidence: immutable preregistered SignalSpec only
+    producer: future post-minima supervisor decision
+    verifier: future RiskSignalVersion schema verifier
+    release_condition: create an immutable RiskSignalVersion only if the first review admits the frozen rule; otherwise reject or retire it
+    earliest: after FIRST_REVIEW_MINIMA_NOT_MET releases
+    contributes_to: [scorecard_eligibility]
+    prohibition: do not mislabel the 8640 observation windows as optimization trials or the risk signal as alpha
+
+  - code: CAMPAIGN_TRIAL_POPULATION_UNDECLARED
+    current_evidence: no score campaign and zero declared trials
+    producer: future prospective association/overlay campaign preregistration
+    verifier: future campaign preflight
+    release_condition: freeze every interpretation, horizon, transformation, benchmark, selection rule, stop rule, and terminal-trial count before computing metrics
+    earliest: before first lawful review calculation
+    contributes_to: [scorecard_eligibility, G10]
+
+  - code: METRIC_CONVENTIONS_AND_RESULTS_MISSING
+    current_evidence: no aggregated metric is lawful during warm-up
+    producer: future preregistered prospective evaluator
+    verifier: future independent statistical reproduction
+    release_condition: complete conventions, minimum sample, exact return/label inputs, and retained metric evidence for each named metric
+    earliest: after warm-up and first-review minima plus campaign preflight
+    contributes_to: [metric_eligibility, economic_performance_after_declared_costs, drawdown_and_loss_severity]
+
+  - code: BENCHMARK_AND_COST_EVIDENCE_MISSING
+    current_evidence: gross labels only
+    producer: future prospective campaign cost and benchmark lane
+    verifier: future cost-grid and benchmark verifiers
+    release_condition: frozen cash/no-block benchmark, applicable opportunity-cost model, and all declared nonzero cost cells complete
+    earliest: after campaign preregistration
+    contributes_to: [G5, G11, baseline_superiority, economic_performance_after_declared_costs]
+
+  - code: G1_G11_NOT_COMPLETE
+    current_evidence: operational provenance only; no validation package
+    producer: future prospective G1-G11 campaign
+    verifier: deterministic strategy eligibility evaluator plus gate-specific verifiers
+    release_condition: exact G1 through G11 all PASS with nonempty evidence references
+    earliest: after all upstream evidence producers release
+    contributes_to: [promotion_eligibility]
+
+  - code: INDEPENDENT_REVIEWS_NOT_COMPLETE
+    current_evidence: supervisor warm-up decision only
+    producer: independent statistical, risk, supervisor, and security reviews
+    verifier: deterministic strategy eligibility evaluator
+    release_condition: all four reviews PASS with immutable evidence references
+    earliest: after a complete validation package exists
+    contributes_to: [promotion_eligibility]
+
+  - code: VALIDATED_ALPHA_STRATEGY_MISSING
+    current_evidence: this subject is a risk-state signal, not alpha
+    producer: separate governed StrategyVersion campaign
+    verifier: deterministic strategy eligibility evaluator
+    release_condition: at least one exact strategy context independently reaches promotion eligibility before this signal can be evaluated as an execution-path risk overlay
+    earliest: independent of this observer; never implied by signal validation
+    contributes_to: [paper_readiness, full_strategy_to_bot_flow]
+
+state_path:
+  - OBSERVING_WARMUP
+  - WARMUP_COMPLETE_RETAIN_ONLY
+  - FIRST_REVIEW_ELIGIBLE
+  - SIGNAL_VALIDATED_OR_REJECTED
+  - RISK_OVERLAY_ELIGIBLE_ONLY_WITH_VALIDATED_STRATEGY
+  - HUMAN_GATED_PAPER_REVIEW
+
+terminal_truths:
+  - A valid outcome is REJECTED or RETIRED.
+  - Signal validation cannot manufacture strategy alpha.
+  - Risk-overlay eligibility cannot authorize paper, demo, testnet, or live execution.
+  - G12 starts only after a separate validated strategy, complete S2 exit, and required human gates.

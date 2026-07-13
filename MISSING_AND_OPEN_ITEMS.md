@@ -286,6 +286,11 @@ blocker classes. The current signal still lacks warm-up completion, eligible met
 scorecard, G1-G11 evidence, and independent reviews; no platform score can substitute for those
 facts.
 
+D-100 maps every remaining prospective-signal blocker to an evidence producer and prevents the
+8,640 observation samples from being mislabeled as trials. The association/overlay campaign's exact
+metric conventions, declared comparison population, benchmarks, cost/opportunity model, and
+selection rule remain to be preregistered before any lawful first-review calculation.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

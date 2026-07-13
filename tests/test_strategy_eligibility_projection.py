@@ -21,6 +21,10 @@ def test_prospective_projection_remains_fail_closed_during_warmup() -> None:
     assert projection["promotion_eligible"] is False
     assert projection["execution_authority"] == "NONE"
     assert "TRIAL_POPULATION_INCOMPLETE" in projection["scorecard_blockers"]
+    assert projection["metrics"][0]["blockers"] == [
+        "METRIC_INPUTS_INCOMPLETE",
+        "METRIC_SAMPLE_INSUFFICIENT",
+    ]
     assert "MANDATORY_GATES_NOT_ALL_PASS" in projection["promotion_blockers"]
 
 

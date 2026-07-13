@@ -80,7 +80,9 @@ class StrategyEligibility:
 
     def as_dict(self) -> dict[str, Any]:
         return {
-            "metrics": [asdict(metric) for metric in self.metrics],
+            "metrics": [
+                {**asdict(metric), "blockers": list(metric.blockers)} for metric in self.metrics
+            ],
             "scorecard_eligible": self.scorecard_eligible,
             "promotion_eligible": self.promotion_eligible,
             "scorecard_blockers": list(self.scorecard_blockers),

@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.102 deterministic strategy eligibility (2026-07-14). Supersedes v8.101 hashes.
+Package version: v8.103 prospective signal evidence producer map (2026-07-14). Supersedes v8.102 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `939a6d6c072e5e08b0500fb99ebe21d9daa6534e69f8fd37ac6d41295d3536a8` |
-| `DECISION_LOG.md` | `b41810b38e860b9e5f11f9f7b76aceaebcbd1981046196b503b165fcfd84b1e7` |
+| `PROJECT_STATE.md` | `a79084d809c48f80f201c398f6128f71080caad8b82928a2f819221c3e0971c6` |
+| `DECISION_LOG.md` | `6c046ebc334a225e295c1af1f14b31e2931690b9ffa0a72eb19b6ec8683eea42` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `417770600a52b07a5d20b79626921ac23f73faeb521c57ce9dce47a7d8f33f21` |
+| `MISSING_AND_OPEN_ITEMS.md` | `59041d0fdca81bf75d7a5d88fefab407bf882cd2f4b479a44fd01745ddbc47f4` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -68,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `7149b63a22191a2b45668571409ae81a157b2025a8ddb118aa9b719c0c583335` |
+| `research/RESEARCH_GAP_MATRIX.md` | `fcd432a75225c7093786f65b5f4eecde48d8f194e7dd7264900dba38ab76e625` |
 
 ## Post-V2 family selection V1 (added v8.55)
 
@@ -628,14 +628,21 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | Path | SHA-256 |
 |---|---|
 | `research/PLATFORM_STRATEGY_VALIDATION_AND_SCORE_ELIGIBILITY_V2.md` | `cd574335102d895360ae8a60abe2c74cd2b42366be9cc4d1ad8446f1aedf1f69` |
-| `research/STRATEGY_ELIGIBILITY_CONTRACT_V1.yaml` | `d78d4cedccd4c15b7c74c42ff43dcb58f008b1448dc02dc7869bfa9f566b1da4` |
-| `src/tios/validation/eligibility.py` | `4b7209e3fdc006a4737c85ff6a9e9295e928b157d0a8dda763c965f26b125419` |
+| `research/STRATEGY_ELIGIBILITY_CONTRACT_V1.yaml` | `9e5f69aeebcf1c511162e9d123c09af2a17e769b3c4562b0ba27b69d31beaae5` |
+| `src/tios/validation/eligibility.py` | `0a9007638857ebd6d30ffd3e4d30bfa9a50b7392fa015c3bf5142faf8d9057d2` |
 | `src/tios/validation/risk.py` | `00a2261bda219f3868b18b5b799cbc37c25a150ddd3fb7bf5d3287e694454f71` |
 | `src/tios/validation/__init__.py` | `943f52a0a1ff31e4f750c1acffec4b091241cea1fa3db546561a5e9304c0940e` |
-| `src/tios/services/dashboard_api/strategy_eligibility.py` | `654c6b4f758eb0656e4d512d28e0f0e2aae0c530aacfe10ed3a673e82c7648b2` |
+| `src/tios/services/dashboard_api/strategy_eligibility.py` | `5ebc551e285ee92c0ab484655ccbadfdff2fd10d48a0edac2b2cfbdb5d11c011` |
 | `tests/test_strategy_eligibility.py` | `59734ba16237eb078f821e18f5047d68c83705dbd6b907ed47088150cbc314e9` |
-| `tests/test_strategy_eligibility_projection.py` | `40ab3695254fdd1de8ab118767067f3a2120e82e978255eb40a9a805c33eb861` |
+| `tests/test_strategy_eligibility_projection.py` | `733d071bdf7401f16e8cebced4439aca959fc8c6bf26f6eada3aac128a6da980` |
 | `tests/test_risk_preconditions.py` | `15b24b25398ce2ce9238be61ba43f77ecdaa9141d8db438cf2c1d686f684e9ba` |
+
+## Prospective signal evidence producer map (added v8.103)
+
+| Path | SHA-256 |
+|---|---|
+| `research/PROSPECTIVE_SIGNAL_EVIDENCE_PRODUCER_MAP_V1.yaml` | `b7d5a6ed289e942b27b2b232b0ef3321897a8a92b501982d7358cf9f7e120194` |
+| `tests/test_prospective_signal_evidence_map.py` | `dc8e2ec39c8104555be6c240e687373b1729a69a420a36749cd775e7c3ad8690` |
 
 ## First causal prospective label schedule (added v8.88)
 

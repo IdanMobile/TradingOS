@@ -981,6 +981,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   evidence-backed G1-G11 plus all ten dimensions and four independent reviews. A prior G10 omission
   in the risk precondition is corrected. Read-only status/dashboard now projects the current
   blocker classes. The prospective signal remains ineligible during warm-up.
+- **Prospective evidence-producer map frozen (D-100):** each signal blocker now has an owner,
+  verifier, release condition, earliest lawful time, and target gate. The 8,640 windows are samples,
+  not trials; no score campaign or StrategyVersion exists. A validated risk signal would still
+  require a separately validated alpha StrategyVersion before any bot/paper path.
 
 ## Operational SSOT (unchanged)
 
@@ -1042,8 +1046,8 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 Let the managed observer continue its preregistered 8,640-checkpoint warm-up while retaining and
 verifying immutable evidence at bounded milestones. Do not aggregate or score during warm-up,
 access the sealed V2 holdout, activate a bot, request credentials, create orders, or cross any
-human S3/S4 gate. In parallel, continue safe offline closure of validation/full-flow gaps, beginning
-with a requirement-by-requirement map from the current signal lane to the later governed scorecard.
+human S3/S4 gate. In parallel, preregister the future prospective association/risk-overlay campaign
+without reading or aggregating warm-up outcomes, then continue safe offline full-flow closure.
 
 ## Exit condition of next phase (unchanged)
 

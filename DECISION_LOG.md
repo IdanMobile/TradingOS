@@ -1110,6 +1110,28 @@ Evidence: `research/PLATFORM_STRATEGY_VALIDATION_AND_SCORE_ELIGIBILITY_V2.md`,
 eligibility/risk tests.
 Status: **Eligibility contract implemented, tested, and projected; current signal warm-up blocked.**
 
+### D-100 — Prospective signal blockers map to explicit evidence producers
+
+Decision: every current eligibility blocker for `PROSPECTIVE-BTC-LIQUIDATION-STRESS-V1` is mapped
+to its owning producer, verifier, earliest lawful evaluation point, release condition, and affected
+gate/dimension. The map explicitly corrects a semantic ambiguity: 8,640 five-minute windows are
+prospective samples, not optimization trials. The signal has no declared score-campaign trial
+population and is not a StrategyVersion.
+
+The current lane may mature into an immutable RiskSignalVersion only after the frozen first-review
+minima and a supervisor admission decision. Even a validated risk signal cannot manufacture alpha,
+create an order, or support a bot without a separately validated exact StrategyVersion context.
+
+Consequence: future agents have a deterministic evidence path and cannot fill missing fields with
+platform scores, zeros, window counts mislabeled as trials, early labels, or inferred approvals.
+The next safe offline step is to preregister the future association/overlay campaign before any
+lawful metric calculation. No warm-up analysis, sealed-holdout access, credential, venue, paper,
+demo, live, or execution authority is created.
+
+Evidence: `research/PROSPECTIVE_SIGNAL_EVIDENCE_PRODUCER_MAP_V1.yaml`, current eligibility
+projection, and `tests/test_prospective_signal_evidence_map.py`.
+Status: **Blocker ownership frozen; signal remains observation-only and not eligible.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing
