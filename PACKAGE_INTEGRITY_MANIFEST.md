@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.91 fail-closed continuity evidence and observer V3 freeze (2026-07-13). Supersedes v8.90 hashes.
+Package version: v8.92 live schema diagnosis and observer V4 freeze (2026-07-13). Supersedes v8.91 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `2b7bc574f50d1be74be311dd6cd0ae0f535a849150a5001dc6d3a92b2e88071e` |
-| `DECISION_LOG.md` | `57ccfaa37ac424ca199654ca321aa98927355f002c0acb17cde7ab42a9b142ab` |
+| `PROJECT_STATE.md` | `947c5427eaf23e99f143154465c8d90b3fcad80b3e87885ab6dd3ab798ac007a` |
+| `DECISION_LOG.md` | `67f4d0e23623cbbfa24369b5f402ed79d66c76164b13436ca35988a572e5036e` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `e6b8db0bfcd8371f7f50ad5029269682803f14750deebf96bb45b19d7a49adeb` |
+| `MISSING_AND_OPEN_ITEMS.md` | `7943eecf0e10322cefd169d110118885b98f24588d0f7e9328fc288f9e8e9326` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -68,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `86cd91c3cfde8c74ae8e130e7fa154293c045801b84d54ee7097c4cfb1a6beca` |
+| `research/RESEARCH_GAP_MATRIX.md` | `aa6639a2accb6f96e09eaf088f1a1bebcb2bd75ab756ca9e6378ad8747ee80bf` |
 
 ## Post-V2 family selection V1 (added v8.55)
 
@@ -503,9 +503,9 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | Path | SHA-256 |
 |---|---|
 | `research/PROSPECTIVE_BTC_LIQUIDATION_STRESS_SIGNAL_V1.yaml` | `a2a5553ee5286a46b9972d6a31edd727ef3e9cfe25bdbdd09c4861012d1c3fb1` |
-| `src/tios/strategy/liquidation_stress.py` | `f7b784f4171e910ebd72b3190c92209e33bbae00a63b2a2579503022e68a75c4` |
-| `scripts/run_prospective_liquidation_observer.py` | `ef3c1a841bc2e1e639b30ff4e4a0d958444d252514090503e0f2506e13b31c25` |
-| `tests/test_liquidation_stress.py` | `f4b66bc61e6ed13007dbe529b0fb426b08235972eb1f869577bf39d92ed9d139` |
+| `src/tios/strategy/liquidation_stress.py` | `dc9e30b033316d9b5f0ca6886def9929d637292e21c73cfca9b0ca23530dc9b9` |
+| `scripts/run_prospective_liquidation_observer.py` | `489b4678f3e84b5014da7e3af39022ad1239856f8f9fe362534221a2384f5d96` |
+| `tests/test_liquidation_stress.py` | `3dec588b1d7fe49b2214860fa9917c286fccc8a81a6e8918c49ea56914d42099` |
 | `pyproject.toml` | `7ea85d3bb8c1ae3444967444f8105a5c58eacdd6c8a7cb34b6f751f2dec01c1d` |
 | `uv.lock` | `f8a23520debbe0e2c2aa4c2cd6013669f9e46525d8631288c1979d2e4a5ed3b1` |
 
@@ -522,9 +522,9 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | Path | SHA-256 |
 |---|---|
 | `research/PROSPECTIVE_BTC_LIQUIDATION_OBSERVER_V2.yaml` | `32a306610a5ac8034287bb9920dfb4b8800b82f2480efaac4ce2370e7358affe` |
-| `src/tios/strategy/liquidation_stress.py` | `f7b784f4171e910ebd72b3190c92209e33bbae00a63b2a2579503022e68a75c4` |
-| `scripts/run_prospective_liquidation_observer.py` | `ef3c1a841bc2e1e639b30ff4e4a0d958444d252514090503e0f2506e13b31c25` |
-| `tests/test_liquidation_stress.py` | `f4b66bc61e6ed13007dbe529b0fb426b08235972eb1f869577bf39d92ed9d139` |
+| `src/tios/strategy/liquidation_stress.py` | `dc9e30b033316d9b5f0ca6886def9929d637292e21c73cfca9b0ca23530dc9b9` |
+| `scripts/run_prospective_liquidation_observer.py` | `489b4678f3e84b5014da7e3af39022ad1239856f8f9fe362534221a2384f5d96` |
+| `tests/test_liquidation_stress.py` | `3dec588b1d7fe49b2214860fa9917c286fccc8a81a6e8918c49ea56914d42099` |
 | `tests/test_prospective_liquidation_observer.py` | `3f36c5b55879abb61ef81e56a92d52d64c1eca505326a79693b5b25aa37ae6f5` |
 
 ## First complete prospective liquidation-stress window (added v8.86)
@@ -572,10 +572,22 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | Path | SHA-256 |
 |---|---|
 | `research/PROSPECTIVE_BTC_LIQUIDATION_OBSERVER_V3.yaml` | `a82fcb2c410fcbea180e4ac0b8cadc1a01ae86dbf3db8d8b855513ce5aac37f4` |
-| `scripts/run_prospective_liquidation_observer.py` | `ef3c1a841bc2e1e639b30ff4e4a0d958444d252514090503e0f2506e13b31c25` |
+| `scripts/run_prospective_liquidation_observer.py` | `489b4678f3e84b5014da7e3af39022ad1239856f8f9fe362534221a2384f5d96` |
 | `tests/test_prospective_liquidation_observer.py` | `3f36c5b55879abb61ef81e56a92d52d64c1eca505326a79693b5b25aa37ae6f5` |
 | `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_CONTINUITY_SESSION_FAILURE_2026_07_13.md` | `c9d831a2f3522dbdf198fe4599f1a516334fe5c6d21342c5d4fcb3663a089fe8` |
 | `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/session_78e77d1ff354e7d7078c4ca1df84b1e42b9ef96e4326945e4a805485ebbba8ed.json` | `78e77d1ff354e7d7078c4ca1df84b1e42b9ef96e4326945e4a805485ebbba8ed` |
+
+## Live schema diagnosis and observer V4 freeze (added v8.92)
+
+| Path | SHA-256 |
+|---|---|
+| `research/PROSPECTIVE_BTC_LIQUIDATION_OBSERVER_V4.yaml` | `a491cc61b8101878a6d9cd9a0b95b238a0ae2327ac65153ad93374e2ba23bbd3` |
+| `src/tios/strategy/liquidation_stress.py` | `dc9e30b033316d9b5f0ca6886def9929d637292e21c73cfca9b0ca23530dc9b9` |
+| `scripts/run_prospective_liquidation_observer.py` | `489b4678f3e84b5014da7e3af39022ad1239856f8f9fe362534221a2384f5d96` |
+| `tests/test_liquidation_stress.py` | `3dec588b1d7fe49b2214860fa9917c286fccc8a81a6e8918c49ea56914d42099` |
+| `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_V3_PARSER_FAILURE_2026_07_13.md` | `63a26750889d6b1f0bb52c4da02744d4958bb00d5d41d422218f0ad78c8c5d9a` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/raw/exchange_info_911646d9bdb663d11b4ecee034163fc1b26631846045ced7907884472c81712c.json` | `911646d9bdb663d11b4ecee034163fc1b26631846045ced7907884472c81712c` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/session_d4278c9bb637195c176583ef21f0a0fd009ac18aa21f4816f87bd5b9213e03e5.json` | `d4278c9bb637195c176583ef21f0a0fd009ac18aa21f4816f87bd5b9213e03e5` |
 
 ## Expected generated artifacts
 

@@ -867,6 +867,26 @@ Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_CONTINUITY_SESSION_FAIL
 session `78e77d1f…`, `research/PROSPECTIVE_BTC_LIQUIDATION_OBSERVER_V3.yaml`, and focused tests.
 Status: **Failed continuity session retained with zero windows; V3 frozen and unrun.**
 
+### D-089 — Live force-order schema defect diagnosed; observer V4 frozen
+
+Decision: the first V3 retry failed before a complete window, but V3 retained the rejected public
+message and exact error. The message proves the parser defect: live `st: 2` is inside the order
+object `o`, while the parser and synthetic fixture incorrectly expected top-level `st`. Binance's
+current liquidation-stream documentation likewise nests documented order fields under `o`.
+
+V4 reads `o.st`, corrects the fixture, and versions new sessions as schema 4. The immutable V3
+failure remains verifiable as the exact known pre-fix defect. No signal formula, event notional,
+window, baseline, label, risk, eligibility, or authority term changes.
+
+Consequence: a clean V4 source retry is authorized only after this commit. Both failed attempts
+retain zero windows. No backfill, analysis, score, strategy change, credential, venue connection,
+order, paper/demo/live state, promotion, or execution authority is authorized.
+
+Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_V3_PARSER_FAILURE_2026_07_13.md`, session
+`d4278c9b…`, `research/PROSPECTIVE_BTC_LIQUIDATION_OBSERVER_V4.yaml`, official Binance stream
+documentation, and corrected tests.
+Status: **Parser defect proven and corrected; V4 frozen and unrun; authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

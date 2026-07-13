@@ -92,7 +92,7 @@ def parse_force_order_message(
         side = str(order["S"])
         accumulated = Decimal(str(order["z"]))
         average_price = Decimal(str(order["ap"]))
-        symbol_type = _integer(payload["st"], "symbol type")
+        symbol_type = _integer(order["st"], "symbol type")
     except (KeyError, TypeError, json.JSONDecodeError, InvalidOperation) as error:
         raise LiquidationStressError("invalid force-order snapshot schema") from error
     if payload.get("e") != "forceOrder":

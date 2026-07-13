@@ -1,5 +1,14 @@
 # Package Changelog
 
+## v8.92 — 2026-07-13 — Live schema diagnosis and observer V4 freeze
+
+- V3 retained the exact rejected live message and proved the parser/fixture incorrectly expected
+  top-level `st`; the actual force-order message publishes `o.st`.
+- Corrected the exact schema path, versioned new sessions as schema 4, and preserved the V3 failure
+  as immutable known pre-fix evidence.
+- Both failed sessions retain zero windows. Signal, labels, scoring, promotion, venue connection,
+  orders, and execution authority remain unchanged.
+
 ## v8.91 — 2026-07-13 — Fail-closed continuity evidence and observer V3 freeze
 
 - Retained a 26m49s source session that ended `FAILED_LiquidationStressError`; correctly admitted

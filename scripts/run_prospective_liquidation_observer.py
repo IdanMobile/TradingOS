@@ -50,6 +50,7 @@ AUTHORITY = {
     "live_orders": "DISABLED",
     "credentials_used": False,
 }
+KNOWN_TOP_LEVEL_ST_DEFECT_COMMIT = "8c5ee6035439f884ea3f282616939fd4cd795939"
 
 
 @dataclass(frozen=True, slots=True)
@@ -286,7 +287,7 @@ def build_session(
         :24
     ]
     return {
-        "schema_version": 3,
+        "schema_version": 4,
         "signal_spec_id": "PROSPECTIVE-BTC-LIQUIDATION-STRESS-V1",
         "signal_spec_sha256": spec_hash,
         "run_commit": run_commit,
@@ -379,7 +380,7 @@ def verify_directory(directory: Path) -> int:
             raise LiquidationStressError(f"session hash mismatch: {path.name}")
         payload = json.loads(path.read_text())
         schema_version = payload.get("schema_version")
-        if schema_version not in {1, 2, 3}:
+        if schema_version not in {1, 2, 3, 4}:
             raise LiquidationStressError("unsupported prospective session schema")
         if payload.get("signal_spec_sha256") != spec_hash:
             raise LiquidationStressError("prospective session spec hash mismatch")
@@ -395,7 +396,7 @@ def verify_directory(directory: Path) -> int:
             or source.get("complete_liquidation_tape") is not False
         ):
             raise LiquidationStressError("prospective session source contract changed")
-        if schema_version == 3:
+        if schema_version in {3, 4}:
             failure = payload.get("source_failure")
             if source["status"] == "COMPLETE":
                 if failure is not None:
@@ -423,7 +424,21 @@ def verify_directory(directory: Path) -> int:
                                 "rejected source event failure mismatch"
                             ) from error
                     else:
-                        raise LiquidationStressError("rejected source event is valid")
+                        legacy_st_defect = False
+                        if (
+                            schema_version == 3
+                            and payload["run_commit"] == KNOWN_TOP_LEVEL_ST_DEFECT_COMMIT
+                            and error_type == "LiquidationStressError"
+                            and error_message == "invalid force-order snapshot schema"
+                        ):
+                            raw_payload = json.loads(rejected["raw_message"])
+                            legacy_st_defect = (
+                                "st" not in raw_payload
+                                and isinstance(raw_payload.get("o"), dict)
+                                and "st" in raw_payload["o"]
+                            )
+                        if not legacy_st_defect:
+                            raise LiquidationStressError("rejected source event is valid")
         raw_hash = source["exchange_info_sha256"]
         raw_path = directory / "raw" / f"exchange_info_{raw_hash}.json"
         if not raw_path.is_file() or sha256(raw_path.read_bytes()) != raw_hash:

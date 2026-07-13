@@ -33,8 +33,8 @@ def message(*, side: str, contracts: str, event_offset_ms: int = 1000) -> str:
                 "z": contracts,
                 "ap": "100000.0",
                 "T": timestamp - 1,
+                "st": 2,
             },
-            "st": 2,
         }
     )
 

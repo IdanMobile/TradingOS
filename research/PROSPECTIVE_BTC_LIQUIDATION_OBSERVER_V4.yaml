@@ -1,0 +1,45 @@
+schema_version: 1
+observer_id: PROSPECTIVE-BTC-LIQUIDATION-OBSERVER-V4
+decision_id: D-089
+status: FROZEN_NOT_RUN
+signal_spec_id: PROSPECTIVE-BTC-LIQUIDATION-STRESS-V1
+signal_spec_sha256: a2a5553ee5286a46b9972d6a31edd727ef3e9cfe25bdbdd09c4861012d1c3fb1
+execution_authority: NONE
+promotion_eligible: false
+
+v3_diagnostic_session:
+  session_sha256: d4278c9bb637195c176583ef21f0a0fd009ac18aa21f4816f87bd5b9213e03e5
+  run_commit: 8c5ee6035439f884ea3f282616939fd4cd795939
+  status: FAILED_LiquidationStressError
+  error_message: invalid force-order snapshot schema
+  admitted_complete_windows: 0
+  rejected_event_evidence: exact public message retained and content-addressed
+
+verified_defect:
+  old_parser_path: payload.st
+  actual_live_path: payload.o.st
+  official_order_container: payload.o
+  official_source: https://developers.binance.com/legacy-docs/derivatives/coin-margined-futures/websocket-market-streams/Liquidation-Order-Streams
+  correction: read symbol type from order.st
+
+compatibility:
+  - Schema-3 session d4278c9b remains verifiable as the exact known pre-fix parser failure.
+  - New sessions use schema 4 and the corrected order.st path.
+  - Existing zero-event V1/V2 sessions remain unchanged and verifiable.
+
+unchanged_terms:
+  source: wss://dstream.binance.com/ws/btcusd_perp@forceOrder
+  source_semantics: LATEST_ONE_PER_SYMBOL_PER_1000MS_SNAPSHOT_NOT_COMPLETE_TAPE
+  window_seconds: 300
+  baseline_windows: 8640
+  failed_session_complete_windows: 0
+  incomplete_or_warmup_state: FLAT_AND_BLOCK
+  venue_connection: NONE
+  paper_orders: DISABLED
+  live_orders: DISABLED
+
+acceptance:
+  - The exact rejected live message parses with symbol_type 2 under V4.
+  - The same message remains recorded as the known V3 parser failure without rewriting history.
+  - Identity, causality, notional, complete-window, signal, risk, and authority tests pass.
+  - No V4 source capture begins before this correction is committed.

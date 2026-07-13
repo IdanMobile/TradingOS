@@ -934,6 +934,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   `FAILED_LiquidationStressError` after 26m49s and admitted zero windows. V2 lacks enough evidence
   to identify the cause. V3 now retains and reconstructs exact exception/message/rejected-event
   evidence without changing the signal; it is not yet run.
+- **V3 diagnosed the parser defect; V4 frozen (D-089):** the retained live force-order message
+  places symbol type at `o.st`, while the parser/fixture expected top-level `st`. V4 corrects that
+  exact path and preserves the V3 session as immutable pre-fix failure evidence. Both failed
+  sessions admit zero windows; signal and authority terms are unchanged.
 
 ## Operational SSOT (unchanged)
 
@@ -992,11 +996,10 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Commit observer V3, then at or after `2026-07-13T19:52:00Z` run the unchanged causal evaluator so
-only the first window's 1h label may be requested and retained. Verify exact bytes without
-aggregating or interpreting the return. Then retry bounded continuous capture under V3 so any
-failure is diagnosable. Do not backfill, score, access the sealed V2 holdout, activate a bot,
-request credentials, or cross any human S3/S4 gate.
+Commit observer V4, then run the unchanged causal evaluator so only the first window's now-available
+1h label may be requested and retained. Verify exact bytes without aggregating or interpreting the
+return. Then retry one complete V4 source window. Do not backfill, score, access the sealed V2
+holdout, activate a bot, request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

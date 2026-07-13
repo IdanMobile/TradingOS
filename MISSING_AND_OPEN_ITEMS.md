@@ -233,6 +233,11 @@ is unknown because V2 preserved only `LiquidationStressError`, not its message o
 record. V3 freezes exact failure evidence and reconstruction without changing the signal. A clean
 V3 capture, continuous warm-up, first available label, and every validation gate remain open.
 
+D-089 uses V3 evidence to diagnose the source failure: the parser/fixture expected top-level `st`,
+but the actual stream publishes `o.st`. V4 corrects only that schema path and preserves the V3
+failure immutably. A clean V4 complete window, continuity, causal labels, warm-up, and all
+validation/promotion gates remain open.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized
