@@ -1,0 +1,85 @@
+{
+  "campaign_id": "SEARCH-BASELINE-G10-REPRO-V1",
+  "declared_scope_lineage": {
+    "all_trials_population_ref": "artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/inputs/b3_trials_da17c5cd44ed4df4cbbca8ac2eed8909bed61976f782c00957114dacefdf0087.json",
+    "all_trials_population_sha256": "da17c5cd44ed4df4cbbca8ac2eed8909bed61976f782c00957114dacefdf0087",
+    "raw_trial_count": 16,
+    "status": "COMPLETE"
+  },
+  "effect": "Legacy accelerator-proxy diagnostic only; not canonical strategy conformance, promotion evidence, or execution authority.",
+  "execution_authority": "NONE",
+  "family": "b3",
+  "g10_gate_status": "METHOD_BLOCKED",
+  "generated_at_utc": "2026-07-13T09:49:02.422360+00:00",
+  "method_contract": {
+    "blockers": [
+      "hierarchical_search_lineage_incomplete",
+      "hierarchy_effective_independent_trials_unavailable",
+      "family_effective_independent_trials_unavailable"
+    ],
+    "governed_selection_metric": "non_annualized_per_bar_sharpe",
+    "metric_applies_to": [
+      "candidate_selection",
+      "PBO_IS",
+      "PBO_OOS",
+      "DSR"
+    ],
+    "status": "METHOD_BLOCKED"
+  },
+  "numeric_result": {
+    "average_trial_return_correlation": null,
+    "bars_excluded_tail": 11,
+    "correlation_observation_count": 577803,
+    "declared_selection_metric": "non_annualized_per_bar_sharpe",
+    "dsr": {
+      "independent": {},
+      "max_abs_delta": null,
+      "primary": {},
+      "status": "METHOD_BLOCKED"
+    },
+    "dsr_metric": "sharpe_per_bar",
+    "effective_independent_trials": null,
+    "effective_independent_trials_scope": "RETAINED_FAMILY_GRID_ONLY",
+    "independent_trials_basis": "UNAVAILABLE_UNDEFINED_TRIAL_RETURN_CORRELATIONS",
+    "numeric_verdict": "METHOD_BLOCKED",
+    "pbo": {
+      "independent": {
+        "mean_logit": 1.480192601719528,
+        "pbo": 0.016317016317016316,
+        "split_count": 12870
+      },
+      "max_abs_delta": 0.0,
+      "primary": {
+        "pbo": 0.016317016317016316,
+        "split_count": 12870
+      }
+    },
+    "pbo_slice_metric": "non_annualized_per_bar_sharpe",
+    "promotion_verdict": "METHOD_BLOCKED",
+    "raw_trial_count": 16,
+    "sample_count": 577803,
+    "search_lineage_complete": false,
+    "selected_returns_kurtosis": 3.0,
+    "selected_returns_skewness": 0.0,
+    "selected_sharpe_per_bar": 0.0,
+    "selected_total_return": 0.0,
+    "selected_trial_key": "window=3,deviation=1.5",
+    "selection_metrics_aligned": true,
+    "selection_procedure": "max full-sample non-annualized per-bar Sharpe over retained family grid",
+    "sharpe_variance_across_trials": 0.0001524002815976385,
+    "slice_count": 16,
+    "slice_length_bars": 36112,
+    "trial_count": 16,
+    "verdict": "METHOD_BLOCKED",
+    "verdict_rule": "PASS requires DSR >= 0.95 and PBO <= 0.5; a PASS additionally requires validation-stats-specialist review before promotion use (RG-07)"
+  },
+  "preregistration_sha256": "ef9b62a95ca701c43cd3a23912d180b270d9b9d49f4c8f4e954405b7365bb872",
+  "promotion_eligible": false,
+  "schema": "tios-g10-preregistered-family-result-v1",
+  "semantic_conformance": "LEGACY_ACCELERATOR_PROXY_NOT_CANONICAL",
+  "upstream_family_admission": {
+    "promotion_effect": "METHOD_BLOCKED",
+    "status": "INCOMPLETE"
+  },
+  "winner_selected": false
+}

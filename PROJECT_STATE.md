@@ -740,13 +740,17 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   open/settle/rehedge/close fees, timestamp ordering, capital conservation, missing data, and
   terminal maintenance breach. Funding input contracts, venue-specific lifecycle integration,
   intraperiod liquidation, empirical execution, and counterparty semantics remain unresolved.
-- **Future research fail-closed contracts:**
-  `research/BASELINE_G10_SEARCH_CAMPAIGN_V1.yaml` freezes the next bounded 66-trial
+- **Future research fail-closed contracts and first completed campaign:**
+  `research/BASELINE_G10_SEARCH_CAMPAIGN_V1.yaml` froze and completed the bounded 66-trial
   B2/B3/B4 reproduction roster, dataset, specs, engine, scenario, parameters, Sharpe metric,
   CSCV policy, hashes, stop rules, and non-authority before any run. New substantive strategy
   artifacts must pass `tios.evidence.validate_substantive_research_metadata`, including exact
   code/data/manifest/spec/campaign/cost/split/trial-population/output lineage. These contracts
-  do not reconstruct omitted historical search stages or authorize a new campaign result.
+  do not reconstruct omitted historical search stages or authorize promotion or execution. The
+  clean, offline run at commit `7782752` retained all 66 trials: B2 and B4 numerically FAIL, B3 is
+  method-blocked, and the overall gate is `METHOD_BLOCKED`. The retained implementations are
+  explicitly legacy current-close/F1-S0 accelerator proxies, not canonical next-open strategy
+  conformance. Evidence: `artifacts/reports/G10_PREREGISTERED_CAMPAIGN_REPORT_2026_07_13.md`.
 
 ## Operational SSOT (unchanged)
 
@@ -805,12 +809,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Continue the remaining dependency-ordered initiatives in
-`docs/supervisor/IMPROVEMENT_PLAN_2026-07-13.md`: execute future searches only under the
-preregistered campaign/provenance contract, reconstruct stat-arb/cross-sectional/combination
-methods and canonical ownership, and extend carry into sourced venue-specific collateral,
-settlement, intraperiod liquidation, reconciliation, and empirical-cost models. Authenticated
-demo networking stays quarantined and all human S3/S4 gates remain untouched.
+Do not expand the failed legacy proxy grids. If baseline conformance remains useful, create a
+new preregistered campaign with canonical next-bar-open execution, B2's declared state rule,
+F1/S1-or-stricter costs, and distributable frozen data. In parallel-safe work, reconstruct
+stat-arb/cross-sectional/combination methods and canonical ownership before drawing family-wide
+claims. Authenticated demo networking stays quarantined and all human S3/S4 gates remain untouched.
 
 ## Exit condition of next phase (unchanged)
 

@@ -33,8 +33,9 @@ The baseline and finding register remain authoritative:
   provenance envelope for future substantive research.
 - Changed future public, signal, and universe searches to train-only selection with
   frozen context-level holdout evaluation. Existing affected runs remain exploratory.
-- Added a preregistered 66-trial future baseline G10 campaign; it grants no promotion
-  or execution authority.
+- Executed the preregistered 66-trial baseline G10 campaign from a clean commit with
+  immutable per-family evidence. B2/B4 fail, B3 is method-blocked, and no promotion
+  or execution authority was created.
 - Added research-only multi-leg canonical identity and deterministic Decimal carry
   accounting/lifecycle primitives for capital, funding, basis, fees, rehedging,
   closing, and isolated-margin breach. Venue-specific semantics remain absent.
@@ -72,11 +73,11 @@ credential rotation if exposure is uncertain, and any paid data or release actio
 
 ## Recommended next phase
 
-Continue offline only: execute new searches solely under the preregistration and
-provenance contracts; reconstruct stat-arb/cross-sectional/combination methodology and
-canonical ownership; then extend carry with sourced venue-specific lifecycle and risk
-semantics. Do not reactivate authenticated networking or treat any numeric diagnostic as
-promotion evidence without the missing human and method gates.
+Continue offline only. Do not expand the failed legacy proxy grids. If baseline
+conformance remains useful, preregister a new canonical next-bar-open, F1/S1-or-stricter
+campaign on distributable frozen data. Otherwise reconstruct one strategy family's method
+and canonical ownership before new parameter search. Do not reactivate authenticated
+networking or treat any numeric diagnostic as promotion evidence.
 
 ## Primary method and venue references
 

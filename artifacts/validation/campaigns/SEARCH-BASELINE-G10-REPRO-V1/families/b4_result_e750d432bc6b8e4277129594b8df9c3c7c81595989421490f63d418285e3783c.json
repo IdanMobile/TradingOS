@@ -1,0 +1,93 @@
+{
+  "campaign_id": "SEARCH-BASELINE-G10-REPRO-V1",
+  "declared_scope_lineage": {
+    "all_trials_population_ref": "artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/inputs/b4_trials_32c479265444ee148293f407df851c664f40d1ca98671c1ddb7e91dc1ac1b84e.json",
+    "all_trials_population_sha256": "32c479265444ee148293f407df851c664f40d1ca98671c1ddb7e91dc1ac1b84e",
+    "raw_trial_count": 16,
+    "status": "COMPLETE"
+  },
+  "effect": "Legacy accelerator-proxy diagnostic only; not canonical strategy conformance, promotion evidence, or execution authority.",
+  "execution_authority": "NONE",
+  "family": "b4",
+  "g10_gate_status": "METHOD_BLOCKED",
+  "generated_at_utc": "2026-07-13T09:49:02.422360+00:00",
+  "method_contract": {
+    "blockers": [
+      "hierarchical_search_lineage_incomplete",
+      "hierarchy_effective_independent_trials_unavailable",
+      "family_effective_independent_trials_unavailable"
+    ],
+    "governed_selection_metric": "non_annualized_per_bar_sharpe",
+    "metric_applies_to": [
+      "candidate_selection",
+      "PBO_IS",
+      "PBO_OOS",
+      "DSR"
+    ],
+    "status": "METHOD_BLOCKED"
+  },
+  "numeric_result": {
+    "average_trial_return_correlation": 0.5529775452203778,
+    "bars_excluded_tail": 11,
+    "correlation_observation_count": 577803,
+    "declared_selection_metric": "non_annualized_per_bar_sharpe",
+    "dsr": {
+      "independent": {
+        "dsr": 0.0,
+        "expected_maximum_noise_sharpe": 0.009882467944484986,
+        "z_score": -29.8872346960902
+      },
+      "max_abs_delta": 3.552713678800501e-15,
+      "primary": {
+        "dsr": 0.0,
+        "expected_maximum_noise_sharpe": 0.009882467944484987,
+        "z_score": -29.887234696090204
+      },
+      "status": "COMPUTED"
+    },
+    "dsr_metric": "sharpe_per_bar",
+    "effective_independent_trials": 7.705336821694333,
+    "effective_independent_trials_scope": "RETAINED_FAMILY_GRID_ONLY",
+    "independent_trials_basis": "DSR_2014_APPENDIX_3_AVERAGE_RETURN_CORRELATION",
+    "numeric_verdict": "FAIL",
+    "pbo": {
+      "independent": {
+        "mean_logit": 0.14277657515041065,
+        "pbo": 0.380963480963481,
+        "split_count": 12870
+      },
+      "max_abs_delta": 0.0,
+      "primary": {
+        "pbo": 0.380963480963481,
+        "split_count": 12870
+      }
+    },
+    "pbo_slice_metric": "non_annualized_per_bar_sharpe",
+    "promotion_verdict": "METHOD_BLOCKED",
+    "raw_trial_count": 16,
+    "sample_count": 577803,
+    "search_lineage_complete": false,
+    "selected_returns_kurtosis": 288.6088717599647,
+    "selected_returns_skewness": 1.5073542240619444,
+    "selected_sharpe_per_bar": -0.031732614114345484,
+    "selected_total_return": -0.9999998428296542,
+    "selected_trial_key": "lookback=3,exit_window=10",
+    "selection_metrics_aligned": true,
+    "selection_procedure": "max full-sample non-annualized per-bar Sharpe over retained family grid",
+    "sharpe_variance_across_trials": 4.7166575385399146e-05,
+    "slice_count": 16,
+    "slice_length_bars": 36112,
+    "trial_count": 16,
+    "verdict": "FAIL",
+    "verdict_rule": "PASS requires DSR >= 0.95 and PBO <= 0.5; a PASS additionally requires validation-stats-specialist review before promotion use (RG-07)"
+  },
+  "preregistration_sha256": "ef9b62a95ca701c43cd3a23912d180b270d9b9d49f4c8f4e954405b7365bb872",
+  "promotion_eligible": false,
+  "schema": "tios-g10-preregistered-family-result-v1",
+  "semantic_conformance": "LEGACY_ACCELERATOR_PROXY_NOT_CANONICAL",
+  "upstream_family_admission": {
+    "promotion_effect": "METHOD_BLOCKED",
+    "status": "INCOMPLETE"
+  },
+  "winner_selected": false
+}

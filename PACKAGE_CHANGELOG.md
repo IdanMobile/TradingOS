@@ -785,3 +785,7 @@ Key outcomes:
 - Classified the retained grids as legacy current-close accelerator proxies rather than
   canonical next-open strategy implementations; the campaign remains diagnostic-only.
 - Added the missing `pyarrow==24.0.0` dependency to the retained vectorbt environment freeze.
+- Executed the frozen campaign from clean commit `7782752`; immutable evidence records B2/B4
+  numeric FAIL, B3 `METHOD_BLOCKED`, overall G10 `METHOD_BLOCKED`, and no selected winner.
+- Added the controlled human-readable campaign report and retained the local-only rerun
+  limitation: the exact hashed dataset and environment are not Git- or DVC-distributed.

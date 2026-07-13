@@ -31,8 +31,8 @@ payloads/original normalization identity, exact public-source/spec identity, one
 frozen candidate, hierarchy-wide effective trials, schema support for ranking/MTF/composition,
 and a complete integrated funding lifecycle/risk model remain open. Research-only multi-leg
 identity and deterministic open/settle/rehedge/close accounting fixtures now exist but create
-no execution path. The next bounded baseline G10 reproduction is preregistered, and future
-substantive artifacts must satisfy the new fail-closed provenance metadata contract.
+no execution path. The bounded 66-trial baseline G10 reproduction completed under the
+fail-closed provenance contract: B2/B4 fail, B3 is method-blocked, and no result is promotable.
 
 These corrective items supersede any earlier statement that all agent-executable work
 is exhausted. They grant no credential, venue, order, paper, demo, or live authority.
@@ -46,9 +46,11 @@ is exhausted. They grant no credential, venue, order, paper, demo, or live autho
 - RG-07 remains **METHOD_BLOCKED** (2026-07-13): candidate-specific G10 PBO/DSR
   was corrected and independently recomputed on retained family populations. B2/B4
   numerically fail, B3 cannot define trial correlations, and no family result can
-  clear the gate because the upstream search hierarchy was not retained. Evidence:
-  `artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_13.json`. A preregistered
-  future campaign prevents recurrence; stats-specialist review remains required
+  clear the gate because the upstream search hierarchy was not retained. The completed
+  preregistered reproduction additionally proves the declared 66-trial scope but exposes
+  legacy current-close/canonical-next-open semantic divergence. Evidence:
+  `artifacts/reports/G10_PREREGISTERED_CAMPAIGN_REPORT_2026_07_13.md`. Future campaigns
+  now fail closed on provenance; stats-specialist review remains required
   before any future G10 PASS can support promotion.
 
 ## Current environment/coverage constraints

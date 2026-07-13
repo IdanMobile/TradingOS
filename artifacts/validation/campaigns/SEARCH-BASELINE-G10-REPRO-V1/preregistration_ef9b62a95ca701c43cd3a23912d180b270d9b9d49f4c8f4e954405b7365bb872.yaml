@@ -1,19 +1,6 @@
 schema: tios-search-campaign-preregistration-v1
 campaign_id: SEARCH-BASELINE-G10-REPRO-V1
-status: COMPLETED
-completed_at_utc: 2026-07-13T09:49:02.422360+00:00
-completion:
-  run_commit: 77827521c09c2ffeee7f12490a9ef2ec3555d474
-  preregistration_sha256: ef9b62a95ca701c43cd3a23912d180b270d9b9d49f4c8f4e954405b7365bb872
-  index_ref: artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/campaign_index_4caf259b6485b57f7838ad0887c9ffa44b879a8155316dce2cacb26db18b4f57.json
-  index_sha256: 4caf259b6485b57f7838ad0887c9ffa44b879a8155316dce2cacb26db18b4f57
-  declared_scope_lineage: COMPLETE
-  upstream_family_admission_complete: false
-  g10_gate_status: METHOD_BLOCKED
-  numeric_summary:
-    b2: FAIL
-    b3: METHOD_BLOCKED
-    b4: FAIL
+status: PREREGISTERED_NOT_RUN
 purpose: >-
   Reproduce the retained legacy vectorbt B2/B3/B4 accelerator-proxy grids under the
   D-047 metric contract. This is not canonical strategy-conformance evidence.

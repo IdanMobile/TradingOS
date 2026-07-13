@@ -440,3 +440,22 @@ evidence. Contract validation checks declarations only and always requires
 Evidence: `research/BASELINE_G10_SEARCH_CAMPAIGN_V1.yaml` and
 `src/tios/evidence/provenance.py`.
 Status: **Approved future offline-research contract; campaign not run and no authority granted.**
+
+### D-050 — First preregistered G10 campaign completes without a promotable result
+Decision: `SEARCH-BASELINE-G10-REPRO-V1` ran from clean commit `7782752` through an
+offline runner with no network, venue, credential, or order path. Its declared 66-trial scope is
+complete and every family result has immutable all-trial inputs, output hashes, and validated
+metadata. B2 and B4
+numerically fail; B3 is method-blocked because constant/no-trade trials make correlations and
+effective trials undefined. The overall gate remains `METHOD_BLOCKED` because upstream family
+admission is unavailable.
+
+The run is a legacy accelerator-proxy reproduction, not canonical strategy conformance:
+current-close fills differ from the specs' next-bar-open timing, B2 uses a crossover event rather
+than its declared eligible state, and F1/S0 omits slippage. No further parameter expansion of
+this proxy population is justified. Any canonical follow-up requires a new preregistration and
+F1/S1-or-stricter costs.
+
+Evidence: `artifacts/reports/G10_PREREGISTERED_CAMPAIGN_REPORT_2026_07_13.md` and the
+content-addressed index under `artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/`.
+Status: **Completed diagnostic; no strategy, promotion, venue, or execution authority.**

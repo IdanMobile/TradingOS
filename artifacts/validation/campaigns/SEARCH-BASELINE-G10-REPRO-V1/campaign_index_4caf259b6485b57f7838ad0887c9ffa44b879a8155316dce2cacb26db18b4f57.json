@@ -1,0 +1,55 @@
+{
+  "campaign_id": "SEARCH-BASELINE-G10-REPRO-V1",
+  "declared_scope_lineage": "COMPLETE",
+  "execution_authority": "NONE",
+  "families": {
+    "b2": {
+      "all_trials_ref": "artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/inputs/b2_trials_81367e559aa03234d1842373160df3b4b8a535067ee4e36ba52276bab715d22d.json",
+      "all_trials_sha256": "81367e559aa03234d1842373160df3b4b8a535067ee4e36ba52276bab715d22d",
+      "g10_gate_status": "METHOD_BLOCKED",
+      "metadata_ref": "artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/families/b2_metadata_624f744b6c556079c99fb809f79198a0a5445115a146c60b753c22b61daa8e28.json",
+      "metadata_sha256": "624f744b6c556079c99fb809f79198a0a5445115a146c60b753c22b61daa8e28",
+      "numeric_verdict": "FAIL",
+      "result_ref": "artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/families/b2_result_41af2d74e392b810a413e05c58996c31337c6e9bda7b8feb662a9d455e88a65e.json",
+      "result_sha256": "41af2d74e392b810a413e05c58996c31337c6e9bda7b8feb662a9d455e88a65e"
+    },
+    "b3": {
+      "all_trials_ref": "artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/inputs/b3_trials_da17c5cd44ed4df4cbbca8ac2eed8909bed61976f782c00957114dacefdf0087.json",
+      "all_trials_sha256": "da17c5cd44ed4df4cbbca8ac2eed8909bed61976f782c00957114dacefdf0087",
+      "g10_gate_status": "METHOD_BLOCKED",
+      "metadata_ref": "artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/families/b3_metadata_84bdd8e22093e241b7f415faf74fc6d7e41870b3385356465aa98f8189252702.json",
+      "metadata_sha256": "84bdd8e22093e241b7f415faf74fc6d7e41870b3385356465aa98f8189252702",
+      "numeric_verdict": "METHOD_BLOCKED",
+      "result_ref": "artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/families/b3_result_2ae7ff5e2817db77448c230d71b658d786fac40cf18f9d2727a15a4786ed640f.json",
+      "result_sha256": "2ae7ff5e2817db77448c230d71b658d786fac40cf18f9d2727a15a4786ed640f"
+    },
+    "b4": {
+      "all_trials_ref": "artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/inputs/b4_trials_32c479265444ee148293f407df851c664f40d1ca98671c1ddb7e91dc1ac1b84e.json",
+      "all_trials_sha256": "32c479265444ee148293f407df851c664f40d1ca98671c1ddb7e91dc1ac1b84e",
+      "g10_gate_status": "METHOD_BLOCKED",
+      "metadata_ref": "artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/families/b4_metadata_1982d86c5561ee8ffdf941cba81f9a445901befe3ccc938b1f714db4d57494f7.json",
+      "metadata_sha256": "1982d86c5561ee8ffdf941cba81f9a445901befe3ccc938b1f714db4d57494f7",
+      "numeric_verdict": "FAIL",
+      "result_ref": "artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/families/b4_result_e750d432bc6b8e4277129594b8df9c3c7c81595989421490f63d418285e3783c.json",
+      "result_sha256": "e750d432bc6b8e4277129594b8df9c3c7c81595989421490f63d418285e3783c"
+    }
+  },
+  "g10_gate_status": "METHOD_BLOCKED",
+  "generated_at_utc": "2026-07-13T09:49:02.422360+00:00",
+  "git_commit": "77827521c09c2ffeee7f12490a9ef2ec3555d474",
+  "git_dirty_at_start": false,
+  "preregistration_ref": "artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/preregistration_ef9b62a95ca701c43cd3a23912d180b270d9b9d49f4c8f4e954405b7365bb872.yaml",
+  "preregistration_sha256": "ef9b62a95ca701c43cd3a23912d180b270d9b9d49f4c8f4e954405b7365bb872",
+  "promotion_eligible": false,
+  "raw_trial_count": 66,
+  "reproducibility_limitations": [
+    "The exact dataset is locally retained and hashed but is not Git- or DVC-distributed.",
+    "The exact engine environment is locally retained and verified but its venv is Git-ignored.",
+    "Historical upstream family admission remains unavailable by design."
+  ],
+  "schema": "tios-g10-preregistered-campaign-index-v1",
+  "selection_scope": "WITHIN_EACH_FAMILY_NO_GLOBAL_66_TRIAL_WINNER",
+  "status": "COMPLETED",
+  "upstream_family_admission_complete": false,
+  "winner_selected": false
+}

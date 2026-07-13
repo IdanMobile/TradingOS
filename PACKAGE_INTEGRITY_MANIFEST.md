@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.53 Preregistered G10 campaign execution contract (2026-07-13). Supersedes v8.52 hashes.
+Package version: v8.53 Preregistered G10 campaign execution contract and completed result (2026-07-13). Supersedes v8.52 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `5f3e0c3a66e1ded8ea41171cc1c9b7a51cd2aecf9e07cb6e3dafacc16df9366a` |
-| `DECISION_LOG.md` | `1b509c24b355c43711bb55f71ae0532ba72c570983b814e497de4f1437876f26` |
+| `PROJECT_STATE.md` | `9db3e71409d96d9f1a890b037c8e43c9d2569a62aa9a5202774796c62136b4a2` |
+| `DECISION_LOG.md` | `c55d9624363e53885b858f59491fe117e1fd00377814a8c0874d99e18bbd9581` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,18 +27,19 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `83d46fe5ce7428208e714fda4a5d49c665297e82effb9709421626e6b4ecf4cd` |
+| `MISSING_AND_OPEN_ITEMS.md` | `7e18f3c6d2fdc002b8894457ca779669aed4527de92aa3ed6fef0466a4e4bf19` |
 
 ## Supervisory correction package (added v8.52)
 
 | Path | SHA-256 |
 |---|---|
 | `docs/supervisor/SUPERVISORY_BASELINE_2026-07-13.md` | `63313a6771b5640fe620e6bea5ae036e44c8a06bf25650d68f0314e1259cf9f3` |
-| `docs/supervisor/IMPROVEMENT_PLAN_2026-07-13.md` | `b4b4cd513bc54bbca50cadedc8d205be26910f651acc9807e7e8bff0c0790e6a` |
-| `docs/supervisor/FINAL_SUPERVISORY_REPORT_2026-07-13.md` | `5ce97adac30f328ebb33e874134ea706f59b344ff2e1410b6013d6a96c86abaa` |
+| `docs/supervisor/IMPROVEMENT_PLAN_2026-07-13.md` | `6db92c314ef6c459ece70aad39054235750af644383fd4efa108d8353dbeb68c` |
+| `docs/supervisor/FINAL_SUPERVISORY_REPORT_2026-07-13.md` | `955bc883fa221faf3ca58120f9fb2cd2f09296044dc69c9f3dc6d1e0091b1eb2` |
+| `artifacts/reports/G10_PREREGISTERED_CAMPAIGN_REPORT_2026_07_13.md` | `67b0be7e43777bf31ba3e33dffa81795bdebd84d84683c7a010e84bc945bf59d` |
 | `strategies/research/funding-carry-basis-delta-neutral/canonical_strategy_spec.yaml` | `87ee0ecfc39515547a09ffa2108b93f7f65785de2ec28e2f4a895190d1ca86b0` |
 | `strategies/research/funding-carry-basis-delta-neutral/canonical_strategy_spec.sha256` | `02b3be727ee2d86a4b80eeb5fdf31779827b604f16e76f7c9f562d82ede8713a` |
-| `research/BASELINE_G10_SEARCH_CAMPAIGN_V1.yaml` | `ef9b62a95ca701c43cd3a23912d180b270d9b9d49f4c8f4e954405b7365bb872` |
+| `research/BASELINE_G10_SEARCH_CAMPAIGN_V1.yaml` | `f7dd3393b95f644df6b38ee3602d0530bc4d91d1f4f873d956b49a10c8ff98fe` |
 
 ## Required handoff inputs — planning system (added v8)
 
@@ -54,7 +55,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `7fb78db68b3491c8323eb409a4cfbd994d044293c54673c77202fcc4ccc877d4` |
+| `research/RESEARCH_GAP_MATRIX.md` | `1d35a8c19038c8b1990d6c74b8f164ba9e9acbd122dfd73328a61eea076f1f09` |
 | `audits/ARCHITECTURE_COMPLETENESS_AUDIT.md` | `729af643828c44b8b59d6dd95a209d9bfe53ed90e9ffd9a404e62db60944cef0` |
 | `audits/TODO_COMPLETENESS_AUDIT.md` | `22ca004dfd4049637db6be5128186a3e51411e2b606c45413d344d46508ad666` |
 | `audits/RED_TEAM_PLAN_REVIEW.md` | `a8d0f8850fdce2fbcfa985016b69d8755a52ed16b8c01e7d8652f6bcb9ee833c` |

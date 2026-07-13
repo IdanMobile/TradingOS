@@ -1,0 +1,70 @@
+{
+  "artifact_id": "SEARCH-BASELINE-G10-REPRO-V1-B4-e750d432bc6b",
+  "artifact_schema": "tios.substantive_strategy_research.v1",
+  "code": {
+    "dirty": false,
+    "git_commit": "77827521c09c2ffeee7f12490a9ef2ec3555d474",
+    "module_sha256": "1863696f8eb060991086092c6e21850b94e80afb5a69f855fd9842f7cc692def",
+    "module_sha256_by_path": {
+      "engines/vectorbt/g10_returns.py": "b287fdc9573d01c48568094a4dab45d1ddd5a95acd771b2bc7f63c2e34ccab34",
+      "scripts/run_g10_candidate.py": "0e46ea7d86c1fa683fbce8fbfd27f1574f7b64d86e0240026746b9036d3d072f",
+      "scripts/run_preregistered_g10_campaign.py": "1863696f8eb060991086092c6e21850b94e80afb5a69f855fd9842f7cc692def",
+      "src/tios/evidence/provenance.py": "49b1690e07e47dd4218992cb0b78c3049b269e5e36f8749c617c32720986a1a3",
+      "src/tios/validation/multiple_testing.py": "bd25dca76e7639beebbc5e8381aaff9e3e6c044e82ce61d721c697900cde4e54"
+    }
+  },
+  "dataset": {
+    "availability": "LOCAL_RETAINED_HASHED_NOT_GIT_OR_DVC_DISTRIBUTED",
+    "data_sha256": "d4d6b3306c44e242f3fb7f71c44bacabf9a6af1f1f8d507ca2de0853b6a727d0",
+    "dataset_id": "DS-CRYPTO-SPOT-BAKEOFF-V1",
+    "manifest_sha256": "f2b729627adb5d75a99c90dd7dd25ea6dcabf83de4baea5784397424034dfc56",
+    "range_end": "2026-06-30 23:55:00+00:00",
+    "range_start": "2021-01-01 00:00:00+00:00"
+  },
+  "execution_authority": "NONE",
+  "generated_at": "2026-07-13T09:49:02.422360+00:00",
+  "method": {
+    "all_trials_population_ref": "artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/inputs/b4_trials_32c479265444ee148293f407df851c664f40d1ca98671c1ddb7e91dc1ac1b84e.json",
+    "cost_model": {
+      "economic_evidence": false,
+      "fee_rate_per_side": 0.001,
+      "initial_cash": 1000.0,
+      "scenario": "F1/S0",
+      "slippage_bps_per_side": 0,
+      "slippage_model": "NOT_MODELLED",
+      "spread_market_impact_latency": "NOT_MODELLED"
+    },
+    "selection_metric": "non_annualized_per_bar_sharpe",
+    "selection_scope": "WITHIN_EACH_FAMILY_NO_GLOBAL_66_TRIAL_WINNER",
+    "split": {
+      "cscv_contiguous_slice_count": 16,
+      "external_holdout": "NOT_CONSUMED",
+      "full_sample_policy": "USE_ALL_577803_BARS_FOR_SELECTION_AND_DSR",
+      "in_sample_slices_per_split": 8,
+      "method": "CSCV_16_CONTIGUOUS_EQUAL_SLICES_PER_FAMILY",
+      "out_of_sample_slices_per_split": 8,
+      "tail_policy": "EXCLUDE_FINAL_11_BARS_FROM_CSCV_ONLY"
+    }
+  },
+  "output_sha256": "e750d432bc6b8e4277129594b8df9c3c7c81595989421490f63d418285e3783c",
+  "promotion_eligible": false,
+  "strategy": {
+    "canonical_spec_sha256": "ae7ac1faffe1f083c6b74aabbeb73ab2c99ba7737c1cd387a95b7508363eaeae",
+    "implementation_conformance": "LEGACY_ACCELERATOR_PROXY_NOT_CANONICAL",
+    "parameters": {
+      "exit_window": [
+        2,
+        3,
+        5,
+        10
+      ],
+      "lookback": [
+        3,
+        5,
+        10,
+        20
+      ]
+    },
+    "search_campaign_ref": "research/BASELINE_G10_SEARCH_CAMPAIGN_V1.yaml@sha256:ef9b62a95ca701c43cd3a23912d180b270d9b9d49f4c8f4e954405b7365bb872"
+  }
+}
