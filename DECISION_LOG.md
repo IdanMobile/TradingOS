@@ -568,12 +568,13 @@ confounded, and adjacent to closed transaction/miner contexts. Dormant supply is
 on-chain movement is not a sale, transfer intent is unresolved, and the mechanism is adjacent to
 the closed MVRV holder context.
 
-Only `FAM-CFTC-BTC-POSITIONING-01` advances to data packaging. It uses the CFTC Legacy Futures
-Only full-size CME Bitcoin row `133741`, excludes the Micro contract, normalizes non-commercial net
-position by open interest, and retains both aligned-high and contrarian-low interpretations. The
-12-trial roster and actual-publication-time rule are frozen in the dossier. Official holiday,
-shutdown, cyber, postponement, and catch-up dates must override the ordinary Friday schedule;
-unresolved releases are quarantined. The executed instrument remains unlevered BTCUSDT Spot.
+Only `FAM-CFTC-BTC-POSITIONING-01` advances to data packaging. It uses the exact filtered CFTC
+Public Reporting Environment Legacy Futures Only response for full-size CME Bitcoin row `133741`,
+excludes the Micro contract, normalizes non-commercial net position by open interest, and retains
+both aligned-high and contrarian-low interpretations. The 12-trial roster and conservative
+publication rule are frozen in the dossier. Official shutdown, cyber, postponement, and catch-up
+dates must override the ordinary lag when later; unresolved releases are quarantined. The executed
+instrument remains unlevered BTCUSDT Spot.
 
 Consequence: exact CFTC archives, official publication-exception evidence, normalized rows, and
 strict next-Spot-open mappings may be packaged offline. No conditioned return may be computed
@@ -582,6 +583,31 @@ state, human gate, sealed V2 holdout, or execution authority is activated.
 
 Evidence: `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V6.md`.
 Status: **Approved constrained-S2 data build; performance unobserved and authority NONE.**
+
+### D-067 — CFTC positioning data and causal publication package frozen offline
+
+Decision: the admitted D-066 family now has an immutable, no-key source package without computing
+conditioned returns. Exact base64-reversible source bytes retain the filtered 133-column CFTC CSV,
+dataset metadata, release schedule, historical special announcements, and 2019/2023 delay records.
+The package contains 431 unique full-size code-`133741` weekly reports from 2018-04-10 through
+2026-07-07 and an explicit 30-report exception ledger. Normal availability is conservatively
+report date plus eight calendar days at UTC midnight; exceptional reports use the later of that
+rule and UTC midnight after official publication.
+
+Because the prior canonical Spot package began in 2021, 33 exact Binance monthly BTCUSDT 1h
+archives from 2018-04 through 2020-12 were added with their official CHECKSUM responses. They join
+the retained 2021-2026 dataset into 72,225 bars. All 25 real gaps are hashed and retained; no
+interpolation is allowed. Exactly 428 CFTC reports map to a strictly later retained Spot open; the
+three reports whose availability falls after Spot coverage remain explicitly unmapped.
+
+Consequence: canonical strategy semantics, independent implementations, and a fully frozen G1-G11
+campaign may now be built. No positioning-conditioned return may be computed until that complete
+campaign is committed cleanly. No derivative, bot, venue, credential, order, paper/demo/live
+state, sealed V2 holdout, human gate, or execution authority is activated.
+
+Evidence: `research/CFTC_BTC_POSITIONING_DATA_PACKAGE_V1.json`,
+`scripts/verify_cftc_btc_positioning_data.py`, and focused fail-closed tests.
+Status: **Verified offline data boundary; performance unobserved and authority NONE.**
 
 ### D-063 — Bitcoin MVRV dislocation family admitted to data/canonical construction
 

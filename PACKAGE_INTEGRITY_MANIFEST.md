@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.69 CFTC positioning family admission (2026-07-13). Supersedes v8.68 hashes.
+Package version: v8.70 CFTC positioning data freeze (2026-07-13). Supersedes v8.69 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `59b9e9899fbb8ec19d7c4c75016bd5ac93a8c9eb074ef2f4a4ef00454d1e0211` |
-| `DECISION_LOG.md` | `74b92045cc862ba6eb18edf2df2dfa03d1659f2cffb16a5d3ed6ea8f252e6319` |
+| `PROJECT_STATE.md` | `1023bfa0d9ecca36c334d9b2b7ddeb2a7dc73f358296c540708cd31775b2d9fc` |
+| `DECISION_LOG.md` | `1ece6958f45ae6f8651f65189fd5a403ae368e11fecd80cd687efcc8240e7e5e` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `c1d259ef3d2c48dbd5041b216c8d6a6417e6fdfffde50b7c6380d66a09fdf8d3` |
+| `MISSING_AND_OPEN_ITEMS.md` | `dcc14d552f2ff92a8eb657b780be1c4c7ce8de4e95c452d513a2ec32bb5fffdb` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -68,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `c3abde01ff052dc96bd8f8fe4a51afbaf81e044b49e5bb97dbde62aefc2bda4e` |
+| `research/RESEARCH_GAP_MATRIX.md` | `c2a34a9c0bbb056ca5dadf57fc9f16de96e41bf8ca74f7c6c556baa83055486d` |
 
 ## Post-V2 family selection V1 (added v8.55)
 
@@ -280,7 +280,88 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 
 | Path | SHA-256 |
 |---|---|
-| `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V6.md` | `da6487a4011707164f5db5dc45e625d6669f12b74ef537fb170df11ef4ac2937` |
+| `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V6.md` | `9492159c0307213e86b50eb90fd487822ff78f1ab4663b608cc2cf5f7a4f6458` |
+
+## CFTC positioning data freeze (added v8.70)
+
+| Path | SHA-256 |
+|---|---|
+| `research/CFTC_BTC_POSITIONING_DATA_PACKAGE_V1.json` | `06fa27b23a17b0f6900e604b9127a9554e4526da5cf18e9d40ef9eeb9ecc925c` |
+| `data/raw/cftc/cftc_btc_133741_publication_exceptions_v1.json` | `09f698864ae77937da15b62188cf2d291d393117986cac8c10469646e15a0c34` |
+| `scripts/verify_cftc_btc_positioning_data.py` | `52f7a6ea7f98c42639141c7b94aa0b9df0a766b126f5f097e480673899b0f354` |
+| `tests/test_cftc_btc_positioning_data.py` | `a7be0d47cdad6674c73eb3c66046aca77976386701dcfb1e36a847ee2bdd3d0e` |
+| `data/raw/cftc/cftc_2019_delayed_release_schedule.html.base64` | `d9d13f63b908121cd3f7ebc6dec6012eb2a23ba4397a8f8bb5447df6e7481b9a` |
+| `data/raw/cftc/cftc_2023_ion_postponement.html.base64` | `72630e62c1d95f492957ea635d098ab88c4819aa1c9fe45145f9f33858c4f267` |
+| `data/raw/cftc/cftc_legacy_futures_only_133741.csv.base64` | `6f4e73af81ba1d244c928d53dddb2593f362715611734c8542596774f6e06ac7` |
+| `data/raw/cftc/cftc_legacy_futures_only_metadata.json.base64` | `ef31d3e895b187b87fdee44ca07b7174d3836dc6ef9cd8ad192fb960f0df2780` |
+| `data/raw/cftc/historical_special_announcements.html.base64` | `11ae2be537c33a8cd1e902f99740051ff10a16b0ef8ea9d2be343bfbefa6db4b` |
+| `data/raw/cftc/release_schedule_2026.html.base64` | `c5d71a1b449d1831b6a736526fa1a09b3216b80a51e90f97c5e070b0de64b3c2` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2018-04.zip.CHECKSUM.base64` | `16bcd60a602a82418534785f4c08f68a741359fd7d01c203950b772699bea7f5` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2018-04.zip.base64` | `91654253638e8a5bde6a994cee7d8646d2c13db809426cddf8cdcf8cf28d8b4e` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2018-05.zip.CHECKSUM.base64` | `5367207c7faf4a53d3973480eadda37f881cdc1926fce2f4f92e19f8a24a5d7b` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2018-05.zip.base64` | `878668551d456241e90d995472c245f0b5737b1b0ba712081c887d25c2f6038a` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2018-06.zip.CHECKSUM.base64` | `8f074ab1a02c53dc4d34c71b625dd73e03972ddfe435a7d5f45c8b7cd7d0a2f5` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2018-06.zip.base64` | `85fcff72014cea7f42a4d43724fc6de847917c5adf489f162e82d385a5c1bc4b` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2018-07.zip.CHECKSUM.base64` | `5acb6069f9a4a5c22f7270d1b98a9840c351c0f7c74afcf7aeb9bd47be028997` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2018-07.zip.base64` | `1b9a567f280caf7a1a5ae585221cc9f0a87d4a1fc330ec2862100e1f4feb9a15` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2018-08.zip.CHECKSUM.base64` | `af40e69675683d500dd928b4cd47fe63ac2ba1f26668af547f971f32a68c1963` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2018-08.zip.base64` | `43425c7a0f4def8ec07b1d60d6609353e3266f4da55ed34fb5fd7fcf645c3743` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2018-09.zip.CHECKSUM.base64` | `89fd5931d63e8cb56991676d2bb69e8e138d56d838a43a38f8c629a9a156e51c` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2018-09.zip.base64` | `66e14ea053f63708931dba4b9211d80bb095b157b756d9325b81a7334f73d75d` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2018-10.zip.CHECKSUM.base64` | `6a91f733f0fafc2ea8f1bdfeac7e905d525d46f0c40b488104db3e8f6e74f786` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2018-10.zip.base64` | `374e4936f567dbe4f4a919922bd9ebf9e1512ae2fb6f32bc198624498b0e4971` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2018-11.zip.CHECKSUM.base64` | `925c783a4619c32e637d59193f66e856bca827e21d347b439fa1d6f78314af87` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2018-11.zip.base64` | `ec5c4a41cc734a7ce658f1350a40a8aa2a37ef85c85521574f313ab7029cf95d` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2018-12.zip.CHECKSUM.base64` | `34bd1425efbd7b5fb84aacc35bdbe9387571a84ec31c6258c6affcbc77556498` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2018-12.zip.base64` | `111a85b26a55beb5d50b9508ce32e835a85aee4b7cdb5fc088569571774ad97b` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-01.zip.CHECKSUM.base64` | `3eac3bd3c45346633a2b49856a74ddeb142c891267dd5449a9f2a46301ff7f97` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-01.zip.base64` | `899f5841967e02de2c6e2d11a7ae8f3f22a8d2cb630153a406cdea4fa7aedd44` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-02.zip.CHECKSUM.base64` | `92b9f797a7561d4249f64764f4110a27cefe5b8f8f9de64eb42f23320a6ec0a7` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-02.zip.base64` | `f45bd5d9bcc4a02b37a2d6b47108359e47118e19b91a729ebcd30e599ca12a0d` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-03.zip.CHECKSUM.base64` | `ce71a9d9086f152f59e3fb0b360b52155fad8fa835090d1db420d39d7a4b75da` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-03.zip.base64` | `8a96f4790a89e883c8074212a9a0348b05b7b16156007db66156358a5a97edb6` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-04.zip.CHECKSUM.base64` | `f612931eee84c52413344cf0029d640a27c3df611c23ec9c692f3917f276c9f6` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-04.zip.base64` | `88e92a3bdac9b78d5b3aa3d16d222f18be7e444c4c14b26247809bb80d6f579b` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-05.zip.CHECKSUM.base64` | `b1c77031b8686067264b8a7d73e2a5d2e5714827bf607c45e4950fd789c745e0` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-05.zip.base64` | `4c04f12e68efcaf9aaca472f14f2f2a98b0e9965aa6c3c525021fd310c96513d` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-06.zip.CHECKSUM.base64` | `e37e704eb16af118e31427b748d571b55b36e36784cbcf5d0c66654d3b2a9b2f` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-06.zip.base64` | `59c3a89dbf8464818e2cdaf11da1efbb934d89195f0edc8e7f70125a238ff522` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-07.zip.CHECKSUM.base64` | `6a5e7466b8650b0b558a3d7505159f1680769e5f921c4969ebfe0592f0f6bb83` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-07.zip.base64` | `069b7d8e29a42271496f33f8ba1b2f01cc59ea742e3bca93ea2e0fa9f0178862` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-08.zip.CHECKSUM.base64` | `d88274b73fe27128d06b4cf69bf64406ee67cd0ca8a23877a9d568fc019294e7` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-08.zip.base64` | `035d56b1ff540a226750f30cfb0e447fb16023391757f68e14a63036558a1b29` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-09.zip.CHECKSUM.base64` | `18c536f6475946e832949c23bfdbced9a9e69f7f0003f8a8287516880ef96050` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-09.zip.base64` | `58854e1cb6b79ca8e0de5f915b4b592680b326fad6d35bdf9bacd194b0813c00` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-10.zip.CHECKSUM.base64` | `58a2a90f5d45ec7ce0dd752bb69737a8478c77c097151f6b9bad2267f104c65d` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-10.zip.base64` | `330f1145c0542b73f4b211fd52d13ea8e9bd6e6cbf6feb6df9987ba99cb53a55` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-11.zip.CHECKSUM.base64` | `543be27a275d65b52b31d71ec6c837e5ca30aafc5bde24a4f568155e922ce2ea` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-11.zip.base64` | `f40a86faa060f1bbdb0dea98e6a2009a86109a00c3acf34762537d567b7ebacc` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-12.zip.CHECKSUM.base64` | `7d3f08c8abe0ae127b7c760c4bf099f380fb77678d82e715315c0eee7b359d9a` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2019-12.zip.base64` | `4ea7bd72f34715fd0f278226af583216fa883836dc3a114dd83ab3c3c2bc6a7b` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-01.zip.CHECKSUM.base64` | `60d74f37565249d8ad1cc0fd1c4e62aa646813728f1899280f49f1690cdc7618` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-01.zip.base64` | `44a5c2583d84a139358c95e9ab2ca97276ff9b0def3d10e6bf57ad3a1db3edd8` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-02.zip.CHECKSUM.base64` | `11b594fb72aec666ace3e17ce5feb6a55bbefec67e0c4fb8af3399fbfa87d6eb` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-02.zip.base64` | `73171363de8a3209f014620d57ba6128205c77488b195687cd82787dac37e059` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-03.zip.CHECKSUM.base64` | `a4c34f0e52e1f87b30723a5f3d1c16c1686f4590d28f6ab5c67fee1b182e8a52` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-03.zip.base64` | `b3140b8c74c9542759b9a39269f08c423cdd55c2fc6f4695254e155a11142556` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-04.zip.CHECKSUM.base64` | `6f7e54dedb1abad2d220f93175946bbd243b1fefa214cefaccd0713f201c7d20` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-04.zip.base64` | `5e9cd1bfdd609b8a9aa42f32a5d2c93bc485f8ad7decaafadade73412f7d8605` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-05.zip.CHECKSUM.base64` | `f5f65dc11386d6fc9db62629d2efa63e5dbe6a34c2dd15bbb2255fc07452e364` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-05.zip.base64` | `fca4cb9b74095633616ce78dfa1ef73e1ee6ae2c7d5ab5a3ecdbc4ff143a32f9` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-06.zip.CHECKSUM.base64` | `974a17d32dde7d4da21930633ad6a06b296e4103cb624650cb099ecdf41db46d` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-06.zip.base64` | `fa610133ffd23855f7eebf5c2db00495b24246d4646fef7548606dd2b47e8e54` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-07.zip.CHECKSUM.base64` | `56e57cc63940b6b214b1bbf41693e7a3e324206301972a66a6496361ec1604c8` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-07.zip.base64` | `5eb5ba0a47d4cd3f3e0415b376fba82b78c6c4a22ea5f55d9c5174ec8fa34693` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-08.zip.CHECKSUM.base64` | `1efd285f5698fe62fcfe1626a7e6ca899cfa909d9a5ef879b0a55179301a1346` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-08.zip.base64` | `8c40a0af133b7ae442e9f6e00a0e7d837429ed730819002e3ada6700fe23702b` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-09.zip.CHECKSUM.base64` | `d3198bfa5b7dacb8e713d6b0d20a70e022a45abef679a4f8875beb62f502ca44` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-09.zip.base64` | `599e42141a3b3387d29a48fe8f5713236f4768844226c48e84b54f46644b9622` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-10.zip.CHECKSUM.base64` | `91a23cd70a02e0d483a8ecd9f4edeb1d888f6c65541a5e9ba44b0fa58aef7eb4` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-10.zip.base64` | `d6ce17801e11c8d867454de51e3f8ba0e12e9d8659668fb5ff55f3abfc3a5af5` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-11.zip.CHECKSUM.base64` | `8db49e5797cbec375870ec49d96b1c08fa9ad8ecd0c8238698e0c44cf9a26cbc` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-11.zip.base64` | `b9479347ae9c9aafd257603873b2165b55a95b2c8094b5cd7ff195474c886240` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-12.zip.CHECKSUM.base64` | `199c31b0e1d4a8845ca6247c1549e774eb4091fa540fff36a7c0d088e1c4b2e7` |
+| `data/raw/cftc/binance_spot_early/BTCUSDT-1h-2020-12.zip.base64` | `9cd37215d2bd0caf7c7e654552923228210baeb8d7726296621f98c2a6e78d38` |
 
 ## Expected generated artifacts
 

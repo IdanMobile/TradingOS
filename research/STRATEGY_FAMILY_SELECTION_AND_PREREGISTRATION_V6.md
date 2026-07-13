@@ -74,18 +74,21 @@ was computed before this decision.
 
 ## Data contract to freeze before scoring
 
-- Primary feature source: CFTC Legacy Futures Only annual compressed files, years 2017-2026,
-  exact row identity `CFTC_Contract_Market_Code=133741`; exclude Micro Bitcoin `133742`, CBOE,
-  options-combined, and disaggregated/TFF mixtures.
+- Primary feature source: exact CFTC Public Reporting Environment Legacy Futures Only filtered
+  CSV response and dataset metadata for `CFTC_Contract_Market_Code=133741`. The annual compressed
+  archive index remains an independent availability reference; exclude Micro Bitcoin `133742`,
+  CBOE, options-combined, and disaggregated/TFF mixtures.
 - Required fields: market name/code, report date, open interest, non-commercial long, short and
   spreading, commercial long/short, nonreportable long/short, changes, percentages, and trader
   counts where published. Preserve every raw field even when the strategy uses fewer.
 - Feature: `(noncommercial_long - noncommercial_short) / open_interest`; open interest must be
   positive. Spreading is retained but excluded from the directional numerator.
 - Publication ledger: retain the ordinary release schedule and all relevant official historical
-  special announcements. Availability is actual publication date at 15:30 America/New_York.
-  Holiday, shutdown, cyber, postponement, or catch-up releases use the official replacement date.
-  If an exact date is unresolved, quarantine that report and reset the consecutive-feature window.
+  special announcements. Ordinary availability is conservatively report date plus eight calendar
+  days at `00:00 UTC`, later than the documented normal Friday release and ordinary one/two-day
+  holiday delays. Shutdown, cyber, postponement, or catch-up releases use the later of that rule
+  and UTC midnight after the official actual publication date. If an exact exceptional date is
+  unresolved, quarantine that report and reset the consecutive-feature window.
 - Executed instrument: retained Binance Spot `BTCUSDT` 1h, unlevered long/cash only. The strategy
   never opens a CME future, derivative, short, margin, or leveraged position.
 - Fill: first retained hourly open strictly after feature availability. A delayed report cannot be
@@ -146,10 +149,11 @@ complete window, excluding `R`, compute population mean and population standard 
 
 ## Exact next action
 
-Freeze the 2017-2026 CFTC Legacy Futures Only ZIPs, the official schedule/exception evidence, and
-the code-`133741` normalized rows into an offline data package. Verify archive bytes, members,
-schema, identities, duplicates, chronology, actual publication availability, exceptional delays,
-feature arithmetic, coverage, and strict-next-Spot-open mapping. Do not compute a
+Freeze the exact filtered CFTC Legacy Futures Only API response and metadata, the official
+schedule/exception evidence, and the code-`133741` normalized rows into an offline data package.
+Verify source bytes, schema, identities, duplicates, chronology, conservative publication
+availability, exceptional delays, feature arithmetic, coverage, and strict-next-Spot-open mapping.
+Do not compute a
 positioning-conditioned return before that package and the full campaign are committed cleanly.
 
 ## Sources

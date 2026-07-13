@@ -115,11 +115,11 @@ OOS segments, stress, delay, reserve trade count, regime, drawdown, benchmark, P
 failed. The exact MVRV pulse family is rejected without rescue; a genuinely distinct mechanism is
 required and no strategy is validated.
 
-D-066 admits a genuinely distinct regulated-futures-positioning family without scoring. Exact
-CFTC annual archive bytes, full-size Bitcoin row identity, historical corrections, and the real
-publication calendar—including shutdown, cyber, holiday, and catch-up exceptions—must be frozen
-and verified before any conditioned return. Data packaging, canonical implementations, campaign
-freeze, G1-G11 evidence, and supervision remain open; no strategy or bot is approved.
+D-066 and D-067 admit and freeze a genuinely distinct regulated-futures-positioning family without
+scoring. Exact CFTC API/metadata/schedule bytes, full-size Bitcoin row identity, 30 publication
+exceptions, 33 official-checksum early Spot archives, 72,225 combined bars, 25 retained gaps, and
+428 strict-later mappings pass offline verification. Canonical implementations, campaign freeze,
+G1-G11 evidence, and supervision remain open; no strategy or bot is approved.
 
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 

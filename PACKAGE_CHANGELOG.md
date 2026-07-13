@@ -1,5 +1,13 @@
 # Package Changelog
 
+## v8.70 — 2026-07-13
+
+- Froze exact filtered CFTC Legacy Futures Only bytes, metadata, schedules, and exception evidence.
+- Added 33 official-checksum Binance BTCUSDT 1h archives covering 2018-04 through 2020-12.
+- Verified 431 CFTC rows, 30 release exceptions, 72,225 Spot bars, 25 gaps, and 428 causal mappings.
+- Retained execution authority `NONE`; no conditioned return, derivative, bot, venue, credential,
+  order, or holdout was activated.
+
 ## v8.69 — 2026-07-13
 
 - Compared regulated futures positioning, blockspace fee pressure, and dormant-supply reactivation
