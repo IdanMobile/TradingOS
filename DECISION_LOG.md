@@ -583,6 +583,31 @@ human gate, sealed V2 holdout access, promotion, or execution authority is activ
 Evidence: `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V8.md`.
 Status: **Approved constrained-S2 data build; performance unobserved and authority NONE.**
 
+### D-076 — Cross-venue premium source and normalized data frozen offline
+
+Decision: exact public Coinbase Exchange source bytes are frozen for two official documentation
+pages, the online `BTC-USD` and `USDT-USD` product identities, and 378 bounded hourly candle
+responses covering the preregistered 2021-05-01 through 2026-06-30 query boundary. Every response
+retains URL/query, request/receipt UTC, response date/type, byte count, SHA-256, and original body.
+No key, authenticated endpoint, account, or trading session was used.
+
+The deterministic normalizer aligns Coinbase BTC-USD, Coinbase USDT-USD, and the already-retained
+Binance BTCUSDT hourly source into 45,193 observations from 2021-05-04T01:00Z through
+2026-06-30T23:00Z. It preserves six combined-source gaps, quote-normalizes BTC-USD through the
+independent USDt/USD close, calculates only the preregistered contemporaneous log-premium feature,
+and proves 45,192 strictly later Binance-open mappings. Rebuilding the normalized Parquet and
+package is byte-identical. Offline verification and deliberate raw-byte, logical-hash, and mapping
+drift tests pass.
+
+Consequence: minimal canonical roles and an immutable G1-G11 campaign may now be built without
+scoring. No premium-conditioned future return has been computed. No bot, credential, venue trading
+session, order, paper/demo/live state, sealed V2 holdout access, promotion, human gate, or execution
+authority is activated.
+
+Evidence: `research/CROSS_VENUE_BTC_PREMIUM_DATA_PACKAGE_V1.json`, retained raw/normalized data,
+`scripts/verify_cross_venue_premium_data.py`, and `tests/test_cross_venue_premium_data.py`.
+Status: **Verified offline data package; performance unobserved and authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

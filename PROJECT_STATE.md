@@ -879,6 +879,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   admits only the cross-venue premium. Twelve interpretation × baseline × threshold trials, strict
   completed-source-hour/later-Binance-open timing, quote conversion, gaps, and no-rescue rules are
   preregistered. Performance remains unobserved; exact Coinbase data packaging is open.
+- **Cross-venue premium data frozen offline (D-076):** 382 exact public Coinbase responses are
+  content-addressed with request/response provenance. Deterministic normalization produces 45,193
+  aligned rows, six combined-source gaps, and 45,192 strict-later Binance-open mappings. Offline
+  reconstruction, byte-identical rebuild, and deliberate drift tests pass; no return was computed.
 
 ## Operational SSOT (unchanged)
 
@@ -937,12 +941,12 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Freeze the exact public Coinbase `BTC-USD` and `USDT-USD` hourly response bytes through 2026-06-30
-for D-075, retain request/response provenance, and normalize them against the retained Binance
-BTCUSDT boundary. Verify products, hashes, schemas, overlaps, gaps, quote conversion, coverage, and
-strict-next-open mappings offline before any premium-conditioned return is computed. Do not access
-the sealed V2 holdout, activate a bot, connect a venue, request credentials, or cross any human
-S3/S4 gate.
+Build the minimal immutable StrategyVersions and four independent implementation roles for the
+D-075/D-076 cross-venue premium context, then freeze the complete G1-G11 campaign and hashed
+development-selection barrier before any premium-conditioned future return is computed. Preserve
+the exact 12-trial roster, six gaps, quote conversion, strict-later fills, costs, splits, thresholds,
+and no-rescue rule. Do not access the sealed V2 holdout, activate a bot, connect a trading venue,
+request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

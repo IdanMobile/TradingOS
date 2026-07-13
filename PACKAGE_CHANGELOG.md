@@ -1,5 +1,14 @@
 # Package Changelog
 
+## v8.79 — 2026-07-13
+
+- Froze 382 exact public Coinbase documentation/product/candle responses with complete request and
+  response provenance; no key or authenticated endpoint was used.
+- Deterministically normalized 45,193 quote-adjusted cross-venue observations with six explicit
+  gaps and 45,192 strict-later Binance-open mappings, without computing future returns.
+- Added byte-identical rebuild, offline verification, and deliberate raw/logical/mapping drift
+  tests; retained execution authority `NONE`.
+
 ## v8.78 — 2026-07-13
 
 - Compared three new mechanisms from primary sources without computing local family performance.

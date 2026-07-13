@@ -159,6 +159,12 @@ boundary, quote conversion, gaps, and no-rescue rules are preregistered without 
 Exact Coinbase data packaging, offline restoration, canonical roles, campaign freeze, G1-G11
 evidence, and supervision remain open; no strategy or bot is approved.
 
+D-076 closes the exact data boundary. A 10 MB content-addressed raw bundle preserves 382 public
+Coinbase documentation/product/candle responses, and deterministic normalization yields 45,193
+aligned rows, six gap events, and 45,192 strict-later mappings. Byte-identical rebuild and three
+deliberate drift classes pass offline. Canonical roles, campaign freeze, G1-G11 evidence, and
+supervision remain open; no strategy or bot is approved.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

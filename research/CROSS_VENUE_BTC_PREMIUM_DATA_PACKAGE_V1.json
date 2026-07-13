@@ -1,0 +1,154 @@
+{
+  "binance_source": {
+    "path": "data/normalized/BTCUSDT_1h.parquet",
+    "scope": "retained normalized BTCUSDT hourly source only; no closed-family result",
+    "sha256": "d44c70c3c87a3e342dd0496c3975d3b54a2b50dd4c5c1b8873ef84eece99947c"
+  },
+  "created_from_retrieval_utc": "2026-07-13T17:51:18.525484+00:00",
+  "decision": "D-075",
+  "normalized": {
+    "bytes": 2554384,
+    "logical_content_sha256": "d591267a33fcc9b6082aec2f632c55246dda0f63290e7e80366378b39ca681c0",
+    "path": "data/normalized/cross_venue_btc_premium_1h_v1.parquet",
+    "schema": "timestamp_open_utc: timestamp[us, tz=UTC] not null\nsource_close_utc: timestamp[us, tz=UTC] not null\ncoinbase_btcusd_close: decimal128(38, 8) not null\ncoinbase_usdtusd_close: decimal128(38, 8) not null\nbinance_btcusdt_open: decimal128(38, 8) not null\nbinance_btcusdt_close: decimal128(38, 8) not null\ncoinbase_implied_btcusdt: decimal128(38, 8) not null\nlog_premium: decimal128(38, 18) not null",
+    "sha256": "2d99612a2cae83d8ca5c41ff86c0083c6f90180d5f57e6c76a3dd2922ed55958"
+  },
+  "package_id": "DATA-CROSS-VENUE-BTC-PREMIUM-1H-V1",
+  "raw_bundle": {
+    "bytes": 10727768,
+    "path": "data/raw/coinbase_exchange/cross_venue_premium_v1.json",
+    "sha256": "3cee2abc5d48069d205acc6deb739627414edf4a1256b27603c7cf2b461b518a"
+  },
+  "safety": {
+    "execution_authority": "NONE",
+    "performance_computed": false,
+    "sealed_v2_holdout_accessed": false,
+    "strategy_scored": false,
+    "venue_connection": "NONE"
+  },
+  "schema": "tios-cross-venue-btc-premium-data-package-v1",
+  "semantics": {
+    "availability": "after latest complete source candle only",
+    "coinbase_candle_close_boundary": "bucket_start_plus_one_hour_minus_one_microsecond",
+    "feature": "ln((coinbase_btcusd_close / coinbase_usdtusd_close) / binance_btcusdt_close)",
+    "fill_mapping": "first retained Binance hourly open strictly after source_close_utc",
+    "gap_policy": "no fill, no carry, reset baseline; held pulse exits at first retained Binance open",
+    "network_during_verify_or_campaign": false
+  },
+  "source_dossier": {
+    "path": "research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V8.md",
+    "sha256": "cc7146b906a80720550f0d3c73756a3bebcfc12ec0586e622317241ef880f502"
+  },
+  "status": "VERIFIED_OFFLINE",
+  "summary": {
+    "aligned_end_utc": "2026-06-30T23:00:00+00:00",
+    "aligned_gaps": [
+      {
+        "left_utc": "2021-08-13T01:00:00+00:00",
+        "missing_hours": 4,
+        "right_utc": "2021-08-13T06:00:00+00:00"
+      },
+      {
+        "left_utc": "2021-09-29T06:00:00+00:00",
+        "missing_hours": 2,
+        "right_utc": "2021-09-29T09:00:00+00:00"
+      },
+      {
+        "left_utc": "2023-03-04T17:00:00+00:00",
+        "missing_hours": 4,
+        "right_utc": "2023-03-04T22:00:00+00:00"
+      },
+      {
+        "left_utc": "2023-03-24T12:00:00+00:00",
+        "missing_hours": 1,
+        "right_utc": "2023-03-24T14:00:00+00:00"
+      },
+      {
+        "left_utc": "2025-10-25T14:00:00+00:00",
+        "missing_hours": 6,
+        "right_utc": "2025-10-25T21:00:00+00:00"
+      },
+      {
+        "left_utc": "2026-05-08T01:00:00+00:00",
+        "missing_hours": 5,
+        "right_utc": "2026-05-08T07:00:00+00:00"
+      }
+    ],
+    "aligned_gaps_sha256": "64e8381c7a9bfc1f036a36e8a11ea4d9edc931e4067afca11bf1b71d88debab8",
+    "aligned_rows": 45193,
+    "aligned_start_utc": "2021-05-04T01:00:00+00:00",
+    "binance_parquet_sha256": "d44c70c3c87a3e342dd0496c3975d3b54a2b50dd4c5c1b8873ef84eece99947c",
+    "binance_rows": 48154,
+    "candle_response_count": 378,
+    "coinbase": {
+      "coverage": {
+        "BTC-USD": {
+          "end_utc": "2026-06-30T23:00:00+00:00",
+          "start_utc": "2021-05-01T00:00:00+00:00"
+        },
+        "USDT-USD": {
+          "end_utc": "2026-06-30T23:00:00+00:00",
+          "start_utc": "2021-05-04T01:00:00+00:00"
+        }
+      },
+      "duplicate_rows": {
+        "BTC-USD": 188,
+        "USDT-USD": 188
+      },
+      "gaps": {
+        "BTC-USD": [
+          {
+            "left_utc": "2023-03-04T17:00:00+00:00",
+            "missing_hours": 3,
+            "right_utc": "2023-03-04T21:00:00+00:00"
+          },
+          {
+            "left_utc": "2025-10-25T15:00:00+00:00",
+            "missing_hours": 5,
+            "right_utc": "2025-10-25T21:00:00+00:00"
+          },
+          {
+            "left_utc": "2026-05-08T01:00:00+00:00",
+            "missing_hours": 5,
+            "right_utc": "2026-05-08T07:00:00+00:00"
+          }
+        ],
+        "USDT-USD": [
+          {
+            "left_utc": "2023-03-04T17:00:00+00:00",
+            "missing_hours": 4,
+            "right_utc": "2023-03-04T22:00:00+00:00"
+          },
+          {
+            "left_utc": "2025-10-25T14:00:00+00:00",
+            "missing_hours": 6,
+            "right_utc": "2025-10-25T21:00:00+00:00"
+          },
+          {
+            "left_utc": "2026-05-08T01:00:00+00:00",
+            "missing_hours": 5,
+            "right_utc": "2026-05-08T07:00:00+00:00"
+          }
+        ]
+      },
+      "gaps_sha256": "7e9d55cfa54781b3cc23ec81598598b777a991e6c128398fe6154f741d2cbf8f",
+      "raw_rows": {
+        "BTC-USD": 45464,
+        "USDT-USD": 45389
+      },
+      "unique_rows": {
+        "BTC-USD": 45275,
+        "USDT-USD": 45200
+      }
+    },
+    "logical_content_sha256": "d591267a33fcc9b6082aec2f632c55246dda0f63290e7e80366378b39ca681c0",
+    "product_identity_body_sha256": {
+      "BTC-USD": "d2bfd4363396ca895bed3a49a2e3f265c7c043efbb50b04ccf87fd5df6197137",
+      "USDT-USD": "d9aec6e775857172e6ad3c8f3af390b95af78dd4cb4d27dcc548fe899e15ea42"
+    },
+    "raw_bundle_bytes": 10727768,
+    "raw_bundle_sha256": "3cee2abc5d48069d205acc6deb739627414edf4a1256b27603c7cf2b461b518a",
+    "source_response_count": 4,
+    "strict_later_mappings": 45192
+  }
+}

@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.78 cross-venue premium family admission (2026-07-13). Supersedes v8.77 hashes.
+Package version: v8.79 cross-venue premium data freeze (2026-07-13). Supersedes v8.78 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `e321b227200c40522f572910934939038ddd9b95135bbe60cf211b12b4c09d0b` |
-| `DECISION_LOG.md` | `2e45b3e8f2b6c04289c342009f0aa7db10140fc7ee109868bea8bb4d36dd0479` |
+| `PROJECT_STATE.md` | `78422f454d5a45f4cd0307b1db8780f1dd00dff46890c441cc5c6400659e80c8` |
+| `DECISION_LOG.md` | `29c2d87562a605ad3fc4707b0deffa4644c21cf529c581ba12c543d8d595a6e3` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `5a28b1729aa331d3b992ed1da8f20530af3936820bf4a35c190ecb31bfdd641b` |
+| `MISSING_AND_OPEN_ITEMS.md` | `82eba79d06ef3cca4226f1d7f52cb9d93f07886f9257ecd368fe2e2ff033333c` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -449,6 +449,18 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | Path | SHA-256 |
 |---|---|
 | `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V8.md` | `cc7146b906a80720550f0d3c73756a3bebcfc12ec0586e622317241ef880f502` |
+
+## Cross-venue premium data freeze (added v8.79)
+
+| Path | SHA-256 |
+|---|---|
+| `data/raw/coinbase_exchange/cross_venue_premium_v1.json` | `3cee2abc5d48069d205acc6deb739627414edf4a1256b27603c7cf2b461b518a` |
+| `data/normalized/cross_venue_btc_premium_1h_v1.parquet` | `2d99612a2cae83d8ca5c41ff86c0083c6f90180d5f57e6c76a3dd2922ed55958` |
+| `research/CROSS_VENUE_BTC_PREMIUM_DATA_PACKAGE_V1.json` | `7dab4bc7ce33a2fb9cfd0595ba1d6a6406b9e8b8f12f1f12532fc20f15fa18c0` |
+| `scripts/fetch_cross_venue_premium_data.py` | `e1d1abf8e068844b342257d9db965180448f95a1c1ea0e53c60f0865360b7f82` |
+| `scripts/build_cross_venue_premium_data.py` | `0d1c625225e5b2d94a25c5edb272033836d47dafc154805deef9eab64b0b10af` |
+| `scripts/verify_cross_venue_premium_data.py` | `4359adf79504aff7d4dfb995dbc534dcebad7cda2c6737b68817e03a4fa27f57` |
+| `tests/test_cross_venue_premium_data.py` | `45788b30a2e8e3ca34184cf3945af6d5eaf853c7c83693698ac6f7ba76c76c6f` |
 
 ## Expected generated artifacts
 
