@@ -421,10 +421,11 @@ def build_method_contract(lineage: dict[str, Any], families: dict[str, Any]) -> 
     }
 
 
-def main() -> dict[str, Any]:
+def build_evidence(lab_dir: Path, out_dir: Path = OUT_DIR) -> dict[str, Any]:
+    """Build evidence from an explicitly selected retained lab and output directory."""
+
     provenance = _verify_dataset()
-    lab_dir = _latest_lab_dir()
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    out_dir.mkdir(parents=True, exist_ok=True)
     subprocess.run(
         [
             str(ENGINE_PYTHON),
@@ -432,7 +433,7 @@ def main() -> dict[str, Any]:
             "--dataset",
             str(DATASET),
             "--out",
-            str(OUT_DIR),
+            str(out_dir),
         ],
         check=True,
         cwd=ROOT,
@@ -443,14 +444,13 @@ def main() -> dict[str, Any]:
     parquet_hashes: dict[str, str] = {}
     input_hashes: dict[str, str] = {}
     for baseline in BASELINES:
-        inputs_path = OUT_DIR / f"g10_returns_{baseline}.json"
+        inputs_path = out_dir / f"g10_returns_{baseline}.json"
         payload = json.loads(inputs_path.read_text())
         parquet_hashes[baseline] = _verify_parity(lab_dir, baseline, payload["trials"])
         input_hashes[baseline] = sha256(inputs_path)
         families[baseline] = evaluate_family(payload)
     search_lineage = build_search_lineage(lab_dir)
     method_contract = build_method_contract(search_lineage, families)
-    date_tag = datetime.now(tz=UTC).strftime("%Y_%m_%d")
     evidence = {
         "schema": "tios-g10-candidate-evidence-v2",
         "gate": "G10",
@@ -512,8 +512,15 @@ def main() -> dict[str, Any]:
             "strategy, selects no winner, and enables no execution path."
         ),
     }
+    return evidence
+
+
+def main() -> dict[str, Any]:
+    evidence = build_evidence(_latest_lab_dir())
+    date_tag = datetime.now(tz=UTC).strftime("%Y_%m_%d")
     out = ROOT / "artifacts/validation" / f"G10_CANDIDATE_EVIDENCE_{date_tag}.json"
     out.write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    families = evidence["families"]
     print(json.dumps({k: families[k]["verdict"] for k in families} | {"artifact": str(out)}))
     return evidence
 

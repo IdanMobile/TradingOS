@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.52 Supervisory truth restoration and execution quarantine (2026-07-13). Supersedes v8.51 hashes.
+Package version: v8.53 Preregistered G10 campaign execution contract (2026-07-13). Supersedes v8.52 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -38,7 +38,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/supervisor/FINAL_SUPERVISORY_REPORT_2026-07-13.md` | `5ce97adac30f328ebb33e874134ea706f59b344ff2e1410b6013d6a96c86abaa` |
 | `strategies/research/funding-carry-basis-delta-neutral/canonical_strategy_spec.yaml` | `87ee0ecfc39515547a09ffa2108b93f7f65785de2ec28e2f4a895190d1ca86b0` |
 | `strategies/research/funding-carry-basis-delta-neutral/canonical_strategy_spec.sha256` | `02b3be727ee2d86a4b80eeb5fdf31779827b604f16e76f7c9f562d82ede8713a` |
-| `research/BASELINE_G10_SEARCH_CAMPAIGN_V1.yaml` | `b10952d9d09ac0c21a700109f10503df8fdfc4954beabf321c63bbfd42e8bab1` |
+| `research/BASELINE_G10_SEARCH_CAMPAIGN_V1.yaml` | `ef9b62a95ca701c43cd3a23912d180b270d9b9d49f4c8f4e954405b7365bb872` |
 
 ## Required handoff inputs — planning system (added v8)
 

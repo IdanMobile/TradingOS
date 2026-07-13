@@ -774,3 +774,14 @@ Key outcomes:
   and live-capital prohibitions remain unchanged.
 - Added `docs/supervisor/FINAL_SUPERVISORY_REPORT_2026-07-13.md` with the verified
   conclusion, validation results, residual classifications, human decisions, and next phase.
+
+## v8.53 — 2026-07-13 — Preregistered G10 campaign execution contract
+
+- Added a local-only preflight/run/verify wrapper that binds the 66-trial campaign to a
+  clean Git commit, exact file hashes, a pinned retained lab, the actual vectorbt environment,
+  immutable per-family all-trial inputs/results, and validated provenance sidecars.
+- Froze the campaign's exact F1/S0 fee-only cost model, within-family selection scope,
+  16-slice/11-tail-bar CSCV policy, and missing upstream family-admission boundary.
+- Classified the retained grids as legacy current-close accelerator proxies rather than
+  canonical next-open strategy implementations; the campaign remains diagnostic-only.
+- Added the missing `pyarrow==24.0.0` dependency to the retained vectorbt environment freeze.

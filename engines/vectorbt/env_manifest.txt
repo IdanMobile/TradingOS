@@ -1,5 +1,6 @@
 engine: vectorbt
 built: 2026-07-06T14:40:48Z
+amended: 2026-07-13T00:00:00Z (retained pyarrow dependency added to exact freeze)
 python: Python 3.13.7
 --- pip freeze ---
 anywidget==0.11.0
@@ -41,6 +42,7 @@ psutil==7.2.2
 psygnal==0.15.1
 ptyprocess==0.7.0
 pure-eval==0.2.3
+pyarrow==24.0.0
 pygments==2.20.0
 pyparsing==3.3.2
 python-dateutil==2.9.0.post0

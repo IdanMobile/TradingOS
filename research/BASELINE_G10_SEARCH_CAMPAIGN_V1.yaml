@@ -1,7 +1,9 @@
 schema: tios-search-campaign-preregistration-v1
 campaign_id: SEARCH-BASELINE-G10-REPRO-V1
 status: PREREGISTERED_NOT_RUN
-purpose: Reproduce the bounded B2/B3/B4 family grids under the D-047 G10 contract.
+purpose: >-
+  Reproduce the retained legacy vectorbt B2/B3/B4 accelerator-proxy grids under the
+  D-047 metric contract. This is not canonical strategy-conformance evidence.
 execution_authority: NONE
 promotion_eligible: false
 winner_selected: false
@@ -18,12 +20,51 @@ scope:
     file_sha256: d4d6b3306c44e242f3fb7f71c44bacabf9a6af1f1f8d507ca2de0853b6a727d0
     manifest: artifacts/datasets/DS-CRYPTO-SPOT-BAKEOFF-V1.manifest.json
     manifest_sha256: f2b729627adb5d75a99c90dd7dd25ea6dcabf83de4baea5784397424034dfc56
+    availability: LOCAL_RETAINED_HASHED_NOT_GIT_OR_DVC_DISTRIBUTED
   engine:
     role: vectorbt_research_accelerator
     environment_manifest: engines/vectorbt/env_manifest.txt
-    environment_manifest_sha256: c55ce4ec3b333a7872da99424ed6187222cc3f70e0ed5ad40825e755c36407d8
-  scenarios: [F1_fee_aware]
+    environment_manifest_sha256: cd2398f4a34887b35b9fd71a1b80c3156a801d783c7cc45fd4e93b84ab094ad3
+    interpreter: engines/vectorbt/.venv/bin/python
+    environment_availability: LOCAL_IGNORED_VENV_VERIFIED_AGAINST_EXACT_MANIFEST
+  retained_population:
+    lab_id: LAB-f04ef5d705e0de4d3fff5fe83ada90b2d91223dc89cfa35364c5fd8439ca3121
+    lab_run: artifacts/research_lab/v0/LAB-f04ef5d705e0de4d3fff5fe83ada90b2d91223dc89cfa35364c5fd8439ca3121/lab_run.json
+    lab_run_sha256: 35293458c4ad1930936b28fac07ed141846203ca091f182e32a9180a46707d38
+    manifest: artifacts/research_lab/v0/LAB-f04ef5d705e0de4d3fff5fe83ada90b2d91223dc89cfa35364c5fd8439ca3121/manifest.json
+    manifest_sha256: c869f4f6ef32b9c5836e3e365db350f75587fac14de3f8dca4492c791e2da8a0
+    trial_ledger: artifacts/research_lab/v0/LAB-f04ef5d705e0de4d3fff5fe83ada90b2d91223dc89cfa35364c5fd8439ca3121/trial_ledger.jsonl
+    trial_ledger_sha256: eedb77d284db8253db30636f115ec32f3caf6d8600f6fa086a0dfacadc1eb9fa
+    experiment_ids_by_family:
+      b2: EXP-VECTORBT-B2-F1
+      b3: EXP-VECTORBT-B3-F1
+      b4: EXP-VECTORBT-B4-F1
+    trial_parquets:
+      b2:
+        file: artifacts/research_lab/v0/LAB-f04ef5d705e0de4d3fff5fe83ada90b2d91223dc89cfa35364c5fd8439ca3121/b2_sweep_all_trials.parquet
+        file_sha256: f0e419b8c2b1bfeaca58d391508a492c1eff510afeeb76d66135ccee65f10550
+      b3:
+        file: artifacts/research_lab/v0/LAB-f04ef5d705e0de4d3fff5fe83ada90b2d91223dc89cfa35364c5fd8439ca3121/b3_sweep_all_trials.parquet
+        file_sha256: c188b898082191579e2bbc235553c8fbd697bb4145344234224a3dec40434ada
+      b4:
+        file: artifacts/research_lab/v0/LAB-f04ef5d705e0de4d3fff5fe83ada90b2d91223dc89cfa35364c5fd8439ca3121/b4_sweep_all_trials.parquet
+        file_sha256: ffea44805e07a4000d03949c5984055691fcbeb62264f3df92256d1e8a0dde92
+  scenarios: [F1/S0_legacy_fee_only_diagnostic]
   transformations: [none]
+  split_observations:
+    bars_total: 577803
+    cscv_bars_used: 577792
+    cscv_tail_bars_excluded: 11
+    full_sample_selection_and_dsr_bars: 577803
+  semantic_conformance: LEGACY_ACCELERATOR_PROXY_NOT_CANONICAL
+  semantic_deviations:
+    - Signals fill at the current bar close; canonical B2/B3/B4 specs require next-bar open.
+    - B2 uses a crossover event; its canonical spec declares the eligible fast-SMA-above-slow-SMA state.
+    - Parity is against the retained accelerator proxy, not canonical event-engine semantics.
+  reproducibility_limitations:
+    - The exact dataset is locally retained and hashed but is not Git- or DVC-distributed.
+    - The exact engine environment is locally retained and verified but its venv is Git-ignored.
+    - Historical upstream family admission remains unavailable by design.
 
 candidate_roster:
   - family: b2
@@ -52,8 +93,25 @@ candidate_roster:
 method:
   governed_selection_metric: non_annualized_per_bar_sharpe
   metric_applies_to: [candidate_selection, PBO_IS, PBO_OOS, DSR]
+  selection_scope: WITHIN_EACH_FAMILY_NO_GLOBAL_66_TRIAL_WINNER
   cscv_contiguous_slice_count: 16
   raw_trial_count: 66
+  cost_model:
+    scenario: F1/S0
+    fee_rate_per_side: 0.001
+    slippage_bps_per_side: 0
+    slippage_model: NOT_MODELLED
+    spread_market_impact_latency: NOT_MODELLED
+    initial_cash: 1000.0
+    economic_evidence: false
+  split:
+    method: CSCV_16_CONTIGUOUS_EQUAL_SLICES_PER_FAMILY
+    cscv_contiguous_slice_count: 16
+    in_sample_slices_per_split: 8
+    out_of_sample_slices_per_split: 8
+    tail_policy: EXCLUDE_FINAL_11_BARS_FROM_CSCV_ONLY
+    full_sample_policy: USE_ALL_577803_BARS_FOR_SELECTION_AND_DSR
+    external_holdout: NOT_CONSUMED
   effective_trial_policy: >-
     Retain full bar-return correlations; compute family-scope Appendix-3 implied trials only
     where correlations are defined. This campaign cannot estimate omitted upstream trials.
@@ -67,8 +125,14 @@ method:
 implementation:
   extractor: engines/vectorbt/g10_returns.py
   extractor_sha256: b287fdc9573d01c48568094a4dab45d1ddd5a95acd771b2bc7f63c2e34ccab34
+  evaluator: scripts/run_g10_candidate.py
+  evaluator_sha256: 0e46ea7d86c1fa683fbce8fbfd27f1574f7b64d86e0240026746b9036d3d072f
   method_module: src/tios/validation/multiple_testing.py
   method_module_sha256: bd25dca76e7639beebbc5e8381aaff9e3e6c044e82ce61d721c697900cde4e54
+  provenance_validator: src/tios/evidence/provenance.py
+  provenance_validator_sha256: 49b1690e07e47dd4218992cb0b78c3049b269e5e36f8749c617c32720986a1a3
+  campaign_runner: scripts/run_preregistered_g10_campaign.py
+  campaign_runner_sha256: 1863696f8eb060991086092c6e21850b94e80afb5a69f855fd9842f7cc692def
 
 stop_rules:
   - Abort on any missing/non-completed trial, parity mismatch, undefined required input, or independent-recomputation disagreement.
@@ -80,5 +144,6 @@ required_output_contract:
   metadata_validator: tios.evidence.validate_substantive_research_metadata
   all_trials_population_required: true
   immutable_output_hash_required: true
+  one_validated_metadata_sidecar_per_family: true
   search_lineage_complete_within_declared_scope: true
   upstream_family_admission_complete: false
