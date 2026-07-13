@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.98 V5 two-window public proof (2026-07-13). Supersedes v8.97 hashes.
+Package version: v8.99 managed prospective-observation contract (2026-07-14). Supersedes v8.98 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `896f3a550d566d23ae334e8fcd75799f45cf533691a44696a793772f6dc3f7f0` |
-| `DECISION_LOG.md` | `331b9431d74605867cd39e9b89a9fa8f553c66eac552a9b6b2f8e328ec166363` |
+| `PROJECT_STATE.md` | `e78706fb42fca003d4ab18aa5160586a2ccb14c14157fb5d4fb02f9db547bfd0` |
+| `DECISION_LOG.md` | `fccb91dd49a33cd31e45709604ca195b2b13180536db2d7da0a3938deb1fa798` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `a1700ec330fb96e961cec638e2fad695e49e5fb2c5ae65b87f7c3e23a27eed09` |
+| `MISSING_AND_OPEN_ITEMS.md` | `5715696cb3ecb84708d7baa9cee3e3c79953df23fb83875e5c4985918e8d40c2` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -593,6 +593,12 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/labels/raw/kline_71b5166cbe12d1c4812c4c83a140f8e68c680abfdd7f5d910d71f167d86b6c81.json` | `71b5166cbe12d1c4812c4c83a140f8e68c680abfdd7f5d910d71f167d86b6c81` |
 | `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/labels/raw/kline_adc23323327753e747269e2fb91a49e95dcc3734de85482b9d1041a93b42456b.json` | `adc23323327753e747269e2fb91a49e95dcc3734de85482b9d1041a93b42456b` |
 | `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/labels/label_snapshot_844852d7e2291a9aca0a605454a18d30cf1846d91d6fb6d0ff9040477304b93f.json` | `844852d7e2291a9aca0a605454a18d30cf1846d91d6fb6d0ff9040477304b93f` |
+
+## Managed prospective-observation contract (added v8.99)
+
+| Path | SHA-256 |
+|---|---|
+| `research/PROSPECTIVE_OBSERVATION_MANAGED_FLOW_V1.yaml` | `15ee329fb1d7b7505f0431f9b57514879444d415c55614f70e78386a7f6b6144` |
 
 ## First causal prospective label schedule (added v8.88)
 

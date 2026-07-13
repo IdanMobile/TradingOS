@@ -270,6 +270,11 @@ scheduled rows are unavailable; none has been aggregated or interpreted. A fresh
 8,640-window warm-up run, actual planned 24-hour rotations, label maturity, review minima, costs,
 G1-G11, strategy approval, and every bot/paper gate remain open.
 
+D-096 freezes a TradingOS-native managed-observation boundary without weakening the offline jobs
+worker. Immutable intent, current-run adoption, fixed command dispatch, freshness/continuity
+projection, dashboard visibility, and drift/failure tests remain to be implemented. The active
+8,640-window run must not be restarted or rewritten during that integration.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

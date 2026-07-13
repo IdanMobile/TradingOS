@@ -1,0 +1,91 @@
+schema_version: 1
+managed_flow_id: PROSPECTIVE-OBSERVATION-MANAGED-FLOW-V1
+decision_id: D-096
+status: FROZEN_NOT_IMPLEMENTED
+stage: S2_PUBLIC_READ_ONLY_RESEARCH
+execution_authority: NONE
+promotion_eligible: false
+
+owned_process:
+  observer_id: PROSPECTIVE-BTC-LIQUIDATION-CHECKPOINT-OBSERVER-V5
+  operations_contract_id: PROSPECTIVE-BTC-LIQUIDATION-PERSISTENT-OBSERVATION-V1
+  command: scripts/run_prospective_liquidation_checkpoints.py
+  arguments:
+    checkpoint_windows:
+      minimum: 1
+      maximum: 8640
+  arbitrary_command_or_path_override: PROHIBITED
+
+architecture_boundary:
+  service: tios.services.observations
+  existing_jobs_worker_extension: REJECTED
+  reason:
+    - Existing S2 jobs are offline and network-sandboxed by contract.
+    - Existing jobs have a 24-hour maximum timeout while one warm-up chain requires 30 days.
+    - Splitting the observer into per-window jobs would reconnect and invalidate continuity.
+  dashboard_role: READ_ONLY_PROJECTION
+  http_write_or_process_control: PROHIBITED
+
+run_intent:
+  storage: content_addressed_json
+  path: artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/operations/intents
+  required_fields:
+    - managed_flow_id
+    - intent_mode
+    - created_at
+    - expected_run_commit
+    - requested_checkpoint_count
+    - operations_contract_sha256
+    - authority
+  modes:
+    PREDECLARED: written before a future managed process starts
+    ADOPTED: explicitly binds an already-running frozen process without rewriting its history
+
+read_projection:
+  sources:
+    - immutable run intent
+    - atomic observer status
+    - content-addressed schema-5 checkpoints
+  heartbeat_interval_seconds: 30
+  fresh_through_seconds: 60
+  delayed_through_seconds: 90
+  stale_after_seconds: 90
+  required_states:
+    - MISSING
+    - PREDECLARED
+    - OBSERVING
+    - CHECKPOINTED
+    - DELAYED
+    - STALE
+    - FAILED_PARTIAL
+    - COMPLETED
+    - ERROR
+
+failure_and_restart:
+  auto_restart: false
+  continuity_rescue: false
+  backfill: false
+  stale_fallback: false
+  behavior: preserve finalized checkpoints and require a new explicit continuity epoch
+
+safety:
+  market_data_transport: PUBLIC_READ_ONLY
+  credentials_used: false
+  account_connection: NONE
+  venue_connection: NONE
+  paper_orders: DISABLED
+  live_orders: DISABLED
+  metric_eligible: false
+  scorecard_eligible: false
+  promotion_eligible: false
+  warmup_analysis: PROHIBITED
+  sealed_v2_holdout_access: PROHIBITED
+
+acceptance:
+  - A fixed-argument managed command cannot accept arbitrary commands, paths, URLs, or credentials.
+  - A content-addressed intent binds the exact commit, contract, checkpoint target, and authority.
+  - The current D-095 run can be labeled ADOPTED without changing its status or checkpoint bytes.
+  - The projection rejects intent, status, checkpoint-hash, contract, commit, and authority drift.
+  - Fresh, delayed, stale, failed, and completed states are derived from retained timestamps.
+  - The read-only dashboard exposes target, finalized count, continuity, freshness, and blockers.
+  - No offline JobStore schema, scheduler, worker sandbox, or existing job semantics change.

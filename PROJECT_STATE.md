@@ -964,6 +964,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   continuity epoch with no failure. Both are zero-event `FLAT/WARMUP_BLOCK/BLOCK` checkpoints.
   Six total complete windows now exist; longest consecutive chain is 2/8,640. Four individual 1h
   labels are retain-only and 14 scheduled rows are unavailable; no aggregation occurred.
+- **Managed observation boundary frozen (D-096):** the 30-day public-source process will be owned
+  by a new read-only observation service with immutable run intent, heartbeat/continuity
+  projection, stale detection, and dashboard visibility. It will not weaken or extend the
+  offline/network-sandboxed jobs worker, accept arbitrary commands, or auto-restart a broken chain.
 
 ## Operational SSOT (unchanged)
 
@@ -1022,11 +1026,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Commit the D-095 proof and start one finite 8,640-checkpoint public observation run from the clean
-evidence commit. Monitor the atomic heartbeat; any unplanned gap starts a new continuity epoch and
-cannot be rescued or backfilled. Evaluate labels only through the separate frozen causal process.
-Do not aggregate or score during warm-up, access the sealed V2 holdout, activate a bot, request
-credentials, create orders, or cross any human S3/S4 gate.
+Implement and test D-096 around the already-running D-095 observer without restarting it: create a
+content-addressed adopted intent, fixed-command future runner, fail-closed freshness/continuity
+projection, and read-only dashboard visibility. Keep the observer code and current continuity
+epoch unchanged. Do not aggregate or score during warm-up, access the sealed V2 holdout, activate
+a bot, request credentials, create orders, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

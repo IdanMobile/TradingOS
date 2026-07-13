@@ -1,5 +1,14 @@
 # Package Changelog
 
+## v8.99 — 2026-07-14 — Managed prospective-observation contract
+
+- Rejected forcing a 30-day public WebSocket process into the offline, network-sandboxed,
+  24-hour-bounded jobs worker.
+- Froze a separate TradingOS observation service with immutable run intent, fixed command,
+  heartbeat/continuity projection, stale detection, and read-only dashboard visibility.
+- Authorized explicit adoption of the active frozen run without restart or history rewrite. No
+  credential, account, order, paper/demo/live, score, promotion, or execution authority exists.
+
 ## v8.98 — 2026-07-13 — V5 two-window public proof
 
 - From clean freeze `474fc0c`, finalized exactly two consecutive schema-5 checkpoints in one

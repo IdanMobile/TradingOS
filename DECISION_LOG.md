@@ -1017,6 +1017,31 @@ Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_V5_TWO_WINDOW_PROOF_202
 sessions `bf68af8b…` and `e9daa3ac…`, and label snapshot `844852d7…`.
 Status: **Operational continuity proof PASS; longest chain 2/8,640; authority NONE.**
 
+### D-096 — Managed public observation is separated from the offline jobs worker
+
+Decision: the prospective checkpoint observer will become a first-class
+`tios.services.observations` flow with content-addressed run intent, deterministic status and
+checkpoint projection, stale-heartbeat detection, and read-only dashboard visibility. The current
+D-095 8,640-window process may be explicitly adopted without changing its already-running process,
+heartbeat, continuity epoch, or immutable checkpoint bytes. Future runs must predeclare the exact
+commit, operations-contract hash, checkpoint target, and authority before process start.
+
+Extending the existing `services.jobs` worker is rejected. That worker is intentionally offline,
+network-sandboxed, and capped at 24-hour jobs, while this public-source observation requires one
+continuous process for up to 30 days. Per-window jobs would reconnect and invalidate the very
+continuity being measured. The managed observation flow accepts no arbitrary command, path, URL,
+credential, or dashboard process-control request and never auto-restarts, backfills, or rescues a
+broken continuity epoch.
+
+Consequence: the bounded observation service, CLI, projection, and tests may be implemented while
+the frozen observer continues unchanged. No existing JobStore schema or semantics may change. No
+strategy validation, analysis during warm-up, bot, account connection, credential, order,
+paper/demo/live state, promotion, or execution authority is activated.
+
+Evidence: `research/PROSPECTIVE_OBSERVATION_MANAGED_FLOW_V1.yaml`, D-093 through D-095, and the
+existing jobs architecture in `docs/architecture/AD.md` and `TYPE_AND_CONTRACT_CATALOG.md`.
+Status: **Managed-flow contract frozen; implementation authorized; authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing
