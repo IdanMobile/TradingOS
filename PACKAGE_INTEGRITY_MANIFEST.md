@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.56 UTC-weekday admission and preregistered campaign freeze (2026-07-13). Supersedes v8.55 hashes.
+Package version: v8.57 UTC-weekday campaign rejection (2026-07-13). Supersedes v8.56 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `59504a5cca020ad4b3dd7ab8727813d85acaeddc226f9697ede152d3a81a330c` |
-| `DECISION_LOG.md` | `03b6fba18615c5c20ea7b435e884128ce552f779ecd1e22b3aca4a41e8db546e` |
+| `PROJECT_STATE.md` | `10f94b0f8c2694711005a6298c8e5c4a62ddffbb0ff76253a86f7fc1a9be9d41` |
+| `DECISION_LOG.md` | `e1011ed2e8bfc0bed3e619add6141ecb9ea6891a4e1129bddb9c27bdc81208f1` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `a671cff03f0108e6f166046bdcc7906dc4875be219786f534fd22d75b39ccd13` |
+| `MISSING_AND_OPEN_ITEMS.md` | `da06c5f1f9575a09cb003f512f8693734776dbcb12054773a7bbedcce7fabea0` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -68,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `3a3ec2260a910848df4d6f59af84944508eb29a55c9ba9992b5093f519b8def7` |
+| `research/RESEARCH_GAP_MATRIX.md` | `d495ac9ff5992edc53047057c059c0e5a29327eb2f971073d330cc45e160a215` |
 
 ## Post-V2 family selection V1 (added v8.55)
 
@@ -122,7 +122,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `research/PLATFORM_STRATEGY_VALIDATION_AND_SCORE_ELIGIBILITY_V1.md` | `dc07a74e16f61ec531a89b5734b1f30011563767034712f5005fdbafef29b39a` |
 | `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V2.md` | `95c9383da7662343ce0644b213ad407d7534e1a0afb06bd430786ba64e2c6c1a` |
 | `research/CALENDAR_UTC_DATA_PACKAGE_V1.json` | `2a0532c3da28586e8f99ccc0e362592473f548b8bc3bc472cfc5cec44db08e50` |
-| `research/CALENDAR_UTC_G1_G11_CAMPAIGN_V1.yaml` | `bce52193c0d7cf7335a25aef48f6e34b09c1545495f16e64e8fa75b65cf68eae` |
+| `research/CALENDAR_UTC_G1_G11_CAMPAIGN_V1.yaml` | `dbf84679e97e892f86610e80fc735e4c4dad89942a9a3b5d6a610e634daff985` |
 | `research/source_snapshots/calendar_utc_v1/binance_public_data_README.md` | `085ab91377aa9325d44f4c7ad27cce4ab381e158403e1d7df2bad39d1a66f7c6` |
 | `strategies/research/calendar-utc-weekday/canonical_strategy_spec.yaml` | `b7f85a146818130abe330fe639b7b38c6b7f7cca7c84e1246c174d7cbc6bf9d4` |
 | `src/tios/strategy/spec.py` | `c15df82896af177cf23db718235641b641f73ba4122dab6de7f36b277a8c88cf` |
@@ -134,7 +134,12 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `tests/test_calendar_utc_data.py` | `ad0148c9dab11d4b4dc5c6baf2492ba423ff49866db88c24c83db1eeffb3eefd` |
 | `tests/test_calendar_utc_reference.py` | `1a23ba4a08149db235a02b710e72b5a9da8cc653bf672b36f9ee621d6297e988` |
 | `tests/test_calendar_utc_strategy.py` | `4c9b503c31899807d7ca8727f9261c22ea578352eb35a7771cb59029c1023473` |
-| `tests/test_calendar_utc_campaign.py` | `180bd5db953983fc23112d545d844388cf78c77ceaf3dd79c2d098ebaed6c554` |
+| `tests/test_calendar_utc_campaign.py` | `ba5bab4b7e39685321d9dd0a9ce81637017b09054f7cfcc0470557b180189f79` |
+| `artifacts/reports/CALENDAR_UTC_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md` | `6199842b4b340e1f95b1e166dedabaff6a5f9b63062d6dd440641392b9dea724` |
+| `artifacts/validation/campaigns/CALENDAR-UTC-G1-G11-V1/campaign_result_67b013d934b3648b76ed7a45449e0348efead0e6e0cc67430583e1d6d68c31e0.json` | `67b013d934b3648b76ed7a45449e0348efead0e6e0cc67430583e1d6d68c31e0` |
+| `artifacts/validation/campaigns/CALENDAR-UTC-G1-G11-V1/preregistration_bce52193c0d7cf7335a25aef48f6e34b09c1545495f16e64e8fa75b65cf68eae.yaml` | `bce52193c0d7cf7335a25aef48f6e34b09c1545495f16e64e8fa75b65cf68eae` |
+| `artifacts/validation/campaigns/CALENDAR-UTC-G1-G11-V1/reference_results_ac7300038092ba8239417517118195f5674ccb71bc3385d620ba859df4c0fa08.json` | `ac7300038092ba8239417517118195f5674ccb71bc3385d620ba859df4c0fa08` |
+| `artifacts/validation/campaigns/CALENDAR-UTC-G1-G11-V1/vectorbt_results_3fdf3719e7284ec496d52b2b20b6591bc2991ff23f4f9a8d3d1f4cd2f8e685f0.json` | `3fdf3719e7284ec496d52b2b20b6591bc2991ff23f4f9a8d3d1f4cd2f8e685f0` |
 
 ## Expected generated artifacts
 

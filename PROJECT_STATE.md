@@ -783,6 +783,13 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   reserve, hard G1-G11 thresholds, and no-rescue rules are frozen in
   `research/CALENDAR_UTC_G1_G11_CAMPAIGN_V1.yaml`. Preflight passes offline; historical scoring
   has not run. No V2 holdout, bot, venue, credential, order, or authority was touched.
+- **UTC-weekday campaign rejected (D-054):** clean-commit execution selected Wednesday and
+  Decimal/vectorbt parity passed, but G5/G8/G9/G10 failed: F2/S3 `-40.74%`, F1/S1 drawdown
+  `-41.29%`, Sharpe below buy-and-hold, PBO `0.7594`, and DSR `0.3012`. A second complete
+  run reproduced governed numeric outputs byte-for-byte. Supervisor review also invalidates
+  untouched-reserve claims because the frozen runner computed reserve metrics before selection,
+  and notes missing Freqtrade/Nautilus certification. The exact context is closed without rescue;
+  no bot, venue, credential, order, promotion, or authority exists.
 
 ## Operational SSOT (unchanged)
 
@@ -841,10 +848,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Commit the unrun `CALENDAR-UTC-G1-G11-V1` freeze from a clean tree, then execute it once offline.
-Retain every weekday/cost/segment result and stop on any hard failure. If the numeric package is
-eligible, perform the required independent stats/risk/supervisor/security reviews; otherwise
-reject the exact StrategyVersion without rescue. Do not access the sealed V2 holdout, activate a
+Begin a new bounded source-only family-selection cycle using genuinely distinct mechanisms and a
+new unseen-evidence plan. The rejected calendar family and its nominal reserve may not be reused
+or adapted. Do not expand or rescue B2/B3/B4, carry, cross-sectional momentum, volatility
+management, stablecoin reversion, halving exposure, or UTC calendar variants without direct new
+evidence that closes their recorded rejection. Do not access the sealed V2 holdout, activate a
 bot, connect a venue, request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)

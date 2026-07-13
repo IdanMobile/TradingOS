@@ -1,0 +1,125 @@
+{
+  "artifacts": {
+    "reference_results": "reference_results_ac7300038092ba8239417517118195f5674ccb71bc3385d620ba859df4c0fa08.json",
+    "vectorbt_results": "vectorbt_results_3fdf3719e7284ec496d52b2b20b6591bc2991ff23f4f9a8d3d1f4cd2f8e685f0.json"
+  },
+  "campaign_id": "CALENDAR-UTC-G1-G11-V1",
+  "completed_at_utc": "2026-07-13T12:46:25.911034+00:00",
+  "evaluation": {
+    "buy_and_hold_primary": {
+      "buy_count": 1,
+      "max_drawdown": -0.7719848663243896,
+      "return_hash_12dp": "39176c8dae291fb742db18bbcaf6094619a31447ea36dd98d7d8d72f11bcfe01",
+      "sell_count": 0,
+      "sharpe_per_bar": 0.005476473174506847,
+      "total_return": 1.0246520864553004
+    },
+    "clock_perturbations_primary": {
+      "offset_+1h": {
+        "buy_count": 286,
+        "max_drawdown": -0.3655945802371283,
+        "return_hash_12dp": "84b59c40554734c5838df877167aa416e6fdf1ee18eb16512845b34d45c0e566",
+        "sell_count": 286,
+        "sharpe_per_bar": 0.005391095263843676,
+        "total_return": 0.6756398994509396
+      },
+      "offset_-1h": {
+        "buy_count": 287,
+        "max_drawdown": -0.3860803094671238,
+        "return_hash_12dp": "ea8a739585f8b00b65daf5ea70e6b9a333f427f945e8851a9ecfc5712f62a914",
+        "sell_count": 286,
+        "sharpe_per_bar": 0.0038802532680330534,
+        "total_return": 0.3814366377171023
+      }
+    },
+    "development": {
+      "buy_count": 156,
+      "max_drawdown": -0.4128972122572808,
+      "return_hash_12dp": "1da066a878b9994ac8a46b8b55e0770bd87bd9401edb5b5b4c45ba022c36b61d",
+      "sell_count": 156,
+      "sharpe_per_bar": 0.002460969860936146,
+      "total_return": 0.0777783226736026
+    },
+    "full_primary": {
+      "buy_count": 286,
+      "max_drawdown": -0.4128972122572808,
+      "return_hash_12dp": "85593d7758c5ca44699e2076610470b6578bf3fae2cf06c27744764a1dcdb236",
+      "sell_count": 286,
+      "sharpe_per_bar": 0.0035057519089323683,
+      "total_return": 0.3198229324896642
+    },
+    "full_stress": {
+      "buy_count": 286,
+      "max_drawdown": -0.5622450005992996,
+      "return_hash_12dp": "11029d3355b0464ccba1f587257076944c07d17f6d3b5a107885cf8b49f37745",
+      "sell_count": 286,
+      "sharpe_per_bar": -0.0027719517877916383,
+      "total_return": -0.40743994814267454
+    },
+    "g10": {
+      "average_trial_return_correlation_clipped_at_zero": 0.0002797904372322449,
+      "dsr": 0.30121297195953955,
+      "effective_trials": 6.998321257376606,
+      "expected_maximum_noise_sharpe": 0.005680753390741348,
+      "pbo": 0.7593628593628594,
+      "pbo_split_count": 12870,
+      "qualitative_family_candidates_retained": 3,
+      "raw_statistical_trials": 7,
+      "selected_sharpe_per_bar": 0.002460969860936146,
+      "z_score": -0.5209150598002824
+    },
+    "gates": {
+      "G10_MULTIPLE_TESTING": "FAIL",
+      "G11_INDEPENDENT_RISK_SUPERVISOR": "NOT_RUN",
+      "G1_DATA_PROVENANCE": "PASS",
+      "G2_CANONICAL_IDENTITY": "PASS",
+      "G3_CAUSAL_GOLDENS": "PASS",
+      "G4_INDEPENDENT_REPRODUCTION": "PASS",
+      "G5_AFTER_COST_ECONOMICS": "FAIL",
+      "G6_CHRONOLOGICAL_OOS": "PASS",
+      "G7_SAMPLE_AND_CLOCK_ROBUSTNESS": "PASS",
+      "G8_REGIME_AND_TAIL": "FAIL",
+      "G9_BENCHMARK_AND_OPPORTUNITY": "FAIL"
+    },
+    "numeric_verdict": "FAIL",
+    "promotion_eligible": false,
+    "reserved_2025_2026h1": {
+      "buy_count": 77,
+      "max_drawdown": -0.19714830963250907,
+      "return_hash_12dp": "fc8b60f652ae1cfa1a4f280608a0127c64a005be251316ca2f17a40c833b88f8",
+      "sell_count": 77,
+      "sharpe_per_bar": 0.0026372618516324418,
+      "total_return": 0.04247380436375975
+    },
+    "selected_trial": "weekday=2",
+    "selected_weekday": 2,
+    "validation_2024": {
+      "buy_count": 52,
+      "max_drawdown": -0.2455366072256926,
+      "return_hash_12dp": "a9b23a622d9d38941ec4cc9204723f9848e226ab60b68d0d5ec6ae462f8f1e2d",
+      "sell_count": 52,
+      "sharpe_per_bar": 0.008525218420793214,
+      "total_return": 0.1646290054511156
+    },
+    "yearly_primary_returns": [
+      0.3073679050734049,
+      -0.24138122801584735,
+      0.0866959291224206,
+      0.1646290054511156,
+      0.1838823895027967,
+      -0.11847510176961568
+    ]
+  },
+  "execution_authority": "NONE",
+  "parity": {
+    "maximum_absolute_metric_difference": 6.786238238021269e-14,
+    "mismatches": [],
+    "numeric_tolerance": 1e-10,
+    "status": "PASS"
+  },
+  "preregistration_sha256": "bce52193c0d7cf7335a25aef48f6e34b09c1545495f16e64e8fa75b65cf68eae",
+  "promotion_eligible": false,
+  "run_commit": "ecdfb3b53815d61713ebeea30d1bc19fda3bd59f",
+  "schema": "tios-calendar-utc-campaign-result-v1",
+  "sealed_v2_holdout_accessed": false
+}

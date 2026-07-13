@@ -1,27 +1,7 @@
 schema: tios-calendar-utc-g1-g11-preregistration-v1
 campaign_id: CALENDAR-UTC-G1-G11-V1
-status: COMPLETED_REJECTED
+status: PREREGISTERED_NOT_RUN
 preregistered_at_utc: "2026-07-13T13:15:00Z"
-completed_at_utc: "2026-07-13T12:46:25.911034+00:00"
-completion:
-  run_commit: ecdfb3b53815d61713ebeea30d1bc19fda3bd59f
-  immutable_preregistration_sha256: bce52193c0d7cf7335a25aef48f6e34b09c1545495f16e64e8fa75b65cf68eae
-  campaign_result: artifacts/validation/campaigns/CALENDAR-UTC-G1-G11-V1/campaign_result_67b013d934b3648b76ed7a45449e0348efead0e6e0cc67430583e1d6d68c31e0.json
-  campaign_result_sha256: 67b013d934b3648b76ed7a45449e0348efead0e6e0cc67430583e1d6d68c31e0
-  reference_results_sha256: ac7300038092ba8239417517118195f5674ccb71bc3385d620ba859df4c0fa08
-  vectorbt_results_sha256: 3fdf3719e7284ec496d52b2b20b6591bc2991ff23f4f9a8d3d1f4cd2f8e685f0
-  deterministic_recomputation: PASS_NUMERIC_PAYLOAD_BYTE_IDENTICAL
-  selected_strategy_version_id: SV-c79226c64f6259c5
-  selected_weekday: 2
-  numeric_verdict: FAIL
-  supervisory_verdict: REJECTED_NOT_PROMOTION_ELIGIBLE
-  protocol_deviation: >-
-    The frozen runner computed every reserve-segment trial before development
-    selection, although selection itself consumed only development metrics. This
-    violates the preregistered select-before-read sequencing and invalidates any
-    claim that the reserve was operationally untouched. It cannot be repaired
-    after results and is an additional rejection reason.
-  execution_authority: NONE
 purpose: >-
   Select exactly one UTC weekday from the complete seven-weekday roster on
   2021-2023 BTCUSDT Spot 1h data, test it once on 2024 validation and once on

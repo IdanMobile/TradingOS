@@ -535,3 +535,26 @@ Evidence: `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V2.md`,
 `research/CALENDAR_UTC_DATA_PACKAGE_V1.json`, and
 `research/CALENDAR_UTC_G1_G11_CAMPAIGN_V1.yaml`.
 Status: **Approved constrained-S2 offline campaign freeze; preregistered and not run.**
+
+### D-054 — UTC-weekday campaign is rejected without rescue
+
+Decision: `CALENDAR-UTC-G1-G11-V1` executed once from clean commit `ecdfb3b` and a second
+complete computation reproduced its preregistration, Decimal results, and vectorbt results
+byte-for-byte. Development selected Wednesday (`SV-c79226c64f6259c5`). Decimal/vectorbt parity
+passed, and the 2024 and nominal 2025–2026H1 segments were positive, but four frozen hard gates
+failed: hard-stress economics, absolute drawdown, benchmark superiority, and G10. PBO is 0.7594,
+DSR is 0.3012, F2/S3 return is -40.74%, and F1/S1 max drawdown is -41.29%.
+
+The supervisor also found that the runner computed reserve metrics before development selection,
+contrary to the frozen select-before-read sequence. Although selection consumed only development
+values, the reserve is not operationally untouched. Required Freqtrade/Nautilus conformance was
+also absent. These findings reinforce rejection; they cannot be repaired after results.
+
+Consequence: the exact family/context is closed `REJECTED_NOT_PROMOTION_ELIGIBLE`. No alternate
+weekday, combination, hour, filter, exit, sizing, cost, threshold, or reserve reinterpretation is
+allowed. No bot or human gate is activated.
+
+Evidence: `artifacts/reports/CALENDAR_UTC_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md` and
+the content-addressed campaign directory under
+`artifacts/validation/campaigns/CALENDAR-UTC-G1-G11-V1/`.
+Status: **Completed negative campaign; execution authority remains NONE.**

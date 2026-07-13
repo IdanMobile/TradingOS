@@ -841,3 +841,16 @@ Key outcomes:
   benchmarks, PBO/DSR, hard gates, exact pins, and no-rescue rules.
 - Offline preflight passes. No historical calendar score, sealed V2 holdout, bot, venue,
   credential, order, paper/demo/live state, promotion, or execution authority was accessed.
+
+## v8.57 — 2026-07-13 — UTC-weekday campaign rejection
+
+- Executed the immutable seven-weekday campaign from clean commit `ecdfb3b`; a second complete
+  run reproduced the preregistration, Decimal results, and vectorbt results byte-for-byte.
+- Selected Wednesday on development data. Reference/vectorbt parity passed and chronological
+  segments were positive, but G5/G8/G9/G10 failed: hard stress `-40.74%`, max drawdown
+  `-41.29%`, Sharpe below buy-and-hold, PBO `0.7594`, and DSR `0.3012`.
+- Recorded the red-team protocol finding that reserve metrics were computed before selection,
+  invalidating untouched-reserve status even though selection consumed development only. Also
+  retained the missing Freqtrade/Nautilus conformance gap.
+- D-054 closes the exact context without rescue. No bot, venue, credential, order, paper/demo/live
+  state, human gate, promotion, or execution authority was activated.

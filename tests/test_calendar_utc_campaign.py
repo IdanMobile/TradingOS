@@ -16,7 +16,10 @@ ENGINE_PYTHON = ROOT / "engines/vectorbt/.venv/bin/python"
 
 def test_calendar_campaign_is_frozen_safe_and_complete() -> None:
     campaign = yaml.safe_load(CAMPAIGN.read_text())
-    assert campaign["status"] == "PREREGISTERED_NOT_RUN"
+    assert campaign["status"] in {"PREREGISTERED_NOT_RUN", "COMPLETED_REJECTED"}
+    if campaign["status"] == "COMPLETED_REJECTED":
+        assert campaign["completion"]["numeric_verdict"] == "FAIL"
+        assert campaign["completion"]["supervisory_verdict"] == ("REJECTED_NOT_PROMOTION_ELIGIBLE")
     assert campaign["safety"] == {
         "execution_authority": "NONE",
         "venue_connection": "NONE",
@@ -47,6 +50,12 @@ def test_calendar_campaign_is_frozen_safe_and_complete() -> None:
 
 
 def test_calendar_campaign_preflight_verifies_without_scoring() -> None:
+    campaign = yaml.safe_load(CAMPAIGN.read_text())
+    if campaign["status"] == "COMPLETED_REJECTED":
+        result = ROOT / campaign["completion"]["campaign_result"]
+        assert result.is_file()
+        assert result.name.endswith(f"{campaign['completion']['campaign_result_sha256']}.json")
+        return
     result = preflight(require_clean=False)
     assert result["data_verification"]["status"] == "PASS"
     assert result["data_verification"]["network_allowed"] is False

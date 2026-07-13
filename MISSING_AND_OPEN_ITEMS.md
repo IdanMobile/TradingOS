@@ -62,6 +62,13 @@ and stop rules are preregistered. This closes the Task 1/2 admission and data-pa
 it does not close G1-G11, cross-engine certification, specialist review, promotion, or any
 bot/venue/authority gate.
 
+The frozen campaign has now completed and is rejected under D-054. Wednesday was positive at
+F1/S1 in 2024 and the nominal reserve, but failed hard-stress economics, drawdown, benchmark,
+and G10 gates. The reserve computation order violated its select-before-read protocol, and full
+Freqtrade/Nautilus conformance was not run. The exact calendar family/context is closed without
+rescue. A new distinct-family cycle and genuinely unseen evidence are required before another
+StrategyVersion can seek validation.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized
