@@ -1042,6 +1042,30 @@ Evidence: `research/PROSPECTIVE_OBSERVATION_MANAGED_FLOW_V1.yaml`, D-093 through
 existing jobs architecture in `docs/architecture/AD.md` and `TYPE_AND_CONTRACT_CATALOG.md`.
 Status: **Managed-flow contract frozen; implementation authorized; authority NONE.**
 
+### D-097 — Managed observation implementation frozen before current-run adoption
+
+Decision: D-096 is implemented as a new `tios.services.observations` package plus one fixed CLI.
+It writes canonical content-addressed `PREDECLARED` or `ADOPTED` intents; validates exact flow and
+operations contracts, commit, authority, status counters, checkpoint bytes, finalized counts, and
+continuity; derives fresh/delayed/stale/terminal states; and projects the active observation into
+both TradingOS status and dashboard evidence surfaces. The dashboard gains no process-control
+write. The fixed launcher accepts only `checkpoint_windows` in `[1,8640]` and refuses a second
+fresh active observer.
+
+The existing jobs schema, worker, network sandbox, schedules, and projections are unchanged.
+Static gates and 104 focused architecture/dashboard/safety/prospective tests pass; the live
+projection independently reconstructs the active D-095 run and correctly reports missing intent
+before adoption. Exact implementation hashes are frozen before writing that intent.
+
+Consequence: after this implementation is committed, the current process may be adopted with
+target 8,640 without restart or byte changes. Future observation runs may use the managed fixed
+launcher. No auto-restart, backfill, warm-up analysis, strategy validation, bot, credential,
+account/venue connection, order, paper/demo/live state, promotion, or execution authority exists.
+
+Evidence: `research/PROSPECTIVE_OBSERVATION_MANAGED_FLOW_IMPLEMENTATION_V1.yaml`, package/CLI
+sources, dashboard projection, and `tests/test_observation_flow.py`.
+Status: **Implementation frozen and tested; current-run adoption pending; authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

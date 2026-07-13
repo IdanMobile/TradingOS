@@ -127,6 +127,20 @@ S2 infrastructure allocation: SQLite owns operational rows and read models; Parq
 - Forbidden: scheduling before identical-input reuse passes; distributed workers; broker; demo/testnet/sandbox, paper, live, venue, credential, order, and approval-transition commands.
 - Tests: identical complete input returns the same batch/artifact refs without recomputation; partial/failure preservation; command allowlist; prohibited execution boundaries.
 
+### 15a. `observations`
+- Responsibility: own finite public-read-only prospective source observation with immutable run
+  intent, one fixed observer command, heartbeat/continuity projection, content-addressed
+  checkpoints, stale detection, and read-only dashboard visibility (D-096).
+- Boundary: separate from the offline/network-sandboxed jobs worker. A 30-day continuity run is
+  one process; it cannot be split into reconnecting per-window jobs or represented as paper/live
+  execution.
+- Forbidden: arbitrary commands, paths, URLs, credentials, account endpoints, auto-restart,
+  continuity rescue, backfill, dashboard process control, signal scoring during warm-up, venue
+  connection, and paper/demo/live orders.
+- Tests: intent/commit/contract/authority/hash drift; fixed arguments; active-run refusal;
+  fresh/delayed/stale/failed/completed projection; checkpoint counts and continuity; no execution
+  capability.
+
 ### 16. `dashboard_api` + `dashboard_ui`
 - Responsibility: read projections under `/api/v1/` and bounded views for Research Lab batches, source-linked candidates, independent score comparisons, historical market/chart annotations, automation status, inert trading-domain projections, and the dormant paper cockpit. Exactly three audited POST exceptions exist: D-038 workspace decisions, D-041 governed data refresh, and D-044 cockpit actions.
 - Read model: manifests + operational projections only; UI is never a source of truth. Research-batch triggering remains CLI-only throughout S2. Persisted scheduling materializes only allowlisted future jobs after the jobs idempotency gate; D-041's fixed data refresh is a separately audited operation.

@@ -132,6 +132,8 @@ def test_dashboard_status_is_read_only_projection() -> None:
     assert status["checks"]["status"] in {"PASS", "UNKNOWN"}
     assert status["checks"]["known_passing"] is (status["checks"]["status"] == "PASS")
     assert status["checks"]["includes_dependency_audit"] is False
+    assert status["observation"]["capabilities"]["execution_authority"] == "NONE"
+    assert status["observation"]["capabilities"]["http_process_control"] is False
 
 
 def test_dashboard_evidence_surface_reads_real_project_artifacts() -> None:
@@ -154,6 +156,8 @@ def test_dashboard_evidence_surface_reads_real_project_artifacts() -> None:
     assert data["validation"]["risk_preconditions"]["no_live_capability"] is True
     assert data["validation"]["risk_preconditions"]["promotion_eligible"] is False
     assert data["stage"] == "S2_OFFLINE_RESEARCH_OPERATIONS"
+    assert data["observation"]["managed_flow_id"] == ("PROSPECTIVE-OBSERVATION-MANAGED-FLOW-V1")
+    assert data["observation"]["capabilities"]["paper_orders"] == "DISABLED"
     assert data["readiness"] == {
         "status": "CONSTRAINED",
         "scope": "S2 OFFLINE RESEARCH ONLY",
@@ -1737,6 +1741,7 @@ def test_live_status_api_contract_without_listening_server(tmp_path: Path) -> No
     payload = json.loads(body)
     assert payload["schema_version"] == 1
     assert payload["checks"]["status"] == "UNKNOWN"
+    assert payload["observation"]["state"] == "MISSING"
 
 
 def test_live_market_api_schema_contract_without_listening_server(tmp_path: Path) -> None:

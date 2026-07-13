@@ -968,6 +968,11 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   by a new read-only observation service with immutable run intent, heartbeat/continuity
   projection, stale detection, and dashboard visibility. It will not weaken or extend the
   offline/network-sandboxed jobs worker, accept arbitrary commands, or auto-restart a broken chain.
+- **Managed observation implementation frozen (D-097):** immutable intent, fixed launcher,
+  heartbeat freshness, commit/contract/authority/hash/count/continuity validation, and read-only
+  status/dashboard projection are implemented and tested without changing JobStore. The active
+  D-095 process is healthy but remains explicitly `UNMANAGED` until its post-commit adopted intent
+  is written.
 
 ## Operational SSOT (unchanged)
 
@@ -1026,11 +1031,10 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Implement and test D-096 around the already-running D-095 observer without restarting it: create a
-content-addressed adopted intent, fixed-command future runner, fail-closed freshness/continuity
-projection, and read-only dashboard visibility. Keep the observer code and current continuity
-epoch unchanged. Do not aggregate or score during warm-up, access the sealed V2 holdout, activate
-a bot, request credentials, create orders, or cross any human S3/S4 gate.
+Commit D-097, write the one content-addressed `ADOPTED` intent for the already-running D-095 process
+with target 8,640, and verify the managed projection without restarting the observer. Retain the
+new checkpoints and adoption evidence. Do not aggregate or score during warm-up, access the sealed
+V2 holdout, activate a bot, request credentials, create orders, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

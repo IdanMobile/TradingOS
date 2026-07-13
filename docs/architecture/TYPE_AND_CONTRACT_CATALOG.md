@@ -223,6 +223,26 @@ snapshot_dataset(path) -> dataset_ref ; restore(dataset_ref) -> path
 - Status: `PENDING|RUNNING|COMPLETED|FAILED|CANCELLED|REUSED`.
 - Semantics: local DB-table jobs only after `RunResearchLabBatch` proves idempotent; at-least-once execution + idempotent effects; bounded attempts/timeouts/concurrency; cooperative cancellation; failures preserve partial artifacts + logs. No broker or distributed worker.
 
+### 5a. Managed prospective observation (D-096)
+
+`ObservationRunIntent{managed_flow_id, schema_version, intent_mode=PREDECLARED|ADOPTED,
+created_at, adopted_process_started_at?, expected_run_commit, requested_checkpoint_count,
+operations_contract_sha256, observer_command, output_dir, authority}`
+
+- Identity: canonical JSON is content-addressed; target is bounded to 1–8,640 checkpoints and the
+  command/path are fixed by code, never payload overrides.
+- Runtime: the atomic observer status owns process start, heartbeat, connection/continuity epochs,
+  finalized count, last window/failure, and authority. Immutable schema-5 checkpoints own history.
+- Projection: derives `FRESH` through 60 seconds, `DELAYED` through 90 seconds, then `STALE`;
+  validates intent, status, checkpoint hashes, commit, contract, counters, and authority.
+- Separation: this is not a `Job`. The existing jobs worker remains offline/network-sandboxed and
+  24-hour bounded. Observation uses one finite public-read-only process so reconnecting job slices
+  cannot fabricate continuity.
+- Failure: no automatic restart, rescue, backfill, or fallback. A gap starts a new continuity epoch
+  and every prior finalized checkpoint remains addressable.
+- Authority: credentials false; account/venue connection none; paper/live orders disabled;
+  execution authority none; dashboard exposes read-only state and no process-control endpoint.
+
 ## 6. Artifact contracts
 
 Every artifact directory contains `manifest.json`:

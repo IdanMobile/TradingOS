@@ -1,5 +1,14 @@
 # Package Changelog
 
+## v8.100 — 2026-07-14 — Managed observation implementation freeze
+
+- Added the TradingOS observation service, fixed future launcher, canonical content-addressed run
+  intents, and strict heartbeat/checkpoint/continuity projection.
+- Added read-only status/dashboard visibility with no process-control API and no change to the
+  offline JobStore worker or sandbox.
+- Passed static gates and 104 focused architecture/dashboard/safety/prospective tests; froze exact
+  code/test hashes before adopting the active run. Authority remains `NONE`.
+
 ## v8.99 — 2026-07-14 — Managed prospective-observation contract
 
 - Rejected forcing a 30-day public WebSocket process into the offline, network-sandboxed,

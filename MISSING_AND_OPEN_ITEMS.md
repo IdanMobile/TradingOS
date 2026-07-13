@@ -275,6 +275,11 @@ worker. Immutable intent, current-run adoption, fixed command dispatch, freshnes
 projection, dashboard visibility, and drift/failure tests remain to be implemented. The active
 8,640-window run must not be restarted or rewritten during that integration.
 
+D-097 implements and tests the managed service, fixed launcher, immutable intent, fail-closed
+projection, and dashboard visibility. The current D-095 process still needs its post-commit
+`ADOPTED` intent and managed verification. Warm-up completion, real rotation evidence, causal label
+maturity, statistical validation, and every promotion/paper gate remain open.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.99 managed prospective-observation contract (2026-07-14). Supersedes v8.98 hashes.
+Package version: v8.100 managed observation implementation freeze (2026-07-14). Supersedes v8.99 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `e78706fb42fca003d4ab18aa5160586a2ccb14c14157fb5d4fb02f9db547bfd0` |
-| `DECISION_LOG.md` | `fccb91dd49a33cd31e45709604ca195b2b13180536db2d7da0a3938deb1fa798` |
+| `PROJECT_STATE.md` | `6b81067197ae0c8d3cd1fcec844b70b96b84a553b9328886ce7877d4e4484f5b` |
+| `DECISION_LOG.md` | `0673764301a7cff806dbb74f51be1ce36821948ec8f5f258f8f2fb3803ad3d42` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `5715696cb3ecb84708d7baa9cee3e3c79953df23fb83875e5c4985918e8d40c2` |
+| `MISSING_AND_OPEN_ITEMS.md` | `321330b66f829705ef5dceee1e3c5f667458e089198c34c2b92e2b48e0de3cec` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -58,9 +58,9 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 
 | Path | SHA-256 |
 |---|---|
-| `docs/architecture/AD.md` | `3f029dcd3ac92cd14a0b9cdb2d6a669d0c98b644246d545deed06537026b6ff7` |
-| `docs/architecture/MODULE_CATALOG.md` | `864d2f94da9dd2806cb44ebd1f17120e17c5dc509917aa639d2f8c142c3097af` |
-| `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md` | `143006284c36deeb4ecc10f514e5b155926426ad03c360ff27f081452118b8e5` |
+| `docs/architecture/AD.md` | `ff034ae1b686927cca0a0f95725e7be03c2f78e504909dca29b8a1a8cae3cd2f` |
+| `docs/architecture/MODULE_CATALOG.md` | `6cadf37032da66afbff75a0e7de0bcbeffe440b33cf80a3ce565f0e704feef19` |
+| `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md` | `5b75c4d8478342d0e0e4639836072f2811c0f1888427e2deef6737f1d14cd870` |
 | `docs/program/PROGRAM_PLAN.md` | `b491591bc5376a4bf3b93f7c42f68c25200f7e4420c05445a925bca7bd60f298` |
 | `docs/product/MVP_SCOPE.md` | `5cdcc8a4249951117baee31cb0ac1b9b5141a150272abe920db3a93a6a9cfc54` |
 | `docs/testing/TEST_MASTER_PLAN.md` | `fb4bd18aed50ff4367c1fb15ff8dbfe33b4399ca7f74ee78e06ed365af350b54` |
@@ -599,6 +599,19 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | Path | SHA-256 |
 |---|---|
 | `research/PROSPECTIVE_OBSERVATION_MANAGED_FLOW_V1.yaml` | `15ee329fb1d7b7505f0431f9b57514879444d415c55614f70e78386a7f6b6144` |
+
+## Managed observation implementation freeze (added v8.100)
+
+| Path | SHA-256 |
+|---|---|
+| `research/PROSPECTIVE_OBSERVATION_MANAGED_FLOW_IMPLEMENTATION_V1.yaml` | `08257ce577c480c3cb305143966300dafd7f92e0b75c1bbaa2f9d440784b6bed` |
+| `src/tios/services/observations/__init__.py` | `0ffaa5bf3d3149e997efce0be0a11e67e731fafe1a4ec4e32ff210b3fe696987` |
+| `src/tios/services/observations/flow.py` | `4bfee7cd3e940658602ac141afb2671715a5e23e289ca238285cac776dea04f7` |
+| `scripts/run_prospective_observation_flow.py` | `049a30eae86bba0abb071016149a3414726a1d47655dcb1b1c19d5e69917f449` |
+| `tests/test_observation_flow.py` | `06bdf250404373a9e3636c5e40e09bde1ff03a0ceb538a7af9dcb95813b70611` |
+| `src/tios/services/dashboard_api/status.py` | `5700430f2f85d2f4166378aa428b2ee96a88f614289d48cb588609cab3ee7792` |
+| `src/tios/services/dashboard_ui/dashboard.html` | `332bfe640bd313e3d916f20d256152dc77864118b8f9dba54079a2a19fe63767` |
+| `tests/test_dashboard.py` | `860df890e868028a7bd68f3bd2a9d53823f7288e1481a872984f8c81a92e7159` |
 
 ## First causal prospective label schedule (added v8.88)
 

@@ -1,0 +1,46 @@
+schema_version: 1
+implementation_id: PROSPECTIVE-OBSERVATION-MANAGED-FLOW-IMPLEMENTATION-V1
+decision_id: D-097
+status: FROZEN_NOT_ADOPTED
+managed_flow_id: PROSPECTIVE-OBSERVATION-MANAGED-FLOW-V1
+managed_flow_contract_sha256: 15ee329fb1d7b7505f0431f9b57514879444d415c55614f70e78386a7f6b6144
+execution_authority: NONE
+
+implementation_hashes:
+  package_init: 0ffaa5bf3d3149e997efce0be0a11e67e731fafe1a4ec4e32ff210b3fe696987
+  flow: 4bfee7cd3e940658602ac141afb2671715a5e23e289ca238285cac776dea04f7
+  cli: 049a30eae86bba0abb071016149a3414726a1d47655dcb1b1c19d5e69917f449
+  flow_tests: 06bdf250404373a9e3636c5e40e09bde1ff03a0ceb538a7af9dcb95813b70611
+  dashboard_status: 5700430f2f85d2f4166378aa428b2ee96a88f614289d48cb588609cab3ee7792
+  dashboard_ui: 332bfe640bd313e3d916f20d256152dc77864118b8f9dba54079a2a19fe63767
+  dashboard_tests: 860df890e868028a7bd68f3bd2a9d53823f7288e1481a872984f8c81a92e7159
+
+verified_behavior:
+  - Immutable PREDECLARED and ADOPTED intents are canonical and content-addressed.
+  - The future launcher accepts only a checkpoint count and dispatches one fixed observer path.
+  - A fresh active observer prevents a second managed observer from starting.
+  - Status, checkpoint count, continuity, longest chain, and freshness project deterministically.
+  - Intent, commit, contract, authority, checkpoint-byte, and counter drift fail closed.
+  - Fresh, delayed, stale, failed, completed, missing, and error states are explicit.
+  - Dashboard projection is read-only and exposes no process-control endpoint.
+  - Existing offline JobStore schema, runner, sandbox, and schedules are unchanged.
+
+current_run_adoption:
+  run_commit: 2b398c10eaf1c6d7357e88ff85a0f655f4a081bc
+  process_started_at: 2026-07-13T21:28:03.839549+00:00
+  requested_checkpoint_count: 8640
+  required_mode: ADOPTED
+  restart_or_history_rewrite: false
+  action_after_clean_commit: >-
+    uv run python scripts/run_prospective_observation_flow.py adopt --checkpoint-windows 8640
+
+safety:
+  market_data_transport: PUBLIC_READ_ONLY
+  credentials_used: false
+  venue_connection: NONE
+  paper_orders: DISABLED
+  live_orders: DISABLED
+  execution_authority: NONE
+  auto_restart: false
+  backfill: false
+  warmup_analysis: PROHIBITED

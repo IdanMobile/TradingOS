@@ -27,6 +27,7 @@ from tios.research_assets import (
 )
 from tios.services.dashboard_api.audit import AuditPathError, confined_audit_handle
 from tios.services.jobs.projection import build_jobs_projection
+from tios.services.observations import build_observation_projection
 
 STATUS_RE = re.compile(r"Status:\s*\*?\*?([^\n]+)")
 TASK_RE = re.compile(r"^## (T-\d{3}-\d{2}) (.+)$", re.MULTILINE)
@@ -383,6 +384,7 @@ def build_status(root: Path | None = None) -> dict[str, Any]:
         },
         "initiatives": initiatives,
         "artifacts": {"files": len([path for path in artifact_files if path.is_file()])},
+        "observation": build_observation_projection(root, now=now),
         "git": _git(root),
         "checks": _check_status(root, now),
     }
@@ -1635,6 +1637,7 @@ def build_dashboard_data(root: Path | None = None) -> dict[str, Any]:
         "generated_at": datetime.now(tz=UTC).isoformat(),
         "stage": "S2_OFFLINE_RESEARCH_OPERATIONS",
         "automation": _automation(root),
+        "observation": build_observation_projection(root),
         "research_lab": research_lab,
         "research_sources": _research_sources(root),
         "dictionary_concepts": _dictionary_concepts(root),
