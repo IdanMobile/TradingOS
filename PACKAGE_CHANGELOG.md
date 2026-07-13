@@ -1,5 +1,12 @@
 # Package Changelog
 
+## v8.66 — 2026-07-13
+
+- Compared MVRV dislocation, U.S. financial conditions, and public attention from current sources.
+- Admitted only BTC MVRV and froze the official no-key metric/catalog snapshot before scoring.
+- Added offline byte, schema, metric, positivity, density, lag, and Spot-mapping verification.
+- Retained execution authority `NONE`; no bot, venue, credential, order, or holdout was activated.
+
 ## v8.65 — 2026-07-13
 
 - Recorded the completed Bitcoin transaction-activity campaign and G11 rejection.

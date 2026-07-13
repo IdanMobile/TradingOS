@@ -559,6 +559,29 @@ the content-addressed campaign directory under
 `artifacts/validation/campaigns/CALENDAR-UTC-G1-G11-V1/`.
 Status: **Completed negative campaign; execution authority remains NONE.**
 
+### D-063 — Bitcoin MVRV dislocation family admitted to data/canonical construction
+
+Decision: a source-only cycle compared exactly three new mechanisms without computing local family
+performance: Bitcoin MVRV holder-cost-basis dislocations, U.S. financial-conditions regimes, and
+public search attention. Financial conditions are rejected for limited and conflicting Bitcoin
+directional evidence. Search attention is rejected because published direction conflicts and
+Google Trends sampling, normalization, stitching, and revisions prevent an immutable point-in-time
+contract.
+
+`FAM-BTC-MVRV-DISLOCATION-01` alone advances. Coin Metrics' no-key Community API and catalog define
+and expose daily BTC `CapMVRVCur`; 2,189 observations plus the exact catalog entry are retained.
+The package records the original HTTP-body hash and the tracked one-LF archival transform, verifies
+no gaps, freezes a two-day lag and strict later Spot mapping, and declares exactly 12 HIGH/LOW,
+30/90/180-day, 1/7-day pulse trials without scoring.
+
+Consequence: canonical and campaign construction may proceed offline. MVRV must not be represented
+as true acquisition cost, unique holders, exchange flow, or causality. No bot, venue, credential,
+order, paper/demo/live state, holdout access, or execution authority is activated.
+
+Evidence: `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V5.md` and
+`research/BTC_MVRV_DATA_PACKAGE_V1.json`.
+Status: **Approved constrained-S2 data/canonical build; performance unobserved and authority NONE.**
+
 ### D-060 — Finalized Bitcoin transaction-activity family admitted to canonical construction
 
 Decision: the fourth bounded source cycle compared exactly finalized Bitcoin L1 confirmed-

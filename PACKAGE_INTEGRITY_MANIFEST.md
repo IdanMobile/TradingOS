@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.65 Bitcoin transaction-activity campaign rejection (2026-07-13). Supersedes v8.64 hashes.
+Package version: v8.66 Bitcoin MVRV family and data freeze (2026-07-13). Supersedes v8.65 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `bca534121485b0ad6eb9387bf514e55e25e1b2a504e67153011adcadd7bae871` |
-| `DECISION_LOG.md` | `ff74d47a0dea44c3d9a12ac96430af7fff5f4d4c12e1b6dc9cf4f8d35f68524c` |
+| `PROJECT_STATE.md` | `233e0cf0ad2d2ba23a7bc26abe06dd469d946ebc26c7b63628e3de6794ec3f00` |
+| `DECISION_LOG.md` | `fc5be3708c8eeec1b55d06aa2ad41ead2433c0203c6d1c945ff5d576c9db09a3` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `98cc98e6ecbd5e6468cb2cb553d272afe5bd19ebdcac51b740bfd283facd7a9b` |
+| `MISSING_AND_OPEN_ITEMS.md` | `9fe7d413ff6899e4ba8b555f37a5a0ab207675438490b927a98a3f779f805048` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -68,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `6311050a91f72ac0d6b1e84b1ad79524681e00963d617b87616f574053d701f9` |
+| `research/RESEARCH_GAP_MATRIX.md` | `77b310ad01d29ccc280f8cd342cf38b457ae42b7d618e0da074a7c2bf7b3ae38` |
 
 ## Post-V2 family selection V1 (added v8.55)
 
@@ -234,6 +234,17 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `artifacts/validation/campaigns/BTC-TX-ACTIVITY-SPOT-G1-G11-V1/phase_two_workers_7de34f3a0a3558d25810812b2405d3f8c0df93e9c51d5a677bbef6211bdb1e6d.json` | `7de34f3a0a3558d25810812b2405d3f8c0df93e9c51d5a677bbef6211bdb1e6d` |
 | `artifacts/validation/campaigns/BTC-TX-ACTIVITY-SPOT-G1-G11-V1/preregistration_9ee7608393fe2cc963abb8910faa804060b610eb0f1f4b37eb18b09418badd68.yaml` | `9ee7608393fe2cc963abb8910faa804060b610eb0f1f4b37eb18b09418badd68` |
 | `artifacts/validation/campaigns/BTC-TX-ACTIVITY-SPOT-G1-G11-V1/selection_affb5b1f22b75c73cbd4edbfba46064d63cebe99eed9efc10c0f9862d5844e17.json` | `affb5b1f22b75c73cbd4edbfba46064d63cebe99eed9efc10c0f9862d5844e17` |
+
+## Bitcoin MVRV family and data freeze (added v8.66)
+
+| Path | SHA-256 |
+|---|---|
+| `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V5.md` | `228c57fab6ba75910588211d5bbc059ef9f4e4630b206b4d7ae3d40f94feab13` |
+| `research/BTC_MVRV_DATA_PACKAGE_V1.json` | `e8155e56dec7a1c05b3f7c289aa9f3320d939ee6160b23b0606af40aef1cd214` |
+| `data/raw/onchain/coinmetrics_btc_capmvrvcur_2020-07-01_2026-06-28_2026-07-13.json` | `88f68a10c52dd822cd6b564f33fb75b5470e1e6fc84783a02ce9a39edf5f8c49` |
+| `data/raw/onchain/coinmetrics_capmvrvcur_catalog_entry_2026-07-13.json` | `32088d26671362024dfe8e721da2891d0f161244542df8ff15b46b7893eaae53` |
+| `scripts/verify_btc_mvrv_data.py` | `fd82034dc9fcc958b647248b01efefbc251f053cbebefca3ba436a5eb37fdd43` |
+| `tests/test_btc_mvrv_data.py` | `dfd5513c6f1151e209baea435d5e9bb0fc64b7a1c779b5dcc03903ac26b8f1ab` |
 
 ## Expected generated artifacts
 

@@ -100,6 +100,12 @@ delay, regime, drawdown, benchmark, and DSR evidence failed. The exact family is
 rescue. A new distinct source-only family cycle is required; no strategy is validated and no bot,
 paper/demo/live state, venue, or execution authority exists.
 
+D-063 admits a distinct Bitcoin MVRV dislocation family without scoring. The official no-key
+metric/catalog snapshot, original-body and tracked archival hashes, 2,189 positive daily values,
+zero gaps, two-day lag, strict Spot mapping, and 12-trial roster pass offline verification.
+Canonical implementations, immutable campaign, G1-G11 evidence, and independent supervision
+remain open; no strategy is validated.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

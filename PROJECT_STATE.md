@@ -827,6 +827,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   validation (-1.57%), reserve (-22.22%), full (-3.02%), stress (-51.98%), and one-bar delay
   (-21.41%) were negative. Parity passed, but G5-G10 and G11 fail; the family is closed without
   rescue and no bot or execution authority exists.
+- **Bitcoin MVRV family admitted (D-063):** a fresh exactly-three-family source cycle rejects U.S.
+  financial conditions and public search attention, admitting only BTC MVRV dislocations. The
+  no-key official metric/catalog snapshot, 2,189 daily rows, two-day lag, zero gaps, strict Spot
+  mapping, and 12 unscored trials are frozen; execution authority remains `NONE`.
 
 ## Operational SSOT (unchanged)
 
@@ -885,10 +889,10 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Begin a new bounded source-only family-selection cycle using at most three genuinely distinct
-mechanisms. Do not rescue transaction activity or reuse the closed calendar/funding contexts. Do
-not access the sealed V2 holdout, activate a bot, connect a venue, request credentials, or cross any
-human S3/S4 gate.
+Build and freeze the canonical 12-trial MVRV campaign without scoring, with independent Decimal,
+vectorbt, Freqtrade-environment, and Nautilus-environment roles plus a hashed development selection
+barrier. Do not reuse closed-family results or access the sealed V2 holdout, activate a bot,
+connect a venue, request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 
