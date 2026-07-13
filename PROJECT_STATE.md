@@ -985,6 +985,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   verifier, release condition, earliest lawful time, and target gate. The 8,640 windows are samples,
   not trials; no score campaign or StrategyVersion exists. A validated risk signal would still
   require a separately validated alpha StrategyVersion before any bot/paper path.
+- **Deterministic risk-signal slice implemented (D-101):** the latest finalized public checkpoint
+  now projects through a dedicated typed risk-state signal to an independent blocking risk
+  decision, fixed offline verifier, and read-only dashboard. Checkpoint/semantic/authority drift
+  fails closed; order creation is structurally disabled. This proves plumbing, not alpha.
 
 ## Operational SSOT (unchanged)
 
@@ -1044,10 +1048,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 ## Exact next action
 
 Let the managed observer continue its preregistered 8,640-checkpoint warm-up while retaining and
-verifying immutable evidence at bounded milestones. Do not aggregate or score during warm-up,
-access the sealed V2 holdout, activate a bot, request credentials, create orders, or cross any
-human S3/S4 gate. In parallel, preregister the future prospective association/risk-overlay campaign
-without reading or aggregating warm-up outcomes, then continue safe offline full-flow closure.
+verifying immutable evidence at bounded milestones. Preregister the future prospective
+association/risk-overlay campaign without reading or aggregating warm-up outcomes. Then connect a
+separately validated exact StrategyVersion to the same independent risk boundary before any later
+paper proposal. Do not access the sealed V2 holdout, activate a bot, request credentials, create
+orders, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

@@ -1132,6 +1132,27 @@ Evidence: `research/PROSPECTIVE_SIGNAL_EVIDENCE_PRODUCER_MAP_V1.yaml`, current e
 projection, and `tests/test_prospective_signal_evidence_map.py`.
 Status: **Blocker ownership frozen; signal remains observation-only and not eligible.**
 
+### D-101 — Prospective checkpoint-to-risk-decision slice is deterministic and order-inert
+
+Decision: the managed observation evidence now feeds one typed TradingOS vertical slice:
+content-addressed finalized checkpoint → `RiskStateSignalEvent` → independent `RiskDecision` →
+read-only status/dashboard and fixed offline verifier. The existing strategy-bound `SignalEvent`
+remains unchanged because the liquidation-stress lane is not a StrategyVersion or alpha.
+
+The risk-state type structurally rejects metric, scorecard, or promotion eligibility and rejects
+any venue, paper, live, or order capability. The adapter verifies the checkpoint hash, location,
+five-minute coverage, public-source semantics, frozen authority, `FLAT` warm-up signal, and
+independent `BLOCK`; any semantic drift returns an error projection with order creation disabled.
+
+Consequence: the current flow is deterministic inside TradingOS and independently verifiable, but
+ends at a risk block. It proves system plumbing, not predictive value. A separately validated exact
+StrategyVersion remains mandatory before any later bot or paper proposal.
+
+Evidence: `src/tios/services/observations/risk_signal.py`,
+`scripts/verify_prospective_risk_signal_flow.py`, read-only dashboard projection, and
+`tests/test_risk_signal_flow.py`.
+Status: **Offline vertical slice available and fail-closed; strategy/paper/live authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

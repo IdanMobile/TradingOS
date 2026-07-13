@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.103 prospective signal evidence producer map (2026-07-14). Supersedes v8.102 hashes.
+Package version: v8.104 deterministic prospective risk-signal slice (2026-07-14). Supersedes v8.103 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `a79084d809c48f80f201c398f6128f71080caad8b82928a2f819221c3e0971c6` |
-| `DECISION_LOG.md` | `6c046ebc334a225e295c1af1f14b31e2931690b9ffa0a72eb19b6ec8683eea42` |
+| `PROJECT_STATE.md` | `e6b6eb78b6b73d0b029ce89aa044f17c30cb3e52f71505c3b6617a2f2514f340` |
+| `DECISION_LOG.md` | `4f2dbd1863c25d106e3c7d338ffe3e0095e55ff7aefef8db5fda32aaa059aefc` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `59041d0fdca81bf75d7a5d88fefab407bf882cd2f4b479a44fd01745ddbc47f4` |
+| `MISSING_AND_OPEN_ITEMS.md` | `53fdc8b960e4e81410303955cbb1d946ab3488ff13dddab711b14187ff5ad1d9` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -68,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `fcd432a75225c7093786f65b5f4eecde48d8f194e7dd7264900dba38ab76e625` |
+| `research/RESEARCH_GAP_MATRIX.md` | `03dda382f1960c265a90c59ccf44b57454ab38e341edf0aa6f62389098ae7d0e` |
 
 ## Post-V2 family selection V1 (added v8.55)
 
@@ -605,13 +605,13 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | Path | SHA-256 |
 |---|---|
 | `research/PROSPECTIVE_OBSERVATION_MANAGED_FLOW_IMPLEMENTATION_V1.yaml` | `08257ce577c480c3cb305143966300dafd7f92e0b75c1bbaa2f9d440784b6bed` |
-| `src/tios/services/observations/__init__.py` | `0ffaa5bf3d3149e997efce0be0a11e67e731fafe1a4ec4e32ff210b3fe696987` |
+| `src/tios/services/observations/__init__.py` | `546dd5f813051ab74ecc045d2506519cf567ccfc1c34ff2b15f82fbbdd7b20e5f` |
 | `src/tios/services/observations/flow.py` | `4bfee7cd3e940658602ac141afb2671715a5e23e289ca238285cac776dea04f7` |
 | `scripts/run_prospective_observation_flow.py` | `049a30eae86bba0abb071016149a3414726a1d47655dcb1b1c19d5e69917f449` |
 | `tests/test_observation_flow.py` | `06bdf250404373a9e3636c5e40e09bde1ff03a0ceb538a7af9dcb95813b70611` |
-| `src/tios/services/dashboard_api/status.py` | `a75f2c687cd7bc65f698fcdac41c78b20143871f4f3f33d1331009bcde3cc3d8` |
-| `src/tios/services/dashboard_ui/dashboard.html` | `2ff336d5052acd6c68f4c53a503979fae5e8edf90367ba7ce763a83dfe086d9c` |
-| `tests/test_dashboard.py` | `a1f68939bd3606bd8d89c5673bc2f33462820880c759a14d3652f54c18f7a47a` |
+| `src/tios/services/dashboard_api/status.py` | `fa74b95cae671e1c03d9b595347ba6ec1fe5316aa36cbb1820572f2d46273e57` |
+| `src/tios/services/dashboard_ui/dashboard.html` | `df43e5a8d416dbf8233858383cf221c89bb911abbe072090875c485907777cdf` |
+| `tests/test_dashboard.py` | `a2cbd3cea65bb01f9d8f49c1dcf244928fa51fa0055f37a01ae959b0c2708f53` |
 
 ## Managed observation adoption (added v8.101)
 
@@ -643,6 +643,16 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `research/PROSPECTIVE_SIGNAL_EVIDENCE_PRODUCER_MAP_V1.yaml` | `b7d5a6ed289e942b27b2b232b0ef3321897a8a92b501982d7358cf9f7e120194` |
 | `tests/test_prospective_signal_evidence_map.py` | `dc8e2ec39c8104555be6c240e687373b1729a69a420a36749cd775e7c3ad8690` |
+
+## Deterministic prospective risk-signal slice (added v8.104)
+
+| Path | SHA-256 |
+|---|---|
+| `src/tios/trading_domain/models.py` | `f25d9c87a07029df0c95dd0da97f6f8c41f0587312abf909c879e1659aa4c235` |
+| `src/tios/trading_domain/__init__.py` | `828c37e0ec4298d685e163325bcc33415b86ae9816a3415134b679c547a604dd` |
+| `src/tios/services/observations/risk_signal.py` | `9ab4c2245e26370dc639b6bba534efbb1e34a9f94a102cf00232fe7e571bc5f1` |
+| `scripts/verify_prospective_risk_signal_flow.py` | `17678afc9bffc15d3c1354d4deb5ec3f375461a3942f40ccaeb54ca23bdb209a` |
+| `tests/test_risk_signal_flow.py` | `72c1600d33c27c8e79e388db7a9b64d6fe1bb7258a64031042edf21dfccc786a` |
 
 ## First causal prospective label schedule (added v8.88)
 

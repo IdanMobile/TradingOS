@@ -291,6 +291,12 @@ D-100 maps every remaining prospective-signal blocker to an evidence producer an
 metric conventions, declared comparison population, benchmarks, cost/opportunity model, and
 selection rule remain to be preregistered before any lawful first-review calculation.
 
+D-101 closes the system-plumbing gap from finalized checkpoint through a dedicated typed risk-state
+signal and independently derived blocking risk decision to the verifier/dashboard. That slice is
+deterministic and order-inert. It does not close the evidence gap: predictive association, eligible
+metrics, campaign trials, G1-G11, independent reviews, and a separately validated alpha
+StrategyVersion remain missing.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

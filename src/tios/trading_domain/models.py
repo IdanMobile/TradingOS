@@ -1052,6 +1052,58 @@ class SignalEvent:
 
 
 @dataclass(frozen=True, slots=True)
+class RiskStateSignalEvent:
+    """Inert research signal that cannot impersonate a strategy signal."""
+
+    signal_id: SignalId
+    signal_spec_id: str
+    run_ref: RunId
+    instrument: InstrumentId
+    timeframe: Timeframe
+    observed_at: datetime
+    side: Side
+    rationale_code: str
+    metric_eligible: bool
+    scorecard_eligible: bool
+    promotion_eligible: bool
+    created_at: datetime
+    creator_type: CreatorType
+    provenance: Provenance
+    schema_version: int = 1
+    environment: Environment = Environment.HISTORICAL_RESEARCH
+    execution_authority: ExecutionAuthority = ExecutionAuthority.NONE
+    venue_connection: VenueConnection = VenueConnection.NONE
+    paper_orders: OrderCapability = OrderCapability.DISABLED
+    live_orders: OrderCapability = OrderCapability.DISABLED
+
+    def __post_init__(self) -> None:
+        _validate_record(self.schema_version, self.created_at, self.provenance, self.environment)
+        _require_utc(self.observed_at, "observed_at")
+        if not re.fullmatch(r"[A-Z][A-Z0-9-]*", self.signal_spec_id):
+            raise ContractError("signal_spec_id must be a canonical uppercase id")
+        if not self.rationale_code or not self.rationale_code.strip():
+            raise ContractError("rationale_code must be non-empty")
+        if any(
+            not isinstance(value, bool)
+            for value in (
+                self.metric_eligible,
+                self.scorecard_eligible,
+                self.promotion_eligible,
+            )
+        ):
+            raise ContractError("signal eligibility fields must be booleans")
+        if self.metric_eligible or self.scorecard_eligible or self.promotion_eligible:
+            raise ContractError("risk-state signals cannot grant strategy eligibility")
+        if (
+            self.execution_authority is not ExecutionAuthority.NONE
+            or self.venue_connection is not VenueConnection.NONE
+            or self.paper_orders is not OrderCapability.DISABLED
+            or self.live_orders is not OrderCapability.DISABLED
+        ):
+            raise ContractError("risk-state signals cannot activate orders")
+
+
+@dataclass(frozen=True, slots=True)
 class BracketLevels:
     take_profit: Decimal | None = None
     stop_loss: Decimal | None = None

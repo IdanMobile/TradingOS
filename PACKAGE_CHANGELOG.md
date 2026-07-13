@@ -1,5 +1,14 @@
 # Package Changelog
 
+## v8.104 — 2026-07-14 — Deterministic prospective risk-signal slice
+
+- Added a dedicated order-inert risk-state signal type; it cannot impersonate a strategy-bound
+  signal, grant eligibility, connect a venue, or create paper/live orders.
+- Connected the latest verified public checkpoint to the typed signal and independent blocking
+  risk decision, with fail-closed semantic/authority checks and read-only dashboard visibility.
+- Added a fixed offline verifier and end-to-end drift tests. This proves TradingOS plumbing, not
+  alpha; the current signal remains `FLAT`, risk remains `BLOCK`, and authority remains `NONE`.
+
 ## v8.103 — 2026-07-14 — Prospective signal evidence-producer map
 
 - Mapped every current signal-eligibility blocker to an owning producer, verifier, earliest lawful
