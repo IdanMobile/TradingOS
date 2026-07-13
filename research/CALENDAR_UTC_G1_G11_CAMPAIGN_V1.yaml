@@ -1,0 +1,161 @@
+schema: tios-calendar-utc-g1-g11-preregistration-v1
+campaign_id: CALENDAR-UTC-G1-G11-V1
+status: PREREGISTERED_NOT_RUN
+preregistered_at_utc: "2026-07-13T13:15:00Z"
+purpose: >-
+  Select exactly one UTC weekday from the complete seven-weekday roster on
+  2021-2023 BTCUSDT Spot 1h data, test it once on 2024 validation and once on
+  the family-unseen 2025 through 2026-H1 reserve, and retain all G1-G10
+  diagnostics for later independent G11 review. This is offline historical
+  research, never order or promotion authority.
+
+safety:
+  execution_authority: NONE
+  venue_connection: NONE
+  orders: DISABLED
+  network: PROHIBITED
+  credentials_required: false
+  sealed_v2_holdout_access: PROHIBITED
+
+family_selection_lineage:
+  dossier: research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V2.md
+  decision: D-053
+  selected_family: FAM-CALENDAR-UTC-01
+  qualitative_candidates_retained: 3
+  candidates:
+    - FAM-CALENDAR-UTC-01
+    - FAM-STABLECOIN-PEG-01
+    - FAM-BTC-HALVING-01
+  performance_observed_before_freeze: false
+  v2_holdout_accessed: false
+
+dataset:
+  package_id: DATA-CALENDAR-UTC-BTCUSDT-1H-V1
+  package: research/CALENDAR_UTC_DATA_PACKAGE_V1.json
+  path: data/normalized/BTCUSDT_1h.parquet
+  parquet_sha256: d44c70c3c87a3e342dd0496c3975d3b54a2b50dd4c5c1b8873ef84eece99947c
+  logical_content_sha256: 49981c5cf5f3376ea60e931415feefa252c5970d902732dd68d8e95c46a2a3b3
+  rows: 48154
+  interval: 1h
+  timezone: UTC
+  instrument: BTCUSDT
+  market: SPOT
+  gaps: RETAINED_NO_INTERPOLATION
+
+canonical_spec:
+  path: strategies/research/calendar-utc-weekday/canonical_strategy_spec.yaml
+  spec_hash: 94802b2003d685f0059b221b5c422ce71573558f78b19f61e9cb42386874b448
+  signal_time: CLOSE_OF_BOUNDARY_BAR
+  ordinary_fill_time: EXACTLY_ADJACENT_NEXT_OPEN
+  pending_fill_across_gap: EXPIRE
+  held_position_at_gap: EXIT_FIRST_OBSERVABLE_OPEN_FAIL_CLOSED
+  direction: LONG_ONLY
+  sizing: FULL_AVAILABLE_CASH
+  initial_cash: 1000
+
+trial_roster:
+  - {selected_weekday: 0, name: MONDAY, strategy_version_id: SV-e15628f45e78520a}
+  - {selected_weekday: 1, name: TUESDAY, strategy_version_id: SV-4b5a36509152ce15}
+  - {selected_weekday: 2, name: WEDNESDAY, strategy_version_id: SV-c79226c64f6259c5}
+  - {selected_weekday: 3, name: THURSDAY, strategy_version_id: SV-4dd5360ced54a9c8}
+  - {selected_weekday: 4, name: FRIDAY, strategy_version_id: SV-b1545401e5b61009}
+  - {selected_weekday: 5, name: SATURDAY, strategy_version_id: SV-0eefee668f3a42b3}
+  - {selected_weekday: 6, name: SUNDAY, strategy_version_id: SV-6da7f5de81652df0}
+
+method:
+  raw_statistical_trial_count: 7
+  qualitative_family_candidate_count: 3
+  selection_metric: non_annualized_per_1h_bar_sharpe
+  selection_scenario: F1/S1
+  tie_break: LOWER_WEEKDAY_INTEGER
+  all_cash_bars_included_as_zero_returns: true
+  segments:
+    development: ["2021-01-01", "2023-12-31 23:00:00+00:00"]
+    validation_2024: ["2024-01-01", "2024-12-31 23:00:00+00:00"]
+    reserved_2025_2026h1: ["2025-01-01", "2026-06-30 23:00:00+00:00"]
+    full: ["2021-01-01", "2026-06-30 23:00:00+00:00"]
+    year_2021: ["2021-01-01", "2021-12-31 23:00:00+00:00"]
+    year_2022: ["2022-01-01", "2022-12-31 23:00:00+00:00"]
+    year_2023: ["2023-01-01", "2023-12-31 23:00:00+00:00"]
+    year_2024: ["2024-01-01", "2024-12-31 23:00:00+00:00"]
+    year_2025: ["2025-01-01", "2025-12-31 23:00:00+00:00"]
+    year_2026_h1: ["2026-01-01", "2026-06-30 23:00:00+00:00"]
+  reserve_access_rule: >-
+    The runner selects and freezes one weekday from development results before
+    reading its reserved-segment metric. The reserve is evaluated exactly once.
+  cost_scenarios:
+    - {id: F0/S0, fee_rate_per_side: 0.0, slippage_bps_per_side: 0, role: mechanics_only}
+    - {id: F1/S1, fee_rate_per_side: 0.001, slippage_bps_per_side: 1, role: primary}
+    - {id: F1/S2, fee_rate_per_side: 0.001, slippage_bps_per_side: 5, role: stress}
+    - {id: F1/S3, fee_rate_per_side: 0.001, slippage_bps_per_side: 10, role: stress}
+    - {id: F2/S2, fee_rate_per_side: 0.0015, slippage_bps_per_side: 5, role: stress}
+    - {id: F2/S3, fee_rate_per_side: 0.0015, slippage_bps_per_side: 10, role: hard_stress}
+  costs:
+    fee_application: EACH_EXECUTED_SIDE_ON_NOTIONAL
+    buy_price: open_times_one_plus_slippage
+    sell_price: open_times_one_minus_slippage
+    spread: NOT_SEPARATELY_OBSERVED
+    impact_and_capacity: NOT_OBSERVED_BLOCKS_LIVE_INFERENCE
+  cscv:
+    scope: DEVELOPMENT_ONLY_ALL_SEVEN_TRIALS
+    contiguous_slices: 16
+    tail: EXCLUDED_FROM_CSCV_ONLY
+    threshold_pbo_maximum: 0.5
+  dsr:
+    scope: DEVELOPMENT_ONLY_ALL_SEVEN_TRIALS
+    effective_trials: APPENDIX_3_AVERAGE_CORRELATION_CLIPPED_AT_ZERO
+    threshold_minimum: 0.95
+  robustness:
+    clock_offsets_hours: [-1, 1]
+    role: POST_SELECTION_DIAGNOSTICS_NOT_SELECTION_TRIALS
+    pass_rule: BOTH_FULL_HISTORY_F1_S1_TOTAL_RETURNS_POSITIVE
+  benchmarks: [CASH, BTCUSDT_BUY_AND_HOLD_F1_S1]
+
+hard_gates:
+  G1_DATA_PROVENANCE: exact offline package verification
+  G2_CANONICAL_IDENTITY: valid spec and seven immutable StrategyVersion identities
+  G3_CAUSAL_GOLDENS: hand-derived timing, cost, gap, and price-invariance tests
+  G4_INDEPENDENT_REPRODUCTION: Decimal reference and vectorbt metrics agree within 1e-10
+  G5_AFTER_COST_ECONOMICS: selected full-history return positive at F1/S1 and F2/S3
+  G6_CHRONOLOGICAL_OOS: selected 2024 and reserved 2025-2026H1 returns both positive at F1/S1
+  G7_SAMPLE_AND_CLOCK_ROBUSTNESS: >-
+    development completed trades >=140, 2024 >=45, reserve >=70, and both
+    preregistered clock-offset diagnostics positive at F1/S1
+  G8_REGIME_AND_TAIL: at least four of six year/H1 returns positive and max drawdown no worse than -25 percent
+  G9_BENCHMARK_AND_OPPORTUNITY: selected Sharpe exceeds buy-and-hold and selected max drawdown is smaller
+  G10_MULTIPLE_TESTING: PBO <=0.5 and corrected DSR >=0.95
+  G11_INDEPENDENT_RISK_SUPERVISOR: NOT_RUN_UNTIL_NUMERIC_PACKAGE_EXISTS
+
+stop_rules:
+  - Abort before scoring on dirty Git or any pin, roster, data, spec, environment, cost, split, or safety mismatch.
+  - Abort on any missing weekday, cost cell, segment, metric, reference result, or vectorbt result.
+  - Retain every weekday even if it has zero trades or undefined economics.
+  - Do not inspect the reserved result before development selection.
+  - No threshold, roster, cost, split, benchmark, or gap-rule change after results.
+  - Any hard FAIL rejects this exact context; no rescue, combination, or alternate selector is allowed.
+  - G11 remains NOT_RUN until the immutable numeric package exists and can independently reject it.
+  - Numeric PASS never grants promotion, paper, demo, live, credential, venue, or order authority.
+
+pinned_files:
+  - {path: research/CALENDAR_UTC_DATA_PACKAGE_V1.json, sha256: 2a0532c3da28586e8f99ccc0e362592473f548b8bc3bc472cfc5cec44db08e50}
+  - {path: data/normalized/BTCUSDT_1h.parquet, sha256: d44c70c3c87a3e342dd0496c3975d3b54a2b50dd4c5c1b8873ef84eece99947c}
+  - {path: scripts/verify_calendar_utc_data.py, sha256: f863b1d3f763daf11698096f624c9398cc42cc6511102cbe3a3e75453b1ebcd1}
+  - {path: strategies/research/calendar-utc-weekday/canonical_strategy_spec.yaml, sha256: b7f85a146818130abe330fe639b7b38c6b7f7cca7c84e1246c174d7cbc6bf9d4}
+  - {path: src/tios/strategy/spec.py, sha256: c15df82896af177cf23db718235641b641f73ba4122dab6de7f36b277a8c88cf}
+  - {path: src/tios/strategy/evaluator.py, sha256: 81325dc8442a97082c35852d046ff217f0eb22dc7fba6d027bdd7be9ae4d6d20}
+  - {path: engines/reference/calendar_utc.py, sha256: e7885a873d2c7e500a50c651f91c600f4534321fba6abfb2dcc669df3062733b}
+  - {path: engines/vectorbt/calendar_utc_returns.py, sha256: cd04c0a2d4933f20b7b1f4b7675d0dc2f457d001131f5ebfd0de6a320239f0e0}
+  - {path: engines/vectorbt/env_manifest.txt, sha256: cd2398f4a34887b35b9fd71a1b80c3156a801d783c7cc45fd4e93b84ab094ad3}
+  - {path: src/tios/validation/multiple_testing.py, sha256: bd25dca76e7639beebbc5e8381aaff9e3e6c044e82ce61d721c697900cde4e54}
+  - {path: scripts/run_calendar_utc_campaign.py, sha256: 2f765066ef920e089b263efc0a19d0763def43a84c9c61ff5f08733d0f1617f1}
+  - {path: tests/test_calendar_utc_reference.py, sha256: 1a23ba4a08149db235a02b710e72b5a9da8cc653bf672b36f9ee621d6297e988}
+  - {path: tests/test_calendar_utc_strategy.py, sha256: 4c9b503c31899807d7ca8727f9261c22ea578352eb35a7771cb59029c1023473}
+
+required_outputs:
+  immutable_preregistration_snapshot: true
+  all_trials_all_costs_all_segments: true
+  content_addressed_reference_results: true
+  content_addressed_vectorbt_results: true
+  content_addressed_campaign_result: true
+  specialist_and_supervisor_review_after_run: true
+  promotion_eligible: false

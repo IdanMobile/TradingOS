@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import hashlib
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 
 from tios.trading_domain import (
@@ -146,6 +146,8 @@ def _indicator_values(
     indicator: Indicator, bars: tuple[MarketBar, ...]
 ) -> list[dict[str, Decimal] | None]:
     name = indicator.name
+    if name == "utc_weekday_window":
+        return _utc_weekday_window(indicator, bars)
     window = int(indicator.parameters.get("window", 1))
     if window <= 0:
         raise StrategyEvaluationError(f"indicator {name!r} requires a positive window")
@@ -171,6 +173,36 @@ def _indicator_values(
     if name == "reference_price":
         return _single_output(indicator, source)
     raise StrategyEvaluationError(f"unsupported canonical indicator {name!r}")
+
+
+def _utc_weekday_window(
+    indicator: Indicator, bars: tuple[MarketBar, ...]
+) -> list[dict[str, Decimal] | None]:
+    if tuple(indicator.outputs) != ("calendar_entry", "calendar_exit"):
+        raise StrategyEvaluationError(
+            "utc_weekday_window outputs must be calendar_entry and calendar_exit"
+        )
+    if indicator.parameters.get("timezone") != "UTC":
+        raise StrategyEvaluationError("utc_weekday_window timezone must be UTC")
+    selected = indicator.parameters.get("selected_weekday")
+    if isinstance(selected, bool) or not isinstance(selected, int) or not 0 <= selected <= 6:
+        raise StrategyEvaluationError(
+            "utc_weekday_window selected_weekday must be an integer from 0 to 6"
+        )
+    result: list[dict[str, Decimal] | None] = []
+    for bar in bars:
+        if bar.market.timeframe.value != "1h":
+            raise StrategyEvaluationError("utc_weekday_window requires 1h bars")
+        is_boundary = bar.open_time.hour == 23
+        result.append(
+            {
+                "calendar_entry": Decimal(
+                    is_boundary and (bar.open_time + timedelta(hours=1)).weekday() == selected
+                ),
+                "calendar_exit": Decimal(is_boundary and bar.open_time.weekday() == selected),
+            }
+        )
+    return result
 
 
 def _single_output(

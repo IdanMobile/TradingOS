@@ -12,6 +12,7 @@ Status: v3, 2026-07-13. Gaps CLOSED by retained execution evidence are listed in
 | RG-13 | Divergence model: backtest-vs-paper reconciliation method | S3 qualification design | G12 sketch | paper-lane data | S3 | paper gates | no until S3 | architect | S3 |
 | RG-14 | CI provider choice (or none) for a single-operator local-first repo | dev workflow | none | cost/benefit at S2 scale | decide at S2 entry with repo evidence | AD §AH | no | operator+agent | S2 entry |
 | RG-16 | Ontology seed scope: which concepts do MVP artifacts actually reference? | dictionary seeding batch | none | extraction from S1 artifacts | run ONTOLOGY_CURATOR over S1 outputs | S2 dictionary batch | no | R6 | S2 |
+| RG-17 | Which fresh strategy family can pass post-V2 admission without inherited results or a dominant unmodeled risk? | blocks a defensible new StrategyVersion and campaign | D-053 admits only `FAM-CALENDAR-UTC-01` after a source-only comparison with stablecoin below-peg and halving exposure; exact public bytes, conflicts, data package, seven-version roster, and unrun campaign are frozen | G1-G11 campaign results, Freqtrade/Nautilus semantic certification, specialist/risk/supervisor/security review | execute the immutable offline campaign once, then review without rescue | Task 3/4 validation | blocks promotion and bot activation, not frozen offline execution | supervisor R1/R4/R5/R8 | after clean campaign-freeze commit |
 
 ## 2. Gaps closed 2026-07-06 (this planning pass)
 

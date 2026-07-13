@@ -1,0 +1,33 @@
+strategy_id: STRAT-CALENDAR-UTC-WEEKDAY
+family: calendar
+inputs: [open]
+indicators:
+  - name: utc_weekday_window
+    parameters:
+      selected_weekday: 0
+      timezone: UTC
+    outputs: [calendar_entry, calendar_exit]
+entry_long:
+  all:
+    - calendar_entry == 1
+exit_long:
+  all:
+    - calendar_exit == 1
+position_sizing: {type: all_in}
+risk:
+  stop_loss: null
+  take_profit: null
+  gap_exit: FIRST_OBSERVABLE_OPEN
+  execution_authority: NONE
+assumptions:
+  - "signal evaluated at the 23:00 UTC one-hour bar close; execution is modeled only at the immediately adjacent next bar open"
+  - "warm-up: none; UTC weekday membership is determined only from the bar open timestamp"
+  - "selected_weekday uses Python weekday numbering: Monday=0 through Sunday=6"
+  - "entry occurs at 00:00 UTC starting the selected weekday and exit at 00:00 UTC immediately after it"
+  - "a pending boundary fill expires across a non-adjacent gap; an already-held position exits at the first observable open as a fail-closed risk action"
+ambiguities: []
+source_refs:
+  - FS2-CALENDAR-AHARON-QADAN-2019
+  - FS2-CALENDAR-CAPORALE-PLASTUN-2019
+  - FS2-CALENDAR-MA-ET-AL-2020
+license_ref: PROJECT-ORIGINAL-SPEC

@@ -486,3 +486,52 @@ Evidence: `research/CANONICAL_BASELINE_G10_CAMPAIGN_V2.yaml`,
 under `artifacts/validation/campaigns/SEARCH-CANONICAL-BASELINE-G10-V2/`.
 Status: **Completed negative diagnostic; B2/B3/B4 expansion closed. G10 remains METHOD_BLOCKED;
 promotion, venue, order, and execution authority remain absent.**
+
+### D-052 — First source-backed post-V2 family-selection cycle is NO_GO
+
+Decision: `FAMILY-SELECT-V1` compared exactly three economically distinct families before any
+new parameter evaluation: delta-neutral funding/basis carry, long-only Spot cross-sectional
+momentum, and volatility-managed Spot exposure. None passes every hard admission gate for
+mechanism, primary-source identity, point-in-time data, complete capital/cost/risk semantics,
+canonical ownership, clean search lineage, adequate sample, and a safe offline route.
+
+Funding/basis carry is rejected for this cycle because public funding, mark, index, and trade
+data do not reconstruct historical account-applicable maintenance tiers, liquidation rules,
+contract changes, or the complete counterparty/capital model. Cross-sectional momentum is
+rejected because a current symbol view is not a delisting-complete point-in-time universe, the
+primary evidence is broad-universe long-short rather than Binance Spot long-only proof, and the
+local family was already searched on exposed history. Volatility-managed Spot exposure is
+rejected because the family already influenced local searches, continuously variable sizing is
+not canonically owned, primary literature contains material OOS/cost counterevidence, and no
+clean holdout independent of both prior exploration and the V2 seal was identified.
+
+Consequence: the outcome is exactly `NO_GO`. No StrategyVersion, campaign, parameter grid,
+dataset acquisition, implementation, bot, venue, order, or authority is created. Task 1 remains
+active for a new bounded source/data-feasibility selection cycle. A rejected family may re-enter
+only with evidence that directly closes its failed gate; prior performance is not new evidence.
+
+Evidence: `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V1.md`.
+Status: **Approved offline research-direction decision under D-039; execution authority remains
+NONE and the V2 prospective holdout remains sealed.**
+
+### D-053 — Fresh UTC-weekday family admitted to a frozen offline campaign
+
+Decision: `FAMILY-SELECT-V2` compared exactly three fresh mechanisms without computing local
+family performance: BTCUSDT Spot UTC-weekday exposure, fiat-backed stablecoin below-peg
+reversion, and Bitcoin-halving exposure. Stablecoin reversion is rejected because redemption,
+account, counterparty, and lifecycle semantics dominate the public-price signal. Halving
+exposure is rejected because only four historical events exist and the retained dataset contains
+one. `FAM-CALENDAR-UTC-01` alone passes the source/data/canonical-feasibility admission gate.
+
+The admitted family is not a validated strategy. Its complete seven-weekday roster, six cost
+cells, development/validation/reserved chronology, clock stresses, benchmarks, PBO/DSR method,
+hard thresholds, gap exits, stop rules, Decimal reference, and vectorbt accelerator are frozen in
+`CALENDAR-UTC-G1-G11-V1` before scoring. Ordinary signals fill only at the exactly adjacent next
+open; pending fills expire across gaps and held exposure exits at the first observable open.
+The campaign has no network, credential, venue, order, paper, demo, live, or promotion authority
+and may not access the sealed V2 prospective holdout.
+
+Evidence: `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V2.md`,
+`research/CALENDAR_UTC_DATA_PACKAGE_V1.json`, and
+`research/CALENDAR_UTC_G1_G11_CAMPAIGN_V1.yaml`.
+Status: **Approved constrained-S2 offline campaign freeze; preregistered and not run.**

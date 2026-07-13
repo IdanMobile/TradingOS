@@ -814,3 +814,30 @@ Key outcomes:
   retained zero-trade correlations, all active exact controls lose effectively all capital
   at F1/S1, and historical walk-forward does not rescue them. Further B2/B3/B4 grid
   expansion is closed; the future holdout remains sealed.
+
+## v8.55 — 2026-07-13 — Post-V2 family selection V1
+
+- Added the source-backed `FAMILY-SELECT-V1` dossier comparing exactly funding/basis
+  carry, long-only Spot cross-sectional momentum, and volatility-managed Spot exposure.
+- Recorded D-052 `NO_GO`: every candidate fails at least one non-compensable admission
+  gate for point-in-time data, full capital/risk semantics, canonical ownership, or clean
+  search lineage. No prior result was inherited and no parameter evaluation ran.
+- Kept Task 1 active for a new maximum-three-family source/data-feasibility cycle; Task 2,
+  StrategyVersion creation, implementation, bots, venues, orders, and all execution
+  authority remain blocked.
+- Preserved the V2 prospective holdout seal and all authenticated-transport quarantines.
+
+## v8.56 — 2026-07-13 — UTC-weekday admission and preregistered campaign freeze
+
+- Added official-source platform validation research and the second bounded family dossier.
+  D-053 admits UTC-weekday BTCUSDT Spot exposure without observing local family performance;
+  stablecoin reversion and halving exposure are rejected.
+- Added an exact offline-verifiable 48,154-row BTCUSDT 1h data package, upstream source snapshot,
+  raw/archive/logical hashes, drift tests, and explicit UTC/gap semantics.
+- Added the calendar canonical family primitive and seven immutable StrategyVersion identities,
+  with hand-derived timing, cost, price-invariance, gap-expiry, and fail-closed gap-exit tests.
+- Added an independent Decimal ledger, vectorbt accelerator, and the unrun
+  `CALENDAR-UTC-G1-G11-V1` campaign with six costs, fixed chronology, clock stresses,
+  benchmarks, PBO/DSR, hard gates, exact pins, and no-rescue rules.
+- Offline preflight passes. No historical calendar score, sealed V2 holdout, bot, venue,
+  credential, order, paper/demo/live state, promotion, or execution authority was accessed.

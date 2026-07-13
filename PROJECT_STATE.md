@@ -766,6 +766,23 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   2027-01-14. No winner, promotion, venue, order, or execution authority exists. Evidence:
   `artifacts/reports/CANONICAL_BASELINE_CAMPAIGN_V2_REPORT_2026_07_13.md` and the content-addressed
   index under `artifacts/validation/campaigns/SEARCH-CANONICAL-BASELINE-G10-V2/`.
+- **Post-V2 family selection V1 completed with `NO_GO` (D-052):** the source-backed
+  `FAMILY-SELECT-V1` cycle compared exactly funding/basis carry, long-only Spot
+  cross-sectional momentum, and volatility-managed Spot exposure without running a new
+  parameter search. Carry fails point-in-time margin/liquidation/counterparty completeness;
+  cross-sectional momentum fails point-in-time universe, canonical-ranking, and clean-lineage
+  admission; volatility management fails clean-lineage/canonical-sizing admission and has
+  material primary-literature OOS/cost counterevidence. No family, StrategyVersion, campaign,
+  dataset, implementation, bot, venue, order, or authority was selected. Evidence:
+  `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V1.md`.
+- **Fresh family V2 and calendar campaign frozen (D-053):** a second exactly-three-family
+  source cycle admitted only BTCUSDT Spot UTC-weekday exposure. Stablecoin below-peg and
+  halving exposure were rejected on dominant semantics/sample constraints. The exact
+  48,154-row public-data package, seven StrategyVersion identities, canonical calendar
+  evaluator, independent Decimal ledger, vectorbt accelerator, six cost cells, chronological
+  reserve, hard G1-G11 thresholds, and no-rescue rules are frozen in
+  `research/CALENDAR_UTC_G1_G11_CAMPAIGN_V1.yaml`. Preflight passes offline; historical scoring
+  has not run. No V2 holdout, bot, venue, credential, order, or authority was touched.
 
 ## Operational SSOT (unchanged)
 
@@ -824,12 +841,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Do not expand or rescue the failed B2/B3/B4 grids. Keep the post-2026-07-14 prospective holdout
-sealed and calculate no interim strategy scores; its one evaluation is not allowed before
-2027-01-14. In parallel-safe offline work, reconstruct one economically distinct strategy
-family's method, canonical ownership, point-in-time data, realistic costs, and hierarchical
-search contract before any new parameter search. Authenticated demo networking stays quarantined
-and all human S3/S4 gates remain untouched.
+Commit the unrun `CALENDAR-UTC-G1-G11-V1` freeze from a clean tree, then execute it once offline.
+Retain every weekday/cost/segment result and stop on any hard failure. If the numeric package is
+eligible, perform the required independent stats/risk/supervisor/security reviews; otherwise
+reject the exact StrategyVersion without rescue. Do not access the sealed V2 holdout, activate a
+bot, connect a venue, request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

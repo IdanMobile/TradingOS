@@ -1,0 +1,89 @@
+{
+  "schema": "tios-calendar-utc-data-package-v1",
+  "package_id": "DATA-CALENDAR-UTC-BTCUSDT-1H-V1",
+  "family_id": "FAM-CALENDAR-UTC-01",
+  "created_at_utc": "2026-07-13T12:18:18Z",
+  "execution_authority": "NONE",
+  "venue_connection": "NONE",
+  "base_dataset": {
+    "dataset_id": "DS-CRYPTO-SPOT-BAKEOFF-V1",
+    "manifest_path": "artifacts/datasets/DS-CRYPTO-SPOT-BAKEOFF-V1.manifest.json",
+    "manifest_sha256": "f2b729627adb5d75a99c90dd7dd25ea6dcabf83de4baea5784397424034dfc56",
+    "raw_manifest_path": "data/raw/binance_spot/raw_manifest.json",
+    "raw_manifest_sha256": "7d2a2336625b9c17f2e83ac98c6ec80ca66f6a70fd93551a2d2e59b60862178a",
+    "raw_root": "data/raw/binance_spot",
+    "raw_archive_selector": "BTCUSDT/1h/",
+    "raw_archive_count": 66,
+    "raw_archive_total_bytes": 2854451,
+    "normalized_path": "data/normalized/BTCUSDT_1h.parquet",
+    "normalized_parquet_sha256": "d44c70c3c87a3e342dd0496c3975d3b54a2b50dd4c5c1b8873ef84eece99947c",
+    "logical_content_sha256": "49981c5cf5f3376ea60e931415feefa252c5970d902732dd68d8e95c46a2a3b3",
+    "rows": 48154,
+    "coverage_start_utc": "2021-01-01 00:00:00+00:00",
+    "coverage_end_utc": "2026-06-30 23:00:00+00:00",
+    "instrument": "BTCUSDT",
+    "market": "SPOT",
+    "interval": "1h"
+  },
+  "source_documentation": [
+    {
+      "authority": "Binance official public-data repository",
+      "repository_url": "https://github.com/binance/binance-public-data",
+      "commit": "5c7f3197591c0d54d85dc43066226bc4c671d47a",
+      "retrieved_at_utc": "2026-07-13T12:18:18Z",
+      "license_claim": "MIT stated in upstream README",
+      "snapshot_path": "research/source_snapshots/calendar_utc_v1/binance_public_data_README.md",
+      "snapshot_sha256": "085ab91377aa9325d44f4c7ad27cce4ab381e158403e1d7df2bad39d1a66f7c6",
+      "scope": "public daily/monthly archive layout, Spot kline schema, timestamp-unit change, checksums, update warning",
+      "limitation": "upstream archived files can later be replaced; local frozen bytes and hashes remain authoritative for reproduction"
+    }
+  ],
+  "calendar_derivation": {
+    "timezone": "UTC",
+    "locale": "NONE",
+    "daylight_saving": "NOT_APPLICABLE",
+    "weekday_domain": {
+      "0": "MONDAY",
+      "1": "TUESDAY",
+      "2": "WEDNESDAY",
+      "3": "THURSDAY",
+      "4": "FRIDAY",
+      "5": "SATURDAY",
+      "6": "SUNDAY"
+    },
+    "input": "timestamp_open_utc",
+    "derived_field": "next_bar_utc_weekday",
+    "definition": "weekday of timestamp_open_utc plus exactly one hour, only when the next retained bar is exactly adjacent",
+    "non_adjacent_behavior": "UNAVAILABLE_EXPIRE_PENDING_SIGNAL",
+    "week_boundary": "ISO weekday numbering is not used; Python datetime.weekday semantics 0=Monday through 6=Sunday",
+    "external_timezone_database_required": false
+  },
+  "known_gaps": {
+    "gap_count": 7,
+    "missing_bars_total": 14,
+    "source": "artifacts/datasets/QUALITY_REPORT.json and independent DATA_QUALITY_AUDIT_01.md",
+    "policy": "never interpolate; exact-adjacency failure expires entry and triggers conservative flagged exit handling if already long"
+  },
+  "restore": {
+    "offline_raw_verification": "uv run python scripts/verify_calendar_utc_data.py",
+    "offline_rebuild_from_retained_archives": "uv run python -m tios.dataset.normalize",
+    "public_fetch_if_archives_absent": "uv run python -m tios.dataset.download",
+    "fetch_requires_credentials": false,
+    "fetch_is_part_of_campaign_execution": false,
+    "post_rebuild_verification": "uv run python scripts/verify_calendar_utc_data.py"
+  },
+  "contamination": {
+    "calendar_family_results_seen_before_freeze": false,
+    "repository_search_terms": [
+      "weekday",
+      "day_of_week",
+      "day-of-week",
+      "monday",
+      "hour_of_day",
+      "time_of_day",
+      "calendar effect",
+      "seasonality"
+    ],
+    "v2_prospective_holdout_accessed": false
+  }
+}

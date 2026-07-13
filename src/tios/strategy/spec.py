@@ -24,6 +24,7 @@ FAMILIES = (
     "trend_following",
     "mean_reversion",
     "breakout",
+    "calendar",
     "carry",
     "market_making",
     "arbitrage",

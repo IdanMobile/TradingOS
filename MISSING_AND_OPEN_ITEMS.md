@@ -43,6 +43,25 @@ sealed 2026-07-14 through at-least-2027-01-14 holdout.
 These corrective items supersede any earlier statement that all agent-executable work
 is exhausted. They grant no credential, venue, order, paper, demo, or live authority.
 
+## Post-V2 family-selection and campaign gate (D-052/D-053)
+
+`FAMILY-SELECT-V1` ended `NO_GO` after comparing exactly funding/basis carry,
+long-only Spot cross-sectional momentum, and volatility-managed Spot exposure. Carry
+still lacks authoritative historical margin/liquidation/contract/counterparty semantics;
+cross-sectional momentum lacks a delisting-complete point-in-time universe, canonical
+ranking/portfolio ownership, and clean search lineage; volatility management lacks clean
+lineage and canonical dynamic-sizing ownership and has material primary-literature
+OOS/cost counterevidence. Evidence:
+`research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V1.md`.
+
+`FAMILY-SELECT-V2` then compared UTC-weekday exposure, stablecoin below-peg reversion,
+and Bitcoin-halving exposure. D-053 admits only `FAM-CALENDAR-UTC-01` to the frozen,
+unrun `CALENDAR-UTC-G1-G11-V1` offline campaign. Its exact data package, seven immutable
+weekday versions, Decimal reference, vectorbt accelerator, costs, chronology, thresholds,
+and stop rules are preregistered. This closes the Task 1/2 admission and data-package gaps;
+it does not close G1-G11, cross-engine certification, specialist review, promotion, or any
+bot/venue/authority gate.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized
