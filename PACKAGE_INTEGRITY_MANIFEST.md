@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.101 managed observation adoption (2026-07-14). Supersedes v8.100 hashes.
+Package version: v8.102 deterministic strategy eligibility (2026-07-14). Supersedes v8.101 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `26df6b464dc77418720115b392ec74af80109fdfc6439b1bdc6c3834fe36f6e8` |
-| `DECISION_LOG.md` | `e8063561777bbbb3335c3bca1f51468a354c90bb1a2b958b65cd23297936be78` |
+| `PROJECT_STATE.md` | `939a6d6c072e5e08b0500fb99ebe21d9daa6534e69f8fd37ac6d41295d3536a8` |
+| `DECISION_LOG.md` | `b41810b38e860b9e5f11f9f7b76aceaebcbd1981046196b503b165fcfd84b1e7` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `407746585627ed1fe02271d35fdf0a5de406ff134c94d23b29b263442ac01444` |
+| `MISSING_AND_OPEN_ITEMS.md` | `417770600a52b07a5d20b79626921ac23f73faeb521c57ce9dce47a7d8f33f21` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -58,9 +58,9 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 
 | Path | SHA-256 |
 |---|---|
-| `docs/architecture/AD.md` | `ff034ae1b686927cca0a0f95725e7be03c2f78e504909dca29b8a1a8cae3cd2f` |
+| `docs/architecture/AD.md` | `a61f86aafccdb4f013cf3e84b90eb869cbffc65aeeb7c427a65ebad1f6b03cc5` |
 | `docs/architecture/MODULE_CATALOG.md` | `6cadf37032da66afbff75a0e7de0bcbeffe440b33cf80a3ce565f0e704feef19` |
-| `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md` | `5b75c4d8478342d0e0e4639836072f2811c0f1888427e2deef6737f1d14cd870` |
+| `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md` | `4abea649d619535bd7c8dfc5846307e52fcdb0feea7ede52a2123503a92ef5f1` |
 | `docs/program/PROGRAM_PLAN.md` | `b491591bc5376a4bf3b93f7c42f68c25200f7e4420c05445a925bca7bd60f298` |
 | `docs/product/MVP_SCOPE.md` | `5cdcc8a4249951117baee31cb0ac1b9b5141a150272abe920db3a93a6a9cfc54` |
 | `docs/testing/TEST_MASTER_PLAN.md` | `fb4bd18aed50ff4367c1fb15ff8dbfe33b4399ca7f74ee78e06ed365af350b54` |
@@ -609,9 +609,9 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `src/tios/services/observations/flow.py` | `4bfee7cd3e940658602ac141afb2671715a5e23e289ca238285cac776dea04f7` |
 | `scripts/run_prospective_observation_flow.py` | `049a30eae86bba0abb071016149a3414726a1d47655dcb1b1c19d5e69917f449` |
 | `tests/test_observation_flow.py` | `06bdf250404373a9e3636c5e40e09bde1ff03a0ceb538a7af9dcb95813b70611` |
-| `src/tios/services/dashboard_api/status.py` | `5700430f2f85d2f4166378aa428b2ee96a88f614289d48cb588609cab3ee7792` |
-| `src/tios/services/dashboard_ui/dashboard.html` | `332bfe640bd313e3d916f20d256152dc77864118b8f9dba54079a2a19fe63767` |
-| `tests/test_dashboard.py` | `860df890e868028a7bd68f3bd2a9d53823f7288e1481a872984f8c81a92e7159` |
+| `src/tios/services/dashboard_api/status.py` | `a75f2c687cd7bc65f698fcdac41c78b20143871f4f3f33d1331009bcde3cc3d8` |
+| `src/tios/services/dashboard_ui/dashboard.html` | `2ff336d5052acd6c68f4c53a503979fae5e8edf90367ba7ce763a83dfe086d9c` |
+| `tests/test_dashboard.py` | `a1f68939bd3606bd8d89c5673bc2f33462820880c759a14d3652f54c18f7a47a` |
 
 ## Managed observation adoption (added v8.101)
 
@@ -622,6 +622,20 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/session_26e8e787b8be8a7c91395007abf1829740251e1b84d6e6b859abd3c3b079d74e.json` | `26e8e787b8be8a7c91395007abf1829740251e1b84d6e6b859abd3c3b079d74e` |
 | `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/session_c101a81fc34dd6909009ba58ce816e4d7b89f30f6dd712949133cd20b1840565.json` | `c101a81fc34dd6909009ba58ce816e4d7b89f30f6dd712949133cd20b1840565` |
 | `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/session_1b189a1faab68ce295438f07c9855cc80a50a7f9fd54592bfd4f2b7cb4de2a55.json` | `1b189a1faab68ce295438f07c9855cc80a50a7f9fd54592bfd4f2b7cb4de2a55` |
+
+## Deterministic strategy eligibility (added v8.102)
+
+| Path | SHA-256 |
+|---|---|
+| `research/PLATFORM_STRATEGY_VALIDATION_AND_SCORE_ELIGIBILITY_V2.md` | `cd574335102d895360ae8a60abe2c74cd2b42366be9cc4d1ad8446f1aedf1f69` |
+| `research/STRATEGY_ELIGIBILITY_CONTRACT_V1.yaml` | `d78d4cedccd4c15b7c74c42ff43dcb58f008b1448dc02dc7869bfa9f566b1da4` |
+| `src/tios/validation/eligibility.py` | `4b7209e3fdc006a4737c85ff6a9e9295e928b157d0a8dda763c965f26b125419` |
+| `src/tios/validation/risk.py` | `00a2261bda219f3868b18b5b799cbc37c25a150ddd3fb7bf5d3287e694454f71` |
+| `src/tios/validation/__init__.py` | `943f52a0a1ff31e4f750c1acffec4b091241cea1fa3db546561a5e9304c0940e` |
+| `src/tios/services/dashboard_api/strategy_eligibility.py` | `654c6b4f758eb0656e4d512d28e0f0e2aae0c530aacfe10ed3a673e82c7648b2` |
+| `tests/test_strategy_eligibility.py` | `59734ba16237eb078f821e18f5047d68c83705dbd6b907ed47088150cbc314e9` |
+| `tests/test_strategy_eligibility_projection.py` | `40ab3695254fdd1de8ab118767067f3a2120e82e978255eb40a9a805c33eb861` |
+| `tests/test_risk_preconditions.py` | `15b24b25398ce2ce9238be61ba43f77ecdaa9141d8db438cf2c1d686f684e9ba` |
 
 ## First causal prospective label schedule (added v8.88)
 

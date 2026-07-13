@@ -1085,6 +1085,31 @@ Evidence: `artifacts/reports/PROSPECTIVE_OBSERVATION_MANAGED_ADOPTION_2026_07_14
 continuous schema-5 checkpoints.
 Status: **Managed observation active; warm-up evidence collection only; authority NONE.**
 
+### D-099 — Strategy eligibility is a three-layer fail-closed contract
+
+Decision: the official-platform review is refreshed and extended with QuantConnect's documented
+community score and Darwinex Zero's calibration, risk-normalization, and DarwinIA allocation
+rating. Platform diagnostics, optimization objectives, leaderboards, and allocation thresholds are
+different objects; none becomes TradingOS approval authority.
+
+TradingOS now implements separate metric, governed-scorecard, and promotion eligibility. Promotion
+requires `COMPLETE_APPROVABLE`, no hard fail, the exact evidence-backed G1-G11 set all `PASS`, all
+ten scorecard dimensions `PASS`, and independent statistical, risk, supervisor, and security
+reviews all `PASS`. The existing risk precondition defect that omitted G10 is corrected. G12
+remains the later paper-forward gate.
+
+Consequence: an unavailable metric stays blocked rather than becoming zero; a structurally complete
+scorecard may truthfully record failures without implying promotion; and no platform score or
+weighted blend can bypass a hard gate. The active prospective signal remains ineligible during its
+preregistered warm-up. Its read-only status/dashboard projection exposes the exact blocker classes
+without adding a control. No bot, paper/demo/live state, credential, venue, order, or execution
+authority is created.
+
+Evidence: `research/PLATFORM_STRATEGY_VALIDATION_AND_SCORE_ELIGIBILITY_V2.md`,
+`research/STRATEGY_ELIGIBILITY_CONTRACT_V1.yaml`, `src/tios/validation/eligibility.py`, and focused
+eligibility/risk tests.
+Status: **Eligibility contract implemented, tested, and projected; current signal warm-up blocked.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

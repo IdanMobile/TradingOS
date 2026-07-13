@@ -217,7 +217,7 @@ LRN records only with evidence refs (invalid otherwise — type catalog §2); ca
 
 ## X. Scoring architecture [APPROVED]
 
-Separate score families exactly as North Star §8 (strategy) and §10 (AI). Hard gates dominate scores everywhere (G-gates for strategies; critical-failure rule for models). No weighted average may override a hard fail; no single global score exists anywhere in the system — enforced by the reporting module's score-view contracts.
+Separate score families exactly as North Star §8 (strategy) and §10 (AI). Hard gates dominate scores everywhere (G-gates for strategies; critical-failure rule for models). No weighted average may override a hard fail; no single global score exists anywhere in the system — enforced by the reporting module's score-view contracts. Strategy eligibility is evaluated in three fail-closed layers: mathematical metric eligibility, governed scorecard eligibility, and promotion eligibility. Platform diagnostics, optimization objectives, leaderboard scores, and allocation ratings remain evidence inputs only. Promotion requires the exact G1-G11 set plus complete independent statistical, risk, supervisor, and security reviews; G12 remains the later paper-forward gate.
 
 ## Y. Approval architecture [APPROVED]
 

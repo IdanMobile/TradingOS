@@ -82,11 +82,12 @@ Primitive-obsession rule: `market`, `venue`, `timeframe`, `instrument` are never
 ### Scorecard (`SCORE-`)
 - Fields: id, subject ref (LAB/EXP/SV), dimension results[] each `{dimension, status: PASS|FAIL|WARN|NOT_RUN, value?, evidence_refs[], blockers[]}`, validation_state, promotion_eligible, created_at, provenance.
 - Required dimensions: data integrity/freshness; after-cost economics; drawdown/loss severity; parameter-neighborhood robustness; temporal/walk-forward stability; regime stability; baseline superiority; multiple-testing/selection-bias control; cross-engine reproduction; operational/evidence completeness.
-- Invariants: dimensions remain independent; there is no blended/global score; `NOT_RUN` is a blocker, never zero; any hard fail or missing required dimension forces `promotion_eligible=false`.
+- Eligibility layers: a metric requires complete inputs, conventions, minimum sample, and evidence; a governed scorecard requires immutable context/provenance, a complete terminal trial population, causal evidence, all ten dimensions, and explicit blockers for unavailable dimensions; promotion additionally requires `COMPLETE_APPROVABLE`, exact evidence-backed G1-G11 `PASS`, all dimensions `PASS`, and independent statistical/risk/supervisor/security reviews `PASS`.
+- Invariants: dimensions remain independent; there is no blended/global score; `NOT_RUN` is a blocker, never zero; any hard fail or missing required dimension forces `promotion_eligible=false`; platform metrics, optimization ranks, leaderboard scores, and allocation ratings cannot approve a context.
 
 ### ValidationPackage (`VAL-`)
 - Fields: SV ref, dataset ref, gate results G1..G12 each `{status: PASS|FAIL|WARN|NOT_RUN, evidence_refs[]}`, cost grid table ref, oos/walk-forward/robustness/regime report refs, hard_fail flag.
-- Invariant: any hard-fail gate ⇒ package cannot support promotion regardless of scores.
+- Invariant: offline strategy promotion requires exact G1..G11 `PASS`; G10 may not be omitted; G12 is the separate later paper-forward gate. Any hard-fail gate ⇒ package cannot support promotion regardless of scores.
 
 ### Evidence record (`EV-`) — the Trading Evidence Registry row
 - As in `specs/EXPERIMENT_LINEAGE_PROTOTYPE_SPEC_V1.md` Test C: evidence_id, hypothesis_id, strategy_version_id, market, instrument, timeframe, run_ref (external tracker id), dataset_ref, validation_state, approval_state.

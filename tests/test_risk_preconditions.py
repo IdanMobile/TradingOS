@@ -11,9 +11,7 @@ def _valid_validation() -> dict[str, object]:
     return {
         "status": "COMPLETE_APPROVABLE",
         "metrics": {"max_drawdown_abs": "12.5", "losses": 3},
-        "gates": {
-            gate: {"status": "PASS"} for gate in (*[f"G{number}" for number in range(1, 10)], "G11")
-        },
+        "gates": {gate: {"status": "PASS"} for gate in (f"G{number}" for number in range(1, 12))},
     }
 
 
@@ -81,7 +79,7 @@ def test_unknown_gate_and_duplicate_or_mismatched_cost_scenario_fail_closed() ->
     validation = _valid_validation()
     gates = validation["gates"]
     assert isinstance(gates, dict)
-    gates["G10"] = {"status": "PASS"}
+    gates["G12"] = {"status": "PASS"}
     cost = _valid_cost_grid()
     scenarios = cost["scenarios"]
     assert isinstance(scenarios, list)

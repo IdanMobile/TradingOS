@@ -975,6 +975,12 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   content-addressed 8,640-checkpoint intent. Verification reports `MANAGED / OBSERVING / FRESH`,
   no blockers, and no execution authority. Three consecutive long-run checkpoints were finalized
   at adoption; this is evidence collection, not strategy validation.
+- **Deterministic eligibility contract frozen (D-099):** current official platform research now
+  distinguishes diagnostics, optimization/leaderboard scores, and allocation ratings. TradingOS
+  implements separate metric, scorecard, and promotion eligibility; promotion requires exact
+  evidence-backed G1-G11 plus all ten dimensions and four independent reviews. A prior G10 omission
+  in the risk precondition is corrected. Read-only status/dashboard now projects the current
+  blocker classes. The prospective signal remains ineligible during warm-up.
 
 ## Operational SSOT (unchanged)
 
@@ -1036,7 +1042,8 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 Let the managed observer continue its preregistered 8,640-checkpoint warm-up while retaining and
 verifying immutable evidence at bounded milestones. Do not aggregate or score during warm-up,
 access the sealed V2 holdout, activate a bot, request credentials, create orders, or cross any
-human S3/S4 gate. In parallel, continue only safe offline closure of validation/full-flow gaps.
+human S3/S4 gate. In parallel, continue safe offline closure of validation/full-flow gaps, beginning
+with a requirement-by-requirement map from the current signal lane to the later governed scorecard.
 
 ## Exit condition of next phase (unchanged)
 

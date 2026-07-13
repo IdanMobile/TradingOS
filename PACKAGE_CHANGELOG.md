@@ -1,5 +1,13 @@
 # Package Changelog
 
+## v8.102 — 2026-07-14 — Deterministic strategy eligibility contract
+
+- Refreshed official-platform validation research and added QuantConnect leaderboard scoring plus
+  Darwinex calibration, risk normalization, and allocation-rating evidence.
+- Added fail-closed metric, scorecard, and promotion eligibility evaluation with no blended score.
+- Corrected the risk precondition's G10 omission; promotion now requires exact evidence-backed
+  G1-G11 and all independent reviews. The prospective signal remains warm-up blocked.
+
 ## v8.101 — 2026-07-14 — Managed observation adoption
 
 - Adopted the active D-095 public observer into the frozen TradingOS observation service without

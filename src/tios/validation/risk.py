@@ -8,9 +8,10 @@ from decimal import Decimal, InvalidOperation
 from typing import Any
 
 from tios.core_types.engine import MANDATORY_GRID
+from tios.validation.eligibility import REQUIRED_GATES
 
 REQUIRED_METRICS = frozenset({"max_drawdown_abs", "losses"})
-MANDATORY_GATES = frozenset({*(f"G{number}" for number in range(1, 10)), "G11"})
+MANDATORY_GATES = REQUIRED_GATES
 
 
 @dataclass(frozen=True)

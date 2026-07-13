@@ -134,6 +134,13 @@ def test_dashboard_status_is_read_only_projection() -> None:
     assert status["checks"]["includes_dependency_audit"] is False
     assert status["observation"]["capabilities"]["execution_authority"] == "NONE"
     assert status["observation"]["capabilities"]["http_process_control"] is False
+    assert status["strategy_eligibility"]["subject_ref"] == (
+        "PROSPECTIVE-BTC-LIQUIDATION-STRESS-V1"
+    )
+    assert status["strategy_eligibility"]["metric_eligible"] is False
+    assert status["strategy_eligibility"]["scorecard_eligible"] is False
+    assert status["strategy_eligibility"]["promotion_eligible"] is False
+    assert status["strategy_eligibility"]["execution_authority"] == "NONE"
 
 
 def test_dashboard_evidence_surface_reads_real_project_artifacts() -> None:
@@ -158,6 +165,8 @@ def test_dashboard_evidence_surface_reads_real_project_artifacts() -> None:
     assert data["stage"] == "S2_OFFLINE_RESEARCH_OPERATIONS"
     assert data["observation"]["managed_flow_id"] == ("PROSPECTIVE-OBSERVATION-MANAGED-FLOW-V1")
     assert data["observation"]["capabilities"]["paper_orders"] == "DISABLED"
+    assert data["strategy_eligibility"]["state"] == "NOT_ELIGIBLE"
+    assert "SCORECARD_INELIGIBLE" in data["strategy_eligibility"]["promotion_blockers"]
     assert data["readiness"] == {
         "status": "CONSTRAINED",
         "scope": "S2 OFFLINE RESEARCH ONLY",
@@ -1519,6 +1528,9 @@ def test_dashboard_status_semantics_fail_closed_before_positive_tokens() -> None
     assert "['PASS','READY','VALID','FROZEN','COMPLETE','COMPLETED'" in html
     assert html.index("negative.some") < html.index("positive.some")
     assert "includes('READY')" not in html
+    assert "Signal eligibility" in html
+    assert "no blended score" in html
+    assert "d.strategy_eligibility||{}" in html
 
 
 def test_market_snapshot_uses_canonical_bars_and_backtest_markers() -> None:

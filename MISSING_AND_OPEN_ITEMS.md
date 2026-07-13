@@ -271,15 +271,20 @@ scheduled rows are unavailable; none has been aggregated or interpreted. A fresh
 G1-G11, strategy approval, and every bot/paper gate remain open.
 
 D-096 freezes a TradingOS-native managed-observation boundary without weakening the offline jobs
-worker. Immutable intent, current-run adoption, fixed command dispatch, freshness/continuity
-projection, dashboard visibility, and drift/failure tests remain to be implemented. The active
-8,640-window run must not be restarted or rewritten during that integration.
+worker. D-097 implements its immutable intent, fixed command, freshness/continuity projection,
+dashboard visibility, and drift/failure tests; D-098 adopts the active run without restart.
 
 D-097 implements and tests the managed service, fixed launcher, immutable intent, fail-closed
 projection, and dashboard visibility. D-098 adopts the current D-095 process without restart and
 verifies it `MANAGED / OBSERVING / FRESH` with no blockers or authority. Warm-up completion, real
 rotation evidence, causal label maturity, statistical validation, and every promotion/paper gate
 remain open.
+
+D-099 implements the previously missing three-layer eligibility decision and corrects the risk
+precondition's omission of G10. Read-only status/dashboard now projects the decision and exact
+blocker classes. The current signal still lacks warm-up completion, eligible metrics, a governed
+scorecard, G1-G11 evidence, and independent reviews; no platform score can substitute for those
+facts.
 
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 

@@ -26,6 +26,9 @@ from tios.research_assets import (
     SourceIntakePlanRegistry,
 )
 from tios.services.dashboard_api.audit import AuditPathError, confined_audit_handle
+from tios.services.dashboard_api.strategy_eligibility import (
+    build_strategy_eligibility_projection,
+)
 from tios.services.jobs.projection import build_jobs_projection
 from tios.services.observations import build_observation_projection
 
@@ -360,6 +363,7 @@ def build_status(root: Path | None = None) -> dict[str, Any]:
     )
     state_match = STATUS_RE.search(state_text)
     now = datetime.now(tz=UTC)
+    observation = build_observation_projection(root, now=now)
     return {
         "schema_version": 1,
         "generated_at": now.isoformat(),
@@ -384,7 +388,8 @@ def build_status(root: Path | None = None) -> dict[str, Any]:
         },
         "initiatives": initiatives,
         "artifacts": {"files": len([path for path in artifact_files if path.is_file()])},
-        "observation": build_observation_projection(root, now=now),
+        "observation": observation,
+        "strategy_eligibility": build_strategy_eligibility_projection(observation),
         "git": _git(root),
         "checks": _check_status(root, now),
     }
@@ -1632,12 +1637,14 @@ def build_dashboard_data(root: Path | None = None) -> dict[str, Any]:
             }
         )
     activity.sort(key=lambda row: str(row["timestamp"] or ""), reverse=True)
+    observation = build_observation_projection(root)
     return {
         "schema_version": 1,
         "generated_at": datetime.now(tz=UTC).isoformat(),
         "stage": "S2_OFFLINE_RESEARCH_OPERATIONS",
         "automation": _automation(root),
-        "observation": build_observation_projection(root),
+        "observation": observation,
+        "strategy_eligibility": build_strategy_eligibility_projection(observation),
         "research_lab": research_lab,
         "research_sources": _research_sources(root),
         "dictionary_concepts": _dictionary_concepts(root),
