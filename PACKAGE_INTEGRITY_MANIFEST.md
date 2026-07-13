@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.92 live schema diagnosis and observer V4 freeze (2026-07-13). Supersedes v8.91 hashes.
+Package version: v8.93 first causally available prospective label (2026-07-13). Supersedes v8.92 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `947c5427eaf23e99f143154465c8d90b3fcad80b3e87885ab6dd3ab798ac007a` |
-| `DECISION_LOG.md` | `67f4d0e23623cbbfa24369b5f402ed79d66c76164b13436ca35988a572e5036e` |
+| `PROJECT_STATE.md` | `7e46ba1a5f7cd3b07a92edb2cd713d04d0c77497ef2cd93eefd4ba497993e48d` |
+| `DECISION_LOG.md` | `7b73a86618e8ba0b94dcd62673c97208b694bd845279540fb7f5caaec9d01a89` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `7943eecf0e10322cefd169d110118885b98f24588d0f7e9328fc288f9e8e9326` |
+| `MISSING_AND_OPEN_ITEMS.md` | `984aa34c8a813379d26cf6ab6e824fd672f5bdd85d2785f206ce08222eb59fd4` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -68,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `aa6639a2accb6f96e09eaf088f1a1bebcb2bd75ab756ca9e6378ad8747ee80bf` |
+| `research/RESEARCH_GAP_MATRIX.md` | `c6fe56dc80be7db5e3d079a1c493a7c0c59dbb5eeede64a84bb72044450e9ccf` |
 
 ## Post-V2 family selection V1 (added v8.55)
 
@@ -541,7 +541,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `research/PROSPECTIVE_BTC_LIQUIDATION_LABEL_CONTRACT_V1.yaml` | `4e64d0ad64161a67d4f867d8fa0351a75252e9be4a725a3ce084a031b7e85dc9` |
 | `src/tios/strategy/prospective_labels.py` | `54958c2cf6660fe1af12554042c8bc2ebae27c285eff16f6f22dab4048cf7496` |
 | `scripts/run_prospective_liquidation_labels.py` | `c7bc1301128ffd5d4615090a40bed795a29205ef7f7eb52764be25c09d39a9c4` |
-| `tests/test_prospective_liquidation_labels.py` | `e5f0c74e51c1bea951f0d7d313a1bed70aa7dd0c4297b391a1b09cf0d082ef08` |
+| `tests/test_prospective_liquidation_labels.py` | `8c2ad7edfc4cffe5d97bad7721a9b8252299d35388381b4651fb44dac43b4ba5` |
 
 ## First causal prospective label schedule (added v8.88)
 
@@ -556,7 +556,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `research/PROSPECTIVE_BTC_LIQUIDATION_LABEL_VERIFIER_V2.yaml` | `3db6e20ecf54c37566585de408c6fb7fe30f5a43d6a2752df2d11d58c0378625` |
 | `scripts/run_prospective_liquidation_labels.py` | `c7bc1301128ffd5d4615090a40bed795a29205ef7f7eb52764be25c09d39a9c4` |
-| `tests/test_prospective_liquidation_labels.py` | `e5f0c74e51c1bea951f0d7d313a1bed70aa7dd0c4297b391a1b09cf0d082ef08` |
+| `tests/test_prospective_liquidation_labels.py` | `8c2ad7edfc4cffe5d97bad7721a9b8252299d35388381b4651fb44dac43b4ba5` |
 
 ## Second complete prospective signal window (added v8.90)
 
@@ -588,6 +588,16 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_V3_PARSER_FAILURE_2026_07_13.md` | `63a26750889d6b1f0bb52c4da02744d4958bb00d5d41d422218f0ad78c8c5d9a` |
 | `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/raw/exchange_info_911646d9bdb663d11b4ecee034163fc1b26631846045ced7907884472c81712c.json` | `911646d9bdb663d11b4ecee034163fc1b26631846045ced7907884472c81712c` |
 | `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/session_d4278c9bb637195c176583ef21f0a0fd009ac18aa21f4816f87bd5b9213e03e5.json` | `d4278c9bb637195c176583ef21f0a0fd009ac18aa21f4816f87bd5b9213e03e5` |
+
+## First causally available prospective label (added v8.93)
+
+| Path | SHA-256 |
+|---|---|
+| `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_FIRST_AVAILABLE_1H_LABEL_2026_07_13.md` | `6b79ed5cab54fa809395681ba2d9bd3b2b2bcf63ae77931f1decab06c5570b51` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/labels/raw/kline_48c1eb72292b32174fd2eb1f1da3b89f97e406d2a3985ffe84e31a9aa80d907d.json` | `48c1eb72292b32174fd2eb1f1da3b89f97e406d2a3985ffe84e31a9aa80d907d` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/labels/raw/kline_61e24812bf8ab198488fd1c61cfe21d7037e2a0dd9cb13317103b32b05ca58f8.json` | `61e24812bf8ab198488fd1c61cfe21d7037e2a0dd9cb13317103b32b05ca58f8` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/labels/label_snapshot_3a71318025765aadeb4f95109f5cfbb98a4138acc0226c709621fd493ce577de.json` | `3a71318025765aadeb4f95109f5cfbb98a4138acc0226c709621fd493ce577de` |
+| `tests/test_prospective_liquidation_labels.py` | `8c2ad7edfc4cffe5d97bad7721a9b8252299d35388381b4651fb44dac43b4ba5` |
 
 ## Expected generated artifacts
 

@@ -159,7 +159,10 @@ def test_older_snapshot_ignores_windows_completed_after_its_evaluation(tmp_path:
     shutil.copytree(SOURCE, target)
     snapshots = sorted((target / "labels").glob("label_snapshot_*.json"))
     assert snapshots
-    first = json.loads(snapshots[0].read_text())
+    first = min(
+        (json.loads(path.read_text()) for path in snapshots),
+        key=lambda payload: payload["evaluated_at"],
+    )
     evaluated_at = datetime.fromisoformat(first["evaluated_at"])
     assert any(
         datetime.fromisoformat(row["start"]) + timedelta(minutes=5) > evaluated_at

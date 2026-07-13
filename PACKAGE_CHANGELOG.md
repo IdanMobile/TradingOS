@@ -1,5 +1,14 @@
 # Package Changelog
 
+## v8.93 — 2026-07-13 — First causally available prospective label
+
+- From clean V4 freeze commit `e8805cc`, retained exact 1m Spot entry/exit bytes after the frozen
+  1h availability boundary and reconstructed the gross arithmetic label.
+- Kept five later labels `NOT_AVAILABLE` with no request; all three snapshots verify offline.
+- Corrected the regression fixture to order snapshots by embedded evaluation time, not hash name.
+- Classified the single outcome as retain-only warm-up evidence. No aggregation, interpretation,
+  score, promotion, venue connection, order, or authority exists.
+
 ## v8.92 — 2026-07-13 — Live schema diagnosis and observer V4 freeze
 
 - V3 retained the exact rejected live message and proved the parser/fixture incorrectly expected

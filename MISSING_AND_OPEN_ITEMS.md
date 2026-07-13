@@ -238,6 +238,11 @@ but the actual stream publishes `o.st`. V4 corrects only that schema path and pr
 failure immutably. A clean V4 complete window, continuity, causal labels, warm-up, and all
 validation/promotion gates remain open.
 
+D-090 retains the first causally available 1h Spot label with exact raw bytes and arithmetic
+reconstruction. It is one gross warm-up observation and is prohibited from aggregation,
+interpretation, scoring, or promotion. A clean V4 complete source window, continuous warm-up,
+remaining label horizons, review minima, costs, G1-G11, and strategy validation remain open.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

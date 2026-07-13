@@ -887,6 +887,24 @@ Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_V3_PARSER_FAILURE_2026_
 documentation, and corrected tests.
 Status: **Parser defect proven and corrected; V4 frozen and unrun; authority NONE.**
 
+### D-090 — First causal 1h label retained without analysis
+
+Decision: from clean commit `e8805cc`, the unchanged evaluator ran after the first window's frozen
+`19:52Z` availability boundary. It retained exact BTCUSDT Spot 1m entry/exit response bytes,
+opens `62012` and `62196`, and gross arithmetic return `0.002967167644971940914661678`. The other
+five scheduled labels remained `NOT_AVAILABLE` and caused no request. All three label snapshots
+reconstruct offline.
+
+Consequence: the prospective source→window→signal→risk-denial→causal-outcome path is now proven
+for one label. It is one warm-up observation, not a trade, edge, score, strategy validation, or
+promotion input. The frozen contract prohibits aggregation or interpretation. No credential,
+venue connection, order, paper/demo/live state, holdout access, promotion, or execution authority
+was activated.
+
+Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_FIRST_AVAILABLE_1H_LABEL_2026_07_13.md`,
+label snapshot `3a713180…`, and exact raw response hashes `48c1eb72…` / `61e24812…`.
+Status: **One causal label retained for warm-up only; eligibility false; authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing
