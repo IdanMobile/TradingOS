@@ -1,5 +1,14 @@
 # Package Changelog
 
+## v8.101 — 2026-07-14 — Managed observation adoption
+
+- Adopted the active D-095 public observer into the frozen TradingOS observation service without
+  restarting it or changing existing evidence.
+- Retained the content-addressed 8,640-checkpoint intent and first three consecutive long-run
+  checkpoints; managed verification reported fresh, continuous, blocker-free collection.
+- Preserved public-read-only transport and zero credential, venue, order, paper/live, or execution
+  authority. This remains warm-up evidence collection, not validated alpha.
+
 ## v8.100 — 2026-07-14 — Managed observation implementation freeze
 
 - Added the TradingOS observation service, fixed future launcher, canonical content-addressed run

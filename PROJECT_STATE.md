@@ -970,9 +970,11 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   offline/network-sandboxed jobs worker, accept arbitrary commands, or auto-restart a broken chain.
 - **Managed observation implementation frozen (D-097):** immutable intent, fixed launcher,
   heartbeat freshness, commit/contract/authority/hash/count/continuity validation, and read-only
-  status/dashboard projection are implemented and tested without changing JobStore. The active
-  D-095 process is healthy but remains explicitly `UNMANAGED` until its post-commit adopted intent
-  is written.
+  status/dashboard projection are implemented and tested without changing JobStore.
+- **Managed observation adopted (D-098):** the active D-095 process was bound without restart to a
+  content-addressed 8,640-checkpoint intent. Verification reports `MANAGED / OBSERVING / FRESH`,
+  no blockers, and no execution authority. Three consecutive long-run checkpoints were finalized
+  at adoption; this is evidence collection, not strategy validation.
 
 ## Operational SSOT (unchanged)
 
@@ -1031,10 +1033,10 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Commit D-097, write the one content-addressed `ADOPTED` intent for the already-running D-095 process
-with target 8,640, and verify the managed projection without restarting the observer. Retain the
-new checkpoints and adoption evidence. Do not aggregate or score during warm-up, access the sealed
-V2 holdout, activate a bot, request credentials, create orders, or cross any human S3/S4 gate.
+Let the managed observer continue its preregistered 8,640-checkpoint warm-up while retaining and
+verifying immutable evidence at bounded milestones. Do not aggregate or score during warm-up,
+access the sealed V2 holdout, activate a bot, request credentials, create orders, or cross any
+human S3/S4 gate. In parallel, continue only safe offline closure of validation/full-flow gaps.
 
 ## Exit condition of next phase (unchanged)
 

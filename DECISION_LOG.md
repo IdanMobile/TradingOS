@@ -1066,6 +1066,25 @@ Evidence: `research/PROSPECTIVE_OBSERVATION_MANAGED_FLOW_IMPLEMENTATION_V1.yaml`
 sources, dashboard projection, and `tests/test_observation_flow.py`.
 Status: **Implementation frozen and tested; current-run adoption pending; authority NONE.**
 
+### D-098 — Active prospective observer adopted into the managed flow
+
+Decision: after committing D-097 as `d81dd47`, the already-running D-095 process was bound to one
+content-addressed `ADOPTED` intent with target 8,640. Adoption did not restart or alter the process
+or its evidence. The independent managed verifier reported `MANAGED / OBSERVING / FRESH`, no
+blockers, three finalized consecutive checkpoints, connection and continuity epoch 2, and 8,637
+remaining at the adoption instant.
+
+Consequence: TradingOS now deterministically supervises the prospective evidence-collection flow
+through fixed intent, status, checkpoint, freshness, continuity, contract, commit, and authority
+checks. It deliberately does not auto-restart or backfill a broken epoch. This is not strategy
+validation or execution authorization; warm-up analysis, scoring, promotion, paper/demo/live,
+credentials, accounts, venues, orders, and the sealed V2 holdout remain blocked.
+
+Evidence: `artifacts/reports/PROSPECTIVE_OBSERVATION_MANAGED_ADOPTION_2026_07_14.md`, adopted intent
+`intent_ee043ada0ec765d75152f77e1cbf49fb42a6bdd6a7062e020e5f4dfde9abbc8d.json`, and its first three
+continuous schema-5 checkpoints.
+Status: **Managed observation active; warm-up evidence collection only; authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

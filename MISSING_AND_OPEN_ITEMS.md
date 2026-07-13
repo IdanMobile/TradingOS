@@ -276,9 +276,10 @@ projection, dashboard visibility, and drift/failure tests remain to be implement
 8,640-window run must not be restarted or rewritten during that integration.
 
 D-097 implements and tests the managed service, fixed launcher, immutable intent, fail-closed
-projection, and dashboard visibility. The current D-095 process still needs its post-commit
-`ADOPTED` intent and managed verification. Warm-up completion, real rotation evidence, causal label
-maturity, statistical validation, and every promotion/paper gate remain open.
+projection, and dashboard visibility. D-098 adopts the current D-095 process without restart and
+verifies it `MANAGED / OBSERVING / FRESH` with no blockers or authority. Warm-up completion, real
+rotation evidence, causal label maturity, statistical validation, and every promotion/paper gate
+remain open.
 
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
