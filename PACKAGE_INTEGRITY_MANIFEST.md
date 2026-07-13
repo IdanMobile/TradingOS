@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.80 cross-venue premium campaign freeze (2026-07-13). Supersedes v8.79 hashes.
+Package version: v8.81 cross-venue premium campaign rejection (2026-07-13). Supersedes v8.80 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `87e78e47d4ba3b092e1045b11cfb0bd94b7f1ec40c65450b375d5847d7ed8421` |
-| `DECISION_LOG.md` | `bcce914a8b370ffd4b61354dc3f5cf6adda44b1db7049649af6446d2140b4c23` |
+| `PROJECT_STATE.md` | `bdaa9010e20e972646d4941256f24d21cfeabac164a0a7e5ef035e95bf73e9c3` |
+| `DECISION_LOG.md` | `6d00eec62ddbe3cfe126c05ca054432818391c8c7058dc2884183b987694c197` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `c8158d13b1322d72f3ad1a19211a49d77bb04746b42fe5ebc139c5bff2b0ba8d` |
+| `MISSING_AND_OPEN_ITEMS.md` | `282472adce2432977447b8fde04f031c46757d86165b874dcad0049dcfdf1871` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -68,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `c2a34a9c0bbb056ca5dadf57fc9f16de96e41bf8ca74f7c6c556baa83055486d` |
+| `research/RESEARCH_GAP_MATRIX.md` | `aec88c44b49b154fcfb75e6eee52dc673d38e0d94a784ea10c3b8b6b5609614d` |
 
 ## Post-V2 family selection V1 (added v8.55)
 
@@ -477,7 +477,20 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `scripts/run_cross_venue_btc_premium_campaign.py` | `3810dadfd1ca930fe20b6975f5ef750f959e42b1e6ec1118c36a5b3054ef9eb3` |
 | `tests/test_cross_venue_premium_strategy.py` | `6a7650d69a960cdb91b70cf2ff27aaac838e994adf2f1dbd5a46a9a2a4673515` |
 | `tests/test_cross_venue_premium_reference.py` | `421282cca592fa1b806e5ac1b8e271b20ddb8033a1fc060e557977ba606259c9` |
-| `tests/test_cross_venue_premium_campaign.py` | `06fde5563a4dc087f126f0cfdc98c0e47cc041626d057fd933da51d964987d8b` |
+| `tests/test_cross_venue_premium_campaign.py` | `448ee27d66bf24d8791ab1610363d4c0840ad0ed6300911bb3c2c1a3485c0d2c` |
+
+## Cross-venue premium campaign rejection (added v8.81)
+
+| Path | SHA-256 |
+|---|---|
+| `artifacts/reports/CROSS_VENUE_BTC_PREMIUM_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md` | `3d23b77be25ff96888bc5d72a7ed57b514438760da3ef371a69d23b5f1abd033` |
+| `artifacts/validation/campaigns/CROSS-VENUE-BTC-PREMIUM-G1-G11-V1/campaign_result_3a0753255bca8aa2eeaa2fd5b03123d2f8fcae9b8308cf73a5831232ab4cd9bb.json` | `3a0753255bca8aa2eeaa2fd5b03123d2f8fcae9b8308cf73a5831232ab4cd9bb` |
+| `artifacts/validation/campaigns/CROSS-VENUE-BTC-PREMIUM-G1-G11-V1/selection_80e50a17a94db52f07d049f5c414d413ef7fc0aa54865e569f4d0d9ce396fc08.json` | `80e50a17a94db52f07d049f5c414d413ef7fc0aa54865e569f4d0d9ce396fc08` |
+| `artifacts/validation/campaigns/CROSS-VENUE-BTC-PREMIUM-G1-G11-V1/phase_one_reference_93451541f6dcaeda23f47fb0d44a6ae39e95e48a440892e61be9a11280d1cb07.json` | `93451541f6dcaeda23f47fb0d44a6ae39e95e48a440892e61be9a11280d1cb07` |
+| `artifacts/validation/campaigns/CROSS-VENUE-BTC-PREMIUM-G1-G11-V1/phase_one_workers_7f7758583fa446963f7bcebab15b0aeaa53ecf37d25ee0618ea7a7a7b5ab9098.json` | `7f7758583fa446963f7bcebab15b0aeaa53ecf37d25ee0618ea7a7a7b5ab9098` |
+| `artifacts/validation/campaigns/CROSS-VENUE-BTC-PREMIUM-G1-G11-V1/phase_two_reference_5bd2118a7db232de3f404328d721a3739898b9cec321f6bd2900bdc99b8c31fd.json` | `5bd2118a7db232de3f404328d721a3739898b9cec321f6bd2900bdc99b8c31fd` |
+| `artifacts/validation/campaigns/CROSS-VENUE-BTC-PREMIUM-G1-G11-V1/phase_two_workers_24b6b60f94871e9a7feed0edff60f9749529ec8f29d5f2f62abf72143a5fde93.json` | `24b6b60f94871e9a7feed0edff60f9749529ec8f29d5f2f62abf72143a5fde93` |
+| `artifacts/validation/campaigns/CROSS-VENUE-BTC-PREMIUM-G1-G11-V1/preregistration_f672f0d5dea03096c8912a4a6a889df8809d8987081093f91490801daa70bccf.yaml` | `f672f0d5dea03096c8912a4a6a889df8809d8987081093f91490801daa70bccf` |
 
 ## Expected generated artifacts
 

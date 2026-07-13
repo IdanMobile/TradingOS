@@ -170,6 +170,11 @@ cost cells, six period slices, causal goldens, strict development-selection barr
 thresholds pass offline preflight. The single clean historical run and independent G11 disposition
 remain open; no strategy or bot is approved.
 
+D-078 closes the cross-venue premium family. Development, validation, reserve, stress, delay, all
+six periods, drawdown, benchmark, and DSR evidence fail despite complete four-role parity. G11
+rejects promotion without rescue. No strategy or bot is approved; a new distinct source-only family
+comparison is required before another campaign.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

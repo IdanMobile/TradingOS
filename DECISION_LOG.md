@@ -633,6 +633,22 @@ Evidence: `research/CROSS_VENUE_BTC_PREMIUM_G1_G11_CAMPAIGN_V1.yaml`, canonical/
 focused tests under `tests/test_cross_venue_premium_*`.
 Status: **Approved constrained-S2 immutable offline campaign; preregistered and not run.**
 
+### D-078 — Cross-venue premium campaign rejected without rescue
+
+Decision: the clean run from `2cb84c8` preserved the hashed development-selection barrier and
+selected continuation-positive / 168 hours / 2.0 z. Development lost 56.08%, validation lost 8.29%,
+reserve lost 24.12%, full primary lost 69.44%, full stress lost 96.50%, and a one-bar delay lost
+72.99%. Zero of six periods is positive; full drawdown is 73.45%. Four-role parity passes, and PBO
+passes at 0.1003, but DSR is 0.00000395 and G5-G10 fail.
+
+Consequence: G11 rejects the exact quote-normalized cross-venue premium context without tuning,
+reinterpretation, or migration to sub-hour/arbitrage execution. It is not validation-approved or
+promotion eligible. No bot, credential, venue trading session, order, paper/demo/live state, human
+gate, sealed V2 holdout, closed-family context, or execution authority was activated.
+
+Evidence: `artifacts/reports/CROSS_VENUE_BTC_PREMIUM_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md`.
+Status: **Completed negative campaign; execution authority remains NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

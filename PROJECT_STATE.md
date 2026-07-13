@@ -887,6 +887,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   threshold StrategyVersions, four implementation roles, six cost cells, six periods, causal
   goldens, G1-G11 gates, and a hashed development-selection barrier pass preflight. The complete
   campaign is unrun and no eligible signal performance, bot, venue, or authority exists.
+- **Cross-venue premium campaign rejected (D-078):** the clean run selected continuation-positive /
+  168 hours / 2.0 z, then lost 56.08% development, 8.29% validation, 24.12% reserve, and 69.44%
+  full-history after costs. All six periods, stress, delay, tail, benchmark, and DSR fail despite
+  complete four-role parity. G11 closes the context without rescue; authority remains `NONE`.
 
 ## Operational SSOT (unchanged)
 
@@ -945,11 +949,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Execute `CROSS-VENUE-BTC-PREMIUM-G1-G11-V1` once from the clean freeze commit. Preserve the hashed
-development-selection barrier before validation/reserve access, retain all 12 trials and four-role
-parity evidence, then issue an independent G11 supervisor decision without rescue. Do not access the
-sealed V2 holdout, activate a bot, connect a trading venue, request credentials, or cross any human
-S3/S4 gate.
+Begin a new source-only comparison of no more than three genuinely distinct mechanisms, excluding
+all closed contexts and without computing local candidate-family performance. Explicitly weigh the
+diminishing prior plausibility of further public-signal mining against stopping research. Preregister
+one GO or record NO_GO before any data/canonical build. Do not access the sealed V2 holdout, activate
+a bot, connect a trading venue, request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

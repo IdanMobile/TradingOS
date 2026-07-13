@@ -1,0 +1,84 @@
+schema: tios-cross-venue-btc-premium-campaign-v1
+campaign_id: CROSS-VENUE-BTC-PREMIUM-G1-G11-V1
+status: PREREGISTERED_NOT_RUN
+decision: D-077
+family_id: FAM-CROSS-VENUE-USD-PREMIUM-01
+safety:
+  execution_authority: NONE
+  venue_connection: NONE
+  orders: DISABLED
+  network: PROHIBITED
+  credentials_required: false
+  sealed_v2_holdout_access: PROHIBITED
+  closed_family_context_access: PROHIBITED
+dataset:
+  package_path: research/CROSS_VENUE_BTC_PREMIUM_DATA_PACKAGE_V1.json
+  data_use: COMPLETED_HOUR_FEATURE_AND_BINANCE_SPOT_LONG_CASH_ONLY
+canonical_spec:
+  path: strategies/research/cross-venue-btc-premium/canonical_strategy_spec.yaml
+pinned_files:
+  - {path: research/CROSS_VENUE_BTC_PREMIUM_DATA_PACKAGE_V1.json, sha256: 7dab4bc7ce33a2fb9cfd0595ba1d6a6406b9e8b8f12f1f12532fc20f15fa18c0}
+  - {path: strategies/research/cross-venue-btc-premium/canonical_strategy_spec.yaml, sha256: 0eddfa5977085034811bd1c86dc2e3d0dc95fae7746b4fb675c1f031a06d8fc8}
+  - {path: src/tios/strategy/spec.py, sha256: 50d34972215d0a1aef793bf23a8fa8121bd89b7e0123dc23b3e3d23f2e536e10}
+  - {path: src/tios/strategy/validator.py, sha256: 5182b042f0d62727aecbbfcb00b3818c6ad24807470473ab13f138fa9e01d0bf}
+  - {path: src/tios/strategy/cross_venue_premium.py, sha256: c4bc851f49dab8a5ed680a421883324a094def07a80270d554ab188dab48dfb6}
+  - {path: engines/cross_venue_premium_data.py, sha256: a6125a3b50817b39def967d0e922d8df179693c10eef5eadaa454d9f1e9daefc}
+  - {path: engines/reference/cross_venue_premium.py, sha256: 13c1894b248b4dd098f2ec0f22b989d24e4dbad355e70fd52286c607a3c5c511}
+  - {path: engines/vectorbt/cross_venue_premium_returns.py, sha256: 2c6cfbb86a55231d577938ba4bdecb90602a3399db709e112c3bf4268bf22739}
+  - {path: engines/freqtrade/cross_venue_premium_signals.py, sha256: e452335012ee53d3bc6a96597dae299235050525fe91744fe3049d6cfe6cf438}
+  - {path: engines/nautilus/cross_venue_premium_events.py, sha256: ee4a817280b0c6eccbe378f94a9779fb2b41f36a98d3bc406503cf25ace82f51}
+  - {path: scripts/verify_cross_venue_premium_data.py, sha256: 4359adf79504aff7d4dfb995dbc534dcebad7cda2c6737b68817e03a4fa27f57}
+  - {path: scripts/run_cross_venue_btc_premium_campaign.py, sha256: 3810dadfd1ca930fe20b6975f5ef750f959e42b1e6ec1118c36a5b3054ef9eb3}
+splits:
+  development: ["2021-05-04 01:00:00+00:00", "2023-12-31 23:00:00+00:00"]
+  validation_2024: ["2024-01-01", "2024-12-31 23:00:00+00:00"]
+  reserve_2025_2026h1: ["2025-01-01", "2026-06-30 23:00:00+00:00"]
+selection:
+  phase_one_scope: development_only
+  scenario: F1/S1
+  metric: nonannualized_per_1h_bar_sharpe_with_zero_cash_returns
+  direction: maximum
+  tie_break: lexical_interpretation_baseline_hours_threshold
+  immutable_hashed_selection_required_before_phase_two: true
+scenarios:
+  - {name: F0/S0, fee: 0, slippage_bps: 0}
+  - {name: F1/S1, fee: 0.001, slippage_bps: 1}
+  - {name: F1/S2, fee: 0.001, slippage_bps: 5}
+  - {name: F1/S3, fee: 0.001, slippage_bps: 10}
+  - {name: F2/S2, fee: 0.0015, slippage_bps: 5}
+  - {name: F2/S3, fee: 0.0015, slippage_bps: 10}
+trial_roster:
+  - {interpretation: CONTINUATION_POSITIVE, baseline_hours: 168, threshold: 1.0, strategy_version_id: SV-88dd79ff99a16d41}
+  - {interpretation: CONTINUATION_POSITIVE, baseline_hours: 168, threshold: 2.0, strategy_version_id: SV-f77752ce8b7882b0}
+  - {interpretation: CONTINUATION_POSITIVE, baseline_hours: 720, threshold: 1.0, strategy_version_id: SV-68ee3d54f4fc583c}
+  - {interpretation: CONTINUATION_POSITIVE, baseline_hours: 720, threshold: 2.0, strategy_version_id: SV-8916d344935dfa07}
+  - {interpretation: CONTINUATION_POSITIVE, baseline_hours: 2160, threshold: 1.0, strategy_version_id: SV-dedf91b642208949}
+  - {interpretation: CONTINUATION_POSITIVE, baseline_hours: 2160, threshold: 2.0, strategy_version_id: SV-a0d3eb6f7a579337}
+  - {interpretation: REVERSAL_NEGATIVE, baseline_hours: 168, threshold: 1.0, strategy_version_id: SV-55e32bc8420a7d69}
+  - {interpretation: REVERSAL_NEGATIVE, baseline_hours: 168, threshold: 2.0, strategy_version_id: SV-a0ee3bb0cbba412f}
+  - {interpretation: REVERSAL_NEGATIVE, baseline_hours: 720, threshold: 1.0, strategy_version_id: SV-23c10e8705575f4e}
+  - {interpretation: REVERSAL_NEGATIVE, baseline_hours: 720, threshold: 2.0, strategy_version_id: SV-4dd70ff46f5de008}
+  - {interpretation: REVERSAL_NEGATIVE, baseline_hours: 2160, threshold: 1.0, strategy_version_id: SV-413255e5590fc462}
+  - {interpretation: REVERSAL_NEGATIVE, baseline_hours: 2160, threshold: 2.0, strategy_version_id: SV-794bc8aca0b1e3ee}
+gates:
+  parity_numeric_tolerance: 1.0e-10
+  development_completed_trades_minimum: 100
+  validation_completed_trades_minimum: 30
+  reserve_completed_trades_minimum: 20
+  required_positive_periods_of_6: 5
+  maximum_drawdown: 0.25
+  pbo_maximum: 0.5
+  dsr_minimum: 0.95
+  require_positive_validation_primary: true
+  require_positive_reserve_primary: true
+  require_positive_full_stress: true
+  require_positive_one_bar_delay: true
+  require_benchmark_sharpe_and_drawdown_superiority: true
+  all_12_trials_enter_g10: true
+stop_rules:
+  source_or_normalized_drift_aborts: true
+  any_hard_fail_rejects_context: true
+  zero_validation_activity_rejects_context: true
+  no_post_result_rescue: true
+  no_simultaneous_arbitrage_or_coinbase_execution_claim: true
+  numeric_pass_cannot_activate_paper_demo_live: true

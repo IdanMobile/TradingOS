@@ -1,0 +1,21 @@
+{
+  "development_metric": -0.013832232288279723,
+  "g10": {
+    "average_trial_return_correlation_clipped_at_zero": 0.3827049708887918,
+    "dsr": 3.95215599141574e-06,
+    "effective_trials": 7.790245320223291,
+    "pbo": 0.10031080031080031,
+    "pbo_split_count": 12870,
+    "raw_statistical_trials": 12,
+    "status": "FAIL"
+  },
+  "schema": "tios-cross-venue-btc-premium-selection-v1",
+  "selected_trial": {
+    "baseline_hours": 168,
+    "interpretation": "CONTINUATION_POSITIVE",
+    "strategy_version_id": "SV-f77752ce8b7882b0",
+    "threshold": 2.0
+  },
+  "selected_trial_name": "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=2.0",
+  "selection_source": "development/F1-S1/sharpe_per_bar"
+}

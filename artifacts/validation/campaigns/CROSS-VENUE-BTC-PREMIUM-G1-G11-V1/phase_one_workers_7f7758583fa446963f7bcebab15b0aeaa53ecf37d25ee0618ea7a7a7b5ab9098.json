@@ -1,0 +1,878 @@
+{
+  "freqtrade": {
+    "engine": "freqtrade",
+    "segments": {
+      "development": {
+        "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=1.0": {
+          "buy_count": 1341,
+          "event_hash": "99dc476e4367cf76257346c2a1d86290dc1e9de29a333ab460a5b04f751e8898",
+          "sell_count": 1341
+        },
+        "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=2.0": {
+          "buy_count": 374,
+          "event_hash": "1d6d840b636c2043341b48a7a53fb6d3bbd3d5c25b199fc6bb569efe8c9ffc0b",
+          "sell_count": 374
+        },
+        "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=1.0": {
+          "buy_count": 562,
+          "event_hash": "22bff1b68da7467437ab01adf5e04045b5f1e35f76d4e7b6d7edb2ecaf2fa448",
+          "sell_count": 562
+        },
+        "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=2.0": {
+          "buy_count": 146,
+          "event_hash": "7de82a7614c0eb7143b64d1a07e027f41df038e0210f665f62f5dfb41937df99",
+          "sell_count": 146
+        },
+        "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=1.0": {
+          "buy_count": 975,
+          "event_hash": "6d74edcfb348f661baab15482fb157a18604d034fdabe53c814a891ef12577b7",
+          "sell_count": 975
+        },
+        "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=2.0": {
+          "buy_count": 266,
+          "event_hash": "e3699f4002953a2d87fbce17111c05280fa1de4da74316411b7845dbeabeb09d",
+          "sell_count": 266
+        },
+        "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=1.0": {
+          "buy_count": 1386,
+          "event_hash": "2392a516c96676642080afd3742796fc4d610be1329cf0adf4318c6af6a5c3b0",
+          "sell_count": 1386
+        },
+        "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=2.0": {
+          "buy_count": 410,
+          "event_hash": "ece9dd0d3ad0ff7af846e64d47e35317125a9c10ce30abaef0893ea65660e3b7",
+          "sell_count": 410
+        },
+        "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=1.0": {
+          "buy_count": 619,
+          "event_hash": "d827dcd05eb73e5a69deb410ca10065d0bd620f96f206666f61aad016084e5d9",
+          "sell_count": 619
+        },
+        "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=2.0": {
+          "buy_count": 163,
+          "event_hash": "2e9720121eccf84d6a1b901f0395e459bfd4a8170c76268dfdbb8e1d76cb229c",
+          "sell_count": 163
+        },
+        "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=1.0": {
+          "buy_count": 1096,
+          "event_hash": "66e597942ee36f53f62151231764d9a4a237a8d71001715989315be3f850d3e7",
+          "sell_count": 1096
+        },
+        "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=2.0": {
+          "buy_count": 291,
+          "event_hash": "07bcb1757053f4a48323332282fd39a5a97c77b0df9cd04d36e887f334b79790",
+          "sell_count": 291
+        }
+      }
+    },
+    "version": "2026.6"
+  },
+  "nautilus": {
+    "engine": "nautilus_trader",
+    "segments": {
+      "development": {
+        "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=1.0": {
+          "buy_count": 1341,
+          "event_hash": "99dc476e4367cf76257346c2a1d86290dc1e9de29a333ab460a5b04f751e8898",
+          "sell_count": 1341
+        },
+        "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=2.0": {
+          "buy_count": 374,
+          "event_hash": "1d6d840b636c2043341b48a7a53fb6d3bbd3d5c25b199fc6bb569efe8c9ffc0b",
+          "sell_count": 374
+        },
+        "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=1.0": {
+          "buy_count": 562,
+          "event_hash": "22bff1b68da7467437ab01adf5e04045b5f1e35f76d4e7b6d7edb2ecaf2fa448",
+          "sell_count": 562
+        },
+        "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=2.0": {
+          "buy_count": 146,
+          "event_hash": "7de82a7614c0eb7143b64d1a07e027f41df038e0210f665f62f5dfb41937df99",
+          "sell_count": 146
+        },
+        "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=1.0": {
+          "buy_count": 975,
+          "event_hash": "6d74edcfb348f661baab15482fb157a18604d034fdabe53c814a891ef12577b7",
+          "sell_count": 975
+        },
+        "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=2.0": {
+          "buy_count": 266,
+          "event_hash": "e3699f4002953a2d87fbce17111c05280fa1de4da74316411b7845dbeabeb09d",
+          "sell_count": 266
+        },
+        "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=1.0": {
+          "buy_count": 1386,
+          "event_hash": "2392a516c96676642080afd3742796fc4d610be1329cf0adf4318c6af6a5c3b0",
+          "sell_count": 1386
+        },
+        "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=2.0": {
+          "buy_count": 410,
+          "event_hash": "ece9dd0d3ad0ff7af846e64d47e35317125a9c10ce30abaef0893ea65660e3b7",
+          "sell_count": 410
+        },
+        "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=1.0": {
+          "buy_count": 619,
+          "event_hash": "d827dcd05eb73e5a69deb410ca10065d0bd620f96f206666f61aad016084e5d9",
+          "sell_count": 619
+        },
+        "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=2.0": {
+          "buy_count": 163,
+          "event_hash": "2e9720121eccf84d6a1b901f0395e459bfd4a8170c76268dfdbb8e1d76cb229c",
+          "sell_count": 163
+        },
+        "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=1.0": {
+          "buy_count": 1096,
+          "event_hash": "66e597942ee36f53f62151231764d9a4a237a8d71001715989315be3f850d3e7",
+          "sell_count": 1096
+        },
+        "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=2.0": {
+          "buy_count": 291,
+          "event_hash": "07bcb1757053f4a48323332282fd39a5a97c77b0df9cd04d36e887f334b79790",
+          "sell_count": 291
+        }
+      }
+    },
+    "version": "1.230.0"
+  },
+  "vectorbt": {
+    "engine": "vectorbt",
+    "segments": {
+      "development": {
+        "F0/S0": {
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=1.0": {
+            "buy_count": 1341,
+            "event_hash": "99dc476e4367cf76257346c2a1d86290dc1e9de29a333ab460a5b04f751e8898",
+            "max_drawdown": -0.640082692988674,
+            "return_hash_12dp": "3acb4d856c227e04f7a40f2d9820f3c88362d7544606ac1a568f3bdf542812ae",
+            "sell_count": 1341,
+            "sharpe_per_bar": 0.0018231018219176122,
+            "total_return": -0.015872148710761053,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=1.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=2.0": {
+            "buy_count": 374,
+            "event_hash": "1d6d840b636c2043341b48a7a53fb6d3bbd3d5c25b199fc6bb569efe8c9ffc0b",
+            "max_drawdown": -0.41877179934747155,
+            "return_hash_12dp": "6d04d6f5fc4ee0dcd979c20eb1e83fe3b3f9ef6a194cd6557fbde2cf2d7f538d",
+            "sell_count": 374,
+            "sharpe_per_bar": 0.0011702655174619136,
+            "total_return": 5.498953939468265e-05,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=2.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=1.0": {
+            "buy_count": 562,
+            "event_hash": "22bff1b68da7467437ab01adf5e04045b5f1e35f76d4e7b6d7edb2ecaf2fa448",
+            "max_drawdown": -0.5615046312377654,
+            "return_hash_12dp": "026d46590e2fa1f5c604de04019884afd370b9074d9156e1dd4137a491721728",
+            "sell_count": 562,
+            "sharpe_per_bar": -0.006575813875821423,
+            "total_return": -0.3913538910296428,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=1.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=2.0": {
+            "buy_count": 146,
+            "event_hash": "7de82a7614c0eb7143b64d1a07e027f41df038e0210f665f62f5dfb41937df99",
+            "max_drawdown": -0.3668690813090869,
+            "return_hash_12dp": "04b08af948d091a821f6c3ffdcad0c832c2954c1663af70a06d0d858a5d2112f",
+            "sell_count": 146,
+            "sharpe_per_bar": -0.0066253318469372754,
+            "total_return": -0.2682083304747688,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=2.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=1.0": {
+            "buy_count": 975,
+            "event_hash": "6d74edcfb348f661baab15482fb157a18604d034fdabe53c814a891ef12577b7",
+            "max_drawdown": -0.7597372225988718,
+            "return_hash_12dp": "88e84a7f6f02779280c6a80dd65a47cfe97cd957ce0503235f2580dc33949da9",
+            "sell_count": 975,
+            "sharpe_per_bar": -0.001911790189584927,
+            "total_return": -0.2552954931623562,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=1.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=2.0": {
+            "buy_count": 266,
+            "event_hash": "e3699f4002953a2d87fbce17111c05280fa1de4da74316411b7845dbeabeb09d",
+            "max_drawdown": -0.4891599124136927,
+            "return_hash_12dp": "35a6548f60d7f9ae5df16e85744441b6672d2be606a90c7091d9c1cc8665c3e6",
+            "sell_count": 266,
+            "sharpe_per_bar": -0.005260335091980586,
+            "total_return": -0.27908758325547434,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=2.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=1.0": {
+            "buy_count": 1386,
+            "event_hash": "2392a516c96676642080afd3742796fc4d610be1329cf0adf4318c6af6a5c3b0",
+            "max_drawdown": -0.8596356123156423,
+            "return_hash_12dp": "8c67d0b5444127c10087af1c7edf1d5717edc5aaf9be64ede7cc91fc18d963fa",
+            "sell_count": 1386,
+            "sharpe_per_bar": -0.014729884388787941,
+            "total_return": -0.806032943157764,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=1.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=2.0": {
+            "buy_count": 410,
+            "event_hash": "ece9dd0d3ad0ff7af846e64d47e35317125a9c10ce30abaef0893ea65660e3b7",
+            "max_drawdown": -0.6932132291258184,
+            "return_hash_12dp": "97c2661618dc9321df2efcf10dfb5293e3176de82e15603c819243c24990ebee",
+            "sell_count": 410,
+            "sharpe_per_bar": -0.009467886639074134,
+            "total_return": -0.48298955383671066,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=2.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=1.0": {
+            "buy_count": 619,
+            "event_hash": "d827dcd05eb73e5a69deb410ca10065d0bd620f96f206666f61aad016084e5d9",
+            "max_drawdown": -0.734213306085514,
+            "return_hash_12dp": "2e2548524d1727b6513e5eb5022ae66f36b81cc4d85f06d54be00684e5870746",
+            "sell_count": 619,
+            "sharpe_per_bar": -0.01572506343116672,
+            "total_return": -0.6723120105582407,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=1.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=2.0": {
+            "buy_count": 163,
+            "event_hash": "2e9720121eccf84d6a1b901f0395e459bfd4a8170c76268dfdbb8e1d76cb229c",
+            "max_drawdown": -0.5110705713552337,
+            "return_hash_12dp": "17dcc37e05636433e2916ca103ff7b27114936bafe2595ba76f48e726b055c62",
+            "sell_count": 163,
+            "sharpe_per_bar": -0.010821363593535242,
+            "total_return": -0.4053483842934909,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=2.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=1.0": {
+            "buy_count": 1096,
+            "event_hash": "66e597942ee36f53f62151231764d9a4a237a8d71001715989315be3f850d3e7",
+            "max_drawdown": -0.8452391408347752,
+            "return_hash_12dp": "fa6e08b9f549cb3909bbbf02ba0400f0592a852277833ddf116a56fb274957ae",
+            "sell_count": 1096,
+            "sharpe_per_bar": -0.016770723469242847,
+            "total_return": -0.7854200661109925,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=1.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=2.0": {
+            "buy_count": 291,
+            "event_hash": "07bcb1757053f4a48323332282fd39a5a97c77b0df9cd04d36e887f334b79790",
+            "max_drawdown": -0.6344569292967656,
+            "return_hash_12dp": "453b07ccc455a130d21072527f248337802f8176afb412ace3a76545640aa652",
+            "sell_count": 291,
+            "sharpe_per_bar": -0.01433051715433105,
+            "total_return": -0.5613509780251489,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=2.0"
+          }
+        },
+        "F1/S1": {
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=1.0": {
+            "buy_count": 1341,
+            "event_hash": "99dc476e4367cf76257346c2a1d86290dc1e9de29a333ab460a5b04f751e8898",
+            "max_drawdown": -0.956400864522182,
+            "return_hash_12dp": "a87a27ec6d8c22c72ec8368be5b057cf5333b0257252271497fa9615d9ccd9f9",
+            "sell_count": 1341,
+            "sharpe_per_bar": -0.029727131286154923,
+            "total_return": -0.9485013844960594,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=1.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=2.0": {
+            "buy_count": 374,
+            "event_hash": "1d6d840b636c2043341b48a7a53fb6d3bbd3d5c25b199fc6bb569efe8c9ffc0b",
+            "max_drawdown": -0.6403178471901774,
+            "return_hash_12dp": "a99e9ccf3f6c45d175f645da70afb86ce50001e2b7551b52ba2eeb0ec0ec00c2",
+            "sell_count": 374,
+            "sharpe_per_bar": -0.013832232288278751,
+            "total_return": -0.5607757874525123,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=2.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=1.0": {
+            "buy_count": 562,
+            "event_hash": "22bff1b68da7467437ab01adf5e04045b5f1e35f76d4e7b6d7edb2ecaf2fa448",
+            "max_drawdown": -0.8402296848759896,
+            "return_hash_12dp": "b383ef0fc8c2fac99930f721ae3b52eb979defad9f845102dccaf163dcd22a28",
+            "sell_count": 562,
+            "sharpe_per_bar": -0.02623107735267129,
+            "total_return": -0.8232322680575794,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=1.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=2.0": {
+            "buy_count": 146,
+            "event_hash": "7de82a7614c0eb7143b64d1a07e027f41df038e0210f665f62f5dfb41937df99",
+            "max_drawdown": -0.500697498051043,
+            "return_hash_12dp": "108b397ecf382c64ec484671d996a47bdc974232d69d65bc00d9e9d7679086f3",
+            "sell_count": 146,
+            "sharpe_per_bar": -0.014309558968508076,
+            "total_return": -0.46924752087901855,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=2.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=1.0": {
+            "buy_count": 975,
+            "event_hash": "6d74edcfb348f661baab15482fb157a18604d034fdabe53c814a891ef12577b7",
+            "max_drawdown": -0.9506220247962975,
+            "return_hash_12dp": "0097616086706f0a061bbb4846247bbab5dbfa9e699448aca9ad89362682dde8",
+            "sell_count": 975,
+            "sharpe_per_bar": -0.02835636017437541,
+            "total_return": -0.9128189619309881,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=1.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=2.0": {
+            "buy_count": 266,
+            "event_hash": "e3699f4002953a2d87fbce17111c05280fa1de4da74316411b7845dbeabeb09d",
+            "max_drawdown": -0.6575369469064878,
+            "return_hash_12dp": "2e6556fe26c091b3aaea255d7db2cffd777fd3d2c23eaeaf2b43a5005654ede4",
+            "sell_count": 266,
+            "sharpe_per_bar": -0.016549970809550032,
+            "total_return": -0.5984558549315386,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=2.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=1.0": {
+            "buy_count": 1386,
+            "event_hash": "2392a516c96676642080afd3742796fc4d610be1329cf0adf4318c6af6a5c3b0",
+            "max_drawdown": -0.99087839775066,
+            "return_hash_12dp": "f5e1685c9a455cd958b1a5a923bccea8bd6e0263421492a35035abe729789de6",
+            "sell_count": 1386,
+            "sharpe_per_bar": -0.04574833900448693,
+            "total_return": -0.9908065855265832,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=1.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=2.0": {
+            "buy_count": 410,
+            "event_hash": "ece9dd0d3ad0ff7af846e64d47e35317125a9c10ce30abaef0893ea65660e3b7",
+            "max_drawdown": -0.8282019983200419,
+            "return_hash_12dp": "c9a02453bb9a8b2105341f8375f1f70ef180bbc0e5b30def3db273eee4339e8a",
+            "sell_count": 410,
+            "sharpe_per_bar": -0.024097043747698083,
+            "total_return": -0.790219277619455,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=2.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=1.0": {
+            "buy_count": 619,
+            "event_hash": "d827dcd05eb73e5a69deb410ca10065d0bd620f96f206666f61aad016084e5d9",
+            "max_drawdown": -0.9182903681690083,
+            "return_hash_12dp": "42ff8df26c9c5b98c9a9e6087e5d31d436b537d588310690474bd758c64b2ec1",
+            "sell_count": 619,
+            "sharpe_per_bar": -0.036385528044471864,
+            "total_return": -0.9160466329202671,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=1.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=2.0": {
+            "buy_count": 163,
+            "event_hash": "2e9720121eccf84d6a1b901f0395e459bfd4a8170c76268dfdbb8e1d76cb229c",
+            "max_drawdown": -0.60065803699677,
+            "return_hash_12dp": "709afc68c68b42d313138e4a671bc753261c3ff496d24adb9124e0130b56e7ad",
+            "sell_count": 163,
+            "sharpe_per_bar": -0.01885257632119549,
+            "total_return": -0.5845444597899926,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=2.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=1.0": {
+            "buy_count": 1096,
+            "event_hash": "66e597942ee36f53f62151231764d9a4a237a8d71001715989315be3f850d3e7",
+            "max_drawdown": -0.9814905348775017,
+            "return_hash_12dp": "1d17dacd0e7da122f78e423c21b688a7beb683002384a1508e6d77989a04dca8",
+            "sell_count": 1096,
+            "sharpe_per_bar": -0.04556950758797332,
+            "total_return": -0.9807505673087318,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=1.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=2.0": {
+            "buy_count": 291,
+            "event_hash": "07bcb1757053f4a48323332282fd39a5a97c77b0df9cd04d36e887f334b79790",
+            "max_drawdown": -0.7735665579693465,
+            "return_hash_12dp": "16de1586286c1982e2d0885b8872361279a58364268d6555834744a97f5bc1f2",
+            "sell_count": 291,
+            "sharpe_per_bar": -0.026239874703618053,
+            "total_return": -0.7687499934417574,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=2.0"
+          }
+        },
+        "F1/S2": {
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=1.0": {
+            "buy_count": 1341,
+            "event_hash": "99dc476e4367cf76257346c2a1d86290dc1e9de29a333ab460a5b04f751e8898",
+            "max_drawdown": -0.9830291042322121,
+            "return_hash_12dp": "a5e2aed9032ee3ab52dc69c062db620299406052ff1601bf7b3eaa93c0c3fb0b",
+            "sell_count": 1341,
+            "sharpe_per_bar": -0.04105692367208352,
+            "total_return": -0.9823849295180067,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=1.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=2.0": {
+            "buy_count": 374,
+            "event_hash": "1d6d840b636c2043341b48a7a53fb6d3bbd3d5c25b199fc6bb569efe8c9ffc0b",
+            "max_drawdown": -0.7171553489494591,
+            "return_hash_12dp": "6573957c9d79bc91eacfc32ab80f933d4b1c1cb6217afb64e88f1ba0fc8ed4c4",
+            "sell_count": 374,
+            "sharpe_per_bar": -0.01922622402454836,
+            "total_return": -0.6743542980575691,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=2.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=1.0": {
+            "buy_count": 562,
+            "event_hash": "22bff1b68da7467437ab01adf5e04045b5f1e35f76d4e7b6d7edb2ecaf2fa448",
+            "max_drawdown": -0.8931167527150773,
+            "return_hash_12dp": "14b42c438496cda9fa051ba32573eeeb17783804fcc0dee2c57d68990858f151",
+            "sell_count": 562,
+            "sharpe_per_bar": -0.033288039994594655,
+            "total_return": -0.8872428292026798,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=1.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=2.0": {
+            "buy_count": 146,
+            "event_hash": "7de82a7614c0eb7143b64d1a07e027f41df038e0210f665f62f5dfb41937df99",
+            "max_drawdown": -0.5530655243491263,
+            "return_hash_12dp": "4d3062434af54a5ab58e16d5b609eb1519e278e376e6b75ad7a551c3906ead29",
+            "sell_count": 146,
+            "sharpe_per_bar": -0.017071263043537524,
+            "total_return": -0.5277560196859159,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=2.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=1.0": {
+            "buy_count": 975,
+            "event_hash": "6d74edcfb348f661baab15482fb157a18604d034fdabe53c814a891ef12577b7",
+            "max_drawdown": -0.974273941919212,
+            "return_hash_12dp": "02e10c528f0a2e2e6baa346f910f8e951d8d76d2b8c8478b7f1ffd7feb381d3f",
+            "sell_count": 975,
+            "sharpe_per_bar": -0.03785977332225244,
+            "total_return": -0.9600356912984565,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=1.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=2.0": {
+            "buy_count": 266,
+            "event_hash": "e3699f4002953a2d87fbce17111c05280fa1de4da74316411b7845dbeabeb09d",
+            "max_drawdown": -0.7109158138154561,
+            "return_hash_12dp": "28a2a7eabee3f9abec77aa4a30a59454ca7f466a2fa722f96c58ac54282689b7",
+            "sell_count": 266,
+            "sharpe_per_bar": -0.02059817102732695,
+            "total_return": -0.6754247333730811,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=2.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=1.0": {
+            "buy_count": 1386,
+            "event_hash": "2392a516c96676642080afd3742796fc4d610be1329cf0adf4318c6af6a5c3b0",
+            "max_drawdown": -0.996986200002186,
+            "return_hash_12dp": "cd64a490941eeaf95f08ec952bac36dd592aa969ad5705a074ef70ae57ff505f",
+            "sell_count": 1386,
+            "sharpe_per_bar": -0.056839755378225575,
+            "total_return": -0.9969665903161076,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=1.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=2.0": {
+            "buy_count": 410,
+            "event_hash": "ece9dd0d3ad0ff7af846e64d47e35317125a9c10ce30abaef0893ea65660e3b7",
+            "max_drawdown": -0.8726270564072582,
+            "return_hash_12dp": "d8fea8aa0167f0668047e1f5c96602241ebedec1fee0aef5969b0ac92a6e7f56",
+            "sell_count": 410,
+            "sharpe_per_bar": -0.029339213974360893,
+            "total_return": -0.8488817304718882,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=2.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=1.0": {
+            "buy_count": 619,
+            "event_hash": "d827dcd05eb73e5a69deb410ca10065d0bd620f96f206666f61aad016084e5d9",
+            "max_drawdown": -0.9491519355426834,
+            "return_hash_12dp": "05af5f8acca625b633c6ff144e0b12d974ef4993aa7b9db5396a71da602fff25",
+            "sell_count": 619,
+            "sharpe_per_bar": -0.043748160646368744,
+            "total_return": -0.948834706559374,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=1.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=2.0": {
+            "buy_count": 163,
+            "event_hash": "2e9720121eccf84d6a1b901f0395e459bfd4a8170c76268dfdbb8e1d76cb229c",
+            "max_drawdown": -0.642932334873178,
+            "return_hash_12dp": "f58f6218b9791857fc10ebf47d5b00347da2aa06b27983a01edd765e87ee3c4b",
+            "sell_count": 163,
+            "sharpe_per_bar": -0.021728999320220734,
+            "total_return": -0.6353362879684414,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=2.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=1.0": {
+            "buy_count": 1096,
+            "event_hash": "66e597942ee36f53f62151231764d9a4a237a8d71001715989315be3f850d3e7",
+            "max_drawdown": -0.9920450017065614,
+            "return_hash_12dp": "d96a28a7e7f19b9ea8e17e9b65392bc045e9d999646e295cd0459055ffb897ca",
+            "sell_count": 1096,
+            "sharpe_per_bar": -0.05584681721416426,
+            "total_return": -0.9919900741880103,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=1.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=2.0": {
+            "buy_count": 291,
+            "event_hash": "07bcb1757053f4a48323332282fd39a5a97c77b0df9cd04d36e887f334b79790",
+            "max_drawdown": -0.8177448842945263,
+            "return_hash_12dp": "6dc5dd499b28ac51f6f24cbb6394434c486347b2cfa5ea23dd36fd771e167bc2",
+            "sell_count": 291,
+            "sharpe_per_bar": -0.03050198081691312,
+            "total_return": -0.8167778445671856,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=2.0"
+          }
+        },
+        "F1/S3": {
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=1.0": {
+            "buy_count": 1341,
+            "event_hash": "99dc476e4367cf76257346c2a1d86290dc1e9de29a333ab460a5b04f751e8898",
+            "max_drawdown": -0.9955050588685281,
+            "return_hash_12dp": "d9810d23b44585f705041d6d75452147e8cb70c4238a9334b431786abff8c8f5",
+            "sell_count": 1341,
+            "sharpe_per_bar": -0.05503494353797265,
+            "total_return": -0.9953921838214815,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=1.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=2.0": {
+            "buy_count": 374,
+            "event_hash": "1d6d840b636c2043341b48a7a53fb6d3bbd3d5c25b199fc6bb569efe8c9ffc0b",
+            "max_drawdown": -0.7998389482475453,
+            "return_hash_12dp": "b406ae068866533929331767e14386f421fcd889f3b4a45b665b069ce54d2012",
+            "sell_count": 374,
+            "sharpe_per_bar": -0.025890011395230526,
+            "total_return": -0.7759633245046369,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=2.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=1.0": {
+            "buy_count": 562,
+            "event_hash": "22bff1b68da7467437ab01adf5e04045b5f1e35f76d4e7b6d7edb2ecaf2fa448",
+            "max_drawdown": -0.9369267250352566,
+            "return_hash_12dp": "03225a1ca8ec419cf99e89c82613bcbb66d06e4f9e0536b5758776ec7363b8c1",
+            "sell_count": 562,
+            "sharpe_per_bar": -0.041993330999680674,
+            "total_return": -0.9357207902054513,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=1.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=2.0": {
+            "buy_count": 146,
+            "event_hash": "7de82a7614c0eb7143b64d1a07e027f41df038e0210f665f62f5dfb41937df99",
+            "max_drawdown": -0.61087075368757,
+            "return_hash_12dp": "893f21361e066fac5fec105d5485837b39cdf34592e3a5902bd389cd6198e505",
+            "sell_count": 146,
+            "sharpe_per_bar": -0.020487507138812883,
+            "total_return": -0.5919067613849716,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=2.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=1.0": {
+            "buy_count": 975,
+            "event_hash": "6d74edcfb348f661baab15482fb157a18604d034fdabe53c814a891ef12577b7",
+            "max_drawdown": -0.9890101821689289,
+            "return_hash_12dp": "c9f6c4026eed17cf837b7d0860811cf481fd72cd09f965eb305be6241a98f6ae",
+            "sell_count": 975,
+            "sharpe_per_bar": -0.0495893705503663,
+            "total_return": -0.9849257769158125,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=1.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=2.0": {
+            "buy_count": 266,
+            "event_hash": "e3699f4002953a2d87fbce17111c05280fa1de4da74316411b7845dbeabeb09d",
+            "max_drawdown": -0.7749736680504721,
+            "return_hash_12dp": "ab0d0aad7493de606ee6d72c69ae194adf3f9edfc565615255b9c6599ac05c80",
+            "sell_count": 266,
+            "sharpe_per_bar": -0.025596233357365147,
+            "total_return": -0.7512328544384513,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=2.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=1.0": {
+            "buy_count": 1386,
+            "event_hash": "2392a516c96676642080afd3742796fc4d610be1329cf0adf4318c6af6a5c3b0",
+            "max_drawdown": -0.9992455747422484,
+            "return_hash_12dp": "6a8b7ef4fe2b27d904e8bfadc7b87316942dd9e42fb5f4d1cdd94e19c9cb2c1e",
+            "sell_count": 1386,
+            "sharpe_per_bar": -0.07049419759237639,
+            "total_return": -0.9992414249300092,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=1.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=2.0": {
+            "buy_count": 410,
+            "event_hash": "ece9dd0d3ad0ff7af846e64d47e35317125a9c10ce30abaef0893ea65660e3b7",
+            "max_drawdown": -0.912433262392555,
+            "return_hash_12dp": "c29a6b012afd193da73b5480ffab1ae0c65294538f9cb14e8de5e6947ff3f1b3",
+            "sell_count": 410,
+            "sharpe_per_bar": -0.035806751570163865,
+            "total_return": -0.8997103466134614,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=2.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=1.0": {
+            "buy_count": 619,
+            "event_hash": "d827dcd05eb73e5a69deb410ca10065d0bd620f96f206666f61aad016084e5d9",
+            "max_drawdown": -0.9726055257812166,
+            "return_hash_12dp": "42097756a7f9ed9372c5dda294ca6ce40f0578d31d58bc7a1fb17de969f49ed3",
+            "sell_count": 619,
+            "sharpe_per_bar": -0.0527906315645806,
+            "total_return": -0.9724483870925167,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=1.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=2.0": {
+            "buy_count": 163,
+            "event_hash": "2e9720121eccf84d6a1b901f0395e459bfd4a8170c76268dfdbb8e1d76cb229c",
+            "max_drawdown": -0.6910486154770357,
+            "return_hash_12dp": "5dd4167bf273a3222ec4282f6817be59013a6a6bccf63eba62526e15349dc538",
+            "sell_count": 163,
+            "sharpe_per_bar": -0.02528008290954707,
+            "total_return": -0.6901849529817013,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=2.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=1.0": {
+            "buy_count": 1096,
+            "event_hash": "66e597942ee36f53f62151231764d9a4a237a8d71001715989315be3f850d3e7",
+            "max_drawdown": -0.9973400709933171,
+            "return_hash_12dp": "0d537d2d22fcf6a3ac916a4e7a5fde4051fa88bf247785c95fc8f1312f25edcb",
+            "sell_count": 1096,
+            "sharpe_per_bar": -0.06847605883060065,
+            "total_return": -0.9973230425767001,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=1.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=2.0": {
+            "buy_count": 291,
+            "event_hash": "07bcb1757053f4a48323332282fd39a5a97c77b0df9cd04d36e887f334b79790",
+            "max_drawdown": -0.8634203928875299,
+            "return_hash_12dp": "c51c343aee1303b2be9dab467667be8a869444b5851478514f3157dead201cf3",
+            "sell_count": 291,
+            "sharpe_per_bar": -0.03575745919137226,
+            "total_return": -0.8630385895029212,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=2.0"
+          }
+        },
+        "F2/S2": {
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=1.0": {
+            "buy_count": 1341,
+            "event_hash": "99dc476e4367cf76257346c2a1d86290dc1e9de29a333ab460a5b04f751e8898",
+            "max_drawdown": -0.9955050648827699,
+            "return_hash_12dp": "4461d652b11f45e64a431532839266a4892fda3b9f4d81c127cc0d902afe09a3",
+            "sell_count": 1341,
+            "sharpe_per_bar": -0.05503495390894889,
+            "total_return": -0.9953921900005733,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=1.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=2.0": {
+            "buy_count": 374,
+            "event_hash": "1d6d840b636c2043341b48a7a53fb6d3bbd3d5c25b199fc6bb569efe8c9ffc0b",
+            "max_drawdown": -0.7998390710466452,
+            "return_hash_12dp": "289487742cdb78f92f4c6be40d39d0ca6ce9f0a85416fa69e36a1d93bce67fdc",
+            "sell_count": 374,
+            "sharpe_per_bar": -0.025890017569003804,
+            "total_return": -0.7759634082945401,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=2.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=1.0": {
+            "buy_count": 562,
+            "event_hash": "22bff1b68da7467437ab01adf5e04045b5f1e35f76d4e7b6d7edb2ecaf2fa448",
+            "max_drawdown": -0.9369267746424986,
+            "return_hash_12dp": "f7dabd181dbc7f0f76d808d6cf5887bb0cfcd9271f5e40d0a2895f2da47dbede",
+            "sell_count": 562,
+            "sharpe_per_bar": -0.0419933250995527,
+            "total_return": -0.9357208263304456,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=1.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=2.0": {
+            "buy_count": 146,
+            "event_hash": "7de82a7614c0eb7143b64d1a07e027f41df038e0210f665f62f5dfb41937df99",
+            "max_drawdown": -0.6108709048646888,
+            "return_hash_12dp": "821d88e8085d11dd739186eb0fd631315c9e8b255264e7b33449f2ae790f6abf",
+            "sell_count": 146,
+            "sharpe_per_bar": -0.020487512726426668,
+            "total_return": -0.5919068209667255,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=2.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=1.0": {
+            "buy_count": 975,
+            "event_hash": "6d74edcfb348f661baab15482fb157a18604d034fdabe53c814a891ef12577b7",
+            "max_drawdown": -0.9890101944610648,
+            "return_hash_12dp": "6b388385209b5bc583b1924a33e7c4c5b1157ef3a0a5d7545bd17593b717f059",
+            "sell_count": 975,
+            "sharpe_per_bar": -0.049589367661706796,
+            "total_return": -0.984925791613208,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=1.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=2.0": {
+            "buy_count": 266,
+            "event_hash": "e3699f4002953a2d87fbce17111c05280fa1de4da74316411b7845dbeabeb09d",
+            "max_drawdown": -0.7749737806764355,
+            "return_hash_12dp": "98ca109fd3efecda46467795119b2443567f8325037b5d40772be80f4cb05056",
+            "sell_count": 266,
+            "sharpe_per_bar": -0.025596250382153275,
+            "total_return": -0.7512329206106628,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=2.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=1.0": {
+            "buy_count": 1386,
+            "event_hash": "2392a516c96676642080afd3742796fc4d610be1329cf0adf4318c6af6a5c3b0",
+            "max_drawdown": -0.9992455757871291,
+            "return_hash_12dp": "9397272d4273df02b08f1c0cabee4ffd6a2eb1287ea2d47db42734aeb9f1953f",
+            "sell_count": 1386,
+            "sharpe_per_bar": -0.07049424467689076,
+            "total_return": -0.999241425981396,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=1.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=2.0": {
+            "buy_count": 410,
+            "event_hash": "ece9dd0d3ad0ff7af846e64d47e35317125a9c10ce30abaef0893ea65660e3b7",
+            "max_drawdown": -0.912433295230155,
+            "return_hash_12dp": "5a464f4cb5ba3c01794666ff4312b17dee38f4a0daca728e98ee1255f471cabe",
+            "sell_count": 410,
+            "sharpe_per_bar": -0.03580677052467246,
+            "total_return": -0.8997103877323095,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=2.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=1.0": {
+            "buy_count": 619,
+            "event_hash": "d827dcd05eb73e5a69deb410ca10065d0bd620f96f206666f61aad016084e5d9",
+            "max_drawdown": -0.9726055495733692,
+            "return_hash_12dp": "aec5d613252cf7aefd8863a4c767f1646069a8e2aa35087c2501649c78db57e1",
+            "sell_count": 619,
+            "sharpe_per_bar": -0.05279067136913601,
+            "total_return": -0.972448404147,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=1.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=2.0": {
+            "buy_count": 163,
+            "event_hash": "2e9720121eccf84d6a1b901f0395e459bfd4a8170c76268dfdbb8e1d76cb229c",
+            "max_drawdown": -0.6910485878257622,
+            "return_hash_12dp": "04df07fc19f3e0b178bab4ffcacb052fce4d397a1a37b7cb4fe00777f34cff98",
+            "sell_count": 163,
+            "sharpe_per_bar": -0.025280099339671288,
+            "total_return": -0.6901850034816717,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=2.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=1.0": {
+            "buy_count": 1096,
+            "event_hash": "66e597942ee36f53f62151231764d9a4a237a8d71001715989315be3f850d3e7",
+            "max_drawdown": -0.9973400745722583,
+            "return_hash_12dp": "32be9e311413375d2304d68ed554565f57c0e805cc2fe96121a9a5809ae471a0",
+            "sell_count": 1096,
+            "sharpe_per_bar": -0.06847610021524868,
+            "total_return": -0.9973230455106509,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=1.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=2.0": {
+            "buy_count": 291,
+            "event_hash": "07bcb1757053f4a48323332282fd39a5a97c77b0df9cd04d36e887f334b79790",
+            "max_drawdown": -0.8634203981458328,
+            "return_hash_12dp": "3a7a65e29e3c065a91f8312d70e4b57a12745285ba9c202697a207e9450ff977",
+            "sell_count": 291,
+            "sharpe_per_bar": -0.035757475674655814,
+            "total_return": -0.8630386293587815,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=2.0"
+          }
+        },
+        "F2/S3": {
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=1.0": {
+            "buy_count": 1341,
+            "event_hash": "99dc476e4367cf76257346c2a1d86290dc1e9de29a333ab460a5b04f751e8898",
+            "max_drawdown": -0.9988206653153647,
+            "return_hash_12dp": "5953b5dde045651c17238a8a5f4ade1e68b15d73188233f47ac6e1e27450e973",
+            "sell_count": 1341,
+            "sharpe_per_bar": -0.06875350591052923,
+            "total_return": -0.9987946717849008,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=1.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=2.0": {
+            "buy_count": 374,
+            "event_hash": "1d6d840b636c2043341b48a7a53fb6d3bbd3d5c25b199fc6bb569efe8c9ffc0b",
+            "max_drawdown": -0.8608404522085937,
+            "return_hash_12dp": "cb3096e09ce6bb6ab3b835d826c02656fe0aae7c027eba389389ca709c03fea2",
+            "sell_count": 374,
+            "sharpe_per_bar": -0.03244293707033839,
+            "total_return": -0.8458680311282721,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=168|threshold=2.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=1.0": {
+            "buy_count": 562,
+            "event_hash": "22bff1b68da7467437ab01adf5e04045b5f1e35f76d4e7b6d7edb2ecaf2fa448",
+            "max_drawdown": -0.9639422178221121,
+            "return_hash_12dp": "78d1e25d912b9ae08a29301685e1887a446bb73633550570e9e8fc2cd4fc90b2",
+            "sell_count": 562,
+            "sharpe_per_bar": -0.050535445550953226,
+            "total_return": -0.9633565257046722,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=1.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=2.0": {
+            "buy_count": 146,
+            "event_hash": "7de82a7614c0eb7143b64d1a07e027f41df038e0210f665f62f5dfb41937df99",
+            "max_drawdown": -0.6611997512885451,
+            "return_hash_12dp": "095dcf04ed2e8382b8b3c41e3211ac5caa887a1c5459c53fc8abd784849083a0",
+            "sell_count": 146,
+            "sharpe_per_bar": -0.02385554397854279,
+            "total_return": -0.6473431657559142,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=2160|threshold=2.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=1.0": {
+            "buy_count": 975,
+            "event_hash": "6d74edcfb348f661baab15482fb157a18604d034fdabe53c814a891ef12577b7",
+            "max_drawdown": -0.9954848003625311,
+            "return_hash_12dp": "8bb7cb7fb418c3fdbc1386b767e80160ec1556247c826c0018b75da257138ee0",
+            "sell_count": 975,
+            "sharpe_per_bar": -0.06110608844218081,
+            "total_return": -0.9943141270943271,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=1.0"
+          },
+          "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=2.0": {
+            "buy_count": 266,
+            "event_hash": "e3699f4002953a2d87fbce17111c05280fa1de4da74316411b7845dbeabeb09d",
+            "max_drawdown": -0.8248370988562947,
+            "return_hash_12dp": "3be63617ba3e0fda6dd0af6c0e21716eac3b41dc1d827ae5d96f9938a566485a",
+            "sell_count": 266,
+            "sharpe_per_bar": -0.030511380833077473,
+            "total_return": -0.8093352063067024,
+            "trial": "interpretation=CONTINUATION_POSITIVE|baseline_hours=720|threshold=2.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=1.0": {
+            "buy_count": 1386,
+            "event_hash": "2392a516c96676642080afd3742796fc4d610be1329cf0adf4318c6af6a5c3b0",
+            "max_drawdown": -0.9998111843730784,
+            "return_hash_12dp": "63692f457357e2e127563b08a9c27057f59a32077f43d3e1bf87c0f37f042ed0",
+            "sell_count": 1386,
+            "sharpe_per_bar": -0.08386727907400023,
+            "total_return": -0.9998103008168291,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=1.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=2.0": {
+            "buy_count": 410,
+            "event_hash": "ece9dd0d3ad0ff7af846e64d47e35317125a9c10ce30abaef0893ea65660e3b7",
+            "max_drawdown": -0.9406389337022701,
+            "return_hash_12dp": "8dd6fac4a2c39fc9d0773baeb929e70fe356453d05563944ac38fab39d5dde58",
+            "sell_count": 410,
+            "sharpe_per_bar": -0.042160394340678434,
+            "total_return": -0.9334427896507517,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=168|threshold=2.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=1.0": {
+            "buy_count": 619,
+            "event_hash": "d827dcd05eb73e5a69deb410ca10065d0bd620f96f206666f61aad016084e5d9",
+            "max_drawdown": -0.9852411970060331,
+            "return_hash_12dp": "8eba782a10104a550a7fa4d9247d7c0098767e616ed4de1bee2f5c6f152bfda7",
+            "sell_count": 619,
+            "sharpe_per_bar": -0.061621251109224014,
+            "total_return": -0.9851639489802584,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=1.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=2.0": {
+            "buy_count": 163,
+            "event_hash": "2e9720121eccf84d6a1b901f0395e459bfd4a8170c76268dfdbb8e1d76cb229c",
+            "max_drawdown": -0.7371750175068019,
+            "return_hash_12dp": "1612e75d6642d07651f645a6c9d7c57744ce3398b3ad2fb8bbe954bbfde5d3d4",
+            "sell_count": 163,
+            "sharpe_per_bar": -0.028773596648230135,
+            "total_return": -0.7367839339468096,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=2160|threshold=2.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=1.0": {
+            "buy_count": 1096,
+            "event_hash": "66e597942ee36f53f62151231764d9a4a237a8d71001715989315be3f850d3e7",
+            "max_drawdown": -0.9991105953087759,
+            "return_hash_12dp": "a98e49ffb18f3f969c580534212dcbb79afd0d7861ae85a18dcd98f237024215",
+            "sell_count": 1096,
+            "sharpe_per_bar": -0.08081445619046618,
+            "total_return": -0.9991053483689734,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=1.0"
+          },
+          "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=2.0": {
+            "buy_count": 291,
+            "event_hash": "07bcb1757053f4a48323332282fd39a5a97c77b0df9cd04d36e887f334b79790",
+            "max_drawdown": -0.8977713617502749,
+            "return_hash_12dp": "899af03824de774307fefb44f2fcf84cdd13547a7a3ab4a928aa2b59556ed11d",
+            "sell_count": 291,
+            "sharpe_per_bar": -0.04091801677261046,
+            "total_return": -0.897619245541989,
+            "trial": "interpretation=REVERSAL_NEGATIVE|baseline_hours=720|threshold=2.0"
+          }
+        }
+      }
+    },
+    "version": "1.1.0"
+  }
+}

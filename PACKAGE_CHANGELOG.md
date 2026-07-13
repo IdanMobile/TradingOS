@@ -1,5 +1,13 @@
 # Package Changelog
 
+## v8.81 — 2026-07-13
+
+- Completed the cross-venue premium campaign from clean commit `2cb84c8` with the hashed
+  development-selection barrier and complete four-role parity intact.
+- Rejected the family: development and both OOS segments lost, zero of six periods was positive,
+  stress lost 96.50%, one-bar delay lost 72.99%, and DSR was 0.00000395.
+- Closed the exact context without rescue; execution authority remains `NONE`.
+
 ## v8.80 — 2026-07-13
 
 - Added the cross-venue premium canonical family and 12 immutable StrategyVersion identities.
