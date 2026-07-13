@@ -1,0 +1,47 @@
+schema_version: 1
+observer_id: PROSPECTIVE-BTC-LIQUIDATION-OBSERVER-V2
+status: FROZEN_NOT_RUN
+decision_id: D-082
+signal_spec_id: PROSPECTIVE-BTC-LIQUIDATION-STRESS-V1
+signal_spec_sha256: a2a5553ee5286a46b9972d6a31edd727ef3e9cfe25bdbdd09c4861012d1c3fb1
+v1_freeze_commit: 2e385a8e67aa2af0e907d26aca3509ba3de52a7a
+v1_first_session_sha256: 4638af9e36fa9f34bd800dbc3057f883f3336c04bde50aab2936ff707af6c685
+execution_authority: NONE
+promotion_eligible: false
+
+operational_change_only:
+  - Record exact WebSocket coverage start and end separately from process start and end.
+  - Assemble only UTC-aligned five-minute windows fully enclosed by uninterrupted coverage.
+  - Preserve zero-event complete windows as valid source observations.
+  - Recompute the immediately prior 8,640-window baseline only when every window is consecutive.
+  - Reconstruct all event, window, signal, risk, authority, raw-byte, and content hashes offline.
+  - Reject overlapping windows and any semantic drift even when an artifact is rehashed.
+
+unchanged_signal_terms:
+  window_seconds: 300
+  baseline_windows: 8640
+  stress_quantile: 0.99
+  quantile_method: NEAREST_RANK
+  directional_share_threshold: 0.80
+  equality_does_not_trigger: true
+  incomplete_or_warmup_state: FLAT_AND_BLOCK
+  governance_override: BLOCK_ACTION_WHILE_NOT_PROMOTION_ELIGIBLE
+  source_semantics: LATEST_ONE_PER_SYMBOL_PER_1000MS_SNAPSHOT_NOT_COMPLETE_TAPE
+
+first_run:
+  requested_complete_windows: 1
+  start: only_after_this_observer_freeze_is_committed
+  acceptance:
+    - exactly one newly retained complete UTC five-minute window
+    - offline byte-identical reconstruction passes for all sessions
+    - new state is WARMUP_BLOCK
+    - signal side is FLAT
+    - independent risk decision is BLOCK
+    - no credentials, account session, orders, paper state, or execution authority
+
+stop_rules:
+  - Stop before writing on an invalid source event or instrument identity.
+  - A failed or disconnected source session contributes no complete windows.
+  - Never infer an unobserved liquidation or backfill an incomplete window.
+  - Never score the prospective signal during warm-up.
+  - Any signal-rule change requires V2 signal spec and a new prospective boundary.

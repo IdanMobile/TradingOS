@@ -1,5 +1,14 @@
 # Package Changelog
 
+## v8.85 — 2026-07-13 — Complete-window prospective observer V2 freeze
+
+- Added an operational-only observer amendment without changing the frozen signal rule.
+- Added exact WebSocket coverage bounds, fully enclosed UTC five-minute window assembly, valid
+  zero-event windows, consecutive-baseline enforcement, and offline reconstruction.
+- Verified the retained V1 session and deliberate byte/rehashed-authority drift failures.
+- Authorized one post-commit complete-window public observation only; scoring, credentials,
+  orders, paper/demo/live state, promotion, and execution authority remain absent.
+
 ## v8.84 — 2026-07-13 — First prospective risk-signal session
 
 - Ran the first bounded public BTCUSD_PERP observation only after the D-080 implementation was

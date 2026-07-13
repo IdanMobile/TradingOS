@@ -903,6 +903,11 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   exchange-info bytes, session hash, deterministic `SIG-495ecfb03d8003161565ea47`, `FLAT`, and an
   independent `BLOCK`. This starts the prospective boundary but supplies no complete five-minute
   window, metric, score, or promotion evidence. No account/order/paper/venue authority changed.
+- **Complete-window observer V2 frozen (D-082):** the signal rule is unchanged. V2 separates
+  WebSocket coverage from process time, emits only fully enclosed UTC five-minute windows,
+  preserves zero-event windows, requires a consecutive 8,640-window baseline, and reconstructs all
+  source/session/window/signal/risk/authority evidence offline. The retained V1 session verifies;
+  byte and rehashed paper-order drift fail. V2 is not yet run and authority remains `NONE`.
 
 ## Operational SSOT (unchanged)
 
@@ -961,12 +966,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Build deterministic assembly and offline verification of fully covered UTC-aligned five-minute
-windows from bounded prospective sessions, retaining explicit gaps and valid zero-event windows.
-Freeze that operational-only amendment before the first complete-window capture, then retain one
-clean complete window and confirm it remains warm-up `FLAT/BLOCK`. Do not backfill the stale
-liquidation archive, score performance, access the sealed V2 holdout, activate a bot, request
-credentials, or cross any human S3/S4 gate.
+Commit D-082's operational-only V2 freeze, then run `--complete-windows 1` from the clean commit.
+Retain and reconstruct exactly one new fully covered UTC five-minute window, including a valid
+zero-event window if the source publishes nothing, and confirm the emitted state remains warm-up
+`FLAT/BLOCK`. Do not backfill the stale liquidation archive, score performance, access the sealed
+V2 holdout, activate a bot, request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

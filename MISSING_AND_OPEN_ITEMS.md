@@ -195,6 +195,11 @@ session completed with zero published snapshots and emitted deterministic `FLAT/
 complete five-minute window exists yet. Deterministic aligned-window assembly/verification,
 continuous coverage, warm-up, labels, statistical gates, and promotion remain open.
 
+D-082 closes the aligned-window assembly/verifier implementation gap without changing the signal.
+The retained V1 session reconstructs offline; byte drift and rehashed authority drift fail. One
+complete-window public session is authorized only after the V2 freeze commit. Warm-up, labels,
+review minima, G1-G11, promotion, and all execution gates remain open.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

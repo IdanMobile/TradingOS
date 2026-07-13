@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal, InvalidOperation
 from enum import StrEnum
 
@@ -129,6 +129,23 @@ def window_start(at: datetime) -> datetime:
     return datetime.fromtimestamp(seconds - seconds % WINDOW_SECONDS, UTC)
 
 
+def complete_window_starts(covered_from: datetime, covered_to: datetime) -> tuple[datetime, ...]:
+    """Return only UTC windows fully enclosed by one uninterrupted source session."""
+    _require_utc(covered_from, "coverage start")
+    _require_utc(covered_to, "coverage end")
+    if covered_to < covered_from:
+        raise LiquidationStressError("coverage end cannot precede coverage start")
+    first = window_start(covered_from)
+    if first != covered_from:
+        first += timedelta(seconds=WINDOW_SECONDS)
+    starts: list[datetime] = []
+    current = first
+    while current + timedelta(seconds=WINDOW_SECONDS) <= covered_to:
+        starts.append(current)
+        current += timedelta(seconds=WINDOW_SECONDS)
+    return tuple(starts)
+
+
 def aggregate_window(
     snapshots: tuple[LiquidationSnapshot, ...], *, start: datetime, complete: bool
 ) -> LiquidationWindow:
@@ -177,6 +194,24 @@ def classify_window(
     if Decimal(1) - current.sell_share >= SELL_SHARE_THRESHOLD:
         return LiquidationStressState.SHORT_LIQUIDATION_STRESS
     return LiquidationStressState.NORMAL
+
+
+def consecutive_baseline(
+    prior_windows: tuple[LiquidationWindow, ...], *, current_start: datetime
+) -> tuple[Decimal, ...]:
+    """Return the frozen baseline only when every immediately prior window exists."""
+    _require_utc(current_start, "current window start")
+    if len(prior_windows) < BASELINE_WINDOWS:
+        return ()
+    candidate = prior_windows[-BASELINE_WINDOWS:]
+    expected = current_start - timedelta(seconds=WINDOW_SECONDS * BASELINE_WINDOWS)
+    for window in candidate:
+        if not window.complete or window.start != expected:
+            return ()
+        expected += timedelta(seconds=WINDOW_SECONDS)
+    if expected != current_start:
+        return ()
+    return tuple(window.gross_notional_usd for window in candidate)
 
 
 def _integer(value: object, name: str) -> int:

@@ -720,6 +720,29 @@ and the content-addressed files under
 `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/`.
 Status: **Prospective observation started; warm-up incomplete; FLAT/BLOCK; authority NONE.**
 
+### D-082 — Prospective observer V2 frozen for complete-window evidence
+
+Decision: the D-081 short-session result exposed an operational evidence gap, not a signal result:
+V1 retained a valid incomplete interval but could not assemble fully covered five-minute windows.
+Observer V2 inherits the exact D-080 signal specification hash and changes no source, feature,
+threshold, baseline, state, label, review, or promotion term. It separately records WebSocket
+coverage, admits only fully enclosed UTC windows, preserves valid zero-event windows, requires an
+immediately consecutive 8,640-window baseline, and reconstructs every session/raw/window/signal/
+risk/authority hash offline.
+
+The verifier passes the retained V1 session and deliberately rejects both a one-byte mutation and
+a rehashed semantic mutation that enables paper orders. Overlapping windows, failed/disconnected
+sessions, source drift, and incomplete coverage fail closed.
+
+Consequence: after this operational-only freeze is committed, one bounded public session may wait
+for and retain exactly one complete five-minute window. It must remain warm-up `FLAT/BLOCK`; no
+metric or score is authorized. No credentials, account session, order, paper/demo/live state,
+human gate, promotion, or execution authority is created.
+
+Evidence: `research/PROSPECTIVE_BTC_LIQUIDATION_OBSERVER_V2.yaml`, updated observer/parser, and
+`tests/test_prospective_liquidation_observer.py`.
+Status: **Observer V2 frozen and unrun; signal rule unchanged; authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

@@ -12,6 +12,8 @@ from tios.strategy.liquidation_stress import (
     LiquidationStressState,
     aggregate_window,
     classify_window,
+    complete_window_starts,
+    consecutive_baseline,
     parse_force_order_message,
 )
 
@@ -84,3 +86,26 @@ def test_snapshot_rejects_identity_and_noncausal_time() -> None:
             expected_pair="BTCUSD",
             contract_size_usd=Decimal(100),
         )
+
+
+def test_only_fully_covered_windows_enter_a_consecutive_baseline() -> None:
+    assert complete_window_starts(
+        START + timedelta(seconds=1), START + timedelta(minutes=10, seconds=1)
+    ) == (START + timedelta(minutes=5),)
+    first = aggregate_window((), start=START, complete=True)
+    history = tuple(
+        aggregate_window(
+            (),
+            start=START + timedelta(seconds=300 * index),
+            complete=True,
+        )
+        for index in range(BASELINE_WINDOWS)
+    )
+    current_start = START + timedelta(seconds=300 * BASELINE_WINDOWS)
+    assert (
+        consecutive_baseline(history, current_start=current_start)
+        == (Decimal(0),) * BASELINE_WINDOWS
+    )
+    assert consecutive_baseline((first,), current_start=START + timedelta(minutes=5)) == ()
+    broken = history[:-1] + (aggregate_window((), start=current_start, complete=True),)
+    assert consecutive_baseline(broken, current_start=current_start + timedelta(minutes=5)) == ()
