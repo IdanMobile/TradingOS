@@ -989,6 +989,11 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   now projects through a dedicated typed risk-state signal to an independent blocking risk
   decision, fixed offline verifier, and read-only dashboard. Checkpoint/semantic/authority drift
   fails closed; order creation is structurally disabled. This proves plumbing, not alpha.
+- **Prospective association/overlay campaign frozen (D-102):** exactly three association horizons
+  are preregistered with `6H` primary, deterministic matched controls, temporal robustness, and no
+  rescue. The verifier currently reports `WAITING` while reading zero warm-up label files and
+  computing zero metrics. Overlay evaluation remains blocked on a separately validated exact alpha
+  StrategyVersion.
 
 ## Operational SSOT (unchanged)
 
@@ -1048,11 +1053,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 ## Exact next action
 
 Let the managed observer continue its preregistered 8,640-checkpoint warm-up while retaining and
-verifying immutable evidence at bounded milestones. Preregister the future prospective
-association/risk-overlay campaign without reading or aggregating warm-up outcomes. Then connect a
-separately validated exact StrategyVersion to the same independent risk boundary before any later
-paper proposal. Do not access the sealed V2 holdout, activate a bot, request credentials, create
-orders, or cross any human S3/S4 gate.
+verifying immutable evidence at bounded milestones. Keep D-102 in `WAITING` and do not aggregate
+warm-up outcomes. The next independent workstream is an exact alpha StrategyVersion campaign that
+can pass promotion without using this risk signal or the sealed V2 holdout. Only after that may a
+new child overlay campaign be frozen. Do not activate a bot, request credentials, create orders, or
+cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

@@ -1,5 +1,16 @@
 # Package Changelog
 
+## v8.105 — 2026-07-14 — Prospective association/overlay campaign freeze
+
+- Froze exactly three prospective association trials with a sole 6H primary endpoint,
+  deterministic matched controls, exact inference/materiality rules, temporal robustness, and no
+  secondary-horizon or extra-time rescue.
+- Separated association support from economic overlay validation. The child overlay cannot run
+  without a separately validated exact alpha StrategyVersion and must retain missed opportunity.
+- Added an executable preflight that verifies frozen hashes and observation progress while reading
+  zero label files and computing zero warm-up metrics. Current status is `WAITING`; authority is
+  `NONE`.
+
 ## v8.104 — 2026-07-14 — Deterministic prospective risk-signal slice
 
 - Added a dedicated order-inert risk-state signal type; it cannot impersonate a strategy-bound

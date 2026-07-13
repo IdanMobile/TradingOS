@@ -1153,6 +1153,31 @@ Evidence: `src/tios/services/observations/risk_signal.py`,
 `tests/test_risk_signal_flow.py`.
 Status: **Offline vertical slice available and fail-closed; strategy/paper/live authority NONE.**
 
+### D-102 — Prospective association and strategy-overlay questions are separated before scoring
+
+Decision: the liquidation-stress lane now has an immutable, executable parent preregistration
+frozen before any warm-up aggregation. It declares exactly three association trials (`1H`, `6H`,
+`24H`), with `6H` as the sole governed primary endpoint and the other horizons unable to rescue
+it. Independent 24-hour-cooldown episode onsets are compared with four deterministic same-UTC-time
+`NORMAL` controls. The primary requires an exact one-sided sign test, a 22-basis-point median
+materiality hurdle, negative event median, minimum sample, chronological-half, leave-one-month-out,
+and concentration gates.
+
+Association and overlay are separate. Even a supported association cannot evaluate or approve an
+execution overlay. A child campaign remains structurally blocked until one exact, independently
+promotion-eligible alpha StrategyVersion is pinned; it must compare that strategy unchanged with
+the same strategy plus six-hour suppression of new long entries, retaining every missed profitable
+entry as opportunity cost.
+
+Consequence: V1 has no outcome-conditioned horizon, threshold, subgroup, control, or extra-time
+rescue. Its executable preflight verifies frozen hashes and the current observation count while
+reading zero label files and computing zero metrics during warm-up. Current result is `WAITING`.
+No risk-signal or alpha conclusion, bot, order, paper/demo/live state, or authority is created.
+
+Evidence: `research/PROSPECTIVE_BTC_LIQUIDATION_ASSOCIATION_OVERLAY_CAMPAIGN_V1.yaml`,
+`scripts/verify_prospective_association_campaign.py`, and focused campaign tests.
+Status: **Parent campaign frozen and preflight-verifiable; metrics and overlay blocked.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

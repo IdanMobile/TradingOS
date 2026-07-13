@@ -1,0 +1,228 @@
+schema_version: 1
+campaign_id: PROSPECTIVE-BTC-LIQUIDATION-ASSOCIATION-OVERLAY-V1
+decision_id: D-102
+status: FROZEN_UNRUN_WAITING_MINIMA
+frozen_at_utc: '2026-07-13T22:44:03Z'
+execution_authority: NONE
+venue_connection: NONE
+credentials_required: false
+paper_orders: DISABLED
+live_orders: DISABLED
+promotion_eligible: false
+warmup_analysis: PROHIBITED
+sealed_v2_holdout_access: PROHIBITED
+
+purpose:
+  association_question: >-
+    After the frozen warm-up, are prospective six-hour BTC Spot returns materially lower after
+    independent LONG_LIQUIDATION_STRESS episode onsets than after deterministic time-matched
+    NORMAL controls?
+  overlay_question: >-
+    For a separately validated exact alpha StrategyVersion, does suppressing new long entries
+    during the frozen six-hour risk window improve its after-cost out-of-sample risk/economic
+    profile relative to the identical unfiltered strategy?
+  non_claims:
+    - Predictive association is not proof that forced orders caused the later Spot return.
+    - The publication stream is a throttled snapshot, not a complete liquidation tape.
+    - Association support is not alpha, StrategyVersion validation, or overlay validation.
+    - This parent campaign cannot create an order or authorize paper, demo, testnet, or live use.
+
+frozen_inputs:
+  signal_spec:
+    path: research/PROSPECTIVE_BTC_LIQUIDATION_STRESS_SIGNAL_V1.yaml
+    sha256: a2a5553ee5286a46b9972d6a31edd727ef3e9cfe25bdbdd09c4861012d1c3fb1
+  label_contract:
+    path: research/PROSPECTIVE_BTC_LIQUIDATION_LABEL_CONTRACT_V1.yaml
+    sha256: 4e64d0ad64161a67d4f867d8fa0351a75252e9be4a725a3ce084a031b7e85dc9
+  label_verifier:
+    path: research/PROSPECTIVE_BTC_LIQUIDATION_LABEL_VERIFIER_V2.yaml
+    sha256: 3db6e20ecf54c37566585de408c6fb7fe30f5a43d6a2752df2d11d58c0378625
+  evidence_producer_map:
+    path: research/PROSPECTIVE_SIGNAL_EVIDENCE_PRODUCER_MAP_V1.yaml
+    sha256: b7d5a6ed289e942b27b2b232b0ef3321897a8a92b501982d7358cf9f7e120194
+  classifier:
+    path: src/tios/strategy/liquidation_stress.py
+    sha256: dc9e30b033316d9b5f0ca6886def9929d637292e21c73cfca9b0ca23530dc9b9
+  label_math:
+    path: src/tios/strategy/prospective_labels.py
+    sha256: 54958c2cf6660fe1af12554042c8bc2ebae27c285eff16f6f22dab4048cf7496
+
+eligibility_preflight:
+  evaluate_metrics_before_all_conditions_pass: false
+  conditions:
+    - at least 180 prospective calendar days have elapsed from the first complete retained window
+    - at least 8640 consecutive complete five-minute warm-up windows exist
+    - at least 50 raw LONG_LIQUIDATION_STRESS windows exist after warm-up
+    - at least 30 eligible independent episode onsets exist after control matching
+    - every required 1H, 6H, and 24H event/control label is terminal and hash-verified
+    - the first public planned rotation is retained and continuity-verified
+    - no source, schema, symbol, pair, contract-size, timestamp, or authority drift is unresolved
+  review_schedule: >-
+    Evaluate once at the first UTC month-end after all conditions pass. If a condition is not met,
+    record WAITING without computing any association statistic and reconsider only at the next UTC
+    month-end. After the first metric-bearing evaluation, V1 is terminal and cannot be rerun with
+    more data as a rescue.
+
+observation_population:
+  source_windows: every terminal five-minute window after the first valid 8640-window warm-up
+  state_rule: exact frozen classifier with no threshold, quantile, or equality reinterpretation
+  event: LONG_LIQUIDATION_STRESS
+  primary_unit: independent_episode_onset
+  episode_onset: >-
+    An event window is an onset only when no LONG_LIQUIDATION_STRESS window exists in the preceding
+    288 five-minute windows (24 hours). Incomplete or missing windows inside that lookback make the
+    candidate ineligible rather than silently normal.
+  overlap_policy: >-
+    Only the first onset in each 24-hour interval is an inference unit. All raw events remain
+    counted and retained; no event is deleted from evidence.
+  evaluation_cutoff: >-
+    An onset enters V1 only if every possible control offset through plus 56 days and its 24H label
+    could be causally available by the frozen evaluation timestamp.
+
+matched_controls:
+  state: NORMAL
+  exact_time_match: same UTC minute-of-week as the episode onset
+  candidate_offsets_days: [-56, -49, -42, -35, -28, -21, -14, -7, 7, 14, 21, 28, 35, 42, 49, 56]
+  exclusion_zone: >-
+    A control is ineligible if any LONG_LIQUIDATION_STRESS or incomplete/missing source window
+    exists within plus or minus 288 five-minute windows (24 hours) of it.
+  selection: >-
+    Select the two smallest-magnitude eligible negative offsets and the two smallest-magnitude
+    eligible positive offsets. Ties resolve by earlier timestamp. A control may not be reused by
+    another episode; episodes are processed chronologically.
+  required_per_episode: 4
+  insufficient_controls: DATA_INCOMPLETE_NO_METRICS
+  benchmark_return: median of the four control gross returns at the same horizon
+  paired_difference: event_gross_return - benchmark_return
+  limitations:
+    - Matching controls UTC seasonality and local calendar drift, not latent volatility or regime.
+    - Later controls are lawful only for offline association inference after their labels mature.
+    - No matched-control result is available to a decision made at the original event timestamp.
+
+declared_trial_population:
+  terminal_trial_count: 3
+  selection_trial_count: 1
+  trials:
+    - {trial_id: ASSOC-1H, horizon: 1H, role: SECONDARY_CONTEXT_NO_RESCUE}
+    - {trial_id: ASSOC-6H, horizon: 6H, role: PRIMARY_GOVERNED_ENDPOINT}
+    - {trial_id: ASSOC-24H, horizon: 24H, role: SECONDARY_CONTEXT_NO_RESCUE}
+  prohibited_variants:
+    - alternate stress quantiles or directional-share thresholds
+    - alternate warm-up lengths, cooldowns, matching offsets, control counts, or horizons
+    - winsorization, event deletion, outcome-conditioned exclusions, or post-result transformations
+    - choosing the best horizon, subgroup, month, regime, cost cell, or alpha strategy
+
+statistics:
+  computed_for_each_horizon:
+    - raw event count
+    - eligible independent episode count
+    - complete matched episode count
+    - event return mean and median
+    - control return mean and median
+    - paired-difference mean and median
+    - paired-difference minimum, maximum, and interquartile range
+    - negative paired-difference count and proportion
+  primary_test:
+    trial_id: ASSOC-6H
+    null: probability(paired_difference < 0) <= 0.5
+    alternative: probability(paired_difference < 0) > 0.5
+    method: exact one-sided binomial sign test
+    ties: paired_difference equal to zero is excluded from n and reported; fewer than 30 non-ties fails
+    alpha: 0.05
+    materiality_hurdle: median_paired_difference <= -0.0022
+    hurdle_basis: >-
+      22 basis points equals the repository canonical F1/S1 Spot round-trip fee/slippage hurdle.
+      It is an association materiality floor, not evidence that an overlay traded or earned it.
+    pass_requires:
+      - exact_sign_test_p_value <= 0.05
+      - median_paired_difference <= -0.0022
+      - event_return_median < 0
+      - at least 30 non-tied complete matched episodes
+      - temporal robustness requirements all pass
+  secondary_tests:
+    policy: report exact p-values and effect sizes for 1H and 24H with Holm adjustment across all 3
+    promotion_use: NONE
+    rescue_primary: false
+  multiple_testing:
+    all_declared_trials_retained: true
+    primary_endpoint_selected_before_metrics: true
+    pbo: NOT_APPLICABLE_NO_PARAMETER_OR_STRATEGY_SELECTION
+    dsr: NOT_APPLICABLE_NO_STRATEGY_RETURN_STREAM_SELECTION
+    g10_status: CANNOT_PASS_STRATEGY_G10_ASSOCIATION_ONLY
+
+temporal_robustness:
+  chronological_half_split:
+    rule: split complete matched episodes into earlier and later halves; odd episode goes earlier
+    pass: median paired difference is negative in both halves
+  leave_one_calendar_month_out:
+    eligible_fold: at least 20 remaining non-tied episodes
+    pass: at least 80 percent of eligible folds have negative median paired difference
+    minimum_eligible_folds: 4
+  concentration:
+    pass: no single calendar month contributes more than 35 percent of complete matched episodes
+  no_rescue: a failed robustness check rejects V1 even when the full-sample primary test passes
+
+association_outcomes:
+  outcomes:
+    - status: INVALID_NO_VERDICT
+      when: provenance, completeness, matching, or preflight fails
+    - status: REJECTED_NO_STABLE_ASSOCIATION
+      when: any governed primary or temporal-robustness requirement fails
+    - status: ASSOCIATION_SUPPORTED_NOT_OVERLAY_VALIDATED
+      when: every governed primary and temporal-robustness requirement passes
+  terminality: >-
+    REJECTED and ASSOCIATION_SUPPORTED are terminal for V1. Any changed method or additional
+    metric-bearing evaluation requires V2 and a new prospective boundary; V1 cannot be rescued.
+
+overlay_child_boundary:
+  current_status: BLOCKED_VALIDATED_ALPHA_STRATEGY_MISSING
+  parent_can_evaluate_overlay: false
+  required_before_child_freeze:
+    - exact immutable StrategyVersion is independently promotion-eligible with G1-G11 evidence
+    - its unchanged baseline signal, sizing, exit, cost, and execution semantics are pinned
+    - parent association outcome is ASSOCIATION_SUPPORTED_NOT_OVERLAY_VALIDATED
+    - a child trial population and untouched post-child-freeze evaluation interval are frozen
+  overlay_rule:
+    trigger: LONG_LIQUIDATION_STRESS episode onset
+    action: suppress only new long-entry intents for six hours after onset
+    existing_positions: unchanged; no forced exit, resize, stop change, or short
+    suppressed_intent: expires and is never queued for delayed execution
+    overlapping_onset: no extension because onsets already require the 24-hour cooldown
+    risk_independence: the deterministic risk service owns the suppression decision
+  comparison:
+    baseline: exact validated StrategyVersion unchanged
+    treatment: same StrategyVersion plus the frozen suppression rule
+    execution_and_costs: identical between baseline and treatment for every order that remains
+    required_cost_surface: inherit all original validation cells; primary must include F1/S1
+    opportunity_cost: retain every profitable entry suppressed by the overlay as a negative effect
+  child_success_minimum:
+    - treatment after-cost return is not lower than baseline at F1/S1
+    - treatment maximum drawdown and expected shortfall are both lower than baseline
+    - benefit is not concentrated in one event, month, or market regime
+    - all child trials, misses, saved costs, and suppressed opportunities are retained
+    - independent statistical, risk, supervisor, and security reviews pass
+  child_non_authority: >-
+    Even a successful child remains an offline promotion input. G12, S2 exit, security, paper-lane
+    architecture, and a new exact human approval remain required before any paper proposal.
+
+gate_mapping:
+  G1: checkpoint, raw-byte, intent, continuity, and content-hash provenance
+  G2: complete source windows and exact terminal Spot labels
+  G3: strictly later label timing and no warm-up outcome access
+  G4: 50 raw events, 30 matched episodes, and terminal population completeness
+  G5: association campaign cannot pass strategy economic performance; child overlay required
+  G6: 24H outcome, tails, concentration, and later overlay drawdown/expected-shortfall evidence
+  G7: fixed controls, chronological halves, and leave-one-month-out stability
+  G8: matched NORMAL benchmark now; exact alpha baseline only in child overlay
+  G9: independent evaluator reproduction required before any RiskSignalVersion admission
+  G10: full three-trial family retained; strategy G10 remains blocked until child campaign
+  G11: independent supervisor decision after complete parent or child evidence
+
+stop_rules:
+  - Do not read, aggregate, or score warm-up outcomes before eligibility preflight passes.
+  - Stop on any frozen-input hash, schema, source, authority, or causal-timing drift.
+  - Never replace missing or tied observations with zero.
+  - Never reinterpret the snapshot feed as complete liquidation volume.
+  - Never use secondary horizons, subgroups, or extra time to rescue a terminal V1 rejection.
+  - Never treat association support as alpha, strategy approval, or order authority.
+  - Never run the overlay comparison without a separately validated exact StrategyVersion.

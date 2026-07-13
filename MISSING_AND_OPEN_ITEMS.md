@@ -297,6 +297,13 @@ deterministic and order-inert. It does not close the evidence gap: predictive as
 metrics, campaign trials, G1-G11, independent reviews, and a separately validated alpha
 StrategyVersion remain missing.
 
+D-102 closes the parent campaign-preregistration gap: three association trials, a sole primary
+endpoint, deterministic controls, exact statistics, temporal robustness, and terminal no-rescue
+outcomes are frozen and executable-preflight verified without reading labels. Current preflight is
+`WAITING`. The 180-day/50-event/30-episode evidence, metric results, independent reproduction, and
+all overlay evidence remain missing; overlay evaluation is blocked on a separately validated exact
+alpha StrategyVersion.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized
