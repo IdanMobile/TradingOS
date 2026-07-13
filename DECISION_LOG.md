@@ -673,6 +673,33 @@ holdout access, promotion, or execution authority is activated.
 Evidence: `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V9.md`.
 Status: **NO_GO; autonomous public-signal mining paused at evidence boundary; authority NONE.**
 
+### D-080 — Prospective BTC liquidation-stress risk signal frozen before observation
+
+Decision: D-079's prospective-evidence reopen condition is used without reopening historical
+performance. `PROSPECTIVE-BTC-LIQUIDATION-STRESS-V1` observes the public unauthenticated Binance
+BTCUSD_PERP forced-order snapshot stream in UTC-aligned five-minute windows. It retains exact
+messages and exchange-info bytes, validates the active instrument and USD 100 contract size, uses
+accumulated filled contracts, deduplicates an exact event identity, and explicitly labels the
+source as a throttled latest-one-per-second snapshot rather than a complete liquidation tape.
+
+The single frozen risk hypothesis uses 8,640 consecutive complete prospective windows as a
+30-day baseline. Gross snapshot notional must strictly exceed its prior nearest-rank 99th
+percentile and one side must represent at least 80%. Sell-dominant stress is a block-new-long risk
+state; buy-dominant stress and normal states are observation-only. Source gaps and warm-up are
+`FLAT/BLOCK`. Independently, every state remains action-blocked while
+`promotion_eligible=false`.
+
+Consequence: a bounded keyless public-market-data observer may run only after this freeze is
+committed. The first statistical review is no earlier than both 180 calendar days and 50
+sell-dominant stress events, after complete warm-up and source-gap evidence. No historical archive
+backfill, rule change, score, order proposal, synthetic paper state, venue session, credential,
+human gate, or execution authority is created.
+
+Evidence: `research/PROSPECTIVE_BTC_LIQUIDATION_STRESS_SIGNAL_V1.yaml`,
+`src/tios/strategy/liquidation_stress.py`, and
+`scripts/run_prospective_liquidation_observer.py`.
+Status: **Prospective signal preregistered; observation not started; authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

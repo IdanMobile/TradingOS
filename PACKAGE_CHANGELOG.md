@@ -1,5 +1,15 @@
 # Package Changelog
 
+## v8.83 — 2026-07-13 — Prospective liquidation-stress signal freeze
+
+- Used D-079's prospective-evidence path without reopening historical performance.
+- Froze one BTCUSD_PERP public forced-order snapshot risk signal: five-minute UTC windows, 30-day
+  complete warm-up, prior nearest-rank 99th-percentile gross threshold, and 80% directional share.
+- Added strict source parsing, duplicate handling, classification, a bounded keyless WebSocket
+  observer, content-addressed writes, and causal/fail-closed tests.
+- Every signal is `FLAT` and independently action-blocked while promotion is false. Observation,
+  paper/demo/live state, credentials, orders, venue authority, and execution remain absent.
+
 ## v8.82 — 2026-07-13 — Public-signal research boundary NO_GO
 
 - Added the ninth source-only three-family dossier without computing candidate performance.

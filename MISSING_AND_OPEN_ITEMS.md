@@ -183,6 +183,12 @@ public-family sweep is not an open task. Strategy validation remains open only t
 evidence: an operator-supplied fully sourced specification and unseen data, approved authoritative
 data access, or genuinely prospective preregistered observations. No strategy or bot is approved.
 
+D-080 opens only the prospective-evidence path. The BTCUSD_PERP liquidation-stress risk signal is
+frozen before observation with a 30-day complete-window warm-up and a first-review boundary of at
+least 180 days plus 50 sell-dominant stress events. Source continuity, future Spot labels, costs,
+G1-G11, independent review, promotion, and every paper/demo/live gate remain open. The observer is
+public-data-only and every emitted state is independently action-blocked.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

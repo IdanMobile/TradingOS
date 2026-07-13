@@ -1,0 +1,131 @@
+schema_version: 1
+signal_spec_id: PROSPECTIVE-BTC-LIQUIDATION-STRESS-V1
+status: PREREGISTERED_NOT_OBSERVED
+decision_id: D-080
+execution_authority: NONE
+promotion_eligible: false
+paper_orders: DISABLED
+live_orders: DISABLED
+selection_start_commit: 0ebaeda2b95e686bf900a3ce5106d6b13776c8e3
+freeze_commit: RECORDED_BY_D-080_AFTER_COMMIT
+
+objective:
+  kind: RISK_STATE_SIGNAL
+  question: >-
+    Does an extreme, directionally concentrated public forced-order snapshot window identify a
+    prospective BTC risk state that should block new long exposure and that has stable forward
+    association after a fully prospective warm-up?
+  non_claims:
+    - The source is not a complete liquidation ledger.
+    - The signal is not alpha, a trade recommendation, or an order instruction.
+    - A recorded signal cannot activate paper, demo, testnet, or live execution.
+
+source:
+  venue: Binance
+  product: COIN-M Futures
+  instrument: BTCUSD_PERP
+  pair: BTCUSD
+  exchange_info_url: https://dapi.binance.com/dapi/v1/exchangeInfo
+  websocket_url: wss://dstream.binance.com/ws/btcusd_perp@forceOrder
+  documentation_url: https://developers.binance.com/en/docs/catalog/core-trading-derivatives-trading-coin-m-futures/api/ws-streams/~#market-liquidation-order-streams
+  authentication: NONE
+  publication_semantics: >-
+    For the symbol, only the latest liquidation order inside each 1000 ms interval is published;
+    intervals without a liquidation publish nothing.
+  retained_fields:
+    - raw_message_bytes
+    - received_at_utc
+    - event_time_ms
+    - transaction_time_ms
+    - symbol
+    - pair
+    - side
+    - accumulated_filled_contracts
+    - average_price
+    - contract_size_usd
+    - symbol_type
+  dominant_limit: THROTTLED_SNAPSHOT_NOT_COMPLETE_LIQUIDATION_TAPE
+
+observation_contract:
+  start_boundary: FIRST_SUCCESSFUL_SESSION_AFTER_FROZEN_COMMIT
+  window_seconds: 300
+  window_alignment: UTC_EPOCH_HALF_OPEN
+  duplicate_identity:
+    - event_time_ms
+    - transaction_time_ms
+    - symbol
+    - side
+    - accumulated_filled_contracts
+    - average_price
+  incomplete_window_when:
+    - observer_did_not_cover_the_full_window
+    - websocket_disconnected
+    - exchange_info_identity_or_contract_size_changed
+    - timestamp_or_schema_validation_failed
+  no_silent_repair: true
+
+feature:
+  executed_notional_usd: accumulated_filled_contracts * contract_size_usd
+  gross_snapshot_notional_usd: sum(executed_notional_usd)
+  sell_snapshot_notional_usd: sum(executed_notional_usd where side == SELL)
+  buy_snapshot_notional_usd: sum(executed_notional_usd where side == BUY)
+  sell_share: sell_snapshot_notional_usd / gross_snapshot_notional_usd
+  zero_window_sell_share: 0
+
+rule:
+  baseline_windows: 8640
+  baseline_duration_days: 30
+  baseline_requires_complete_consecutive_windows: true
+  stress_quantile: 0.99
+  quantile_method: NEAREST_RANK
+  directional_share_threshold: 0.80
+  equality_does_not_trigger: true
+  states:
+    SOURCE_WINDOW_INCOMPLETE: FLAT_AND_BLOCK
+    WARMUP_BLOCK: FLAT_AND_BLOCK
+    LONG_LIQUIDATION_STRESS: FLAT_AND_BLOCK_NEW_LONG
+    SHORT_LIQUIDATION_STRESS: OBSERVE_ONLY
+    NORMAL: OBSERVE_ONLY
+  governance_override: >-
+    Every state remains BLOCK_ACTION while promotion_eligible is false, independently of the
+    observed signal state.
+
+prospective_labels:
+  executed_market: Binance Spot BTCUSDT
+  availability_rule: first completed Spot observation strictly after signal window close
+  horizons_hours: [1, 6, 24]
+  cost_cells_required_before_strategy_test: true
+  labels_may_not_change_the_frozen_rule: true
+
+first_review_gate:
+  earliest_calendar_days: 180
+  minimum_long_liquidation_stress_events: 50
+  requires_complete_30_day_warmup: true
+  requires_retained_terminal_record_for_every_window: true
+  requires_source_gap_and_schema_drift_report: true
+  requires_preregistered_benchmark_costs_and_g1_g11_campaign: true
+  selection_or_threshold_change_before_review: FORBIDDEN
+
+stop_rules:
+  - Stop on source schema, symbol, pair, contract-size, timestamp, or hash mismatch.
+  - Stop if publication semantics change or the stream becomes authenticated.
+  - Never interpret snapshot notional as total market liquidations.
+  - Never backfill the prospective boundary with the stale 2023-2024 archive.
+  - Never use the signal to propose or simulate an order before promotion and a new human gate.
+  - Any later rule change creates V2 and a new prospective boundary.
+
+platform_eligibility_mapping:
+  metric_eligible: false
+  scorecard_eligible: false
+  promotion_eligible: false
+  reasons:
+    - prospective sample and labels do not yet exist
+    - no immutable completed observation series
+    - no causal after-cost campaign or benchmark
+    - G1-G11 are not complete
+  reference: research/PLATFORM_STRATEGY_VALIDATION_AND_SCORE_ELIGIBILITY_V1.md
+
+source_refs:
+  - https://developers.binance.com/en/docs/catalog/core-trading-derivatives-trading-coin-m-futures/api/ws-streams/~#market-liquidation-order-streams
+  - https://developers.binance.com/en/docs/catalog/core-trading-derivatives-trading-coin-m-futures/api/rest-api/market-data#exchange-information
+  - https://github.com/binance/binance-public-data

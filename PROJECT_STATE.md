@@ -891,6 +891,13 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   168 hours / 2.0 z, then lost 56.08% development, 8.29% validation, 24.12% reserve, and 69.44%
   full-history after costs. All six periods, stress, delay, tail, benchmark, and DSR fail despite
   complete four-role parity. G11 closes the context without rescue; authority remains `NONE`.
+- **Prospective liquidation-stress signal frozen (D-080):** D-079's prospective-evidence path is
+  now an immutable public-data risk-signal contract, not a retrospective strategy rescue. It uses
+  Binance BTCUSD_PERP latest-one-per-second forced-order snapshots, exact five-minute windows, a
+  30-day prospective baseline, strict 99th-percentile gross stress, and 80% directional share.
+  Warm-up, gaps, and every unpromoted state are `FLAT/BLOCK`; the first review requires both 180
+  days and 50 sell-dominant events. Observation has not started, no score exists, and authority is
+  `NONE`.
 
 ## Operational SSOT (unchanged)
 
@@ -949,13 +956,12 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Honor D-079's `NO_GO` and stop autonomous public-signal mining at the current evidence boundary.
-Do not create another data/canonical campaign from the same public-history universe. Present the
-operator with the retained negative result and reopen Task 1 only for new exogenous evidence: an
-operator-supplied fully sourced strategy plus unseen point-in-time data, approved authoritative
-data access, or genuinely prospective preregistered observations. Do not access the sealed V2
-holdout, activate a bot, connect a trading venue, request credentials, or cross any human S3/S4
-gate.
+Commit D-080's prospective signal specification, parser/classifier, bounded keyless observer, and
+tests before collecting the first message. Then run one short public-data observation session from
+that clean commit, retain exact exchange-info/message bytes plus the content-addressed `FLAT/BLOCK`
+signal and independent risk denial, and verify zero credentials/orders/venue authority. Do not
+backfill the stale liquidation archive, score performance, access the sealed V2 holdout, activate a
+bot, request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 
