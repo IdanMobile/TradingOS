@@ -700,6 +700,26 @@ Evidence: `research/PROSPECTIVE_BTC_LIQUIDATION_STRESS_SIGNAL_V1.yaml`,
 `scripts/run_prospective_liquidation_observer.py`.
 Status: **Prospective signal preregistered; observation not started; authority NONE.**
 
+### D-081 — First prospective signal session retained FLAT and blocked
+
+Decision: after D-080 was committed at `2e385a8`, one fixed-endpoint, unauthenticated 30-second
+BTCUSD_PERP public-market-data session completed. The exact exchange-info response confirms the
+active perpetual identity and USD 100 contract size. No forced-order snapshot arrived; under the
+official publication semantics this is a valid zero-event interval, not a zero-liquidation market
+claim. The content-addressed session emits deterministic signal
+`SIG-495ecfb03d8003161565ea47` as `FLAT / PROSPECTIVE_SOURCE_WINDOW_INCOMPLETE`.
+
+Consequence: the prospective boundary is now active, but no complete five-minute window, warm-up,
+label, metric, scorecard, or promotion evidence exists. Independent risk remains `BLOCK` because
+the window is incomplete and promotion is false. Exact session/raw hashes verify; no account,
+credential, order, fill, position, paper runtime, authenticated venue session, human gate, or
+execution authority changed.
+
+Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_STRESS_FIRST_SESSION_2026_07_13.md`
+and the content-addressed files under
+`artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/`.
+Status: **Prospective observation started; warm-up incomplete; FLAT/BLOCK; authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

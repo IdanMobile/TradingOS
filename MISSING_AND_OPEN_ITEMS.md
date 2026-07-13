@@ -189,6 +189,12 @@ least 180 days plus 50 sell-dominant stress events. Source continuity, future Sp
 G1-G11, independent review, promotion, and every paper/demo/live gate remain open. The observer is
 public-data-only and every emitted state is independently action-blocked.
 
+D-081 starts the prospective boundary from frozen commit `2e385a8`. The first 30-second source
+session completed with zero published snapshots and emitted deterministic `FLAT/BLOCK` signal
+`SIG-495ecfb03d8003161565ea47`; both raw exchange info and the session are content-addressed. No
+complete five-minute window exists yet. Deterministic aligned-window assembly/verification,
+continuous coverage, warm-up, labels, statistical gates, and promotion remain open.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

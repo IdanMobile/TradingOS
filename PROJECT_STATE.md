@@ -898,6 +898,11 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   Warm-up, gaps, and every unpromoted state are `FLAT/BLOCK`; the first review requires both 180
   days and 50 sell-dominant events. Observation has not started, no score exists, and authority is
   `NONE`.
+- **First prospective signal retained (D-081):** one 30-second public BTCUSD_PERP session from
+  frozen commit `2e385a8` completed with zero published force-order snapshots. It retained exact
+  exchange-info bytes, session hash, deterministic `SIG-495ecfb03d8003161565ea47`, `FLAT`, and an
+  independent `BLOCK`. This starts the prospective boundary but supplies no complete five-minute
+  window, metric, score, or promotion evidence. No account/order/paper/venue authority changed.
 
 ## Operational SSOT (unchanged)
 
@@ -956,12 +961,12 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Commit D-080's prospective signal specification, parser/classifier, bounded keyless observer, and
-tests before collecting the first message. Then run one short public-data observation session from
-that clean commit, retain exact exchange-info/message bytes plus the content-addressed `FLAT/BLOCK`
-signal and independent risk denial, and verify zero credentials/orders/venue authority. Do not
-backfill the stale liquidation archive, score performance, access the sealed V2 holdout, activate a
-bot, request credentials, or cross any human S3/S4 gate.
+Build deterministic assembly and offline verification of fully covered UTC-aligned five-minute
+windows from bounded prospective sessions, retaining explicit gaps and valid zero-event windows.
+Freeze that operational-only amendment before the first complete-window capture, then retain one
+clean complete window and confirm it remains warm-up `FLAT/BLOCK`. Do not backfill the stale
+liquidation archive, score performance, access the sealed V2 holdout, activate a bot, request
+credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

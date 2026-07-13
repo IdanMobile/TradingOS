@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.83 prospective liquidation-stress signal freeze (2026-07-13). Supersedes v8.82 hashes.
+Package version: v8.84 first prospective liquidation-stress session (2026-07-13). Supersedes v8.83 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `26289cecfd39fb08a8f4690b6becbb01ee7494e75573e76aee137160ee4d67b9` |
-| `DECISION_LOG.md` | `e1ea9763255cd279898ef4566e6e7695057370d9106b53d9fb891c2fc0740751` |
+| `PROJECT_STATE.md` | `e5f25e59bc31195d9b5daf6b8d6f7c362d29db9a58a62a83f6aed6f5074b342f` |
+| `DECISION_LOG.md` | `b1802ac2c66b7f53d807ab5ac45a85c308e28ab6edbc8177ce72037fc459d495` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `cc047f21d16e6e78660c9b0f78f0ed7050825869d7d0169b14b180f4a4dedac7` |
+| `MISSING_AND_OPEN_ITEMS.md` | `ab19372df50683c13d978e0bb1ad3d978e0dd8477495db89d56f5278babf0302` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -68,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `47e4baee0ce68cb9fc2f9c858169d4c1488788502e2a6a440271038de0b4b631` |
+| `research/RESEARCH_GAP_MATRIX.md` | `90dc844bae20972b553599c4f3def776bb2ee5bbf75c312d3383fe53b4c03463` |
 
 ## Post-V2 family selection V1 (added v8.55)
 
@@ -508,6 +508,14 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `tests/test_liquidation_stress.py` | `d7254990609d0242071845a142fdb3a964f9b2df3392f80c089a14e2afddd01d` |
 | `pyproject.toml` | `7ea85d3bb8c1ae3444967444f8105a5c58eacdd6c8a7cb34b6f751f2dec01c1d` |
 | `uv.lock` | `f8a23520debbe0e2c2aa4c2cd6013669f9e46525d8631288c1979d2e4a5ed3b1` |
+
+## First prospective liquidation-stress session (added v8.84)
+
+| Path | SHA-256 |
+|---|---|
+| `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_STRESS_FIRST_SESSION_2026_07_13.md` | `45b5ac68da7e09fa711a0110fd9379f78437b47593951ea4d3d11795ec07ba42` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/raw/exchange_info_07a0858c96751c863d3222c70715523a27fa42396d5773171a0025d9d6b1d723.json` | `07a0858c96751c863d3222c70715523a27fa42396d5773171a0025d9d6b1d723` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/session_4638af9e36fa9f34bd800dbc3057f883f3336c04bde50aab2936ff707af6c685.json` | `4638af9e36fa9f34bd800dbc3057f883f3336c04bde50aab2936ff707af6c685` |
 
 ## Expected generated artifacts
 

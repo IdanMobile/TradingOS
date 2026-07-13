@@ -1,5 +1,14 @@
 # Package Changelog
 
+## v8.84 — 2026-07-13 — First prospective risk-signal session
+
+- Ran the first bounded public BTCUSD_PERP observation only after the D-080 implementation was
+  committed at `2e385a8`.
+- Retained exact exchange-info bytes and a content-addressed 30-second session with zero published
+  snapshots, deterministic `SIG-495ecfb03d8003161565ea47`, and `FLAT/BLOCK` disposition.
+- Verified source/session hashes, frozen-commit binding, no credentials, no account/venue session,
+  and disabled paper/live orders. No metric, scorecard, promotion, or execution authority exists.
+
 ## v8.83 — 2026-07-13 — Prospective liquidation-stress signal freeze
 
 - Used D-079's prospective-evidence path without reopening historical performance.
