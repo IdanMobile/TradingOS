@@ -838,6 +838,11 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
 - **Bitcoin MVRV campaign rejected (D-065):** HIGH/180/1-day won development (+44.50%), but
   validation (-21.00%), reserve (-10.42%), stress (-45.53%), and delay (-20.08%) failed. PBO
   0.5895 and DSR 0.4632 fail; G5-G10 and G11 reject the family without rescue.
+- **CFTC Bitcoin-futures positioning admitted (D-066):** a new exactly-three-family source cycle
+  rejects blockspace-fee pressure and dormant-supply reactivation, admitting only the CFTC Legacy
+  Futures Only full-size CME Bitcoin row `133741`. Its 12 unscored trials require actual CFTC
+  publication dates, including official delay exceptions, before strict next-Spot-open mapping.
+  No conditioned return, derivative position, bot, venue, credential, or authority exists.
 
 ## Operational SSOT (unchanged)
 
@@ -896,9 +901,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Begin another bounded source-only comparison of at most three genuinely distinct mechanisms. Do
-not rescue MVRV or reuse any closed-family context. Do not access the sealed V2 holdout, activate a
-bot, connect a venue, request credentials, or cross any human S3/S4 gate.
+Freeze the 2017-2026 CFTC Legacy Futures Only annual archives, official release schedule and
+historical exception announcements, code-`133741` rows, and strict actual-publication-to-Spot-open
+mapping into an offline drift-failing data package. Do not compute a positioning-conditioned
+return until the data and complete campaign are committed cleanly. Do not access the sealed V2
+holdout, activate a bot, connect a venue, request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

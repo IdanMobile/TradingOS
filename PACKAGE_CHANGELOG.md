@@ -1,5 +1,14 @@
 # Package Changelog
 
+## v8.69 — 2026-07-13
+
+- Compared regulated futures positioning, blockspace fee pressure, and dormant-supply reactivation
+  without computing local family performance.
+- Admitted only CFTC full-size CME Bitcoin positioning to exact data packaging.
+- Made actual CFTC publication exceptions a blocking causal-data requirement.
+- Retained execution authority `NONE`; no derivative, bot, venue, credential, order, or holdout
+  was activated.
+
 ## v8.68 — 2026-07-13
 
 - Recorded the completed Bitcoin MVRV campaign and independent G11 rejection.

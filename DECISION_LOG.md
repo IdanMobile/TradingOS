@@ -559,6 +559,30 @@ the content-addressed campaign directory under
 `artifacts/validation/campaigns/CALENDAR-UTC-G1-G11-V1/`.
 Status: **Completed negative campaign; execution authority remains NONE.**
 
+### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
+
+Decision: a new source-only cycle compared exactly three distinct mechanisms without computing
+local family performance: regulated CME Bitcoin-futures positioning, Bitcoin blockspace fee
+pressure, and dormant-supply reactivation. Fee pressure is rejected as endogenous, mechanically
+confounded, and adjacent to closed transaction/miner contexts. Dormant supply is rejected because
+on-chain movement is not a sale, transfer intent is unresolved, and the mechanism is adjacent to
+the closed MVRV holder context.
+
+Only `FAM-CFTC-BTC-POSITIONING-01` advances to data packaging. It uses the CFTC Legacy Futures
+Only full-size CME Bitcoin row `133741`, excludes the Micro contract, normalizes non-commercial net
+position by open interest, and retains both aligned-high and contrarian-low interpretations. The
+12-trial roster and actual-publication-time rule are frozen in the dossier. Official holiday,
+shutdown, cyber, postponement, and catch-up dates must override the ordinary Friday schedule;
+unresolved releases are quarantined. The executed instrument remains unlevered BTCUSDT Spot.
+
+Consequence: exact CFTC archives, official publication-exception evidence, normalized rows, and
+strict next-Spot-open mappings may be packaged offline. No conditioned return may be computed
+before a clean data/campaign freeze. No future, bot, venue, credential, order, paper/demo/live
+state, human gate, sealed V2 holdout, or execution authority is activated.
+
+Evidence: `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V6.md`.
+Status: **Approved constrained-S2 data build; performance unobserved and authority NONE.**
+
 ### D-063 — Bitcoin MVRV dislocation family admitted to data/canonical construction
 
 Decision: a source-only cycle compared exactly three new mechanisms without computing local family
