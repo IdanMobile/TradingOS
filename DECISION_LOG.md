@@ -743,6 +743,28 @@ Evidence: `research/PROSPECTIVE_BTC_LIQUIDATION_OBSERVER_V2.yaml`, updated obser
 `tests/test_prospective_liquidation_observer.py`.
 Status: **Observer V2 frozen and unrun; signal rule unchanged; authority NONE.**
 
+### D-083 — First complete prospective risk-signal window retained
+
+Decision: one `--complete-windows 1` session ran only after observer V2 was frozen at `eaf2604`.
+Continuous public WebSocket coverage enclosed `[2026-07-13T18:45:00Z,
+2026-07-13T18:50:00Z)`. The source published zero BTCUSD_PERP forced-order snapshots; V2 correctly
+retains this as one complete zero-event window while preserving the source's throttled-snapshot
+limitation. Both retained sessions reconstruct offline.
+
+The deterministic result is `SIG-54b9c184a05a3a037df6495d`, `FLAT`, and `WARMUP_BLOCK`. The
+required 8,640-window baseline is absent. Independent risk is `BLOCK`; metric, scorecard, and
+promotion eligibility remain false.
+
+Consequence: the prospective source→window→signal→risk-denial path is now operationally proven for
+one complete window. This is not strategy validation or paper activation. Future-label semantics
+and ongoing append-only coverage are next; no scoring is allowed during warm-up. No credential,
+account session, order, fill, position, paper/demo/live state, human gate, promotion, or execution
+authority was activated.
+
+Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_STRESS_FIRST_COMPLETE_WINDOW_2026_07_13.md`
+and content-addressed session `2f582162…`.
+Status: **One complete prospective window; warm-up FLAT/BLOCK; authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

@@ -200,6 +200,12 @@ The retained V1 session reconstructs offline; byte drift and rehashed authority 
 complete-window public session is authorized only after the V2 freeze commit. Warm-up, labels,
 review minima, G1-G11, promotion, and all execution gates remain open.
 
+D-083 retains the first complete UTC five-minute window from frozen observer commit `eaf2604`.
+Continuous coverage produced a valid zero-event window, deterministic
+`SIG-54b9c184a05a3a037df6495d`, `FLAT`, and independent `BLOCK`; both sessions reconstruct offline.
+Only 1 of 8,640 warm-up windows exists. Strictly-later Spot label capture, ongoing coverage, review
+minima, scoring, G1-G11, and promotion remain open.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

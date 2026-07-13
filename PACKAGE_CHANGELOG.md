@@ -1,5 +1,13 @@
 # Package Changelog
 
+## v8.86 — 2026-07-13 — First complete prospective signal window
+
+- Ran exactly one complete-window session from frozen observer commit `eaf2604`.
+- Retained continuous coverage of `[18:45Z,18:50Z)`, zero published snapshots, a valid complete
+  USD 0 observation, `SIG-54b9c184a05a3a037df6495d`, `FLAT`, and `WARMUP_BLOCK`.
+- Reconstructed both retained sessions offline. Independent risk remains `BLOCK`; metric,
+  scorecard, promotion, paper/live orders, credentials, and execution authority remain absent.
+
 ## v8.85 — 2026-07-13 — Complete-window prospective observer V2 freeze
 
 - Added an operational-only observer amendment without changing the frozen signal rule.

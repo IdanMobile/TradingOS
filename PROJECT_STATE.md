@@ -908,6 +908,11 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   preserves zero-event windows, requires a consecutive 8,640-window baseline, and reconstructs all
   source/session/window/signal/risk/authority evidence offline. The retained V1 session verifies;
   byte and rehashed paper-order drift fail. V2 is not yet run and authority remains `NONE`.
+- **First complete prospective window retained (D-083):** frozen observer `eaf2604` continuously
+  covered `[2026-07-13T18:45Z,18:50Z)` and reconstructed one valid zero-event window. It emitted
+  `SIG-54b9c184a05a3a037df6495d`, `FLAT`, `WARMUP_BLOCK`, and independent `BLOCK`. This proves the
+  public source→window→signal→risk-denial path, not edge or promotion. Warm-up is 1/8,640; metric,
+  scorecard, paper, and execution authority remain unavailable.
 
 ## Operational SSOT (unchanged)
 
@@ -966,10 +971,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Commit D-082's operational-only V2 freeze, then run `--complete-windows 1` from the clean commit.
-Retain and reconstruct exactly one new fully covered UTC five-minute window, including a valid
-zero-event window if the source publishes nothing, and confirm the emitted state remains warm-up
-`FLAT/BLOCK`. Do not backfill the stale liquidation archive, score performance, access the sealed
+Freeze the prospective label contract before any outcome is available: Binance Spot BTCUSDT
+completed observations strictly after each signal-window close, at fixed 1h/6h/24h horizons, with
+future labels `NOT_AVAILABLE` until causally observable. Add offline reconstruction and deliberate
+future-label/authority drift tests, but do not analyze returns during warm-up. Continue append-only
+source collection only under the unchanged signal hash. Do not backfill, score, access the sealed
 V2 holdout, activate a bot, request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
