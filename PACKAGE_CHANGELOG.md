@@ -1,5 +1,16 @@
 # Package Changelog
 
+## v8.98 — 2026-07-13 — V5 two-window public proof
+
+- From clean freeze `474fc0c`, finalized exactly two consecutive schema-5 checkpoints in one
+  process, connection epoch, and continuity epoch with no failure.
+- Both checkpoints remain `FLAT/WARMUP_BLOCK` with independent `BLOCK`; the longest retained chain
+  is 2/8,640 and all nine source sessions reconstruct offline.
+- Retained two newly causal 1h labels individually without aggregation or interpretation; four of
+  18 rows are available and 14 remain unavailable. Kept mutable heartbeat state out of Git while
+  preserving immutable checkpoint evidence. Made the status fixture tolerate the existing local
+  runtime directory; observer code is unchanged. Authority remains `NONE`.
+
 ## v8.97 — 2026-07-13 — Checkpoint observer V5 freeze
 
 - Implemented finite schema-5 per-window checkpoints on one public read-only WebSocket, atomic

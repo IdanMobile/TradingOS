@@ -991,6 +991,32 @@ Evidence: `research/PROSPECTIVE_BTC_LIQUIDATION_CHECKPOINT_OBSERVER_V5.yaml`, th
 focused prospective/safety tests.
 Status: **V5 frozen and unrun; first two-window public proof authorized; authority NONE.**
 
+### D-095 — V5 consecutive public checkpoints retained; long warm-up run authorized
+
+Decision: one finite V5 process from clean commit `474fc0c` finalized exactly two consecutive
+schema-5 windows, `[2026-07-13T21:10Z,21:15Z)` and `[21:15Z,21:20Z)`. Both share run ID
+`78c3e40115c5003ff2a23c48`, connection epoch 1, continuity epoch 1, and the same connection-open
+timestamp. Both sources are `COMPLETE`; no failure, reconnect, or planned handoff occurred. Each
+retains zero published snapshots, `FLAT/WARMUP_BLOCK`, and independent `BLOCK`.
+
+The unchanged causal evaluator separately retained two newly available 1h rows from exact public
+Spot bytes. The six-window schedule now contains four available retain-only 1h rows and 14
+unavailable rows. No label was aggregated, interpreted, scored, or used to change the signal.
+Mutable `operations/status.json` is excluded from Git because it is operational liveness only; its
+completed hash is retained in the report while content-addressed sessions remain historical proof.
+A post-proof fixture-only amendment allows the status-verifier test to coexist with that local
+runtime directory; the frozen observer and the proof commit are unchanged.
+
+Consequence: V5's minimum public continuity proof passes and one finite 8,640-checkpoint warm-up
+run may begin from the clean D-095 evidence commit. Any gap resets continuity and cannot be
+backfilled or rescued. This does not validate a strategy, authorize analysis during warm-up, or
+activate a bot, account connection, credential, order, paper/demo/live state, sealed holdout,
+promotion, or execution authority.
+
+Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_V5_TWO_WINDOW_PROOF_2026_07_13.md`,
+sessions `bf68af8b…` and `e9daa3ac…`, and label snapshot `844852d7…`.
+Status: **Operational continuity proof PASS; longest chain 2/8,640; authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

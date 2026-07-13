@@ -264,6 +264,12 @@ authority rejection, and schema-5 reconstruction. The post-freeze two-window pub
 additional consecutive warm-up windows after that proof, causal label maturity, review minima,
 costs, G1-G11, strategy approval, and every bot/paper gate remain open.
 
+D-095 passes the exact two-window public proof from the clean D-094 commit. Six complete windows
+exist in total and the longest consecutive chain is two. Four 1h labels are retain-only and 14
+scheduled rows are unavailable; none has been aggregated or interpreted. A fresh single-process
+8,640-window warm-up run, actual planned 24-hour rotations, label maturity, review minima, costs,
+G1-G11, strategy approval, and every bot/paper gate remain open.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

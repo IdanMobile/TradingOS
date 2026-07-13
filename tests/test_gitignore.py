@@ -17,6 +17,7 @@ MUST_IGNORE = [
     ".dvc/cache/x",
     ".dvc/tmp/x",
     "data/raw/klines/BTCUSDT/1h/raw.zip",
+    "artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/operations/status.json",
 ]
 MUST_NOT_IGNORE = [
     ".env.example",

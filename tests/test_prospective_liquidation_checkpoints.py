@@ -55,7 +55,7 @@ def test_persistent_status_verifies_and_rejects_authority_drift(tmp_path: Path) 
         "authority": AUTHORITY.copy(),
     }
     operations = target / "operations"
-    operations.mkdir()
+    operations.mkdir(exist_ok=True)
     (operations / "status.json").write_text(json.dumps(status))
     assert verify(target).returncode == 0
 

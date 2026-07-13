@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.97 checkpoint observer V5 freeze (2026-07-13). Supersedes v8.96 hashes.
+Package version: v8.98 V5 two-window public proof (2026-07-13). Supersedes v8.97 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `305bf0bc52a83188c894e91172617d0bd246857c57164af894b7c3f455e9582d` |
-| `DECISION_LOG.md` | `31b7dec52ee41af5e4e42d5a5c94027885bad9c938cd38dbeeb01d31d3820370` |
+| `PROJECT_STATE.md` | `896f3a550d566d23ae334e8fcd75799f45cf533691a44696a793772f6dc3f7f0` |
+| `DECISION_LOG.md` | `331b9431d74605867cd39e9b89a9fa8f553c66eac552a9b6b2f8e328ec166363` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `17b52e140bdbd8de0fb49cf212e39918cf0cd8f8168561c0665d88bd1eb2ec7e` |
+| `MISSING_AND_OPEN_ITEMS.md` | `a1700ec330fb96e961cec638e2fad695e49e5fb2c5ae65b87f7c3e23a27eed09` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -576,7 +576,23 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `scripts/run_prospective_liquidation_observer.py` | `b828afe7e614664c80a3f78ffa1c985ff232874064af7646de4c5f9ca47802f4` |
 | `scripts/run_prospective_liquidation_checkpoints.py` | `23490946d021387e3db125af1c49b609ab182a4218cb47b0c5714594455fda88` |
 | `tests/test_prospective_liquidation_observer.py` | `c6c52a47aa9fac5b5307f02443e91865feb07fa3cd090767534b910185bee0a5` |
-| `tests/test_prospective_liquidation_checkpoints.py` | `fdace96f52941a4693b9305b01b1654b4d3e3aa51e16112874943dc4bac03f76` |
+| `tests/test_prospective_liquidation_checkpoints.py` | `086be8a14c4f89bd926eb47e3faeb1edfbe609a5e5145f022441b55eed51a3aa` |
+
+## V5 two-window public proof (added v8.98)
+
+| Path | SHA-256 |
+|---|---|
+| `.gitignore` | `5235c86334ea68c3826f9adeb31c5fe81d539a990de70d98581f58328eca25d6` |
+| `tests/test_gitignore.py` | `f983a18a7ad4db90ed956700ac95d9da1d88f86d177d051cad6c479520e26879` |
+| `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_V5_TWO_WINDOW_PROOF_2026_07_13.md` | `278b46bfd7e6294a3d1ab532493f64f6570e952202974cc038655cade8a0100b` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/raw/exchange_info_96b22dc83f1bddc57f4c5325879e792f2766bd0439d51511ad64985f884d07c0.json` | `96b22dc83f1bddc57f4c5325879e792f2766bd0439d51511ad64985f884d07c0` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/session_bf68af8b6b728a0b1b890472e1797a62b8a43fbb7c4e2a5fb2c4f8e1636ab40c.json` | `bf68af8b6b728a0b1b890472e1797a62b8a43fbb7c4e2a5fb2c4f8e1636ab40c` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/session_e9daa3ac1539ba58b1d6978574ad1ab4c436673b8c3c9ae72ca605e2a7adbb16.json` | `e9daa3ac1539ba58b1d6978574ad1ab4c436673b8c3c9ae72ca605e2a7adbb16` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/labels/raw/kline_305f7ac3a4fdb5b49aa4e8280928bd880a4e866fceb83540dc06b9f86ea13f48.json` | `305f7ac3a4fdb5b49aa4e8280928bd880a4e866fceb83540dc06b9f86ea13f48` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/labels/raw/kline_5491d26f776f1fd49cf54b045cbca3ee910db57b87f5723d80b141c43148e28b.json` | `5491d26f776f1fd49cf54b045cbca3ee910db57b87f5723d80b141c43148e28b` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/labels/raw/kline_71b5166cbe12d1c4812c4c83a140f8e68c680abfdd7f5d910d71f167d86b6c81.json` | `71b5166cbe12d1c4812c4c83a140f8e68c680abfdd7f5d910d71f167d86b6c81` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/labels/raw/kline_adc23323327753e747269e2fb91a49e95dcc3734de85482b9d1041a93b42456b.json` | `adc23323327753e747269e2fb91a49e95dcc3734de85482b9d1041a93b42456b` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/labels/label_snapshot_844852d7e2291a9aca0a605454a18d30cf1846d91d6fb6d0ff9040477304b93f.json` | `844852d7e2291a9aca0a605454a18d30cf1846d91d6fb6d0ff9040477304b93f` |
 
 ## First causal prospective label schedule (added v8.88)
 

@@ -70,3 +70,6 @@ artifacts/bakeoff/**/raw.json
 
 # --- DVC lineage prototype demo data (regenerable scratch, not evidence) ---
 artifacts/lineage/prototype/
+
+# Mutable prospective-observer liveness; immutable sessions are committed evidence.
+artifacts/prospective/*/operations/status.json

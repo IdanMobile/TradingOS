@@ -958,7 +958,12 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   schema-5 checkpoint per fully enclosed window and an atomic operational heartbeat. Synthetic
   tests prove same-connection consecutive checkpoints, fail-closed disconnect continuity reset,
   overlap-preserving planned rotation, offline reconstruction, and authority-drift rejection. The
-  first post-freeze two-window public proof is unrun.
+  first post-freeze two-window public proof was then run under D-095.
+- **V5 consecutive-window proof passed (D-095):** clean commit `474fc0c` finalized
+  `[21:10Z,21:15Z)` and `[21:15Z,21:20Z)` in one process, run ID, connection epoch, and
+  continuity epoch with no failure. Both are zero-event `FLAT/WARMUP_BLOCK/BLOCK` checkpoints.
+  Six total complete windows now exist; longest consecutive chain is 2/8,640. Four individual 1h
+  labels are retain-only and 14 scheduled rows are unavailable; no aggregation occurred.
 
 ## Operational SSOT (unchanged)
 
@@ -1017,11 +1022,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-From the clean D-094 V5 freeze, run exactly one bounded two-window public proof. Accept only two
-consecutive finalized checkpoints from one process, one continuity epoch, and one public read-only
-connection. Then verify and retain the evidence without aggregating labels, backfilling, scoring,
-accessing the sealed V2 holdout, activating a bot, requesting credentials, or crossing any human
-S3/S4 gate.
+Commit the D-095 proof and start one finite 8,640-checkpoint public observation run from the clean
+evidence commit. Monitor the atomic heartbeat; any unplanned gap starts a new continuity epoch and
+cannot be rescued or backfilled. Evaluate labels only through the separate frozen causal process.
+Do not aggregate or score during warm-up, access the sealed V2 holdout, activate a bot, request
+credentials, create orders, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 
