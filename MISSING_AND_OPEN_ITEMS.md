@@ -223,6 +223,11 @@ windows cannot invalidate an older snapshot; every label and safety term is unch
 post-freeze refresh, first available outcome, continuous warm-up, and all validation gates remain
 open.
 
+D-087 retains a second complete zero-event source window and a post-V2 six-row causal label
+schedule. The two complete windows are separated by three unobserved windows, so the consecutive
+warm-up chain remains one. Continuous capture, the first 1h outcome after `19:52Z`, 8,639 further
+consecutive windows, review minima, costs, G1-G11, and promotion remain open.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

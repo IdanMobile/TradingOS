@@ -1,5 +1,13 @@
 # Package Changelog
 
+## v8.90 — 2026-07-13 — Second complete prospective window
+
+- Retained `[19:05Z,19:10Z)` as a second valid zero-event `FLAT/WARMUP_BLOCK/BLOCK` window.
+- Recorded that the two complete windows are nonconsecutive, so the longest warm-up chain remains
+  one rather than overstating total observations as baseline progress.
+- After verifier V2 froze, retained six causal `NOT_AVAILABLE` label rows and verified both label
+  snapshots. No Spot outcome, score, promotion, venue connection, or authority exists.
+
 ## v8.89 — 2026-07-13 — Append-only label verifier V2 freeze
 
 - Recorded a fail-closed refresh attempt that wrote no artifact and exposed no future outcome.

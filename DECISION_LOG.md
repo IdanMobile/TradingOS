@@ -824,6 +824,28 @@ Evidence: `research/PROSPECTIVE_BTC_LIQUIDATION_LABEL_VERIFIER_V2.yaml`, updated
 `tests/test_prospective_liquidation_labels.py`.
 Status: **Operational verifier correction frozen and unrun; label contract unchanged.**
 
+### D-087 — Second complete window retained; continuity not overstated
+
+Decision: a public session from run commit `e831172` continuously enclosed
+`[2026-07-13T19:05Z,19:10Z)` and retained a second valid zero-event complete window. It emitted
+`SIG-142d08b4d8620e0ff682d7f5`, `FLAT`, `WARMUP_BLOCK`, and independent `BLOCK`. Because the prior
+complete window ended at `18:50Z`, the two observations are not consecutive; the longest valid
+warm-up chain remains one window.
+
+The first label refresh failed closed without output, D-086 was committed at `7cc6ef0`, and the
+post-freeze refresh then retained six `NOT_AVAILABLE` rows for the two windows. Both old and new
+label snapshots reconstruct offline, proving append-only snapshot-relative verification. No raw
+Spot response, price, or return was requested because every horizon was still future.
+
+Consequence: continuous prospective collection—not the total number of isolated windows—must build
+the 8,640-window baseline. The first lawful 1h outcome remains due after `19:52Z`. No analysis,
+score, rule change, credential, venue connection, order, paper/demo/live state, promotion, or
+execution authority is authorized.
+
+Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_SECOND_COMPLETE_WINDOW_2026_07_13.md`,
+session `f1655057…`, and label snapshot `f5453680…`.
+Status: **Two complete windows total; longest consecutive chain one; authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

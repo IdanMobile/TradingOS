@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.89 append-only label verifier V2 freeze (2026-07-13). Supersedes v8.88 hashes.
+Package version: v8.90 second complete prospective signal window (2026-07-13). Supersedes v8.89 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `6b9fc4de47d7cea69ed4540fd58a9d6b2713858a20ec39777565febace45cdf4` |
-| `DECISION_LOG.md` | `c5fb7639cd5220611d332a8396c94dbf56481d444687c9d73315749066523060` |
+| `PROJECT_STATE.md` | `bf7933265f4d760dc03251004d2cfbbe2a696317352a2ea968bb307b76f35e77` |
+| `DECISION_LOG.md` | `ff19ecac157835219c344652a962ba731debcfdf9d96a8484f770a6985c8fbc0` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `1541959de7c2b95629f2c0828316ef519dd83f511a7c4395d94e4455c40a6ff4` |
+| `MISSING_AND_OPEN_ITEMS.md` | `57f415cdd6ff0594ab26629b35d715df36f5f6219d6223c3b6d3c5501a33861d` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -68,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `f5644ae76dac5cfb6b596fd2b39e4a52fee8970eab153368492bc989ea9bdea6` |
+| `research/RESEARCH_GAP_MATRIX.md` | `0aa79467c144716e4e1a31da345e233945d494f0eb83776e3c4fb6bdbcb022e5` |
 
 ## Post-V2 family selection V1 (added v8.55)
 
@@ -557,6 +557,15 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `research/PROSPECTIVE_BTC_LIQUIDATION_LABEL_VERIFIER_V2.yaml` | `3db6e20ecf54c37566585de408c6fb7fe30f5a43d6a2752df2d11d58c0378625` |
 | `scripts/run_prospective_liquidation_labels.py` | `c7bc1301128ffd5d4615090a40bed795a29205ef7f7eb52764be25c09d39a9c4` |
 | `tests/test_prospective_liquidation_labels.py` | `e5f0c74e51c1bea951f0d7d313a1bed70aa7dd0c4297b391a1b09cf0d082ef08` |
+
+## Second complete prospective signal window (added v8.90)
+
+| Path | SHA-256 |
+|---|---|
+| `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_SECOND_COMPLETE_WINDOW_2026_07_13.md` | `0c49e268b2fd558fe1a4150c9b346e3e94e9aa2e3a8fbf89b97bad49c142d991` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/raw/exchange_info_0ee97fb812053b261722db5dab79b3488f75743ace6e9656597156351eae634a.json` | `0ee97fb812053b261722db5dab79b3488f75743ace6e9656597156351eae634a` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/session_f1655057e707798e3d142157bdc5eb09028c25b4e89afe113c3e4f04f499f7f1.json` | `f1655057e707798e3d142157bdc5eb09028c25b4e89afe113c3e4f04f499f7f1` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/labels/label_snapshot_f5453680fd3b6fbac1b86f705691da0ebde51a2e252ecea48bd169d7db3a3ccd.json` | `f5453680fd3b6fbac1b86f705691da0ebde51a2e252ecea48bd169d7db3a3ccd` |
 
 ## Expected generated artifacts
 

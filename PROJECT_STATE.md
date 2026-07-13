@@ -926,6 +926,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   closed before output because V1 judged an older snapshot against future source history. V2
   reconstructs each snapshot only from windows closed by its own evaluation time. The label rule,
   prior artifact, eligibility, and authority remain unchanged; the corrected refresh is unrun.
+- **Second complete signal window retained (D-087):** `[19:05Z,19:10Z)` was another valid
+  zero-event `FLAT/WARMUP_BLOCK/BLOCK` observation. It is not consecutive with the `18:45Z` window,
+  so the longest warm-up chain remains 1/8,640. After V2 froze at `7cc6ef0`, a six-row label
+  schedule retained all outcomes as `NOT_AVAILABLE`; both snapshots reconstruct offline.
 
 ## Operational SSOT (unchanged)
 
@@ -984,11 +988,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Commit the D-086 operational verifier correction, then rerun the evaluator to append the second
-window's causal schedule without invalidating the first. At or after `2026-07-13T19:52:00Z`, only
-the first window's 1h label may be requested and retained while later horizons stay unavailable.
-Verify exact bytes without aggregating or interpreting returns. Do not backfill, score, access the
-sealed V2 holdout, activate a bot, request credentials, or cross any human S3/S4 gate.
+Begin an uninterrupted bounded source session to grow a genuinely consecutive window chain. At or
+after `2026-07-13T19:52:00Z`, only the first window's 1h label may be requested and retained while
+later horizons stay unavailable. Verify exact bytes without aggregating or interpreting returns.
+Do not backfill, score, access the sealed V2 holdout, activate a bot, request credentials, or cross
+any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 
