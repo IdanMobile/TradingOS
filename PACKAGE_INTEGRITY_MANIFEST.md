@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.76 Spot taker-imbalance V1 abort and V2 freeze (2026-07-13). Supersedes v8.75 hashes.
+Package version: v8.77 Spot taker-imbalance campaign rejection (2026-07-13). Supersedes v8.76 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `cbeb8b341c4f1ece9c8e5c1729da78972c74fd607ca997ebaf7cda3a255c8260` |
-| `DECISION_LOG.md` | `b2ce9b8c35bb0b4ca91a4c7a18a800754005762a5ef80bc43050c347c57cb77a` |
+| `PROJECT_STATE.md` | `e5c3bde8e07d5d7893f2527c3285bfa50f42abe30227dbfdb14f5f0dd5a502d7` |
+| `DECISION_LOG.md` | `209f618028ed168096aa31fd8edf497ae65dc2223c3c2a40b8f0676d578502a8` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `cd341a2495a173ec99f57569919ceb417efafc6c3983d0943fbc829f584ea67d` |
+| `MISSING_AND_OPEN_ITEMS.md` | `1fa98d95edd336136f744fe29a95f179b293e9b088a5881dc48e0fb7c4162227` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -430,6 +430,19 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `artifacts/reports/BTC_SPOT_TAKER_IMBALANCE_V1_OPERATIONAL_ABORT_2026_07_13.md` | `6bf06aeac54c914e164addbac6b5720a8d76b33a302027e6a95c623dd3c12f21` |
 | `research/BTC_SPOT_TAKER_IMBALANCE_G1_G11_CAMPAIGN_V2.yaml` | `8a10f00f9d7450eb41865e23ad385ff11a02610df9583c424e4267a0e6795479` |
+
+## Spot taker-imbalance campaign rejection (added v8.77)
+
+| Path | SHA-256 |
+|---|---|
+| `artifacts/reports/BTC_SPOT_TAKER_IMBALANCE_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md` | `498f1d402ebe32bfadb8e35b376723851c7219089fe0ee17f2dc6180026fe7c2` |
+| `artifacts/validation/campaigns/BTC-SPOT-TAKER-IMBALANCE-G1-G11-V2/campaign_result_06111e4492a30b39789501b7d7607de27c9efd778a3a808f77e108858df082b7.json` | `06111e4492a30b39789501b7d7607de27c9efd778a3a808f77e108858df082b7` |
+| `artifacts/validation/campaigns/BTC-SPOT-TAKER-IMBALANCE-G1-G11-V2/selection_47fe851c738471c9c906a1699df426387a84c21b9e98503a3690f2130c7c625c.json` | `47fe851c738471c9c906a1699df426387a84c21b9e98503a3690f2130c7c625c` |
+| `artifacts/validation/campaigns/BTC-SPOT-TAKER-IMBALANCE-G1-G11-V2/phase_one_reference_38b3e86c650301dcb8c2fe5425882526522ba49a0ca45454dff3a4140e45cf10.json` | `38b3e86c650301dcb8c2fe5425882526522ba49a0ca45454dff3a4140e45cf10` |
+| `artifacts/validation/campaigns/BTC-SPOT-TAKER-IMBALANCE-G1-G11-V2/phase_one_workers_e9ca78764157029856127aa395018fdc3f9861c95b0ae94c9cbbefeaa550955f.json` | `e9ca78764157029856127aa395018fdc3f9861c95b0ae94c9cbbefeaa550955f` |
+| `artifacts/validation/campaigns/BTC-SPOT-TAKER-IMBALANCE-G1-G11-V2/phase_two_reference_ffd38662f6aa2673d111d773531d244ff050413318ccf946e6e7b1dc6428629e.json` | `ffd38662f6aa2673d111d773531d244ff050413318ccf946e6e7b1dc6428629e` |
+| `artifacts/validation/campaigns/BTC-SPOT-TAKER-IMBALANCE-G1-G11-V2/phase_two_workers_83647b0dbd93cd608058d060e6475dee2f99d894a359946ae8532585fc9e423d.json` | `83647b0dbd93cd608058d060e6475dee2f99d894a359946ae8532585fc9e423d` |
+| `artifacts/validation/campaigns/BTC-SPOT-TAKER-IMBALANCE-G1-G11-V2/preregistration_8a10f00f9d7450eb41865e23ad385ff11a02610df9583c424e4267a0e6795479.yaml` | `8a10f00f9d7450eb41865e23ad385ff11a02610df9583c424e4267a0e6795479` |
 
 ## Expected generated artifacts
 

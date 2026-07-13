@@ -1,5 +1,13 @@
 # Package Changelog
 
+## v8.77 — 2026-07-13
+
+- Completed taker-imbalance V2 from clean commit `eba18df` with the hashed selection barrier intact.
+- Rejected the family: all primary/OOS/stress/delay economics lost, full drawdown was 90.37%, only
+  one of seven periods was positive, DSR was 0.0000208, and two nonselected trials had vectorbt
+  parity residuals.
+- Closed the context without rescue; execution authority remains `NONE`.
+
 ## v8.76 — 2026-07-13
 
 - Closed taker-imbalance V1 pre-selection after its exact reference implementation remained

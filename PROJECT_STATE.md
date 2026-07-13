@@ -870,6 +870,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   scan was interrupted before any artifact, selection, OOS access, or strategy verdict. V2 inherits
   every campaign term and changes only prefix-moment computation and cost-independent event
   caching. Focused equivalence tests and preflight pass; V2 remains unrun.
+- **Spot taker-imbalance campaign rejected (D-074):** V2 selected continuation-high / 168 hours /
+  2.0 z, then lost 74.26% development, 11.37% validation, 57.15% reserve, and 90.23% full-history
+  after costs. Stress/delay/tail/regime/benchmark/DSR fail; two nonselected vectorbt residuals also
+  fail full parity. G11 closes the context without rescue; authority remains `NONE`.
 
 ## Operational SSOT (unchanged)
 
@@ -928,10 +932,10 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Commit the computation-only Spot taker-imbalance V2 freeze, then execute its one authorized offline
-historical run from that clean commit. Preserve the V1 selection barrier, retain every trial, and
-complete independent G11 supervision without tuning or rescue. Do not access the sealed V2
-holdout, activate a bot, connect a venue, request credentials, or cross any human S3/S4 gate.
+Begin a new source-only comparison of no more than three genuinely distinct mechanisms, excluding
+all closed contexts and without computing local candidate-family performance. Preregister one GO
+or record NO_GO before any data/canonical build. Do not access the sealed V2 holdout, activate a
+bot, connect a venue, request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

@@ -1,0 +1,158 @@
+{
+  "artifacts": {
+    "phase_one_reference": "phase_one_reference_38b3e86c650301dcb8c2fe5425882526522ba49a0ca45454dff3a4140e45cf10.json",
+    "phase_one_workers": "phase_one_workers_e9ca78764157029856127aa395018fdc3f9861c95b0ae94c9cbbefeaa550955f.json",
+    "phase_two_reference": "phase_two_reference_ffd38662f6aa2673d111d773531d244ff050413318ccf946e6e7b1dc6428629e.json",
+    "phase_two_workers": "phase_two_workers_83647b0dbd93cd608058d060e6475dee2f99d894a359946ae8532585fc9e423d.json"
+  },
+  "campaign_id": "BTC-SPOT-TAKER-IMBALANCE-G1-G11-V2",
+  "closed_family_context_accessed": false,
+  "completed_at_utc": "2026-07-13T17:37:42.336703+00:00",
+  "evaluation": {
+    "buy_and_hold_primary": {
+      "buy_count": 1,
+      "event_hash": "BUY_AND_HOLD",
+      "max_drawdown": -0.7719848663243896,
+      "return_hash_12dp": "39176c8dae291fb742db18bbcaf6094619a31447ea36dd98d7d8d72f11bcfe01",
+      "sell_count": 0,
+      "sharpe_per_bar": 0.005476473174506847,
+      "total_return": 1.0246520864553004
+    },
+    "development": {
+      "buy_count": 776,
+      "event_hash": "3acecebfab1b22b62c592d37433b673cb578a6f0e2a7ab655f565f48ad5438a8",
+      "max_drawdown": -0.7445516684891675,
+      "return_hash_12dp": "17dd9039296216bb01948e282765ae961046a0ac92900375b85d5caf32c0c245",
+      "sell_count": 776,
+      "sharpe_per_bar": -0.01282371625244322,
+      "total_return": -0.7426448596971229
+    },
+    "full_primary": {
+      "buy_count": 1363,
+      "event_hash": "285c555ca7d218f3f31b324776547908e5b163f5724dd13e5524483ded46a632",
+      "max_drawdown": -0.9036812679794962,
+      "return_hash_12dp": "7bd2da5fb5c1d034f29ba0e0f1f2b84fde32ed6a55768349cbcf62756f9af881",
+      "sell_count": 1363,
+      "sharpe_per_bar": -0.01468658763319661,
+      "total_return": -0.9022688055245248
+    },
+    "full_stress": {
+      "buy_count": 1363,
+      "event_hash": "285c555ca7d218f3f31b324776547908e5b163f5724dd13e5524483ded46a632",
+      "max_drawdown": -0.9978621946272612,
+      "return_hash_12dp": "d4217fb90b03769b3204a79485faa25f7d67722d90ec2aad1ea0fede9e3e1251",
+      "sell_count": 1363,
+      "sharpe_per_bar": -0.039620951741612856,
+      "total_return": -0.9978492476081282
+    },
+    "g10": {
+      "average_trial_return_correlation_clipped_at_zero": 0.3263812321319237,
+      "dsr": 2.080891270950236e-05,
+      "effective_trials": 8.409806446548838,
+      "pbo": 0.27987567987567985,
+      "pbo_split_count": 12870,
+      "raw_statistical_trials": 12,
+      "status": "FAIL"
+    },
+    "gates": {
+      "G10_MULTIPLE_TESTING": "FAIL",
+      "G11_INDEPENDENT_RISK_SUPERVISOR": "NOT_RUN",
+      "G1_DATA_PROVENANCE": "PASS",
+      "G2_CANONICAL_IDENTITY": "PASS",
+      "G3_CAUSAL_GOLDENS": "PASS",
+      "G4_INDEPENDENT_REPRODUCTION": "FAIL",
+      "G5_AFTER_COST_ECONOMICS": "FAIL",
+      "G6_CHRONOLOGICAL_OOS": "FAIL",
+      "G7_SAMPLE_AND_CLOCK_ROBUSTNESS": "FAIL",
+      "G8_REGIME_AND_TAIL": "FAIL",
+      "G9_BENCHMARK_AND_OPPORTUNITY": "FAIL"
+    },
+    "numeric_verdict": "FAIL",
+    "one_bar_delayed_primary": {
+      "buy_count": 1363,
+      "event_hash": "54a9c7702929a346c04a3b7672d48744afe6765f80801e7fde7dccf4fb7a413a",
+      "max_drawdown": -0.9140370954164269,
+      "return_hash_12dp": "f97a89025c012789d6d187554b9a7a016bbd7b622ab58cb22b1808b41e378083",
+      "sell_count": 1363,
+      "sharpe_per_bar": -0.015235881740037692,
+      "total_return": -0.9089601917082919
+    },
+    "period_primary_returns": [
+      -0.5623813665951332,
+      0.08091948644346224,
+      -0.45594388587981804,
+      -0.036644647315517975,
+      -0.0799575965064792,
+      -0.5032032420184637,
+      -0.13756326252391196
+    ],
+    "promotion_eligible": false,
+    "reserve_2025_2026h1": {
+      "buy_count": 255,
+      "event_hash": "02a0fc1903cb9b8830d2033951b896a43e4c83cef2eff28d36102589c12809d1",
+      "max_drawdown": -0.5745844820360315,
+      "return_hash_12dp": "2ffb660000b4b6fd6cacdb96c1292284ef5ebaeb272588b170b7f44a3645add7",
+      "sell_count": 255,
+      "sharpe_per_bar": -0.04084189426906829,
+      "total_return": -0.5715442248577061
+    },
+    "selected_trial": "interpretation=CONTINUATION_HIGH|baseline_hours=168|threshold=2.0",
+    "validation_2023_2024": {
+      "buy_count": 332,
+      "event_hash": "a120369a68488487ba1fed6128b326a9e0c78c3ac0a1f825635e4d0a0a46b11b",
+      "max_drawdown": -0.28396944367062515,
+      "return_hash_12dp": "6106747d79160ce4db11b4ff438769a10f8dfb5f07644656ad9e9a58a602591b",
+      "sell_count": 332,
+      "sharpe_per_bar": -0.0034815962175543383,
+      "total_return": -0.11367222589782075
+    }
+  },
+  "execution_authority": "NONE",
+  "parity": {
+    "phase_one": {
+      "maximum_absolute_metric_difference": 0.0010031329729939809,
+      "mismatches": [
+        "vectorbt/development/F2/S3/interpretation=CONTINUATION_HIGH|baseline_hours=24|threshold=1.0/total_return",
+        "vectorbt/development/F2/S3/interpretation=CONTINUATION_HIGH|baseline_hours=24|threshold=1.0/sharpe_per_bar",
+        "vectorbt/development/F2/S3/interpretation=CONTINUATION_HIGH|baseline_hours=24|threshold=1.0/max_drawdown",
+        "vectorbt/development/interpretation=CONTINUATION_HIGH|baseline_hours=24|threshold=1.0/buy_count",
+        "vectorbt/development/interpretation=CONTINUATION_HIGH|baseline_hours=24|threshold=1.0/sell_count",
+        "vectorbt/development/F2/S3/interpretation=REVERSAL_LOW|baseline_hours=24|threshold=1.0/total_return",
+        "vectorbt/development/F2/S3/interpretation=REVERSAL_LOW|baseline_hours=24|threshold=1.0/sharpe_per_bar",
+        "vectorbt/development/F2/S3/interpretation=REVERSAL_LOW|baseline_hours=24|threshold=1.0/max_drawdown",
+        "vectorbt/development/interpretation=REVERSAL_LOW|baseline_hours=24|threshold=1.0/buy_count",
+        "vectorbt/development/interpretation=REVERSAL_LOW|baseline_hours=24|threshold=1.0/sell_count"
+      ],
+      "numeric_tolerance": 1e-10,
+      "status": "FAIL",
+      "versions": {
+        "freqtrade": "2026.6",
+        "nautilus": "1.230.0",
+        "vectorbt": "1.1.0"
+      }
+    },
+    "phase_two": {
+      "maximum_absolute_metric_difference": 5.057065877167588e-14,
+      "mismatches": [],
+      "numeric_tolerance": 1e-10,
+      "status": "PASS",
+      "versions": {
+        "freqtrade": "2026.6",
+        "nautilus": "1.230.0",
+        "vectorbt": "1.1.0"
+      }
+    },
+    "status": "FAIL"
+  },
+  "preregistration_sha256": "8a10f00f9d7450eb41865e23ad385ff11a02610df9583c424e4267a0e6795479",
+  "promotion_eligible": false,
+  "run_commit": "eba18df8ad87f87d518d2272b78302bc53dab5e8",
+  "schema": "tios-btc-spot-taker-imbalance-campaign-result-v1",
+  "sealed_v2_holdout_accessed": false,
+  "selection_barrier": {
+    "reserve_evaluated_only_after_selection": true,
+    "selection_artifact": "selection_47fe851c738471c9c906a1699df426387a84c21b9e98503a3690f2130c7c625c.json",
+    "selection_sha256": "47fe851c738471c9c906a1699df426387a84c21b9e98503a3690f2130c7c625c",
+    "status": "PASS"
+  }
+}

@@ -741,6 +741,23 @@ Evidence: `artifacts/reports/BTC_SPOT_TAKER_IMBALANCE_V1_OPERATIONAL_ABORT_2026_
 `research/BTC_SPOT_TAKER_IMBALANCE_G1_G11_CAMPAIGN_V2.yaml`.
 Status: **V1 aborted pre-selection; V2 immutable offline rerun authorized; authority NONE.**
 
+### D-074 — Spot taker-imbalance campaign rejected without rescue
+
+Decision: V2 completed from clean commit `eba18df` with its development selection barrier intact
+and selected continuation-high / 168 hours / 2.0 z. Development lost 74.26%, validation lost
+11.37%, reserve lost 57.15%, and full primary lost 90.23% with 90.37% drawdown. Stress lost 99.78%,
+the one-bar delay lost 90.90%, only one of seven periods was positive, selected Sharpe trailed
+buy-and-hold, and DSR was 0.0000208. PBO alone passed at 0.2799. Selected-trial phase-two parity
+passed, but two nonselected 24-hour/1.0 development trials retained vectorbt residuals. G4-G10 fail.
+
+Consequence: G11 rejects the exact completed-hour Spot taker-imbalance family without tuning,
+filtering, or reinterpretation. It is not promotion eligible. No bot, venue, credential, order,
+paper/demo/live state, human gate, sealed V2 holdout, closed-family context, or execution authority
+was activated.
+
+Evidence: `artifacts/reports/BTC_SPOT_TAKER_IMBALANCE_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md`.
+Status: **Completed negative campaign; execution authority remains NONE.**
+
 ### D-063 — Bitcoin MVRV dislocation family admitted to data/canonical construction
 
 Decision: a source-only cycle compared exactly three new mechanisms without computing local family
