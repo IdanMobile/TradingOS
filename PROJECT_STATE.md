@@ -949,11 +949,13 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Begin a new source-only comparison of no more than three genuinely distinct mechanisms, excluding
-all closed contexts and without computing local candidate-family performance. Explicitly weigh the
-diminishing prior plausibility of further public-signal mining against stopping research. Preregister
-one GO or record NO_GO before any data/canonical build. Do not access the sealed V2 holdout, activate
-a bot, connect a trading venue, request credentials, or cross any human S3/S4 gate.
+Honor D-079's `NO_GO` and stop autonomous public-signal mining at the current evidence boundary.
+Do not create another data/canonical campaign from the same public-history universe. Present the
+operator with the retained negative result and reopen Task 1 only for new exogenous evidence: an
+operator-supplied fully sourced strategy plus unseen point-in-time data, approved authoritative
+data access, or genuinely prospective preregistered observations. Do not access the sealed V2
+holdout, activate a bot, connect a trading venue, request credentials, or cross any human S3/S4
+gate.
 
 ## Exit condition of next phase (unchanged)
 

@@ -175,6 +175,14 @@ six periods, drawdown, benchmark, and DSR evidence fail despite complete four-ro
 rejects promotion without rescue. No strategy or bot is approved; a new distinct source-only family
 comparison is required before another campaign.
 
+D-079 completes that bounded comparison with `NO_GO`. Point-in-time exchange flows require
+authenticated proprietary labels, the official BTC liquidation-snapshot archive is throttled and
+stale, and complete CME curve data require entitlement plus derivative capital semantics. After
+eight bounded selection cycles and no promotion-eligible completed campaign, another autonomous
+public-family sweep is not an open task. Strategy validation remains open only to new exogenous
+evidence: an operator-supplied fully sourced specification and unseen data, approved authoritative
+data access, or genuinely prospective preregistered observations. No strategy or bot is approved.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

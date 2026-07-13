@@ -1,5 +1,17 @@
 # Package Changelog
 
+## v8.82 — 2026-07-13 — Public-signal research boundary NO_GO
+
+- Added the ninth source-only three-family dossier without computing candidate performance.
+- Rejected exchange-flow labels (authenticated/proprietary PiT dependency), forced-liquidation
+  stress (throttled 472-day stale official archive), and CME curve/roll (entitled historical data
+  and derivative capital-model dependency).
+- D-079 stops autonomous public-signal mining after the cumulative negative campaigns rather than
+  expanding the hidden family-search burden. Reopen requires new exogenous evidence, approved
+  authoritative data access, or genuinely prospective preregistered observations.
+- No Task-2 build, bot, venue, credential, order, paper/demo/live state, human gate, sealed holdout,
+  promotion, or execution authority was activated.
+
 ## v8.81 — 2026-07-13
 
 - Completed the cross-venue premium campaign from clean commit `2cb84c8` with the hashed

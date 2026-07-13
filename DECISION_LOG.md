@@ -649,6 +649,30 @@ gate, sealed V2 holdout, closed-family context, or execution authority was activ
 Evidence: `artifacts/reports/CROSS_VENUE_BTC_PREMIUM_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md`.
 Status: **Completed negative campaign; execution authority remains NONE.**
 
+### D-079 — Current autonomous public-signal mining boundary closed NO_GO
+
+Decision: `FAMILY-SELECT-V9` compared exactly three unclosed mechanisms without computing local
+family performance: point-in-time exchange flows, forced-liquidation stress, and the regulated CME
+Bitcoin futures curve. Exchange-flow labels require an authenticated proprietary PiT product and
+cannot be reconstructed from ownerless UTXOs. Binance's official BTC liquidation snapshots are a
+throttled, non-exhaustive series covering only 472 days from 2023-06-25 through 2024-10-14. CME
+curve semantics are authoritative, but complete historical contract/settlement data require an
+entitled DataMine or licensed MDP source plus a derivative capital model.
+
+Consequence: all three are `NO_GO` at the current public, keyless, reproducible, Spot-compatible
+boundary. After eight bounded source cycles, seven admissions, and no promotion-eligible completed
+campaign, autonomous public-signal mining stops rather than increasing the hidden family-search
+burden. Research may reopen only for new exogenous evidence: an operator-supplied fully sourced
+strategy and unseen data, approved authoritative data access, or genuinely prospective evidence
+collected under preregistration. Another public-family sweep, copied result, rejected-family
+ensemble, or same-history parameter search is not authorized.
+
+No Task-2 build, bot, credential, venue session, order, paper/demo/live state, human gate, sealed
+holdout access, promotion, or execution authority is activated.
+
+Evidence: `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V9.md`.
+Status: **NO_GO; autonomous public-signal mining paused at evidence boundary; authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing
