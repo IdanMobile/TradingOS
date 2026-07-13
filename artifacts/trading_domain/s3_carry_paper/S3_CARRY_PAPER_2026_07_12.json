@@ -1,0 +1,72 @@
+{
+  "ann_return_erosion_pct": 4.3,
+  "approval_status": "NOT_ELIGIBLE",
+  "backtest_baseline": {
+    "ann_return_pct": 12.7,
+    "execution_cost_usdt": "425.34",
+    "leg_toggles": 812,
+    "max_drawdown_pct": -0.5,
+    "toggle_fee_bps": 4.0,
+    "total_return_pct": 92.6
+  },
+  "candidate": {
+    "best_config": {
+      "lookback": 21,
+      "rebalance": 3,
+      "threshold": 0.0
+    },
+    "periods_8h": 6021,
+    "strategy_id": "STRAT-FUNDING-CARRY-BASIS-DELTA-NEUTRAL",
+    "universe_pairs": 12,
+    "validation_note": "basis-aware carry DSR 1.0 but verdict_is_genuine=false; this probe measures the EXECUTION piece that DSR omitted. Still NOT_ELIGIBLE."
+  },
+  "divergence_report": {
+    "observations": [
+      {
+        "backtest_value": "425.34",
+        "metric": "FEE_TOTAL",
+        "paper_value": "2552.06",
+        "tolerance": "50",
+        "within_tolerance": false
+      },
+      {
+        "backtest_value": "812",
+        "metric": "TRADE_COUNT",
+        "paper_value": "812",
+        "tolerance": "0",
+        "within_tolerance": true
+      }
+    ],
+    "status": "OUTSIDE_TOLERANCE"
+  },
+  "execution_authority": "NONE",
+  "finding": "Realistic per-leg execution (spot+perp, taker 10.0bps + slippage 2.0bps = 24bps/toggle vs the backtest's 4bps) cuts annual carry from 12.7% to 8.4% (812 leg-toggles, $2552.06 execution cost). Carry stays net-positive after realistic execution \u2014 the edge is execution-robust at this turnover; remaining risk is COUNTERPARTY (operator/venue), not backtest math.",
+  "ledger": {
+    "entries": 3,
+    "final_balance_usdt": "15570.00",
+    "reconstructs_paper_equity": true
+  },
+  "live_orders": "DISABLED",
+  "mode": "SYNTHETIC_LOCAL_SIMULATOR",
+  "paper_orders": "DISABLED",
+  "paper_realistic_execution": {
+    "ann_return_pct": 8.4,
+    "execution_cost_usdt": "2552.06",
+    "final_equity_usdt": "15570.00",
+    "leg_toggles": 812,
+    "max_drawdown_pct": -4.7,
+    "toggle_fee_bps": 23.999999999999996,
+    "total_return_pct": 55.7
+  },
+  "prohibited": [
+    "credential_request",
+    "venue_account_connection",
+    "order_submit_cancel_replace",
+    "paper_demo_live_activation",
+    "real_money"
+  ],
+  "schema": "tios-s3-carry-paper-v1",
+  "stage": "S3_PAPER_DEMO",
+  "status": "PAPER_LANE_RAN_SYNTHETICALLY_NOT_VALIDATED",
+  "venue_connection": "NONE"
+}

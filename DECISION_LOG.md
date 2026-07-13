@@ -298,3 +298,61 @@ reproducibility holds). The paired read view `GET /api/v1/operations` (data fres
 requires its own decision gate.
 Status: **Approved (operator); implemented in `dashboard_api/operations.py` +
 `dashboard_ui/server.py`, gate-verified.**
+
+### D-042 — Operator authority-transfer to the AI is DECLINED (gates stay human)
+Decision (2026-07-12): the operator, citing "you have more knowledge than me," offered to
+let the AI self-authorize (a) the S3 paper-lane activation / HG-3, (b) the S4 perp/margin
+capability, and (c) venue selection + paid order-book data procurement. This is DECLINED and
+cannot be accepted. Rationale: HG-3/HG-4 and the S3→S4 progression are human-only gates by
+D-036/D-037/AD §AA — their entire purpose is that no automated agent can advance itself toward
+real-money capability; an AI flipping its own gates voids the guarantee precisely when capital
+is at stake. Separately, venue account creation, credential entry, and payment are prohibited
+agent actions regardless of authorization. Delegation of *research-direction* decisions (D-039)
+does NOT extend to *live-capability* gates. The AI's role stops at producing decision-ready
+evidence for a human to act on: the carry robustness + counterparty-stress sweep
+(`run_funding_carry_robustness.py`) is that evidence — and it shows the carry is regime-inflated
+(8.4%/yr is mostly the 2021 bull; ~break-even in bear/chop) with an unrecoverable 100%
+counterparty tail, which strengthens, not weakens, the case for a deliberate human decision.
+`execution_authority=NONE` unchanged; no venue, no orders, no credentials.
+Status: **Held (AI); no gate crossed. Awaiting explicit human action on S3/S4/venue if desired.**
+
+### D-043 — Paper-lane architecture: local synthetic simulator first, venue testnet after HG-4
+Decision (AI reviewer-class under D-039, 2026-07-12; T-015-01 preparation): the S3 paper lane
+uses the local `SYNTHETIC_LOCAL_SIMULATOR` (the confined runtime in
+`src/tios/services/paper/`) as the first and only lane until HG-4 resolves venue eligibility,
+then optionally graduates to a
+venue testnet/demo adapter behind the same paper contracts. The locked lane uses Binance public
+data-only market observations, synthetic USDT, and local simulated fills only; it has no API
+keys, account endpoint, credential, or venue order route. Rationale: a venue testnet requires
+account eligibility + API permissions, which are HG-4 human-only facts; until then the local
+simulator (no venue, no credentials, synthetic USDT, conservative immutable risk caps) is the
+only lawful paper path. T-015-03 pure divergence computation and T-015-04 lifecycle/drill
+validation machinery are preparation evidence only; real paper observations and operational
+drills remain deferred until gate-approved activation. Evidence: OKX demo confirmed
+(REG §6); Binance testnet/demo unconfirmed (post-HG-4 recheck). This is a recommendation
+prepared ahead of the gate. The operator's 2026-07-12 implementation direction adopts and locks
+this architecture without approving HG-3 or activating any bot; activation still requires both
+HG-3 and a validation-approved strategy context. `SIG-VOLUME-BREAKOUT` remains research-only.
+Full readiness assessment: `docs/program/S3_READINESS_PACKAGE.md`.
+Status: **Architecture approved and locked (operator, 2026-07-12); S3 entry and bot activation
+remain pending HG-3 plus a validation-approved strategy context. No authenticated venue/account
+connection, no exchange orders, and no credentials; `execution_authority=NONE`,
+`venue_connection=NONE`, `paper_orders=DISABLED`, `live_orders=DISABLED`.**
+
+### D-044 — Bounded audited paper-cockpit action route
+Decision (operator-requested, 2026-07-12): approve exactly one additional console write route,
+`POST /api/v1/cockpit-actions`, for the humanized paper-first cockpit. Its exact action allowlist
+is `ACKNOWLEDGE`, `PAUSE_PAPER_ENTRIES`, `RESUME_PAPER_ENTRIES`,
+`PAUSE_RESEARCH_SCHEDULE`, and `RESUME_RESEARCH_SCHEDULE`. Acknowledgement is limited to a
+known informational or warning item. Pausing paper entries blocks only new local synthetic
+entries; existing synthetic positions continue through their governed exit/risk rules. Research
+schedule pause/resume changes only future materialization and does not interrupt running work.
+
+The route is loopback-only and accepts same-origin JSON with a strict subject/action allowlist
+and required idempotency key. Every accepted action is retained append-only in
+`artifacts/human_decisions/cockpit_actions.jsonl`; duplicate keys are idempotent and conflicting
+reuse is rejected. This approval adds no force entry, close-position, cancel-order, stop-all,
+credential, stage-gate/approval transition, venue, exchange-order, or live-control action. It
+does not approve HG-3 or activate a bot, and it preserves `execution_authority=NONE`,
+`venue_connection=NONE`, `paper_orders=DISABLED`, and `live_orders=DISABLED`.
+Status: **Approved (operator); implemented as the third bounded audited POST route.**

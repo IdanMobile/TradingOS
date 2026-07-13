@@ -1,16 +1,16 @@
-# Graph Report - trading_os_project_package  (2026-07-12)
+# Graph Report - trading_os_project_package  (2026-07-13)
 
 ## Corpus Check
-- 820 files · ~3,494,109 words
+- 877 files · ~3,556,168 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 6207 nodes · 10445 edges · 511 communities (433 shown, 78 thin omitted)
-- Extraction: 78% EXTRACTED · 22% INFERRED · 0% AMBIGUOUS · INFERRED: 2247 edges (avg confidence: 0.54)
+- 7054 nodes · 13406 edges · 542 communities (462 shown, 80 thin omitted)
+- Extraction: 76% EXTRACTED · 24% INFERRED · 0% AMBIGUOUS · INFERRED: 3151 edges (avg confidence: 0.55)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b9fb988a`
+- Built from commit: `5fdbc0fd`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -494,35 +494,67 @@
 - [[_COMMUNITY_Community 508|Community 508]]
 - [[_COMMUNITY_Community 509|Community 509]]
 - [[_COMMUNITY_Community 510|Community 510]]
+- [[_COMMUNITY_Community 511|Community 511]]
+- [[_COMMUNITY_Community 512|Community 512]]
+- [[_COMMUNITY_Community 513|Community 513]]
+- [[_COMMUNITY_Community 514|Community 514]]
+- [[_COMMUNITY_Community 515|Community 515]]
+- [[_COMMUNITY_Community 516|Community 516]]
+- [[_COMMUNITY_Community 517|Community 517]]
+- [[_COMMUNITY_Community 518|Community 518]]
+- [[_COMMUNITY_Community 519|Community 519]]
+- [[_COMMUNITY_Community 520|Community 520]]
+- [[_COMMUNITY_Community 521|Community 521]]
+- [[_COMMUNITY_Community 522|Community 522]]
+- [[_COMMUNITY_Community 523|Community 523]]
+- [[_COMMUNITY_Community 524|Community 524]]
+- [[_COMMUNITY_Community 525|Community 525]]
+- [[_COMMUNITY_Community 526|Community 526]]
+- [[_COMMUNITY_Community 527|Community 527]]
+- [[_COMMUNITY_Community 528|Community 528]]
+- [[_COMMUNITY_Community 529|Community 529]]
+- [[_COMMUNITY_Community 530|Community 530]]
+- [[_COMMUNITY_Community 531|Community 531]]
+- [[_COMMUNITY_Community 532|Community 532]]
+- [[_COMMUNITY_Community 533|Community 533]]
+- [[_COMMUNITY_Community 534|Community 534]]
+- [[_COMMUNITY_Community 535|Community 535]]
+- [[_COMMUNITY_Community 536|Community 536]]
+- [[_COMMUNITY_Community 537|Community 537]]
+- [[_COMMUNITY_Community 538|Community 538]]
+- [[_COMMUNITY_Community 539|Community 539]]
+- [[_COMMUNITY_Community 540|Community 540]]
+- [[_COMMUNITY_Community 541|Community 541]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `ContractError` - 118 edges
-2. `Package Changelog` - 61 edges
-3. `Money` - 57 edges
-4. `DomainRef` - 56 edges
-5. `Provenance` - 55 edges
-6. `PaperStabilityReport` - 54 edges
-7. `RiskId` - 53 edges
-8. `ApprovalId` - 53 edges
-9. `PaperStabilityStatus` - 53 edges
-10. `CreatorType` - 53 edges
+2. `timedelta` - 90 edges
+3. `PaperRunner` - 70 edges
+4. `PaperRuntimeError` - 67 edges
+5. `CanonicalStrategySpec` - 65 edges
+6. `Package Changelog` - 61 edges
+7. `Money` - 57 edges
+8. `DomainRef` - 56 edges
+9. `Provenance` - 55 edges
+10. `PaperStabilityReport` - 54 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `test_independent_pbo_matches_known_answer_fixture()` --calls--> `independent_pbo()`  [INFERRED]
-  tests/test_g10_candidate.py → scripts/run_g10_candidate.py
 - `Path` --uses--> `FeeSlippageScenario`  [INFERRED]
   tests/test_hummingbot_lane.py → src/tios/core_types/engine.py
+- `test_operations_projection_includes_completion_matrix()` --calls--> `build_operations()`  [INFERRED]
+  tests/test_completion_matrix.py → src/tios/services/dashboard_api/operations.py
+- `test_completion_matrix_reflects_real_stage_state()` --calls--> `build_completion_matrix()`  [INFERRED]
+  tests/test_completion_matrix.py → src/tios/services/dashboard_api/status.py
 - `MonkeyPatch` --uses--> `Handler`  [INFERRED]
   tests/test_dashboard.py → src/tios/services/dashboard_ui/server.py
 - `CanonicalStrategySpec` --uses--> `CanonicalStrategySpec`  [INFERRED]
-  tests/test_strategy_evaluator.py → src/tios/strategy/spec.py
-- `MarketBar` --uses--> `CanonicalStrategySpec`  [INFERRED]
   tests/test_strategy_evaluator.py → src/tios/strategy/spec.py
 
 ## Import Cycles
 - 1-file cycle: `scripts/backtest_human_view.py -> scripts/backtest_human_view.py`
 - 1-file cycle: `scripts/register_vectorbt_trials.py -> scripts/register_vectorbt_trials.py`
 - 1-file cycle: `scripts/run_external_strategy_search.py -> scripts/run_external_strategy_search.py`
+- 1-file cycle: `scripts/run_funding_carry_s3_paper.py -> scripts/run_funding_carry_s3_paper.py`
 - 1-file cycle: `scripts/run_research_lab_v0.py -> scripts/run_research_lab_v0.py`
 - 1-file cycle: `scripts/run_s3_paper_probe.py -> scripts/run_s3_paper_probe.py`
 - 1-file cycle: `scripts/run_seed_candidate_g10.py -> scripts/run_seed_candidate_g10.py`
@@ -535,37 +567,36 @@
 - 1-file cycle: `src/tios/adapters/hummingbot/normalize_result.py -> src/tios/adapters/hummingbot/normalize_result.py`
 - 1-file cycle: `src/tios/approval/history.py -> src/tios/approval/history.py`
 - 1-file cycle: `src/tios/evidence/store.py -> src/tios/evidence/store.py`
+- 1-file cycle: `src/tios/execution/exit_ladder.py -> src/tios/execution/exit_ladder.py`
 - 1-file cycle: `src/tios/parity/fees.py -> src/tios/parity/fees.py`
-- 1-file cycle: `src/tios/services/dashboard_api/status.py -> src/tios/services/dashboard_api/status.py`
-- 1-file cycle: `src/tios/services/jobs/store.py -> src/tios/services/jobs/store.py`
-- 1-file cycle: `src/tios/strategy/evaluator.py -> src/tios/strategy/evaluator.py`
-- 1-file cycle: `src/tios/trading_domain/models.py -> src/tios/trading_domain/models.py`
+- 1-file cycle: `src/tios/services/dashboard_api/cockpit.py -> src/tios/services/dashboard_api/cockpit.py`
+- 1-file cycle: `src/tios/services/dashboard_api/news.py -> src/tios/services/dashboard_api/news.py`
 
-## Communities (511 total, 78 thin omitted)
+## Communities (542 total, 80 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.07
-Nodes (202): AccountId, ApprovalId, DivergenceMetric, InstrumentId, LedgerDirection, LedgerId, MarketQuote, Money (+194 more)
+Cohesion: 0.06
+Nodes (232): AccountId, ApprovalId, BracketLevels, DivergenceMetric, FillEvent, InstrumentId, LedgerDirection, LedgerId (+224 more)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.05
 Nodes (57): Any, Path, Any, MonkeyPatch, assemble_prompt(), _context_hash(), load_corpus(), Fixtures -> prompt assembly -> schema validation -> scoring plumbing (T-011-03). (+49 more)
 
 ### Community 2 - "Community 2"
-Cohesion: 0.20
-Nodes (36): _artifact_hashes(), batch_id(), _bind_experiment_lineage(), _canonical_hash(), command_allowed(), _confined(), _evidence(), _evidence_rows() (+28 more)
+Cohesion: 0.25
+Nodes (30): _artifact_hashes(), batch_id(), _bind_experiment_lineage(), _canonical_hash(), command_allowed(), _confined(), _evidence(), _expected_evidence() (+22 more)
 
 ### Community 3 - "Community 3"
-Cohesion: 0.10
-Nodes (18): AmbiguityRecord, license_gate(), LicenseRecord, LifecycleError, Strategy ingestion records + lifecycle-state guards (T-010-01, REQ-039).  specs/, Disallowed lifecycle-state transition., Guard one lifecycle-state transition; return the new state or raise.      Only t, Required source record (workflow spec `Required source record`). (+10 more)
+Cohesion: 0.08
+Nodes (21): _json_constant(), _json_float(), _json_int(), AmbiguityRecord, license_gate(), LicenseRecord, LifecycleError, Strategy ingestion records + lifecycle-state guards (T-010-01, REQ-039).  specs/ (+13 more)
 
 ### Community 4 - "Community 4"
 Cohesion: 0.03
 Nodes (61): Package Changelog, v1, v2, v3 — 2026-07-05, v4 — 2026-07-05, v5 — 2026-07-05, v6 — SSOT + Pre-Code Environment Intake, v7 — Handoff simulation hardening (+53 more)
 
 ### Community 5 - "Community 5"
-Cohesion: 0.20
-Nodes (18): evaluate_family(), independent_dsr(), independent_pbo(), _latest_lab_dir(), main(), _normal_cdf(), _normal_inv_cdf(), Any (+10 more)
+Cohesion: 0.14
+Nodes (24): evaluate_family(), independent_dsr(), independent_pbo(), _latest_lab_dir(), main(), _normal_cdf(), _normal_inv_cdf(), Any (+16 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.11
@@ -573,11 +604,11 @@ Nodes (48): CompletedProcess, _artifact_ref(), _build_ledger(), _confined(), _ex
 
 ### Community 7 - "Community 7"
 Cohesion: 0.12
-Nodes (21): _apply_migration(), confined_database(), _identity(), Job, JobState, JobStore, JobType, _lease_duration() (+13 more)
+Nodes (22): _apply_migration(), confined_database(), _identity(), Job, JobState, JobStore, JobType, _lease_duration() (+14 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.04
-Nodes (47): 2026-07-05, 2026-07-06 — Planning-mandate pass, 2026-07-07 — Governance re-check, 2026-07-10 — Product integration direction, 2026-07-11 — API contract clarification, D-001 — Market sequence, D-002 — Reuse before build, D-003 — Dashboard as operating system (+39 more)
+Cohesion: 0.07
+Nodes (29): 2026-07-05, D-001 — Market sequence, D-002 — Reuse before build, D-003 — Dashboard as operating system, D-004 — Dictionary & Concepts, D-005 — AI Model & Agent Intelligence, D-006 — Research Assets, D-007 — Architecture timing (+21 more)
 
 ### Community 9 - "Community 9"
 Cohesion: 0.04
@@ -612,8 +643,8 @@ Cohesion: 0.11
 Nodes (37): ReproducibilityEvidence, Any, datetime, Decimal, g1_fixture(), test_cost_rule_hard_fails_zero_cost_only_profit(), test_cost_rule_passes_economic_profitability(), test_g10_retention_evidence_blocks_partial_or_premature_selection() (+29 more)
 
 ### Community 17 - "Community 17"
-Cohesion: 0.12
-Nodes (38): build_dashboard_data(), Build the current evidence-operations surface from repository artifacts., _handle_request(), Path, _sha256(), test_dashboard_activity_maps_one_to_one_to_real_artifacts(), test_dashboard_api_rejects_prohibited_methods_without_listening_server(), test_dashboard_check_pass_requires_fresh_machine_readable_artifact() (+30 more)
+Cohesion: 0.08
+Nodes (57): build_dashboard_data(), Build the current evidence-operations surface from repository artifacts., _handle_request(), Path, _sha256(), test_attention_rows_render_a_vertical_text_hierarchy(), test_cockpit_action_retry_reuses_key_and_blocks_opposite_action(), test_cockpit_range_refresh_visibility_and_last_good_contracts() (+49 more)
 
 ### Community 18 - "Community 18"
 Cohesion: 0.12
@@ -628,8 +659,8 @@ Cohesion: 0.05
 Nodes (36): artifacts, scorecard.json, TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION_BTCUSDT_15m_events.jsonl, TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION_BTCUSDT_1h_events.jsonl, TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION_BTCUSDT_5m_events.jsonl, TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION_ETHUSDT_15m_events.jsonl, TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION_ETHUSDT_1h_events.jsonl, TVPINE-RAGINGPORRA-RSI-MEAN-REVERSION_ETHUSDT_5m_events.jsonl (+28 more)
 
 ### Community 21 - "Community 21"
-Cohesion: 0.16
-Nodes (31): _directory_replacement_writer(), _initialize_in_process(), _lock_path_replacement_writer(), _paused_write_writer(), Any, JobStore, Path, _store() (+23 more)
+Cohesion: 0.15
+Nodes (33): _directory_replacement_writer(), _initialize_in_process(), _lock_path_replacement_writer(), _paused_write_writer(), Any, JobStore, Path, _store() (+25 more)
 
 ### Community 22 - "Community 22"
 Cohesion: 0.06
@@ -640,12 +671,12 @@ Cohesion: 0.06
 Nodes (31): 0. Conventions, 1. Scalar / value types, 2. Core entities (identity, lifecycle, invariants), 3. Commands, queries, events (planning contracts), 4. Adapter contracts, 5. Job contracts, 6. Artifact contracts, 7. API contracts (dashboard, MVP) (+23 more)
 
 ### Community 24 - "Community 24"
-Cohesion: 0.10
-Nodes (21): BracketLevels, FillEvent, OrderState, fill(), intent(), order_state(), position(), OrderIntent (+13 more)
+Cohesion: 0.08
+Nodes (63): _aroon(), aroon_cross(), _atr(), _bollinger(), bollinger_breakout(), bollinger_reversion(), bollinger_rsi(), build_report() (+55 more)
 
 ### Community 25 - "Community 25"
-Cohesion: 0.20
-Nodes (31): _automation(), build_stage_gate_readiness(), build_status(), _check_status(), _comparisons(), _dictionary_concepts(), _git(), _initiative() (+23 more)
+Cohesion: 0.18
+Nodes (33): _automation(), build_completion_matrix(), build_stage_gate_readiness(), build_status(), _check_status(), _comparisons(), _dictionary_concepts(), _git() (+25 more)
 
 ### Community 26 - "Community 26"
 Cohesion: 0.06
@@ -660,8 +691,8 @@ Cohesion: 0.12
 Nodes (14): FreshnessState, HumanReviewStatus, _nonempty(), Validated registry for application-owned research assets., Immutable in-memory index loaded from the application-owned JSON registry., Raised when a research-asset registry is not usable as evidence., A retained research artifact plus its freshness and consumers., ResearchAssetError (+6 more)
 
 ### Community 29 - "Community 29"
-Cohesion: 0.18
-Nodes (24): _canonical_digest(), _confined(), default_database(), JobCancelled, JobResult, JobTimedOut, _json_object(), _open_artifact_directory() (+16 more)
+Cohesion: 0.16
+Nodes (26): _canonical_digest(), _confined(), default_database(), JobCancelled, JobResult, JobTimedOut, _json_object(), _open_artifact_directory() (+18 more)
 
 ### Community 30 - "Community 30"
 Cohesion: 0.20
@@ -676,8 +707,8 @@ Cohesion: 0.24
 Nodes (26): atr(), build_hashes(), _buy(), canonical_hash(), configs(), ema(), _equity(), _event() (+18 more)
 
 ### Community 33 - "Community 33"
-Cohesion: 0.11
-Nodes (17): CanonicalStrategySpec, completeness_errors(), _has_risk_exit(), Canonical spec validator (T-005-01; SKILL_CANONICAL_SPEC_VALIDATOR steps 1–2)., validate(), validate_yaml(), ValidationReport, External replay candidates are canonical but not execution authority. (+9 more)
+Cohesion: 0.15
+Nodes (15): CanonicalStrategySpec, completeness_errors(), _has_risk_exit(), Canonical spec validator (T-005-01; SKILL_CANONICAL_SPEC_VALIDATOR steps 1–2)., validate(), validate_yaml(), ValidationReport, T-005-01/02 acceptance: property tests on rule trees, malformed fixtures rejecte (+7 more)
 
 ### Community 34 - "Community 34"
 Cohesion: 0.08
@@ -780,8 +811,8 @@ Cohesion: 0.09
 Nodes (22): artifacts, evidence.jsonl, qc1_trials.parquet, qc2_trials.parquet, scorecards.json, cycle_id, execution_authority, finished_at_utc (+14 more)
 
 ### Community 59 - "Community 59"
-Cohesion: 0.15
-Nodes (39): Indicator, SearchStrategy, SignalEvent, CanonicalStrategySpec, Comparison, CreatorType, datetime, Decimal (+31 more)
+Cohesion: 0.14
+Nodes (38): Indicator, SearchStrategy, CanonicalStrategySpec, Comparison, CreatorType, datetime, Decimal, MarketBar (+30 more)
 
 ### Community 60 - "Community 60"
 Cohesion: 0.21
@@ -796,8 +827,8 @@ Cohesion: 0.18
 Nodes (18): g10_candidate_evidence_path(), g10_gate(), main(), Path, read_json(), Any, test_b2_validation_has_independent_risk_preconditions_and_no_promotion(), test_invalid_drawdown_or_loss_metrics_fail_closed() (+10 more)
 
 ### Community 63 - "Community 63"
-Cohesion: 0.12
-Nodes (28): _buy_hold_pct(), _canonical(), fast_donchian(), load(), Loaded, main(), Outcome, per_trade_backtest() (+20 more)
+Cohesion: 0.15
+Nodes (33): _acknowledgeable(), _append_action_record(), _cockpit_acknowledgements(), CockpitActionError, CockpitNotFoundError, CockpitUnavailableError, _decimal(), _decision_is_actionable() (+25 more)
 
 ### Community 64 - "Community 64"
 Cohesion: 0.10
@@ -808,12 +839,12 @@ Cohesion: 0.10
 Nodes (20): B1 — Buy and hold sanity baseline, B2 — Moving-average crossover, B3 — Bollinger mean-reversion baseline, B4 — Volatility breakout baseline, Candidates in first bake-off, Common baseline strategies, Common initial market slice, Decision rule (+12 more)
 
 ### Community 66 - "Community 66"
-Cohesion: 0.19
-Nodes (8): Any, parse_spec(), CanonicalStrategySpec model (T-005-01, REQ-011; TYPE_AND_CONTRACT_CATALOG §2)., Strict structural parse of a spec mapping (already YAML-loaded)., Structural/semantic spec problem with a precise location path., _require(), SpecError, _str_list()
+Cohesion: 0.06
+Nodes (145): BinancePublicClient, CockpitSnapshot, Public, inert synthetic paper runtime surface., BinanceBookTicker, BinanceDataError, BinanceKline, BinancePublicClient, _decimal() (+137 more)
 
 ### Community 67 - "Community 67"
 Cohesion: 0.20
-Nodes (20): _bollinger(), _donchian(), _ema(), _eval_comparison(), _eval_tree(), Reproduction spot-check for two seed-batch items (T-010-12 verification gate: "s, BB over `window` bars ending at idx (population std, the talib/Pine default)., Wilder-smoothed RSI (the talib/freqtrade convention). (+12 more)
+Nodes (15): _aligned_logs(), backtest_oos(), build_report(), cointegrate(), _df_tstat(), load_hourly(), main(), _metrics() (+7 more)
 
 ### Community 68 - "Community 68"
 Cohesion: 0.10
@@ -841,7 +872,7 @@ Nodes (14): DirectionalTradingControllerBase, DirectionalTradingControllerConfig
 
 ### Community 74 - "Community 74"
 Cohesion: 0.28
-Nodes (18): DataFrame, Path, Series, Exception, cli(), _confined(), _confined_output(), _failed_row() (+10 more)
+Nodes (18): DataFrame, Exception, Path, Series, cli(), _confined(), _confined_output(), _failed_row() (+10 more)
 
 ### Community 75 - "Community 75"
 Cohesion: 0.29
@@ -1144,8 +1175,8 @@ Cohesion: 0.13
 Nodes (14): artifact_id, command, converter_losses, engine, fee_rate_per_side, files, input_refs, produced_by (+6 more)
 
 ### Community 150 - "Community 150"
-Cohesion: 0.23
-Nodes (14): build_market_snapshot(), _expected_hash(), _json(), Read-only market and retained-trade projection for the dashboard., Return canonical candles and matching retained backtest fills., _sha256(), Any, Path (+6 more)
+Cohesion: 0.22
+Nodes (13): build_market_snapshot(), _expected_hash(), _json(), Read-only market and retained-trade projection for the dashboard., Return canonical candles and matching retained backtest fills., _sha256(), Any, Path (+5 more)
 
 ### Community 151 - "Community 151"
 Cohesion: 0.13
@@ -1164,8 +1195,8 @@ Cohesion: 0.13
 Nodes (14): Allocation, Crypto-specific, Directional, Existing Strategy Registry V0, Freqtrade, Hummingbot controllers shown in current official Dashboard configuration docs, Initial strategy-family taxonomy, Liquidity/execution (+6 more)
 
 ### Community 155 - "Community 155"
-Cohesion: 0.23
-Nodes (17): Prices, backtest_long_only(), backtest_long_short(), _benchmark_equal_weight(), build_report(), _day_return(), _grid_result(), load_daily() (+9 more)
+Cohesion: 0.16
+Nodes (18): Prices, backtest_long_only(), backtest_long_short(), _benchmark_equal_weight(), build_report(), _day_return(), _grid_result(), load_daily() (+10 more)
 
 ### Community 156 - "Community 156"
 Cohesion: 0.13
@@ -1201,7 +1232,7 @@ Nodes (13): 10. Exact failure criteria, 11. Market sequence (unchanged), 12. Tra
 
 ### Community 164 - "Community 164"
 Cohesion: 0.14
-Nodes (13): Acceptance gates for the product path, Automation and AI-provider controls, Canonical domain contracts to add before paper operations, Chart and market-data strategy, Dashboard information architecture, Product destination, Reuse register for this roadmap, Stage S1 — Evidence OS (complete through HG-2) (+5 more)
+Nodes (13): Acceptance gates for the product path, Automation and AI-provider controls, Canonical domain contracts for paper operations, Chart and market-data strategy, Dashboard information architecture, Product destination, Reuse register for this roadmap, Stage S1 — Evidence OS (complete through HG-2) (+5 more)
 
 ### Community 165 - "Community 165"
 Cohesion: 0.27
@@ -1216,8 +1247,8 @@ Cohesion: 0.15
 Nodes (12): 1. North Star capabilities (§1/§13 capability map), 2. Lifecycle states (§I) — every state has entry gate, exit paths, owner: **Complete**. DEGRADED/PAUSED semantics defined at approval level; runtime degradation detection is S3 (Partial, recorded in initiative 15)., 3. Data flows — dataset freeze; spec→engine→normalized results; runs→validation→evidence→approval; AI output→intake→RA; events→views. All specified with converters C1–C7: **Complete**. Paper/live divergence flow: S3 (Partial, RG-13)., 4. External integrations — engines (4+1), lineage (MLflow/DVC), data (Binance public), AI providers (3), venues (4, deferred): each has adapter/port, version pinning, failure/fallback row (AD §AD): **Complete** for MVP set., 5. Failure paths — AD §AD table covers every MVP external dependency + consistency rule: **Complete** (MVP scope). Chaos/distributed failures: N/A (no distributed system)., 6. Approvals — identity, states, human-only gates, machine-propose rule: **Complete**., 7. Security boundaries — secrets, credential scopes, ingested-code containment, prompt injection, AI tool permissions, live-unreachable enforcement: **Complete** (spec level; executable checks tasked T-018-*)., 8. Maintenance — dependency budget, upgrade parity reruns, docs freshness triggers, single-operator ceiling addressed in red team: **Complete**. (+4 more)
 
 ### Community 168 - "Community 168"
-Cohesion: 0.19
-Nodes (8): BaseHTTPRequestHandler, Handler, is_loopback_host(), main(), Dependency-free local server for the Trading OS evidence dashboard., Accept only literal loopback addresses and localhost., test_dashboard_accepts_loopback_hosts(), test_dashboard_refuses_non_loopback_hosts()
+Cohesion: 0.17
+Nodes (10): bucket_by_year(), build_report(), counterparty_stress(), main(), _period_year(), 8h period index -> calendar year (period 0 = epoch)., fcb._metrics restricted to the fields that make sense per-segment., One-shot haircut of the deployed equity; terminal loss + carry-years to recover. (+2 more)
 
 ### Community 169 - "Community 169"
 Cohesion: 0.15
@@ -1428,8 +1459,8 @@ Cohesion: 0.31
 Nodes (9): load_golden(), Path, T-005-03 acceptance: all four baseline specs are VALID, and the hand-computed go, sma(), test_b1_golden(), test_b2_golden(), test_b3_golden(), test_b4_golden() (+1 more)
 
 ### Community 221 - "Community 221"
-Cohesion: 0.31
-Nodes (10): bars(), CanonicalStrategySpec, MarketBar, Side, signal_bars(), signals(), spec(), test_canonical_signal_evaluator_reproduces_unambiguous_seed_transitions() (+2 more)
+Cohesion: 0.21
+Nodes (14): _append_dedup(), fetch_klines(), _klines_json_to_raw(), _last_open_ms(), main(), Keep the frozen klines dataset fresh by appending only the newest bars.  Instead, Binance REST kline rows -> the raw arrow table the normalizer expects (ms times), Concatenate, sort, and drop rows repeating an open timestamp (keep existing). (+6 more)
 
 ### Community 222 - "Community 222"
 Cohesion: 0.24
@@ -1592,8 +1623,8 @@ Cohesion: 0.38
 Nodes (6): Path, Signal-timestamp parity probe (T-006-02): compares Freqtrade's generated B1-B4 s, read_csv_rows(), run_probe(), to_bool(), write_report()
 
 ### Community 262 - "Community 262"
-Cohesion: 0.43
-Nodes (3): Event, run_loop_until_interrupted(), Job
+Cohesion: 0.26
+Nodes (10): build_report(), _dsr(), main(), cp.carry_walk with a causal universe-funding deploy gate. deploy_threshold=-1.0, regime_gated_walk(), Offline checks for the funding-carry regime filter (no files, no network)., test_always_on_gate_reproduces_base_walk(), test_gate_reduces_exposure_vs_base() (+2 more)
 
 ### Community 263 - "Community 263"
 Cohesion: 0.29
@@ -1673,7 +1704,7 @@ Nodes (6): Initiative 09 — Validation Harness (S1, WS6) — CRITICAL PATH, T-0
 
 ### Community 282 - "Community 282"
 Cohesion: 0.29
-Nodes (6): Initiative 15 — Paper Trading (S3), T-015-01 Paper-lane architecture decision (engine dry-run vs venue testnet/demo), T-015-02 Paper deployment of first validated strategy, T-015-03 Backtest-vs-paper divergence tracking (RG-13), T-015-04 Operational drills, T-015-05 Human-only venue gates package (HG-4 prep)
+Nodes (6): Initiative 15 — Paper Trading (S3), T-015-01 Paper-lane architecture decision (local simulator vs venue testnet/demo), T-015-02 Paper deployment of first validated strategy, T-015-03 Backtest-vs-paper divergence tracking (RG-13), T-015-04 Operational drills, T-015-05 Human-only venue gates package (HG-4 prep)
 
 ### Community 283 - "Community 283"
 Cohesion: 0.29
@@ -1852,16 +1883,16 @@ Cohesion: 0.80
 Nodes (4): _experiment(), _run(), test_ledger_is_append_only_and_failed_runs_preserve_reason(), test_ledger_retains_all_trials_and_winner_must_reference_one()
 
 ### Community 327 - "Community 327"
-Cohesion: 0.12
-Nodes (35): _bollinger(), bollinger_breakout(), bollinger_reversion(), bollinger_rsi(), build_report(), _buy_hold(), connors_rsi2(), _cross() (+27 more)
+Cohesion: 0.21
+Nodes (27): build_cockpit(), perform_cockpit_action(), Apply one allowlisted local action and retain an idempotent operator audit., Build one honest operating snapshot; this function never activates or creates pa, _handle_request(), _paper_fixture(), _post(), Path (+19 more)
 
 ### Community 328 - "Community 328"
 Cohesion: 0.50
 Nodes (3): _hash(), S3/S4 readiness artifacts remain probe-only and non-executable., test_retained_s3_s4_readiness_artifact_is_current_and_hash_checked()
 
 ### Community 329 - "Community 329"
-Cohesion: 0.21
-Nodes (14): _append_dedup(), fetch_klines(), _klines_json_to_raw(), _last_open_ms(), main(), Keep the frozen klines dataset fresh by appending only the newest bars.  Instead, Binance REST kline rows -> the raw arrow table the normalizer expects (ms times), Concatenate, sort, and drop rows repeating an open timestamp (keep existing). (+6 more)
+Cohesion: 0.20
+Nodes (9): Current objective and phase, Exact next action, Handoff — Continue from the funding-carry / market-neutral finding (2026-07-12), Key mechanics the next session MUST know (do not rediscover), Remaining work, in priority order, The honest scoreboard (all through production-G10 DSR ≥ 0.95; NONE genuinely passed), The one thing that matters — what we found, Verification state (+1 more)
 
 ### Community 330 - "Community 330"
 Cohesion: 0.60
@@ -2020,36 +2051,36 @@ Cohesion: 0.50
 Nodes (3): Binding boundary, Executed evidence, T-006-06 — vectorbt Accelerator Probe Conclusion
 
 ### Community 378 - "Community 378"
-Cohesion: 0.23
-Nodes (7): backtest(), build_report(), main(), _metrics(), Trade the mean-reverting log spread; +1 long / -1 short / 0 flat. -> (returns, t, _spread(), Checks for the stat-arb pairs engine (no files, no network).
+Cohesion: 0.16
+Nodes (17): align_trend(), build_report(), daily_trend_up(), _dsr(), _load_tf(), main(), mtf_signals(), _out_of_sample() (+9 more)
 
 ### Community 472 - "Community 472"
 Cohesion: 0.21
 Nodes (15): _canonical(), _decode(), _jsonable(), Durable append-only local store for inert S3/S4 evidence records., Evidence cannot be stored or verified without violating an invariant., One-table SQLite evidence ledger with no update/delete API., StoredSyntheticEvidence, SyntheticEvidenceStore (+7 more)
 
 ### Community 473 - "Community 473"
-Cohesion: 0.16
-Nodes (23): _atr_pct(), build_report(), evaluate(), flow_momentum(), load_rich(), main(), Candles, Decimal (+15 more)
+Cohesion: 0.08
+Nodes (42): _atr_pct(), build_report(), evaluate(), flow_momentum(), load_rich(), main(), Candles, Decimal (+34 more)
 
 ### Community 474 - "Community 474"
 Cohesion: 0.24
 Nodes (12): ContainedResult, ContainmentError, Subprocess containment for untrusted ingested Python code., Raised when an untrusted execution request violates containment policy., Run a local script out-of-process with no inherited credentials or network., run_untrusted_python(), Path, MonkeyPatch (+4 more)
 
 ### Community 475 - "Community 475"
-Cohesion: 0.33
-Nodes (12): _backtest_with_fees(), _bar(), build_report(), Candidate, main(), _market(), PaperRun, Decimal (+4 more)
+Cohesion: 0.17
+Nodes (48): _config(), _gate(), _InjectedClient, _MutableClient, _priced_row(), datetime, MonkeyPatch, PaperRiskPolicy (+40 more)
 
 ### Community 476 - "Community 476"
-Cohesion: 0.32
-Nodes (10): _candles(), Decimal, Logic checks for the copied-public-strategy search.  Exercises the signal builde, Flat OHLC where open==high==low==close (execution uses next-bar open)., seed_fees(), test_buy_hold_matches_price_ratio_net_of_fees(), test_donchian_breakout_triggers_on_new_high(), test_rsi_reversion_buys_oversold() (+2 more)
+Cohesion: 0.19
+Nodes (30): _article(), _article_identity(), _CacheState, _compact_cache(), _encoded_record(), _failure_detail(), _fetch(), _freshness() (+22 more)
 
 ### Community 477 - "Community 477"
-Cohesion: 0.53
-Nodes (5): _candles(), Decimal, End-to-end check for the synthetic S3 paper lane.  Runs the lane on a tiny hand-, test_paper_lane_enters_on_breakout_and_conserves_cash(), test_report_keeps_candidate_inert_and_reports_divergence()
+Cohesion: 0.18
+Nodes (32): build_external_news(), Return cached relevant metadata, refreshing lazily only when configured., _article(), _IncompleteResponse, _payload(), MonkeyPatch, Path, _Response (+24 more)
 
 ### Community 478 - "Community 478"
-Cohesion: 0.60
-Nodes (4): opened(), OperationalIncidentRecord, test_operational_incident_lifecycle_is_append_only_and_inert(), test_operational_incident_lifecycle_rejects_skips_and_incomplete_resolution()
+Cohesion: 0.19
+Nodes (15): build_ledger(), build_report(), carry_walk(), _cents(), main(), Decimal, Pick the config the backtest would pick: max per-bar Sharpe under the baseline f, Aggregate S3 cash-flow through the real ledger contract: capital, then the net (+7 more)
 
 ### Community 479 - "Community 479"
 Cohesion: 0.20
@@ -2064,68 +2095,76 @@ Cohesion: 0.20
 Nodes (9): Boundaries (unchanged), Market Data Acquisition Plan, Recommended first pull (Tranche 1 — free, sized, one clean freeze), REVISED APPROACH (2026-07-12) — feature-bars, not 78 GB of raw ticks, The value ladder — what more the market gives us, Tier 1 — free, high value, pull now (Binance public data + CoinGecko free), Tier 2 — free but heavy (do selectively), Tier 3 — paid / vendor (operator procures; agent never pays or holds keys) 💳 (+1 more)
 
 ### Community 483 - "Community 483"
-Cohesion: 0.24
-Nodes (13): Acquired, download_one(), download_one(), expected_files(), fetch(), main(), months(), official_checksum() (+5 more)
-
-### Community 485 - "Community 485"
 Cohesion: 0.29
 Nodes (13): _basis_spec(), fetch(), FileSpec, head_size(), _kline_spec(), main(), months(), plan() (+5 more)
 
+### Community 485 - "Community 485"
+Cohesion: 0.20
+Nodes (24): _delta(), main(), _now(), open_and_close_cycle(), _order_create(), order_status(), place_market_buy(), place_market_sell() (+16 more)
+
 ### Community 486 - "Community 486"
-Cohesion: 0.24
-Nodes (16): _best_context(), build_operations(), _data_update(), _mtime_utc(), Operations view: data freshness + per-strategy results, and the data-refresh tri, Governed action (D-041): launch ONLY the local daily_update refresh, detached., _read_json(), _strategy_rows() (+8 more)
+Cohesion: 0.18
+Nodes (9): EvidenceError, EvidenceRecord, EvidenceRegistry, Local-first Trading Evidence Registry records and storage., Raised when an evidence record would violate its contract., Trading-domain link to generic run and dataset lineage.      ``run_ref`` and ``d, Append-only JSONL registry suitable for a local developer checkout., _evidence_rows() (+1 more)
 
 ### Community 487 - "Community 487"
 Cohesion: 0.29
 Nodes (9): build_pair(), main(), _minute_bars(), Compress raw aggTrades ticks into per-minute microstructure feature bars.  The p, Stream each month's ticks -> minute bars, so peak memory is one month., Aggregate raw ticks into 1-minute microstructure bars., _read_ticks(), Path (+1 more)
 
 ### Community 488 - "Community 488"
-Cohesion: 0.36
-Nodes (7): _canon(), Any, Table, Pure-logic checks for the daily updater (no network).  Guards the two things tha, _row(), test_append_dedup_drops_the_overlapping_bar(), test_rest_row_converts_to_canonical()
+Cohesion: 0.20
+Nodes (20): _bollinger(), _donchian(), _ema(), _eval_comparison(), _eval_tree(), Reproduction spot-check for two seed-batch items (T-010-12 verification gate: "s, BB over `window` bars ending at idx (population std, the talib/Pine default)., Wilder-smoothed RSI (the talib/freqtrade convention). (+12 more)
 
 ### Community 489 - "Community 489"
-Cohesion: 0.38
-Nodes (6): datetime, Amendment A1 golden test (T-004-02 acceptance, D-029, CG-03).  Fixtures are real, A µs-looking file in a pre-2025 month must hard-fail, not silently pass., test_boundary_converges_to_canonical_utc(), test_unit_mismatch_is_rejected(), utc()
+Cohesion: 0.17
+Nodes (14): _hash(), _jsonable(), main(), _markdown(), Any, StageGateRequirement, StageGateRequirementKind, _requirement() (+6 more)
 
 ### Community 490 - "Community 490"
-Cohesion: 0.47
-Nodes (5): main(), normalize_all(), normalize_pair(), Normalize DS-CRYPTO-MULTI-V1 spot klines (many pairs, all timeframes).  Reuses t, Normalize every present monthly kline zip for one pair/interval, or None if abse
+Cohesion: 0.17
+Nodes (9): build_report(), diversification_row(), main(), Realistic-execution carry annual return from the S3 paper walk (single source)., Years of compounding carry to climb back from a (1-loss) multiplier., Structural outcome of splitting capital across k venues, each defaulting w.p. p., realized_carry_ann_pct(), years_to_recover() (+1 more)
 
 ### Community 491 - "Community 491"
 Cohesion: 0.47
 Nodes (5): Table, Check aggTrades -> 1-minute microstructure aggregation (no files, no network)., test_minute_bar_aggregates_flow_and_vwap(), test_two_minutes_split_into_two_bars(), _ticks()
 
 ### Community 492 - "Community 492"
-Cohesion: 0.47
-Nodes (8): Decimal, Checks for the volume/volatility/order-flow signal builders.  Hand-built series, _rich(), test_rolling_sum_is_a_trailing_window_total(), test_rolling_taker_ratio_between_zero_and_one(), test_rolling_vwap_is_quote_over_base(), test_volume_breakout_requires_a_volume_surge(), test_vwap_reversion_buys_below_and_sells_above()
+Cohesion: 0.16
+Nodes (18): AuditPathError, confined_atomic_write(), confined_audit_handle(), Confined append-only audit file access for local dashboard actions., Atomically replace one confined regular file without following links., An audit path cannot be opened without escaping its repository boundary., Open a relative audit through anchored, no-follow repository parents., _validate_relative_path() (+10 more)
 
 ### Community 493 - "Community 493"
-Cohesion: 0.46
-Nodes (7): build_report(), _datasets(), evaluate(), _load(), main(), Candles, Path
+Cohesion: 0.15
+Nodes (27): _best_context(), build_demo_bot(), build_operations(), _data_update(), _mtime_utc(), Operations view: data freshness + per-strategy results, and the data-refresh tri, Read-only projection of the demo bot's persisted orders + last P&L snapshot., Governed action (D-041): launch ONLY the local daily_update refresh, detached. (+19 more)
 
 ### Community 494 - "Community 494"
-Cohesion: 0.47
-Nodes (4): _dataset(), Decimal, Check the universe search screens each strategy over multiple datasets (no files, test_evaluate_returns_structure_and_flags_screen()
+Cohesion: 0.25
+Nodes (7): 1. I could not "complete" HG-3/4/5, and I won't fake it, 2. The uncomfortable truth: nothing is genuinely validated yet, 3. What I built this session to make the eventual decision defensible, 4. My actual recommendation (as the CEO/CTO/broker you asked me to be), 5. One thing you should know about the codebase right now, 6. What remains — and it's only yours, Agent notes to the operator — what's on my mind (2026-07-12)
+
+### Community 495 - "Community 495"
+Cohesion: 0.22
+Nodes (8): 2026-07-07 — Governance re-check, 2026-07-10 — Product integration direction, D-033 — Decision-ID uniqueness gate coverage fix, D-034 — Staged TradingView and market-workspace integration, D-035 — Local lineage composition selected from executable prototype, D-036 — HG-2 approved for constrained S2 autonomous research-lab entry, D-037 — S2 architecture lock, Trading Intelligence OS — Decision Log
 
 ### Community 498 - "Community 498"
 Cohesion: 0.18
 Nodes (10): _asset_returns(), backtest(), build_report(), main(), _positions(), Rolling annualized volatility of asset returns (O(n))., Long/flat state -> vol-targeted fraction in [0,1] (no leverage)., Vol-targeted long/flat P&L with turnover costs; returns risk metrics + return se (+2 more)
 
 ### Community 499 - "Community 499"
-Cohesion: 0.22
-Nodes (12): test_dsr_known_answer_fixture(), test_multiple_testing_methods_fail_closed_on_invalid_inputs(), test_pbo_cscv_known_answer_fixture(), deflated_sharpe_ratio(), expected_maximum_noise_sharpe(), probability_of_backtest_overfitting(), Multiple-testing method fixtures for G10.  These helpers are pure math and do no, Cross-sectional sample variance for trial Sharpe ratios. (+4 more)
+Cohesion: 0.11
+Nodes (19): backtest(), build_report(), main(), _metrics(), Trade the mean-reverting log spread; +1 long / -1 short / 0 flat. -> (returns, t, _spread(), test_dsr_known_answer_fixture(), test_multiple_testing_methods_fail_closed_on_invalid_inputs() (+11 more)
 
 ### Community 500 - "Community 500"
 Cohesion: 0.31
 Nodes (12): _bar_returns_for_trial(), build_report(), _independent_dsr(), _independent_pbo(), main(), _moments(), _normal_cdf(), _normal_inv_cdf() (+4 more)
 
 ### Community 501 - "Community 501"
-Cohesion: 0.39
-Nodes (6): _payload(), Candidate-specific G10 integration checks (T-009-04 / RG-07)., test_evaluate_family_fails_an_overfit_population(), test_evaluate_family_passes_only_a_dominant_stable_candidate(), test_independent_pbo_matches_known_answer_fixture(), _trial()
+Cohesion: 0.24
+Nodes (13): Acquired, download_one(), download_one(), expected_files(), fetch(), main(), months(), official_checksum() (+5 more)
+
+### Community 502 - "Community 502"
+Cohesion: 0.29
+Nodes (5): Path, Checks for the Operations-tab completion matrix (initiative x stage x completion, test_completion_matrix_is_empty_without_todo_index(), test_completion_matrix_reflects_real_stage_state(), test_operations_projection_includes_completion_matrix()
 
 ### Community 503 - "Community 503"
-Cohesion: 0.15
-Nodes (14): EvidenceError, EvidenceRecord, EvidenceRegistry, Local-first Trading Evidence Registry records and storage., Raised when an evidence record would violate its contract., Trading-domain link to generic run and dataset lineage.      ``run_ref`` and ``d, Append-only JSONL registry suitable for a local developer checkout., EvidenceRecord (+6 more)
+Cohesion: 0.25
+Nodes (7): Honest recommendation, S3 exit criteria — status against the plan, S3 Paper-Trading Qualification — Readiness Package, T-015-01 — Paper-lane architecture decision (adopted in D-043), Task-by-task (Initiative 15), The real bottleneck: there is no genuinely-validated strategy, and carry cannot be backtest-validated, What the operator must decide (the irreducible human work)
 
 ### Community 504 - "Community 504"
 Cohesion: 0.21
@@ -2136,36 +2175,144 @@ Cohesion: 0.18
 Nodes (13): backtest(), build_matrix(), build_report(), _carry_return(), _load_funding(), _load_klines(), main(), _metrics() (+5 more)
 
 ### Community 507 - "Community 507"
-Cohesion: 0.20
-Nodes (9): RunCommand, Any, CanonicalStrategySpec, create_version(), StrategyVersion (T-005-02, REQ-012): immutable snapshot of spec + resolved param, StrategyVersion, StrategyVersion, test_same_content_same_sv_id_new_params_new_sv() (+1 more)
+Cohesion: 0.25
+Nodes (8): 2026-07-11 — API contract clarification, D-038 — Single audited operator workspace-decision route (AD §AI / type catalog §7 clarification), D-039 — Delegation of research-direction and reviewer-class decisions to AI, D-040 — AI-decided research direction: multi-timeframe/instrument seed comparison, D-041 — Second audited console write: the data-refresh trigger, D-042 — Operator authority-transfer to the AI is DECLINED (gates stay human), D-043 — Paper-lane architecture: local synthetic simulator first, venue testnet after HG-4, D-044 — Bounded audited paper-cockpit action route
 
 ### Community 508 - "Community 508"
 Cohesion: 0.25
 Nodes (7): 1. The honest scoreboard, 2. The central insight, 3. The strategy menu — dynamic options & variants, 4. Operator decision points (only you can authorise), 5. What can be built NOW, no gates, 6. Recommendation, Strategy Research Direction — CEO/CTO Brief (2026-07-12)
 
 ### Community 509 - "Community 509"
+Cohesion: 0.31
+Nodes (6): _noise(), Offline checks for the professional stat-arb (no files, no network).  Determinis, Deterministic uniform(-0.5,0.5) stream from a linear congruential generator., test_backtest_oos_trades_on_mean_reverting_spread(), test_cointegration_gate_detects_and_rejects(), test_df_tstat_stationary_vs_random_walk()
+
+### Community 510 - "Community 510"
+Cohesion: 0.36
+Nodes (7): _canon(), Any, Table, Pure-logic checks for the daily updater (no network).  Guards the two things tha, _row(), test_append_dedup_drops_the_overlapping_bar(), test_rest_row_converts_to_canonical()
+
+### Community 511 - "Community 511"
+Cohesion: 0.39
+Nodes (5): BinanceBookTicker, Timeframe, test_payload_boundaries_reject_malformed_oversized_and_float_values(), test_public_client_parses_only_allowlisted_data_and_retries_429(), test_runner_uses_closed_bars_and_supports_deterministic_gated_fill()
+
+### Community 512 - "Community 512"
+Cohesion: 0.23
+Nodes (13): build_ladder(), Direction, evaluate(), ExitDecision, ExitLadder, LadderConfig, position_size(), Laddered TP/SL exit planning — venue-agnostic, shared by every bot (demo and rea (+5 more)
+
+### Community 513 - "Community 513"
+Cohesion: 0.47
+Nodes (5): main(), normalize_all(), normalize_pair(), Normalize DS-CRYPTO-MULTI-V1 spot klines (many pairs, all timeframes).  Reuses t, Normalize every present monthly kline zip for one pair/interval, or None if abse
+
+### Community 514 - "Community 514"
+Cohesion: 0.18
+Nodes (9): BaseHTTPRequestHandler, Handler, is_loopback_host(), main(), _PostGuardError, Dependency-free local server for the Trading OS evidence dashboard., Accept only literal loopback addresses and localhost., test_dashboard_accepts_loopback_hosts() (+1 more)
+
+### Community 515 - "Community 515"
+Cohesion: 0.40
+Nodes (5): 2026-07-06 — Planning-mandate pass, D-029 — Canonical dataset amendment: Binance timestamp unit boundary, D-030 — Planning system adopted as subordinate authority layer, D-031 — Decision-log ID hygiene correction, D-032 — Registry-driven candidate adjustments (evidence-refreshed 2026-07-06)
+
+### Community 516 - "Community 516"
+Cohesion: 0.24
+Nodes (15): _candles(), _ohlc_up(), Decimal, Logic checks for the copied-public-strategy search.  Exercises the signal builde, Flat OHLC where open==high==low==close (execution uses next-bar open)., seed_fees(), test_buy_hold_matches_price_ratio_net_of_fees(), test_donchian_breakout_triggers_on_new_high() (+7 more)
+
+### Community 517 - "Community 517"
+Cohesion: 0.33
+Nodes (5): HG-3 / HG-4 / HG-5 — Operator Decision Packages, HG-3 — MVP / paper-phase acceptance (S2 exit), HG-4 — Venue / operator eligibility (before S3 exit), HG-5 — Limited-live review (S3 exit), Recommended sequence (also in S3_READINESS_PACKAGE.md)
+
+### Community 518 - "Community 518"
+Cohesion: 0.29
+Nodes (6): Activation checklist (when your account confirms), Demo-lane integration plan (venue testnet/demo), Env vars (add to `.env` only when keys exist; never commit real values), The three rungs (unchanged), Venue recommendation, What is built now vs later
+
+### Community 519 - "Community 519"
 Cohesion: 0.60
-Nodes (5): StageGateRequirement, StageGateRequirementKind, requirement(), s3_requirements(), test_s3_stage_gate_readiness_can_be_modeled_without_activation()
+Nodes (4): opened(), OperationalIncidentRecord, test_operational_incident_lifecycle_is_append_only_and_inert(), test_operational_incident_lifecycle_rejects_skips_and_incomplete_resolution()
+
+### Community 520 - "Community 520"
+Cohesion: 0.18
+Nodes (17): _balances(), _can_trade(), _first(), _grants_fund_removal(), load_dotenv(), main(), _permissions(), preflight() (+9 more)
+
+### Community 521 - "Community 521"
+Cohesion: 0.12
+Nodes (28): _buy_hold_pct(), _canonical(), fast_donchian(), load(), Loaded, main(), Outcome, per_trade_backtest() (+20 more)
+
+### Community 523 - "Community 523"
+Cohesion: 0.14
+Nodes (16): _buy(), fetch_klines(), main(), Candles, PostTransport, Transport, Preflight, fetch real bars, walk the Donchian signal, and trade transitions on t, Append one bot order to the persisted activity log the console reads. (+8 more)
+
+### Community 524 - "Community 524"
+Cohesion: 0.14
+Nodes (19): backtest_returns(), _base_builders(), build_report(), confluence(), _evaluate(), main(), Candles, SignalBuilder (+11 more)
+
+### Community 525 - "Community 525"
+Cohesion: 0.26
+Nodes (10): LadderConfig, _heartbeat(), main(), Position, PostTransport, Transport, Continuous loop: enter on breakout, then manage the position with the shared lad, run_managed() (+2 more)
+
+### Community 526 - "Community 526"
+Cohesion: 0.19
+Nodes (8): Any, parse_spec(), CanonicalStrategySpec model (T-005-01, REQ-011; TYPE_AND_CONTRACT_CATALOG §2)., Strict structural parse of a spec mapping (already YAML-loaded)., Structural/semantic spec problem with a precise location path., _require(), SpecError, _str_list()
+
+### Community 527 - "Community 527"
+Cohesion: 0.43
+Nodes (3): Event, run_loop_until_interrupted(), Job
+
+### Community 528 - "Community 528"
+Cohesion: 0.19
+Nodes (5): _cycle_transports(), Offline checks for the Bybit demo execution round-trip (no network, no real key), test_open_and_close_cycle_ends_flat(), test_session_runs_multiple_cycles_and_logs(), _wallet()
+
+### Community 529 - "Community 529"
+Cohesion: 0.18
+Nodes (10): RunCommand, _version_payload(), Any, CanonicalStrategySpec, create_version(), StrategyVersion (T-005-02, REQ-012): immutable snapshot of spec + resolved param, StrategyVersion, StrategyVersion (+2 more)
+
+### Community 530 - "Community 530"
+Cohesion: 0.57
+Nodes (6): EvidenceRecord, Path, _record(), test_record_links_domain_semantics_to_replaceable_public_refs(), test_record_rejects_whitespace_in_external_refs(), test_registry_is_append_only_and_unvalidated_cannot_be_eligible()
+
+### Community 532 - "Community 532"
+Cohesion: 0.38
+Nodes (6): datetime, Amendment A1 golden test (T-004-02 acceptance, D-029, CG-03).  Fixtures are real, A µs-looking file in a pre-2025 month must hard-fail, not silently pass., test_boundary_converges_to_canonical_utc(), test_unit_mismatch_is_rejected(), utc()
+
+### Community 533 - "Community 533"
+Cohesion: 0.16
+Nodes (12): fetch_carry_signal(), main(), _order(), perp_position(), _poll_leg(), PostTransport, Transport, Live linear-perp funding rate + prices (public, no auth). (+4 more)
+
+### Community 534 - "Community 534"
+Cohesion: 0.25
+Nodes (8): Path, Offline checks for the Bybit demo preflight (no network, no real key, no orders), test_auth_failure_reports_cleanly(), test_load_dotenv_fills_unset_and_respects_existing(), test_preflight_refuses_non_demo_host(), test_trade_only_key_is_safe(), test_withdrawal_capable_key_is_flagged_unsafe(), _transport()
+
+### Community 536 - "Community 536"
+Cohesion: 0.31
+Nodes (10): bars(), CanonicalStrategySpec, MarketBar, Side, signal_bars(), signals(), spec(), test_canonical_signal_evaluator_reproduces_unambiguous_seed_transitions() (+2 more)
+
+### Community 538 - "Community 538"
+Cohesion: 0.39
+Nodes (6): _klines(), Offline checks for the always-on managed demo bot (no network, no real key)., _run(), test_bot_enters_on_breakout_then_scales_out_all_tps(), test_bot_stops_out_when_price_breaks_the_stop(), _transports()
+
+### Community 539 - "Community 539"
+Cohesion: 0.25
+Nodes (7): build_pnl(), compute_pnl(), main(), Transport, Net realized P&L in USDT, fees included, given flat-ending BTC/USDT bots., spot_price(), Offline checks for the demo P&L tool (no network, no real key).
+
+### Community 541 - "Community 541"
+Cohesion: 0.67
+Nodes (4): _metric(), _normalize(), Decimal, _validate_trial_outputs()
 
 ## Knowledge Gaps
-- **3305 isolated node(s):** `schema`, `artifacts`, `artifact_id`, `produced_by`, `status` (+3300 more)
+- **3354 isolated node(s):** `schema`, `artifacts`, `artifact_id`, `produced_by`, `status` (+3349 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **78 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **80 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `timedelta` connect `Community 24` to `Community 0`, `Community 130`, `Community 69`, `Community 7`, `Community 168`, `Community 137`, `Community 16`, `Community 17`, `Community 21`, `Community 189`, `Community 221`, `Community 25`, `Community 475`, `Community 157`, `Community 478`, `Community 63`?**
-  _High betweenness centrality (0.028) - this node is a cross-community bridge._
-- **Why does `ContractError` connect `Community 0` to `Community 3`, `Community 510`?**
-  _High betweenness centrality (0.023) - this node is a cross-community bridge._
+- **Why does `timedelta` connect `Community 475` to `Community 0`, `Community 130`, `Community 514`, `Community 7`, `Community 519`, `Community 521`, `Community 137`, `Community 16`, `Community 17`, `Community 21`, `Community 536`, `Community 25`, `Community 157`, `Community 189`, `Community 63`, `Community 66`, `Community 69`, `Community 327`, `Community 476`, `Community 477`, `Community 511`?**
+  _High betweenness centrality (0.046) - this node is a cross-community bridge._
 - **Why does `RegistryError` connect `Community 1` to `Community 3`?**
+  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+- **Why does `ContractError` connect `Community 0` to `Community 3`?**
   _High betweenness centrality (0.016) - this node is a cross-community bridge._
 - **Are the 48 inferred relationships involving `ContractError` (e.g. with `AccountId` and `ApprovalId`) actually correct?**
   _`ContractError` has 48 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 48 inferred relationships involving `Money` (e.g. with `AccountId` and `ApprovalId`) actually correct?**
-  _`Money` has 48 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 48 inferred relationships involving `DomainRef` (e.g. with `AccountId` and `ApprovalId`) actually correct?**
-  _`DomainRef` has 48 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `schema`, `artifacts`, `artifact_id` to the rest of the system?**
-  _3592 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Are the 89 inferred relationships involving `timedelta` (e.g. with `build_cockpit()` and `_paper_snapshot()`) actually correct?**
+  _`timedelta` has 89 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 54 inferred relationships involving `PaperRunner` (e.g. with `BinanceBookTicker` and `BinanceDataError`) actually correct?**
+  _`PaperRunner` has 54 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 39 inferred relationships involving `PaperRuntimeError` (e.g. with `BinancePublicClient` and `CockpitSnapshot`) actually correct?**
+  _`PaperRuntimeError` has 39 INFERRED edges - model-reasoned connections that need verification._

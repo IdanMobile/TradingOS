@@ -380,6 +380,7 @@ def test_jobs_projection_is_complete_json_safe_and_read_only(tmp_path: Path) -> 
             "next_due": NOW.isoformat(),
             "max_attempts": 1,
             "timeout_seconds": 3600,
+            "enabled": True,
         }
     ]
     assert projection["worker"]["mode"] == "LOCAL_OPERATOR_CLI_ONLY"
@@ -405,6 +406,32 @@ def test_jobs_projection_does_not_materialize_due_schedules(tmp_path: Path) -> N
     assert projection["latest_jobs"] == []
     assert projection["counts"]["states"]["QUEUED"] == 0
     assert projection["schedules"][0]["schedule_id"] == "due-now"
+    assert (database.read_bytes(), database.stat().st_mtime_ns) == before
+
+
+def test_jobs_projection_reads_legacy_v2_schedule_without_migrating(tmp_path: Path) -> None:
+    root = tmp_path / "repo"
+    database = root / "artifacts/jobs/jobs.sqlite3"
+    database.parent.mkdir(parents=True)
+    with sqlite3.connect(database, isolation_level=None) as connection:
+        connection.execute("BEGIN IMMEDIATE")
+        store_module._apply_migration(connection, store_module._MIGRATIONS[0], 1)  # noqa: SLF001
+        store_module._apply_migration(connection, store_module._MIGRATIONS[1], 2)  # noqa: SLF001
+        connection.execute(
+            """INSERT INTO schedules(
+                   schedule_id,job_type,payload_json,interval_seconds,next_due,
+                   max_attempts,timeout_seconds
+               ) VALUES ('legacy-schedule','RESEARCH_LAB_V0','{}',60,?,1,3600)""",
+            (NOW.isoformat(),),
+        )
+        connection.commit()
+    before = (database.read_bytes(), database.stat().st_mtime_ns)
+
+    projection = build_jobs_projection(root)
+
+    assert projection["availability"] == "AVAILABLE"
+    assert projection["database"]["schema_version"] == 2
+    assert projection["schedules"][0]["enabled"] is True
     assert (database.read_bytes(), database.stat().st_mtime_ns) == before
 
 
@@ -491,8 +518,8 @@ def test_migration_is_atomic_and_restartable(
     with sqlite3.connect(path) as connection:
         columns = {row[1] for row in connection.execute("PRAGMA table_info(jobs)")}
         assert "cancel_requested" in columns
-        assert connection.execute("PRAGMA user_version").fetchone() == (2,)
-        assert connection.execute("SELECT version FROM schema_version").fetchone() == (2,)
+        assert connection.execute("PRAGMA user_version").fetchone() == (3,)
+        assert connection.execute("SELECT version FROM schema_version").fetchone() == (3,)
 
 
 def test_concurrent_initialization_is_safe_across_threads_and_processes(
@@ -518,7 +545,7 @@ def test_concurrent_initialization_is_safe_across_threads_and_processes(
         assert process.exitcode == 0
     with sqlite3.connect(path) as connection:
         assert connection.execute("PRAGMA integrity_check").fetchone() == ("ok",)
-        assert connection.execute("PRAGMA user_version").fetchone() == (2,)
+        assert connection.execute("PRAGMA user_version").fetchone() == (3,)
 
 
 def test_write_entry_lock_path_replacement_does_not_split_serialization(tmp_path: Path) -> None:
@@ -676,6 +703,21 @@ def test_recurring_occurrences_have_deterministic_keys(tmp_path: Path) -> None:
         f"schedule:daily-lab:{job.due_at.isoformat()}" for job in occurrences
     ]
     assert store.materialize_due(now=NOW + timedelta(seconds=120)) == []
+
+
+def test_paused_schedule_does_not_materialize_until_resumed(tmp_path: Path) -> None:
+    store = _store(tmp_path)
+    store.add_schedule("daily-lab", JobType.RESEARCH_LAB_V0, 60, NOW)
+
+    assert store.set_schedule_enabled("daily-lab", False).enabled is False
+    assert store.materialize_due(now=NOW + timedelta(seconds=60)) == []
+    assert store.list() == []
+
+    resumed = store.set_schedule_enabled("daily-lab", True, now=NOW + timedelta(seconds=60))
+    assert resumed.enabled is True
+    assert resumed.next_due == NOW + timedelta(seconds=120)
+    assert store.materialize_due(now=NOW + timedelta(seconds=119)) == []
+    assert len(store.materialize_due(now=NOW + timedelta(seconds=120))) == 1
 
 
 @pytest.mark.parametrize("limit", [-100, -1, 0, 1001, 10_000])

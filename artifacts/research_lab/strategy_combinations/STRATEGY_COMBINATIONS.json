@@ -1,0 +1,90 @@
+{
+  "base_strategies": [
+    "EXT-GOLDEN-CROSS",
+    "EXT-DONCHIAN-40",
+    "EXT-MACD-CROSS",
+    "EXT-KELTNER-BREAKOUT",
+    "EXT-RSI14",
+    "EXT-BB-REVERSION",
+    "EXT-STOCHASTIC",
+    "EXT-VORTEX",
+    "EXT-PAT-ENGULFING"
+  ],
+  "best": {
+    "kind": "confluence",
+    "members": [
+      "EXT-DONCHIAN-40",
+      "EXT-KELTNER-BREAKOUT"
+    ],
+    "sharpe_ann": 0.31,
+    "trades": 864
+  },
+  "combinations_tested": 31,
+  "execution_authority": "NONE",
+  "g10_dsr": {
+    "dsr": 0.0,
+    "note": "Mixing zero-edge components does not create edge; confluence mostly cuts trade count. A PASS would still owe out-of-sample + cross-engine reproduction.",
+    "threshold": 0.95,
+    "verdict": "FAIL",
+    "verdict_is_genuine": false
+  },
+  "mode": "OFFLINE_RESEARCH_ONLY",
+  "schema": "tios-strategy-combinations-v1",
+  "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+  "top_combinations": [
+    {
+      "kind": "confluence",
+      "members": [
+        "EXT-DONCHIAN-40",
+        "EXT-KELTNER-BREAKOUT"
+      ],
+      "sharpe_ann": 0.31,
+      "trades": 864
+    },
+    {
+      "kind": "confluence",
+      "members": [
+        "EXT-GOLDEN-CROSS",
+        "EXT-DONCHIAN-40"
+      ],
+      "sharpe_ann": 0.29,
+      "trades": 424
+    },
+    {
+      "kind": "confluence",
+      "members": [
+        "EXT-KELTNER-BREAKOUT",
+        "EXT-VORTEX"
+      ],
+      "sharpe_ann": 0.25,
+      "trades": 1140
+    },
+    {
+      "kind": "confluence",
+      "members": [
+        "EXT-GOLDEN-CROSS",
+        "EXT-KELTNER-BREAKOUT"
+      ],
+      "sharpe_ann": 0.25,
+      "trades": 632
+    },
+    {
+      "kind": "confluence",
+      "members": [
+        "EXT-DONCHIAN-40",
+        "EXT-VORTEX"
+      ],
+      "sharpe_ann": 0.23,
+      "trades": 1126
+    },
+    {
+      "kind": "confluence",
+      "members": [
+        "EXT-BB-REVERSION",
+        "EXT-PAT-ENGULFING"
+      ],
+      "sharpe_ann": 0.19,
+      "trades": 18
+    }
+  ]
+}

@@ -5,8 +5,10 @@
 
 from __future__ import annotations
 
+import fcntl
 import hashlib
 import json
+import os
 import re
 import subprocess
 from datetime import UTC, datetime, timedelta
@@ -23,6 +25,7 @@ from tios.research_assets import (
     SourceIntakePlanError,
     SourceIntakePlanRegistry,
 )
+from tios.services.dashboard_api.audit import AuditPathError, confined_audit_handle
 from tios.services.jobs.projection import build_jobs_projection
 
 STATUS_RE = re.compile(r"Status:\s*\*?\*?([^\n]+)")
@@ -171,6 +174,61 @@ def _initiative(path: Path) -> dict[str, Any]:
     }
 
 
+INITIATIVE_INDEX_RE = re.compile(
+    r"^\|\s*(\d{2})\s*\|\s*`?([^|`]+?)`?\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*$",
+    re.MULTILINE,
+)
+
+
+def build_completion_matrix(root: Path | None = None) -> dict[str, Any]:
+    """Initiative x stage x completion grid from TODO.md's index + each todos/NN_*.md.
+
+    Read-only projection. Stage comes from the TODO.md index table; the overall status and
+    task counts come from the initiative file's own task acceptance (evidence, not prose). Makes
+    explicit that a green gate certifies built-scope correctness, not product completeness.
+    """
+    root = root or Path(__file__).resolve().parents[4]
+    index = (root / "TODO.md").read_text() if (root / "TODO.md").is_file() else ""
+    todos_dir = root / "todos"
+    rows: list[dict[str, Any]] = []
+    by_stage: dict[str, dict[str, int]] = {}
+    for match in INITIATIVE_INDEX_RE.finditer(index):
+        num, file_ref, stage, purpose, _critical = (group.strip() for group in match.groups())
+        path = todos_dir / Path(file_ref).name
+        if not path.is_file():
+            continue
+        initiative = _initiative(path)
+        done = sum(1 for task in initiative["tasks"] if task["status"].startswith("DONE"))
+        gated = sum(1 for task in initiative["tasks"] if _task_bucket(task["status"]) == "gated")
+        rows.append(
+            {
+                "id": num,
+                "title": initiative["title"],
+                "stage": stage,
+                "purpose": purpose,
+                "overall": initiative["status"],
+                "tasks_done": done,
+                "tasks_total": len(initiative["tasks"]),
+                "tasks_gated": gated,
+            }
+        )
+        bucket = by_stage.setdefault(stage, {"initiatives": 0, "done": 0})
+        bucket["initiatives"] += 1
+        if initiative["status"] == "DONE":
+            bucket["done"] += 1
+    rows.sort(key=lambda row: row["id"])
+    return {
+        "schema_version": 1,
+        "current_stage": "S2 (constrained)",
+        "note": (
+            "A green `make check` certifies built-scope correctness, not product completeness. "
+            "S3 is not entered; S4 is not authorized; no strategy is validated."
+        ),
+        "rows": rows,
+        "by_stage": by_stage,
+    }
+
+
 def _git(root: Path) -> dict[str, Any]:
     result = subprocess.run(
         ["git", "status", "--short"], cwd=root, capture_output=True, text=True, check=False
@@ -221,17 +279,21 @@ def _check_status(root: Path, now: datetime) -> dict[str, Any]:
 
 
 def _workspace_decision_records(root: Path) -> list[dict[str, Any]]:
-    path = root / WORKSPACE_DECISIONS_PATH
-    if not path.is_file():
-        return []
     records = []
-    for line in path.read_text().splitlines():
-        try:
-            payload = json.loads(line)
-        except ValueError:
-            continue
-        if isinstance(payload, dict):
-            records.append(payload)
+    try:
+        with confined_audit_handle(root, WORKSPACE_DECISIONS_PATH, create=False) as handle:
+            if handle is None:
+                return []
+            fcntl.flock(handle.fileno(), fcntl.LOCK_SH)
+            for line in handle:
+                try:
+                    payload = json.loads(line)
+                except ValueError:
+                    continue
+                if isinstance(payload, dict):
+                    records.append(payload)
+    except (OSError, AuditPathError):
+        return []
     return records
 
 
@@ -331,6 +393,12 @@ def record_workspace_decision(root: Path, payload: dict[str, Any]) -> dict[str, 
     task_id = str(payload.get("task_id", "")).strip()
     choice = str(payload.get("choice", "")).strip()
     note = str(payload.get("note", "")).strip()
+    idempotency_key = payload.get("idempotency_key")
+    if idempotency_key is not None and (
+        not isinstance(idempotency_key, str)
+        or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.:/-]{0,199}", idempotency_key)
+    ):
+        raise ValueError("idempotency_key must be a bounded identifier")
     if len(note) > 500:
         raise ValueError("note is too long")
     action = next(
@@ -353,12 +421,49 @@ def record_workspace_decision(root: Path, payload: dict[str, Any]) -> dict[str, 
         "choice_label": option["label"],
         "effect": option["effect"],
         "note": note,
+        "idempotency_key": idempotency_key,
     }
-    path = root / WORKSPACE_DECISIONS_PATH
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(record, sort_keys=True) + "\n")
-    return {"schema_version": 1, "recorded": record, "status": build_status(root)}
+    replayed: dict[str, Any] | None = None
+    with confined_audit_handle(root, WORKSPACE_DECISIONS_PATH, create=True) as handle:
+        assert handle is not None
+        fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+        handle.seek(0)
+        if idempotency_key is not None:
+            for line in handle:
+                try:
+                    retained = json.loads(line)
+                except ValueError as error:
+                    raise ValueError("workspace decision audit is malformed") from error
+                if (
+                    not isinstance(retained, dict)
+                    or retained.get("idempotency_key") != idempotency_key
+                ):
+                    continue
+                if (
+                    retained.get("task_id"),
+                    retained.get("choice"),
+                    retained.get("note"),
+                ) != (task_id, choice, note):
+                    raise ValueError("idempotency key conflicts with retained decision")
+                replayed = retained
+                break
+        if replayed is None:
+            handle.write(json.dumps(record, sort_keys=True) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+    if replayed is not None:
+        return {
+            "schema_version": 1,
+            "recorded": replayed,
+            "idempotent": True,
+            "status": build_status(root),
+        }
+    return {
+        "schema_version": 1,
+        "recorded": record,
+        "idempotent": False,
+        "status": build_status(root),
+    }
 
 
 def _json(path: Path) -> dict[str, Any]:

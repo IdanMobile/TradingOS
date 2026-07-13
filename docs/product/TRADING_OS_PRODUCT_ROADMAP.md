@@ -1,7 +1,7 @@
 # Trading Intelligence OS — Product Roadmap
 
-Status: **Active roadmap; constrained S2 research-only implementation is current (D-036/D-037).**
-Date: 2026-07-10
+Status: **Active roadmap; constrained S2 research-only operation is current, with the dormant S3 paper architecture locked by D-043.**
+Date: 2026-07-12
 
 This roadmap translates the North Star and the detailed operator goal into an
 implementable product sequence. It does not expand the current authorization to
@@ -45,7 +45,7 @@ Entry: satisfied by the prototype evidence decision, HG-2 (D-036), and architect
 lock (D-037). The former product wave 7 is a product-facing slice of S2, not a parallel
 execution track.
 
-- extend the existing replaceable read-only console; framework replacement is deferred;
+- extend the existing replaceable projection-first console; framework replacement is deferred;
 - TradingView Lightweight Charts for owned chart composition and annotations;
 - canonical candle query/datafeed API;
 - selectable symbol/timeframe/range;
@@ -55,8 +55,12 @@ execution track.
 - typed read-only portfolio/risk projections;
 - search over registries and report artifacts.
 
-The console contracts remain inert: no write endpoint, venue client, credential,
-synthetic wallet, order command, approval mutation, or paper/demo/live control exists.
+The console remains execution-inert. Its only writes before the paper cockpit are the
+two audited, loopback-only operator routes approved by D-038 and D-041:
+`POST /api/v1/workspace-actions/decision` and
+`POST /api/v1/workspace-actions/data-update`. Neither route can connect a venue,
+carry credentials, mutate approval or synthetic capital, route an order, or control
+paper/demo/live execution.
 
 Lightweight Charts is preferred for the OS-owned chart because it is public,
 Apache-2.0 licensed, fast, and supports series markers. It is a visualization
@@ -64,11 +68,20 @@ library, not a market-data source or broker.
 
 ### Stage S3 — Paper operations
 
-Entry: S2 exit and at least one strategy-context candidate meeting approval gates.
+Entry: an approved HG-3 stage-gate record and at least one validation-approved
+strategy-context configuration. `SIG-VOLUME-BREAKOUT` remains research-only and is
+not eligible to start a paper bot.
 
-- paper-only market-data stream;
-- paper execution simulator or approved demo/testnet adapter;
+- `SYNTHETIC_LOCAL_SIMULATOR` is the locked first S3 architecture: Binance public
+  data-only market observations, synthetic USDT, and local simulated fills only;
+- no API key, account endpoint, credential, venue order route, or exchange order;
+- `execution_authority=NONE`, `venue_connection=NONE`, `paper_orders=DISABLED`, and
+  `live_orders=DISABLED` remain binding even while the local simulator runs;
+- public Binance closed bars and quotes are observations used by the simulator, not
+  evidence of a connected account or live execution;
 - typed order, fill, position, account, and portfolio snapshot records;
+- typed bot, signal-watch, attention, finding, portfolio-performance, and cockpit
+  snapshot records for the humanized operating view;
 - bracket TP/SL semantics and exchange constraints;
 - independent risk engine with pre-trade checks, stale-data guards, drawdown
   limits, exposure limits, and kill switch;
@@ -89,10 +102,13 @@ The OS backend remains responsible for authentication, risk decisions, order
 routing, reconciliation, and fail-closed behavior. Without that access, the OS
 uses its own Lightweight Charts UI and broker adapter.
 
-## Canonical domain contracts to add before paper operations
+## Canonical domain contracts for paper operations
 
-All records must carry stable IDs, UTC timestamps, decimal money/price/quantity,
-environment, strategy context, and provenance:
+Durable identity/evidence records must carry stable IDs, UTC timestamps, decimal
+money/price/quantity, environment, strategy context, and provenance. Immutable
+ephemeral cockpit value/projection rows may instead use their typed identifier/subject/source
+and event/observation/as-of fields; they remain UTC and decimal-exact, carry source/environment/
+provenance where applicable, and cannot authorize a transition:
 
 - `MarketBar` / `MarketQuote` / `MarketDepthSnapshot`;
 - `SignalEvent`;
@@ -104,9 +120,15 @@ environment, strategy context, and provenance:
 - `RiskDecision`;
 - `ApprovalRecord`;
 - `ChartAnnotation` linked to evidence and lifecycle environment.
+- `PaperBotSnapshot` / `SignalWatchSnapshot`;
+- `AttentionItem` / `FindingItem`;
+- `PortfolioPerformance` / `CockpitSnapshot`.
 
 Strategy logic may propose an intent and levels; only the independent risk and
 approval layers may permit paper/live routing.
+
+The paper/cockpit records are additive projections. They do not change the existing
+S2 validators, S2 reachable approval states, or the historical-research contracts.
 
 ## Chart and market-data strategy
 
@@ -173,10 +195,11 @@ dashboard may show configuration presence but must never display a secret value.
 AI may propose research, extraction, or red-team output. It may not approve risk,
 route an order, modify paper/live capital, or bypass a deterministic gate.
 
-Any future first demo wallet belongs to S3 and would use real public market observations
-with explicitly synthetic capital and an immutable paper ledger. It is not authorized
-in S2, is not an exchange account, and cannot be upgraded to real capital merely by
-changing a frontend toggle.
+The first S3 paper portfolio uses real public market observations with explicitly
+synthetic USDT and an immutable local paper ledger. The implementation may remain
+dormant in S2, but no bot may start until HG-3 and a matching validation-approved
+strategy context exist. It is not an exchange account and cannot be upgraded to real
+capital merely by changing a frontend toggle.
 
 ## Reuse register for this roadmap
 

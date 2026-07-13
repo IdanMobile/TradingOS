@@ -1,10 +1,17 @@
 # Initiative 15 — Paper Trading (S3)
 
-Requirement source: AD §AA, PROGRAM_PLAN S3, North Star G12. Entry criteria: S2 exit (HG-3) + ≥1 validated strategy. All tasks DEFERRED-S3; recorded to keep the path explicit, not to authorize work.
+Requirement source: AD §AA, PROGRAM_PLAN S3, North Star G12. Entry criteria: S2 exit
+(HG-3) + ≥1 validation-approved strategy context. T-015-01's architecture decision is
+complete and locked; paper activation and real paper-observation work remain DEFERRED-S3,
+and venue/live work retains its later human gates. Recording implementation machinery does
+not authorize a bot to start.
 
-## T-015-01 Paper-lane architecture decision (engine dry-run vs venue testnet/demo)
+## T-015-01 Paper-lane architecture decision (local simulator vs venue testnet/demo)
 - Inputs: bake-off paper-path evidence; venue demo capabilities (OKX demo confirmed; Binance testnet/demo — REG §6). Acceptance: decision-log entry with evidence.
-- Status: **DEFERRED-S3** — requires S2 exit, HG-3, and a validated strategy.
+- Status: **ARCHITECTURE LOCKED; ACTIVATION DEFERRED-S3** — the recommendation
+  prepared 2026-07-12 (D-043) is now operator-adopted: local synthetic simulator
+  first, venue testnet only after HG-4. Activation remains pending HG-3 and a
+  validation-approved strategy context. See `docs/program/S3_READINESS_PACKAGE.md`.
 
 ## T-015-02 Paper deployment of first validated strategy
 - Acceptance: paper bot runs with environment tagging, synthetic-capital accounting, full logging.

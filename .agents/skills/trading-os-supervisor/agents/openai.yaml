@@ -1,0 +1,4 @@
+interface:
+  display_name: "Trading OS Supervisor"
+  short_description: "Supervise trading-system architecture and strategy"
+  default_prompt: "Use $trading-os-supervisor to determine the right review or research mode, verify evidence, and supervise the Trading OS without executing trades."

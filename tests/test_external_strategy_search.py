@@ -8,6 +8,7 @@ no network, no engines.
 
 from __future__ import annotations
 
+import math
 import sys
 from decimal import Decimal
 from pathlib import Path
@@ -72,9 +73,53 @@ def seed_fees() -> Decimal:
     return ext.seed.FEES
 
 
-def test_twenty_public_strategies_registered() -> None:
-    # The operator asked for ~20 copied public strategies; guard the roster size
-    # and that every one carries a public source attribution (copied, not generated).
-    assert len(ext.STRATEGIES) == 20
+def test_public_strategy_roster_is_registered() -> None:
+    # 20 original + 8 indicators + 4 candlestick patterns; each carries a public source.
+    assert len(ext.STRATEGIES) == 32
     assert all(s.source and s.variants for s in ext.STRATEGIES)
-    assert len({s.strategy_id for s in ext.STRATEGIES}) == 20
+    assert len({s.strategy_id for s in ext.STRATEGIES}) == 32
+    assert sum(1 for s in ext.STRATEGIES if s.family == "pattern") == 4
+
+
+def test_engulfing_pattern_detects_a_bullish_reversal() -> None:
+    # A down bar, then an up bar whose body engulfs it -> bullish engulfing entry.
+    o = [Decimal("100"), Decimal("97")]
+    close = [Decimal("98"), Decimal("101")]
+    candles = {"open": o, "high": close, "low": o, "close": close, "volume": close}
+    entries, exits = ext.engulfing(Decimal("1.0"))(candles)
+    assert entries[1] is True and exits[1] is False
+
+
+def _ohlc_up(n: int, spread: str = "0.5") -> dict[str, list[Decimal]]:
+    closes = [Decimal(100 + i) for i in range(n)]
+    s = Decimal(spread)
+    return {
+        "open": closes,
+        "high": [c + s for c in closes],
+        "low": [c - s for c in closes],
+        "close": closes,
+        "volume": closes,
+    }
+
+
+def test_new_oscillators_stay_in_bounds() -> None:
+    c = _candles([100 + (i % 7) - 3 for i in range(60)])  # oscillating
+    stoch = [v for v in ext._stochastic_k(c, 14) if v is not None]
+    williams = [v for v in ext._williams(c, 14) if v is not None]
+    assert stoch and all(Decimal(0) <= v <= Decimal(100) for v in stoch)
+    assert williams and all(Decimal(-100) <= v <= Decimal(0) for v in williams)
+
+
+def test_new_trend_builders_signal_on_a_clean_uptrend() -> None:
+    c = _ohlc_up(120)
+    for builder in (ext.vortex_cross(14), ext.aroon_cross(25), ext.ichimoku_trend(9, 26)):
+        entries, exits = builder(c)
+        assert any(entries)  # a clean uptrend must produce at least one long entry
+        assert not any(e and x for e, x in zip(entries, exits, strict=True))
+
+
+def test_macd_cross_fires_on_changing_momentum() -> None:
+    # A linear trend has a constant MACD (no cross); an oscillating market must cross both ways.
+    closes = [100 + 20 * math.sin(i / 8) for i in range(200)]
+    entries, exits = ext.macd_cross(12, 26, 9)(_candles(closes))
+    assert any(entries) and any(exits)

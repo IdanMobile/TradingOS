@@ -61,8 +61,11 @@ def evaluate_strategy_signals(
     created_at: datetime,
     creator_type: CreatorType,
     provenance: Provenance,
+    initial_held: bool = False,
 ) -> tuple[SignalEvent, ...]:
     """Emit deduplicated long-only state transitions; signals never become orders."""
+    if not isinstance(initial_held, bool):
+        raise StrategyEvaluationError("initial_held must be boolean")
     if not bars:
         return ()
     market = bars[0].market
@@ -75,7 +78,7 @@ def evaluate_strategy_signals(
         raise StrategyEvaluationError("strategy bars must be strictly time ordered")
     contexts = _indicator_contexts(spec, bars)
     signals: list[SignalEvent] = []
-    is_long = False
+    is_long = initial_held
     for bar, context in zip(bars, contexts, strict=True):
         if context is None:
             continue

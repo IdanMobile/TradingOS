@@ -33,7 +33,7 @@ TIMEFRAMES = ("1h", "4h", "1d")  # tradeable frequencies; skip fee-churning 5m/1
 # Require near-complete history per timeframe (~70%+ of full 2021-2026 coverage) so
 # partial / still-downloading series (e.g. a 1-month listing pump) can't contaminate.
 MIN_BARS = {"1h": 33000, "4h": 8000, "1d": 1400}
-ALL_STRATEGIES = (*ext.STRATEGIES, *sig.STRATEGIES)  # 20 public + 5 signal
+ALL_STRATEGIES = (*ext.STRATEGIES, *sig.STRATEGIES)  # 32 public + 5 signal
 
 
 def _load(path: Path) -> ext.Candles:

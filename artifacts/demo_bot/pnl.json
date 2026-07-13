@@ -1,0 +1,11 @@
+{
+  "btc_balance": 1.0004129,
+  "btc_price": 64202.7,
+  "computed_at": "2026-07-13T00:19:04.185320+00:00",
+  "note": "Demo/fake money. Bots trade BTC/USDT and end flat, so this is net realized P&L including fees \u2014 a losing number here is fees paid by a strategy with no genuine edge.",
+  "realized_pnl_usdt": -0.7109,
+  "result": "LOSS",
+  "starting_btc": 1.0,
+  "starting_usdt": 50000.0,
+  "usdt_balance": 49972.7798
+}

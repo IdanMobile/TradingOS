@@ -1,1 +1,5 @@
 {"action": "daily_update", "source": "local_dashboard_operator", "triggered_at": "2026-07-12T09:38:29.093017+00:00"}
+{"action": "daily_update", "idempotency_key": "ee2654f1-d417-42de-9e06-65eda383f294", "phase": "PREPARED", "schema_version": 1, "source": "local_dashboard_operator", "triggered_at": "2026-07-12T19:57:42.187599+00:00"}
+{"action": "daily_update", "idempotency_key": "ee2654f1-d417-42de-9e06-65eda383f294", "phase": "COMPLETED", "schema_version": 1, "source": "local_dashboard_operator", "triggered_at": "2026-07-12T19:57:42.187599+00:00"}
+{"action": "daily_update", "idempotency_key": "9c771768-8c24-4065-a39f-e367df182c91", "phase": "PREPARED", "schema_version": 1, "source": "local_dashboard_operator", "triggered_at": "2026-07-12T19:57:43.382194+00:00"}
+{"action": "daily_update", "idempotency_key": "9c771768-8c24-4065-a39f-e367df182c91", "phase": "COMPLETED", "schema_version": 1, "source": "local_dashboard_operator", "triggered_at": "2026-07-12T19:57:43.382194+00:00"}

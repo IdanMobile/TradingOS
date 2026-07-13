@@ -20,7 +20,7 @@ from enum import StrEnum
 from pathlib import Path
 from typing import Any
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 MAX_LIST_LIMIT = 1000
 MAX_DB_IMAGE_BYTES = 64 * 1024 * 1024
 
@@ -93,6 +93,7 @@ class Schedule:
     next_due: datetime
     max_attempts: int
     timeout_seconds: int
+    enabled: bool
 
 
 _MIGRATIONS: tuple[tuple[str, ...], ...] = (
@@ -144,6 +145,10 @@ _MIGRATIONS: tuple[tuple[str, ...], ...] = (
     (
         """ALTER TABLE jobs ADD COLUMN cancel_requested INTEGER NOT NULL DEFAULT 0
         CHECK (cancel_requested IN (0, 1))""",
+    ),
+    (
+        """ALTER TABLE schedules ADD COLUMN enabled INTEGER NOT NULL DEFAULT 1
+        CHECK (enabled IN (0, 1))""",
     ),
 )
 
@@ -272,7 +277,11 @@ class JobStore:
     @staticmethod
     def _read_file(parent_fd: int, name: str) -> bytes:
         try:
-            descriptor = os.open(name, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=parent_fd)
+            descriptor = os.open(
+                name,
+                os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW,
+                dir_fd=parent_fd,
+            )
         except FileNotFoundError:
             return b""
         try:
@@ -738,7 +747,7 @@ class JobStore:
         with self._connect() as connection:
             connection.execute("BEGIN IMMEDIATE")
             rows = connection.execute(
-                "SELECT * FROM schedules WHERE next_due <= ? ORDER BY next_due",
+                "SELECT * FROM schedules WHERE enabled = 1 AND next_due <= ? ORDER BY next_due",
                 (_stamp(cutoff),),
             ).fetchall()
             for row in rows:
@@ -776,6 +785,36 @@ class JobStore:
                     break
             connection.commit()
         return made
+
+    def set_schedule_enabled(
+        self, schedule_id: str, enabled: bool, *, now: datetime | None = None
+    ) -> Schedule:
+        """Pause future occurrences; resume at the first future slot without backfill."""
+        if not schedule_id.strip() or not isinstance(enabled, bool):
+            raise ValueError("a schedule_id and boolean enabled state are required")
+        with self._connect() as connection:
+            current = connection.execute(
+                "SELECT * FROM schedules WHERE schedule_id = ?", (schedule_id,)
+            ).fetchone()
+            if current is None:
+                raise KeyError(schedule_id)
+            next_due = datetime.fromisoformat(current["next_due"])
+            if enabled:
+                resumed_at = now or utc_now()
+                if next_due <= resumed_at:
+                    interval = int(current["interval_seconds"])
+                    steps = int((resumed_at - next_due).total_seconds() // interval) + 1
+                    next_due += timedelta(seconds=steps * interval)
+            cursor = connection.execute(
+                "UPDATE schedules SET enabled = ?, next_due = ? WHERE schedule_id = ?",
+                (int(enabled), _stamp(next_due), schedule_id),
+            )
+            row = connection.execute(
+                "SELECT * FROM schedules WHERE schedule_id = ?", (schedule_id,)
+            ).fetchone()
+        if row is None or cursor.rowcount != 1:
+            raise KeyError(schedule_id)
+        return _schedule(row)
 
     def _finish(
         self,
@@ -849,4 +888,5 @@ def _schedule(row: sqlite3.Row) -> Schedule:
         next_due=datetime.fromisoformat(row["next_due"]),
         max_attempts=row["max_attempts"],
         timeout_seconds=row["timeout_seconds"],
+        enabled=bool(row["enabled"]),
     )

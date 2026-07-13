@@ -1,0 +1,122 @@
+{
+  "all_weather": false,
+  "basis": "realistic per-leg execution (spot+perp, taker+slippage) from the S3 paper probe",
+  "config": {
+    "lookback": 21,
+    "rebalance": 3,
+    "threshold": 0.0
+  },
+  "counterparty_stress": [
+    {
+      "haircut_pct": 10.0,
+      "recover": "~2 yr",
+      "terminal_loss_pct": -10.0
+    },
+    {
+      "haircut_pct": 25.0,
+      "recover": "~4 yr",
+      "terminal_loss_pct": -25.0
+    },
+    {
+      "haircut_pct": 50.0,
+      "recover": "~9 yr",
+      "terminal_loss_pct": -50.0
+    },
+    {
+      "haircut_pct": 100.0,
+      "recover": "UNRECOVERABLE",
+      "terminal_loss_pct": -100.0
+    }
+  ],
+  "execution_authority": "NONE",
+  "full_period": {
+    "ann_return_pct": 8.4,
+    "leg_toggles": 812,
+    "max_drawdown_pct": -4.7,
+    "periods_8h": 6021,
+    "sharpe_ann": 5.65,
+    "total_return_pct": 55.7
+  },
+  "mode": "OFFLINE_RESEARCH_ONLY",
+  "operator_note": "Gates unchanged: this is evidence for a HUMAN S3/S4 decision, not an activation. execution_authority=NONE; no venue, no orders, no credentials.",
+  "per_regime": {
+    "2021_bull": {
+      "ann_return_pct": 42.6,
+      "max_drawdown_pct": -0.9,
+      "periods": 1095,
+      "positive_period_pct": 67.7,
+      "sharpe_ann": 14.97,
+      "total_return_pct": 42.6
+    },
+    "2022_bear": {
+      "ann_return_pct": -3.8,
+      "max_drawdown_pct": -4.2,
+      "periods": 1095,
+      "positive_period_pct": 50.4,
+      "sharpe_ann": -3.25,
+      "total_return_pct": -3.8
+    },
+    "2023_26_recovery_chop": {
+      "ann_return_pct": 3.7,
+      "max_drawdown_pct": -4.7,
+      "periods": 3831,
+      "positive_period_pct": 59.7,
+      "sharpe_ann": 3.77,
+      "total_return_pct": 13.5
+    }
+  },
+  "per_year": {
+    "2021": {
+      "ann_return_pct": 42.6,
+      "max_drawdown_pct": -0.9,
+      "periods": 1095,
+      "positive_period_pct": 67.7,
+      "sharpe_ann": 14.97,
+      "total_return_pct": 42.6
+    },
+    "2022": {
+      "ann_return_pct": -3.8,
+      "max_drawdown_pct": -4.2,
+      "periods": 1095,
+      "positive_period_pct": 50.4,
+      "sharpe_ann": -3.25,
+      "total_return_pct": -3.8
+    },
+    "2023": {
+      "ann_return_pct": 5.3,
+      "max_drawdown_pct": -0.9,
+      "periods": 1095,
+      "positive_period_pct": 60.8,
+      "sharpe_ann": 5.72,
+      "total_return_pct": 5.3
+    },
+    "2024": {
+      "ann_return_pct": 12.3,
+      "max_drawdown_pct": -0.8,
+      "periods": 1098,
+      "positive_period_pct": 70.7,
+      "sharpe_ann": 11.73,
+      "total_return_pct": 12.4
+    },
+    "2025": {
+      "ann_return_pct": -0.5,
+      "max_drawdown_pct": -1.9,
+      "periods": 1095,
+      "positive_period_pct": 55.3,
+      "sharpe_ann": -0.69,
+      "total_return_pct": -0.5
+    },
+    "2026": {
+      "ann_return_pct": -7.1,
+      "max_drawdown_pct": -3.7,
+      "periods": 543,
+      "positive_period_pct": 44.2,
+      "sharpe_ann": -6.07,
+      "total_return_pct": -3.6
+    }
+  },
+  "schema": "tios-funding-carry-robustness-v1",
+  "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+  "tradeability": "RESEARCH_ONLY \u2014 perps/margin S4-gated; counterparty risk operator-owned",
+  "verdict": "Realistic-execution carry is REGIME-DEPENDENT: 2021_bull 42.6%/yr, 2022_bear -3.8%/yr, 2023_26_recovery_chop 3.7%/yr. Worst calendar year: 2026 at -7.1%/yr (maxDD -3.7%). The binding risk is NOT market regime but COUNTERPARTY: a full exchange default is unrecoverable at any carry rate, so venue selection + collateral custody is the operator decision that dominates \u2014 not the backtest. Diversify venues and cap per-venue equity accordingly."
+}

@@ -1,0 +1,166 @@
+{
+  "best": {
+    "ann_return_pct": -3.3,
+    "bars": 19262,
+    "beta": 0.8412,
+    "entry_z": 2.5,
+    "max_drawdown_pct": -40.0,
+    "pair": "ADAUSDT/DOTUSDT",
+    "sharpe_ann": 0.1,
+    "total_return_pct": -7.1,
+    "trades": 296,
+    "window": 120
+  },
+  "cointegration": [
+    {
+      "beta": 0.793,
+      "cointegrated": true,
+      "df_tstat": -4.364,
+      "oos_bars": 19262,
+      "pair": "ETHUSDT/BTCUSDT"
+    },
+    {
+      "beta": 0.4867,
+      "cointegrated": true,
+      "df_tstat": -5.16,
+      "oos_bars": 19262,
+      "pair": "BNBUSDT/BTCUSDT"
+    },
+    {
+      "beta": 0.8952,
+      "cointegrated": true,
+      "df_tstat": -3.455,
+      "oos_bars": 19262,
+      "pair": "BNBUSDT/ETHUSDT"
+    },
+    {
+      "beta": 0.8332,
+      "cointegrated": false,
+      "df_tstat": -1.334,
+      "oos_bars": 19262,
+      "pair": "LTCUSDT/BTCUSDT"
+    },
+    {
+      "beta": 0.3254,
+      "cointegrated": false,
+      "df_tstat": -2.857,
+      "oos_bars": 19262,
+      "pair": "ETHUSDT/SOLUSDT"
+    },
+    {
+      "beta": 1.1318,
+      "cointegrated": false,
+      "df_tstat": -2.363,
+      "oos_bars": 19262,
+      "pair": "LINKUSDT/ETHUSDT"
+    },
+    {
+      "beta": 1.3216,
+      "cointegrated": false,
+      "df_tstat": -1.599,
+      "oos_bars": 19262,
+      "pair": "DOTUSDT/ETHUSDT"
+    },
+    {
+      "beta": 0.6319,
+      "cointegrated": false,
+      "df_tstat": -2.258,
+      "oos_bars": 19262,
+      "pair": "AVAXUSDT/SOLUSDT"
+    },
+    {
+      "beta": 0.8412,
+      "cointegrated": true,
+      "df_tstat": -4.335,
+      "oos_bars": 19262,
+      "pair": "ADAUSDT/DOTUSDT"
+    },
+    {
+      "beta": 1.2798,
+      "cointegrated": true,
+      "df_tstat": -3.395,
+      "oos_bars": 12937,
+      "pair": "MATICUSDT/ETHUSDT"
+    }
+  ],
+  "execution_authority": "NONE",
+  "frequency": "1h",
+  "g10_dsr": {
+    "dsr": 0.0088,
+    "expected_max_noise_sharpe": 0.0187,
+    "note": "OUT-OF-SAMPLE DSR on in-sample-cointegrated pairs only (no selection lookahead), estimated hedge ratio, 1h. A PASS is a genuine market-neutral OOS edge subject to noted ceilings: short-borrow/funding cost, execution slippage, DF-augmentation lags, and cointegration decay (re-test the gate live).",
+    "threshold": 0.95,
+    "verdict": "FAIL",
+    "verdict_is_genuine": false
+  },
+  "in_sample_frac": 0.6,
+  "mode": "OFFLINE_RESEARCH_ONLY",
+  "pairs_cointegrated_in_sample": 5,
+  "pairs_tested": 10,
+  "schema": "tios-stat-arb-pro-v1",
+  "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+  "top_configs": [
+    {
+      "ann_return_pct": -3.3,
+      "beta": 0.8412,
+      "entry_z": 2.5,
+      "max_drawdown_pct": -40.0,
+      "pair": "ADAUSDT/DOTUSDT",
+      "sharpe_ann": 0.1,
+      "trades": 296,
+      "window": 120
+    },
+    {
+      "ann_return_pct": -8.1,
+      "beta": 0.8412,
+      "entry_z": 2.0,
+      "max_drawdown_pct": -43.2,
+      "pair": "ADAUSDT/DOTUSDT",
+      "sharpe_ann": -0.0,
+      "trades": 436,
+      "window": 120
+    },
+    {
+      "ann_return_pct": -19.1,
+      "beta": 0.4867,
+      "entry_z": 2.5,
+      "max_drawdown_pct": -43.3,
+      "pair": "BNBUSDT/BTCUSDT",
+      "sharpe_ann": -0.59,
+      "trades": 280,
+      "window": 120
+    },
+    {
+      "ann_return_pct": -20.7,
+      "beta": 0.793,
+      "entry_z": 2.5,
+      "max_drawdown_pct": -48.0,
+      "pair": "ETHUSDT/BTCUSDT",
+      "sharpe_ann": -0.6,
+      "trades": 269,
+      "window": 120
+    },
+    {
+      "ann_return_pct": -34.6,
+      "beta": 0.8412,
+      "entry_z": 2.5,
+      "max_drawdown_pct": -68.8,
+      "pair": "ADAUSDT/DOTUSDT",
+      "sharpe_ann": -0.82,
+      "trades": 500,
+      "window": 60
+    },
+    {
+      "ann_return_pct": -38.7,
+      "beta": 0.8412,
+      "entry_z": 2.0,
+      "max_drawdown_pct": -72.0,
+      "pair": "ADAUSDT/DOTUSDT",
+      "sharpe_ann": -0.9,
+      "trades": 746,
+      "window": 60
+    }
+  ],
+  "tradeability": "RESEARCH_ONLY \u2014 short leg needs perps/margin (S4-gated)",
+  "trials_searched": 20
+}

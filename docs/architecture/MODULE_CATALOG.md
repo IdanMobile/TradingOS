@@ -1,7 +1,7 @@
 # Module Catalog — Trading Intelligence OS
 
-Status: S2 architecture-lock specification v1. Boundaries and selected S2 technologies are approved by retained S1 evidence and D-036.
-Date: 2026-07-10
+Status: S2 architecture-lock specification v1 plus dormant, gate-bound S3 paper/cockpit modules.
+Date: 2026-07-12
 Companion: `docs/architecture/AD.md` §E (module map), `TYPE_AND_CONTRACT_CATALOG.md` (types).
 
 ## Dependency law
@@ -118,10 +118,12 @@ S2 infrastructure allocation: SQLite owns operational rows and read models; Parq
 - Tests: identical complete input returns the same batch/artifact refs without recomputation; partial/failure preservation; command allowlist; prohibited execution boundaries.
 
 ### 16. `dashboard_api` + `dashboard_ui`
-- Responsibility: read-only `/api/v1/` and bounded S2 views for Research Lab batches, source-linked candidates, independent score comparisons, historical market/chart annotations, automation status, and inert trading-domain projections.
-- Read model: manifests + operational projections only; UI is never a source of truth. Local batch triggering remains CLI-only throughout S2; persisted scheduling is the only trigger added after the jobs idempotency gate passes.
-- Forbidden: POST/PUT/PATCH/DELETE, trigger/order/approval endpoints, synthetic wallet or account mutation, venue credentials/clients, and demo/paper/live controls or affordances.
-- Tests: JSON serialization/schema contracts; prohibited HTTP methods; disabled execution flags; empty-state rendering.
+- Responsibility: read projections under `/api/v1/` and bounded views for Research Lab batches, source-linked candidates, independent score comparisons, historical market/chart annotations, automation status, inert trading-domain projections, and the dormant paper cockpit. Exactly three audited POST exceptions exist: D-038 workspace decisions, D-041 governed data refresh, and D-044 cockpit actions.
+- Read model: manifests + operational projections only; UI is never a source of truth. Research-batch triggering remains CLI-only throughout S2. Persisted scheduling materializes only allowlisted future jobs after the jobs idempotency gate; D-041's fixed data refresh is a separately audited operation.
+- Allowed writes: only `POST /api/v1/workspace-actions/decision`, `POST /api/v1/workspace-actions/data-update`, and `POST /api/v1/cockpit-actions`, each under its decision-recorded allowlist, audit, loopback, and request-safety contract.
+- Forbidden: every other POST/PUT/PATCH/DELETE target; exchange-order, force-entry/exit, stage-gate approval, synthetic-capital mutation, credential/venue-client, and live-control endpoints or affordances.
+- Tests: JSON serialization/schema contracts; exact POST allowlists and prohibited methods; disabled execution flags; unavailable and empty-state rendering.
+- Dormant paper service: the implemented `services/paper` runtime provides gate-bound local simulation over Binance public data, confined append-only synthetic accounting, bot/signal/risk/portfolio projections, and replayable operational evidence. Import is inert; initialization and bot activation require approved HG-3 evidence plus a matching validation-approved strategy context. Credentials, account/order endpoints, venue routes, exchange orders, real money, and gate/risk bypass remain forbidden.
 
 ### 17. `reporting`
 - Responsibility: build the mandated `artifacts/reports/*.md` from machine-readable inputs (reports are projections, never hand-maintained truth).

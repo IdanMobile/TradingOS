@@ -1,0 +1,89 @@
+{
+  "best_mtf": {
+    "sharpe_ann": 1.33,
+    "strategy_id": "EXT-GOLDEN-CROSS"
+  },
+  "entry_timeframe": "1h",
+  "execution_authority": "NONE",
+  "g10_dsr": {
+    "dsr": 0.9778,
+    "note": "MTF is a causal higher-TF trend FILTER; it can improve trade selection but cannot create edge from nothing. Full-sample; see out_of_sample for the honest test.",
+    "threshold": 0.95,
+    "verdict": "PASS",
+    "verdict_is_genuine": false
+  },
+  "mode": "OFFLINE_RESEARCH_ONLY",
+  "mtf_helped_count": "5/6",
+  "out_of_sample": {
+    "oos_dsr": 0.7802,
+    "oos_sharpe_ann": 0.52,
+    "selected": "EXT-GOLDEN-CROSS on SOLUSDT",
+    "selection_pool": 36,
+    "takeaway": "full-sample PASS was a regime/selection artifact \u2014 collapses out-of-sample",
+    "train_sharpe_ann": 1.68,
+    "verdict": "FAIL",
+    "verdict_is_genuine": false
+  },
+  "pairs": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "BNBUSDT",
+    "SOLUSDT",
+    "LINKUSDT",
+    "LTCUSDT"
+  ],
+  "per_strategy": [
+    {
+      "base_sharpe_ann": 0.64,
+      "base_trades": 766,
+      "mtf_helped": true,
+      "mtf_sharpe_ann": 0.87,
+      "mtf_trades": 408,
+      "strategy_id": "EXT-DONCHIAN-40"
+    },
+    {
+      "base_sharpe_ann": 1.38,
+      "base_trades": 284,
+      "mtf_helped": false,
+      "mtf_sharpe_ann": 1.33,
+      "mtf_trades": 180,
+      "strategy_id": "EXT-GOLDEN-CROSS"
+    },
+    {
+      "base_sharpe_ann": 0.14,
+      "base_trades": 3751,
+      "mtf_helped": true,
+      "mtf_sharpe_ann": 0.56,
+      "mtf_trades": 1799,
+      "strategy_id": "EXT-MACD-CROSS"
+    },
+    {
+      "base_sharpe_ann": 0.49,
+      "base_trades": 1078,
+      "mtf_helped": true,
+      "mtf_sharpe_ann": 0.93,
+      "mtf_trades": 556,
+      "strategy_id": "EXT-KELTNER-BREAKOUT"
+    },
+    {
+      "base_sharpe_ann": 0.93,
+      "base_trades": 1602,
+      "mtf_helped": true,
+      "mtf_sharpe_ann": 1.09,
+      "mtf_trades": 822,
+      "strategy_id": "EXT-TREND-SMA200"
+    },
+    {
+      "base_sharpe_ann": -0.21,
+      "base_trades": 4915,
+      "mtf_helped": true,
+      "mtf_sharpe_ann": 0.32,
+      "mtf_trades": 2435,
+      "strategy_id": "EXT-VORTEX"
+    }
+  ],
+  "schema": "tios-mtf-confluence-v1",
+  "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+  "trend_filter": "daily close > SMA50",
+  "trend_timeframe": "1d"
+}

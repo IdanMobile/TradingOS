@@ -714,7 +714,7 @@ def test_dashboard_includes_read_only_tradingview_market_monitor() -> None:
         / "dashboard_ui"
         / "dashboard.html"
     ).read_text()
-    assert 'data-view="market"' in html
+    assert "['market','Market monitor']" in html
     assert "external-embedding/embed-widget-advanced-chart.js" in html
     assert "NO ORDERS" in html
     assert "tradingview-widget-copyright" in html
@@ -730,15 +730,15 @@ def test_dashboard_includes_read_only_tradingview_market_monitor() -> None:
         "Live trading",
         "Trading Domain",
         "Orders, portfolio & risk",
-        "Demo wallet boundary",
-        "S3 paper/demo readiness",
-        "S4 live readiness",
-        "blocked gate chain",
+        "Simulator boundary",
+        "Synthetic paper readiness",
+        "Live readiness",
+        "gate-bound activation chain",
         "human-only future stage",
-        "Demo wallet readiness",
-        "Demo wallet invariants",
+        "Legacy demo-wallet contract",
+        "Demo-wallet invariants",
         "DESIGN_ONLY_NOT_ACTIVATED",
-        "synthetic capital not authorized",
+        "separate from the confined paper simulator",
         "Dictionary",
         "Concept registry",
         "Ontology boundary",
@@ -763,7 +763,7 @@ def test_dashboard_includes_read_only_tradingview_market_monitor() -> None:
     ):
         assert label in html
     assert "Changed files" not in html
-    assert "No venue connectivity, paper/live execution, credentials, or order execution" in html
+    assert "Research automation cannot control the gate-bound simulator" in html
 
 
 def test_dashboard_activity_maps_one_to_one_to_real_artifacts() -> None:
@@ -797,18 +797,667 @@ def test_dashboard_ui_a11y_responsive_and_state_contracts() -> None:
         'id="marketProvenance"',
         'aria-describedby="marketProvenance candleTable"',
         'aria-details="candleTable"',
-        "STALE_MS=15000",
-        "MARKET_POLL_MS=15000",
-        "setInterval(()=>{if(document.querySelector('#market').classList.contains('active'))loadMarket()}",
+        'id="refreshRate"',
+        '<option value="15000" selected>15s</option>',
+        "networkTimer=setInterval(()=>sharedRefresh(false),Number(value))",
+        "document.addEventListener('visibilitychange'",
+        "showing last-good snapshot",
         "marketLoading=true",
-        "last successful refresh",
+        "Last updated",
         "returned malformed JSON",
         'id="retry"',
+        "crypto.randomUUID()",
+        "idempotency_key:idempotencyKey",
+        "dataUpdateKey||(dataUpdateKey=crypto.randomUUID())",
     ):
         assert contract in html
+    assert "POLL_MS=5000" not in html
+    assert "MARKET_POLL_MS=15000" not in html
     assert "Array.from({length:24}" not in html
     assert "HG-2" not in html
     assert "S1" not in html
+
+
+def test_humanized_cockpit_has_exactly_five_workspaces_and_overview_is_default() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+
+    assert re.findall(r'<button[^>]+data-workspace="([^"]+)"', html) == [
+        "now",
+        "trading",
+        "research",
+        "operations",
+        "library",
+    ]
+    assert (
+        '<button class="active" data-workspace="now" aria-current="page">Overview</button>' in html
+    )
+    assert '<span id="crumb">OVERVIEW</span>' in html
+    assert 'id="workspaceTools" aria-label="Overview tools" hidden' in html
+    assert '<section id="now" class="view active"' in html
+    assert "showWorkspace('now')" in html
+    assert "now:[['now','Overview']]" in html
+    assert "['ArrowDown','ArrowUp','Home','End']" in html
+    assert "workspaceButtons[index].focus()" in html
+    for preserved_view in (
+        "market",
+        "research-lab",
+        "strategies",
+        "comparisons",
+        "validation",
+        "automation",
+        "operations",
+        "workspace",
+        "datasets",
+        "runs",
+        "engines",
+        "dictionary",
+        "search",
+        "evidence",
+    ):
+        assert f'<section id="{preserved_view}"' in html or f'id="{preserved_view}"' in html
+
+
+def test_single_child_workspace_has_no_subtab_but_multi_child_workspaces_do() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    navigation = html[html.index("const WORKSPACES=") : html.index("const workspaceButtons=")]
+    script = f"""
+const classList=()=>{{
+  const values=new Set();
+  return {{
+    toggle(name,force){{if(force)values.add(name);else values.delete(name)}},
+    remove(name){{values.delete(name)}},
+    contains(name){{return values.has(name)}}
+  }};
+}};
+const button=(workspace,label)=>({{
+  dataset:{{workspace}},textContent:label,classList:classList(),attributes:{{}},
+  setAttribute(name,value){{this.attributes[name]=value}},
+  removeAttribute(name){{delete this.attributes[name]}},
+  addEventListener(){{}}
+}});
+const workspaceButtons=[
+  button('now','Overview'),button('trading','Trading'),button('research','Research'),
+  button('operations','Operations'),button('library','Library')
+];
+const views=['now','paper-trading','market'].map(id=>({{id,classList:classList()}}));
+const crumb={{textContent:''}};
+const toolNav={{
+  hidden:false,attributes:{{}},buttons:[],_innerHTML:'',
+  setAttribute(name,value){{this.attributes[name]=value}},
+  set innerHTML(value){{
+    this._innerHTML=value;this.buttons=[];
+    for(const match of value.matchAll(/data-view="([^"]+)"[^>]*>([^<]+)<\\/button>/g)){{
+      const item=button('',match[2]);item.dataset={{view:match[1]}};this.buttons.push(item);
+    }}
+  }},
+  get innerHTML(){{return this._innerHTML}},
+  querySelectorAll(){{return this.buttons}}
+}};
+const document={{
+  body:{{classList:classList()}},
+  querySelectorAll(selector){{
+    if(selector==='.view')return views;
+    if(selector==='#workspaceTools [data-view]')return toolNav.buttons;
+    if(selector==='[data-workspace]')return workspaceButtons;
+    return [];
+  }},
+  querySelector(selector){{
+    if(selector==='#workspaceTools')return toolNav;
+    if(selector==='#crumb')return crumb;
+    const match=/^\\[data-workspace="([^"]+)"\\]$/.exec(selector);
+    return match?workspaceButtons.find(item=>item.dataset.workspace===match[1]):null;
+  }}
+}};
+const navToggle={{setAttribute(){{}}}},window={{}},initTradingView=()=>{{}},loadMarket=()=>{{}};
+const esc=value=>String(value);
+{navigation}
+showWorkspace('now');
+const overview={{
+  hidden:toolNav.hidden,html:toolNav.innerHTML,crumb:crumb.textContent,
+  label:toolNav.attributes['aria-label'],active:views[0].classList.contains('active')
+}};
+showWorkspace('trading');
+const trading={{
+  hidden:toolNav.hidden,html:toolNav.innerHTML,crumb:crumb.textContent,
+  label:toolNav.attributes['aria-label'],controls:toolNav.buttons.length,
+  firstCurrent:toolNav.buttons[0].attributes['aria-current']
+}};
+console.log(JSON.stringify({{overview,trading}}));
+"""
+    state = json.loads(
+        subprocess.run(
+            ["node", "--input-type=module", "-"],
+            input=script,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+    )
+
+    assert state["overview"] == {
+        "hidden": True,
+        "html": "",
+        "crumb": "OVERVIEW",
+        "label": "Overview tools",
+        "active": True,
+    }
+    assert state["trading"]["hidden"] is False
+    assert state["trading"]["controls"] == 2
+    assert state["trading"]["crumb"] == "TRADING / PORTFOLIO, BOTS & SIGNALS"
+    assert state["trading"]["label"] == "Trading tools"
+    assert state["trading"]["firstCurrent"] == "page"
+    assert 'data-view="paper-trading"' in state["trading"]["html"]
+    assert 'data-view="market"' in state["trading"]["html"]
+
+
+def test_responsive_layout_breakpoints_cover_all_workspaces() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+
+    assert (
+        "@media(max-width:1180px){.shell{grid-template-columns:200px minmax(0,1fr)}"
+        ".grid{grid-template-columns:repeat(2,minmax(0,1fr))}"
+        ".layout,.market-grid{grid-template-columns:1fr}}" in html
+    )
+    assert (
+        "@media(max-width:900px){.shell{display:block}.sidebar{height:auto;position:static;" in html
+    )
+    assert (
+        ".topbar{position:static;padding:12px 24px;align-items:flex-start;"
+        "flex-direction:column}" in html
+    )
+    assert ".env{width:100%;justify-content:flex-start}" in html
+    assert ".workspace-tools{flex-wrap:wrap;overflow-x:visible}" in html
+    assert "@media(max-width:1180px){.cockpit-head{grid-template-columns:1fr}" in html
+    assert ".portfolio-main,.section-grid{grid-template-columns:1fr}" in html
+    assert "@media(max-width:1000px)" not in html
+
+
+def test_mobile_tables_chart_and_sidebar_have_bounded_layout_contracts() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    datasets = html[
+        html.index("document.querySelector('#datasetsBody')") : html.index(
+            "document.querySelector('#strategiesBody')"
+        )
+    ]
+    mount = re.search(r'<div id="tradingviewWidgetMount"[^>]*>', html)
+
+    assert mount is not None
+    assert 'style="' not in mount.group()
+    assert ".tradingview-widget-container{height:650px;min-height:0}" in html
+    assert ".tradingview-widget-container{height:520px;min-height:0}" in html
+    assert ".market-grid{grid-template-columns:1fr}" in html
+    assert (
+        '<div class="table-wrap" tabindex="0" role="region" '
+        'aria-label="Frozen data registry table"><table>' in datasets
+    )
+    assert datasets.index('</table></div><p class="mono">Manifest:') > datasets.index(
+        'aria-label="Frozen data registry table"'
+    )
+    assert ".table-wrap:focus-visible{outline:3px solid var(--cyan)" in html
+    assert (
+        ".sidebar{border-right:1px solid var(--line);padding:24px 16px;"
+        "background:#09101b;position:sticky;top:0;height:100vh;display:flex;"
+        "flex-direction:column;overflow-y:auto}" in html
+    )
+    assert ".sidebar-foot{margin-top:auto;padding:20px 10px 0" in html
+    assert ".sidebar-foot{position:absolute" not in html
+    assert ".title-row>.action{margin-top:16px}" in html
+    assert "}.action{margin-top:16px}" not in html
+
+
+def test_collapsed_workspace_selection_hands_focus_to_main_only_on_small_screens() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    source = html[html.index("function showWorkspace") : html.index("const workspaceButtons")]
+    script = f"""
+const classList=()=>{{
+  const values=new Set();
+  return {{
+    add(name){{values.add(name)}},remove(name){{values.delete(name)}},
+    contains(name){{return values.has(name)}},
+    toggle(name,force){{if(force)values.add(name);else values.delete(name)}}
+  }};
+}};
+const body={{classList:classList()}},main={{calls:[],focus(options){{this.calls.push(options)}}}};
+const navToggle={{
+  expanded:'true',
+  setAttribute(name,value){{if(name==='aria-expanded')this.expanded=value}}
+}};
+const toolNav={{hidden:false,innerHTML:'',setAttribute(){{}},querySelectorAll(){{return []}}}};
+const button=(workspace,label)=>({{
+  dataset:{{workspace}},textContent:label,classList:classList(),
+  setAttribute(){{}},removeAttribute(){{}}
+}});
+const buttons=[button('now','Overview'),button('trading','Trading'),button('research','Research')];
+const document={{
+  body,
+  querySelectorAll(selector){{return selector==='[data-workspace]'?buttons:[]}},
+  querySelector(selector){{
+    if(selector==='#workspaceTools')return toolNav;
+    if(selector==='#main-content')return main;
+    const match=/^\\[data-workspace="([^"]+)"\\]$/.exec(selector);
+    return match?buttons.find(item=>item.dataset.workspace===match[1]):null;
+  }}
+}};
+let matches=true,activeWorkspace='now';
+const window={{
+  matchMedia(query){{
+    if(query!=='(max-width:900px)')throw new Error(query);
+    return {{matches}};
+  }}
+}};
+const WORKSPACES={{
+  now:[['now','Overview']],
+  trading:[['paper-trading','Portfolio, bots & signals'],['market','Market monitor']],
+  research:[['research-lab','Research Lab'],['validation','Validation']]
+}};
+const esc=value=>String(value),showView=()=>{{}};
+{source}
+body.classList.add('nav-open');showWorkspace('trading');
+const mobile={{
+  focuses:main.calls.length,
+  options:main.calls[0],
+  open:body.classList.contains('nav-open'),
+  expanded:navToggle.expanded
+}};
+matches=false;body.classList.add('nav-open');showWorkspace('research');
+console.log(JSON.stringify({{mobile,desktopFocuses:main.calls.length}}));
+"""
+    state = json.loads(
+        subprocess.run(
+            ["node", "--input-type=module", "-"],
+            input=script,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+    )
+
+    assert state["mobile"] == {
+        "focuses": 1,
+        "options": {"preventScroll": True},
+        "open": False,
+        "expanded": "false",
+    }
+    assert state["desktopFocuses"] == 1
+
+
+def test_now_screen_order_and_plain_language_boundary_are_static_contracts() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    ordered_ids = [
+        'id="environmentHeading"',
+        'id="nowHeadline"',
+        'id="attentionPanel"',
+        'id="portfolioBody"',
+        'id="botsList"',
+        'id="positionsList"',
+        'id="leaderboardBody"',
+        'id="signalsList"',
+        'id="findingsList"',
+        'id="recentActivity"',
+    ]
+    indexes = [html.index(contract) for contract in ordered_ids]
+    assert indexes == sorted(indexes)
+    assert "Gate-bound synthetic paper cockpit" in html
+    assert "No real money · no venue or live orders" in html
+    assert "no real money, account or exchange orders" in html
+
+
+def test_attention_rows_render_a_vertical_text_hierarchy() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    source = html[html.index("function renderAttention") : html.index("function renderPortfolio")]
+
+    assert ".attention-row>div{display:grid;gap:4px;min-width:0}" in html
+    assert ".attention-row strong,.attention-row small{display:block}" in html
+    assert ".attention-row small{color:var(--muted);line-height:1.45}" in html
+    assert ".attention-row small:first-of-type{color:#b9c7d8}" in html
+    assert source.index("<div><strong>") < source.index("<small>${esc(summary)}</small>")
+    assert source.index("<small>${esc(summary)}</small>") < source.index(
+        "<small>${esc(humanStatus(item.severity"
+    )
+    assert ".attention-row .action{grid-column:2" in html
+
+
+def test_cockpit_range_refresh_visibility_and_last_good_contracts() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+
+    assert re.findall(r'data-range="([^"]+)"', html) == [
+        "24h",
+        "1d",
+        "3d",
+        "7d",
+        "1m",
+        "all",
+    ]
+    assert re.findall(r'<option value="(off|5000|15000|60000)"', html) == [
+        "off",
+        "5000",
+        "15000",
+        "60000",
+    ]
+    assert "selectedRange=button.dataset.range" in html
+    assert "document.hidden&&!manual" in html
+    assert "if(document.hidden||value==='off')return" in html
+    assert "if(cockpitLastGood){renderFreshness(cockpitLastGood.freshness,true)" in html
+    assert "state==='Delayed'?'Stale':state" in html
+    assert "cockpitLastGood=snapshot" in html
+    assert "cockpitRefreshQueued=true" in html
+    assert "requestedRange!==selectedRange" in html
+    assert html.count("networkTimer=setInterval") == 1
+
+
+def test_cockpit_refresh_queue_keeps_latest_range_and_same_range_follow_up() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    source = html[
+        html.index("function refreshCockpitSnapshot") : html.index("async function loadAll")
+    ]
+    script = f"""
+var cockpitRefreshQueued=false,cockpitRefreshPromise=null,cockpitLoading=false;
+var cockpitLastGood=null,cockpitLastSuccess=0,cockpitLastError='',cockpitRefreshFailed=false;
+var selectedRange='24h',calls=[],renders=[],resolvers=[];
+var content={{setAttribute(){{}},removeAttribute(){{}}}};
+var refresh={{setAttribute(){{}},removeAttribute(){{}},textContent:''}};
+var retry={{hidden:false}};
+var fetchJson=async url=>{{
+  calls.push(url);return await new Promise(resolve=>resolvers.push(resolve));
+}};
+var renderCockpit=snapshot=>renders.push(snapshot.tag||snapshot.range);
+var renderFreshness=()=>{{}},setHealthIndicator=()=>{{}};
+var renderCockpitUnavailable=()=>{{}},updateDisplayStatus=()=>{{}};
+{source}
+var tick=()=>new Promise(resolve=>setImmediate(resolve));
+var first=refreshCockpitSnapshot();await tick();
+selectedRange='1d';var latest=refreshCockpitSnapshot();
+resolvers.shift()({{range:'24h',tag:'stale-24h'}});await tick();
+resolvers.shift()({{range:'1d',tag:'latest-1d'}});await Promise.all([first,latest]);
+var sameFirst=refreshCockpitSnapshot();await tick();var sameFollow=refreshCockpitSnapshot();
+resolvers.shift()({{range:'1d',tag:'before-action'}});await tick();
+resolvers.shift()({{range:'1d',tag:'after-action'}});await Promise.all([sameFirst,sameFollow]);
+console.log(JSON.stringify({{calls,renders}}));
+"""
+    result = subprocess.run(
+        ["node", "--input-type=module", "-"],
+        input=script,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    state = json.loads(result.stdout)
+
+    assert state["calls"] == [
+        "/api/v1/cockpit?range=24h",
+        "/api/v1/cockpit?range=1d",
+        "/api/v1/cockpit?range=1d",
+        "/api/v1/cockpit?range=1d",
+    ]
+    assert state["renders"] == ["latest-1d", "before-action", "after-action"]
+
+
+def test_first_cockpit_failure_renders_explicit_unavailable_state_without_zeros() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    source = html[
+        html.index("function renderCockpitUnavailable") : html.index("const cockpitActionIdentity")
+    ]
+    script = f"""
+var nodes=new Map();
+var node=()=>({{
+  innerHTML:'',textContent:'',className:'',hidden:false,classList:{{remove(){{}}}}
+}});
+var document={{querySelector:selector=>{{
+  if(!nodes.has(selector))nodes.set(selector,node());return nodes.get(selector);
+}}}};
+var selectedRange='24h',health=null;
+var esc=value=>String(value??'').replace(/[&<>\"']/g,char=>({{
+  '&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'
+}}[char]));
+var setHealthIndicator=(state,label)=>health={{state,label}},renderCockpitActionStatus=()=>{{}};
+{source}
+renderCockpitUnavailable(new Error('offline'));
+var selectors=[
+  '#nowHeadline','#freshnessList','#attentionList','#portfolioBody','#botsList',
+  '#positionsList','#leaderboardBody','#signalsList','#findingsList',
+  '#recentActivity','#paperTradingBody'
+];
+var output=selectors
+  .map(selector=>nodes.get(selector).innerHTML||nodes.get(selector).textContent)
+  .join(' ');
+console.log(JSON.stringify({{output,health,updated:nodes.get('#cockpitUpdated').textContent,retryText:nodes.get('#portfolioBody').innerHTML}}));
+"""
+    state = json.loads(
+        subprocess.run(
+            ["node", "--input-type=module", "-"],
+            input=script,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+    )
+
+    assert state["health"] == {"state": "unavailable", "label": "Cockpit unavailable"}
+    assert "unavailable" in state["output"].lower()
+    assert "offline" in state["output"]
+    assert state["updated"] == "No cockpit snapshot has been loaded."
+    assert "$0" not in state["output"]
+    assert "0 USDT" not in state["output"]
+    assert "Loading retained" not in state["output"]
+    assert "else renderCockpitUnavailable(error);retry.hidden=false" in html
+    assert "if(cockpitRefreshFailed){refresh.textContent=`Cockpit unavailable:" in html
+
+
+def test_paper_mode_recovers_from_error_color_on_valid_retry() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    function = re.search(r"function setPaperTradingMode\(snapshot\)\{.*?\n", html)
+    assert function
+    script = f"""
+var mode={{className:'badge red',textContent:'UNAVAILABLE'}};
+var document={{querySelector:()=>mode}};
+{function.group(0)}
+setPaperTradingMode({{mode:'SYNTHETIC_LOCAL_SIMULATOR',available:true}});
+var synthetic={{...mode}};
+mode.className='badge red';mode.textContent='UNAVAILABLE';
+setPaperTradingMode({{mode:'RESEARCH_ONLY',available:false}});
+console.log(JSON.stringify({{synthetic,research:mode}}));
+"""
+    state = json.loads(
+        subprocess.run(
+            ["node", "--input-type=module", "-"],
+            input=script,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+    )
+
+    assert state["synthetic"] == {"className": "badge green", "textContent": "SYNTHETIC PAPER"}
+    assert state["research"] == {"className": "badge amber", "textContent": "RESEARCH ONLY"}
+    assert "setPaperTradingMode(snapshot);" in html
+
+
+def test_cockpit_action_retry_reuses_key_and_blocks_opposite_action() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    support = html[
+        html.index("const cockpitActionIdentity") : html.index("function renderCockpitActionStatus")
+    ]
+    action = html[
+        html.index("async function performCockpitActionValues") : html.index("let marketSnapshot")
+    ]
+    script = f"""
+var cockpitActionAttempts=new Map(),calls=[],request=0,refreshes=0;
+var cockpitLastGood={{capabilities:{{actions:['PAUSE_PAPER_ENTRIES','RESUME_PAPER_ENTRIES']}}}};
+var asArray=value=>Array.isArray(value)?value:[],humanStatus=value=>String(value);
+var crypto={{randomUUID:()=> 'stable-action-key'}};
+var renderCockpitActionStatus=()=>{{}},syncCockpitActionButtons=()=>{{}};
+var sharedRefresh=async()=>{{refreshes++}};
+var fetch=async(url,options)=>{{
+  calls.push(JSON.parse(options.body));
+  if(request++===0)throw new Error('network lost');
+  return {{ok:true,json:async()=>({{schema_version:1,status:'recorded'}})}};
+}};
+{support}
+{action}
+await performCockpitActionValues('PAUSE_PAPER_ENTRIES','bot-1');
+var retained=[...cockpitActionAttempts.values()][0],firstError=retained.error;
+await performCockpitActionValues('RESUME_PAPER_ENTRIES','bot-1');
+var callsAfterOpposite=calls.length;
+await performCockpitActionValues('PAUSE_PAPER_ENTRIES','bot-1');
+console.log(JSON.stringify({{calls,callsAfterOpposite,firstError,remaining:cockpitActionAttempts.size,refreshes}}));
+"""
+    state = json.loads(
+        subprocess.run(
+            ["node", "--input-type=module", "-"],
+            input=script,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+    )
+
+    assert state["callsAfterOpposite"] == 1
+    assert [call["idempotency_key"] for call in state["calls"]] == [
+        "stable-action-key",
+        "stable-action-key",
+    ]
+    assert "same idempotency key" in state["firstError"]
+    assert state["remaining"] == 0
+    assert state["refreshes"] == 1
+    assert "retry.hidden" not in action
+
+
+def test_cockpit_unavailable_and_progress_rendering_never_fabricate_values() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    portfolio_source = html[
+        html.index("function renderPortfolio") : html.index("function drawEquityChart")
+    ]
+    bots_source = html[html.index("function renderBots") : html.index("function renderPositions")]
+
+    assert "portfolio.available!==true" in portfolio_source
+    assert "Portfolio unavailable" in portfolio_source
+    assert "$0" not in portfolio_source
+    assert "0 USDT" not in portfolio_source
+    assert "no trades" not in portfolio_source.lower()
+    assert "completion" not in bots_source.lower()
+    assert "conditions_unavailable_reason" in bots_source
+    for forbidden_control in ("Force entry", "Close position", "Cancel order", "Stop all"):
+        assert f">{forbidden_control}<" not in html
+
+
+def test_global_pause_action_mode_health_and_empty_table_contracts() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    bots_source = html[html.index("function renderBots") : html.index("function renderPositions")]
+    paper_source = html[
+        html.index("function renderPaperTrading") : html.index("function renderCockpit")
+    ]
+
+    assert "Pause new entries for all paper bots" in bots_source
+    assert "Resume new entries for all paper bots" in bots_source
+    assert (
+        "Open synthetic positions continue following their retained exit and risk rules"
+        in bots_source
+    )
+    assert bots_source.count("data-cockpit-action") == 1
+    assert 'id="cockpitActionStatus"' in html
+    assert "const cockpitActionAttempts=new Map()" in html
+    assert "Retry same action" in html
+    assert "No paper execution lane is active" not in html
+    assert "no synthetic wallet ledger" not in html
+    assert "every execution capability is absent or disabled in S2" not in html
+    assert "offline research only" not in html
+    assert "demo, paper, and live trading are disabled" not in html
+    assert '<span class="dot" id="healthDot"' in html
+    assert '<span class="dot live" id="healthDot"' not in html
+    assert '<span class="visually-hidden">${esc(detail)}</span>' in html
+    assert 'colspan="7">No gate-approved paper bot is retained.' in paper_source
+    assert 'colspan="6">No synthetic position is open' in paper_source
+    assert 'colspan="6">No retained synthetic signal watch is active.' in paper_source
+
+
+def test_fraction_percent_formatter_is_exact_and_unavailable_reasons_are_preserved() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    function = re.search(r"function fractionPercent\(value\)\{.*?\n\}", html, re.DOTALL)
+    assert function
+    script = (
+        function.group(0) + "\nconsole.log(JSON.stringify(['0.12345','-0.005','1','bad',null]"
+        ".map(fractionPercent)));"
+    )
+    values = json.loads(
+        subprocess.run(["node", "-e", script], capture_output=True, text=True, check=True).stdout
+    )
+
+    assert values == ["12.35%", "-0.50%", "100.00%", None, None]
+    leaderboard = html[
+        html.index("function renderLeaderboard") : html.index("function renderSignals")
+    ]
+    assert "row.return_unavailable_reason" in leaderboard
+    assert "row.allocation_unavailable_reason" in leaderboard
+    assert "moneyText(row.allocated_capital,'USDT')" in leaderboard
+
+
+def test_equity_chart_has_exact_accessible_table_and_chart_only_parses_coordinates() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    portfolio_source = html[
+        html.index("function renderPortfolio") : html.index("function renderBots")
+    ]
+
+    assert 'id="equityChart"' in portfolio_source
+    assert 'role="img"' in portfolio_source
+    assert 'aria-describedby="equityTable"' in portfolio_source
+    assert 'aria-details="equityTable"' in portfolio_source
+    assert "Every retained equity point plotted" in portfolio_source
+    assert "points.map(point=>" in portfolio_source
+    assert "Number.parseFloat(point?.equity)" in portfolio_source
+    assert "Number.parseFloat" not in html[: html.index("function drawEquityChart")]
+    assert "Math.min(...values)" not in portfolio_source
+    assert "for(const value of values)" in portfolio_source
+
+
+def test_dashboard_inline_javascript_parses() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    scripts = [
+        body
+        for attributes, body in re.findall(r"<script([^>]*)>(.*?)</script>", html, re.DOTALL)
+        if "src=" not in attributes
+    ]
+    result = subprocess.run(
+        ["node", "--check", "-"],
+        input="\n".join(scripts),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
 
 
 def test_market_success_then_failure_clears_all_prior_evidence_contract() -> None:
@@ -1033,6 +1682,29 @@ def test_workspace_decision_recording_is_validated_and_retained(tmp_path: Path) 
         record_workspace_decision(tmp_path, {"task_id": "T-011-05", "choice": "place_order"})
 
 
+def test_workspace_decision_audit_refuses_parent_symlink_escape(tmp_path: Path) -> None:
+    (tmp_path / "todos").mkdir()
+    (tmp_path / "todos/11_ai_agent_eval.md").write_text(
+        "# Initiative 11\n\n## T-011-05 First real runs\n- Status: **DEFERRED-CREDENTIALS**.\n"
+    )
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    artifacts = tmp_path / "artifacts"
+    artifacts.mkdir()
+    (artifacts / "human_decisions").symlink_to(outside, target_is_directory=True)
+
+    with pytest.raises(ValueError, match="audit path"):
+        record_workspace_decision(
+            tmp_path,
+            {
+                "task_id": "T-011-05",
+                "choice": "keep_deferred",
+                "idempotency_key": "decision-symlink",
+            },
+        )
+    assert not (outside / "workspace_decisions.jsonl").exists()
+
+
 @pytest.mark.parametrize("host", ["127.0.0.1", "127.0.0.2", "::1", "localhost"])
 def test_dashboard_accepts_loopback_hosts(host: str) -> None:
     assert is_loopback_host(host)
@@ -1165,7 +1837,7 @@ def test_workspace_decision_post_is_the_only_allowed_write_path(tmp_path: Path) 
     (tmp_path / "todos/11_ai_agent_eval.md").write_text(
         "# Initiative 11\n\n## T-011-05 First real runs\n- Status: **DEFERRED-CREDENTIALS**.\n"
     )
-    body = b'{"task_id":"T-011-05","choice":"keep_deferred"}'
+    body = b'{"task_id":"T-011-05","choice":"keep_deferred","idempotency_key":"decision-test-1"}'
     response = _handle_request(
         b"POST /api/v1/workspace-actions/decision HTTP/1.1\r\n"
         b"Host: localhost\r\n"
@@ -1177,6 +1849,18 @@ def test_workspace_decision_post_is_the_only_allowed_write_path(tmp_path: Path) 
     headers, payload = response.split(b"\r\n\r\n", 1)
     assert b" 201 " in headers
     assert json.loads(payload)["recorded"]["choice"] == "keep_deferred"
+    replay = _handle_request(
+        b"POST /api/v1/workspace-actions/decision HTTP/1.1\r\n"
+        b"Host: localhost\r\nContent-Type: application/json\r\n"
+        + f"Content-Length: {len(body)}\r\n\r\n".encode()
+        + body,
+        tmp_path,
+    )
+    assert json.loads(replay.split(b"\r\n\r\n", 1)[1])["idempotent"] is True
+    decision_lines = (
+        (tmp_path / "artifacts/human_decisions/workspace_decisions.jsonl").read_text().splitlines()
+    )
+    assert len(decision_lines) == 1
 
     blocked = _handle_request(
         b"POST /api/v1/orders HTTP/1.1\r\nHost: localhost\r\nContent-Length: 2\r\n\r\n{}",

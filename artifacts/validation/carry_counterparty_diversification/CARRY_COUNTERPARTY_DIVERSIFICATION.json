@@ -1,0 +1,176 @@
+{
+  "assumptions": {
+    "default_model": "independent, one-shot, total-loss-per-venue",
+    "note": "p is an operator due-diligence input, NOT estimated here. Correlated defaults (a systemic crypto event) violate independence and are a residual risk no allocation removes \u2014 only capital sizing does.",
+    "per_venue_annual_default_prob": [
+      0.02,
+      0.05,
+      0.1
+    ]
+  },
+  "carry_ann_return_pct": 8.4,
+  "execution_authority": "NONE",
+  "grid": {
+    "p=0.02": [
+      {
+        "all_venues_default_is_unrecoverable": true,
+        "all_venues_default_prob": 0.02,
+        "expected_annual_counterparty_drag_pct": 2.0,
+        "net_expected_ann_return_pct": 6.23,
+        "per_venue_cap_pct": 100.0,
+        "single_default_loss_pct": 100.0,
+        "single_default_recover_years": "UNRECOVERABLE",
+        "venues": 1
+      },
+      {
+        "all_venues_default_is_unrecoverable": true,
+        "all_venues_default_prob": 0.0004,
+        "expected_annual_counterparty_drag_pct": 2.0,
+        "net_expected_ann_return_pct": 6.23,
+        "per_venue_cap_pct": 50.0,
+        "single_default_loss_pct": 50.0,
+        "single_default_recover_years": 8.6,
+        "venues": 2
+      },
+      {
+        "all_venues_default_is_unrecoverable": true,
+        "all_venues_default_prob": 8e-06,
+        "expected_annual_counterparty_drag_pct": 2.0,
+        "net_expected_ann_return_pct": 6.23,
+        "per_venue_cap_pct": 33.3,
+        "single_default_loss_pct": 33.3,
+        "single_default_recover_years": 5.0,
+        "venues": 3
+      },
+      {
+        "all_venues_default_is_unrecoverable": true,
+        "all_venues_default_prob": 0.0,
+        "expected_annual_counterparty_drag_pct": 2.0,
+        "net_expected_ann_return_pct": 6.23,
+        "per_venue_cap_pct": 25.0,
+        "single_default_loss_pct": 25.0,
+        "single_default_recover_years": 3.6,
+        "venues": 4
+      },
+      {
+        "all_venues_default_is_unrecoverable": true,
+        "all_venues_default_prob": 0.0,
+        "expected_annual_counterparty_drag_pct": 2.0,
+        "net_expected_ann_return_pct": 6.23,
+        "per_venue_cap_pct": 20.0,
+        "single_default_loss_pct": 20.0,
+        "single_default_recover_years": 2.8,
+        "venues": 5
+      }
+    ],
+    "p=0.05": [
+      {
+        "all_venues_default_is_unrecoverable": true,
+        "all_venues_default_prob": 0.05,
+        "expected_annual_counterparty_drag_pct": 5.0,
+        "net_expected_ann_return_pct": 2.98,
+        "per_venue_cap_pct": 100.0,
+        "single_default_loss_pct": 100.0,
+        "single_default_recover_years": "UNRECOVERABLE",
+        "venues": 1
+      },
+      {
+        "all_venues_default_is_unrecoverable": true,
+        "all_venues_default_prob": 0.0025,
+        "expected_annual_counterparty_drag_pct": 5.0,
+        "net_expected_ann_return_pct": 2.98,
+        "per_venue_cap_pct": 50.0,
+        "single_default_loss_pct": 50.0,
+        "single_default_recover_years": 8.6,
+        "venues": 2
+      },
+      {
+        "all_venues_default_is_unrecoverable": true,
+        "all_venues_default_prob": 0.000125,
+        "expected_annual_counterparty_drag_pct": 5.0,
+        "net_expected_ann_return_pct": 2.98,
+        "per_venue_cap_pct": 33.3,
+        "single_default_loss_pct": 33.3,
+        "single_default_recover_years": 5.0,
+        "venues": 3
+      },
+      {
+        "all_venues_default_is_unrecoverable": true,
+        "all_venues_default_prob": 6e-06,
+        "expected_annual_counterparty_drag_pct": 5.0,
+        "net_expected_ann_return_pct": 2.98,
+        "per_venue_cap_pct": 25.0,
+        "single_default_loss_pct": 25.0,
+        "single_default_recover_years": 3.6,
+        "venues": 4
+      },
+      {
+        "all_venues_default_is_unrecoverable": true,
+        "all_venues_default_prob": 0.0,
+        "expected_annual_counterparty_drag_pct": 5.0,
+        "net_expected_ann_return_pct": 2.98,
+        "per_venue_cap_pct": 20.0,
+        "single_default_loss_pct": 20.0,
+        "single_default_recover_years": 2.8,
+        "venues": 5
+      }
+    ],
+    "p=0.1": [
+      {
+        "all_venues_default_is_unrecoverable": true,
+        "all_venues_default_prob": 0.1,
+        "expected_annual_counterparty_drag_pct": 10.0,
+        "net_expected_ann_return_pct": -2.44,
+        "per_venue_cap_pct": 100.0,
+        "single_default_loss_pct": 100.0,
+        "single_default_recover_years": "UNRECOVERABLE",
+        "venues": 1
+      },
+      {
+        "all_venues_default_is_unrecoverable": true,
+        "all_venues_default_prob": 0.01,
+        "expected_annual_counterparty_drag_pct": 10.0,
+        "net_expected_ann_return_pct": -2.44,
+        "per_venue_cap_pct": 50.0,
+        "single_default_loss_pct": 50.0,
+        "single_default_recover_years": 8.6,
+        "venues": 2
+      },
+      {
+        "all_venues_default_is_unrecoverable": true,
+        "all_venues_default_prob": 0.001,
+        "expected_annual_counterparty_drag_pct": 10.0,
+        "net_expected_ann_return_pct": -2.44,
+        "per_venue_cap_pct": 33.3,
+        "single_default_loss_pct": 33.3,
+        "single_default_recover_years": 5.0,
+        "venues": 3
+      },
+      {
+        "all_venues_default_is_unrecoverable": true,
+        "all_venues_default_prob": 0.0001,
+        "expected_annual_counterparty_drag_pct": 10.0,
+        "net_expected_ann_return_pct": -2.44,
+        "per_venue_cap_pct": 25.0,
+        "single_default_loss_pct": 25.0,
+        "single_default_recover_years": 3.6,
+        "venues": 4
+      },
+      {
+        "all_venues_default_is_unrecoverable": true,
+        "all_venues_default_prob": 1e-05,
+        "expected_annual_counterparty_drag_pct": 10.0,
+        "net_expected_ann_return_pct": -2.44,
+        "per_venue_cap_pct": 20.0,
+        "single_default_loss_pct": 20.0,
+        "single_default_recover_years": 2.8,
+        "venues": 5
+      }
+    ]
+  },
+  "mode": "OFFLINE_RESEARCH_ONLY",
+  "operator_note": "Feeds HG-4 (venue count/selection) and HG-5 (capital + max drawdown). No venue, no orders, no credentials; execution_authority=NONE.",
+  "schema": "tios-carry-counterparty-diversification-v1",
+  "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+  "verdict": "Single-venue carry (K=1) carries an UNRECOVERABLE \u2212100% counterparty tail at probability p. Splitting across K venues with per-venue caps leaves the expected drag unchanged (~p) but converts the catastrophe into a bounded 1/K loss that carry can recover from, and shrinks total wipeout to p**K. Therefore the real-world go/no-go is an HG-4 decision \u2014 how many independent venues, which ones, and per-venue capital caps \u2014 not a backtest metric. Correlated (systemic) default is the residual only position sizing (HG-4 item 8) can bound."
+}

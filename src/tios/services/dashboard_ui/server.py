@@ -5,10 +5,16 @@ from __future__ import annotations
 import argparse
 import ipaddress
 import json
+import re
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
+from tios.services.dashboard_api.cockpit import (
+    CockpitActionError,
+    build_cockpit,
+    perform_cockpit_action,
+)
 from tios.services.dashboard_api.market import build_market_snapshot
 from tios.services.dashboard_api.operations import build_operations, trigger_data_update
 from tios.services.dashboard_api.search import build_search_results
@@ -18,6 +24,8 @@ from tios.services.dashboard_api.status import (
     build_status,
     record_workspace_decision,
 )
+
+_IDEMPOTENCY_KEY = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,199}$")
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -74,6 +82,14 @@ class Handler(BaseHTTPRequestHandler):
                 )
                 return
             self._send(200, "application/json", json.dumps(payload).encode())
+        elif path == "/api/v1/cockpit":
+            query = parse_qs(request.query)
+            try:
+                payload = build_cockpit(self.root, query.get("range", ["24h"])[0])
+            except (ValueError, TypeError) as error:
+                self._json_error(400, str(error))
+                return
+            self._send(200, "application/json", json.dumps(payload).encode())
         elif path in {"/", "/index.html"}:
             self._send(200, "text/html; charset=utf-8", self.html.encode())
         elif path.startswith("/api/"):
@@ -92,30 +108,82 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:  # noqa: N802
         request = urlparse(self.path)
-        if request.path == "/api/v1/workspace-actions/data-update":
-            # Governed action (D-041): launch the local, offline data refresh only.
-            body = json.dumps(trigger_data_update(self.root)).encode()
-            self._send(202, "application/json", body)
-            return
-        if request.path != "/api/v1/workspace-actions/decision":
+        routes = {
+            "/api/v1/workspace-actions/data-update",
+            "/api/v1/workspace-actions/decision",
+            "/api/v1/cockpit-actions",
+        }
+        if request.path not in routes:
             self._send(404, "application/json", b'{"schema_version":1,"error":"not found"}')
             return
         try:
-            length = int(self.headers.get("Content-Length", "0"))
-            if length <= 0 or length > 4096:
-                raise ValueError("invalid request size")
-            payload = json.loads(self.rfile.read(length).decode())
-            if not isinstance(payload, dict):
-                raise ValueError("request body must be an object")
+            payload = self._read_same_origin_json()
+            key = payload.get("idempotency_key")
+            if not isinstance(key, str) or not _IDEMPOTENCY_KEY.fullmatch(key):
+                raise ValueError("idempotency_key must be a bounded identifier")
+            if request.path == "/api/v1/workspace-actions/data-update":
+                if set(payload) != {"idempotency_key"}:
+                    raise ValueError("data update accepts only idempotency_key")
+                body = json.dumps(trigger_data_update(self.root, key)).encode()
+                self._send(202, "application/json", body)
+                return
+            if request.path == "/api/v1/cockpit-actions":
+                result = perform_cockpit_action(self.root, payload)
+                self._send(201, "application/json", json.dumps(result).encode())
+                return
             body = json.dumps(record_workspace_decision(self.root, payload)).encode()
-        except (ValueError, json.JSONDecodeError) as error:
-            self._send(
-                400,
-                "application/json",
-                json.dumps({"schema_version": 1, "error": str(error)}).encode(),
-            )
+        except CockpitActionError as error:
+            self._json_error(error.status_code, str(error))
+            return
+        except (ValueError, json.JSONDecodeError, UnicodeDecodeError) as error:
+            self._json_error(400, str(error))
             return
         self._send(201, "application/json", body)
+
+    def _read_same_origin_json(self) -> dict[str, object]:
+        media_type = self.headers.get("Content-Type", "").split(";", 1)[0].strip().lower()
+        if media_type != "application/json":
+            raise _PostGuardError(415, "Content-Type must be application/json")
+        fetch_site = self.headers.get("Sec-Fetch-Site")
+        if fetch_site is not None and fetch_site.lower() not in {
+            "same-origin",
+            "same-site",
+            "none",
+        }:
+            raise _PostGuardError(403, "cross-origin request rejected")
+        origin = self.headers.get("Origin")
+        if origin is not None:
+            host = self.headers.get("Host", "")
+            parsed = urlparse(origin)
+            request_scheme = getattr(self.server, "url_scheme", "http")
+            if (
+                request_scheme not in {"http", "https"}
+                or parsed.scheme != request_scheme
+                or not host
+                or parsed.netloc.casefold() != host.casefold()
+                or parsed.path not in {"", "/"}
+                or parsed.params
+                or parsed.query
+                or parsed.fragment
+            ):
+                raise _PostGuardError(403, "cross-origin request rejected")
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+        except ValueError as error:
+            raise ValueError("invalid request size") from error
+        if length <= 0 or length > 4096:
+            raise ValueError("invalid request size")
+        payload = json.loads(self.rfile.read(length).decode())
+        if not isinstance(payload, dict):
+            raise ValueError("request body must be an object")
+        return payload
+
+    def _json_error(self, code: int, message: str) -> None:
+        self._send(
+            code,
+            "application/json",
+            json.dumps({"schema_version": 1, "error": message}).encode(),
+        )
 
     def _send(self, code: int, content_type: str, body: bytes) -> None:
         self.send_response(code)
@@ -127,6 +195,12 @@ class Handler(BaseHTTPRequestHandler):
 
     def log_message(self, format: str, *args: object) -> None:
         return
+
+
+class _PostGuardError(CockpitActionError):
+    def __init__(self, status_code: int, message: str) -> None:
+        super().__init__(message)
+        self.status_code = status_code
 
 
 def is_loopback_host(host: str) -> bool:

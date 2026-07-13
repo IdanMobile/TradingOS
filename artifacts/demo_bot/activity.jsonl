@@ -1,0 +1,14 @@
+{"fill_price": "63778.9", "ok": true, "qty": 0.000391, "recorded_at": "2026-07-12T23:51:28.023690+00:00", "side": "BUY", "signal": "donchian(10/5)", "signal_price": "63839.1", "symbol": "BTCUSDT"}
+{"fill_price": "63781.7", "ok": true, "qty": 0.000391, "recorded_at": "2026-07-12T23:51:29.042970+00:00", "side": "SELL", "signal": "donchian(10/5)", "signal_price": "63799.1", "symbol": "BTCUSDT"}
+{"fill_price": "63781.7", "ok": true, "qty": 0.000391, "recorded_at": "2026-07-12T23:51:30.578426+00:00", "side": "BUY", "signal": "donchian(10/5)", "signal_price": "63802.7", "symbol": "BTCUSDT"}
+{"fill_price": "63781.7", "ok": true, "qty": 0.000391, "recorded_at": "2026-07-12T23:51:31.601295+00:00", "side": "SELL", "signal": "donchian(10/5)", "signal_price": "63834.2", "symbol": "BTCUSDT"}
+{"fill_price": "63781.7", "ok": true, "qty": 0.000391, "recorded_at": "2026-07-12T23:51:33.145570+00:00", "side": "BUY", "signal": "donchian(10/5)", "signal_price": "63852.1", "symbol": "BTCUSDT"}
+{"fill_price": "63781.7", "ok": true, "qty": 0.000391, "recorded_at": "2026-07-12T23:51:34.178391+00:00", "side": "SELL", "signal": "donchian(10/5)", "signal_price": "63811.4", "symbol": "BTCUSDT"}
+{"fill_price": "63888.0", "qty": "64.5", "recorded_at": "2026-07-13T00:04:54.380013+00:00", "side": "SPOT_BUY", "signal": "funding_carry(-0.002%)", "signal_price": "63856.9", "symbol": "BTCUSDT"}
+{"fill_price": null, "qty": "0.001", "recorded_at": "2026-07-13T00:05:03.804521+00:00", "side": "PERP_SHORT", "signal": "funding_carry(-0.002%)", "signal_price": "63856.9", "symbol": "BTCUSDT"}
+{"fill_price": "63880.8", "qty": "0.001", "recorded_at": "2026-07-13T00:05:05.108888+00:00", "side": "SPOT_SELL", "signal": "funding_carry(-0.002%)", "signal_price": "63856.9", "symbol": "BTCUSDT"}
+{"fill_price": null, "qty": "0.001", "recorded_at": "2026-07-13T00:05:14.619942+00:00", "side": "PERP_CLOSE", "signal": "funding_carry(-0.002%)", "signal_price": "63856.9", "symbol": "BTCUSDT"}
+{"fill_price": "63988.2", "qty": "64.59", "recorded_at": "2026-07-13T00:07:56.155678+00:00", "side": "SPOT_BUY", "signal": "funding_carry(-0.001%)", "signal_price": "63955.3", "symbol": "BTCUSDT"}
+{"fill_price": "63955.3", "qty": "0.001", "recorded_at": "2026-07-13T00:07:57.088376+00:00", "side": "PERP_SHORT", "signal": "funding_carry(-0.001%)", "signal_price": "63955.3", "symbol": "BTCUSDT"}
+{"fill_price": "63986.9", "qty": "0.001", "recorded_at": "2026-07-13T00:07:58.261513+00:00", "side": "SPOT_SELL", "signal": "funding_carry(-0.001%)", "signal_price": "63955.3", "symbol": "BTCUSDT"}
+{"fill_price": "63948.8", "qty": "0.001", "recorded_at": "2026-07-13T00:07:59.183415+00:00", "side": "PERP_CLOSE", "signal": "funding_carry(-0.001%)", "signal_price": "63955.3", "symbol": "BTCUSDT"}

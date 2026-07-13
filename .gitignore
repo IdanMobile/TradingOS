@@ -54,6 +54,9 @@ mlartifacts/
 engines/*/lane/
 artifacts/**/*.zip
 
+# Optional external-news metadata cache (regenerated server-side)
+artifacts/news/
+
 # --- Raw bakeoff engine dumps (100s of MB; manifest/metrics/parquet summaries are committed) ---
 artifacts/bakeoff/**/raw.json
 

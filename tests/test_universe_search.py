@@ -30,6 +30,6 @@ def test_evaluate_returns_structure_and_flags_screen() -> None:
     assert all(c["screen_pass"] for c in result["screen_pass_contexts"])
 
 
-def test_all_25_strategies_are_loaded() -> None:
-    assert len(uni.ALL_STRATEGIES) == 25  # 20 public + 5 signal
-    assert len({s.strategy_id for s in uni.ALL_STRATEGIES}) == 25
+def test_all_strategies_are_loaded() -> None:
+    assert len(uni.ALL_STRATEGIES) == 37  # 32 public (incl. 4 patterns) + 5 signal
+    assert len({s.strategy_id for s in uni.ALL_STRATEGIES}) == 37

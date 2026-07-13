@@ -114,7 +114,8 @@ def _validated_connection(connection: sqlite3.Connection, image_bytes: int) -> i
     version = int(connection.execute("PRAGMA user_version").fetchone()[0])
     recorded = int(connection.execute("SELECT version FROM schema_version").fetchone()[0])
     integrity = str(connection.execute("PRAGMA integrity_check").fetchone()[0])
-    if version != SCHEMA_VERSION or recorded != SCHEMA_VERSION or integrity != "ok":
+    supported = {SCHEMA_VERSION - 1, SCHEMA_VERSION}
+    if version != recorded or version not in supported or integrity != "ok":
         raise RuntimeError("jobs database schema or integrity check failed")
     if image_bytes > MAX_DB_IMAGE_BYTES:
         raise RuntimeError("jobs database capacity check failed")
@@ -194,10 +195,13 @@ def _latest(connection: sqlite3.Connection) -> list[dict[str, Any]]:
 
 
 def _schedules(connection: sqlite3.Connection) -> list[dict[str, Any]]:
+    has_enabled = "enabled" in {
+        str(row["name"]) for row in connection.execute("PRAGMA table_info(schedules)")
+    }
     rows = connection.execute(
-        """SELECT schedule_id, job_type, interval_seconds, next_due,
-                  max_attempts, timeout_seconds
-           FROM schedules ORDER BY next_due, schedule_id"""
+        f"""SELECT schedule_id, job_type, interval_seconds, next_due,
+                   max_attempts, timeout_seconds{", enabled" if has_enabled else ""}
+            FROM schedules ORDER BY next_due, schedule_id"""
     )
     schedules = [
         {
@@ -207,6 +211,7 @@ def _schedules(connection: sqlite3.Connection) -> list[dict[str, Any]]:
             "next_due": _time(row["next_due"], required=True),
             "max_attempts": int(row["max_attempts"]),
             "timeout_seconds": int(row["timeout_seconds"]),
+            "enabled": bool(row["enabled"]) if has_enabled else True,
         }
         for row in rows
     ]

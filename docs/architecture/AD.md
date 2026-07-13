@@ -11,7 +11,7 @@ Evidence base: package research (2026-07-05) + refreshed web research (2026-07-0
 
 - **Purpose**: a self-measuring machine for discovering, rejecting, validating, approving, monitoring, degrading, and retiring trading edges — measuring its own tools, models, agents, and research assets along the way (North Star §2).
 - **Philosophy**: composable reuse around a custom evidence spine. Engines, trackers, indicator libraries, dashboards are replaceable commodities behind ports; the durable custom core is the Trading Evidence Registry + approval/provenance semantics (North Star §15, D-009, D-016).
-- **S2 boundary**: Crypto Spot, BTCUSDT/ETHUSDT, 5m/15m/1h, historical research→validation evidence pipeline and read-only console. Paper is modeled but not activated. See `docs/product/MVP_SCOPE.md` and the S2 plan.
+- **S2 boundary**: Crypto Spot, BTCUSDT/ETHUSDT, 5m/15m/1h, historical research→validation evidence pipeline and a bounded console with exactly three audited POST exceptions. The paper runtime is implemented but dormant and gate-bound; no paper state or bot is active. See `docs/product/MVP_SCOPE.md` and the S2 plan.
 - **Long-term boundary**: multi-market (perps, US equities/ETFs), paper→limited-live under human gates, full 27-page console, evidence-routed AI.
 - **Non-goals**: universal bot, single score, AI-in-live-path, architecture for its own sake (North Star §17).
 - **Core risks**: overfitting theater, cost-model optimism, leakage, engine semantic mismatch, AI hallucination provenance, single-operator maintenance ceiling (North Star §18; red team in `audits/RED_TEAM_PLAN_REVIEW.md`).
@@ -19,7 +19,7 @@ Evidence base: package research (2026-07-05) + refreshed web research (2026-07-0
 ## B. Architecture principles
 
 1. **Reuse before build** [APPROVED, D-002] — custom code requires a failed reuse case (Custom Build Gate §AL).
-2. **Modular monolith over services** [APPROVED for S2] — one local application boundary (CLI plus read-only dashboard) with ports/adapters and per-engine isolated subprocess environments. S1 completed on one operator machine without evidence requiring service boundaries; extraction requires a later measured contention or multi-host need and preserves the ports.
+2. **Modular monolith over services** [APPROVED for S2] — one local application boundary (CLI plus projection-first dashboard with exactly three audited POST exceptions) with ports/adapters and per-engine isolated subprocess environments. S1 completed on one operator machine without evidence requiring service boundaries; extraction requires a later measured contention or multi-host need and preserves the ports.
 3. **Ports and adapters + dependency inversion** [APPROVED as design law] — MODULE_CATALOG dependency rules; enforced by architecture tests.
 4. **Deterministic vs non-deterministic boundary** [APPROVED] — §H; AI never inside deterministic execution paths.
 5. **Immutable evidence, append-only history** [APPROVED] — supersession over mutation for all evidence-bearing records (type catalog §0).
@@ -50,8 +50,8 @@ Consolidated from the mandate's candidate list — merged where cohesion demands
 | **Knowledge** | dictionary concepts, research assets, ResearchSource/Hypothesis registry, ecosystem library | bounded S2 | same storage/provenance pattern; split later only if scale demands |
 | **AI Measurement** | model/agent/prompt registries, benchmarks, cost, routing evidence | harness+fixtures | Task Router deferred to S2 (needs benchmark evidence first) |
 | **Memory** | evidence-linked learnings | thin | |
-| **Operations** | jobs, schedules, reports, dashboard | thin read-only | Reporting + Ops merged for MVP |
-| Paper/Bot Operations | bot lifecycle, divergence tracking | **deferred S3** | modeled, not built |
+| **Operations** | jobs, schedules, reports, dashboard | thin + bounded audited controls | Reporting + Ops merged for MVP; exactly three allowlisted POST exceptions (D-038/D-041/D-044) |
+| Paper/Bot Operations | bot lifecycle, divergence tracking | **implemented dormant; activation deferred S3** | confined local runtime exists but requires HG-3 + a validation-approved strategy context; no active bot/state |
 | Live Trading, Portfolio, Risk Center | — | **execution deferred S3/S4** | S2 has inert historical projections and risk/approval preconditions only |
 
 Prohibited responsibilities are inherited from MODULE_CATALOG (e.g., Validation never promotes; Strategy never owns risk).
@@ -83,7 +83,7 @@ Dependency direction: `src/tios` never imports from `engines/`; engine invocatio
 
 ## G. Application architecture [APPROVED for S2]
 
-S2 has **one local CLI/application boundary** for research operations and **one read-only dashboard process** (API+UI). The first Research Lab runner is a bounded deterministic command in the monolith. A persisted local job table and scheduler may be added only after that same command passes the idempotency contract in §S; they are not separate services. Separate research/backtest/validation workers, ingestion services, and distributed orchestration remain rejected because S1 produced no multi-process or multi-host requirement.
+S2 has **one local CLI/application boundary** for research operations and **one projection-first bounded dashboard process** (API+UI) with the D-038/D-041/D-044 audited POST exceptions. The first Research Lab runner is a bounded deterministic command in the monolith. Its persisted local job table and scheduler were added only after the same command passed the idempotency contract in §S; they are not separate services. Separate research/backtest/validation workers, ingestion services, and distributed orchestration remain rejected because S1 produced no multi-process or multi-host requirement.
 
 ## H. Deterministic vs non-deterministic boundary [APPROVED — mandatory]
 
@@ -145,7 +145,7 @@ Each converter records: converter version, source hash, losses[], provenance (ty
 
 ## M. Type system
 
-Canonical in `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md` §0–2. [APPROVED for S2 semantics and JSON serialization]. Key laws: decimal values cross JSON boundaries as strings, timestamps are UTC ISO-8601 with `Z`, IDs are opaque, top-level payloads carry schema versions, value objects replace primitives, and evidence is append-only.
+Canonical in `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md` §0–2. [APPROVED for S2 semantics and JSON serialization]. Key laws: decimal values cross JSON boundaries as strings; timestamps are UTC ISO-8601 in canonical `Z` or `+00:00` form, with only explicitly documented legacy Z-only fields remaining stricter; IDs are opaque; top-level payloads carry schema versions; value objects replace primitives; and evidence is append-only.
 
 ## N. Domain models and entities
 
@@ -214,15 +214,17 @@ Independent risk authority (never strategy-owned): global caps (capital, daily l
 
 ## AA. Demo, paper, and live boundary [APPROVED]
 
-S2 is historical research only: `execution_authority=NONE`, `venue_connection=NONE`, `paper_orders=DISABLED`, and `live_orders=DISABLED`. Its Market/Signal/Order/Fill/Position/Portfolio/Risk/Approval records are inert historical/read-model contracts and expose no client, route, credential, or mutation command. There is no synthetic wallet, demo/testnet/sandbox connection, Freqtrade trade/dry-run mode, credential-bearing venue adapter, order endpoint, approval-write endpoint, or real-money command.
+S2 operation is historical research only: `execution_authority=NONE`, `venue_connection=NONE`, `paper_orders=DISABLED`, and `live_orders=DISABLED`. Its Market/Signal/Order/Fill/Position/Portfolio/Risk/Approval records are inert historical/read-model contracts and expose no exchange client, credential, or order command. Dormant S3 local-simulator code may be present, but no paper account, bot, ledger store, or runtime state is initialized or active without the S3 predicates below. There is no demo/testnet/sandbox connection, Freqtrade trade/dry-run mode, credential-bearing venue adapter, order endpoint, stage-gate approval endpoint, or real-money command.
 
-S3/S4 control-plane records may be modeled before activation: stage-gate readiness, synthetic-local paper-lane proposals, and limited-live readiness proposals are immutable evidence/proposal records only. They validate prerequisites, human-decision evidence, and risk-limit shape while keeping `execution_authority=NONE`, `venue_connection=NONE`, and all paper/live order capabilities disabled. They do not create wallets, accounts, venue sessions, credentials, approval transitions, or order routes.
+S3/S4 control-plane records and dormant local-simulator machinery may be implemented before activation. Stage-gate readiness, synthetic-local paper-lane proposals, and limited-live readiness proposals validate prerequisites, human-decision evidence, and risk-limit shape while keeping `execution_authority=NONE`, `venue_connection=NONE`, and all exchange paper/live order capabilities disabled. Merely importing or inspecting the runtime creates no paper store, wallet, account, bot, venue session, credential, approval transition, or order route. Local simulated fills, once gate-approved, are synthetic evidence rather than exchange orders.
 
-Demo/testnet connectivity remains disabled until **all** are true: S2 exit passes; HG-3 is explicitly approved; one strategy-context has `validation.status=COMPLETE_APPROVABLE` and `promotion_eligible=true`; an explicit paper-lane architecture decision exists; a security review passes; and the operator approves the specific integration. Paper activation then requires its own isolated credentials/state, explicit synthetic-capital labeling, and approval gate. Any later limited-live review additionally requires S3 exit, quantified backtest-vs-paper divergence and the defined paper-stability period, an independent live risk/kill-switch and security package, a specific limited-capital/venue proposal, and explicit HG-5 operator approval. Live adapters and keys remain absent, and every LIVE-family transition is unreachable in S2. Missing any predicate keeps all execution controls absent and disabled.
+Local `SYNTHETIC_LOCAL_SIMULATOR` activation remains disabled until **all** are true: S2 exit passes; an approved HG-3 stage-gate record exists; one matching strategy context has retained validation approval and evidence; and the D-043 paper-lane architecture decision exists. The local simulator uses synthetic capital, public market observations, and confined local state only: it has no credential, account endpoint, venue session, or order route. Venue demo/testnet connectivity additionally requires HG-4, a security review, operator approval of the specific integration, isolated venue credentials/state, and explicit synthetic-capital labeling. Any later limited-live review additionally requires S3 exit, quantified backtest-vs-paper divergence and the defined paper-stability period, an independent live risk/kill-switch and security package, a specific limited-capital/venue proposal, and explicit HG-5 operator approval. Live adapters and keys remain absent, and every LIVE-family transition is unreachable in S2. Missing any predicate keeps all execution controls absent and disabled.
 
 ## AB. Security architecture [APPROVED design]
 
 Per SSOT secret rules + intake gate: `.env`-only secrets, names-only `.env.example`, gitignore verification, no withdrawal-enabled keys ever requested, credential rotation procedure documented at intake, minimal key scopes. Dependency scanning + license compatibility in local gate (gitleaks/audit — verify tools at WS1). Untrusted-content rule: ingested strategy code never executes in-process; reproduction in isolated env without credentials/network where feasible; all fetched content is data, not instructions (prompt injection). AI tool permissions per role (AGENT_ROLES). Threat model review at each stage exit (SKILL_SECURITY_REVIEWER).
+
+Local path confinement uses anchored descriptors, no-follow opens, regular-file checks, and fail-closed identity verification. It is not a sandbox against a hostile process running as the same OS user with permission to rename repository parent directories concurrently; that case requires OS-account/filesystem isolation and remains outside the local single-operator threat boundary.
 
 ## AC. Observability architecture [APPROVED for S2]
 
@@ -259,7 +261,7 @@ One-command setup (bootstrap script + per-engine env builders), one-command loca
 
 ## AI. UI / product information architecture [APPROVED for bounded S2]
 
-The existing dashboard remains a replaceable projection of manifests and the operational read model, never a store. S2 scope is limited to read-only Research Lab batch status/failures/blockers, source-linked candidates and independent score dimensions, run comparisons, an owned historical market chart with typed annotations, automation status/next eligible work, and inert trading-domain projections labeled disabled. `/api/v1/` exposes only the corresponding reads plus **exactly one audited write exception** [APPROVED, D-038]: `POST /api/v1/workspace-actions/decision`, the operator-driven workspace-decision recording route — loopback-only, payloads validated against a fixed task/option allowlist, append-only to `artifacts/human_decisions/workspace_decisions.jsonl`, test-pinned as the sole write path. It carries no order, approval-transition, job, credential, venue, paper/demo/live, or real-money mutation authority, and no AI-autonomous caller exists. All other POST/PUT/PATCH/DELETE routes remain prohibited; any expansion of this route or any additional write route requires a new decision gate. A local manual batch trigger remains CLI-only while idempotency is proven. Framework replacement, command palette, generalized 27-page CRUD, AI command center, and executable trading controls are not part of this lock.
+The existing dashboard remains a replaceable projection of manifests and the operational read model, never a store. S2 scope is limited to read-only Research Lab batch status/failures/blockers, source-linked candidates and independent score dimensions, run comparisons, an owned historical market chart with typed annotations, automation status/next eligible work, and inert trading-domain projections labeled disabled. Before the paper cockpit, `/api/v1/` had **two audited write exceptions, not one**: D-038 `POST /api/v1/workspace-actions/decision`, the fixed-allowlist append-only operator-decision route, and D-041 `POST /api/v1/workspace-actions/data-update`, the fixed-argv governed daily-data refresh trigger. D-044 adds the paper-first `POST /api/v1/cockpit-actions`, restricted to same-origin JSON, idempotency keys, fixed subject/action allowlists, and append-only audit evidence for acknowledgements and pause/resume controls over new local paper entries or future research schedules. The current server therefore has three bounded audited POST routes. All remain loopback-only and carry no exchange-order, credential, venue-route, stage-gate approval, live-control, or real-money authority. All other POST/PUT/PATCH/DELETE routes remain prohibited; any expansion requires a new decision gate. Framework replacement, command palette, generalized 27-page CRUD, AI command center, and executable live-trading controls are not part of this lock.
 
 ## AJ. Deployment architecture [APPROVED for MVP]
 
@@ -277,12 +279,12 @@ Full project log remains `DECISION_LOG.md` (D-001…D-030). Architecture-specifi
 
 | ID | Decision | Status | Evidence | Alternatives | Consequences / reversibility | Prototype required? | Reverify |
 |---|---|---|---|---|---|---|---|
-| AD-01 | Modular monolith, single CLI + read-only dashboard | APPROVED S2 | S1 decision; §B2, §G | services, worker daemons | low ops burden; reversible via ports | S1 showed no extraction need | measured contention/multi-host need |
+| AD-01 | Modular monolith, single CLI + bounded projection-first dashboard | APPROVED S2; write exceptions D-038/D-041/D-044 | S1 decision; §B2, §G, §AI | services, worker daemons | low ops burden; reversible via ports | S1 showed no extraction need | measured contention/multi-host need |
 | AD-02 | Per-engine isolated environments; core never imports engines | APPROVED | REG §1 licenses + RG-04 | shared env | license safety + dep isolation; low cost | WS1 confirms | on engine change |
 | AD-03 | SQLite operational state; measured PostgreSQL 18 migration trigger | APPROVED S2 | S1 decision; §P | Postgres-first | zero-ops now; ports/replay preserve migration path | S1 local workload | §P trigger |
 | AD-04 | Parquet+DuckDB analytics; no TSDB; no vector DB | APPROVED S2 | S1 canonical data; REG §5, §AF | Timescale, pgvector | sufficient for retained workloads; additive later | S1 dataset/bake-off | workload shape changes |
 | AD-05 | MLflow+DVC behind lineage ports | APPROVED S2 | S1 seven-gate lineage report | MLflow-only, DVC-only, Aim/ClearML | stable public refs; filesystem fallback remains | passed WS5 | restore failure/tool upgrade |
-| AD-06 | Retain existing read-only dashboard projection for bounded S2 console | APPROVED S2 | S1 evidence-surface pass; §AI | replace framework now | preserves refreshability; read model remains replaceable | passed WS9 | bounded views cannot be met |
+| AD-06 | Retain existing projection-first dashboard for bounded S2 console | APPROVED S2; audited writes added by D-038/D-041/D-044 | S1 evidence-surface pass; §AI | replace framework now | preserves refreshability; read model remains replaceable | passed WS9 | bounded views cannot be met |
 | AD-07 | Next.js+shadcn replacement | DEFERRED; not S2 scope | §AI; no S1 replacement need | Refine/react-admin | avoids unproved rewrite; contracts preserve later option | none | executable/generalized console is authorized |
 | AD-08 | Relational dictionary + FTS; graph/RDF rejected for MVP | APPROVED (evidence-backed) | REG §9 | Neo4j/Kuzu/Memgraph/rdflib | laziest defensible; additive interop later | none | if interop need appears |
 | AD-09 | FIBO as legal seed source; no glossary scraping | APPROVED | REG §9 | Investopedia scrape | clean licensing | none | annually |

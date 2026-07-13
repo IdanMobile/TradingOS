@@ -5,7 +5,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from tios.services.dashboard_api.operations import build_operations
+import pytest
+
+from tios.services.dashboard_api import operations
+from tios.services.dashboard_api.operations import build_operations, trigger_data_update
 
 
 def _write(path: Path, payload: dict) -> None:
@@ -62,3 +65,78 @@ def test_operations_handles_missing_files(tmp_path: Path) -> None:
     ops = build_operations(tmp_path)
     assert ops["data_update"]["last_update_utc"] is None
     assert ops["strategies"] == [] and ops["strategy_count"] == 0
+
+
+def test_data_update_trigger_is_idempotent_and_audited(tmp_path: Path, monkeypatch) -> None:
+    launches: list[object] = []
+
+    def launch(*args, **kwargs):
+        launches.append((args, kwargs))
+        return object()
+
+    monkeypatch.setattr(operations.subprocess, "Popen", launch)
+
+    first = trigger_data_update(tmp_path, "data-refresh-1")
+    second = trigger_data_update(tmp_path, "data-refresh-1")
+
+    assert first["idempotent"] is False
+    assert second["idempotent"] is True
+    assert len(launches) == 1
+    records = [
+        json.loads(line)
+        for line in (tmp_path / "artifacts/operations/data_update_triggers.jsonl")
+        .read_text()
+        .splitlines()
+    ]
+    assert [record["phase"] for record in records] == ["PREPARED", "COMPLETED"]
+
+
+def test_data_update_launch_failure_replays_failure_without_false_success(
+    tmp_path: Path, monkeypatch
+) -> None:
+    launches = 0
+
+    def launch(*args, **kwargs):
+        nonlocal launches
+        launches += 1
+        if launches == 1:
+            raise OSError("injected launch failure")
+        return object()
+
+    monkeypatch.setattr(operations.subprocess, "Popen", launch)
+
+    with pytest.raises(ValueError, match="launch failed") as first:
+        trigger_data_update(tmp_path, "failed-refresh")
+    with pytest.raises(ValueError, match="launch failed") as replay:
+        trigger_data_update(tmp_path, "failed-refresh")
+    assert str(first.value) == str(replay.value)
+    assert launches == 1
+
+    recovered = trigger_data_update(tmp_path, "new-refresh-key")
+    assert recovered["status"] == "started"
+    assert launches == 2
+    records = [
+        json.loads(line)
+        for line in (tmp_path / "artifacts/operations/data_update_triggers.jsonl")
+        .read_text()
+        .splitlines()
+        if "failed-refresh" in line
+    ]
+    assert [record["phase"] for record in records] == ["PREPARED", "FAILED"]
+
+
+def test_data_update_audit_refuses_parent_symlink_escape(tmp_path: Path, monkeypatch) -> None:
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    artifacts = tmp_path / "artifacts"
+    artifacts.mkdir()
+    (artifacts / "operations").symlink_to(outside, target_is_directory=True)
+    monkeypatch.setattr(
+        operations.subprocess,
+        "Popen",
+        lambda *args, **kwargs: pytest.fail("unsafe audit must block launch"),
+    )
+
+    with pytest.raises(ValueError, match="audit path"):
+        trigger_data_update(tmp_path, "symlink-refresh")
+    assert not (outside / "data_update_triggers.jsonl").exists()

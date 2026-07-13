@@ -541,6 +541,159 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   build: download (free) Binance perp klines/mark and validate funding carry WITH basis +
   liquidation risk. Thresholds untouched; `execution_authority=NONE`.
 
+- **Basis-aware funding carry — the real edge, honestly bounded (2026-07-12):** the free
+  Binance perp+spot 8h data was downloaded (acquire `--kinds basis`, 12 pairs) and the
+  funding carry re-backtested INCLUDING the spot-perp basis P&L it previously omitted
+  (`scripts/run_funding_carry_basis.py`, 6021 8h periods). Result: best basis-aware carry
+  Sharpe 9.17, ann 12.7%, maxDD -0.5%, DSR 1.0 — **but `verdict_is_genuine: false`.** The
+  carry genuinely SURVIVES basis risk (real: a well-arbitraged perp tracks spot within
+  ~0.1%), confirming it is a robust market-neutral edge — the first real candidate in the
+  whole arc, matching how crypto funds actually make money. Sharpe ~9 is still inflated vs
+  real-world ~2-4 because it omits execution slippage, intraperiod basis spikes,
+  leverage/liquidation, and exchange COUNTERPARTY risk (the actual 2022 killer). Honest
+  conclusion: the remaining validation is EXECUTION-level (needs S3 paper trading to
+  measure real fills/slippage) and OPERATIONAL (counterparty = venue selection, operator
+  decision) — NOT a price-prediction problem. This makes funding carry the concrete,
+  evidence-backed candidate that justifies preparing S3/HG-3 and the S4 perp capability.
+  Thresholds untouched throughout; `execution_authority=NONE`.
+- **Funding carry through the S3 paper lane — execution measured (2026-07-12):** the honest
+  remaining step (execution-level validation) was built: `scripts/run_funding_carry_s3_paper.py`
+  drives the SAME basis-aware best config (thr=0.0, lb=21, reb=3) through EXPLICIT per-leg
+  execution — every delta-neutral rebalance trades both legs (spot + perp), each paying a
+  10bps taker fee + 2bps slippage = 24bps/toggle, versus the backtest's coarse 4bps proxy —
+  and routes the cash flows through the real synthetic ledger contract (init → net-settlement
+  credit → fee debit, no overdraw). Result over 6021 8h periods: realistic execution cuts
+  annual carry from **12.7% → 8.4%/yr** (a 4.3 pct-pt erosion; 812 leg-toggles, ~$2,552
+  execution cost on $10k). The paper-vs-backtest divergence report is OUTSIDE_TOLERANCE on
+  FEE_TOTAL (6× the fee) with IDENTICAL TRADE_COUNT — i.e. the signals/fills are the same, only
+  the cost diverges, which is exactly what S3 exists to measure. **Honest conclusion: the carry
+  edge SURVIVES realistic execution at this turnover (still net-positive ~8.4%), so the one
+  remaining unmodelled risk is COUNTERPARTY/venue — an operator+S4 decision, not backtest math.**
+  Still `NOT_ELIGIBLE` / `execution_authority=NONE` / `SYNTHETIC_LOCAL_SIMULATOR`; no venue, no
+  orders. `make check` = 441 tests green (+3). Artifact:
+  `artifacts/trading_domain/s3_carry_paper/S3_CARRY_PAPER_2026_07_12.json`.
+- **Professional stat-arb — rigorous OOS negative result (2026-07-12):** the naive daily
+  pairs strategy (DSR 0.15) was rebuilt properly: `scripts/run_stat_arb_pro.py` adds an
+  in-sample Engle-Granger COINTEGRATION gate (pure-Python OLS hedge ratio + Dickey-Fuller
+  t-stat on the residual; no numpy/statsmodels by project design), an ESTIMATED hedge ratio
+  β (not fixed 1:1), OUT-OF-SAMPLE-only evaluation (60/40 split, no pair-selection lookahead),
+  and 1h frequency (15 pairs available). Result: 5 of 10 curated pairs cointegrate in-sample,
+  but the best OOS config (ADAUSDT/DOTUSDT, β=0.84) delivers Sharpe 0.1, ann **-3.3%**, maxDD
+  -40%, **DSR 0.0088 → FAIL**. This is the classic COINTEGRATION-DECAY finding: pairs that
+  cohere in-sample de-cohere out-of-sample, so honest OOS scoring makes stat-arb *worse* than
+  the lookahead-tainted naive version, not better. Rigorously rules out crypto pairs stat-arb
+  as a standalone edge. Consequence: the risk-parity COMBINATION framework is correctly NOT
+  built (needs ≥2 validated sleeves; only carry survives). `execution_authority=NONE`;
+  thresholds untouched. Artifact: `artifacts/validation/stat_arb_pro/STAT_ARB_PRO.json`.
+  Full suite after both builds: 446 pytest green.
+- **Carry robustness sweep — the headline number is regime-inflated (2026-07-12):**
+  `scripts/run_funding_carry_robustness.py` walks the realistic-execution carry P&L per
+  regime and stress-tests counterparty risk. Critical honest finding: the 8.4%/yr full-period
+  figure is DOMINATED BY THE 2021 BULL. Per-regime realistic-execution carry: **2021 bull
+  +42.6%/yr, 2022 bear −3.8%/yr, 2023-26 recovery/chop +3.7%/yr** (worst year 2026 −7.1%/yr).
+  So carry is REGIME-DEPENDENT, not all-weather — roughly break-even-to-negative once the
+  2021 anomaly is excluded. Counterparty haircut stress: −10% → ~2yr recovery, −50% → ~9yr,
+  **−100% (exchange default, the FTX/LUNA case) → UNRECOVERABLE**. Conclusion: the binding
+  risk is not market regime but counterparty/custody, which is precisely why venue selection
+  is a human operator decision, not a backtest output. This tempers the "go to market with
+  confidence" case: carry is a real but modest, regime-sensitive edge with an unrecoverable
+  tail — not a standalone green light. `execution_authority=NONE`; no gate crossed. Artifact:
+  `artifacts/validation/funding_carry_robustness/FUNDING_CARRY_ROBUSTNESS.json`. Full suite: 455 green.
+- **Operator authority-transfer declined, by design (2026-07-12):** operator offered to let
+  the agent self-authorize the S3 paper activation (HG-3), S4 perp/margin capability, and
+  venue/paid-data procurement. DECLINED and held: these are human-only gates (D-036/D-037/AD
+  §AA) plus prohibited agent actions (account/credential/payment). An AI flipping its own
+  live-capability gates voids the entire governance guarantee; delegation does not transfer
+  that authority. Agent instead produced decision-ready evidence (robustness + stress above).
+  `execution_authority=NONE` unchanged.
+- **S3 hardening + HG-3/4/5 decision packages (2026-07-12):** operator goal was to complete
+  HG-3/4/5. Held the human-only boundary (D-042) and instead completed everything up to each
+  human signature. Two hardening research models built (both RESEARCH-ONLY, thresholds
+  untouched, `execution_authority=NONE`): (1) `run_carry_counterparty_diversification.py` —
+  a single venue is an UNRECOVERABLE −100% counterparty tail; splitting across K venues with
+  per-venue caps converts it to a recoverable 1/K loss and shrinks total wipeout to p^K
+  (expected drag unchanged ~p) → the go/no-go is an HG-4 multi-venue decision, not a backtest;
+  (2) `run_funding_carry_regime_filter.py` — a CAUSAL universe-funding deploy gate lifts the
+  2022 bear from −3.8% to −0.7%/yr while holding full-period 8.4% (no lookahead, not a date
+  filter). Decision packages assembled: `docs/program/HG_DECISION_PACKAGES.md` (ready-to-sign
+  HG-3/HG-4/HG-5 with prerequisites done + the ten HG-4 items + sizing guidance) and the honest
+  boundary memo `docs/program/AGENT_NOTES_TO_OPERATOR.md`. Bottom line recorded: no strategy is
+  genuinely validated (carry's DSR pass is not genuine — off-sample counterparty tail), so
+  T-015-02 stays blocked on a real validation + the human gates. All agent-authored work green;
+  the one red test (`test_dashboard_includes_read_only_tradingview_market_monitor`) is a
+  separate concurrent stream's half-built dashboard feature, deliberately left to that stream.
+- **Demo venue execution proven — first real order→fill→reconcile (2026-07-13):** operator
+  obtained a Bybit **demo** account and drove the venue-testnet rung end to end. New self-contained
+  tooling (kept out of the concurrently-edited paper module): `scripts/demo_preflight.py` (read-only
+  key-safety check — demo-host-locked, refuses any key that can move funds) and
+  `scripts/demo_roundtrip.py` (a hard-capped ≤50 USDT spot market buy → poll to Filled → wallet
+  reconcile). Preflight GREEN (connected to `api-demo.bybit.com`, trade-only, no fund removal,
+  50k USDT + 1 BTC/ETH demo balances). Live round-trip GREEN: order `2257869337098718464` filled
+  0.00039178 BTC @ $63,812.10; USDT 50000→49975 (−25 exact), BTC 1→1.00039138 (+fill). Proves the
+  full venue plumbing (V5 HMAC signing, order create/query, balance reconcile) on fake money.
+  MACHINERY TEST ONLY — no strategy is validated; real `execution_authority` stays NONE; demo keys
+  are `.env` (`PYBIT_API_KEY`/`PYBIT_API_SECRET`, trade-only, no withdrawal). Plan +
+  activation ladder: `docs/program/DEMO_LANE_PLAN.md`. `make check` = 616 green.
+- **Public strategy catalog expanded + first strategy-driven demo bot (2026-07-13):** operator
+  asked for maximum public strategies, tested, and a dedicated bot even on the best candidate.
+  (1) `run_external_strategy_search.py` grew 20→**28 copied public strategies** (+MACD, Stochastic,
+  Williams %R, CCI, Keltner, Ichimoku, Vortex, Aroon with new OHLC indicators); universe search now
+  33. Honest screen result: **0 of 28 survive** — reinforces that classic TA has no genuine OOS edge.
+  (2) `scripts/demo_strategy_bot.py` — a real Donchian breakout signal over live Bybit klines drives
+  the demo execution lane (BUY on entry, SELL on exit, ends flat). Live run: 120 real BTC 1m bars →
+  3 entry/exit pairs → **6 real demo orders placed**, final FLAT. First real strategy-driven order
+  flow. MACHINERY + CANDIDATE only — Donchian is NOT validated (fails DSR); demo/fake money; real
+  `execution_authority` stays NONE; demo-host-locked, MAX_NOTIONAL + MAX_TRADES capped. `make check`
+  = 626 green.
+- **Funding-carry demo bot (perp leg) + console bot view (2026-07-13):** first bot whose signal is
+  a real economic edge. `scripts/demo_carry_bot.py` reads the live funding rate and runs a
+  delta-neutral cycle on the Bybit demo: LONG spot + SHORT perp (category=linear, the S4-class perp
+  capability exercised ON DEMO ONLY), reports the position + funding, then closes both legs to flat.
+  Live run: all 4 legs Filled (SPOT_BUY 64.6 USDT, PERP_SHORT 0.001, SPOT_SELL, PERP_CLOSE);
+  post-run perp position confirmed FLAT (no residual short). Fixed a category-mismatch poll (order
+  status must query linear for perp legs). Console: `build_demo_bot` projection + Operations "Demo
+  bot activity" card render every bot order (strategy + carry legs) from `artifacts/demo_bot/
+  activity.jsonl` — dashboard-watchable, not just terminal. MACHINERY + CANDIDATE — carry validation
+  NOT genuine (counterparty tail); demo/fake money; real `execution_authority` stays NONE;
+  demo-host-locked, per-leg notional capped. `make check` = 633 green.
+- **Shared TP/SL ladder engine + always-on managed bot (2026-07-13):** operator asked for a
+  general (demo AND real) laddered take-profit/stop-loss system and an always-on bot. (1) New shared
+  venue-agnostic module `src/tios/execution/exit_ladder.py` (pure Decimal math, no execution — so it
+  is identical for demo and live; only the venue adapter is gate-controlled): `build_ladder` (ATR
+  stop + R-multiple TP1..TPn), `position_size` (risk-fraction / stop-distance), `evaluate` (per-tick
+  scale-out fractions, breakeven-after-TP1, stop-out). DEFAULT: 2xATR stop, TP 1R/2R/3R/4R, 25% out
+  each, breakeven at TP1. Fully unit-tested. (2) `scripts/demo_managed_bot.py` — continuous loop that
+  enters on Donchian breakout, builds the shared ladder, and manages the exit (scale out at each TP,
+  move stop to breakeven, stop-out remainder), persisting a heartbeat so the console shows ACTIVE.
+  Offline-tested by walking a scripted price path (entry -> all-TP scale-out -> flat; and stop-out).
+  Console (`build_demo_bot`) now surfaces heartbeat (ACTIVE/stopped + position) and P&L
+  (`scripts/demo_pnl.py`, showing WIN/LOSS vs the 50k+1BTC start; currently -0.71 USDT = fees, since
+  no strategy has a genuine edge). MACHINERY + CANDIDATE; demo/fake money; real execution_authority
+  stays NONE. `make check` = 645 green.
+- **Candlestick patterns + combination/ensemble tester — both fail honestly (2026-07-13):** operator
+  asked for pattern strategies and mixing variants. (1) Added 4 candlestick-pattern strategies to
+  `run_external_strategy_search.py` (engulfing, hammer/shooting-star, piercing/dark-cloud,
+  morning/evening star; bullish=entry, bearish mirror=exit) → 32 public strategies; universe search
+  37. Fresh run: **0 of 32 survive** the honest screen (patterns included). (2) New
+  `run_strategy_combinations.py` — confluence pairs (AND-entry/OR-exit) + voting ensembles over a
+  9-strategy base set, each backtested to per-bar returns and DSR-scored with trial deflation. Result:
+  31 mixes tested, best (confluence Donchian-40 + Keltner) **DSR 0.0 → FAIL**. Confirms the honest
+  principle: mixing zero-edge components cannot manufacture edge — confluence just cuts trade count.
+  Patterns/mixes are coverage + rigorous negatives, not alpha; useful only as confluence FILTERS on a
+  real edge (carry). RESEARCH-ONLY; execution_authority=NONE. `make check` = 649 green.
+- **Multi-timeframe confluence — a full-sample PASS caught and killed out-of-sample (2026-07-13):**
+  operator asked to test MTF (trade the lower TF only with the higher TF trend). `run_mtf_confluence.py`
+  gates 1h entries by the 1d trend (daily close > SMA50), aligned CAUSALLY (each hour uses only daily
+  bars that have already closed — no lookahead, unit-tested). Result: the daily-trend filter HELPED
+  5/6 trend strategies in-sample, and the full-sample **DSR hit 0.9778 → "PASS"** — the first TA thing
+  to cross 0.95 all session. BUT the honest out-of-sample test (select best on first 60%, measure DSR
+  on held-out 40%, deflated by the selection pool) **collapsed it: golden-cross/SOL OOS Sharpe 0.52,
+  DSR 0.7802 → FAIL.** The full-sample pass was a bull-regime + selection artifact (long-only trend
+  following rides 2021; the "best" was golden-cross where MTF didn't even help). Lesson re-confirmed:
+  a high full-sample DSR is NOT an edge — OOS is the gate, same test that killed the stat-arb pass.
+  MTF is a genuine, useful FILTER (helps trade selection) but does not manufacture out-of-sample edge.
+  The wall holds: carry remains the only real edge, still counterparty-gated. `make check` = 652 green.
+
 ## Operational SSOT (unchanged)
 
 `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` remains the single operational source of truth for coding-agent execution (D-027). It was updated 2026-07-06 to reference the planning system (D-030); no competing controller exists.

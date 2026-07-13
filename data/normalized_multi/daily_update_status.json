@@ -1,15 +1,491 @@
 {
-  "last_run_utc": "2026-07-12T11:17:35.619966+00:00",
-  "files_updated": 1,
-  "bars_added": 0,
+  "last_run_utc": "2026-07-12T19:59:49.502814+00:00",
+  "files_updated": 69,
+  "bars_added": 52433,
   "target": "/Users/user/Downloads/trading_os_project_package/data/normalized_multi",
   "updated": [
     {
+      "file": "AAVEUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "89d8a3878ba94e0379f6f9bfc3112ba3d51999dfc719963ed0ed085be521bff1"
+    },
+    {
+      "file": "ADAUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "7d4e3568e4659e39efbfcb00f1de74be1444193a7551a0da9489260aab2275e2"
+    },
+    {
+      "file": "ADAUSDT_1h.parquet",
+      "added_rows": 284,
+      "rows": 48438,
+      "coverage_end_utc": "2026-07-12 19:00:00+00:00",
+      "content_sha256": "bbe5d8173252c7d42d2438fa5c868d02bf9e2005ebe7375ab63c64d0109a532e"
+    },
+    {
+      "file": "ADAUSDT_4h.parquet",
+      "added_rows": 71,
+      "rows": 12113,
+      "coverage_end_utc": "2026-07-12 16:00:00+00:00",
+      "content_sha256": "c957cc188674b706621e9c7f8bf5bc8a25cacd706c85f1878f0d2f7bdd55e6cd"
+    },
+    {
+      "file": "ALGOUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "ed28cfda17cd5f172b87896e67f1c4bff47b397150bc2379b5a62165ff8644b5"
+    },
+    {
+      "file": "APTUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 1363,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "aaac7a127063946b9117f32e6b2963b640e9f6adc3b44dc4f5d369fddde6c37e"
+    },
+    {
+      "file": "ARBUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 1208,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "eecfe93121bddf05ef23f2602d7e8801c5d7740812b8bfc8b0e075ae1bc10b0b"
+    },
+    {
+      "file": "ATOMUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "96cf400137fde50a4629fe9ac157cb651d61462792809749d35354d9c2e87126"
+    },
+    {
+      "file": "ATOMUSDT_1h.parquet",
+      "added_rows": 284,
+      "rows": 48438,
+      "coverage_end_utc": "2026-07-12 19:00:00+00:00",
+      "content_sha256": "634d01ba35e93714e591dd1d237ed05021af679a0d6fd377752599af2654350f"
+    },
+    {
+      "file": "ATOMUSDT_4h.parquet",
+      "added_rows": 71,
+      "rows": 12113,
+      "coverage_end_utc": "2026-07-12 16:00:00+00:00",
+      "content_sha256": "a67e4a33fd5a777eac0b463dcc202b6b5ca06eb722642f51856c6e2cb05589d0"
+    },
+    {
+      "file": "AVAXUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "1edadefe31867e9bebc74d498c2e726cec25668e4c41b3f8623d6c45d1d56d6b"
+    },
+    {
+      "file": "AVAXUSDT_1h.parquet",
+      "added_rows": 284,
+      "rows": 48438,
+      "coverage_end_utc": "2026-07-12 19:00:00+00:00",
+      "content_sha256": "c56db6ae2ae7c3b05dab93c8354c930a84e65bafc51f4d6d1d6a55b6738698ea"
+    },
+    {
+      "file": "AVAXUSDT_4h.parquet",
+      "added_rows": 71,
+      "rows": 12113,
+      "coverage_end_utc": "2026-07-12 16:00:00+00:00",
+      "content_sha256": "e313e30d5ffd738c432f8d11f142d3944d48fe40142ed691b00222ad3df4d9ba"
+    },
+    {
+      "file": "AXSUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "5e2c31177fa45a8e84c6dd127115b69a63660b0cda4dfa85c80cfff568b0036d"
+    },
+    {
+      "file": "BCHUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "edabdbf6d5c4eb3eccc0a98f7c8094483acb18a0e2bc5048864a57c678ff3c8b"
+    },
+    {
+      "file": "BNBUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "f1db7e778f271b30c9ab30166b999783787a3542b80dade50ca64f21bfd0caa9"
+    },
+    {
+      "file": "BNBUSDT_1h.parquet",
+      "added_rows": 284,
+      "rows": 48438,
+      "coverage_end_utc": "2026-07-12 19:00:00+00:00",
+      "content_sha256": "84590441e4e506b9aede793d11be78f58b284195b34423dfa7e281e8be1c3d51"
+    },
+    {
+      "file": "BNBUSDT_4h.parquet",
+      "added_rows": 71,
+      "rows": 12113,
+      "coverage_end_utc": "2026-07-12 16:00:00+00:00",
+      "content_sha256": "5d8703a9975d440f67b7a9270f73a462e368ffe246f3e757c3b6f57603530c23"
+    },
+    {
       "file": "BTCUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "57a9b4938d406ea8d0254eff55f7b6a4ddaf0ef50ebafe3f9f9dca94619bfb55"
+    },
+    {
+      "file": "BTCUSDT_1h.parquet",
+      "added_rows": 284,
+      "rows": 48438,
+      "coverage_end_utc": "2026-07-12 19:00:00+00:00",
+      "content_sha256": "88e0aceee0d1f362ef7f839fb2b2357510e78eb51173bdca45fe0de7c8f7a26a"
+    },
+    {
+      "file": "BTCUSDT_4h.parquet",
+      "added_rows": 71,
+      "rows": 12113,
+      "coverage_end_utc": "2026-07-12 16:00:00+00:00",
+      "content_sha256": "9d195a7b46866bf6b942fb504f56cd3ec1373bbcf63126d49b7483ed22fd6c42"
+    },
+    {
+      "file": "DOGEUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "809f26446ae317a2149ee02889741a319c6de7f0d3f931426ad20193f801963b"
+    },
+    {
+      "file": "DOGEUSDT_1h.parquet",
+      "added_rows": 284,
+      "rows": 48438,
+      "coverage_end_utc": "2026-07-12 19:00:00+00:00",
+      "content_sha256": "533af012b0ccc30d7fffe50e44dbb779670d39870ab98003f78359c1627cde52"
+    },
+    {
+      "file": "DOGEUSDT_4h.parquet",
+      "added_rows": 71,
+      "rows": 12113,
+      "coverage_end_utc": "2026-07-12 16:00:00+00:00",
+      "content_sha256": "0db5c7ec1a670368ff8e3e1e8ae2b9f29f90d4e9ec05fe8b474146e8d90dc453"
+    },
+    {
+      "file": "DOTUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "ceed2fcd4e11a74353ade27a2a073909df24b262befa734459c138620d0fadee"
+    },
+    {
+      "file": "DOTUSDT_1h.parquet",
+      "added_rows": 284,
+      "rows": 48438,
+      "coverage_end_utc": "2026-07-12 19:00:00+00:00",
+      "content_sha256": "878eedbe7fa71af460ef3f78edfde2abbe3fbceb1e367f29de110c6a2ad4d85f"
+    },
+    {
+      "file": "DOTUSDT_4h.parquet",
+      "added_rows": 71,
+      "rows": 12113,
+      "coverage_end_utc": "2026-07-12 16:00:00+00:00",
+      "content_sha256": "46999f1df0bcd8c64ca096667dab9e56270af9deac61f16ea00a73abb0b870f0"
+    },
+    {
+      "file": "EGLDUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "996b3d6e24d4c3c11cd5bbf1c4f49938349ec7547fb00c0cb7e84f26acafa999"
+    },
+    {
+      "file": "EOSUSDT_1d.parquet",
+      "added_rows": 0,
+      "rows": 1607,
+      "coverage_end_utc": "2025-05-26 00:00:00+00:00",
+      "content_sha256": "8859cee0312957634af1aa394353a1551c3ff1f41857c9128f3c8e785b1a8cd6"
+    },
+    {
+      "file": "ETCUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "3a46ea6b6780cb1cfb1cb75a9ed4755aa3a5e582944a21b7bb85e6766c217320"
+    },
+    {
+      "file": "ETHUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "e71549a5e7992cf45bd029bfa4a8fe1bc82e3e1212c7604b1ee3685cae3a25fd"
+    },
+    {
+      "file": "ETHUSDT_1h.parquet",
+      "added_rows": 284,
+      "rows": 48438,
+      "coverage_end_utc": "2026-07-12 19:00:00+00:00",
+      "content_sha256": "bf5902aeb0184673e663c943509b4062856cd8cf7b17f85c1917a1b4e7476398"
+    },
+    {
+      "file": "ETHUSDT_4h.parquet",
+      "added_rows": 71,
+      "rows": 12113,
+      "coverage_end_utc": "2026-07-12 16:00:00+00:00",
+      "content_sha256": "c753435c062bace9d8ffa9829d5f2492e0c40beb3ac7c09d0d24c2860306f8a0"
+    },
+    {
+      "file": "FILUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "e2da7f3e2357d8e29fe0e2937962818ce9dac75aac2ff6999c62ddfb0d133943"
+    },
+    {
+      "file": "FLOWUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 1809,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "faf63084cf0d4aa70f977636d48d826a7f7105992afc3f0a72d5ed050e94c34e"
+    },
+    {
+      "file": "FTMUSDT_1d.parquet",
+      "added_rows": 0,
+      "rows": 1474,
+      "coverage_end_utc": "2025-01-13 00:00:00+00:00",
+      "content_sha256": "db8188d17db9578207c3254da825f7a99005c246a1c0279fce9e0ff23f42a63f"
+    },
+    {
+      "file": "GRTUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "083520b380c98957aa19feb0a150c5f6f123ed1aab9bf7e72a484d7437644c29"
+    },
+    {
+      "file": "INJUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "7f51e2086984cd05ce59d9f46acf67ca85cb0e67664b3d5dd7b6f627ad0c6536"
+    },
+    {
+      "file": "LINKUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "85e0bf215fa1d962026dd0e6bd033110c023d2edbe8e9040a11fd7e76d7fd4cc"
+    },
+    {
+      "file": "LINKUSDT_1h.parquet",
+      "added_rows": 284,
+      "rows": 48438,
+      "coverage_end_utc": "2026-07-12 19:00:00+00:00",
+      "content_sha256": "29c0eeda688551926e111b597533f6b3b134ce0b38b75bb27c3950755861ef83"
+    },
+    {
+      "file": "LINKUSDT_4h.parquet",
+      "added_rows": 71,
+      "rows": 12113,
+      "coverage_end_utc": "2026-07-12 16:00:00+00:00",
+      "content_sha256": "8fcf8894239dc96a92539bb29e45e14404cb9673da141fc926411191c676f315"
+    },
+    {
+      "file": "LTCUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "4155b7a921e212791e422cd1820d518fcf64f9ee5ec8df24da1a2c3f1ba1b82d"
+    },
+    {
+      "file": "LTCUSDT_1h.parquet",
+      "added_rows": 284,
+      "rows": 48438,
+      "coverage_end_utc": "2026-07-12 19:00:00+00:00",
+      "content_sha256": "41fb05ad3821dc7c9c74c55de23e9b51d3e9fe969f1c7ed36e2718a74dfdf9c4"
+    },
+    {
+      "file": "LTCUSDT_4h.parquet",
+      "added_rows": 71,
+      "rows": 12113,
+      "coverage_end_utc": "2026-07-12 16:00:00+00:00",
+      "content_sha256": "32659284cef424cb5a3f61845623a157697d68fb346dc9410d4a429558859951"
+    },
+    {
+      "file": "MANAUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "96eb51b57372c758a3846539947cc20b817f70342859d698c2266fd9d01a314c"
+    },
+    {
+      "file": "MATICUSDT_1d.parquet",
+      "added_rows": 0,
+      "rows": 1349,
+      "coverage_end_utc": "2024-09-10 00:00:00+00:00",
+      "content_sha256": "075ed65d09c040ddb5851f422dd3ef78603c7dc3ff27b01c3112387d6bd15af4"
+    },
+    {
+      "file": "MATICUSDT_1h.parquet",
+      "added_rows": 0,
+      "rows": 32341,
+      "coverage_end_utc": "2024-09-10 02:00:00+00:00",
+      "content_sha256": "cc7cfe4914d4e2b25f9f91cb678609df4216f57db7a0ad2efc188e125fe73ffe"
+    },
+    {
+      "file": "MATICUSDT_4h.parquet",
+      "added_rows": 0,
+      "rows": 8089,
+      "coverage_end_utc": "2024-09-10 00:00:00+00:00",
+      "content_sha256": "e185859533a5a2b2492e736a50f6914f6608c9e929326a9396b00904035ddbf4"
+    },
+    {
+      "file": "NEARUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "ec985418a044b9bd586fc0b8d37c08ef0b30d868bf2680b2f6815b658ddbef11"
+    },
+    {
+      "file": "OPUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 1503,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "3510b499bed67d221b2e86bff647dd4c0e9cdf14a4f331f26233eeccd2ccb27f"
+    },
+    {
+      "file": "RUNEUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "c1230cfef2f1cdeca962af26abf37258ead7639e464ba4883e61fe7a0bd15083"
+    },
+    {
+      "file": "SANDUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "e66499c2c8e4273f4bbab4a54a7cbfe5e4ab55a202ad0cdd6377329f7f8f90f1"
+    },
+    {
+      "file": "SEIUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 1063,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "6751362c3d9a2d428aea320ff17614c74e672d0beccc2f91287f11ad4d2ca3b8"
+    },
+    {
+      "file": "SOLUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "d9685179d3def1d6fddbbf50578dd2b573083683708ebbc49d7e36f61f5e8c36"
+    },
+    {
+      "file": "SOLUSDT_1h.parquet",
+      "added_rows": 284,
+      "rows": 48438,
+      "coverage_end_utc": "2026-07-12 19:00:00+00:00",
+      "content_sha256": "7fd17b55f1f7429e39765f7f1e682b0680d6199435fda49964ab111fb675545d"
+    },
+    {
+      "file": "SOLUSDT_4h.parquet",
+      "added_rows": 71,
+      "rows": 12113,
+      "coverage_end_utc": "2026-07-12 16:00:00+00:00",
+      "content_sha256": "61828702b96f5ff6201d56544e87fc396bca92310c09456f6a66429d113213a2"
+    },
+    {
+      "file": "SUIUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 1167,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "5dff90d598b9381f26f66f8d23ec2712919d05fdd7ab4a287c5532d0b5218ac1"
+    },
+    {
+      "file": "THETAUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "303f02219c7e0af8419b67ada332eb5c5db9e8dbc6c58cd9cc9a70dcb4ed6ae7"
+    },
+    {
+      "file": "TIAUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 986,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "86d3895c07ce55c021a0e8d89006f03d9fa25292b3b945bf0e1b25648c42afe9"
+    },
+    {
+      "file": "TRXUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "e830000d5b10aaddad4cd317a7d2eb5fe5de5848a11c4070e8de02fd34a288fd"
+    },
+    {
+      "file": "TRXUSDT_1h.parquet",
+      "added_rows": 284,
+      "rows": 48438,
+      "coverage_end_utc": "2026-07-12 19:00:00+00:00",
+      "content_sha256": "0d6fe132405b7fdfee9946c61f60bf2dd801fa6a4d27d0b786698a0cd042e3dc"
+    },
+    {
+      "file": "TRXUSDT_4h.parquet",
+      "added_rows": 71,
+      "rows": 12113,
+      "coverage_end_utc": "2026-07-12 16:00:00+00:00",
+      "content_sha256": "33374038ab25452632e10dfb72b85543c00d3163478acbae282099a88d7ebdda"
+    },
+    {
+      "file": "UNIUSDT_1d.parquet",
+      "added_rows": 12,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "55f648e99cd878d07370cb89c4a9eaade3a7a53bd470b2f3303bb822ec692fa5"
+    },
+    {
+      "file": "UNIUSDT_1h.parquet",
+      "added_rows": 47694,
+      "rows": 48438,
+      "coverage_end_utc": "2026-07-12 19:00:00+00:00",
+      "content_sha256": "f1b0f4b231a668a4adcc1a45c27747bfc6f8d9b2ee725b9634abdc5c63b38757"
+    },
+    {
+      "file": "XLMUSDT_1d.parquet",
       "added_rows": 0,
       "rows": 2019,
       "coverage_end_utc": "2026-07-12 00:00:00+00:00",
-      "content_sha256": "0275db9746866c7e02523ef6ee4121d4b9ffda4cf39cdcb214f73d11221b2e2a"
+      "content_sha256": "871d93266a5fd8821af565a2932d35c49a3885e13528b0c37d1c1764891f2b98"
+    },
+    {
+      "file": "XRPUSDT_1d.parquet",
+      "added_rows": 0,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "8a60d619b90cb8aac792a0cdc96ce869b22e529368393b0386eb43afcc01877b"
+    },
+    {
+      "file": "XRPUSDT_1h.parquet",
+      "added_rows": 0,
+      "rows": 48438,
+      "coverage_end_utc": "2026-07-12 19:00:00+00:00",
+      "content_sha256": "18ba2119464b1fddb4a870e7866c5d638d59bb861ecb2e4d19609b6b7e86aa5e"
+    },
+    {
+      "file": "XRPUSDT_4h.parquet",
+      "added_rows": 71,
+      "rows": 12113,
+      "coverage_end_utc": "2026-07-12 16:00:00+00:00",
+      "content_sha256": "ec5c78982b723102b001a28b8a457577efd8be5733b23af67b25718868a1d2aa"
+    },
+    {
+      "file": "XTZUSDT_1d.parquet",
+      "added_rows": 0,
+      "rows": 2019,
+      "coverage_end_utc": "2026-07-12 00:00:00+00:00",
+      "content_sha256": "dd4381eea349e228f9219f8d52750733ed72a29f0d094eaa6311a2deaa9a5464"
     }
   ]
 }

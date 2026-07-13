@@ -24,6 +24,8 @@ audit:
 # failure or inability to reach it fails this target while `check` remains usable offline.
 required: check audit
 
+# Local dashboard (loopback-only, read-only: no venue, no orders, no real money).
+# Open the URL it prints (default http://127.0.0.1:8765).
 dashboard:
 	uv run python -m tios.services.dashboard_ui.server
 

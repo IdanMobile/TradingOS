@@ -220,6 +220,301 @@ def trend_filter(window: int) -> SignalBuilder:
     return build
 
 
+# --------------------------------------------------------------------------- #
+# Additional public indicators (OHLC-only; long-only spot). Batch added 2026-07-13.
+# --------------------------------------------------------------------------- #
+def _rolling_max(values: list[Decimal], window: int) -> list[Decimal | None]:
+    out: list[Decimal | None] = [None] * len(values)
+    for i in range(window - 1, len(values)):
+        out[i] = max(values[i - window + 1 : i + 1])
+    return out
+
+
+def _rolling_min(values: list[Decimal], window: int) -> list[Decimal | None]:
+    out: list[Decimal | None] = [None] * len(values)
+    for i in range(window - 1, len(values)):
+        out[i] = min(values[i - window + 1 : i + 1])
+    return out
+
+
+def _true_range(c: Candles) -> list[Decimal]:
+    high, low, close = c["high"], c["low"], c["close"]
+    tr = [high[0] - low[0]]
+    for i in range(1, len(high)):
+        pc = close[i - 1]
+        tr.append(max(high[i] - low[i], abs(high[i] - pc), abs(low[i] - pc)))
+    return tr
+
+
+def _atr(c: Candles, window: int) -> list[Decimal | None]:
+    return seed.rolling_mean(_true_range(c), window)
+
+
+def _stochastic_k(c: Candles, window: int) -> list[Decimal | None]:
+    hh, ll, close = _rolling_max(c["high"], window), _rolling_min(c["low"], window), c["close"]
+    out: list[Decimal | None] = [None] * len(close)
+    for i in range(len(close)):
+        if hh[i] is not None and ll[i] is not None and hh[i] != ll[i]:
+            out[i] = (close[i] - ll[i]) / (hh[i] - ll[i]) * Decimal(100)
+    return out
+
+
+def _williams(c: Candles, window: int) -> list[Decimal | None]:
+    hh, ll, close = _rolling_max(c["high"], window), _rolling_min(c["low"], window), c["close"]
+    out: list[Decimal | None] = [None] * len(close)
+    for i in range(len(close)):
+        if hh[i] is not None and ll[i] is not None and hh[i] != ll[i]:
+            out[i] = (hh[i] - close[i]) / (hh[i] - ll[i]) * Decimal(-100)
+    return out
+
+
+def _cci(c: Candles, window: int) -> list[Decimal | None]:
+    tp = [(h + low + cl) / 3 for h, low, cl in zip(c["high"], c["low"], c["close"], strict=True)]
+    sma = seed.rolling_mean(tp, window)
+    out: list[Decimal | None] = [None] * len(tp)
+    for i in range(window - 1, len(tp)):
+        mean = sma[i]
+        if mean is None:
+            continue
+        mad = sum(abs(tp[j] - mean) for j in range(i - window + 1, i + 1)) / window
+        if mad != 0:
+            out[i] = (tp[i] - mean) / (Decimal("0.015") * mad)
+    return out
+
+
+def _keltner(
+    c: Candles, ema_w: int, atr_w: int, mult: Decimal
+) -> tuple[list[Decimal | None], list[Decimal | None]]:
+    mid, atr = _ema(c["close"], ema_w), _atr(c, atr_w)
+    upper: list[Decimal | None] = [None] * len(mid)
+    for i in range(len(mid)):
+        if mid[i] is not None and atr[i] is not None:
+            upper[i] = mid[i] + mult * atr[i]
+    return upper, mid
+
+
+def _ichimoku(
+    c: Candles, tenkan_w: int, kijun_w: int
+) -> tuple[list[Decimal | None], list[Decimal | None]]:
+    def midline(window: int) -> list[Decimal | None]:
+        hh, ll = _rolling_max(c["high"], window), _rolling_min(c["low"], window)
+        return [
+            (hh[i] + ll[i]) / 2 if hh[i] is not None and ll[i] is not None else None
+            for i in range(len(hh))
+        ]
+
+    return midline(tenkan_w), midline(kijun_w)
+
+
+def _macd(
+    c: Candles, fast: int, slow: int, signal_w: int
+) -> tuple[list[Decimal | None], list[Decimal | None]]:
+    ef, es = _ema(c["close"], fast), _ema(c["close"], slow)
+    macd: list[Decimal | None] = [
+        f - s if f is not None and s is not None else None for f, s in zip(ef, es, strict=True)
+    ]
+    sig: list[Decimal | None] = [None] * len(macd)
+    k, prev, count = Decimal(2) / (signal_w + 1), None, 0
+    for i, m in enumerate(macd):
+        if m is None:
+            continue
+        prev = m if prev is None else m * k + prev * (Decimal(1) - k)
+        count += 1
+        if count >= signal_w:
+            sig[i] = prev
+    return macd, sig
+
+
+def _vortex(c: Candles, window: int) -> tuple[list[Decimal | None], list[Decimal | None]]:
+    high, low, tr = c["high"], c["low"], _true_range(c)
+    vm_plus = [Decimal(0)] + [abs(high[i] - low[i - 1]) for i in range(1, len(high))]
+    vm_minus = [Decimal(0)] + [abs(low[i] - high[i - 1]) for i in range(1, len(high))]
+    vip: list[Decimal | None] = [None] * len(high)
+    vim: list[Decimal | None] = [None] * len(high)
+    for i in range(window, len(high)):
+        tr_sum = sum(tr[i - window + 1 : i + 1])
+        if tr_sum != 0:
+            vip[i] = sum(vm_plus[i - window + 1 : i + 1]) / tr_sum
+            vim[i] = sum(vm_minus[i - window + 1 : i + 1]) / tr_sum
+    return vip, vim
+
+
+def _aroon(c: Candles, window: int) -> tuple[list[Decimal | None], list[Decimal | None]]:
+    high, low = c["high"], c["low"]
+    up: list[Decimal | None] = [None] * len(high)
+    down: list[Decimal | None] = [None] * len(high)
+    for i in range(window, len(high)):
+        window_high = high[i - window : i + 1]
+        window_low = low[i - window : i + 1]
+        since_high = window - window_high.index(max(window_high))
+        since_low = window - window_low.index(min(window_low))
+        up[i] = Decimal(window - since_high) / window * 100
+        down[i] = Decimal(window - since_low) / window * 100
+    return up, down
+
+
+def macd_cross(fast: int, slow: int, signal_w: int) -> SignalBuilder:
+    def build(c: Candles) -> tuple[list[bool], list[bool]]:
+        macd, sig = _macd(c, fast, slow, signal_w)
+        return _cross(macd, sig)
+
+    return build
+
+
+def stochastic_reversion(window: int, low: Decimal, high: Decimal) -> SignalBuilder:
+    def build(c: Candles) -> tuple[list[bool], list[bool]]:
+        k = _stochastic_k(c, window)
+        entries = [v is not None and v < low for v in k]
+        exits = [v is not None and v > high for v in k]
+        return entries, exits
+
+    return build
+
+
+def williams_reversion(window: int, low: Decimal, high: Decimal) -> SignalBuilder:
+    def build(c: Candles) -> tuple[list[bool], list[bool]]:
+        wr = _williams(c, window)
+        entries = [v is not None and v < low for v in wr]
+        exits = [v is not None and v > high for v in wr]
+        return entries, exits
+
+    return build
+
+
+def cci_breakout(window: int, level: Decimal) -> SignalBuilder:
+    def build(c: Candles) -> tuple[list[bool], list[bool]]:
+        cci = _cci(c, window)
+        entries = [v is not None and v > level for v in cci]
+        exits = [v is not None and v < -level for v in cci]
+        return entries, exits
+
+    return build
+
+
+def keltner_breakout(ema_w: int, atr_w: int, mult: Decimal) -> SignalBuilder:
+    def build(c: Candles) -> tuple[list[bool], list[bool]]:
+        upper, mid = _keltner(c, ema_w, atr_w, mult)
+        close = c["close"]
+        entries = [u is not None and p > u for p, u in zip(close, upper, strict=True)]
+        exits = [m is not None and p < m for p, m in zip(close, mid, strict=True)]
+        return entries, exits
+
+    return build
+
+
+def ichimoku_trend(tenkan_w: int, kijun_w: int) -> SignalBuilder:
+    def build(c: Candles) -> tuple[list[bool], list[bool]]:
+        tenkan, kijun = _ichimoku(c, tenkan_w, kijun_w)
+        close = c["close"]
+        entries = [
+            t is not None and k is not None and p > k and t > k
+            for p, t, k in zip(close, tenkan, kijun, strict=True)
+        ]
+        exits = [k is not None and p < k for p, k in zip(close, kijun, strict=True)]
+        return entries, exits
+
+    return build
+
+
+def vortex_cross(window: int) -> SignalBuilder:
+    def build(c: Candles) -> tuple[list[bool], list[bool]]:
+        return _cross(*_vortex(c, window))
+
+    return build
+
+
+def aroon_cross(window: int) -> SignalBuilder:
+    def build(c: Candles) -> tuple[list[bool], list[bool]]:
+        return _cross(*_aroon(c, window))
+
+    return build
+
+
+# --------------------------------------------------------------------------- #
+# Candlestick-pattern strategies (bullish pattern = entry, bearish mirror = exit).
+# Long-only spot; every one is a copied public pattern. Batch added 2026-07-13.
+# --------------------------------------------------------------------------- #
+def engulfing(min_ratio: Decimal) -> SignalBuilder:
+    """Bullish/bearish engulfing: current body engulfs the prior body (>= min_ratio bigger)."""
+
+    def build(c: Candles) -> tuple[list[bool], list[bool]]:
+        o, cl = c["open"], c["close"]
+        entries, exits = [False] * len(o), [False] * len(o)
+        for i in range(1, len(o)):
+            prev_body, body = abs(cl[i - 1] - o[i - 1]), abs(cl[i] - o[i])
+            if body < min_ratio * prev_body:
+                continue
+            if cl[i] > o[i] and cl[i - 1] < o[i - 1] and cl[i] >= o[i - 1] and o[i] <= cl[i - 1]:
+                entries[i] = True  # bullish engulfing
+            if cl[i] < o[i] and cl[i - 1] > o[i - 1] and o[i] >= cl[i - 1] and cl[i] <= o[i - 1]:
+                exits[i] = True  # bearish engulfing
+        return entries, exits
+
+    return build
+
+
+def hammer_star(shadow_ratio: Decimal) -> SignalBuilder:
+    """Hammer (long lower shadow) = entry; shooting star (long upper shadow) = exit."""
+
+    def build(c: Candles) -> tuple[list[bool], list[bool]]:
+        o, h, low, cl = c["open"], c["high"], c["low"], c["close"]
+        entries, exits = [False] * len(o), [False] * len(o)
+        for i in range(len(o)):
+            body = abs(cl[i] - o[i])
+            if body <= 0:
+                continue
+            upper = h[i] - max(o[i], cl[i])
+            lower = min(o[i], cl[i]) - low[i]
+            if lower >= shadow_ratio * body and upper <= body:
+                entries[i] = True  # hammer
+            if upper >= shadow_ratio * body and lower <= body:
+                exits[i] = True  # shooting star
+        return entries, exits
+
+    return build
+
+
+def piercing_darkcloud(penetration: Decimal) -> SignalBuilder:
+    """Piercing line = entry; dark-cloud cover = exit (penetration into the prior body)."""
+
+    def build(c: Candles) -> tuple[list[bool], list[bool]]:
+        o, cl = c["open"], c["close"]
+        entries, exits = [False] * len(o), [False] * len(o)
+        for i in range(1, len(o)):
+            prev = abs(cl[i - 1] - o[i - 1])
+            if prev <= 0:
+                continue
+            if cl[i - 1] < o[i - 1] and cl[i] > o[i] and o[i] < cl[i - 1]:
+                if cl[i] >= cl[i - 1] + penetration * prev:  # closes into prior bearish body
+                    entries[i] = True
+            if cl[i - 1] > o[i - 1] and cl[i] < o[i] and o[i] > cl[i - 1]:
+                if cl[i] <= cl[i - 1] - penetration * prev:  # closes into prior bullish body
+                    exits[i] = True
+        return entries, exits
+
+    return build
+
+
+def morning_evening_star(star_max: Decimal) -> SignalBuilder:
+    """Morning star (3-bar bottom) = entry; evening star (3-bar top) = exit."""
+
+    def build(c: Candles) -> tuple[list[bool], list[bool]]:
+        o, cl = c["open"], c["close"]
+        entries, exits = [False] * len(o), [False] * len(o)
+        for i in range(2, len(o)):
+            body0, body1 = abs(cl[i - 2] - o[i - 2]), abs(cl[i - 1] - o[i - 1])
+            mid0 = (o[i - 2] + cl[i - 2]) / 2
+            if body0 <= 0 or body1 > star_max * body0:
+                continue
+            if cl[i - 2] < o[i - 2] and cl[i] > o[i] and cl[i] >= mid0:
+                entries[i] = True  # morning star
+            if cl[i - 2] > o[i - 2] and cl[i] < o[i] and cl[i] <= mid0:
+                exits[i] = True  # evening star
+        return entries, exits
+
+    return build
+
+
 @dataclass(frozen=True)
 class Strategy:
     strategy_id: str
@@ -463,6 +758,158 @@ STRATEGIES: tuple[Strategy, ...] = (
             "ema",
             ema_cross,
             [{"fast": 50, "slow": 200}, {"fast": 40, "slow": 180}, {"fast": 60, "slow": 220}],
+        ),
+    ),
+    Strategy(
+        "EXT-MACD-CROSS",
+        "MACD line/signal crossover 12/26/9 (Appel, public)",
+        "momentum",
+        _grid(
+            "macd",
+            macd_cross,
+            [
+                {"fast": 12, "slow": 26, "signal_w": 9},
+                {"fast": 10, "slow": 21, "signal_w": 9},
+                {"fast": 8, "slow": 17, "signal_w": 9},
+            ],
+        ),
+    ),
+    Strategy(
+        "EXT-STOCHASTIC",
+        "Stochastic %K oversold/overbought reversion (Lane, public)",
+        "reversion",
+        _grid(
+            "stoch",
+            stochastic_reversion,
+            [
+                {"window": 14, "low": Decimal("20"), "high": Decimal("80")},
+                {"window": 14, "low": Decimal("25"), "high": Decimal("75")},
+                {"window": 10, "low": Decimal("20"), "high": Decimal("80")},
+            ],
+        ),
+    ),
+    Strategy(
+        "EXT-WILLIAMS-R",
+        "Williams %R oversold/overbought reversion (Williams, public)",
+        "reversion",
+        _grid(
+            "williams",
+            williams_reversion,
+            [
+                {"window": 14, "low": Decimal("-80"), "high": Decimal("-20")},
+                {"window": 10, "low": Decimal("-85"), "high": Decimal("-15")},
+                {"window": 21, "low": Decimal("-80"), "high": Decimal("-20")},
+            ],
+        ),
+    ),
+    Strategy(
+        "EXT-CCI-BREAKOUT",
+        "Commodity Channel Index +/-100 breakout (Lambert, public)",
+        "momentum",
+        _grid(
+            "cci",
+            cci_breakout,
+            [
+                {"window": 20, "level": Decimal("100")},
+                {"window": 14, "level": Decimal("100")},
+                {"window": 20, "level": Decimal("150")},
+            ],
+        ),
+    ),
+    Strategy(
+        "EXT-KELTNER-BREAKOUT",
+        "Keltner Channel EMA+ATR breakout (Keltner/Chester, public)",
+        "breakout",
+        _grid(
+            "keltner",
+            keltner_breakout,
+            [
+                {"ema_w": 20, "atr_w": 10, "mult": Decimal("2")},
+                {"ema_w": 20, "atr_w": 10, "mult": Decimal("1.5")},
+                {"ema_w": 14, "atr_w": 10, "mult": Decimal("2")},
+            ],
+        ),
+    ),
+    Strategy(
+        "EXT-ICHIMOKU",
+        "Ichimoku tenkan/kijun trend (Hosoda, public)",
+        "trend",
+        _grid(
+            "ichimoku",
+            ichimoku_trend,
+            [
+                {"tenkan_w": 9, "kijun_w": 26},
+                {"tenkan_w": 7, "kijun_w": 22},
+                {"tenkan_w": 12, "kijun_w": 30},
+            ],
+        ),
+    ),
+    Strategy(
+        "EXT-VORTEX",
+        "Vortex Indicator VI+/VI- crossover (Botes/Siepman, public)",
+        "trend",
+        _grid("vortex", vortex_cross, [{"window": 14}, {"window": 10}, {"window": 21}]),
+    ),
+    Strategy(
+        "EXT-AROON",
+        "Aroon up/down crossover (Chande, public)",
+        "trend",
+        _grid("aroon", aroon_cross, [{"window": 25}, {"window": 14}, {"window": 20}]),
+    ),
+    Strategy(
+        "EXT-PAT-ENGULFING",
+        "Bullish/bearish engulfing candlestick pattern (public)",
+        "pattern",
+        _grid(
+            "engulf",
+            engulfing,
+            [
+                {"min_ratio": Decimal("1.0")},
+                {"min_ratio": Decimal("1.2")},
+                {"min_ratio": Decimal("1.5")},
+            ],
+        ),
+    ),
+    Strategy(
+        "EXT-PAT-HAMMER",
+        "Hammer / shooting-star candlestick pattern (public)",
+        "pattern",
+        _grid(
+            "hammer",
+            hammer_star,
+            [
+                {"shadow_ratio": Decimal("2")},
+                {"shadow_ratio": Decimal("2.5")},
+                {"shadow_ratio": Decimal("3")},
+            ],
+        ),
+    ),
+    Strategy(
+        "EXT-PAT-PIERCING",
+        "Piercing line / dark-cloud cover candlestick pattern (public)",
+        "pattern",
+        _grid(
+            "piercing",
+            piercing_darkcloud,
+            [
+                {"penetration": Decimal("0.5")},
+                {"penetration": Decimal("0.6")},
+                {"penetration": Decimal("0.7")},
+            ],
+        ),
+    ),
+    Strategy(
+        "EXT-PAT-STAR",
+        "Morning star / evening star candlestick pattern (public)",
+        "pattern",
+        _grid(
+            "star",
+            morning_evening_star,
+            [
+                {"star_max": Decimal("0.3")},
+                {"star_max": Decimal("0.5")},
+                {"star_max": Decimal("0.7")},
+            ],
         ),
     ),
 )
