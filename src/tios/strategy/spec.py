@@ -26,6 +26,7 @@ FAMILIES = (
     "breakout",
     "calendar",
     "funding_pressure",
+    "transaction_activity",
     "carry",
     "market_making",
     "arbitrage",

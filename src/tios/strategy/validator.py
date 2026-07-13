@@ -26,6 +26,8 @@ DATASET_IDENTIFIERS = frozenset(
         "calc_time",
         "funding_interval_hours",
         "last_funding_rate",
+        "source_day_utc",
+        "confirmed_transaction_count",
     }
 )
 

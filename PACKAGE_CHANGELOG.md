@@ -1,5 +1,13 @@
 # Package Changelog
 
+## v8.64 — 2026-07-13
+
+- Froze the 12-trial Bitcoin transaction-activity canonical campaign before scoring.
+- Added strict two-day-lag, consecutive-window, non-extending pulse, and gap semantics.
+- Added independent Decimal, vectorbt, Freqtrade-environment, and Nautilus-environment roles.
+- Added a hashed development-selection barrier that blocks validation/reserve access.
+- Retained execution authority `NONE`; no bot, venue, credential, order, or holdout was activated.
+
 ## v4 — 2026-07-05
 - Added Phase 3 Execution Readiness Report.
 - Added Crypto Spot Venue & Data Matrix V1.

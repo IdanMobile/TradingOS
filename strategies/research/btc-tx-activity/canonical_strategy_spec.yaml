@@ -1,0 +1,40 @@
+strategy_id: STRAT-BTC-TX-ACTIVITY-SPOT
+family: transaction_activity
+inputs: [source_day_utc, confirmed_transaction_count, open, close]
+indicators:
+  - name: prior_log_count_zscore
+    parameters:
+      activity_side: HIGH
+      prior_window_days: 14
+      z_threshold: 1
+      population_std: true
+      availability_lag_full_utc_days: 2
+      pulse_holding_days: 1
+    outputs: [activity_pulse_entry, activity_pulse_exit]
+entry_long:
+  all:
+    - activity_pulse_entry == 1
+exit_long:
+  all:
+    - activity_pulse_exit == 1
+position_sizing: {type: all_in}
+risk:
+  stop_loss: null
+  take_profit: null
+  source_gap_exit: FIRST_OBSERVABLE_OPEN
+  spot_gap_exit: FIRST_OBSERVABLE_OPEN
+  execution_authority: NONE
+assumptions:
+  - "warm-up requires the resolved number of immediately preceding complete consecutive UTC daily observations"
+  - "signal is evaluated after the source day plus two full UTC days and fills only at the first retained hourly bar open strictly later, normally 01:00 UTC"
+  - "the z-score uses natural-log counts, the prior-window population mean and population standard deviation, and excludes the current source day"
+  - "HIGH requires z > 1 and LOW requires z < -1; equality and zero prior standard deviation produce no signal"
+  - "a held pulse ignores later signals, never extends or stacks, and exits at the first hourly bar open at least 24 or 72 hours after entry"
+  - "a missing source day resets warm-up and exits held exposure when the absence becomes observable under the same two-day lag"
+  - "transaction count is not users, transaction value, exchange flow, or causal adoption"
+ambiguities: []
+source_refs:
+  - FS4-BLOCKCHAIN-CHARTS-API
+  - FS4-KOUTMOS-2018
+  - FS4-AALBORG-2019
+license_ref: PROJECT-ORIGINAL-SPEC

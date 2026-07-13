@@ -819,6 +819,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   shocks. Exact official response bytes, 2,004 campaign observations, a two-day availability lag,
   the known November 2025 gap, strict later Spot mapping, and drift tests pass. Twelve pulse trials
   are frozen without performance; canonical/campaign work remains offline and authority-free.
+- **Bitcoin transaction-activity campaign frozen (D-061):** all 12 immutable trials, four
+  independent implementation roles, six cost cells, two-phase selection barrier, G1-G11 gates,
+  and no-rescue boundary are preregistered. Focused tests and offline preflight pass; performance
+  remains unobserved until a clean-commit run and execution authority remains `NONE`.
 
 ## Operational SSOT (unchanged)
 
@@ -877,12 +881,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Begin a new bounded source-only family-selection cycle using genuinely distinct mechanisms and a
-new unseen-evidence plan. The rejected calendar family and its nominal reserve may not be reused
-or adapted. Do not expand or rescue B2/B3/B4, carry, cross-sectional momentum, volatility
-management, stablecoin reversion, halving exposure, or UTC calendar variants without direct new
-evidence that closes their recorded rejection. Do not access the sealed V2 holdout, activate a
-bot, connect a venue, request credentials, or cross any human S3/S4 gate.
+From the clean campaign-freeze commit, run `BTC-TX-ACTIVITY-SPOT-G1-G11-V1` once offline. Require
+the development selection artifact and its hash before validation/reserve evaluation, then perform
+the independent G11 supervisor review. Any hard failure closes the exact context without rescue.
+Do not access the sealed V2 holdout, activate a bot, connect a venue, request credentials, or cross
+any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

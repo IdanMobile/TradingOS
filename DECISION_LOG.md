@@ -581,6 +581,28 @@ Evidence: `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V4.md` and
 `research/BTC_TX_ACTIVITY_DATA_PACKAGE_V1.json`.
 Status: **Approved constrained-S2 data/canonical build; performance unobserved and authority NONE.**
 
+### D-061 — Bitcoin transaction-activity campaign frozen behind a selection barrier
+
+Decision: the D-060 family is specified as `BTC-TX-ACTIVITY-SPOT-G1-G11-V1` before any
+activity-conditioned return is computed. Twelve content-derived StrategyVersions exhaust the
+two-side, three-window, two-holding-period roster. The canonical implementation and independent
+Decimal, vectorbt, Freqtrade-environment, and Nautilus-environment roles freeze strict prior-window
+population z-scores, the two-day availability lag, next-open fills, non-extending pulses, and
+fail-closed source/Spot gaps. Focused causal tests and worker import preflights pass.
+
+The offline runner evaluates all 12 trials on development first, writes and verifies a hashed
+selection artifact, and refuses validation/reserve access without it. Six cost cells, chronological
+splits, trade minima, timing delay, benchmark, drawdown, period, PBO/DSR, parity, G1-G11, and
+no-rescue rules are immutable.
+
+Consequence: one clean-commit offline historical run is authorized. Numeric output cannot
+self-promote. No bot, venue, credential, order, paper/demo/live state, human gate, sealed V2
+holdout access, closed-family reuse, or execution authority is authorized.
+
+Evidence: `research/BTC_TX_ACTIVITY_SPOT_G1_G11_CAMPAIGN_V1.yaml` and focused tests under
+`tests/test_transaction_activity_*`.
+Status: **Approved constrained-S2 immutable offline campaign; preregistered and not run.**
+
 ### D-055 — Funding-pressure Spot family admitted to canonical campaign construction
 
 Decision: `FAMILY-SELECT-V3` compared exactly three distinct mechanisms without computing local
