@@ -1,0 +1,175 @@
+schema: tios-canonical-baseline-method-sources-v1
+record_id: CANONICAL-BASELINE-METHOD-SOURCES-V2
+checked_at_utc: 2026-07-13T00:00:00Z
+purpose: >-
+  Primary-source record for the execution, cost, validation, and reproducibility
+  choices frozen by SEARCH-CANONICAL-BASELINE-G10-V2. Sources constrain the
+  method; they do not validate a strategy or imply profit.
+execution_authority: NONE
+promotion_eligible: false
+
+sources:
+  - source_id: SRC-VECTORBT-PORTFOLIO-2026
+    source_class: official_software_documentation
+    title: vectorbt Portfolio API
+    url: https://vectorbt.dev/api/portfolio/base/
+    retrieved_at_utc: 2026-07-13T00:00:00Z
+    verified_fact: >-
+      The documentation warns that signals derived from close should be shifted
+      forward one tick and executed using a price available after the signal; its
+      examples support close-series valuation with a separate order price and
+      explicit fees and slippage.
+    campaign_implication: >-
+      Evaluate on close t, resolve state, and permit a fill only at the exactly
+      adjacent open t+1. Keep close as the portfolio valuation series and open as
+      the order price.
+    limitation: >-
+      A bar open is a research approximation, not a guarantee that a live order
+      receives that price.
+
+  - source_id: SRC-FREQTRADE-STRATEGY-101-2026
+    source_class: official_software_documentation
+    title: Freqtrade Strategy 101
+    url: https://www.freqtrade.io/en/stable/strategy-101/
+    retrieved_at_utc: 2026-07-13T00:00:00Z
+    verified_fact: >-
+      Freqtrade documents that a signal formed after a candle closes enters at
+      the next candle's open in backtesting.
+    campaign_implication: >-
+      Next-open execution is a common causal bar-backtest convention and is used
+      as an independent implementation-design cross-check.
+    limitation: >-
+      Freqtrade conventions do not prove vectorbt implementation correctness or
+      live fill quality.
+
+  - source_id: SRC-BINANCE-PUBLIC-DATA-2026
+    source_class: official_venue_repository
+    title: Binance Public Data
+    url: https://github.com/binance/binance-public-data
+    retrieved_at_utc: 2026-07-13T00:00:00Z
+    verified_fact: >-
+      Binance publishes monthly Spot kline archives with adjacent CHECKSUM files
+      and documents the timestamp precision change to microseconds from
+      2025-01-01.
+    campaign_implication: >-
+      Freeze every monthly archive URL, byte size, and SHA-256; verify every
+      source byte before deterministic normalization and handle both documented
+      timestamp regimes.
+    limitation: >-
+      The public kline archive does not provide historical order-book state,
+      queue position, or account-specific executions.
+
+  - source_id: SRC-BINANCE-SPOT-FEES-2026-07-13
+    source_class: official_venue_documentation
+    title: Binance Spot trading fees
+    url: https://www.binance.com/en/fee/trading
+    retrieved_at_utc: 2026-07-13T00:00:00Z
+    verified_fact: >-
+      The regular-user Spot table displayed a 0.100 percent maker and taker rate
+      when retrieved.
+    campaign_implication: >-
+      F1 uses a frozen 10 bps fee per side; F2 doubles it as a stress case.
+    limitation: >-
+      Fees are time-, venue-, tier-, promotion-, tax-, discount-, and
+      account-dependent. This observation is a dated calibration, not a promise
+      of an operator's actual fee.
+
+  - source_id: SRC-BINANCE-FEE-CALCULATION-2026
+    source_class: official_venue_education
+    title: How to Calculate Transaction Fees on Binance
+    url: https://www.binance.com/en/academy/articles/how-to-calculate-transaction-fees-on-binance
+    retrieved_at_utc: 2026-07-13T00:00:00Z
+    verified_fact: >-
+      Binance explains that fees depend on maker/taker role and user tier and are
+      charged on trading activity.
+    campaign_implication: >-
+      Treat the fixed fee grid as declared scenarios and apply costs on each
+      executed side, not as a universal account-level truth.
+    limitation: >-
+      The page does not reconstruct historical account-specific commissions.
+
+  - source_id: SRC-SKLEARN-TIMESERIES-SPLIT-1-9
+    source_class: official_software_documentation
+    title: scikit-learn TimeSeriesSplit
+    url: https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html
+    retrieved_at_utc: 2026-07-13T00:00:00Z
+    verified_fact: >-
+      TimeSeriesSplit documents time-ordered expanding training sets and a gap
+      parameter between train and test sets.
+    campaign_implication: >-
+      Use expanding chronological selection, a declared one-bar boundary gap,
+      and never use a fold's test data to select its trial.
+    limitation: >-
+      The campaign implements its frozen calendar folds directly; citation of a
+      splitter does not by itself exclude leakage.
+
+  - source_id: SRC-PBO-2016
+    source_class: primary_academic_paper
+    title: The Probability of Backtest Overfitting
+    authors: [David H. Bailey, Jonathan M. Borwein, Marcos Lopez de Prado, Qiji Jim Zhu]
+    url: https://scholarworks.wmich.edu/math_pubs/42/
+    retrieved_at_utc: 2026-07-13T00:00:00Z
+    verified_fact: >-
+      The paper defines combinatorially symmetric cross-validation for estimating
+      the probability that selection over a backtest population is overfit.
+    campaign_implication: >-
+      Retain all frozen trials and compute CSCV/PBO at family and campaign scope
+      using the same governed selection metric.
+    limitation: >-
+      PBO is not chronological out-of-sample evidence and cannot reconstruct
+      omitted upstream searches.
+
+  - source_id: SRC-DSR-2014
+    source_class: primary_academic_paper
+    title: >-
+      The Deflated Sharpe Ratio: Correcting for Selection Bias, Backtest
+      Overfitting, and Non-Normality
+    authors: [David H. Bailey, Marcos Lopez de Prado]
+    url: https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf
+    retrieved_at_utc: 2026-07-13T00:00:00Z
+    verified_fact: >-
+      The paper adjusts the selected Sharpe for multiple testing and non-normal
+      returns and gives an average-correlation approximation for effective trials.
+    campaign_implication: >-
+      Compute DSR only when retained return correlations are defined; otherwise
+      fail closed as method-blocked rather than inventing an effective trial count.
+    limitation: >-
+      A retained-family estimate cannot substitute for unavailable
+      hierarchy-wide search history.
+
+  - source_id: SRC-DVC-SHARING-2026
+    source_class: official_software_documentation
+    title: DVC get and data sharing workflow
+    url: https://dvc.org/doc/command-reference/get
+    retrieved_at_utc: 2026-07-13T00:00:00Z
+    verified_fact: >-
+      DVC-tracked data is fetched through repository metadata and an accessible
+      data remote; Git alone does not carry cached artifact bytes.
+    campaign_implication: >-
+      The existing local-only DVC prototype is not described as distributable.
+      V2 instead tracks a portable, checksum-pinned public-source manifest and a
+      deterministic restore command.
+    limitation: >-
+      Public-source restoration depends on the upstream archive remaining
+      reachable; the campaign itself is offline and never auto-fetches.
+
+method_synthesis:
+  verified_facts:
+    - Close-derived signals must not fill before a later observable price.
+    - Time-ordered expanding splits and explicit gaps are established validation tools.
+    - PBO and DSR answer complementary multiple-testing questions.
+    - Binance publishes checksum-addressable monthly Spot klines.
+  inferences:
+    - Exact five-minute adjacency is the safest definition of the next executable
+      bar for this gapped retained dataset.
+    - Fixed S1-S3 slippage is a stress surface because five-minute OHLCV cannot
+      identify historical spread, queue, or market impact.
+    - Rebuilding from pinned official bytes is a practical distributable fallback
+      for this public dataset even without a shared DVC remote.
+  unknowns:
+    - Historical account-specific fee discounts, taxes, and promotions.
+    - Historical spread, depth, latency, impact, and achievable fill probability.
+    - The complete upstream research population that admitted B2, B3, and B4.
+  stop_rule: >-
+    These sources cannot be used to upgrade a numeric result into promotion,
+    execution authority, or a live-fill claim.

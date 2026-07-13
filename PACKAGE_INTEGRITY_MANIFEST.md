@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.53 Preregistered G10 campaign execution contract and completed result (2026-07-13). Supersedes v8.52 hashes.
+Package version: v8.54 Canonical V2 formal-run freeze and portable dataset restoration (2026-07-13). Supersedes v8.53 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -40,6 +40,17 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `strategies/research/funding-carry-basis-delta-neutral/canonical_strategy_spec.yaml` | `87ee0ecfc39515547a09ffa2108b93f7f65785de2ec28e2f4a895190d1ca86b0` |
 | `strategies/research/funding-carry-basis-delta-neutral/canonical_strategy_spec.sha256` | `02b3be727ee2d86a4b80eeb5fdf31779827b604f16e76f7c9f562d82ede8713a` |
 | `research/BASELINE_G10_SEARCH_CAMPAIGN_V1.yaml` | `f7dd3393b95f644df6b38ee3602d0530bc4d91d1f4f873d956b49a10c8ff98fe` |
+
+## Canonical baseline V2 formal-run freeze (added v8.54)
+
+| Path | SHA-256 |
+|---|---|
+| `data/raw/manifests/DS-CRYPTO-SPOT-BTCUSDT-5M-V1.source.json` | `f9d986bd48c9baa060871721fc849be3f72b472d4c8859b35d07ec29b0d93139` |
+| `research/CANONICAL_BASELINE_G10_CAMPAIGN_V2.yaml` | `8696412b87fbc4817a4cca25e9fc585466431881529b006627dcaad857a21dd4` |
+| `research/CANONICAL_BASELINE_METHOD_SOURCES_V2.yaml` | `366643eb382c81d41043813c15fefb50ab2a05b31454b185ba597577bfe0d478` |
+| `engines/vectorbt/canonical_baseline_returns.py` | `ffca97a92ecefe1be2b187316320e5c486ed64618962571d25f4d06c1850299e` |
+| `scripts/restore_canonical_btcusdt_5m.py` | `5fa0417f23b4211f0ebccd6b32f903ae48e6fd61d9cafa5f272aa9001cbafca1` |
+| `scripts/run_canonical_baseline_campaign.py` | `e7fbcb31a17ff7c3ecc9e4525c0d8c7ca765ccf0d9ef62f3e9f1f6881c02e7b1` |
 
 ## Required handoff inputs — planning system (added v8)
 

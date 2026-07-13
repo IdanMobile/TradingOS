@@ -789,3 +789,21 @@ Key outcomes:
   numeric FAIL, B3 `METHOD_BLOCKED`, overall G10 `METHOD_BLOCKED`, and no selected winner.
 - Added the controlled human-readable campaign report and retained the local-only rerun
   limitation: the exact hashed dataset and environment are not Git- or DVC-distributed.
+
+## v8.54 — 2026-07-13 — Canonical V2 formal-run freeze
+
+- Added a portable 66-archive Binance BTCUSDT 5m source manifest and an offline-first
+  restore command that reproduces the exact 577,803-row Parquet byte hash; public fetching
+  is explicit and every archive is SHA-256 pinned.
+- Added a separate canonical-rule B2/B3/B4 extractor with 67 frozen trials, persistent B2
+  eligibility, population-variance B3, prior-high B4, gap-reset indicators, position-aware
+  conflicts, and exact-adjacent next-open fills.
+- Added the complete F0/S0 through F2/S3 cost surface, per-trial executed notional and
+  turnover, five expanding historical pseudo-OOS folds, plus family and campaign-wide
+  PBO/DSR inputs.
+- Added a governed formal-run/verify/recompute lifecycle, exact code/data/spec/environment
+  pins, primary-source method ledger, and a sealed post-2026-07-14 prospective holdout.
+- Disclosed that a pre-freeze implementation smoke touched the full historical dataset;
+  therefore V2 is a reproducibility/conformance diagnostic, not unseen evidence. The future
+  holdout is the only prospective test. No strategy, venue, order, or execution authority
+  was enabled.

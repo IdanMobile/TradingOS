@@ -1,0 +1,308 @@
+schema: tios-search-campaign-preregistration-v2
+campaign_id: SEARCH-CANONICAL-BASELINE-G10-V2
+status: PREREGISTERED_NOT_RUN
+preregistered_at_utc: 2026-07-13T10:37:23Z
+purpose: >-
+  Recompute the frozen B2/B3/B4 baseline families with their declared causal
+  rules, next-adjacent-bar-open execution, a six-cell cost surface, chronological
+  historical pseudo-out-of-sample diagnostics, and family plus campaign-wide
+  PBO/DSR. This is a bounded offline canonical-rule campaign, not promotion or
+  live-fill evidence.
+execution_authority: NONE
+network_during_campaign: PROHIBITED
+credentials_required: false
+venue_connection: NONE
+orders: DISABLED
+promotion_eligible: false
+winner_selected: false
+
+pre_freeze_exposure:
+  status: IMPLEMENTATION_SMOKE_ACCESSED_FULL_HISTORICAL_DATA
+  occurred_before_utc: "2026-07-13T10:37:23Z"
+  cause: >-
+    A code-acceptance performance smoke ran the complete extractor before this
+    contract reached an immutable Git commit.
+  information_observed:
+    - B2 coarse numeric verdict was FAIL.
+    - B3 coarse numeric verdict was METHOD_BLOCKED.
+    - B4 coarse numeric verdict was FAIL.
+    - Campaign-wide coarse numeric verdict was METHOD_BLOCKED.
+  retained_campaign_evidence: NONE
+  effect: >-
+    The formal V2 run remains useful for immutable reproduction, canonical-rule
+    conformance, cost sensitivity, and method auditing, but it is not an unseen
+    or confirmatory statistical test. No V2 historical result may be described
+    as prospective evidence.
+  remedy: >-
+    Freeze this exposure, method, code, and scope before the formal run; make no
+    result-driven changes; rely only on the post-freeze future holdout for
+    genuinely prospective evidence.
+
+scope:
+  predecessor_campaign:
+    campaign_id: SEARCH-BASELINE-G10-REPRO-V1
+    relationship: IMMUTABLE_LEGACY_REFERENCE_ONLY
+    reuse_of_results: NONE
+  admitted_families: [b2, b3, b4]
+  excluded_upstream_history: >-
+    The historical process that admitted these three families and excluded other
+    hypotheses is unavailable. The declared 67-trial V2 roster is complete, but
+    hierarchy-wide search lineage is not.
+  dataset:
+    dataset_id: DS-CRYPTO-SPOT-BTCUSDT-5M-V1
+    context: BTCUSDT_5m
+    file: data/normalized/BTCUSDT_5m.parquet
+    file_sha256: d4d6b3306c44e242f3fb7f71c44bacabf9a6af1f1f8d507ca2de0853b6a727d0
+    logical_content_sha256: 3ec05eb0ea618310209ae92de4bf1940b929ed2c889bccb0b3f749ff0a8a17fa
+    rows: 577803
+    range_start_utc: "2021-01-01T00:00:00Z"
+    range_end_utc: "2026-06-30T23:55:00Z"
+    interval: 5m
+    known_gap_count: 7
+    known_missing_bar_count: 213
+    source_manifest: data/raw/manifests/DS-CRYPTO-SPOT-BTCUSDT-5M-V1.source.json
+    source_manifest_sha256: f9d986bd48c9baa060871721fc849be3f72b472d4c8859b35d07ec29b0d93139
+    restore_script: scripts/restore_canonical_btcusdt_5m.py
+    restore_script_sha256: 5fa0417f23b4211f0ebccd6b32f903ae48e6fd61d9cafa5f272aa9001cbafca1
+    availability: PUBLIC_CHECKSUM_PINNED_DETERMINISTIC_REBUILD
+    restore_policy: >-
+      Default operation is offline verification. Public downloads require an
+      explicit --fetch flag, verify every frozen archive SHA-256, and are never
+      called by the campaign runner.
+  engine:
+    role: vectorbt_research_accelerator
+    interpreter: engines/vectorbt/.venv/bin/python
+    environment_manifest: engines/vectorbt/env_manifest.txt
+    environment_manifest_sha256: cd2398f4a34887b35b9fd71a1b80c3156a801d783c7cc45fd4e93b84ab094ad3
+    environment_availability: LOCAL_VENV_REBUILDABLE_FROM_EXACT_MANIFEST
+    numeric_representation: FLOAT64_CONVERSION_FROM_CANONICAL_DECIMAL128
+    numeric_limit: >-
+      Converter loss is disclosed. Canonical-rule conformance is asserted only
+      for signal and execution semantics, not decimal-exact accounting parity.
+  semantic_conformance: CANONICAL_RULES_NEXT_ADJACENT_OPEN_FLOAT64
+  execution_model:
+    decision_time: BAR_CLOSE_T
+    fill_time: EXACTLY_ADJACENT_BAR_OPEN_T_PLUS_1
+    adjacency_required: 5m
+    pending_signal_across_gap: EXPIRE
+    held_position_across_gap: CARRY_WITHOUT_SYNTHETIC_FILL
+    indicator_after_gap: RESET_AND_REQUIRE_FULL_CONTIGUOUS_WARMUP
+    b2_entry: PERSISTENT_FAST_SMA_ABOVE_SLOW_SMA_WHEN_FLAT
+    b2_exit: FAST_SMA_BELOW_SLOW_SMA_WHEN_HELD
+    b3_std: POPULATION_DDOF_0
+    b3_entry: CLOSE_STRICTLY_BELOW_LOWER_BAND
+    b3_exit: CLOSE_AT_OR_ABOVE_MIDDLE_BAND
+    b4_entry: CLOSE_ABOVE_PRIOR_HIGH_EXCLUDING_CURRENT_BAR
+    b4_exit: CLOSE_BELOW_EXIT_SMA
+    simultaneous_raw_entry_and_exit: FLAT_ENTERS_HELD_EXITS
+    final_bar_signal: NO_FILL
+    final_open_position: MARK_TO_FINAL_CLOSE_NO_FORCED_LIQUIDATION
+    direction: LONG_ONLY
+    sizing: FULL_AVAILABLE_CASH
+    initial_cash: 1000.0
+  transformations:
+    - decimal128_market_columns_to_float64_disclosed
+    - contiguous_segment_indicator_reset
+    - position_aware_state_resolution
+    - one_bar_execution_shift_with_exact_adjacency
+  reproducibility_limitations:
+    - >-
+      Upstream Binance archives are public and byte-pinned but their continued
+      future availability is outside repository control.
+    - >-
+      The exact vectorbt virtual environment is ignored locally; the complete
+      package manifest is tracked and preflight verifies the active environment.
+    - >-
+      Five-minute OHLCV has no historical bid/ask book, queue, latency, or impact
+      evidence. S1-S3 are declared adverse-price stresses, not empirical S4.
+    - Historical upstream family admission and earlier informal research remain unavailable.
+
+candidate_roster:
+  - family: b2
+    strategy_id: STRAT-B2-ma-crossover
+    canonical_spec: fixtures/strategies/baselines/B2_ma_crossover.yaml
+    canonical_spec_file_sha256: da3b238432f5e7085f901a87ca6ac3b527055382abacd3d4c21f0476ed15356a
+    inherited_grid:
+      fast: [2, 3, 5, 8, 10, 15]
+      slow: [10, 20, 30, 40, 50, 60]
+      constraint: fast < slow
+      raw_trial_count: 34
+    exact_spec_control: {fast: 3, slow: 5}
+    raw_trial_count: 35
+  - family: b3
+    strategy_id: STRAT-B3-bollinger-mr
+    canonical_spec: fixtures/strategies/baselines/B3_bollinger_mean_reversion.yaml
+    canonical_spec_file_sha256: 347384f3102770c588c7a8e5451bfdb7ac929785120227e39a20559b99fb8ef1
+    parameters:
+      window: [3, 5, 10, 20]
+      deviation: [0.5, 1.0, 1.5, 2.0]
+    exact_spec_control: {window: 3, deviation: 1.0}
+    structural_zero_trade_trials:
+      - {window: 3, deviation: 1.5}
+      - {window: 3, deviation: 2.0}
+      - {window: 5, deviation: 2.0}
+    structural_basis: >-
+      With population variance and a strict lower-band breach, entry is
+      impossible when deviation >= sqrt(window - 1).
+    retention_policy: >-
+      Retain all preregistered variants. Undefined zero-variance correlations
+      block DSR/effective-trial claims; no trial is silently removed.
+    raw_trial_count: 16
+  - family: b4
+    strategy_id: STRAT-B4-vol-breakout
+    canonical_spec: fixtures/strategies/baselines/B4_volatility_breakout.yaml
+    canonical_spec_file_sha256: ae7ac1faffe1f083c6b74aabbeb73ab2c99ba7737c1cd387a95b7508363eaeae
+    parameters:
+      lookback: [3, 5, 10, 20]
+      exit_window: [2, 3, 5, 10]
+    exact_spec_control: {lookback: 5, exit_window: 3}
+    raw_trial_count: 16
+
+method:
+  governed_selection_metric: non_annualized_per_bar_sharpe
+  metric_applies_to:
+    - family_candidate_selection
+    - campaign_wide_diagnostic_selection
+    - PBO_IS
+    - PBO_OOS
+    - DSR
+    - walk_forward_training_selection
+  selection_scope: >-
+    WITHIN_FAMILY_AND_CAMPAIGN_WIDE_DIAGNOSTICS_ONLY_NO_PROMOTED_WINNER
+  raw_trial_count: 67
+  cost_model:
+    primary_economic_scenario: F1/S1
+    selection_scenario: F1/S1
+    initial_cash: 1000.0
+    order_assumption: MARKET_TAKER_AT_NEXT_OPEN_WITH_ADVERSE_SLIPPAGE
+    fee_application: EACH_EXECUTED_SIDE_ON_NOTIONAL
+    buy_price: open * (1 + slippage_rate)
+    sell_price: open * (1 - slippage_rate)
+    funding: NOT_APPLICABLE_SPOT
+    spread: NOT_SEPARATELY_OBSERVED
+    market_impact: NOT_OBSERVED
+    latency: NOT_OBSERVED
+    scenarios:
+      - {id: F0/S0, fee_rate_per_side: 0.0, slippage_bps_per_side: 0, role: diagnostic_only}
+      - {id: F1/S1, fee_rate_per_side: 0.001, slippage_bps_per_side: 1, role: selection_and_primary}
+      - {id: F1/S2, fee_rate_per_side: 0.001, slippage_bps_per_side: 5, role: stress}
+      - {id: F1/S3, fee_rate_per_side: 0.001, slippage_bps_per_side: 10, role: stress}
+      - {id: F2/S2, fee_rate_per_side: 0.0015, slippage_bps_per_side: 5, role: stress}
+      - {id: F2/S3, fee_rate_per_side: 0.0015, slippage_bps_per_side: 10, role: stress}
+    interpretation:
+      - F0/S0 can diagnose mechanics but cannot support an economic claim.
+      - No trial or family is selected separately per cost cell.
+      - Report the complete surface, turnover, and trade count without inventing capacity.
+  cscv:
+    contiguous_slice_count: 16
+    in_sample_slices_per_split: 8
+    out_of_sample_slices_per_split: 8
+    tail_policy: EXCLUDE_REMAINDER_FROM_CSCV_ONLY
+    full_sample_policy: USE_ALL_BARS_FOR_SELECTION_DSR_AND_COST_SURFACE
+    scopes: [each_family, all_67_trials]
+  walk_forward:
+    evidence_label: HISTORICAL_PSEUDO_OOS
+    reason_not_untouched: >-
+      The 2021-2026 data and these families influenced earlier repository work.
+    training: EXPANDING_FROM_2021_01_01
+    selection_scenario: F1/S1
+    selection_metric: non_annualized_per_bar_sharpe
+    boundary_gap_bars: 1
+    boundary_gap_duration: 5m
+    test_position_start: FLAT
+    indicator_warmup: TRAILING_PRE_TEST_HISTORY_INCLUDING_GAP_ALLOWED_SIGNALS_AND_FILLS_FORBIDDEN
+    scopes: [each_family, all_67_trials]
+    folds:
+      - id: WF-2022
+        selection_end_utc: "2021-12-31T23:50:00Z"
+        gap_utc: "2021-12-31T23:55:00Z"
+        test_start_utc: "2022-01-01T00:00:00Z"
+        test_end_utc: "2022-12-31T23:55:00Z"
+      - id: WF-2023
+        selection_end_utc: "2022-12-31T23:50:00Z"
+        gap_utc: "2022-12-31T23:55:00Z"
+        test_start_utc: "2023-01-01T00:00:00Z"
+        test_end_utc: "2023-12-31T23:55:00Z"
+      - id: WF-2024
+        selection_end_utc: "2023-12-31T23:50:00Z"
+        gap_utc: "2023-12-31T23:55:00Z"
+        test_start_utc: "2024-01-01T00:00:00Z"
+        test_end_utc: "2024-12-31T23:55:00Z"
+      - id: WF-2025
+        selection_end_utc: "2024-12-31T23:50:00Z"
+        gap_utc: "2024-12-31T23:55:00Z"
+        test_start_utc: "2025-01-01T00:00:00Z"
+        test_end_utc: "2025-12-31T23:55:00Z"
+      - id: WF-2026-H1
+        selection_end_utc: "2025-12-31T23:50:00Z"
+        gap_utc: "2025-12-31T23:55:00Z"
+        test_start_utc: "2026-01-01T00:00:00Z"
+        test_end_utc: "2026-06-30T23:55:00Z"
+  prospective_holdout:
+    status: SEALED_WAITING_FOR_FUTURE_DATA
+    evidence_label: PROSPECTIVE_POST_FREEZE_HOLDOUT
+    freeze_date_utc: "2026-07-13T00:00:00Z"
+    observation_start_utc: "2026-07-14T00:00:00Z"
+    evaluation_not_before_utc: "2027-01-14T00:00:00Z"
+    minimum_observation_days: 184
+    pre_start_warmup: ALLOWED_WITH_NO_PRE_START_SIGNALS_OR_FILLS
+    start_position: FLAT
+    evaluation_frequency: ONCE_AFTER_MINIMUM_WINDOW
+    selected_trial_source: THIS_CAMPAIGN_F1_S1_RESULTS_FROZEN_BEFORE_OBSERVATION_START
+    adaptation_rule: ANY_CHANGE_AFTER_OBSERVING_HOLDOUT_REQUIRES_V3_AND_NEW_HOLDOUT
+    current_campaign_consumes_holdout: false
+  effective_trial_policy: >-
+    Retain full-bar correlations and apply the DSR Appendix-3 average-correlation
+    estimate only when every required correlation is defined. Report family and
+    campaign-wide raw and effective counts separately. Never substitute a
+    retained-scope estimate for missing upstream hierarchy evidence.
+  thresholds:
+    pbo_maximum: 0.5
+    dsr_minimum: 0.95
+
+implementation:
+  extractor: engines/vectorbt/canonical_baseline_returns.py
+  extractor_sha256: ffca97a92ecefe1be2b187316320e5c486ed64618962571d25f4d06c1850299e
+  evaluator: scripts/run_g10_candidate.py
+  evaluator_sha256: 0e46ea7d86c1fa683fbce8fbfd27f1574f7b64d86e0240026746b9036d3d072f
+  method_module: src/tios/validation/multiple_testing.py
+  method_module_sha256: bd25dca76e7639beebbc5e8381aaff9e3e6c044e82ce61d721c697900cde4e54
+  provenance_validator: src/tios/evidence/provenance.py
+  provenance_validator_sha256: 49b1690e07e47dd4218992cb0b78c3049b269e5e36f8749c617c32720986a1a3
+  campaign_runner: scripts/run_canonical_baseline_campaign.py
+  campaign_runner_sha256: e7fbcb31a17ff7c3ecc9e4525c0d8c7ca765ccf0d9ef62f3e9f1f6881c02e7b1
+  method_sources: research/CANONICAL_BASELINE_METHOD_SOURCES_V2.yaml
+  method_sources_sha256: 366643eb382c81d41043813c15fefb50ab2a05b31454b185ba597577bfe0d478
+
+search_lineage:
+  declared_v2_scope_complete: true
+  upstream_family_admission_complete: false
+  known_predecessor_trial_count: 66
+  v2_trial_count: 67
+  cost_scenarios_are_stresses_not_additional_trials: true
+  blocker_effect: OVERALL_G10_METHOD_BLOCKED_AND_PROMOTION_FALSE
+
+stop_rules:
+  - Abort before execution on any code, data, source-manifest, spec, or environment pin mismatch.
+  - Abort before execution unless Git is clean and the campaign is PREREGISTERED_NOT_RUN.
+  - Abort on a missing trial, scenario, fold, undefined required input, or independent-method disagreement.
+  - Retain structural zero-trade trials and undefined correlations; never silently drop or impute them.
+  - Do not add candidates, parameters, data, scenarios, engines, folds, or transformations after start; create V3.
+  - A numeric PASS remains non-promotional while upstream search, S4 execution evidence, and prospective evidence are incomplete.
+  - The campaign must never access a venue, credential, order route, or network.
+
+required_output_contract:
+  metadata_validator: tios.evidence.validate_substantive_research_metadata
+  immutable_preregistration_snapshot_required: true
+  all_trials_population_required: true
+  all_cost_cells_required: true
+  all_walk_forward_folds_required: true
+  family_and_campaign_wide_g10_required: true
+  content_addressed_outputs_required: true
+  deterministic_recomputation_required: true
+  pre_freeze_exposure_disclosed: true
+  one_validated_metadata_sidecar_per_family: true
+  declared_v2_scope_lineage_complete: true
+  upstream_family_admission_complete: false
+  execution_authority: NONE
+  promotion_eligible: false
