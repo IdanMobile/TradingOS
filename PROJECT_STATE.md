@@ -950,6 +950,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   4 with `source_failure=null`, `FLAT`, and `BLOCK`. The second 1h gross label reconstructs from
   opens `62046.51` and `62215.86`. Four complete windows remain isolated; two labels remain
   retain-only with no analysis, score, promotion, venue connection, or authority.
+- **Persistent checkpoint contract frozen (D-093):** Binance documents a 24-hour COIN-M connection
+  limit, so repeated one-window reconnects cannot create the 30-day chain. V1 freezes atomic
+  per-window checkpoints, 30-second heartbeats, bounded retries, and overlap-proven 23h30m
+  rotation. V5 implementation and the first consecutive two-window proof are unrun.
 
 ## Operational SSOT (unchanged)
 
@@ -1008,11 +1012,10 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Freeze a bounded persistent-observation operating contract before starting a longer V4 session:
-explicit reconnect/reset behavior, atomic per-session retention, heartbeat/status evidence, and
-no partial-window rescue. Continue causal labels without aggregation or interpretation. Do not
-backfill, score, access the sealed V2 holdout, activate a bot, request credentials, or cross any
-human S3/S4 gate.
+Implement V5 per-window checkpointing and atomic heartbeats under D-093, with synthetic disconnect
+and overlapping-rotation tests. Freeze the code before one bounded two-window public proof. Do not
+aggregate labels, backfill, score, access the sealed V2 holdout, activate a bot, request
+credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

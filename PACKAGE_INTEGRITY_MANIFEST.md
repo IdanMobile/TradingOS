@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.95 second causal 1h label and V4 window (2026-07-13). Supersedes v8.94 hashes.
+Package version: v8.96 persistent checkpoint operations contract (2026-07-13). Supersedes v8.95 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `6d9eae78373457b4b32a9f8727213c5ef438d8ad10b6836147a37ddac07818eb` |
-| `DECISION_LOG.md` | `047cdc7823dfce33b79a0e4d5b6261953b8ac8d0c78c833d7438b05097cd2afc` |
+| `PROJECT_STATE.md` | `81d2571f546e2fc022b676e38c4dd52fd825798808bb86a8c2df30933e5028b7` |
+| `DECISION_LOG.md` | `83c545f5fdf8c14814e5608af49c995fbb26d234d0b28fdda1aa70ad7e9e69fa` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `593575bd6d1d239e584039d23995fd25849deb36b0d4bf3ced3ef767b86ba2b2` |
+| `MISSING_AND_OPEN_ITEMS.md` | `0f033ac61dc076391735b3316f8e0f139cc97603769a39d45be54f0f079b1747` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -68,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `52e6792fa0dbdabb1f613a5cf47178701b9bdb2af427eaa04002e51fc4523695` |
+| `research/RESEARCH_GAP_MATRIX.md` | `7149b63a22191a2b45668571409ae81a157b2025a8ddb118aa9b719c0c583335` |
 
 ## Post-V2 family selection V1 (added v8.55)
 
@@ -561,6 +561,12 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/labels/raw/kline_0f54432852cfa30c876a9a8df4333adccf28d25c92081d9c0c54c282b0c95e7c.json` | `0f54432852cfa30c876a9a8df4333adccf28d25c92081d9c0c54c282b0c95e7c` |
 | `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/labels/raw/kline_f662510c67c37b870140c929ea262d109197daf83c5b18d83d382d06a726b1f5.json` | `f662510c67c37b870140c929ea262d109197daf83c5b18d83d382d06a726b1f5` |
 | `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/labels/label_snapshot_0ee31a1b40ae47e1aacaa1c0ce73730d7642d0ba9bf394f321c8dbdc580fd8d1.json` | `0ee31a1b40ae47e1aacaa1c0ce73730d7642d0ba9bf394f321c8dbdc580fd8d1` |
+
+## Persistent checkpoint operations contract (added v8.96)
+
+| Path | SHA-256 |
+|---|---|
+| `research/PROSPECTIVE_BTC_LIQUIDATION_PERSISTENT_OBSERVATION_V1.yaml` | `c58ce02837c86b28b8b956fb2eb37ab1cd500e36a63516272c6dac71798e191d` |
 
 ## First causal prospective label schedule (added v8.88)
 

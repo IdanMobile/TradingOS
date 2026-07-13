@@ -1,0 +1,90 @@
+schema_version: 1
+operations_contract_id: PROSPECTIVE-BTC-LIQUIDATION-PERSISTENT-OBSERVATION-V1
+decision_id: D-093
+status: FROZEN_NOT_RUN
+signal_spec_id: PROSPECTIVE-BTC-LIQUIDATION-STRESS-V1
+signal_spec_sha256: a2a5553ee5286a46b9972d6a31edd727ef3e9cfe25bdbdd09c4861012d1c3fb1
+observer_version: V5_CHECKPOINTED_PLANNED
+execution_authority: NONE
+promotion_eligible: false
+
+official_source:
+  url: https://developers.binance.com/legacy-docs/derivatives/coin-margined-futures/websocket-market-streams
+  retrieval_utc: 2026-07-13T20:18:33Z
+  claims:
+    - A single COIN-M market-stream connection is valid for 24 hours.
+    - The server sends ping frames every 3 minutes and requires pong within 10 minutes.
+    - The connection limit is 10 incoming messages per second and 1024 streams.
+  scope_limit: legacy URL on the official 2026 Binance developer site; reverify before production
+
+bounded_run:
+  requested_checkpoint_windows:
+    minimum: 1
+    maximum: 8640
+  infinite_daemon: false
+  stream: wss://dstream.binance.com/ws/btcusd_perp@forceOrder
+  authentication: NONE
+  labels_run_separately: true
+
+checkpoint_semantics:
+  - Keep one public WebSocket coverage epoch open across multiple UTC five-minute windows.
+  - After each fully enclosed window closes, write and offline-verify one immutable checkpoint.
+  - A later disconnect cannot invalidate a checkpoint finalized before the disconnect.
+  - A current partial window is never checkpointed, inferred, rescued, or backfilled.
+  - Every checkpoint records the connection epoch, exact coverage, signal, risk, authority, and hashes.
+
+planned_rotation:
+  trigger_connection_age: 23h30m
+  method: open one replacement connection before retiring the old connection
+  handoff: require overlapping verified coverage through a UTC five-minute boundary
+  success: next checkpoint can remain in the same continuity epoch
+  failure: discard the current partial window and increment continuity epoch
+
+unplanned_failure:
+  retain:
+    - exact exception type and message
+    - rejected public message and receipt time when applicable
+    - mutable heartbeat final state
+  reset:
+    - current partial window
+    - continuity epoch
+  preserve: every previously finalized checkpoint
+  reconnect_backoff_seconds: [5, 15, 30, 60]
+  maximum_consecutive_reconnects: 10
+  stop_after_limit: true
+
+heartbeat:
+  interval_seconds: 30
+  atomic_mutable_path: operations/status.json
+  fields:
+    - run_commit
+    - process_started_at
+    - heartbeat_at
+    - state
+    - connection_epoch
+    - continuity_epoch
+    - finalized_window_count
+    - last_finalized_window_start
+    - last_failure_ref
+    - authority
+  evidentiary_status: operational_liveness_only_not_historical_proof
+
+safety:
+  venue_connection: NONE
+  market_data_transport: PUBLIC_READ_ONLY
+  credentials_used: false
+  paper_orders: DISABLED
+  live_orders: DISABLED
+  metric_eligible: false
+  scorecard_eligible: false
+  promotion_eligible: false
+  warmup_analysis: PROHIBITED
+  sealed_v2_holdout_access: PROHIBITED
+
+implementation_acceptance:
+  - Existing V1-V4 sessions and all label snapshots continue to verify.
+  - Synthetic multi-window input creates one atomic checkpoint per completed window.
+  - Disconnect mid-window preserves prior checkpoints and rejects only the partial window.
+  - Planned overlapping rotation preserves continuity; nonoverlap increments continuity epoch.
+  - Heartbeat writes are atomic and cannot change execution authority.
+  - A bounded post-freeze public run completes at least two consecutive checkpoints.

@@ -253,6 +253,11 @@ remain isolated; two gross labels remain retain-only and unanalysed. Persistent 
 further consecutive windows, remaining horizons, review minima, costs, G1-G11, strategy approval,
 and every bot/paper gate remain open.
 
+D-093 freezes the only operating shape capable of building the consecutive baseline: atomic
+per-window checkpoints on one continuous connection plus overlap-proven rotation before Binance's
+documented 24-hour disconnect. V5 implementation, synthetic rotation/failure tests, a two-window
+post-freeze run, 8,639 further consecutive windows, and all validation/promotion gates remain open.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

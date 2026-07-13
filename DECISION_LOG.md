@@ -946,6 +946,28 @@ Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_SECOND_1H_LABEL_AND_V4_
 session `a99a97c1…`, label snapshot `0ee31a1b…`, and exact raw bytes.
 Status: **Two causal labels retained without analysis; longest chain one; authority NONE.**
 
+### D-093 — Checkpointed persistent-observation contract frozen before implementation
+
+Decision: repeatedly launching the bounded one-window observer cannot build the frozen 8,640-window
+baseline because every process reconnect omits at least one aligned window. Binance also documents
+that a COIN-M market-stream connection is valid for only 24 hours. A valid 30-day chain therefore
+requires per-window atomic checkpoints plus planned overlapping connection rotation before the
+24-hour disconnect.
+
+The V1 operations contract freezes finite runs of at most 8,640 checkpoints, 30-second mutable
+heartbeats, one immutable checkpoint per fully enclosed window, overlap-proven rotation at 23h30m,
+bounded reconnect backoff, and continuity-epoch reset after any unplanned gap. A disconnect may
+discard only its current partial window; checkpoints finalized before it remain immutable. Labels
+stay a separate causal process and warm-up analysis remains prohibited.
+
+Consequence: V5 checkpoint implementation and synthetic failure/rotation tests may proceed. No
+daemon framework, account session, credential, venue connection, order, paper/demo/live state,
+score, promotion, or execution authority is authorized.
+
+Evidence: `research/PROSPECTIVE_BTC_LIQUIDATION_PERSISTENT_OBSERVATION_V1.yaml` and official Binance
+COIN-M WebSocket connection documentation retrieved 2026-07-13.
+Status: **Persistent-observation contract frozen and unrun; authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

@@ -1,5 +1,14 @@
 # Package Changelog
 
+## v8.96 — 2026-07-13 — Persistent checkpoint operations contract
+
+- Rejected a simple process loop because intentional reconnects can never build the consecutive
+  baseline and Binance documents a 24-hour COIN-M connection lifetime.
+- Froze atomic per-window checkpoints, 30-second heartbeats, bounded reconnect/reset semantics,
+  and overlap-proven connection rotation before implementation.
+- Kept runs finite, labels separate, warm-up analysis prohibited, and every venue/order/authority
+  state disabled.
+
 ## v8.95 — 2026-07-13 — Second causal 1h label and V4 window
 
 - Retained another successful schema-4 complete window with `source_failure=null`, `FLAT`, and
