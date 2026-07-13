@@ -131,6 +131,11 @@ validation, insufficient development/reserve sample, 63.35% drawdown, four-of-se
 periods, inferior benchmark Sharpe, PBO 0.5578, and DSR 0.3493 cause G5-G11 rejection. No strategy
 or bot is approved; the next distinct family comparison remains open.
 
+D-070 admits only Binance Spot completed-hour taker imbalance from a source-only comparison of
+three new mechanisms. The exact 12-trial roster and causal boundary are preregistered without local
+performance. Dedicated data verification, canonical roles, campaign freeze, G1-G11 evidence, and
+supervision remain open; no strategy or bot is approved.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

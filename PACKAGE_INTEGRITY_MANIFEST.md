@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.72 CFTC positioning campaign rejection (2026-07-13). Supersedes v8.71 hashes.
+Package version: v8.73 Spot taker-imbalance family selection (2026-07-13). Supersedes v8.72 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `210c15d9d4808c81f2353cd669dae9430a06e38d1683eac11e946db4ad2855a8` |
-| `DECISION_LOG.md` | `d8c580498f3a0a4c599f679572898cdcb3975d0cd626cf180ca25f874cfde585` |
+| `PROJECT_STATE.md` | `198a4e0d4a1ac57a84ad1a0f31bd5bd5f00874a08940189998436b3f642e3d86` |
+| `DECISION_LOG.md` | `e5f78fb9b3702d04f1720d310472883735b52c3fadc885edd23369ecd29fea5c` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `79d3295cfa22b43b9fc16d29c2f52dae55131bf61eb8621595e0b1e9911cb4fb` |
+| `MISSING_AND_OPEN_ITEMS.md` | `881853e10742ba2857fb976e71624d8339d4dc7ebf9f9e84a92c5205aa058873` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -392,6 +392,12 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `artifacts/validation/campaigns/CFTC-BTC-POSITIONING-SPOT-G1-G11-V1/phase_two_reference_4ba5d259f036d2175131505d20cd0453b1c7666bf19dfb2c245adfc98d1512a3.json` | `4ba5d259f036d2175131505d20cd0453b1c7666bf19dfb2c245adfc98d1512a3` |
 | `artifacts/validation/campaigns/CFTC-BTC-POSITIONING-SPOT-G1-G11-V1/phase_two_workers_077adca87622761c7fa3f008adf1484260f3edbdb942a5da2654560958a52d34.json` | `077adca87622761c7fa3f008adf1484260f3edbdb942a5da2654560958a52d34` |
 | `artifacts/validation/campaigns/CFTC-BTC-POSITIONING-SPOT-G1-G11-V1/preregistration_19adfd87584bf917ff861088b600e44d2476e181552eead14f279231fed04245.yaml` | `19adfd87584bf917ff861088b600e44d2476e181552eead14f279231fed04245` |
+
+## Spot taker-imbalance family selection (added v8.73)
+
+| Path | SHA-256 |
+|---|---|
+| `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V7.md` | `443aee27e491ae31257c964ecaa04d540a7bc5a9fee9aec8330dc55031eb0b3f` |
 
 ## Expected generated artifacts
 

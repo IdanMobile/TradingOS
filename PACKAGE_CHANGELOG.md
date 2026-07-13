@@ -1,5 +1,13 @@
 # Package Changelog
 
+## v8.73 — 2026-07-13
+
+- Compared exactly three new source-backed mechanisms after the CFTC rejection.
+- Admitted completed-hour Binance Spot taker imbalance only; rejected perpetual OI and macro
+  liquidity for bounded point-in-time/method feasibility.
+- Preregistered 12 trials, strict post-close fills, six-hour pulses, splits, gates, selection
+  barrier, and no-rescue rules without computing local family performance.
+
 ## v8.72 — 2026-07-13
 
 - Completed the frozen CFTC positioning campaign from clean commit `b3bc024` with the hashed

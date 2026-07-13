@@ -655,6 +655,30 @@ authority was activated.
 Evidence: `artifacts/reports/CFTC_BTC_POSITIONING_SPOT_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md`.
 Status: **Completed negative campaign; execution authority remains NONE.**
 
+### D-070 — Binance Spot taker imbalance admitted to data packaging
+
+Decision: `FAMILY-SELECT-V7` compared exactly three new mechanisms without computing local
+candidate performance: Spot aggressive taker-flow imbalance, perpetual open-interest crowding,
+and macro dollar/liquidity pressure. Perpetual OI is rejected because the official historical REST
+contract exposes only 30 days and venue-local OI is directionless and adjacent to closed
+derivatives contexts. Macro liquidity is rejected because release clocks, revisions, mixed
+frequencies, event overlap, and a large hidden series hierarchy make the bounded campaign
+inadequate.
+
+`FAM-BTC-SPOT-TAKER-IMBALANCE-01` alone advances. It uses only completed-hour Binance Spot kline
+quote volume and taker-buy quote volume, with entry strictly after the source-hour close. The exact
+12-trial interpretation/baseline/threshold roster, fixed six-hour nonextending pulse, chronology,
+costs, gates, no-rescue rules, and selection barrier are preregistered. Both continuation and
+reversal signs remain because contemporaneous price impact does not determine the later sign.
+
+Consequence: exact offline data packaging and canonical/campaign construction may proceed. No
+imbalance-conditioned return may be computed before a clean freeze. No bot, venue, credential,
+order, paper/demo/live state, promotion, human gate, sealed V2 holdout, or execution authority is
+activated.
+
+Evidence: `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V7.md`.
+Status: **Approved constrained-S2 data/canonical build; performance unobserved and authority NONE.**
+
 ### D-063 — Bitcoin MVRV dislocation family admitted to data/canonical construction
 
 Decision: a source-only cycle compared exactly three new mechanisms without computing local family

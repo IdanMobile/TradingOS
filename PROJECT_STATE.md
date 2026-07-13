@@ -853,6 +853,11 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   development/reserve sample, 63.35% drawdown, four-of-seven period breadth, inferior benchmark
   Sharpe, PBO 0.5578, and DSR 0.3493 cause G5-G11 failure. The context is closed without rescue;
   no bot, venue, paper/demo/live state, promotion, or authority exists.
+- **Spot taker-imbalance family admitted without scoring (D-070):** a source-only comparison of
+  aggressive Spot flow, perpetual OI crowding, and macro liquidity admits only completed-hour
+  Binance BTCUSDT taker imbalance. Twelve interpretation × baseline × threshold trials, a fixed
+  six-hour pulse, strict-later fill, splits, costs, gates, and no-rescue rules are preregistered.
+  Performance remains unobserved; dedicated data/campaign construction is open.
 
 ## Operational SSOT (unchanged)
 
@@ -911,11 +916,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Begin a new source-only comparison of no more than three genuinely distinct mechanisms, excluding
-closed contexts and without computing local candidate-family performance. Preregister the selected
-family before any score, then continue only through safe offline data/canonical work. Do not access
-the sealed V2 holdout, activate a bot, connect a venue, request credentials, or cross any human
-S3/S4 gate.
+Freeze and verify the dedicated Spot taker-imbalance data package from already-retained exact
+Binance bytes, then build canonical/reference/vectorbt/Freqtrade/Nautilus roles and the complete
+two-phase G1-G11 campaign. Commit the full campaign before computing an imbalance-conditioned
+return. Do not access the sealed V2 holdout, activate a bot, connect a venue, request credentials,
+or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 
