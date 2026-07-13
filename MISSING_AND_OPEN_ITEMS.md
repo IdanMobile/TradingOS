@@ -248,6 +248,11 @@ D-091 retains a successful schema-4 complete window with `source_failure=null`, 
 so continuous-operation evidence and warm-up remain open. The second window's 1h label first
 becomes available at `2026-07-13T20:12Z`; all analysis and promotion gates remain closed.
 
+D-092 retains another successful V4 window and the second causal 1h label. Four complete windows
+remain isolated; two gross labels remain retain-only and unanalysed. Persistent continuity, 8,639
+further consecutive windows, remaining horizons, review minima, costs, G1-G11, strategy approval,
+and every bot/paper gate remain open.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

@@ -925,6 +925,27 @@ Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_V4_FIRST_COMPLETE_WINDO
 session `54ea7fae…`, and label snapshot `566efb70…`.
 Status: **V4 complete-window path proven; longest chain one; authority NONE.**
 
+### D-092 — Second causal 1h label and additional V4 window retained
+
+Decision: a second successful V4 session from clean commit `fad9997` enclosed
+`[2026-07-13T20:10Z,20:15Z)`, retained zero events, set `source_failure=null`, and emitted
+`SIG-637b5e49ff85d286959af1be`, `FLAT/WARMUP_BLOCK`, and independent `BLOCK`. Four complete windows
+now exist but remain isolated, so the longest warm-up chain is still one.
+
+After the second historical window's frozen availability time, the unchanged evaluator retained
+exact Spot opens `62046.51` and `62215.86` and gross arithmetic label
+`0.002729404119587064606857017`. The 12-row snapshot now holds two available 1h labels and ten
+unavailable labels. No aggregation or interpretation occurred.
+
+Consequence: repeated source/signal/risk/label operation is proven in bounded sessions, but
+persistent continuity, adequate sample, strategy edge, score, and promotion are unproven. No
+credential, venue connection, order, paper/demo/live state, holdout access, promotion, or execution
+authority was activated.
+
+Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_SECOND_1H_LABEL_AND_V4_WINDOW_2026_07_13.md`,
+session `a99a97c1…`, label snapshot `0ee31a1b…`, and exact raw bytes.
+Status: **Two causal labels retained without analysis; longest chain one; authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

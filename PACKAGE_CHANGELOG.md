@@ -1,5 +1,14 @@
 # Package Changelog
 
+## v8.95 — 2026-07-13 — Second causal 1h label and V4 window
+
+- Retained another successful schema-4 complete window with `source_failure=null`, `FLAT`, and
+  independent `BLOCK`.
+- Retained exact bytes for the second causally available 1h label; the 12-row snapshot contains
+  two available labels and ten unavailable rows.
+- Kept all labels unaggregated and unanalysed. Four complete windows remain isolated; no score,
+  promotion, venue connection, order, or authority exists.
+
 ## v8.94 — 2026-07-13 — Observer V4 complete-window proof
 
 - Retained a successful schema-4 `[20:00Z,20:05Z)` source session with
