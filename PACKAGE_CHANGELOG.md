@@ -866,3 +866,15 @@ Key outcomes:
 - Added an offline verifier and deliberate byte, schema, and timestamp drift tests. Every retained
   funding event has a strictly later expected Spot open. Scoring remains prohibited until the
   canonical campaign is cleanly committed.
+
+## v8.59 — 2026-07-13 — Funding-pressure immutable campaign freeze
+
+- Added a canonical point-in-time funding observation/state projection with exact-millisecond
+  availability, complete rolling warm-up, strict threshold equality, next-open, pending-expiry,
+  and held-gap-exit semantics.
+- Froze 12 content-derived StrategyVersions and independent Decimal, vectorbt, Freqtrade 2026.6,
+  and Nautilus 1.230.0 role implementations behind exact environment and code hashes.
+- Added a physical two-phase runner: development selection is written and hashed before any
+  validation/reserve/full/period evaluation. A deliberate early phase-two call fails closed.
+- D-056 freezes all costs, chronology, benchmarks, sample/tail/clock/PBO/DSR gates, and no-rescue
+  rules. Offline preflight and focused tests pass; historical family performance remains unseen.

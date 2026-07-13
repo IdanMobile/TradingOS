@@ -583,3 +583,27 @@ paper/demo/live state, promotion, human gate, or execution authority is activate
 Evidence: `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V3.md` and
 `research/FUNDING_PRESSURE_SPOT_DATA_PACKAGE_V1.json`.
 Status: **Approved constrained-S2 data/canonical build; performance unobserved and authority NONE.**
+
+### D-056 — Funding-pressure Spot campaign frozen behind a selection artifact barrier
+
+Decision: the admitted D-055 family is fully specified before scoring as
+`FUNDING-PRESSURE-SPOT-G1-G11-V1`. Twelve content-derived StrategyVersions exhaust the declared
+two-polarity, three-lookback, two-threshold roster. Exact Decimal accounting is paired with
+vectorbt acceleration, a Freqtrade-environment dataframe signal harness, and a
+Nautilus-environment event-order/gap harness. Synthetic causal goldens and offline preflight pass.
+
+The runner has two physically gated phases. Phase one may evaluate all 12 trials on development
+only and must write a content-addressed selected-StrategyVersion artifact. Phase two refuses to
+evaluate validation, reserve, full-history, or period metrics unless that file exists and its hash
+verifies. A deliberate early phase-two test raises. The campaign freezes six cost cells, next-open
+and gap semantics, chronology, trade minima, benchmark, drawdown, one-bar delay, PBO/DSR, all
+G1-G11 thresholds, no-rescue rules, and exact code/data/environment hashes.
+
+Consequence: one clean-commit offline historical run is authorized. Numeric output cannot
+self-promote and G11 still requires independent supervisor review. No bot, venue, credential,
+order, paper/demo/live state, HG-3, or execution authority is authorized; the sealed V2 holdout
+and rejected calendar reserve remain prohibited.
+
+Evidence: `research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V1.yaml` and focused tests under
+`tests/test_funding_pressure_*`.
+Status: **Approved constrained-S2 immutable offline campaign; preregistered and not run.**

@@ -1,0 +1,37 @@
+strategy_id: STRAT-FUNDING-PRESSURE-SPOT
+family: funding_pressure
+inputs: [calc_time, funding_interval_hours, last_funding_rate, open, close]
+indicators:
+  - name: funding_observation_mean
+    parameters:
+      polarity: CONTINUATION
+      lookback_observations: 3
+      absolute_mean_rate_threshold: 0
+      availability: EXACT_CALC_TIME_MS
+    outputs: [funding_long_eligible, funding_cash_eligible]
+entry_long:
+  all:
+    - funding_long_eligible == 1
+exit_long:
+  all:
+    - funding_cash_eligible == 1
+position_sizing: {type: all_in}
+risk:
+  stop_loss: null
+  take_profit: null
+  gap_exit: FIRST_OBSERVABLE_OPEN_IF_HELD
+  pending_gap_action: EXPIRE
+  execution_authority: NONE
+assumptions:
+  - "warm-up requires the complete resolved lookback count of funding observations"
+  - "signal is evaluated at exact calc_time milliseconds and can fill only at the first expected Spot hourly bar open strictly later than calc_time"
+  - "lookbacks count observations and retain funding_interval_hours rather than assuming an eight-hour interval"
+  - "funding is an exogenous feature only; the strategy holds unlevered BTCUSDT Spot or cash and never holds a derivative position"
+  - "equality to the resolved threshold is cash; state persists until a later funding observation changes it"
+  - "a pending fill expires when its expected next hourly Spot open is absent; a held position exits at the first observable bar open after a Spot gap"
+ambiguities: []
+source_refs:
+  - FS3-NBER-30796
+  - FS3-ARXIV-1912.03270
+  - FS3-BINANCE-FUNDING
+license_ref: PROJECT-ORIGINAL-SPEC

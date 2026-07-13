@@ -15,7 +15,18 @@ from tios.strategy.spec import CanonicalStrategySpec, SpecError, parse_spec
 
 # Canonical dataset columns rules may reference (spec §schema) besides indicator outputs
 DATASET_IDENTIFIERS = frozenset(
-    {"open", "high", "low", "close", "volume_base", "quote_volume", "trade_count"}
+    {
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume_base",
+        "quote_volume",
+        "trade_count",
+        "calc_time",
+        "funding_interval_hours",
+        "last_funding_rate",
+    }
 )
 
 

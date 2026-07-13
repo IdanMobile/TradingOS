@@ -75,6 +75,11 @@ long/cash. Its 66 funding archives and exact Spot package are frozen and verifie
 canonical strategy, independent engines, explicit selection-artifact barrier, campaign freeze,
 and all G1-G11 outcomes remain open; the family is not validated or promotion-eligible.
 
+D-056 closes the canonical/implementation/freeze portion: the exact 12-version campaign passes
+offline preflight and synthetic causal/parity goldens, and phase two fails without a hashed
+development selection artifact. Historical scoring and independent G11 review remain open. The
+family is still unvalidated and no bot, paper/demo/live state, or venue authority exists.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

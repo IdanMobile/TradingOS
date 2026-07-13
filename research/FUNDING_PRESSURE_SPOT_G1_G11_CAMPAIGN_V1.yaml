@@ -1,0 +1,111 @@
+schema: tios-funding-pressure-spot-g1-g11-campaign-v1
+campaign_id: FUNDING-PRESSURE-SPOT-G1-G11-V1
+status: PREREGISTERED_NOT_RUN
+decision: D-055
+created_at_utc: 2026-07-13T13:20:00Z
+
+safety:
+  execution_authority: NONE
+  venue_connection: NONE
+  orders: DISABLED
+  network: PROHIBITED
+  credentials_required: false
+  sealed_v2_holdout_access: PROHIBITED
+  rejected_calendar_reserve_access: PROHIBITED
+
+dataset:
+  package_id: DATA-FUNDING-PRESSURE-BTCUSDT-1H-V1
+  package_path: research/FUNDING_PRESSURE_SPOT_DATA_PACKAGE_V1.json
+  funding_root: data/raw/fundingRate/BTCUSDT
+  spot_path: data/normalized/BTCUSDT_1h.parquet
+  funding_use: EXOGENOUS_FEATURE_ONLY
+  execution_market: UNLEVERED_BTCUSDT_SPOT_LONG_CASH
+
+canonical_spec:
+  path: strategies/research/funding-pressure-spot/canonical_strategy_spec.yaml
+  spec_hash: 4a4cce8b68fedf38fa3bc96987e8533ab2077611f858ad4abd891cc97656b0c3
+
+trial_roster:
+  - {polarity: CONTINUATION, lookback: 3, threshold: 0.0, strategy_version_id: SV-3d0505fbe9457430}
+  - {polarity: CONTINUATION, lookback: 3, threshold: 0.0001, strategy_version_id: SV-5132d5bdb10b6cfe}
+  - {polarity: CONTINUATION, lookback: 9, threshold: 0.0, strategy_version_id: SV-68e12d1fb1c2216b}
+  - {polarity: CONTINUATION, lookback: 9, threshold: 0.0001, strategy_version_id: SV-59b46bb5e08eba17}
+  - {polarity: CONTINUATION, lookback: 21, threshold: 0.0, strategy_version_id: SV-459e5d38ad23bbd2}
+  - {polarity: CONTINUATION, lookback: 21, threshold: 0.0001, strategy_version_id: SV-384613e5631cb5d8}
+  - {polarity: CONTRARIAN, lookback: 3, threshold: 0.0, strategy_version_id: SV-4364a36657428b26}
+  - {polarity: CONTRARIAN, lookback: 3, threshold: 0.0001, strategy_version_id: SV-3ef5c58fceaf45fd}
+  - {polarity: CONTRARIAN, lookback: 9, threshold: 0.0, strategy_version_id: SV-4d4cf4737950365b}
+  - {polarity: CONTRARIAN, lookback: 9, threshold: 0.0001, strategy_version_id: SV-e9082e9e0ecd8fa8}
+  - {polarity: CONTRARIAN, lookback: 21, threshold: 0.0, strategy_version_id: SV-7007762777f0d29a}
+  - {polarity: CONTRARIAN, lookback: 21, threshold: 0.0001, strategy_version_id: SV-2fac24ddd9ab1a94}
+
+method:
+  raw_statistical_trial_count: 12
+  qualitative_family_candidates_retained: 3
+  selection_metric: nonannualized_per_1h_bar_sharpe_F1_S1_zero_cash_returns_included
+  selection_tie_break: lexical_polarity_lookback_threshold
+  chronology:
+    development: ["2021-01-01", "2023-12-31 23:00:00+00:00"]
+    validation_2024: ["2024-01-01", "2024-12-31 23:00:00+00:00"]
+    reserve_2025_2026h1: ["2025-01-01", "2026-06-30 23:00:00+00:00"]
+  selection_barrier:
+    phase_1: evaluate all 12 trials on development only
+    artifact: content-addressed selected StrategyVersion plus development metric and G10
+    phase_2: evaluate validation/reserve/full/periods for selected StrategyVersion only
+    fail_closed_test: phase_2 call without verified selection artifact must raise
+  cost_scenarios:
+    - {name: F0/S0, fee_rate_per_side: 0.0, slippage_bps_per_side: 0.0}
+    - {name: F1/S1, fee_rate_per_side: 0.001, slippage_bps_per_side: 1.0}
+    - {name: F1/S2, fee_rate_per_side: 0.001, slippage_bps_per_side: 5.0}
+    - {name: F1/S3, fee_rate_per_side: 0.001, slippage_bps_per_side: 10.0}
+    - {name: F2/S2, fee_rate_per_side: 0.0015, slippage_bps_per_side: 5.0}
+    - {name: F2/S3, fee_rate_per_side: 0.0015, slippage_bps_per_side: 10.0}
+  independent_roles:
+    decimal_reference: exact rates/prices/cost ledger
+    vectorbt: float64 portfolio acceleration and metric parity
+    freqtrade: installed-environment dataframe Spot signal parity
+    nautilus: installed-environment exact-event-order and gap parity
+  multiple_testing:
+    pbo: 16-slice CSCV across all 12 development trials; pass <= 0.5
+    dsr: complete trial-return correlation and moment evidence; pass >= 0.95
+  final_mark: final Spot close; ending held state reported; no invented liquidation
+
+hard_gates:
+  G1_DATA_PROVENANCE: exact package and offline verifier PASS
+  G2_CANONICAL_IDENTITY: spec hash and all 12 StrategyVersion identities PASS
+  G3_CAUSAL_GOLDENS: exact-millisecond next-open, equality, warmup, gap and cost tests PASS
+  G4_INDEPENDENT_REPRODUCTION: all four roles event/count parity and reference/vectorbt metric tolerance <= 1e-10
+  G5_AFTER_COST_ECONOMICS: selected full/validation/reserve F1/S1 and full F2/S3 returns all > 0
+  G6_CHRONOLOGICAL_OOS: validation and reserve F1/S1 returns both > 0
+  G7_SAMPLE_AND_CLOCK_ROBUSTNESS: completed trades development >= 30, validation >= 8, reserve >= 12, one-bar-late full F1/S1 > 0
+  G8_REGIME_AND_TAIL: at least 4 of 6 year/H1 segments positive and full F1/S1 max drawdown >= -0.25
+  G9_BENCHMARK_AND_OPPORTUNITY: F1/S1 Sharpe above costed buy-and-hold and drawdown smaller
+  G10_MULTIPLE_TESTING: PBO <= 0.5 and DSR >= 0.95; undefined inputs fail closed
+  G11_INDEPENDENT_RISK_SUPERVISOR: required after numeric run; cannot be self-promoted
+
+stop_and_no_rescue:
+  - any source, hash, schema, timestamp, ordering, spec, roster, cost, split, engine, barrier, or threshold mismatch aborts
+  - reserve signal, return, or metric computation before the hashed selection artifact rejects the campaign
+  - retain every development trial including zero-trade and undefined-statistic trials
+  - do not reinterpret funding sign or add thresholds, filters, exits, instruments, sizing, leverage, shorts, or derivatives after results
+  - any hard FAIL, method block, or conformance residual rejects this exact context
+  - no numeric PASS can activate paper, demo, live, a bot, HG-3, a venue, credentials, or orders
+
+pinned_files:
+  - {path: research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V3.md, sha256: 0e74d76408fb75e0564be374281acb851f5acb0061a4ca000882479937c30f7a}
+  - {path: research/FUNDING_PRESSURE_SPOT_DATA_PACKAGE_V1.json, sha256: df28e581ccd95755d620dafef18adbad202ea41038827bff5241716d1112b251}
+  - {path: strategies/research/funding-pressure-spot/canonical_strategy_spec.yaml, sha256: 98bb073bd7c1ff46383d8837c39dee3dd2dfb2a7e303c22986afc8e2c5c742aa}
+  - {path: src/tios/strategy/spec.py, sha256: 36249d50e6b6d2c675b75356308f57cfd769567e80148a33c5a8c47c811c298e}
+  - {path: src/tios/strategy/validator.py, sha256: a99b7d970205e0941c697d48d39eaf2b4dfa0be375cddee00040be946dc59d4a}
+  - {path: src/tios/strategy/funding_pressure.py, sha256: 2bb4bc766a54aff687824e0edc103213ce05abf8a077de29dad4975dcbe6a76a}
+  - {path: engines/funding_pressure_data.py, sha256: 1dca9cde1da9657c990a6d43026c883c15e6915918496b1262f9eae7c5bf9e8a}
+  - {path: engines/reference/funding_pressure.py, sha256: 8e660df18f0c001f2d06e10cd25c45b80ef71ac2399de5f163869adcaf9ef4f4}
+  - {path: engines/vectorbt/funding_pressure_returns.py, sha256: ae5c2c870ce00653b34d2e4b55e31d76274f8fe2a349086aaa7643335922652b}
+  - {path: engines/freqtrade/funding_pressure_signals.py, sha256: 4b42290490c969e0ad7ef9dac95564962402c553cb2a4d44575850b6db4b6183}
+  - {path: engines/nautilus/funding_pressure_events.py, sha256: 84cbce8b39914d60b4c7f69cd48f21fc66cf9a2f1361c66031cf98eb6352fc66}
+  - {path: scripts/verify_funding_pressure_data.py, sha256: 3135d084f7e84bae2e73a3a89c98dd5c6c35e7d909858a8690cc7481c16c376c}
+  - {path: scripts/run_funding_pressure_campaign.py, sha256: 4ef5f992b86d7a3b718b14e4fe00e4114a711db8caa003ff6a3164bcd4ee2039}
+  - {path: engines/vectorbt/env_manifest.txt, sha256: cd2398f4a34887b35b9fd71a1b80c3156a801d783c7cc45fd4e93b84ab094ad3}
+  - {path: engines/freqtrade/env_manifest.txt, sha256: 6e39f5c596f1f2a9ab56e611dbe872d22d71b9c4d34f7e16ce30ab29c9264c93}
+  - {path: engines/nautilus/env_manifest.txt, sha256: 069e38ad2bbbf5cb5c77a4f7b958bce1af66e25ee557f76225619da4a5811762}
+  - {path: uv.lock, sha256: c87d0d8b7f26f9028a2cc2156c394322ae7c0c81d58d9e6fc3ea78b66199a133}

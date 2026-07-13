@@ -797,6 +797,12 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   funding plus 48,154-row Spot package passes offline semantic and drift checks. No scoring may
   occur until the whole campaign is committed cleanly; no derivative position, V2 holdout,
   calendar reserve, bot, venue, credential, order, or authority was touched.
+- **Funding-pressure Spot campaign frozen (D-056):** all 12 StrategyVersions, six cost cells,
+  canonical point-in-time rules, Decimal/vectorbt/Freqtrade/Nautilus role implementations,
+  chronology, G1-G11 thresholds, and exact environment/data/code pins are immutable and unrun.
+  A verified selection artifact is mandatory before any validation/reserve computation, and the
+  deliberate early-call test fails closed. One clean offline run is next; no execution authority
+  or sealed/rejected reserve access exists.
 
 ## Operational SSOT (unchanged)
 

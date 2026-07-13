@@ -25,6 +25,7 @@ FAMILIES = (
     "mean_reversion",
     "breakout",
     "calendar",
+    "funding_pressure",
     "carry",
     "market_making",
     "arbitrage",

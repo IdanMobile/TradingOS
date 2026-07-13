@@ -1,6 +1,6 @@
 # Strategy family selection and preregistration V3
 
-Status: **GO — `FAM-FUNDING-PRESSURE-SPOT-01` admitted to data packaging only**  
+Status: **GO — `FAM-FUNDING-PRESSURE-SPOT-01` campaign frozen, not run**
 Decision ID: `D-055`  
 Decision class: constrained-S2 source/data feasibility; no performance computed  
 Execution authority: `NONE`  
@@ -147,11 +147,11 @@ that calls reserve evaluation early.
 
 ## Exact next action
 
-The content-addressed funding-plus-Spot package is now frozen as
-`research/FUNDING_PRESSURE_SPOT_DATA_PACKAGE_V1.json`; its offline verifier and deliberate
-archive/schema/timestamp drift tests pass. Create the canonical spec, 12 StrategyVersions,
-independent implementations, explicit two-phase runner, and immutable campaign. Do not compute
-funding-conditioned Spot returns until that complete campaign is committed cleanly.
+The content-addressed data package, canonical spec, 12 StrategyVersions, four independent role
+implementations, explicit selection-artifact barrier, and immutable campaign are frozen as
+`research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V1.yaml`. Commit the complete freeze cleanly,
+then execute it once offline. The runner must reject any validation/reserve call made before the
+hashed development selection artifact exists.
 
 ## Sources
 
