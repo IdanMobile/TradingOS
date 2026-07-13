@@ -27,6 +27,7 @@ FAMILIES = (
     "calendar",
     "funding_pressure",
     "transaction_activity",
+    "mvrv_dislocation",
     "carry",
     "market_making",
     "arbitrage",

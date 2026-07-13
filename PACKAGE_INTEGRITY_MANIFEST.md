@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.66 Bitcoin MVRV family and data freeze (2026-07-13). Supersedes v8.65 hashes.
+Package version: v8.67 Bitcoin MVRV campaign freeze (2026-07-13). Supersedes v8.66 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `233e0cf0ad2d2ba23a7bc26abe06dd469d946ebc26c7b63628e3de6794ec3f00` |
-| `DECISION_LOG.md` | `fc5be3708c8eeec1b55d06aa2ad41ead2433c0203c6d1c945ff5d576c9db09a3` |
+| `PROJECT_STATE.md` | `c338b2c914c69fcb4b5d1b2384abf385363b987f48105c8ffacc36ec1754811a` |
+| `DECISION_LOG.md` | `30e95b712804693be12b101803709486ea6ec0c2eb94f96f563f1e6c0a73bb5d` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `9fe7d413ff6899e4ba8b555f37a5a0ab207675438490b927a98a3f779f805048` |
+| `MISSING_AND_OPEN_ITEMS.md` | `d7b35c2cc381bcc99d1f5c4bf5c9fb5a3f5dd307562080f330b93a8555ce5a51` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -68,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `77b310ad01d29ccc280f8cd342cf38b457ae42b7d618e0da074a7c2bf7b3ae38` |
+| `research/RESEARCH_GAP_MATRIX.md` | `061810b0c339c8d902fb3ed5f36d15a7143a87f248f25d6756c3472cfb9a2f97` |
 
 ## Post-V2 family selection V1 (added v8.55)
 
@@ -125,7 +125,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `research/CALENDAR_UTC_G1_G11_CAMPAIGN_V1.yaml` | `dbf84679e97e892f86610e80fc735e4c4dad89942a9a3b5d6a610e634daff985` |
 | `research/source_snapshots/calendar_utc_v1/binance_public_data_README.md` | `085ab91377aa9325d44f4c7ad27cce4ab381e158403e1d7df2bad39d1a66f7c6` |
 | `strategies/research/calendar-utc-weekday/canonical_strategy_spec.yaml` | `b7f85a146818130abe330fe639b7b38c6b7f7cca7c84e1246c174d7cbc6bf9d4` |
-| `src/tios/strategy/spec.py` | `bd5c46183c532b2456793eb308ce46f8a215b1d793334a781f8a8c1474f12931` |
+| `src/tios/strategy/spec.py` | `5ed0aafdd71f75cd0ab902fd9fc5ec814e535a9052cd8986d317d0233830b1ee` |
 | `src/tios/strategy/evaluator.py` | `81325dc8442a97082c35852d046ff217f0eb22dc7fba6d027bdd7be9ae4d6d20` |
 | `engines/reference/calendar_utc.py` | `e7885a873d2c7e500a50c651f91c600f4534321fba6abfb2dcc669df3062733b` |
 | `engines/vectorbt/calendar_utc_returns.py` | `cd04c0a2d4933f20b7b1f4b7675d0dc2f457d001131f5ebfd0de6a320239f0e0` |
@@ -156,7 +156,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V1.yaml` | `6b4fbff8936ba678b470c8ccdbe9c4c43b9e8fce8e5a34785946692efb900bab` |
 | `strategies/research/funding-pressure-spot/canonical_strategy_spec.yaml` | `98bb073bd7c1ff46383d8837c39dee3dd2dfb2a7e303c22986afc8e2c5c742aa` |
-| `src/tios/strategy/validator.py` | `b8cf44bdcdda30894aa39a7cdfc3f66941dc2d4698228c25b8b058a36828e25d` |
+| `src/tios/strategy/validator.py` | `0916085cd35cf1f7a48dddb0d49a8fe6a25d4b7f2428d5b25e8389e818a117be` |
 | `src/tios/strategy/funding_pressure.py` | `2bb4bc766a54aff687824e0edc103213ce05abf8a077de29dad4975dcbe6a76a` |
 | `engines/funding_pressure_data.py` | `1dca9cde1da9657c990a6d43026c883c15e6915918496b1262f9eae7c5bf9e8a` |
 | `engines/reference/funding_pressure.py` | `8e660df18f0c001f2d06e10cd25c45b80ef71ac2399de5f163869adcaf9ef4f4` |
@@ -245,6 +245,23 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `data/raw/onchain/coinmetrics_capmvrvcur_catalog_entry_2026-07-13.json` | `32088d26671362024dfe8e721da2891d0f161244542df8ff15b46b7893eaae53` |
 | `scripts/verify_btc_mvrv_data.py` | `fd82034dc9fcc958b647248b01efefbc251f053cbebefca3ba436a5eb37fdd43` |
 | `tests/test_btc_mvrv_data.py` | `dfd5513c6f1151e209baea435d5e9bb0fc64b7a1c779b5dcc03903ac26b8f1ab` |
+
+## Bitcoin MVRV campaign freeze (added v8.67)
+
+| Path | SHA-256 |
+|---|---|
+| `strategies/research/btc-mvrv-dislocation/canonical_strategy_spec.yaml` | `6c3d92e832213ae4e0debeee5ec9a7a7a7140fcf65a1a9b2fe05b25e7035dfa6` |
+| `src/tios/strategy/mvrv_dislocation.py` | `efc36caa3fcc0af9b8ed5d283f134bbaa7fcb587e00e6a8cfe2f3b5041842ca6` |
+| `engines/mvrv_data.py` | `121a4a49132b3e3cc570a232f940b0f95b3422335bf7e962d9e20c80e9747dd7` |
+| `engines/reference/mvrv_dislocation.py` | `387f5f0fd8017c8e095277919b06a0c9ed98b40efe81840af6199f53f51a25fc` |
+| `engines/vectorbt/mvrv_dislocation_returns.py` | `bf74e6069ce2f8ccd4cfc7fb26f38d28558d00471e5ada72b525e1de46a794bf` |
+| `engines/freqtrade/mvrv_dislocation_signals.py` | `b8a3f24e5f90a5ae987f5e3cc0e3b615b80606588dbef463c642d1208940da49` |
+| `engines/nautilus/mvrv_dislocation_events.py` | `d3de055693883be0a50a4ab296d951abc6b05b2e2d3665ffd7b59dd1d9bc78cd` |
+| `research/BTC_MVRV_SPOT_G1_G11_CAMPAIGN_V1.yaml` | `838767c48f9c4ae095e0ed9be8d5e6ec10b0fbcadc6533c61e2d59397c0b2867` |
+| `scripts/run_mvrv_campaign.py` | `45c85c59f1d54ecdb80f50978c1a84ffc8e420cb06f46cdc3d103f6168efad53` |
+| `tests/test_mvrv_dislocation_strategy.py` | `ded93ed2f1cb10df93b85f22effe69437ed47548590843e9a34fe7b62f43b987` |
+| `tests/test_mvrv_dislocation_reference.py` | `e33ab03ea7c9ac76fec6eac0ba3df8f08ea6a54044efc3ee5f0ca4b0d9e3f20c` |
+| `tests/test_mvrv_campaign.py` | `7fb7261eafe12c44ce64455d9f00abd2cdc9cc535290352fd960dcc56f6dcf5d` |
 
 ## Expected generated artifacts
 

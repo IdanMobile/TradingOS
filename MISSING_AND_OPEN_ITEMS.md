@@ -106,6 +106,10 @@ zero gaps, two-day lag, strict Spot mapping, and 12-trial roster pass offline ve
 Canonical implementations, immutable campaign, G1-G11 evidence, and independent supervision
 remain open; no strategy is validated.
 
+D-064 closes canonical/campaign construction. All 12 immutable versions, four roles, cost cells,
+selection barrier, gates, and safety constraints pass offline preflight. The single governed
+historical run and independent G11 disposition remain open; no strategy is validated.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

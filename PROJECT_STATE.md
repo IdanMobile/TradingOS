@@ -831,6 +831,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   financial conditions and public search attention, admitting only BTC MVRV dislocations. The
   no-key official metric/catalog snapshot, 2,189 daily rows, two-day lag, zero gaps, strict Spot
   mapping, and 12 unscored trials are frozen; execution authority remains `NONE`.
+- **Bitcoin MVRV campaign frozen (D-064):** all 12 StrategyVersions, four implementation roles,
+  six cost cells, chronological splits, G1-G11 thresholds, and hashed development selection
+  barrier are immutable. Focused causal/preflight checks pass; performance remains unobserved and
+  authority remains `NONE`.
 
 ## Operational SSOT (unchanged)
 
@@ -889,10 +893,10 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Build and freeze the canonical 12-trial MVRV campaign without scoring, with independent Decimal,
-vectorbt, Freqtrade-environment, and Nautilus-environment roles plus a hashed development selection
-barrier. Do not reuse closed-family results or access the sealed V2 holdout, activate a bot,
-connect a venue, request credentials, or cross any human S3/S4 gate.
+From the clean campaign-freeze commit, run `BTC-MVRV-SPOT-G1-G11-V1` once offline. Require the
+hashed development selection before any validation/reserve access, then issue the independent G11
+review. Do not reuse closed-family results or access the sealed V2 holdout, activate a bot, connect
+a venue, request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

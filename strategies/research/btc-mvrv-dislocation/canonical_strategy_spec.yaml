@@ -1,0 +1,40 @@
+strategy_id: STRAT-BTC-MVRV-DISLOCATION-SPOT
+family: mvrv_dislocation
+inputs: [mvrv_source_day_utc, mvrv_current_supply, open, close]
+indicators:
+  - name: prior_log_mvrv_zscore
+    parameters:
+      side: HIGH
+      prior_window_days: 30
+      z_threshold: 1
+      population_std: true
+      availability_lag_full_utc_days: 2
+      pulse_holding_days: 1
+    outputs: [mvrv_pulse_entry, mvrv_pulse_exit]
+entry_long:
+  all:
+    - mvrv_pulse_entry == 1
+exit_long:
+  all:
+    - mvrv_pulse_exit == 1
+position_sizing: {type: all_in}
+risk:
+  stop_loss: null
+  take_profit: null
+  source_gap_exit: FIRST_OBSERVABLE_OPEN
+  spot_gap_exit: FIRST_OBSERVABLE_OPEN
+  execution_authority: NONE
+assumptions:
+  - "warm-up requires the resolved number of immediately preceding complete consecutive UTC daily MVRV observations"
+  - "signal is evaluated after the source day plus two full UTC days and fills only at the first retained hourly bar open strictly later, normally 01:00 UTC"
+  - "the z-score uses natural-log MVRV, the prior-window population mean and population standard deviation, and excludes the current source day"
+  - "HIGH requires z > 1 and LOW requires z < -1; equality and zero prior standard deviation produce no signal"
+  - "a held pulse ignores later signals, never extends or stacks, and exits at the first hourly bar open at least 24 or 168 hours after entry"
+  - "a missing source day resets warm-up and exits held exposure when the absence becomes observable under the same two-day lag"
+  - "MVRV is not true acquisition cost, unique holders, exchange flow, or causal valuation"
+ambiguities: []
+source_refs:
+  - FS5-COINMETRICS-CAPMVRVCUR
+  - FS5-COINMETRICS-REALIZED-CAP
+  - FS5-NBER-24877
+license_ref: PROJECT-ORIGINAL-SPEC

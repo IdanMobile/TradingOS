@@ -582,6 +582,28 @@ Evidence: `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V5.md` and
 `research/BTC_MVRV_DATA_PACKAGE_V1.json`.
 Status: **Approved constrained-S2 data/canonical build; performance unobserved and authority NONE.**
 
+### D-064 — Bitcoin MVRV campaign frozen behind a development selection barrier
+
+Decision: the D-063 family is fully specified before scoring as `BTC-MVRV-SPOT-G1-G11-V1`.
+Twelve content-derived StrategyVersions exhaust the HIGH/LOW, 30/90/180-day prior-window, and
+1/7-day holding roster. Canonical exact-Decimal semantics are paired with an independent Decimal
+ledger, vectorbt accelerator, Freqtrade-environment signal harness, and Nautilus-environment event
+harness. Focused causal tests, worker import preflights, offline data verification, and a deliberate
+phase-two-without-selection failure pass.
+
+The runner evaluates development first and must write a content-addressed selection artifact
+before validation/reserve/full/period access. Six cost cells, chronology, trade minima, benchmark,
+drawdown, one-bar delay, PBO/DSR, parity, G1-G11, no-rescue rules, and exact data/code hashes are
+frozen.
+
+Consequence: one clean-commit offline run is authorized. Numeric output cannot self-promote and
+G11 remains independent. No bot, venue, credential, order, paper/demo/live state, human gate,
+holdout access, closed-family context, or execution authority is authorized.
+
+Evidence: `research/BTC_MVRV_SPOT_G1_G11_CAMPAIGN_V1.yaml` and focused tests under
+`tests/test_mvrv_*`.
+Status: **Approved constrained-S2 immutable offline campaign; preregistered and not run.**
+
 ### D-060 — Finalized Bitcoin transaction-activity family admitted to canonical construction
 
 Decision: the fourth bounded source cycle compared exactly finalized Bitcoin L1 confirmed-

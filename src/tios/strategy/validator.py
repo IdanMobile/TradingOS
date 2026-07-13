@@ -28,6 +28,8 @@ DATASET_IDENTIFIERS = frozenset(
         "last_funding_rate",
         "source_day_utc",
         "confirmed_transaction_count",
+        "mvrv_source_day_utc",
+        "mvrv_current_supply",
     }
 )
 

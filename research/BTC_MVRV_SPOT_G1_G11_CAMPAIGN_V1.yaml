@@ -1,0 +1,82 @@
+schema: tios-mvrv-dislocation-campaign-v1
+campaign_id: BTC-MVRV-SPOT-G1-G11-V1
+status: PREREGISTERED_NOT_RUN
+family_id: FAM-BTC-MVRV-DISLOCATION-01
+safety:
+  execution_authority: NONE
+  venue_connection: NONE
+  orders: DISABLED
+  network: PROHIBITED
+  credentials_required: false
+  sealed_v2_holdout_access: PROHIBITED
+  closed_family_context_access: PROHIBITED
+dataset:
+  package_path: research/BTC_MVRV_DATA_PACKAGE_V1.json
+  mvrv_path: data/raw/onchain/coinmetrics_btc_capmvrvcur_2020-07-01_2026-06-28_2026-07-13.json
+  spot_path: data/normalized/BTCUSDT_1h.parquet
+canonical_spec:
+  path: strategies/research/btc-mvrv-dislocation/canonical_strategy_spec.yaml
+pinned_files:
+  - {path: research/BTC_MVRV_DATA_PACKAGE_V1.json, sha256: e8155e56dec7a1c05b3f7c289aa9f3320d939ee6160b23b0606af40aef1cd214}
+  - {path: data/raw/onchain/coinmetrics_btc_capmvrvcur_2020-07-01_2026-06-28_2026-07-13.json, sha256: 88f68a10c52dd822cd6b564f33fb75b5470e1e6fc84783a02ce9a39edf5f8c49}
+  - {path: data/raw/onchain/coinmetrics_capmvrvcur_catalog_entry_2026-07-13.json, sha256: 32088d26671362024dfe8e721da2891d0f161244542df8ff15b46b7893eaae53}
+  - {path: data/normalized/BTCUSDT_1h.parquet, sha256: d44c70c3c87a3e342dd0496c3975d3b54a2b50dd4c5c1b8873ef84eece99947c}
+  - {path: artifacts/datasets/DS-CRYPTO-SPOT-BAKEOFF-V1.manifest.json, sha256: f2b729627adb5d75a99c90dd7dd25ea6dcabf83de4baea5784397424034dfc56}
+  - {path: strategies/research/btc-mvrv-dislocation/canonical_strategy_spec.yaml, sha256: 6c3d92e832213ae4e0debeee5ec9a7a7a7140fcf65a1a9b2fe05b25e7035dfa6}
+  - {path: src/tios/strategy/mvrv_dislocation.py, sha256: efc36caa3fcc0af9b8ed5d283f134bbaa7fcb587e00e6a8cfe2f3b5041842ca6}
+  - {path: engines/mvrv_data.py, sha256: 121a4a49132b3e3cc570a232f940b0f95b3422335bf7e962d9e20c80e9747dd7}
+  - {path: engines/reference/mvrv_dislocation.py, sha256: 387f5f0fd8017c8e095277919b06a0c9ed98b40efe81840af6199f53f51a25fc}
+  - {path: engines/vectorbt/mvrv_dislocation_returns.py, sha256: bf74e6069ce2f8ccd4cfc7fb26f38d28558d00471e5ada72b525e1de46a794bf}
+  - {path: engines/freqtrade/mvrv_dislocation_signals.py, sha256: b8a3f24e5f90a5ae987f5e3cc0e3b615b80606588dbef463c642d1208940da49}
+  - {path: engines/nautilus/mvrv_dislocation_events.py, sha256: d3de055693883be0a50a4ab296d951abc6b05b2e2d3665ffd7b59dd1d9bc78cd}
+splits:
+  development: ["2021-01-01", "2023-12-31 23:00:00+00:00"]
+  validation_2024: ["2024-01-01", "2024-12-31 23:00:00+00:00"]
+  reserve_2025_2026h1: ["2025-01-01", "2026-06-30 23:00:00+00:00"]
+selection:
+  phase_one_scope: development_only
+  scenario: F1/S1
+  metric: nonannualized_per_1h_bar_sharpe_with_zero_cash_returns
+  direction: maximum
+  tie_break: lexical_side_window_holding_days
+  immutable_hashed_selection_required_before_phase_two: true
+scenarios:
+  - {name: F0/S0, fee: 0, slippage_bps: 0}
+  - {name: F1/S1, fee: 0.001, slippage_bps: 1}
+  - {name: F1/S2, fee: 0.001, slippage_bps: 5}
+  - {name: F1/S3, fee: 0.001, slippage_bps: 10}
+  - {name: F2/S2, fee: 0.0015, slippage_bps: 5}
+  - {name: F2/S3, fee: 0.0015, slippage_bps: 10}
+trial_roster:
+  - {side: HIGH, window: 30, holding_days: 1, strategy_version_id: SV-5d514b0d07cd5d7e}
+  - {side: HIGH, window: 30, holding_days: 7, strategy_version_id: SV-12574dfacbaa45ec}
+  - {side: HIGH, window: 90, holding_days: 1, strategy_version_id: SV-62acec361a7146e1}
+  - {side: HIGH, window: 90, holding_days: 7, strategy_version_id: SV-6b130d356d9512f2}
+  - {side: HIGH, window: 180, holding_days: 1, strategy_version_id: SV-e5eadedce6b89139}
+  - {side: HIGH, window: 180, holding_days: 7, strategy_version_id: SV-c721d8e3e40f0afb}
+  - {side: LOW, window: 30, holding_days: 1, strategy_version_id: SV-51bab099d34b8eb5}
+  - {side: LOW, window: 30, holding_days: 7, strategy_version_id: SV-72cc406d96601d6b}
+  - {side: LOW, window: 90, holding_days: 1, strategy_version_id: SV-a4f28d2fa031873f}
+  - {side: LOW, window: 90, holding_days: 7, strategy_version_id: SV-6850acb4c52ad64c}
+  - {side: LOW, window: 180, holding_days: 1, strategy_version_id: SV-418172d25cd827d0}
+  - {side: LOW, window: 180, holding_days: 7, strategy_version_id: SV-defbe70efe2c410d}
+gates:
+  parity_numeric_tolerance: 1.0e-10
+  development_completed_trades_minimum: 30
+  validation_completed_trades_minimum: 8
+  reserve_completed_trades_minimum: 12
+  required_positive_year_periods_of_6: 4
+  maximum_drawdown: 0.25
+  pbo_maximum: 0.5
+  dsr_minimum: 0.95
+  require_positive_validation_primary: true
+  require_positive_reserve_primary: true
+  require_positive_full_stress: true
+  require_positive_one_bar_delay: true
+  require_benchmark_sharpe_and_drawdown_superiority: true
+  all_12_trials_enter_g10: true
+stop_rules:
+  any_hard_fail_rejects_context: true
+  zero_validation_activity_rejects_context: true
+  no_post_result_rescue: true
+  numeric_pass_cannot_activate_paper_demo_live: true

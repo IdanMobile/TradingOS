@@ -1,5 +1,12 @@
 # Package Changelog
 
+## v8.67 — 2026-07-13
+
+- Froze the canonical 12-trial Bitcoin MVRV campaign before scoring.
+- Added exact Decimal, vectorbt, Freqtrade-environment, and Nautilus-environment roles.
+- Added a hashed development-selection barrier that blocks validation/reserve access.
+- Retained execution authority `NONE`; no bot, venue, credential, order, or holdout was activated.
+
 ## v8.66 — 2026-07-13
 
 - Compared MVRV dislocation, U.S. financial conditions, and public attention from current sources.
