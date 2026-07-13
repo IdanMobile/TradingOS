@@ -724,6 +724,23 @@ Evidence: `research/BTC_SPOT_TAKER_IMBALANCE_G1_G11_CAMPAIGN_V1.yaml`, canonical
 and focused tests under `tests/test_taker_imbalance_*`.
 Status: **Approved constrained-S2 immutable offline campaign; preregistered and not run.**
 
+### D-073 — Taker-imbalance V1 pre-selection runtime abort closed; computation-only V2 authorized
+
+Decision: V1 began from clean commit `79b5fa3` and remained in phase-one reference development
+computation. Its independent ledger rescanned up to 720 prior rows for every bar and regenerated
+cost-independent events in every cost cell. After sustained full-CPU execution it was interrupted
+before phase-one completion. No selection artifact, worker output, validation, reserve,
+full-history, period, or final campaign artifact existed; temporary state was removed.
+
+V2 inherits V1's full strategy/statistical/safety contract by hash. Its only changes use
+mathematically equivalent prefix moments for the prior-window population variance and cache exact
+event flags across cost cells. Canonical/reference micro-goldens and the full 12-hour sub-warm-up
+worker parity remain intact. No strategy or gate term changes.
+
+Evidence: `artifacts/reports/BTC_SPOT_TAKER_IMBALANCE_V1_OPERATIONAL_ABORT_2026_07_13.md` and
+`research/BTC_SPOT_TAKER_IMBALANCE_G1_G11_CAMPAIGN_V2.yaml`.
+Status: **V1 aborted pre-selection; V2 immutable offline rerun authorized; authority NONE.**
+
 ### D-063 — Bitcoin MVRV dislocation family admitted to data/canonical construction
 
 Decision: a source-only cycle compared exactly three new mechanisms without computing local family

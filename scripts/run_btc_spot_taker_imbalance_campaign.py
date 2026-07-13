@@ -35,8 +35,8 @@ from tios.strategy.spec import parse_spec  # noqa: E402
 from tios.strategy.validator import validate  # noqa: E402
 from tios.strategy.version import create_version  # noqa: E402
 
-CAMPAIGN = ROOT / "research/BTC_SPOT_TAKER_IMBALANCE_G1_G11_CAMPAIGN_V1.yaml"
-OUTPUT_ROOT = ROOT / "artifacts/validation/campaigns/BTC-SPOT-TAKER-IMBALANCE-G1-G11-V1"
+CAMPAIGN = ROOT / "research/BTC_SPOT_TAKER_IMBALANCE_G1_G11_CAMPAIGN_V2.yaml"
+OUTPUT_ROOT = ROOT / "artifacts/validation/campaigns/BTC-SPOT-TAKER-IMBALANCE-G1-G11-V2"
 SCENARIOS = shared.SCENARIOS
 DEVELOPMENT = {"development": ("2018-04-01", "2022-12-31 23:00:00+00:00")}
 POST_SELECTION = {
@@ -194,30 +194,32 @@ def _reference_phase(
     for segment, bounds in segments.items():
         opened, opens, closes = shared._segment_spot(spot, bounds)
         payload[segment] = {}
+        event_cache: dict[str, tuple[dict[str, Any], tuple[bool, ...], tuple[bool, ...]]] = {}
+        for trial in trials:
+            name = trial_name(trial["interpretation"], trial["baseline_hours"], trial["threshold"])
+            kwargs = {
+                "spot_opens": opened,
+                "source_opens": source_opens,
+                "source_closes": source_closes,
+                "quote_volume": quote_volume,
+                "taker_buy_quote": taker_buy_quote,
+                "interpretation": trial["interpretation"],
+                "baseline_hours": trial["baseline_hours"],
+                "threshold": Decimal(str(trial["threshold"])),
+                "delay_bars": delay_bars,
+            }
+            entries, exits = taker_events(**kwargs)
+            event_cache[name] = (kwargs, entries, exits)
         for scenario, fee, slippage in SCENARIOS:
             payload[segment][scenario] = {}
-            for trial in trials:
-                name = trial_name(
-                    trial["interpretation"], trial["baseline_hours"], trial["threshold"]
-                )
-                kwargs = {
-                    "spot_opens": opened,
-                    "source_opens": source_opens,
-                    "source_closes": source_closes,
-                    "quote_volume": quote_volume,
-                    "taker_buy_quote": taker_buy_quote,
-                    "interpretation": trial["interpretation"],
-                    "baseline_hours": trial["baseline_hours"],
-                    "threshold": Decimal(str(trial["threshold"])),
-                    "delay_bars": delay_bars,
-                }
-                entries, exits = taker_events(**kwargs)
+            for name, (kwargs, entries, exits) in event_cache.items():
                 ledger = simulate_taker_ledger(
                     **kwargs,
                     opens=opens,
                     closes=closes,
                     fee_rate_per_side=fee,
                     slippage_bps_per_side=slippage,
+                    precomputed_events=(entries, exits),
                 )
                 return_values = [float(value) for value in ledger.returns]
                 payload[segment][scenario][name] = shared._metrics(

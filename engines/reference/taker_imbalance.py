@@ -53,19 +53,28 @@ def taker_events(
         Decimal(2) * bought / total - Decimal(1) if okay else Decimal(0)
         for total, bought, okay in zip(quote_volume, taker_buy_quote, valid, strict=True)
     ]
+    prefix = [Decimal(0)]
+    prefix_squared = [Decimal(0)]
+    run_length: list[int] = []
+    for index, value in enumerate(values):
+        prefix.append(prefix[-1] + value)
+        prefix_squared.append(prefix_squared[-1] + value * value)
+        consecutive = index > 0 and source_opens[index] - source_opens[index - 1] == BAR
+        run_length.append(
+            (run_length[-1] + 1 if valid[index - 1] and consecutive else 1) if valid[index] else 0
+        )
+
     candidates: set[datetime] = set()
     for index in range(baseline_hours, len(source_opens)):
         start = index - baseline_hours
-        if not all(valid[start : index + 1]) or any(
-            right - left != BAR for left, right in pairwise(source_opens[start : index + 1])
-        ):
+        if run_length[index] < baseline_hours + 1:
             continue
-        baseline = values[start:index]
-        mean = sum(baseline, Decimal(0)) / Decimal(baseline_hours)
-        variance = sum(((value - mean) ** 2 for value in baseline), Decimal(0)) / Decimal(
-            baseline_hours
-        )
-        if variance == 0:
+        count = Decimal(baseline_hours)
+        total = prefix[index] - prefix[start]
+        squared_total = prefix_squared[index] - prefix_squared[start]
+        mean = total / count
+        variance = squared_total / count - mean * mean
+        if variance <= 0:
             continue
         z_score = (values[index] - mean) / variance.sqrt()
         eligible = (
@@ -121,12 +130,13 @@ def simulate_taker_ledger(
     fee_rate_per_side: Decimal,
     slippage_bps_per_side: Decimal,
     delay_bars: int = 0,
+    precomputed_events: tuple[tuple[bool, ...], tuple[bool, ...]] | None = None,
 ) -> TakerLedgerResult:
     if not len(spot_opens) == len(opens) == len(closes) or not spot_opens:
         raise ValueError("Spot columns must be non-empty and equal length")
     if fee_rate_per_side < 0 or slippage_bps_per_side < 0:
         raise ValueError("costs must be non-negative")
-    entries, exits = taker_events(
+    entries, exits = precomputed_events or taker_events(
         spot_opens=spot_opens,
         source_opens=source_opens,
         source_closes=source_closes,
@@ -137,6 +147,8 @@ def simulate_taker_ledger(
         threshold=threshold,
         delay_bars=delay_bars,
     )
+    if len(entries) != len(spot_opens) or len(exits) != len(spot_opens):
+        raise ValueError("precomputed event flags must match Spot rows")
     slip = slippage_bps_per_side / Decimal(10_000)
     cash, quantity, previous_equity = INITIAL_CASH, Decimal(0), INITIAL_CASH
     returns: list[Decimal] = []

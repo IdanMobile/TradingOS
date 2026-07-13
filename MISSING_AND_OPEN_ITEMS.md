@@ -145,6 +145,10 @@ cost cells, seven periods, causal goldens, strict development-selection barrier,
 thresholds pass offline preflight. The single clean historical run and independent G11 disposition
 remain open; no strategy or bot is approved.
 
+D-073 closes V1 without a strategy verdict after a pre-selection CPU-bound runtime abort. V2
+changes only mathematically equivalent reference computation and cost-independent event caching;
+the clean V2 run and independent G11 disposition remain open. No strategy or bot is approved.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

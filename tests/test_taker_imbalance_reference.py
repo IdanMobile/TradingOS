@@ -11,6 +11,10 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from engines.reference.taker_imbalance import simulate_taker_ledger, taker_events  # noqa: E402
+from tios.strategy.taker_imbalance import (  # noqa: E402
+    TakerObservation,
+    project_taker_pulses,
+)
 
 
 def test_reference_events_and_cost_accounting() -> None:
@@ -33,6 +37,24 @@ def test_reference_events_and_cost_accounting() -> None:
         threshold=Decimal("1.0"),
     )
     assert entries[25] and exits[31]
+    canonical = project_taker_pulses(
+        tuple(
+            TakerObservation(opened, closed, total, bought)
+            for opened, closed, total, bought in zip(
+                source_opens, source_closes, quote, bought, strict=True
+            )
+        ),
+        spot_opens,
+        interpretation="CONTINUATION_HIGH",
+        baseline_hours=24,
+        threshold=Decimal("1.0"),
+    )
+    assert [spot_opens[index] for index, flag in enumerate(entries) if flag] == [
+        canonical[0].open_time
+    ]
+    assert [spot_opens[index] for index, flag in enumerate(exits) if flag] == [
+        canonical[1].open_time
+    ]
     result = simulate_taker_ledger(
         spot_opens=spot_opens,
         opens=(Decimal(100),) * 32,

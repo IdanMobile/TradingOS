@@ -1,5 +1,13 @@
 # Package Changelog
 
+## v8.76 — 2026-07-13
+
+- Closed taker-imbalance V1 pre-selection after its exact reference implementation remained
+  CPU-bound; no result, selection, OOS segment, or strategy verdict was created.
+- Froze V2 with only prefix-moment computation and cost-independent event caching; V1 strategy,
+  statistical, and safety terms are inherited by hash.
+- Retained execution authority `NONE` and all no-live/no-holdout boundaries.
+
 ## v8.75 — 2026-07-13
 
 - Froze 12 Spot taker-imbalance StrategyVersions and exact completed-hour-to-next-open pulse

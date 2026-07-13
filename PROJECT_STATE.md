@@ -866,6 +866,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   threshold StrategyVersions, four implementation roles, six cost cells, seven periods, causal
   goldens, G1-G11 gates, and a hashed development-selection barrier pass preflight. The complete
   campaign is unrun and no eligible signal performance, bot, venue, or authority exists.
+- **Spot taker-imbalance V1 closed pre-selection; V2 frozen (D-073):** V1's CPU-bound reference
+  scan was interrupted before any artifact, selection, OOS access, or strategy verdict. V2 inherits
+  every campaign term and changes only prefix-moment computation and cost-independent event
+  caching. Focused equivalence tests and preflight pass; V2 remains unrun.
 
 ## Operational SSOT (unchanged)
 
@@ -924,8 +928,8 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Commit the complete Spot taker-imbalance campaign freeze, then execute its one authorized offline
-historical run from that clean commit. Preserve the selection barrier, retain every trial, and
+Commit the computation-only Spot taker-imbalance V2 freeze, then execute its one authorized offline
+historical run from that clean commit. Preserve the V1 selection barrier, retain every trial, and
 complete independent G11 supervision without tuning or rescue. Do not access the sealed V2
 holdout, activate a bot, connect a venue, request credentials, or cross any human S3/S4 gate.
 
