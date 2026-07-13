@@ -206,6 +206,12 @@ Continuous coverage produced a valid zero-event window, deterministic
 Only 1 of 8,640 warm-up windows exists. Strictly-later Spot label capture, ongoing coverage, review
 minima, scoring, G1-G11, and promotion remain open.
 
+D-084 freezes the future-label boundary before evaluation. BTCUSDT Spot one-minute opens are
+fixed at window-close-plus-one-minute entry and 1h/6h/24h exits; no request is allowed until each
+exit candle completes. Exact raw bytes and derived labels must reconstruct, and deliberate
+future-time and authority drift fail closed. The first causal evaluation, continued prospective
+coverage, 8,639 warm-up windows, review minima, costs, G1-G11, and promotion remain open.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

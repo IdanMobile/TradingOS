@@ -1,5 +1,14 @@
 # Package Changelog
 
+## v8.87 — 2026-07-13 — Prospective causal label freeze
+
+- Froze Binance Spot BTCUSDT one-minute entry and 1h/6h/24h exit timestamps before evaluation;
+  every request is prohibited until its exact exit candle has completed.
+- Added content-addressed exact-response retention and offline reconstruction for session links,
+  timing, prices, returns, eligibility, and authority.
+- Focused tests reject wrong candle timestamps, early future labels, and rehashed paper-order drift.
+  Warm-up analysis, scoring, promotion, venue connection, and execution authority remain disabled.
+
 ## v8.86 — 2026-07-13 — First complete prospective signal window
 
 - Ran exactly one complete-window session from frozen observer commit `eaf2604`.

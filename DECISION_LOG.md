@@ -765,6 +765,26 @@ Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_STRESS_FIRST_COMPLETE_W
 and content-addressed session `2f582162…`.
 Status: **One complete prospective window; warm-up FLAT/BLOCK; authority NONE.**
 
+### D-084 — Causal prospective Spot label contract frozen before evaluation
+
+Decision: future labels for every retained complete liquidation-signal window are fixed before
+their values are evaluated. The source is the unauthenticated Binance Spot `BTCUSDT` one-minute
+kline endpoint. Entry is the open at window close plus one minute; exits are the opens exactly
+1h, 6h, and 24h after entry. A label is `NOT_AVAILABLE` and triggers no request until the exit bar
+has completed one minute later. Exact response bytes, timestamps, prices, returns, session links,
+contract hash, and authority boundary must reconstruct offline.
+
+Consequence: one first causal label evaluation may run only from the clean freeze commit. During
+the 8,640-window warm-up, available returns are retained but may not be aggregated, analyzed,
+scored, or used to change the signal. Early labels, absent exact candles, byte drift, and rehashed
+future-time or authority drift fail closed. No historical backfill, V2 holdout access, bot, venue
+connection, credential, order, paper/demo/live state, promotion, or execution authority is
+authorized.
+
+Evidence: `research/PROSPECTIVE_BTC_LIQUIDATION_LABEL_CONTRACT_V1.yaml`,
+`scripts/run_prospective_liquidation_labels.py`, and focused causal/drift tests.
+Status: **Label contract frozen, not yet evaluated; authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

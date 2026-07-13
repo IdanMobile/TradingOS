@@ -1,0 +1,49 @@
+schema_version: 1
+label_contract_id: PROSPECTIVE-BTC-LIQUIDATION-LABELS-V1
+decision_id: D-084
+status: FROZEN_NOT_RUN
+signal_spec_id: PROSPECTIVE-BTC-LIQUIDATION-STRESS-V1
+signal_spec_sha256: a2a5553ee5286a46b9972d6a31edd727ef3e9cfe25bdbdd09c4861012d1c3fb1
+execution_authority: NONE
+promotion_eligible: false
+
+source:
+  owner: Binance
+  market: Spot
+  symbol: BTCUSDT
+  interval: 1m
+  endpoint: https://data-api.binance.vision/api/v3/klines
+  authentication: NONE
+  official_sources:
+    - https://developers.binance.com/en/docs/products/spot/rest-api
+    - https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data
+  retained_form: exact_response_bytes_content_addressed
+
+causal_timing:
+  signal_window: UTC-aligned five-minute window
+  signal_window_close: window_start + 5 minutes
+  entry: open of the one-minute bar at signal_window_close + 1 minute
+  rationale: first completed-bar observation whose open is strictly later than signal-window close
+  horizons: [1H, 6H, 24H]
+  exit: open of the one-minute bar at entry + horizon
+  available_at: exit bar open + 1 minute
+  before_available_at: NOT_AVAILABLE_AND_DO_NOT_REQUEST
+  missing_or_nonexact_response: FAIL_CLOSED_NO_LABEL
+
+label_value:
+  gross_return: exit_open / entry_open - 1
+  costs_applied: false
+  warmup_use: RETAIN_ONLY_DO_NOT_AGGREGATE_ANALYZE_OR_SCORE
+
+verification:
+  - Reconstruct every session and complete window before label evaluation.
+  - Verify exact raw response bytes and content-addressed label snapshot offline.
+  - Reject early labels, timestamp drift, price drift, missing bytes, and authority drift.
+
+safety:
+  venue_connection: NONE
+  credentials_used: false
+  paper_orders: DISABLED
+  live_orders: DISABLED
+  scorecard_eligible: false
+  sealed_v2_holdout_access: PROHIBITED

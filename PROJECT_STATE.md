@@ -913,6 +913,11 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   `SIG-54b9c184a05a3a037df6495d`, `FLAT`, `WARMUP_BLOCK`, and independent `BLOCK`. This proves the
   public source→window→signal→risk-denial path, not edge or promotion. Warm-up is 1/8,640; metric,
   scorecard, paper, and execution authority remain unavailable.
+- **Prospective Spot label contract frozen (D-084):** every complete signal window now has fixed
+  BTCUSDT Spot one-minute entry and 1h/6h/24h exit timestamps. A future label remains
+  `NOT_AVAILABLE` without a request until its exit bar completes. The verifier reconstructs exact
+  raw bytes, prices, returns, eligibility, and authority and rejects rehashed future-time or
+  paper-order drift. No label evaluation has run from the freeze; warm-up analysis is prohibited.
 
 ## Operational SSOT (unchanged)
 
@@ -971,12 +976,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Freeze the prospective label contract before any outcome is available: Binance Spot BTCUSDT
-completed observations strictly after each signal-window close, at fixed 1h/6h/24h horizons, with
-future labels `NOT_AVAILABLE` until causally observable. Add offline reconstruction and deliberate
-future-label/authority drift tests, but do not analyze returns during warm-up. Continue append-only
-source collection only under the unchanged signal hash. Do not backfill, score, access the sealed
-V2 holdout, activate a bot, request credentials, or cross any human S3/S4 gate.
+Commit the D-084 label freeze, then run exactly one first label evaluation from that clean commit.
+Retain only causally available exact Spot observations and explicit `NOT_AVAILABLE` rows, verify
+the snapshot offline, and report status without aggregating or interpreting returns. Continue
+append-only source collection only under the unchanged signal hash. Do not backfill, score, access
+the sealed V2 holdout, activate a bot, request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 
