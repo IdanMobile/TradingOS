@@ -635,3 +635,17 @@ strategy term changed; validation and reserve remain untouched.
 Evidence: `artifacts/reports/FUNDING_PRESSURE_SPOT_V2_OPERATIONAL_ABORT_2026_07_13.md` and
 `research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V3.yaml`.
 Status: **V2 aborted pre-selection; V3 immutable offline rerun authorized; authority NONE.**
+
+### D-059 — Funding-pressure directional Spot campaign rejected without rescue
+
+Decision: V3 completed with its selection barrier intact and selected contrarian/3/0.0001.
+Validation had zero trades and zero return; reserve had two trades and lost 2.52%. DSR was 0.8235,
+and one non-selected development trial failed Nautilus parity. G4/G5/G6/G7/G8/G10 fail. The
+full-history +51.58% is concentrated in 2021–2022 and cannot override frozen OOS gates.
+
+Consequence: the exact funding-pressure directional long/cash family is closed without tuning or
+reinterpretation. G11 rejects it as not validated and not promotion eligible. No bot, venue,
+credential, order, paper/demo/live state, human gate, or authority is activated.
+
+Evidence: `artifacts/reports/FUNDING_PRESSURE_SPOT_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md`.
+Status: **Completed negative campaign; execution authority remains NONE.**

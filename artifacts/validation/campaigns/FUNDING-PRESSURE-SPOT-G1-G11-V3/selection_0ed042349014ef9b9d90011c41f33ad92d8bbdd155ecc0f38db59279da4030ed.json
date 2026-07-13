@@ -1,0 +1,21 @@
+{
+  "development_metric": 0.012131160566588584,
+  "g10": {
+    "average_trial_return_correlation_clipped_at_zero": 0.2897399396334004,
+    "dsr": 0.8235165786903522,
+    "effective_trials": 8.812860664032595,
+    "pbo": 0.3846930846930847,
+    "pbo_split_count": 12870,
+    "raw_statistical_trials": 12,
+    "status": "FAIL"
+  },
+  "schema": "tios-funding-pressure-selection-v1",
+  "selected_trial": {
+    "lookback": 3,
+    "polarity": "CONTRARIAN",
+    "strategy_version_id": "SV-3ef5c58fceaf45fd",
+    "threshold": 0.0001
+  },
+  "selected_trial_name": "polarity=CONTRARIAN|lookback=3|threshold=0.0001",
+  "selection_source": "development/F1-S1/sharpe_per_bar"
+}

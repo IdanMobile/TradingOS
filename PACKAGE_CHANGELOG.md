@@ -894,3 +894,11 @@ Key outcomes:
 - Closed V2 before selection after pandas 3 rejected mixed naive/UTC-aware segment slice bounds.
 - Froze V3 with only explicit UTC parsing of the already-frozen segment strings in external
   workers. V1 strategy/statistical terms remain inherited by hash; reserve remains untouched.
+
+## v8.62 — 2026-07-13 — Funding-pressure campaign rejection
+
+- Completed V3 with a verified select-before-reserve artifact and selected contrarian/3/0.0001.
+- Rejected the family: zero 2024 trades, two losing reserve trades, DSR 0.8235, and one Nautilus
+  trial-parity failure cause G4/G5/G6/G7/G8/G10/G11 failure.
+- D-059 closes the context without rescue. No bot, venue, order, paper/demo/live state, human gate,
+  promotion, or execution authority was activated.

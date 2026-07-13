@@ -16,10 +16,16 @@ from run_funding_pressure_campaign import (  # noqa: E402
 )
 
 
+def _resolved_campaign():  # type: ignore[no-untyped-def]
+    overlay = yaml.safe_load(CAMPAIGN.read_text())
+    base = yaml.safe_load((ROOT / overlay["base_contract"]["path"]).read_text())
+    return {**base, **overlay}
+
+
 def test_funding_campaign_is_frozen_safe_and_complete() -> None:
     assert yaml.safe_load(CAMPAIGN.read_text())["schema"].endswith("campaign-v3")
-    campaign = preflight(require_clean=False)["campaign"]
-    assert campaign["status"] == "PREREGISTERED_NOT_RUN"
+    campaign = _resolved_campaign()
+    assert campaign["status"] in {"PREREGISTERED_NOT_RUN", "COMPLETED_REJECTED"}
     assert campaign["safety"] == {
         "execution_authority": "NONE",
         "venue_connection": "NONE",
@@ -51,6 +57,12 @@ def test_funding_campaign_is_frozen_safe_and_complete() -> None:
 
 
 def test_funding_campaign_preflight_verifies_without_scoring() -> None:
+    campaign = _resolved_campaign()
+    if campaign["status"] == "COMPLETED_REJECTED":
+        result = ROOT / campaign["completion"]["campaign_result"]
+        assert result.is_file()
+        assert result.name.endswith(f"{campaign['completion']['campaign_result_sha256']}.json")
+        return
     result = preflight(require_clean=False)
     assert result["data_verification"]["status"] == "PASS"
     assert result["data_verification"]["network_allowed"] is False

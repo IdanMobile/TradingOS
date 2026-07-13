@@ -810,6 +810,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
 - **Funding-pressure V2 operational abort / V3 freeze (D-058):** V2 next failed closed on pandas
   mixed-timezone slice parsing, still before selection or reserve. V3 adds only explicit UTC
   normalization of the frozen bounds; the full V1 contract remains inherited by hash.
+- **Funding-pressure V3 rejected (D-059):** the selection barrier passed, but validation had zero
+  trades, reserve lost 2.52% on two trades, DSR was 0.8235, and Nautilus parity failed on one
+  declared development trial. G4/G5/G6/G7/G8/G10 and G11 fail; the context is closed without
+  rescue and no bot or execution authority exists.
 
 ## Operational SSOT (unchanged)
 

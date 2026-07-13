@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.61 funding-pressure V2 abort and V3 freeze (2026-07-13). Supersedes v8.60 hashes.
+Package version: v8.62 funding-pressure campaign rejection (2026-07-13). Supersedes v8.61 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `e1a801d057137807c8b474359353268e63a296c72f7c6c78051145cf9958b0b1` |
-| `DECISION_LOG.md` | `b1f4181a86a17d5c434ecc765f332dfe8a6e84bba051b8cc56fdf01c8fc39e53` |
+| `PROJECT_STATE.md` | `d0664850392fc52771aa9fbf9f5193e18775008c581e4bedbd1b06de812f031d` |
+| `DECISION_LOG.md` | `d6092aaefdd7d4dd949fd5dfac1b69aef25523fbb4dafe122d72279b1d62a56c` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `ea6edb23e4b2d60b46ad9a732c02b940b4a5c6da016f001fc0eb1264dd86a893` |
+| `MISSING_AND_OPEN_ITEMS.md` | `c05ae8774cdcf727a1320de5c6209440a0da3b6331816751b9f55b07494dc688` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -68,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `b9049fcb6bb2a8ff146ecca2ef2e9b0f70ead2912e65b6e37a150279348ceaa1` |
+| `research/RESEARCH_GAP_MATRIX.md` | `e71ba46fd41ba5493444ad07fb5cb4da3f9db86b6678d4a60fac48c84a523669` |
 
 ## Post-V2 family selection V1 (added v8.55)
 
@@ -166,7 +166,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `scripts/run_funding_pressure_campaign.py` | `ed32ce5905d94ec98f23e813380f326744cff97f517a9ce2814668c2faacf561` |
 | `tests/test_funding_pressure_strategy.py` | `44c4f5c7baeebd8a77222a7c6dc1ab70a744915764a7d4f6e41f539db1e4dd95` |
 | `tests/test_funding_pressure_reference.py` | `780566f9f4d8be9777a9aecf595fa0b2532dbdd7e8b26f4efeeab82351f9311e` |
-| `tests/test_funding_pressure_campaign.py` | `3ad9a271db9655c49bd00f2fc652d1f4e93f89a0a863d88afdaad795d36ab67d` |
+| `tests/test_funding_pressure_campaign.py` | `6428d2729bab71e2c9b452761eac669e092df22cb6d1f4b2c48493d79f84989a` |
 
 ## Funding-pressure V1 abort and V2 freeze (added v8.60)
 
@@ -179,8 +179,21 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 
 | Path | SHA-256 |
 |---|---|
-| `research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V3.yaml` | `79864bd116fdb50ff584a4f701a88571f482bb653dedc7aabb2ffc8a1c527044` |
+| `research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V3.yaml` | `ee4380411eb933f7f7374bcbe42251571b6fa5f341f01be58790008919178b32` |
 | `artifacts/reports/FUNDING_PRESSURE_SPOT_V2_OPERATIONAL_ABORT_2026_07_13.md` | `f995c08f137428e9bc67d6de51f101f19237b9e41e4f67d80e17d6e501a30879` |
+
+## Funding-pressure campaign rejection (added v8.62)
+
+| Path | SHA-256 |
+|---|---|
+| `artifacts/reports/FUNDING_PRESSURE_SPOT_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md` | `4be0adfea558dddbf5bce7bcd974ee324d842fea46b10912939ccddc8eac31bd` |
+| `artifacts/validation/campaigns/FUNDING-PRESSURE-SPOT-G1-G11-V3/campaign_result_4f85fb195e3097a8d7a9b1b4484e51b0e8c4395bf16b6017801f39f196ccda76.json` | `4f85fb195e3097a8d7a9b1b4484e51b0e8c4395bf16b6017801f39f196ccda76` |
+| `artifacts/validation/campaigns/FUNDING-PRESSURE-SPOT-G1-G11-V3/phase_one_reference_d54bc21f46cb588cb2fe2784975809f218ec3b3ae1ff041ef297468054687a3a.json` | `d54bc21f46cb588cb2fe2784975809f218ec3b3ae1ff041ef297468054687a3a` |
+| `artifacts/validation/campaigns/FUNDING-PRESSURE-SPOT-G1-G11-V3/phase_one_workers_77039a1ed042066c2c0d0c2aa7005e60b7d460b96a2fdd9dc1e8a72f3d56017a.json` | `77039a1ed042066c2c0d0c2aa7005e60b7d460b96a2fdd9dc1e8a72f3d56017a` |
+| `artifacts/validation/campaigns/FUNDING-PRESSURE-SPOT-G1-G11-V3/phase_two_reference_d72a162dd27c7704c392e72120ae09a8e8d77c2c82eb6ddddb43d06253f739c4.json` | `d72a162dd27c7704c392e72120ae09a8e8d77c2c82eb6ddddb43d06253f739c4` |
+| `artifacts/validation/campaigns/FUNDING-PRESSURE-SPOT-G1-G11-V3/phase_two_workers_119b2b769de0d1f20ad79adc06274387651ba0a2b9cb83b5713c8a5866ac84ed.json` | `119b2b769de0d1f20ad79adc06274387651ba0a2b9cb83b5713c8a5866ac84ed` |
+| `artifacts/validation/campaigns/FUNDING-PRESSURE-SPOT-G1-G11-V3/preregistration_79864bd116fdb50ff584a4f701a88571f482bb653dedc7aabb2ffc8a1c527044.yaml` | `79864bd116fdb50ff584a4f701a88571f482bb653dedc7aabb2ffc8a1c527044` |
+| `artifacts/validation/campaigns/FUNDING-PRESSURE-SPOT-G1-G11-V3/selection_0ed042349014ef9b9d90011c41f33ad92d8bbdd155ecc0f38db59279da4030ed.json` | `0ed042349014ef9b9d90011c41f33ad92d8bbdd155ecc0f38db59279da4030ed` |
 
 ## Expected generated artifacts
 

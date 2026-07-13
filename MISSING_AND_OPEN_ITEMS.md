@@ -84,6 +84,11 @@ V1 then aborted operationally before selection because an external worker lacked
 root on its import path. D-057 closes V1 without a strategy verdict and freezes V2 with only that
 bootstrap repaired. Validation/reserve remain untouched; V2 execution and G1-G11 remain open.
 
+V3 subsequently completed and is rejected under D-059. The verified selection barrier does not
+rescue zero validation trades, a losing two-trade reserve, failed DSR, or the Nautilus parity
+residual. The exact directional funding-pressure context is closed; a distinct family and new
+unseen evidence are required.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

@@ -1,0 +1,165 @@
+{
+  "artifacts": {
+    "phase_one_reference": "phase_one_reference_d54bc21f46cb588cb2fe2784975809f218ec3b3ae1ff041ef297468054687a3a.json",
+    "phase_one_workers": "phase_one_workers_77039a1ed042066c2c0d0c2aa7005e60b7d460b96a2fdd9dc1e8a72f3d56017a.json",
+    "phase_two_reference": "phase_two_reference_d72a162dd27c7704c392e72120ae09a8e8d77c2c82eb6ddddb43d06253f739c4.json",
+    "phase_two_workers": "phase_two_workers_119b2b769de0d1f20ad79adc06274387651ba0a2b9cb83b5713c8a5866ac84ed.json"
+  },
+  "campaign_id": "FUNDING-PRESSURE-SPOT-G1-G11-V3",
+  "completed_at_utc": "2026-07-13T13:29:58.173020+00:00",
+  "evaluation": {
+    "buy_and_hold_primary": {
+      "buy_count": 1,
+      "event_hash": "BUY_AND_HOLD",
+      "max_drawdown": -0.7719848663243896,
+      "return_hash_12dp": "39176c8dae291fb742db18bbcaf6094619a31447ea36dd98d7d8d72f11bcfe01",
+      "sell_count": 0,
+      "sharpe_per_bar": 0.005476473174506847,
+      "total_return": 1.0246520864553004
+    },
+    "development": {
+      "buy_count": 13,
+      "event_hash": "62d441338da3313a79eda9c3844999981cee49fd22c8d0c25147932807a03990",
+      "max_drawdown": -0.10950050522769716,
+      "return_hash_12dp": "f0782b3a126cc3dd94e252d3e2d767cec8fd23a877dcd8eada3507664af03df5",
+      "sell_count": 13,
+      "sharpe_per_bar": 0.012131160566588584,
+      "total_return": 0.554923274127959
+    },
+    "full_primary": {
+      "buy_count": 15,
+      "event_hash": "c49e18ba303930e73c51ec5a25f72d13c834bfbf88c28f260cae586b47d5a97a",
+      "max_drawdown": -0.10950050522769716,
+      "return_hash_12dp": "b7bf6da7c27d7dadf44cd946c322ede3b7cfbe21eaad6e49cb9bd9edcc32b775",
+      "sell_count": 15,
+      "sharpe_per_bar": 0.008401792093715296,
+      "total_return": 0.5157880461792931
+    },
+    "full_stress": {
+      "buy_count": 15,
+      "event_hash": "c49e18ba303930e73c51ec5a25f72d13c834bfbf88c28f260cae586b47d5a97a",
+      "max_drawdown": -0.11447336937791563,
+      "return_hash_12dp": "9cc4d01eb5dd7495b88d6ec9d3af582314d797e0fbd220a94d169616554c49cc",
+      "sell_count": 15,
+      "sharpe_per_bar": 0.007601112445112813,
+      "total_return": 0.4534433021950897
+    },
+    "g10": {
+      "average_trial_return_correlation_clipped_at_zero": 0.2897399396334004,
+      "dsr": 0.8235165786903522,
+      "effective_trials": 8.812860664032595,
+      "pbo": 0.3846930846930847,
+      "pbo_split_count": 12870,
+      "raw_statistical_trials": 12,
+      "status": "FAIL"
+    },
+    "gates": {
+      "G10_MULTIPLE_TESTING": "FAIL",
+      "G11_INDEPENDENT_RISK_SUPERVISOR": "NOT_RUN",
+      "G1_DATA_PROVENANCE": "PASS",
+      "G2_CANONICAL_IDENTITY": "PASS",
+      "G3_CAUSAL_GOLDENS": "PASS",
+      "G4_INDEPENDENT_REPRODUCTION": "FAIL",
+      "G5_AFTER_COST_ECONOMICS": "FAIL",
+      "G6_CHRONOLOGICAL_OOS": "FAIL",
+      "G7_SAMPLE_AND_CLOCK_ROBUSTNESS": "FAIL",
+      "G8_REGIME_AND_TAIL": "FAIL",
+      "G9_BENCHMARK_AND_OPPORTUNITY": "PASS"
+    },
+    "numeric_verdict": "FAIL",
+    "one_bar_delayed_primary": {
+      "buy_count": 15,
+      "event_hash": "bd3d80b53ea21f0a730b3657e9f11334062513bcf4df1f207064d9c7935ad7ce",
+      "max_drawdown": -0.11248557655785751,
+      "return_hash_12dp": "ee43a40e75eb27f1537069da972fdb893a0b4b672dd9c4a0ead7d92e9a0a0663",
+      "sell_count": 15,
+      "sharpe_per_bar": 0.008529830746740252,
+      "total_return": 0.5319959631254859
+    },
+    "period_primary_returns": [
+      0.3156005960980331,
+      0.1819113481247561,
+      0.0,
+      0.0,
+      -0.008841795742636127,
+      -0.016472441234709513
+    ],
+    "promotion_eligible": false,
+    "reserve_2025_2026h1": {
+      "buy_count": 2,
+      "event_hash": "6c9f6acaf2529223037f447b4458080bb51e137fdf3a6e3e7749b629ae516d96",
+      "max_drawdown": -0.041545148908635254,
+      "return_hash_12dp": "6c19bdac7085815ce5c81e85e94bc2d6da2ab048eeec7c3ee2565a4297c20bf1",
+      "sell_count": 2,
+      "sharpe_per_bar": -0.006499338822942325,
+      "total_return": -0.02516859101656576
+    },
+    "selected_trial": "polarity=CONTRARIAN|lookback=3|threshold=0.0001",
+    "validation_2024": {
+      "buy_count": 0,
+      "event_hash": "2eb78abb1edd521a5a7652ccc0fd16d7aeae8941920f64324bd33b5d6ab26eb6",
+      "max_drawdown": 0.0,
+      "return_hash_12dp": "8a45e57b35a4ed6d5e8f8588fce52f902414e7e16ab42ba14e726705bf870f9c",
+      "sell_count": 0,
+      "sharpe_per_bar": 0.0,
+      "total_return": 0.0
+    }
+  },
+  "execution_authority": "NONE",
+  "parity": {
+    "phase_one": {
+      "maximum_absolute_metric_difference": 3.1308289294429414e-14,
+      "mismatches": [
+        "nautilus/development/polarity=CONTINUATION|lookback=21|threshold=0.0001/event_hash",
+        "nautilus/development/polarity=CONTINUATION|lookback=21|threshold=0.0001/buy_count",
+        "nautilus/development/polarity=CONTINUATION|lookback=21|threshold=0.0001/sell_count",
+        "nautilus/development/polarity=CONTINUATION|lookback=21|threshold=0.0001/event_hash",
+        "nautilus/development/polarity=CONTINUATION|lookback=21|threshold=0.0001/buy_count",
+        "nautilus/development/polarity=CONTINUATION|lookback=21|threshold=0.0001/sell_count",
+        "nautilus/development/polarity=CONTINUATION|lookback=21|threshold=0.0001/event_hash",
+        "nautilus/development/polarity=CONTINUATION|lookback=21|threshold=0.0001/buy_count",
+        "nautilus/development/polarity=CONTINUATION|lookback=21|threshold=0.0001/sell_count",
+        "nautilus/development/polarity=CONTINUATION|lookback=21|threshold=0.0001/event_hash",
+        "nautilus/development/polarity=CONTINUATION|lookback=21|threshold=0.0001/buy_count",
+        "nautilus/development/polarity=CONTINUATION|lookback=21|threshold=0.0001/sell_count",
+        "nautilus/development/polarity=CONTINUATION|lookback=21|threshold=0.0001/event_hash",
+        "nautilus/development/polarity=CONTINUATION|lookback=21|threshold=0.0001/buy_count",
+        "nautilus/development/polarity=CONTINUATION|lookback=21|threshold=0.0001/sell_count",
+        "nautilus/development/polarity=CONTINUATION|lookback=21|threshold=0.0001/event_hash",
+        "nautilus/development/polarity=CONTINUATION|lookback=21|threshold=0.0001/buy_count",
+        "nautilus/development/polarity=CONTINUATION|lookback=21|threshold=0.0001/sell_count"
+      ],
+      "numeric_tolerance": 1e-10,
+      "status": "FAIL",
+      "versions": {
+        "freqtrade": "2026.6",
+        "nautilus": "1.230.0",
+        "vectorbt": "1.1.0"
+      }
+    },
+    "phase_two": {
+      "maximum_absolute_metric_difference": 6.2727600891321345e-15,
+      "mismatches": [],
+      "numeric_tolerance": 1e-10,
+      "status": "PASS",
+      "versions": {
+        "freqtrade": "2026.6",
+        "nautilus": "1.230.0",
+        "vectorbt": "1.1.0"
+      }
+    },
+    "status": "FAIL"
+  },
+  "preregistration_sha256": "79864bd116fdb50ff584a4f701a88571f482bb653dedc7aabb2ffc8a1c527044",
+  "promotion_eligible": false,
+  "rejected_calendar_reserve_accessed": false,
+  "run_commit": "f31e60182ddfe2bafff14da90215e96a32024023",
+  "schema": "tios-funding-pressure-campaign-result-v1",
+  "sealed_v2_holdout_accessed": false,
+  "selection_barrier": {
+    "reserve_evaluated_only_after_selection": true,
+    "selection_artifact": "selection_0ed042349014ef9b9d90011c41f33ad92d8bbdd155ecc0f38db59279da4030ed.json",
+    "selection_sha256": "0ed042349014ef9b9d90011c41f33ad92d8bbdd155ecc0f38db59279da4030ed",
+    "status": "PASS"
+  }
+}
