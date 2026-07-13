@@ -623,3 +623,15 @@ StrategyVersion, polarity, lookback, threshold, cost, split, gate, or result cha
 Evidence: `artifacts/reports/FUNDING_PRESSURE_SPOT_V1_OPERATIONAL_ABORT_2026_07_13.md` and
 `research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V2.yaml`.
 Status: **V1 aborted pre-selection; V2 immutable offline rerun authorized; authority NONE.**
+
+### D-058 — V2 timezone-boundary abort closed; UTC-normalization-only V3 authorized
+
+Decision: V2's import repair passed, then its first vectorbt worker aborted because pandas 3
+rejected mixed naive/UTC-aware frozen segment bounds. No selection artifact, post-selection
+evaluation, or output was created. V3 inherits V1's complete contract by hash and changes only
+external-worker parsing of those same strings into explicit UTC timestamps. No statistical or
+strategy term changed; validation and reserve remain untouched.
+
+Evidence: `artifacts/reports/FUNDING_PRESSURE_SPOT_V2_OPERATIONAL_ABORT_2026_07_13.md` and
+`research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V3.yaml`.
+Status: **V2 aborted pre-selection; V3 immutable offline rerun authorized; authority NONE.**

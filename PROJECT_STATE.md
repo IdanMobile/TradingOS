@@ -807,6 +807,9 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   external worker could not import the repo-local loader. No selection artifact or post-selection
   evaluation exists. V2 inherits the full V1 contract by hash and changes only worker import
   bootstrap; all three external environments now import successfully and preflight passes.
+- **Funding-pressure V2 operational abort / V3 freeze (D-058):** V2 next failed closed on pandas
+  mixed-timezone slice parsing, still before selection or reserve. V3 adds only explicit UTC
+  normalization of the frozen bounds; the full V1 contract remains inherited by hash.
 
 ## Operational SSOT (unchanged)
 

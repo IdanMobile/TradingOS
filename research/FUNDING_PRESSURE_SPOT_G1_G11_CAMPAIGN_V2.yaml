@@ -1,8 +1,16 @@
 schema: tios-funding-pressure-spot-g1-g11-campaign-v2
 campaign_id: FUNDING-PRESSURE-SPOT-G1-G11-V2
-status: PREREGISTERED_NOT_RUN
+status: ABORTED_PRE_SELECTION
 decision: D-057
 created_at_utc: 2026-07-13T13:21:09Z
+completion:
+  attempted_from_commit: 68d0436
+  phase: phase_1_worker_start_after_development_reference_computation
+  reason: pandas rejected mixed naive/UTC-aware segment slice bounds
+  selection_artifact_created: false
+  validation_or_reserve_evaluated: false
+  campaign_output_created: false
+  strategy_verdict: NOT_REACHED
 
 base_contract:
   path: research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V1.yaml

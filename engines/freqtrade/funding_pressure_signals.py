@@ -61,7 +61,10 @@ def main() -> int:
     funding = load_funding(ROOT / request["funding_root"])
     segments = {}
     for segment, bounds in request["segments"].items():
-        spot = spot_all.loc[bounds[0] : bounds[1]]
+        lower, upper = (pd.Timestamp(value) for value in bounds)
+        lower = lower.tz_localize("UTC") if lower.tzinfo is None else lower.tz_convert("UTC")
+        upper = upper.tz_localize("UTC") if upper.tzinfo is None else upper.tz_convert("UTC")
+        spot = spot_all.loc[lower:upper]
         segments[segment] = {}
         for trial in request["trials"]:
             name = trial_name(trial["polarity"], trial["lookback"], trial["threshold"])

@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.60 funding-pressure V1 abort and V2 freeze (2026-07-13). Supersedes v8.59 hashes.
+Package version: v8.61 funding-pressure V2 abort and V3 freeze (2026-07-13). Supersedes v8.60 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `621cd0f83afad16b6d7ba34396f83d6a8c16c0d1369fb8caa510f3a227faf0dd` |
-| `DECISION_LOG.md` | `a317a324586b528776f456d38fedb1eee7ddd5d025cbca56c53c0e4aaa26232b` |
+| `PROJECT_STATE.md` | `e1a801d057137807c8b474359353268e63a296c72f7c6c78051145cf9958b0b1` |
+| `DECISION_LOG.md` | `b1f4181a86a17d5c434ecc765f332dfe8a6e84bba051b8cc56fdf01c8fc39e53` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -160,20 +160,27 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `src/tios/strategy/funding_pressure.py` | `2bb4bc766a54aff687824e0edc103213ce05abf8a077de29dad4975dcbe6a76a` |
 | `engines/funding_pressure_data.py` | `1dca9cde1da9657c990a6d43026c883c15e6915918496b1262f9eae7c5bf9e8a` |
 | `engines/reference/funding_pressure.py` | `8e660df18f0c001f2d06e10cd25c45b80ef71ac2399de5f163869adcaf9ef4f4` |
-| `engines/vectorbt/funding_pressure_returns.py` | `656d92877e2d4950f2eeb0c33070054809b4c50429e8aa5f2f8fc0c657e016ce` |
-| `engines/freqtrade/funding_pressure_signals.py` | `0a845f27b762ab1831802c5bcd6d4d173154f153f21819e4d1ca65261d5bd07d` |
-| `engines/nautilus/funding_pressure_events.py` | `a799fa23cb7afc0e502dd6f3e8e8dd24ed0b0b38117ceb32005d25a16dcc3577` |
-| `scripts/run_funding_pressure_campaign.py` | `146c63bf8bf71bcb1d5e60ce94824d06ee5257170bda223d9b597866229a4f03` |
+| `engines/vectorbt/funding_pressure_returns.py` | `b5d3aa597bd2e82377edc5c4aa7ea23c73b01ac56b3f9c221113fb939ba76a7d` |
+| `engines/freqtrade/funding_pressure_signals.py` | `cdee9bb5f047f3d35537800e745cf5fe80f08d348f4884e07c1b2e63569daef2` |
+| `engines/nautilus/funding_pressure_events.py` | `67bc37cc52810bade33c6055eb4ab7edc0c2f811a1b1017f171fb91f0a55b125` |
+| `scripts/run_funding_pressure_campaign.py` | `ed32ce5905d94ec98f23e813380f326744cff97f517a9ce2814668c2faacf561` |
 | `tests/test_funding_pressure_strategy.py` | `44c4f5c7baeebd8a77222a7c6dc1ab70a744915764a7d4f6e41f539db1e4dd95` |
 | `tests/test_funding_pressure_reference.py` | `780566f9f4d8be9777a9aecf595fa0b2532dbdd7e8b26f4efeeab82351f9311e` |
-| `tests/test_funding_pressure_campaign.py` | `f1e2be3f684258c9076db4b91f71cb718cefa280dedcc46d7b4ab2118f3a191e` |
+| `tests/test_funding_pressure_campaign.py` | `3ad9a271db9655c49bd00f2fc652d1f4e93f89a0a863d88afdaad795d36ab67d` |
 
 ## Funding-pressure V1 abort and V2 freeze (added v8.60)
 
 | Path | SHA-256 |
 |---|---|
-| `research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V2.yaml` | `a49022b508f1785fd937253430683bd3e964796a980d9346964a6f51d0c38d3b` |
+| `research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V2.yaml` | `7b4e4d2c7141d3cb83e263f0e3445706f2d9a232cda967a94027ea0ee107fe8c` |
 | `artifacts/reports/FUNDING_PRESSURE_SPOT_V1_OPERATIONAL_ABORT_2026_07_13.md` | `ae1d59b7b1fc4365a54398ed3c947eef5d0326eaefd6811e47d94fd0edf345b8` |
+
+## Funding-pressure V2 abort and V3 freeze (added v8.61)
+
+| Path | SHA-256 |
+|---|---|
+| `research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V3.yaml` | `79864bd116fdb50ff584a4f701a88571f482bb653dedc7aabb2ffc8a1c527044` |
+| `artifacts/reports/FUNDING_PRESSURE_SPOT_V2_OPERATIONAL_ABORT_2026_07_13.md` | `f995c08f137428e9bc67d6de51f101f19237b9e41e4f67d80e17d6e501a30879` |
 
 ## Expected generated artifacts
 

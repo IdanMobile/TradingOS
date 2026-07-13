@@ -125,7 +125,10 @@ def main() -> int:
     funding = load_funding(ROOT / request["funding_root"])
     results: dict[str, Any] = {}
     for segment, bounds in request["segments"].items():
-        spot = spot_all.loc[bounds[0] : bounds[1]]
+        lower, upper = (pd.Timestamp(value) for value in bounds)
+        lower = lower.tz_localize("UTC") if lower.tzinfo is None else lower.tz_convert("UTC")
+        upper = upper.tz_localize("UTC") if upper.tzinfo is None else upper.tz_convert("UTC")
+        spot = spot_all.loc[lower:upper]
         results[segment] = {}
         for scenario in request["scenarios"]:
             results[segment][scenario["name"]] = {

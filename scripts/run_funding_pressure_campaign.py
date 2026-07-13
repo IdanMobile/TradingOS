@@ -44,8 +44,8 @@ from tios.validation.multiple_testing import (  # noqa: E402
     sharpe_variance_from_trials,
 )
 
-CAMPAIGN = ROOT / "research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V2.yaml"
-OUTPUT_ROOT = ROOT / "artifacts/validation/campaigns/FUNDING-PRESSURE-SPOT-G1-G11-V2"
+CAMPAIGN = ROOT / "research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V3.yaml"
+OUTPUT_ROOT = ROOT / "artifacts/validation/campaigns/FUNDING-PRESSURE-SPOT-G1-G11-V3"
 SCENARIOS = (
     ("F0/S0", Decimal("0"), Decimal("0")),
     ("F1/S1", Decimal("0.001"), Decimal("1")),

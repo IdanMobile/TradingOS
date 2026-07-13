@@ -888,3 +888,9 @@ Key outcomes:
   in vectorbt, Freqtrade, and Nautilus worker processes before importing the shared data loader.
 - Worker import smoke, offline preflight, safety checks, and selection-barrier tests pass. No bot,
   venue, credential, order, paper/demo/live state, or execution authority was activated.
+
+## v8.61 — 2026-07-13 — Funding-pressure V2 abort and UTC-normalized V3 freeze
+
+- Closed V2 before selection after pandas 3 rejected mixed naive/UTC-aware segment slice bounds.
+- Froze V3 with only explicit UTC parsing of the already-frozen segment strings in external
+  workers. V1 strategy/statistical terms remain inherited by hash; reserve remains untouched.
