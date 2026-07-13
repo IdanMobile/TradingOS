@@ -823,6 +823,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   independent implementation roles, six cost cells, two-phase selection barrier, G1-G11 gates,
   and no-rescue boundary are preregistered. Focused tests and offline preflight pass; performance
   remains unobserved until a clean-commit run and execution authority remains `NONE`.
+- **Bitcoin transaction-activity campaign rejected (D-062):** HIGH/56/1-day won development, but
+  validation (-1.57%), reserve (-22.22%), full (-3.02%), stress (-51.98%), and one-bar delay
+  (-21.41%) were negative. Parity passed, but G5-G10 and G11 fail; the family is closed without
+  rescue and no bot or execution authority exists.
 
 ## Operational SSOT (unchanged)
 
@@ -881,11 +885,10 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-From the clean campaign-freeze commit, run `BTC-TX-ACTIVITY-SPOT-G1-G11-V1` once offline. Require
-the development selection artifact and its hash before validation/reserve evaluation, then perform
-the independent G11 supervisor review. Any hard failure closes the exact context without rescue.
-Do not access the sealed V2 holdout, activate a bot, connect a venue, request credentials, or cross
-any human S3/S4 gate.
+Begin a new bounded source-only family-selection cycle using at most three genuinely distinct
+mechanisms. Do not rescue transaction activity or reuse the closed calendar/funding contexts. Do
+not access the sealed V2 holdout, activate a bot, connect a venue, request credentials, or cross any
+human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

@@ -1,0 +1,21 @@
+{
+  "development_metric": 0.0051070210060812395,
+  "g10": {
+    "average_trial_return_correlation_clipped_at_zero": 0.3437386006994498,
+    "dsr": 0.3421961112642448,
+    "effective_trials": 8.218875392306051,
+    "pbo": 0.2965034965034965,
+    "pbo_split_count": 12870,
+    "raw_statistical_trials": 12,
+    "status": "FAIL"
+  },
+  "schema": "tios-transaction-activity-selection-v1",
+  "selected_trial": {
+    "holding_days": 1,
+    "side": "HIGH",
+    "strategy_version_id": "SV-702a430c99d438cf",
+    "window": 56
+  },
+  "selected_trial_name": "side=HIGH|window=56|holding_days=1",
+  "selection_source": "development/F1-S1/sharpe_per_bar"
+}

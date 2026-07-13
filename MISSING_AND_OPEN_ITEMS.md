@@ -94,6 +94,12 @@ transaction-count shocks advance with exact retained bytes, a two-day lag, gap q
 12-trial pulse roster. Canonical implementations, the two-phase campaign, all G1-G11 outcomes,
 and independent supervision remain open; no strategy is yet validated.
 
+D-061 and D-062 close that work. The immutable campaign selected HIGH/56/1-day in development,
+four-role parity passed, and the selection barrier held, but validation, reserve, full, stress,
+delay, regime, drawdown, benchmark, and DSR evidence failed. The exact family is rejected without
+rescue. A new distinct source-only family cycle is required; no strategy is validated and no bot,
+paper/demo/live state, venue, or execution authority exists.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

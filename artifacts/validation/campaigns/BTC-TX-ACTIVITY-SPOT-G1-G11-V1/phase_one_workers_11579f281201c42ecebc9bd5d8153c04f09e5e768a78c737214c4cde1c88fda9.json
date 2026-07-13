@@ -1,0 +1,878 @@
+{
+  "freqtrade": {
+    "engine": "freqtrade",
+    "segments": {
+      "development": {
+        "side=HIGH|window=14|holding_days=1": {
+          "buy_count": 131,
+          "event_hash": "a8c230f5c7a7f4958fab83715ca2aa47b4ab111ba083bc013d485cdb829ff752",
+          "sell_count": 131
+        },
+        "side=HIGH|window=14|holding_days=3": {
+          "buy_count": 101,
+          "event_hash": "88aee0a87e83f943fca7b67be498caca2665943ca96b35120d254fd030558667",
+          "sell_count": 101
+        },
+        "side=HIGH|window=28|holding_days=1": {
+          "buy_count": 132,
+          "event_hash": "9bdc4bcbab6de3986d95078dac6d5f388ca29e25d599fa0b95ef20f06bfdb5bb",
+          "sell_count": 132
+        },
+        "side=HIGH|window=28|holding_days=3": {
+          "buy_count": 101,
+          "event_hash": "000c3e0fdeb20902e09b64947cdd685f378c6d022ec52c2a896c939353cff9e4",
+          "sell_count": 101
+        },
+        "side=HIGH|window=56|holding_days=1": {
+          "buy_count": 139,
+          "event_hash": "9dbc6a5ce72325813083d01f0787869c7746c6640d5caa970a41006864c3f141",
+          "sell_count": 139
+        },
+        "side=HIGH|window=56|holding_days=3": {
+          "buy_count": 99,
+          "event_hash": "9d79993d55505f3ef1ad9da66e7cdd2f76e912c590cc6ce389e04653b01328fa",
+          "sell_count": 99
+        },
+        "side=LOW|window=14|holding_days=1": {
+          "buy_count": 162,
+          "event_hash": "348c7bc388894da6cbd68bcd12c152b52421e6b06e38370fa1e12e0958ebf173",
+          "sell_count": 162
+        },
+        "side=LOW|window=14|holding_days=3": {
+          "buy_count": 139,
+          "event_hash": "a0a8f7b2502a7ee1c894edab6a620cea8c5e715d52acca433e72138e060d1d1d",
+          "sell_count": 139
+        },
+        "side=LOW|window=28|holding_days=1": {
+          "buy_count": 158,
+          "event_hash": "9c28a75daf83f775562f10884b4baf56ba8291bbd1a3fd6fdf4f228fa3c8b435",
+          "sell_count": 158
+        },
+        "side=LOW|window=28|holding_days=3": {
+          "buy_count": 138,
+          "event_hash": "bfff9fb9be99bba01ac9fade4cfabc5c124a3a5eeef18482f2187e90670a9753",
+          "sell_count": 137
+        },
+        "side=LOW|window=56|holding_days=1": {
+          "buy_count": 152,
+          "event_hash": "fe6c3e49b38cc6b4c950def305fb6b2869d52e21fbfd6c94c2cc509b3373c1fd",
+          "sell_count": 152
+        },
+        "side=LOW|window=56|holding_days=3": {
+          "buy_count": 129,
+          "event_hash": "06cfebb0968e536d7824e2f5a2cc1846e89a258c6587263cfe2b1d94eca97973",
+          "sell_count": 128
+        }
+      }
+    },
+    "version": "2026.6"
+  },
+  "nautilus": {
+    "engine": "nautilus_trader",
+    "segments": {
+      "development": {
+        "side=HIGH|window=14|holding_days=1": {
+          "buy_count": 131,
+          "event_hash": "a8c230f5c7a7f4958fab83715ca2aa47b4ab111ba083bc013d485cdb829ff752",
+          "sell_count": 131
+        },
+        "side=HIGH|window=14|holding_days=3": {
+          "buy_count": 101,
+          "event_hash": "88aee0a87e83f943fca7b67be498caca2665943ca96b35120d254fd030558667",
+          "sell_count": 101
+        },
+        "side=HIGH|window=28|holding_days=1": {
+          "buy_count": 132,
+          "event_hash": "9bdc4bcbab6de3986d95078dac6d5f388ca29e25d599fa0b95ef20f06bfdb5bb",
+          "sell_count": 132
+        },
+        "side=HIGH|window=28|holding_days=3": {
+          "buy_count": 101,
+          "event_hash": "000c3e0fdeb20902e09b64947cdd685f378c6d022ec52c2a896c939353cff9e4",
+          "sell_count": 101
+        },
+        "side=HIGH|window=56|holding_days=1": {
+          "buy_count": 139,
+          "event_hash": "9dbc6a5ce72325813083d01f0787869c7746c6640d5caa970a41006864c3f141",
+          "sell_count": 139
+        },
+        "side=HIGH|window=56|holding_days=3": {
+          "buy_count": 99,
+          "event_hash": "9d79993d55505f3ef1ad9da66e7cdd2f76e912c590cc6ce389e04653b01328fa",
+          "sell_count": 99
+        },
+        "side=LOW|window=14|holding_days=1": {
+          "buy_count": 162,
+          "event_hash": "348c7bc388894da6cbd68bcd12c152b52421e6b06e38370fa1e12e0958ebf173",
+          "sell_count": 162
+        },
+        "side=LOW|window=14|holding_days=3": {
+          "buy_count": 139,
+          "event_hash": "a0a8f7b2502a7ee1c894edab6a620cea8c5e715d52acca433e72138e060d1d1d",
+          "sell_count": 139
+        },
+        "side=LOW|window=28|holding_days=1": {
+          "buy_count": 158,
+          "event_hash": "9c28a75daf83f775562f10884b4baf56ba8291bbd1a3fd6fdf4f228fa3c8b435",
+          "sell_count": 158
+        },
+        "side=LOW|window=28|holding_days=3": {
+          "buy_count": 138,
+          "event_hash": "bfff9fb9be99bba01ac9fade4cfabc5c124a3a5eeef18482f2187e90670a9753",
+          "sell_count": 137
+        },
+        "side=LOW|window=56|holding_days=1": {
+          "buy_count": 152,
+          "event_hash": "fe6c3e49b38cc6b4c950def305fb6b2869d52e21fbfd6c94c2cc509b3373c1fd",
+          "sell_count": 152
+        },
+        "side=LOW|window=56|holding_days=3": {
+          "buy_count": 129,
+          "event_hash": "06cfebb0968e536d7824e2f5a2cc1846e89a258c6587263cfe2b1d94eca97973",
+          "sell_count": 128
+        }
+      }
+    },
+    "version": "1.230.0"
+  },
+  "vectorbt": {
+    "engine": "vectorbt",
+    "segments": {
+      "development": {
+        "F0/S0": {
+          "side=HIGH|window=14|holding_days=1": {
+            "buy_count": 131,
+            "event_hash": "a8c230f5c7a7f4958fab83715ca2aa47b4ab111ba083bc013d485cdb829ff752",
+            "max_drawdown": -0.35930588719753476,
+            "return_hash_12dp": "70caf0dba09038f260125e1963524fdac1b7d2fc1a193642d020365edcd5369d",
+            "sell_count": 131,
+            "sharpe_per_bar": 0.00048447685771512393,
+            "total_return": -0.037856578137341106,
+            "trial": "side=HIGH|window=14|holding_days=1"
+          },
+          "side=HIGH|window=14|holding_days=3": {
+            "buy_count": 101,
+            "event_hash": "88aee0a87e83f943fca7b67be498caca2665943ca96b35120d254fd030558667",
+            "max_drawdown": -0.6076482188526029,
+            "return_hash_12dp": "ce515a86b27401ced459112634fe596c1cba42dd644f065b377b990d8ef57a1a",
+            "sell_count": 101,
+            "sharpe_per_bar": 0.0015418876662148708,
+            "total_return": -0.016404281477264478,
+            "trial": "side=HIGH|window=14|holding_days=3"
+          },
+          "side=HIGH|window=28|holding_days=1": {
+            "buy_count": 132,
+            "event_hash": "9bdc4bcbab6de3986d95078dac6d5f388ca29e25d599fa0b95ef20f06bfdb5bb",
+            "max_drawdown": -0.27753778033736165,
+            "return_hash_12dp": "4e6492ee55b6e91003965d6bc1b495b56c6960bca7580a21bd9d26a50f593bf9",
+            "sell_count": 132,
+            "sharpe_per_bar": 0.0047727795788461745,
+            "total_return": 0.23310741437015237,
+            "trial": "side=HIGH|window=28|holding_days=1"
+          },
+          "side=HIGH|window=28|holding_days=3": {
+            "buy_count": 101,
+            "event_hash": "000c3e0fdeb20902e09b64947cdd685f378c6d022ec52c2a896c939353cff9e4",
+            "max_drawdown": -0.5285555301275655,
+            "return_hash_12dp": "be06d070e10bfdab863ffc59e202b1426b0be81f5900ecc62952c4a45698ce85",
+            "sell_count": 101,
+            "sharpe_per_bar": 0.005154316022911368,
+            "total_return": 0.36192503815441285,
+            "trial": "side=HIGH|window=28|holding_days=3"
+          },
+          "side=HIGH|window=56|holding_days=1": {
+            "buy_count": 139,
+            "event_hash": "9dbc6a5ce72325813083d01f0787869c7746c6640d5caa970a41006864c3f141",
+            "max_drawdown": -0.18225203414486557,
+            "return_hash_12dp": "286c7a5f697859e8c6d857ac7f716105ecb3a983995edbfa47240f95b53f51aa",
+            "sell_count": 139,
+            "sharpe_per_bar": 0.010251707215069055,
+            "total_return": 0.7198996557309286,
+            "trial": "side=HIGH|window=56|holding_days=1"
+          },
+          "side=HIGH|window=56|holding_days=3": {
+            "buy_count": 99,
+            "event_hash": "9d79993d55505f3ef1ad9da66e7cdd2f76e912c590cc6ce389e04653b01328fa",
+            "max_drawdown": -0.49540324304679473,
+            "return_hash_12dp": "d0cbdc53c4e6dabcc8ac40be36a53ce66c618cdc071180612879ef399977a564",
+            "sell_count": 99,
+            "sharpe_per_bar": 0.004862443813882092,
+            "total_return": 0.326836501678349,
+            "trial": "side=HIGH|window=56|holding_days=3"
+          },
+          "side=LOW|window=14|holding_days=1": {
+            "buy_count": 162,
+            "event_hash": "348c7bc388894da6cbd68bcd12c152b52421e6b06e38370fa1e12e0958ebf173",
+            "max_drawdown": -0.6166861574511999,
+            "return_hash_12dp": "d5ba5f4eb4228a724d8ea76b71b4e36f176d370ad4dfff2d9c6e65cdbb3f10e5",
+            "sell_count": 162,
+            "sharpe_per_bar": -0.005111176126997395,
+            "total_return": -0.4238805339107548,
+            "trial": "side=LOW|window=14|holding_days=1"
+          },
+          "side=LOW|window=14|holding_days=3": {
+            "buy_count": 139,
+            "event_hash": "a0a8f7b2502a7ee1c894edab6a620cea8c5e715d52acca433e72138e060d1d1d",
+            "max_drawdown": -0.68766753549988,
+            "return_hash_12dp": "ae909c40150b5a391c47f1d50067c5dc6c1c7d4f1a3177e77f17d15533447b44",
+            "sell_count": 139,
+            "sharpe_per_bar": -0.0015829130561202127,
+            "total_return": -0.3855236968900225,
+            "trial": "side=LOW|window=14|holding_days=3"
+          },
+          "side=LOW|window=28|holding_days=1": {
+            "buy_count": 158,
+            "event_hash": "9c28a75daf83f775562f10884b4baf56ba8291bbd1a3fd6fdf4f228fa3c8b435",
+            "max_drawdown": -0.5410531831264058,
+            "return_hash_12dp": "ed332a7e1ecc4b398b7c6f608f33403d1a1df04c6eb799b1a1e5f98280734649",
+            "sell_count": 158,
+            "sharpe_per_bar": -0.0060602352208476125,
+            "total_return": -0.4456881499284384,
+            "trial": "side=LOW|window=28|holding_days=1"
+          },
+          "side=LOW|window=28|holding_days=3": {
+            "buy_count": 138,
+            "event_hash": "bfff9fb9be99bba01ac9fade4cfabc5c124a3a5eeef18482f2187e90670a9753",
+            "max_drawdown": -0.700824284458358,
+            "return_hash_12dp": "99548093172acd0e69931ad4d11e41c05decfc694e3a27e558d592917ab344ed",
+            "sell_count": 137,
+            "sharpe_per_bar": -0.0031850625006296404,
+            "total_return": -0.49359761856426804,
+            "trial": "side=LOW|window=28|holding_days=3"
+          },
+          "side=LOW|window=56|holding_days=1": {
+            "buy_count": 152,
+            "event_hash": "fe6c3e49b38cc6b4c950def305fb6b2869d52e21fbfd6c94c2cc509b3373c1fd",
+            "max_drawdown": -0.581441531482679,
+            "return_hash_12dp": "7081a9f0b0c1689404ae8fb6952dd6aba9562e1d8698bd4d69747e933a03df64",
+            "sell_count": 152,
+            "sharpe_per_bar": -0.005288210331895661,
+            "total_return": -0.4106345626993424,
+            "trial": "side=LOW|window=56|holding_days=1"
+          },
+          "side=LOW|window=56|holding_days=3": {
+            "buy_count": 129,
+            "event_hash": "06cfebb0968e536d7824e2f5a2cc1846e89a258c6587263cfe2b1d94eca97973",
+            "max_drawdown": -0.7141453129092108,
+            "return_hash_12dp": "033bed54e37d019b773628668b2c5430398ed12a265ada7b676f97ea664abaa7",
+            "sell_count": 128,
+            "sharpe_per_bar": -0.0031900932651413427,
+            "total_return": -0.50018885154279,
+            "trial": "side=LOW|window=56|holding_days=3"
+          }
+        },
+        "F1/S1": {
+          "side=HIGH|window=14|holding_days=1": {
+            "buy_count": 131,
+            "event_hash": "a8c230f5c7a7f4958fab83715ca2aa47b4ab111ba083bc013d485cdb829ff752",
+            "max_drawdown": -0.4693742300270204,
+            "return_hash_12dp": "4216e0550281c00df34d8706114c802660124a188a0fe35bce5ffc29d1ba5a1c",
+            "sell_count": 131,
+            "sharpe_per_bar": -0.004355055706666716,
+            "total_return": -0.2787661403228933,
+            "trial": "side=HIGH|window=14|holding_days=1"
+          },
+          "side=HIGH|window=14|holding_days=3": {
+            "buy_count": 101,
+            "event_hash": "88aee0a87e83f943fca7b67be498caca2665943ca96b35120d254fd030558667",
+            "max_drawdown": -0.6402454299791797,
+            "return_hash_12dp": "76dd1de5ed38c52c6cfa455e9d914fbee51c87a604f356370ff55fe0eccba586",
+            "sell_count": 101,
+            "sharpe_per_bar": -0.0009058825121379686,
+            "total_return": -0.21238066945760603,
+            "trial": "side=HIGH|window=14|holding_days=3"
+          },
+          "side=HIGH|window=28|holding_days=1": {
+            "buy_count": 132,
+            "event_hash": "9bdc4bcbab6de3986d95078dac6d5f388ca29e25d599fa0b95ef20f06bfdb5bb",
+            "max_drawdown": -0.3436904004858298,
+            "return_hash_12dp": "19cf587dc9c1d8152794a09e750148168ae672521210ad4c78951bd804865f80",
+            "sell_count": 132,
+            "sharpe_per_bar": -0.00034276783669296877,
+            "total_return": -0.07767973009712319,
+            "trial": "side=HIGH|window=28|holding_days=1"
+          },
+          "side=HIGH|window=28|holding_days=3": {
+            "buy_count": 101,
+            "event_hash": "000c3e0fdeb20902e09b64947cdd685f378c6d022ec52c2a896c939353cff9e4",
+            "max_drawdown": -0.574867327652954,
+            "return_hash_12dp": "7f2bd5f1947f62126e2f64cb71f280abd6886a9d915364b2ec36c1e41a8935b4",
+            "sell_count": 101,
+            "sharpe_per_bar": 0.002679838263427156,
+            "total_return": 0.09056847910151532,
+            "trial": "side=HIGH|window=28|holding_days=3"
+          },
+          "side=HIGH|window=56|holding_days=1": {
+            "buy_count": 139,
+            "event_hash": "9dbc6a5ce72325813083d01f0787869c7746c6640d5caa970a41006864c3f141",
+            "max_drawdown": -0.21991870076134634,
+            "return_hash_12dp": "8bae61b84935d333147e72fe299e071913d2a71ba4c6b573768c1ce0acb2932b",
+            "sell_count": 139,
+            "sharpe_per_bar": 0.005107021006081533,
+            "total_return": 0.2667643033337105,
+            "trial": "side=HIGH|window=56|holding_days=1"
+          },
+          "side=HIGH|window=56|holding_days=3": {
+            "buy_count": 99,
+            "event_hash": "9d79993d55505f3ef1ad9da66e7cdd2f76e912c590cc6ce389e04653b01328fa",
+            "max_drawdown": -0.5409497962112515,
+            "return_hash_12dp": "3eb858a9d737d03462093ddc5ad38e7e108744a605775417465a5a84e2af8ffd",
+            "sell_count": 99,
+            "sharpe_per_bar": 0.0024379293086988084,
+            "total_return": 0.06715632736650173,
+            "trial": "side=HIGH|window=56|holding_days=3"
+          },
+          "side=LOW|window=14|holding_days=1": {
+            "buy_count": 162,
+            "event_hash": "348c7bc388894da6cbd68bcd12c152b52421e6b06e38370fa1e12e0958ebf173",
+            "max_drawdown": -0.7078899444853284,
+            "return_hash_12dp": "f50b3951ae3e0f3c50f4eeddad8075fadb3304cd89cbd8a48ed86bddf796df55",
+            "sell_count": 162,
+            "sharpe_per_bar": -0.009418842703356477,
+            "total_return": -0.5966055217147461,
+            "trial": "side=LOW|window=14|holding_days=1"
+          },
+          "side=LOW|window=14|holding_days=3": {
+            "buy_count": 139,
+            "event_hash": "a0a8f7b2502a7ee1c894edab6a620cea8c5e715d52acca433e72138e060d1d1d",
+            "max_drawdown": -0.7426419893438239,
+            "return_hash_12dp": "5d6e5e93bfff0b0d98dd3e608bad45ec537553a4adbd3a4e7bab3951c871836d",
+            "sell_count": 139,
+            "sharpe_per_bar": -0.00405437041869057,
+            "total_return": -0.5474174069222774,
+            "trial": "side=LOW|window=14|holding_days=3"
+          },
+          "side=LOW|window=28|holding_days=1": {
+            "buy_count": 158,
+            "event_hash": "9c28a75daf83f775562f10884b4baf56ba8291bbd1a3fd6fdf4f228fa3c8b435",
+            "max_drawdown": -0.654228579930927,
+            "return_hash_12dp": "992165a6366321047a372c6df70c25256b5e3362ff7c880ef33cab65053c538b",
+            "sell_count": 158,
+            "sharpe_per_bar": -0.010496408904384398,
+            "total_return": -0.6084444759714085,
+            "trial": "side=LOW|window=28|holding_days=1"
+          },
+          "side=LOW|window=28|holding_days=3": {
+            "buy_count": 138,
+            "event_hash": "bfff9fb9be99bba01ac9fade4cfabc5c124a3a5eeef18482f2187e90670a9753",
+            "max_drawdown": -0.7567156277144781,
+            "return_hash_12dp": "cea812865f2a43e317501f75216cb456fad5dec74a49059358c1bddcd368b318",
+            "sell_count": 137,
+            "sharpe_per_bar": -0.0056408216894242875,
+            "total_return": -0.6257844430982011,
+            "trial": "side=LOW|window=28|holding_days=3"
+          },
+          "side=LOW|window=56|holding_days=1": {
+            "buy_count": 152,
+            "event_hash": "fe6c3e49b38cc6b4c950def305fb6b2869d52e21fbfd6c94c2cc509b3373c1fd",
+            "max_drawdown": -0.6663086309063491,
+            "return_hash_12dp": "2fdd5f2262b560b463e479c18ef3bbe9b0277d52866bdfddbecf27b9dd2d6c4c",
+            "sell_count": 152,
+            "sharpe_per_bar": -0.00956771050822916,
+            "total_return": -0.5781514654802665,
+            "trial": "side=LOW|window=56|holding_days=1"
+          },
+          "side=LOW|window=56|holding_days=3": {
+            "buy_count": 129,
+            "event_hash": "06cfebb0968e536d7824e2f5a2cc1846e89a258c6587263cfe2b1d94eca97973",
+            "max_drawdown": -0.7685685932370986,
+            "return_hash_12dp": "51876377ae26e97284a0f065e70e4e03af7387f8eab54e939bd577e8fd99e966",
+            "sell_count": 128,
+            "sharpe_per_bar": -0.005457266378359923,
+            "total_return": -0.6232692492744113,
+            "trial": "side=LOW|window=56|holding_days=3"
+          }
+        },
+        "F1/S2": {
+          "side=HIGH|window=14|holding_days=1": {
+            "buy_count": 131,
+            "event_hash": "a8c230f5c7a7f4958fab83715ca2aa47b4ab111ba083bc013d485cdb829ff752",
+            "max_drawdown": -0.519869953315643,
+            "return_hash_12dp": "af1117fdea8277bb0bb38b3447cd651938954feaa21a195ce89e94ad708982f2",
+            "sell_count": 131,
+            "sharpe_per_bar": -0.006106986088799886,
+            "total_return": -0.3505255947526924,
+            "trial": "side=HIGH|window=14|holding_days=1"
+          },
+          "side=HIGH|window=14|holding_days=3": {
+            "buy_count": 101,
+            "event_hash": "88aee0a87e83f943fca7b67be498caca2665943ca96b35120d254fd030558667",
+            "max_drawdown": -0.6535210573794268,
+            "return_hash_12dp": "6d9fd245d4f32646cedf290cdd04f0a6d76a6543916f46ba5a28064bc68d7680",
+            "sell_count": 101,
+            "sharpe_per_bar": -0.0017944750777090475,
+            "total_return": -0.27351714613632394,
+            "trial": "side=HIGH|window=14|holding_days=3"
+          },
+          "side=HIGH|window=28|holding_days=1": {
+            "buy_count": 132,
+            "event_hash": "9bdc4bcbab6de3986d95078dac6d5f388ca29e25d599fa0b95ef20f06bfdb5bb",
+            "max_drawdown": -0.36982316920379343,
+            "return_hash_12dp": "51014604b01102f70c1bbe18279deb83ab0e62c7ea2fdbc385a63ab0d1ee226a",
+            "sell_count": 132,
+            "sharpe_per_bar": -0.002197402760179781,
+            "total_return": -0.17011053547793165,
+            "trial": "side=HIGH|window=28|holding_days=1"
+          },
+          "side=HIGH|window=28|holding_days=3": {
+            "buy_count": 101,
+            "event_hash": "000c3e0fdeb20902e09b64947cdd685f378c6d022ec52c2a896c939353cff9e4",
+            "max_drawdown": -0.5905555312897386,
+            "return_hash_12dp": "ccc781e90b2e20919ef09e0d13d12dfe52816e71d7be8cb8c21d2a0abd5a200f",
+            "sell_count": 101,
+            "sharpe_per_bar": 0.0017807269359029654,
+            "total_return": 0.005916526306986271,
+            "trial": "side=HIGH|window=28|holding_days=3"
+          },
+          "side=HIGH|window=56|holding_days=1": {
+            "buy_count": 139,
+            "event_hash": "9dbc6a5ce72325813083d01f0787869c7746c6640d5caa970a41006864c3f141",
+            "max_drawdown": -0.23963533436962325,
+            "return_hash_12dp": "246298cebd7cc29a1369b6c6709a81ff6683892db7e7bcd58e342a0f9188ffbb",
+            "sell_count": 139,
+            "sharpe_per_bar": 0.003237833900855509,
+            "total_return": 0.13344973516920164,
+            "trial": "side=HIGH|window=56|holding_days=1"
+          },
+          "side=HIGH|window=56|holding_days=3": {
+            "buy_count": 99,
+            "event_hash": "9d79993d55505f3ef1ad9da66e7cdd2f76e912c590cc6ce389e04653b01328fa",
+            "max_drawdown": -0.5564726018431627,
+            "return_hash_12dp": "70471855d2d0f225ae832c1fb7a3676c71b8a8526713db0073ab7088b9f44107",
+            "sell_count": 99,
+            "sharpe_per_bar": 0.0015569885617950717,
+            "total_return": -0.014102155247575639,
+            "trial": "side=HIGH|window=56|holding_days=3"
+          },
+          "side=LOW|window=14|holding_days=1": {
+            "buy_count": 162,
+            "event_hash": "348c7bc388894da6cbd68bcd12c152b52421e6b06e38370fa1e12e0958ebf173",
+            "max_drawdown": -0.7386316742648684,
+            "return_hash_12dp": "aab01adc9cd478225ff12664d23a460ef8876184ab31d732c9e00f1c716fb27c",
+            "sell_count": 162,
+            "sharpe_per_bar": -0.010977711266523615,
+            "total_return": -0.645639440624145,
+            "trial": "side=LOW|window=14|holding_days=1"
+          },
+          "side=LOW|window=14|holding_days=3": {
+            "buy_count": 139,
+            "event_hash": "a0a8f7b2502a7ee1c894edab6a620cea8c5e715d52acca433e72138e060d1d1d",
+            "max_drawdown": -0.7601369475191077,
+            "return_hash_12dp": "44f7c9a16723cded71ba4b90ae2c37b2fbfedd2731ca3ec8460b21aa4a6f096e",
+            "sell_count": 139,
+            "sharpe_per_bar": -0.004951319432315481,
+            "total_return": -0.5950473036569324,
+            "trial": "side=LOW|window=14|holding_days=3"
+          },
+          "side=LOW|window=28|holding_days=1": {
+            "buy_count": 158,
+            "event_hash": "9c28a75daf83f775562f10884b4baf56ba8291bbd1a3fd6fdf4f228fa3c8b435",
+            "max_drawdown": -0.6933282649107513,
+            "return_hash_12dp": "1b5df87b165cf26e239d20c2b52605bd380000abdd1f97b958658651049c6ac6",
+            "sell_count": 158,
+            "sharpe_per_bar": -0.01210147381059445,
+            "total_return": -0.6549368940362329,
+            "trial": "side=LOW|window=28|holding_days=1"
+          },
+          "side=LOW|window=28|holding_days=3": {
+            "buy_count": 138,
+            "event_hash": "bfff9fb9be99bba01ac9fade4cfabc5c124a3a5eeef18482f2187e90670a9753",
+            "max_drawdown": -0.7743427514327396,
+            "return_hash_12dp": "c18deb6ef9ee779133d9eadd720d1a6223c68a09d49e9ba9001119651906bf1d",
+            "sell_count": 137,
+            "sharpe_per_bar": -0.006531822621623541,
+            "total_return": -0.6647648937506536,
+            "trial": "side=LOW|window=28|holding_days=3"
+          },
+          "side=LOW|window=56|holding_days=1": {
+            "buy_count": 152,
+            "event_hash": "fe6c3e49b38cc6b4c950def305fb6b2869d52e21fbfd6c94c2cc509b3373c1fd",
+            "max_drawdown": -0.6942010362453706,
+            "return_hash_12dp": "c0ddf18ef73016531d55b24f6bcd87518dbb5389d86de93389f442d1deba12a5",
+            "sell_count": 152,
+            "sharpe_per_bar": -0.0111173560041204,
+            "total_return": -0.6264520733156833,
+            "trial": "side=LOW|window=56|holding_days=1"
+          },
+          "side=LOW|window=56|holding_days=3": {
+            "buy_count": 129,
+            "event_hash": "06cfebb0968e536d7824e2f5a2cc1846e89a258c6587263cfe2b1d94eca97973",
+            "max_drawdown": -0.7856800989071033,
+            "return_hash_12dp": "74404f21d928663f70a3c1d5d2325c471e4b6e5a9178c4116f31b30c5b14f915",
+            "sell_count": 128,
+            "sharpe_per_bar": -0.006280062782460995,
+            "total_return": -0.6600730122581652,
+            "trial": "side=LOW|window=56|holding_days=3"
+          }
+        },
+        "F1/S3": {
+          "side=HIGH|window=14|holding_days=1": {
+            "buy_count": 131,
+            "event_hash": "a8c230f5c7a7f4958fab83715ca2aa47b4ab111ba083bc013d485cdb829ff752",
+            "max_drawdown": -0.5764029555520587,
+            "return_hash_12dp": "6da5c1a3f6982bbb5a54ac0f3ae267b24bf5fd020c28ea1ccf12cdb634b03cd6",
+            "sell_count": 131,
+            "sharpe_per_bar": -0.008287260228799562,
+            "total_return": -0.43026955124194227,
+            "trial": "side=HIGH|window=14|holding_days=1"
+          },
+          "side=HIGH|window=14|holding_days=3": {
+            "buy_count": 101,
+            "event_hash": "88aee0a87e83f943fca7b67be498caca2665943ca96b35120d254fd030558667",
+            "max_drawdown": -0.6694288163784365,
+            "return_hash_12dp": "5eba951fb708402cc57a9f14d25ff68b8b54430fea02b6649a506cb6bd716b3f",
+            "sell_count": 101,
+            "sharpe_per_bar": -0.0029034539314397264,
+            "total_return": -0.3433081892575482,
+            "trial": "side=HIGH|window=14|holding_days=3"
+          },
+          "side=HIGH|window=28|holding_days=1": {
+            "buy_count": 132,
+            "event_hash": "9bdc4bcbab6de3986d95078dac6d5f388ca29e25d599fa0b95ef20f06bfdb5bb",
+            "max_drawdown": -0.4088910041928152,
+            "return_hash_12dp": "7655ab375749f2c894fcefd064acea49edfd4d10b1d98e8dea54ebc5831b3377",
+            "sell_count": 132,
+            "sharpe_per_bar": -0.004507143630515804,
+            "total_return": -0.27273389685437405,
+            "trial": "side=HIGH|window=28|holding_days=1"
+          },
+          "side=HIGH|window=28|holding_days=3": {
+            "buy_count": 101,
+            "event_hash": "000c3e0fdeb20902e09b64947cdd685f378c6d022ec52c2a896c939353cff9e4",
+            "max_drawdown": -0.6093542031006682,
+            "return_hash_12dp": "eeed2120ddf107610ed467de7f9a84067b91eb414f8fae839937f3292d5deafe",
+            "sell_count": 101,
+            "sharpe_per_bar": 0.0006580185885317112,
+            "total_return": -0.09071887711716636,
+            "trial": "side=HIGH|window=28|holding_days=3"
+          },
+          "side=HIGH|window=56|holding_days=1": {
+            "buy_count": 139,
+            "event_hash": "9dbc6a5ce72325813083d01f0787869c7746c6640d5caa970a41006864c3f141",
+            "max_drawdown": -0.27329460843067677,
+            "return_hash_12dp": "0678767a43c4507fbdde6be42a8bbe15c337102f4357388129218dd668aa1503",
+            "sell_count": 139,
+            "sharpe_per_bar": 0.0009068173598104581,
+            "total_return": -0.013640351584562496,
+            "trial": "side=HIGH|window=56|holding_days=1"
+          },
+          "side=HIGH|window=56|holding_days=3": {
+            "buy_count": 99,
+            "event_hash": "9d79993d55505f3ef1ad9da66e7cdd2f76e912c590cc6ce389e04653b01328fa",
+            "max_drawdown": -0.5751400641556843,
+            "return_hash_12dp": "406ee9ddfad69cdc400abd706816f58d3e811beb829ce57648b7e9d68d64d0f1",
+            "sell_count": 99,
+            "sharpe_per_bar": 0.0004569686512820615,
+            "total_return": -0.10703026782839879,
+            "trial": "side=HIGH|window=56|holding_days=3"
+          },
+          "side=LOW|window=14|holding_days=1": {
+            "buy_count": 162,
+            "event_hash": "348c7bc388894da6cbd68bcd12c152b52421e6b06e38370fa1e12e0958ebf173",
+            "max_drawdown": -0.7725499756364984,
+            "return_hash_12dp": "6bab6e5202bd1564a2a08c6686655646098e03e9315aba9619a311e2dbc6bed0",
+            "sell_count": 162,
+            "sharpe_per_bar": -0.012918522272506896,
+            "total_return": -0.69863720752165,
+            "trial": "side=LOW|window=14|holding_days=1"
+          },
+          "side=LOW|window=14|holding_days=3": {
+            "buy_count": 139,
+            "event_hash": "a0a8f7b2502a7ee1c894edab6a620cea8c5e715d52acca433e72138e060d1d1d",
+            "max_drawdown": -0.7803428120423062,
+            "return_hash_12dp": "49e94e250a56e61f0a18b5b4bf8b15df2fe14c4588de58d356de0e09df7ef316",
+            "sell_count": 139,
+            "sharpe_per_bar": -0.006070712928367834,
+            "total_return": -0.6475988420164002,
+            "trial": "side=LOW|window=14|holding_days=3"
+          },
+          "side=LOW|window=28|holding_days=1": {
+            "buy_count": 158,
+            "event_hash": "9c28a75daf83f775562f10884b4baf56ba8291bbd1a3fd6fdf4f228fa3c8b435",
+            "max_drawdown": -0.7361315523497829,
+            "return_hash_12dp": "6ef15bea3a215dfba87a6c0d497ebc898faa5a71d2ffd3d4a131a1ad4ef1fd35",
+            "sell_count": 158,
+            "sharpe_per_bar": -0.014099373322105058,
+            "total_return": -0.7053679693627407,
+            "trial": "side=LOW|window=28|holding_days=1"
+          },
+          "side=LOW|window=28|holding_days=3": {
+            "buy_count": 138,
+            "event_hash": "bfff9fb9be99bba01ac9fade4cfabc5c124a3a5eeef18482f2187e90670a9753",
+            "max_drawdown": -0.7947934170582348,
+            "return_hash_12dp": "963bb302963dc576f26470a6c7055a5b7de470995961284e321b455ecb7199b2",
+            "sell_count": 137,
+            "sharpe_per_bar": -0.007643603738499652,
+            "total_return": -0.7078310034497224,
+            "trial": "side=LOW|window=28|holding_days=3"
+          },
+          "side=LOW|window=56|holding_days=1": {
+            "buy_count": 152,
+            "event_hash": "fe6c3e49b38cc6b4c950def305fb6b2869d52e21fbfd6c94c2cc509b3373c1fd",
+            "max_drawdown": -0.7344168902951069,
+            "return_hash_12dp": "c5595f2c99be2edd0e525cb82f665ca07079a95bbe81a823ecc261e81509353d",
+            "sell_count": 152,
+            "sharpe_per_bar": -0.01304728971073734,
+            "total_return": -0.67912673713381,
+            "trial": "side=LOW|window=56|holding_days=1"
+          },
+          "side=LOW|window=56|holding_days=3": {
+            "buy_count": 129,
+            "event_hash": "06cfebb0968e536d7824e2f5a2cc1846e89a258c6587263cfe2b1d94eca97973",
+            "max_drawdown": -0.8054926975351311,
+            "return_hash_12dp": "7f1b87267964b4e899cbe3b923be7d18e573dd36ae95b3f81f5907ea1c064e7a",
+            "sell_count": 128,
+            "sharpe_per_bar": -0.007306939741968581,
+            "total_return": -0.7010635070543467,
+            "trial": "side=LOW|window=56|holding_days=3"
+          }
+        },
+        "F2/S2": {
+          "side=HIGH|window=14|holding_days=1": {
+            "buy_count": 131,
+            "event_hash": "a8c230f5c7a7f4958fab83715ca2aa47b4ab111ba083bc013d485cdb829ff752",
+            "max_drawdown": -0.5764030089254097,
+            "return_hash_12dp": "c158e26de8e20ee4a83e4cffa94e72e02c9122c0154cbeed738fa796082296d7",
+            "sell_count": 131,
+            "sharpe_per_bar": -0.0082872626776782,
+            "total_return": -0.43026962587680667,
+            "trial": "side=HIGH|window=14|holding_days=1"
+          },
+          "side=HIGH|window=14|holding_days=3": {
+            "buy_count": 101,
+            "event_hash": "88aee0a87e83f943fca7b67be498caca2665943ca96b35120d254fd030558667",
+            "max_drawdown": -0.6694288319153198,
+            "return_hash_12dp": "a74f3b2383542b6814c2801adb44444bc1928e79efef7fd97769beb6b3809ef5",
+            "sell_count": 101,
+            "sharpe_per_bar": -0.0029034550705900964,
+            "total_return": -0.3433082555835788,
+            "trial": "side=HIGH|window=14|holding_days=3"
+          },
+          "side=HIGH|window=28|holding_days=1": {
+            "buy_count": 132,
+            "event_hash": "9bdc4bcbab6de3986d95078dac6d5f388ca29e25d599fa0b95ef20f06bfdb5bb",
+            "max_drawdown": -0.4088910420238807,
+            "return_hash_12dp": "023ff219bb888a64bcc39eb5c981ce96bedcaa3a463c9300680e685456407f0c",
+            "sell_count": 132,
+            "sharpe_per_bar": -0.004507145620260355,
+            "total_return": -0.2727339928537243,
+            "trial": "side=HIGH|window=28|holding_days=1"
+          },
+          "side=HIGH|window=28|holding_days=3": {
+            "buy_count": 101,
+            "event_hash": "000c3e0fdeb20902e09b64947cdd685f378c6d022ec52c2a896c939353cff9e4",
+            "max_drawdown": -0.6093542214610648,
+            "return_hash_12dp": "28488e84bad08de309cd9ff2e52c589f9057b3c03698c6c1ec1b04582a054abe",
+            "sell_count": 101,
+            "sharpe_per_bar": 0.0006580175200738089,
+            "total_return": -0.09071896895477437,
+            "trial": "side=HIGH|window=28|holding_days=3"
+          },
+          "side=HIGH|window=56|holding_days=1": {
+            "buy_count": 139,
+            "event_hash": "9dbc6a5ce72325813083d01f0787869c7746c6640d5caa970a41006864c3f141",
+            "max_drawdown": -0.2732946542132253,
+            "return_hash_12dp": "cafecadd5c4cadc2401456bbf0973c2f2d72114de7af9c04101f2fc24513ddc4",
+            "sell_count": 139,
+            "sharpe_per_bar": 0.000906815142017751,
+            "total_return": -0.013640488688873688,
+            "trial": "side=HIGH|window=56|holding_days=1"
+          },
+          "side=HIGH|window=56|holding_days=3": {
+            "buy_count": 99,
+            "event_hash": "9d79993d55505f3ef1ad9da66e7cdd2f76e912c590cc6ce389e04653b01328fa",
+            "max_drawdown": -0.5751400824247048,
+            "return_hash_12dp": "2e7ae0cf8541979bc9d9e3597978bb36e201d8e696f7bf9d4275105fdff303a1",
+            "sell_count": 99,
+            "sharpe_per_bar": 0.0004569676191200572,
+            "total_return": -0.10703035623261098,
+            "trial": "side=HIGH|window=56|holding_days=3"
+          },
+          "side=LOW|window=14|holding_days=1": {
+            "buy_count": 162,
+            "event_hash": "348c7bc388894da6cbd68bcd12c152b52421e6b06e38370fa1e12e0958ebf173",
+            "max_drawdown": -0.7725500072521259,
+            "return_hash_12dp": "5cd1a255cf8d30fe2ff01bf69f3be1d2eb1a8c1cc2c675f6056d63c9a8d0c423",
+            "sell_count": 162,
+            "sharpe_per_bar": -0.012918525601164558,
+            "total_return": -0.6986372563425365,
+            "trial": "side=LOW|window=14|holding_days=1"
+          },
+          "side=LOW|window=14|holding_days=3": {
+            "buy_count": 139,
+            "event_hash": "a0a8f7b2502a7ee1c894edab6a620cea8c5e715d52acca433e72138e060d1d1d",
+            "max_drawdown": -0.780342831372186,
+            "return_hash_12dp": "5f965b31ffbd3fc3b72f91299edd25fd61eef2bc4aa4f338abbd64631bcd6f14",
+            "sell_count": 139,
+            "sharpe_per_bar": -0.006070714153061602,
+            "total_return": -0.6475988910002768,
+            "trial": "side=LOW|window=14|holding_days=3"
+          },
+          "side=LOW|window=28|holding_days=1": {
+            "buy_count": 158,
+            "event_hash": "9c28a75daf83f775562f10884b4baf56ba8291bbd1a3fd6fdf4f228fa3c8b435",
+            "max_drawdown": -0.736131592194013,
+            "return_hash_12dp": "60e28769385055ac4509eb32d72b25ad6264b7b4a06a82d5664e327c746913d9",
+            "sell_count": 158,
+            "sharpe_per_bar": -0.014099375901118672,
+            "total_return": -0.7053680159147103,
+            "trial": "side=LOW|window=28|holding_days=1"
+          },
+          "side=LOW|window=28|holding_days=3": {
+            "buy_count": 138,
+            "event_hash": "bfff9fb9be99bba01ac9fade4cfabc5c124a3a5eeef18482f2187e90670a9753",
+            "max_drawdown": -0.7947934365529066,
+            "return_hash_12dp": "35aa0c715e8c93e5e1acff4aef635fd824713bbcf0997850b6c6f7b4ac02eac9",
+            "sell_count": 137,
+            "sharpe_per_bar": -0.00764360301500008,
+            "total_return": -0.7078309705805773,
+            "trial": "side=LOW|window=28|holding_days=3"
+          },
+          "side=LOW|window=56|holding_days=1": {
+            "buy_count": 152,
+            "event_hash": "fe6c3e49b38cc6b4c950def305fb6b2869d52e21fbfd6c94c2cc509b3373c1fd",
+            "max_drawdown": -0.7344169277424154,
+            "return_hash_12dp": "f240cfee85f36563ae1c1e737b9f8f3461953d58c68496816d07ae55d68e70df",
+            "sell_count": 152,
+            "sharpe_per_bar": -0.013047290742082789,
+            "total_return": -0.6791267859066606,
+            "trial": "side=LOW|window=56|holding_days=1"
+          },
+          "side=LOW|window=56|holding_days=3": {
+            "buy_count": 129,
+            "event_hash": "06cfebb0968e536d7824e2f5a2cc1846e89a258c6587263cfe2b1d94eca97973",
+            "max_drawdown": -0.805492716402386,
+            "return_hash_12dp": "d6dd677e19e3b7dbd8af128e9de486239e3a4913606173a2bda3832b24305f40",
+            "sell_count": 128,
+            "sharpe_per_bar": -0.0073069385931932036,
+            "total_return": -0.7010634707334197,
+            "trial": "side=LOW|window=56|holding_days=3"
+          }
+        },
+        "F2/S3": {
+          "side=HIGH|window=14|holding_days=1": {
+            "buy_count": 131,
+            "event_hash": "a8c230f5c7a7f4958fab83715ca2aa47b4ab111ba083bc013d485cdb829ff752",
+            "max_drawdown": -0.6265506310644091,
+            "return_hash_12dp": "842881ecda8a3a7206485c8addc198ced2e792f878c087b8927fd3eab49b70ed",
+            "sell_count": 131,
+            "sharpe_per_bar": -0.010454021358287373,
+            "total_return": -0.50022242740004,
+            "trial": "side=HIGH|window=14|holding_days=1"
+          },
+          "side=HIGH|window=14|holding_days=3": {
+            "buy_count": 101,
+            "event_hash": "88aee0a87e83f943fca7b67be498caca2665943ca96b35120d254fd030558667",
+            "max_drawdown": -0.6846062231707308,
+            "return_hash_12dp": "3727eed1fc28be58ed085aeee27338990feae90b3ea76e28bfc825abf95dc6a7",
+            "sell_count": 101,
+            "sharpe_per_bar": -0.004009988825430647,
+            "total_return": -0.406394674771827,
+            "trial": "side=HIGH|window=14|holding_days=3"
+          },
+          "side=HIGH|window=28|holding_days=1": {
+            "buy_count": 132,
+            "event_hash": "9bdc4bcbab6de3986d95078dac6d5f388ca29e25d599fa0b95ef20f06bfdb5bb",
+            "max_drawdown": -0.46191472221384355,
+            "return_hash_12dp": "ed710b4024e6f79dcae5b93571d0c9efdd801be2c0bf715713581332edb48bf4",
+            "sell_count": 132,
+            "sharpe_per_bar": -0.006804064987664485,
+            "total_return": -0.3626670326847045,
+            "trial": "side=HIGH|window=28|holding_days=1"
+          },
+          "side=HIGH|window=28|holding_days=3": {
+            "buy_count": 101,
+            "event_hash": "000c3e0fdeb20902e09b64947cdd685f378c6d022ec52c2a896c939353cff9e4",
+            "max_drawdown": -0.6272897959925986,
+            "return_hash_12dp": "b9c2d535236b2c5f9a0b483f34d3ab2e4bb06df9119d5ae7911fae8603abba95",
+            "sell_count": 101,
+            "sharpe_per_bar": -0.00046287149112509356,
+            "total_return": -0.17807088828706263,
+            "trial": "side=HIGH|window=28|holding_days=3"
+          },
+          "side=HIGH|window=56|holding_days=1": {
+            "buy_count": 139,
+            "event_hash": "9dbc6a5ce72325813083d01f0787869c7746c6640d5caa970a41006864c3f141",
+            "max_drawdown": -0.32278726105061595,
+            "return_hash_12dp": "696aabee8e489ebf90bd53b278c1990346984c7cdab5e6702419c9fafa4efb4a",
+            "sell_count": 139,
+            "sharpe_per_bar": -0.001414874718923594,
+            "total_return": -0.14164237671922375,
+            "trial": "side=HIGH|window=56|holding_days=1"
+          },
+          "side=HIGH|window=56|holding_days=3": {
+            "buy_count": 99,
+            "event_hash": "9d79993d55505f3ef1ad9da66e7cdd2f76e912c590cc6ce389e04653b01328fa",
+            "max_drawdown": -0.5930218559800622,
+            "return_hash_12dp": "147bce1d0130eb38f33d9d2847d4d52efeccca955375b89a9bb1f8ffccb53bcf",
+            "sell_count": 99,
+            "sharpe_per_bar": -0.0006412808186889941,
+            "total_return": -0.19119930337957658,
+            "trial": "side=HIGH|window=56|holding_days=3"
+          },
+          "side=LOW|window=14|holding_days=1": {
+            "buy_count": 162,
+            "event_hash": "348c7bc388894da6cbd68bcd12c152b52421e6b06e38370fa1e12e0958ebf173",
+            "max_drawdown": -0.8022243506250029,
+            "return_hash_12dp": "93451be2709aea1aec08224e7080a9e160f3aa14238cdcd26e7313bc1cd90f0a",
+            "sell_count": 162,
+            "sharpe_per_bar": -0.01484909658900733,
+            "total_return": -0.7437087294999396,
+            "trial": "side=LOW|window=14|holding_days=1"
+          },
+          "side=LOW|window=14|holding_days=3": {
+            "buy_count": 139,
+            "event_hash": "a0a8f7b2502a7ee1c894edab6a620cea8c5e715d52acca433e72138e060d1d1d",
+            "max_drawdown": -0.798846569004714,
+            "return_hash_12dp": "0965471d3951e11aadfbc2ba745d386944390bbfec6459e0ec6420ca7f33081c",
+            "sell_count": 139,
+            "sharpe_per_bar": -0.007187752278431748,
+            "total_return": -0.6933307025544541,
+            "trial": "side=LOW|window=14|holding_days=3"
+          },
+          "side=LOW|window=28|holding_days=1": {
+            "buy_count": 158,
+            "event_hash": "9c28a75daf83f775562f10884b4baf56ba8291bbd1a3fd6fdf4f228fa3c8b435",
+            "max_drawdown": -0.7731133767840966,
+            "return_hash_12dp": "f294f9f1d9a05782f555c388061512ddbcaefb9ac4356327d37bb708722afaa7",
+            "sell_count": 158,
+            "sharpe_per_bar": -0.0160861130243649,
+            "total_return": -0.7484285678143516,
+            "trial": "side=LOW|window=28|holding_days=1"
+          },
+          "side=LOW|window=28|holding_days=3": {
+            "buy_count": 138,
+            "event_hash": "bfff9fb9be99bba01ac9fade4cfabc5c124a3a5eeef18482f2187e90670a9753",
+            "max_drawdown": -0.8133907155672485,
+            "return_hash_12dp": "714800058afe04a7f362a4d4e1bc1bf94485713d7c9d6d8c81addcab5f0e07fb",
+            "sell_count": 137,
+            "sharpe_per_bar": -0.008752837578394755,
+            "total_return": -0.7453645797912073,
+            "trial": "side=LOW|window=28|holding_days=3"
+          },
+          "side=LOW|window=56|holding_days=1": {
+            "buy_count": 152,
+            "event_hash": "fe6c3e49b38cc6b4c950def305fb6b2869d52e21fbfd6c94c2cc509b3373c1fd",
+            "max_drawdown": -0.7697761754356274,
+            "return_hash_12dp": "aee7372f05a428656993992a3907966cb8fd7732a489b8646dc9bdb46166ef46",
+            "sell_count": 152,
+            "sharpe_per_bar": -0.01496762046600083,
+            "total_return": -0.7243736939289663,
+            "trial": "side=LOW|window=56|holding_days=1"
+          },
+          "side=LOW|window=56|holding_days=3": {
+            "buy_count": 129,
+            "event_hash": "06cfebb0968e536d7824e2f5a2cc1846e89a258c6587263cfe2b1d94eca97973",
+            "max_drawdown": -0.823473756522766,
+            "return_hash_12dp": "d345ecaf71e5adf3f97696aca4c9194248ea9157d761556f45c5d509aed4ce05",
+            "sell_count": 128,
+            "sharpe_per_bar": -0.008331715314324237,
+            "total_return": -0.7371110829830144,
+            "trial": "side=LOW|window=56|holding_days=3"
+          }
+        }
+      }
+    },
+    "version": "1.1.0"
+  }
+}

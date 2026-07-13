@@ -1,0 +1,81 @@
+schema: tios-transaction-activity-campaign-v1
+campaign_id: BTC-TX-ACTIVITY-SPOT-G1-G11-V1
+status: PREREGISTERED_NOT_RUN
+family_id: FAM-BTC-TX-ACTIVITY-01
+safety:
+  execution_authority: NONE
+  venue_connection: NONE
+  orders: DISABLED
+  network: PROHIBITED
+  credentials_required: false
+  sealed_v2_holdout_access: PROHIBITED
+  closed_calendar_or_funding_context_access: PROHIBITED
+dataset:
+  package_path: research/BTC_TX_ACTIVITY_DATA_PACKAGE_V1.json
+  activity_path: data/raw/onchain/blockchain_info_n_transactions_6y_2026-07-13.json
+  spot_path: data/normalized/BTCUSDT_1h.parquet
+canonical_spec:
+  path: strategies/research/btc-tx-activity/canonical_strategy_spec.yaml
+pinned_files:
+  - {path: research/BTC_TX_ACTIVITY_DATA_PACKAGE_V1.json, sha256: 00b36574e6721ef46baf7bb6684c1cdd26f0a5741657058b5144db84dc51fd74}
+  - {path: data/raw/onchain/blockchain_info_n_transactions_6y_2026-07-13.json, sha256: 884abab27dbbae21e989d27808349acdbbe372cb90f10e758abfb214ea21a7f1}
+  - {path: data/normalized/BTCUSDT_1h.parquet, sha256: d44c70c3c87a3e342dd0496c3975d3b54a2b50dd4c5c1b8873ef84eece99947c}
+  - {path: artifacts/datasets/DS-CRYPTO-SPOT-BAKEOFF-V1.manifest.json, sha256: f2b729627adb5d75a99c90dd7dd25ea6dcabf83de4baea5784397424034dfc56}
+  - {path: strategies/research/btc-tx-activity/canonical_strategy_spec.yaml, sha256: 45094612df881362d4ae81151413e1d1e263cb6959460726cda46976f56c8242}
+  - {path: src/tios/strategy/transaction_activity.py, sha256: c1e3f6be3406ddf74f62cfe047c64570ccdb95896470b831d98ea1b9befc73c1}
+  - {path: engines/transaction_activity_data.py, sha256: 95e476332f14fce8882b5ed62cb308c3b305bb39dcfd7ad00f66525342fbec1a}
+  - {path: engines/reference/transaction_activity.py, sha256: 1fafde265b8c643dc55026cee7642c97d61ea0c70d2387d518d58152c78349ea}
+  - {path: engines/vectorbt/transaction_activity_returns.py, sha256: 55080d409dde349538546e4d790f74a27d54428e3145ab1784c311b914ea326a}
+  - {path: engines/freqtrade/transaction_activity_signals.py, sha256: ad1e214b425c6ecda0113f9bd894328112231fce5e6368f5be52087452b1d24c}
+  - {path: engines/nautilus/transaction_activity_events.py, sha256: a62d246d539f8318a69f0d7437dcc125d3f42fd04f9a1fb00c09bc9c95e9db3a}
+splits:
+  development: ["2021-01-01", "2023-12-31 23:00:00+00:00"]
+  validation_2024: ["2024-01-01", "2024-12-31 23:00:00+00:00"]
+  reserve_2025_2026h1: ["2025-01-01", "2026-06-30 23:00:00+00:00"]
+selection:
+  phase_one_scope: development_only
+  scenario: F1/S1
+  metric: nonannualized_per_1h_bar_sharpe_with_zero_cash_returns
+  direction: maximum
+  tie_break: lexical_side_window_holding_days
+  immutable_hashed_selection_required_before_phase_two: true
+scenarios:
+  - {name: F0/S0, fee: 0, slippage_bps: 0}
+  - {name: F1/S1, fee: 0.001, slippage_bps: 1}
+  - {name: F1/S2, fee: 0.001, slippage_bps: 5}
+  - {name: F1/S3, fee: 0.001, slippage_bps: 10}
+  - {name: F2/S2, fee: 0.0015, slippage_bps: 5}
+  - {name: F2/S3, fee: 0.0015, slippage_bps: 10}
+trial_roster:
+  - {side: HIGH, window: 14, holding_days: 1, strategy_version_id: SV-c77c28d67393048e}
+  - {side: HIGH, window: 14, holding_days: 3, strategy_version_id: SV-3f9f5f36b1885269}
+  - {side: HIGH, window: 28, holding_days: 1, strategy_version_id: SV-9cc1d8bd38a345a4}
+  - {side: HIGH, window: 28, holding_days: 3, strategy_version_id: SV-8ae1e88417c6e408}
+  - {side: HIGH, window: 56, holding_days: 1, strategy_version_id: SV-702a430c99d438cf}
+  - {side: HIGH, window: 56, holding_days: 3, strategy_version_id: SV-e1158e8239c76566}
+  - {side: LOW, window: 14, holding_days: 1, strategy_version_id: SV-a700816ceabd244b}
+  - {side: LOW, window: 14, holding_days: 3, strategy_version_id: SV-bf51da4718c28775}
+  - {side: LOW, window: 28, holding_days: 1, strategy_version_id: SV-6c86399fe7c8cd55}
+  - {side: LOW, window: 28, holding_days: 3, strategy_version_id: SV-3de38563db758ed1}
+  - {side: LOW, window: 56, holding_days: 1, strategy_version_id: SV-dcbc6788c0325ad0}
+  - {side: LOW, window: 56, holding_days: 3, strategy_version_id: SV-b3a9c621489db358}
+gates:
+  parity_numeric_tolerance: 1.0e-10
+  development_completed_trades_minimum: 30
+  validation_completed_trades_minimum: 8
+  reserve_completed_trades_minimum: 12
+  required_positive_year_periods_of_6: 4
+  maximum_drawdown: 0.25
+  pbo_maximum: 0.5
+  dsr_minimum: 0.95
+  require_positive_validation_primary: true
+  require_positive_reserve_primary: true
+  require_positive_full_stress: true
+  require_positive_one_bar_delay: true
+  require_benchmark_sharpe_and_drawdown_superiority: true
+  all_12_trials_enter_g10: true
+stop_rules:
+  any_hard_fail_rejects_context: true
+  zero_validation_activity_rejects_context: true
+  no_post_result_rescue: true
+  numeric_pass_cannot_activate_paper_demo_live: true

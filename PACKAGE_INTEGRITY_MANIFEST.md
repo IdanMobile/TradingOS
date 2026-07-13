@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.64 Bitcoin transaction-activity campaign freeze (2026-07-13). Supersedes v8.63 hashes.
+Package version: v8.65 Bitcoin transaction-activity campaign rejection (2026-07-13). Supersedes v8.64 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `b956ed7821572a15f7e319c63d65b0c083d4501b52fb9d29bb5ab57718d97ee8` |
-| `DECISION_LOG.md` | `c7f8ea35a097edd08280d0b5f539d0d8a38209b190102a01fdf35b8c743e9a52` |
+| `PROJECT_STATE.md` | `bca534121485b0ad6eb9387bf514e55e25e1b2a504e67153011adcadd7bae871` |
+| `DECISION_LOG.md` | `ff74d47a0dea44c3d9a12ac96430af7fff5f4d4c12e1b6dc9cf4f8d35f68524c` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `b38f481da2578b632b1760ea9e3f5f147000a19ecd2ed5ecfbc2af7c2d20becd` |
+| `MISSING_AND_OPEN_ITEMS.md` | `98cc98e6ecbd5e6468cb2cb553d272afe5bd19ebdcac51b740bfd283facd7a9b` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -68,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `41928b01a1c54a04c9a961867d570c8fcf465799d028821e7468497169ec3782` |
+| `research/RESEARCH_GAP_MATRIX.md` | `6311050a91f72ac0d6b1e84b1ad79524681e00963d617b87616f574053d701f9` |
 
 ## Post-V2 family selection V1 (added v8.55)
 
@@ -220,7 +220,20 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `scripts/run_transaction_activity_campaign.py` | `4c49ab03196da60103e8c4df3c713b75a2fdd2b73c64e493d9e5ebd20b23ab28` |
 | `tests/test_transaction_activity_strategy.py` | `fefda8ff54c41857a2f944e067addec2b594f470b7c3f7682028029d838aa4f7` |
 | `tests/test_transaction_activity_reference.py` | `325e94c4d287a734bbc868b6933195e8e4881bee4b702c8a81a8c422d93a5ec3` |
-| `tests/test_transaction_activity_campaign.py` | `f1e93652f9cf89fc054c15c40c49cb95f88ec9c8069150191695d7d548d717bf` |
+| `tests/test_transaction_activity_campaign.py` | `789015d7c30acac189ba29acecbe32a4bee3ec3c98b1f5545748d7906dd01746` |
+
+## Bitcoin transaction-activity campaign rejection (added v8.65)
+
+| Path | SHA-256 |
+|---|---|
+| `artifacts/reports/BTC_TX_ACTIVITY_SPOT_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md` | `012919bc232e72194c787a6ed531e93bd4902e9b746718dbdb6c7ffd664acd58` |
+| `artifacts/validation/campaigns/BTC-TX-ACTIVITY-SPOT-G1-G11-V1/campaign_result_f77b5d3481413d062fd8b7f4218e641cb2d71656ddcdcf2d7edcd29c8cdc5ef6.json` | `f77b5d3481413d062fd8b7f4218e641cb2d71656ddcdcf2d7edcd29c8cdc5ef6` |
+| `artifacts/validation/campaigns/BTC-TX-ACTIVITY-SPOT-G1-G11-V1/phase_one_reference_81794fd23c71d6cab4f212f0b5d671872433ec247ba23c6c9ed3672f7e3fa4bf.json` | `81794fd23c71d6cab4f212f0b5d671872433ec247ba23c6c9ed3672f7e3fa4bf` |
+| `artifacts/validation/campaigns/BTC-TX-ACTIVITY-SPOT-G1-G11-V1/phase_one_workers_11579f281201c42ecebc9bd5d8153c04f09e5e768a78c737214c4cde1c88fda9.json` | `11579f281201c42ecebc9bd5d8153c04f09e5e768a78c737214c4cde1c88fda9` |
+| `artifacts/validation/campaigns/BTC-TX-ACTIVITY-SPOT-G1-G11-V1/phase_two_reference_da72b7fa2080ed26dd676bf378ddab2461ccf350d7f378ac7911d3172c4261b4.json` | `da72b7fa2080ed26dd676bf378ddab2461ccf350d7f378ac7911d3172c4261b4` |
+| `artifacts/validation/campaigns/BTC-TX-ACTIVITY-SPOT-G1-G11-V1/phase_two_workers_7de34f3a0a3558d25810812b2405d3f8c0df93e9c51d5a677bbef6211bdb1e6d.json` | `7de34f3a0a3558d25810812b2405d3f8c0df93e9c51d5a677bbef6211bdb1e6d` |
+| `artifacts/validation/campaigns/BTC-TX-ACTIVITY-SPOT-G1-G11-V1/preregistration_9ee7608393fe2cc963abb8910faa804060b610eb0f1f4b37eb18b09418badd68.yaml` | `9ee7608393fe2cc963abb8910faa804060b610eb0f1f4b37eb18b09418badd68` |
+| `artifacts/validation/campaigns/BTC-TX-ACTIVITY-SPOT-G1-G11-V1/selection_affb5b1f22b75c73cbd4edbfba46064d63cebe99eed9efc10c0f9862d5844e17.json` | `affb5b1f22b75c73cbd4edbfba46064d63cebe99eed9efc10c0f9862d5844e17` |
 
 ## Expected generated artifacts
 

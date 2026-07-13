@@ -1,5 +1,12 @@
 # Package Changelog
 
+## v8.65 — 2026-07-13
+
+- Recorded the completed Bitcoin transaction-activity campaign and G11 rejection.
+- Preserved the development selection barrier and four-role parity evidence.
+- Closed the exact HIGH/LOW transaction-count pulse family without rescue.
+- Retained execution authority `NONE`; no bot, venue, credential, order, or holdout was activated.
+
 ## v8.64 — 2026-07-13
 
 - Froze the 12-trial Bitcoin transaction-activity canonical campaign before scoring.

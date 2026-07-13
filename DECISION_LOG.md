@@ -603,6 +603,21 @@ Evidence: `research/BTC_TX_ACTIVITY_SPOT_G1_G11_CAMPAIGN_V1.yaml` and focused te
 `tests/test_transaction_activity_*`.
 Status: **Approved constrained-S2 immutable offline campaign; preregistered and not run.**
 
+### D-062 — Bitcoin transaction-activity pulse campaign rejected without rescue
+
+Decision: the campaign selected HIGH/56/1-day from development. Validation returned -1.57%,
+reserve returned -22.22%, full F1/S1 returned -3.02%, full F2/S3 stress returned -51.98%, and the
+one-bar delay returned -21.41%. Only two of six periods were positive, full drawdown was -38.49%,
+and DSR was 0.3422. Four-role parity passed without mismatches and PBO passed at 0.2965, but those
+facts cannot override G5/G6/G7/G8/G9/G10 failures.
+
+Consequence: G11 rejects the exact transaction-count shock family without tuning, filtering, or
+reinterpretation. It is not promotion eligible. No bot, venue, credential, order, paper/demo/live
+state, human gate, sealed V2 holdout, closed-family context, or execution authority was activated.
+
+Evidence: `artifacts/reports/BTC_TX_ACTIVITY_SPOT_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md`.
+Status: **Completed negative campaign; execution authority remains NONE.**
+
 ### D-055 — Funding-pressure Spot family admitted to canonical campaign construction
 
 Decision: `FAMILY-SELECT-V3` compared exactly three distinct mechanisms without computing local
