@@ -848,10 +848,11 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   Binance archives extend the existing Spot boundary to 2018, yielding 72,225 bars, 25 retained
   gaps, and 428 strict-later report mappings. Offline verification and drift tests pass; no family
   return has been computed and authority remains `NONE`.
-- **CFTC positioning campaign frozen (D-068):** 12 immutable aligned/contrarian × baseline ×
-  threshold StrategyVersions, four implementation roles, six cost cells, seven regime periods,
-  causal goldens, G1-G11 gates, and a hashed development-selection barrier pass preflight. The
-  complete campaign is unrun and no eligible signal performance, bot, venue, or authority exists.
+- **CFTC positioning campaign rejected (D-069):** the clean run selected contrarian-low / 52
+  reports / 1.0 z and passed G1-G4 parity/evidence gates. Negative validation, insufficient
+  development/reserve sample, 63.35% drawdown, four-of-seven period breadth, inferior benchmark
+  Sharpe, PBO 0.5578, and DSR 0.3493 cause G5-G11 failure. The context is closed without rescue;
+  no bot, venue, paper/demo/live state, promotion, or authority exists.
 
 ## Operational SSOT (unchanged)
 
@@ -910,10 +911,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Commit the complete CFTC positioning campaign freeze, then execute its one authorized offline
-historical run from that clean commit. Preserve the selection barrier, retain every trial, and
-complete independent G11 supervision without tuning or rescue. Do not access the sealed V2
-holdout, activate a bot, connect a venue, request credentials, or cross any human S3/S4 gate.
+Begin a new source-only comparison of no more than three genuinely distinct mechanisms, excluding
+closed contexts and without computing local candidate-family performance. Preregister the selected
+family before any score, then continue only through safe offline data/canonical work. Do not access
+the sealed V2 holdout, activate a bot, connect a venue, request credentials, or cross any human
+S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

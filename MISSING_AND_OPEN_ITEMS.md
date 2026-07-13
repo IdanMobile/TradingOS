@@ -126,6 +126,11 @@ cost cells, seven regime periods, strict development-selection barrier, G1-G11 t
 no-rescue constraints pass offline preflight. The single clean historical run and independent G11
 disposition remain open; no strategy or bot is approved.
 
+D-069 closes the CFTC positioning family after the clean campaign run. G1-G4 pass, but negative
+validation, insufficient development/reserve sample, 63.35% drawdown, four-of-seven positive
+periods, inferior benchmark Sharpe, PBO 0.5578, and DSR 0.3493 cause G5-G11 rejection. No strategy
+or bot is approved; the next distinct family comparison remains open.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

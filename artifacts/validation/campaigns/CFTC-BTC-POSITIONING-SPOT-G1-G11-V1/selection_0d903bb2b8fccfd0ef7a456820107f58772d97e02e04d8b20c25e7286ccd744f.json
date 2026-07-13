@@ -1,0 +1,21 @@
+{
+  "development_metric": 0.006298384229358027,
+  "g10": {
+    "average_trial_return_correlation_clipped_at_zero": 0.26508837324906154,
+    "dsr": 0.3492735390839972,
+    "effective_trials": 9.084027894260323,
+    "pbo": 0.5578088578088578,
+    "pbo_split_count": 12870,
+    "raw_statistical_trials": 12,
+    "status": "FAIL"
+  },
+  "schema": "tios-cftc-positioning-selection-v1",
+  "selected_trial": {
+    "baseline_weeks": 52,
+    "interpretation": "CONTRARIAN_LOW",
+    "strategy_version_id": "SV-0bf55e2fa7d34ff8",
+    "threshold": 1.0
+  },
+  "selected_trial_name": "interpretation=CONTRARIAN_LOW|baseline_weeks=52|threshold=1.0",
+  "selection_source": "development/F1-S1/sharpe_per_bar"
+}

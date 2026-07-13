@@ -1,0 +1,147 @@
+{
+  "artifacts": {
+    "phase_one_reference": "phase_one_reference_a37719dde317f73257b84205256d262d12b822ccc972c0d02cfc37e1fce6bdc0.json",
+    "phase_one_workers": "phase_one_workers_813a679f1a5a6ae26a89c26483545571be244b916a15e157defdf2144994c5f3.json",
+    "phase_two_reference": "phase_two_reference_4ba5d259f036d2175131505d20cd0453b1c7666bf19dfb2c245adfc98d1512a3.json",
+    "phase_two_workers": "phase_two_workers_077adca87622761c7fa3f008adf1484260f3edbdb942a5da2654560958a52d34.json"
+  },
+  "campaign_id": "CFTC-BTC-POSITIONING-SPOT-G1-G11-V1",
+  "closed_family_context_accessed": false,
+  "completed_at_utc": "2026-07-13T15:42:48.881907+00:00",
+  "evaluation": {
+    "buy_and_hold_primary": {
+      "buy_count": 1,
+      "event_hash": "BUY_AND_HOLD",
+      "max_drawdown": -0.7719848663243896,
+      "return_hash_12dp": "39176c8dae291fb742db18bbcaf6094619a31447ea36dd98d7d8d72f11bcfe01",
+      "sell_count": 0,
+      "sharpe_per_bar": 0.005476473174506847,
+      "total_return": 1.0246520864553004
+    },
+    "development": {
+      "buy_count": 27,
+      "event_hash": "996252277abd21afabfdadcc0d9108edd1837fffb55a451c7634b5cc3e5954ce",
+      "max_drawdown": -0.6335328724196698,
+      "return_hash_12dp": "f0a0e7235fca41898e8d245d250a9c7ca38570d8467d476cace528317246f194",
+      "sell_count": 27,
+      "sharpe_per_bar": 0.006298384229358027,
+      "total_return": 0.8508099268492184
+    },
+    "full_primary": {
+      "buy_count": 46,
+      "event_hash": "8504b381d1bc0567ed6ef6cfa553fbd1d4c6687513963a3312b1dd0548db8e14",
+      "max_drawdown": -0.6335328724196698,
+      "return_hash_12dp": "4948f3a9421b0b2349d28a105463fbca22be9885e09688020961a587b70995e3",
+      "sell_count": 46,
+      "sharpe_per_bar": 0.004609347515526903,
+      "total_return": 0.8526890229395965
+    },
+    "full_stress": {
+      "buy_count": 46,
+      "event_hash": "8504b381d1bc0567ed6ef6cfa553fbd1d4c6687513963a3312b1dd0548db8e14",
+      "max_drawdown": -0.6486057576460784,
+      "return_hash_12dp": "82bbf8282569fa257cdf82f99a4153e73577b74ca5931a1b929f572f7dc63545",
+      "sell_count": 46,
+      "sharpe_per_bar": 0.003919042026528924,
+      "total_return": 0.6287909745407994
+    },
+    "g10": {
+      "average_trial_return_correlation_clipped_at_zero": 0.26508837324906154,
+      "dsr": 0.3492735390839972,
+      "effective_trials": 9.084027894260323,
+      "pbo": 0.5578088578088578,
+      "pbo_split_count": 12870,
+      "raw_statistical_trials": 12,
+      "status": "FAIL"
+    },
+    "gates": {
+      "G10_MULTIPLE_TESTING": "FAIL",
+      "G11_INDEPENDENT_RISK_SUPERVISOR": "NOT_RUN",
+      "G1_DATA_PROVENANCE": "PASS",
+      "G2_CANONICAL_IDENTITY": "PASS",
+      "G3_CAUSAL_GOLDENS": "PASS",
+      "G4_INDEPENDENT_REPRODUCTION": "PASS",
+      "G5_AFTER_COST_ECONOMICS": "FAIL",
+      "G6_CHRONOLOGICAL_OOS": "FAIL",
+      "G7_SAMPLE_AND_CLOCK_ROBUSTNESS": "FAIL",
+      "G8_REGIME_AND_TAIL": "FAIL",
+      "G9_BENCHMARK_AND_OPPORTUNITY": "FAIL"
+    },
+    "numeric_verdict": "FAIL",
+    "one_bar_delayed_primary": {
+      "buy_count": 45,
+      "event_hash": "0072aca83a916d8a9d186857071781d187f3317aef12c27e167f2c7540fd2c98",
+      "max_drawdown": -0.6277758473495452,
+      "return_hash_12dp": "f1c621a96263926d5afb1ab962e6ff06d197e94c93f67f10233a123aed85bc02",
+      "sell_count": 45,
+      "sharpe_per_bar": 0.004679293112389554,
+      "total_return": 0.8768789918594926
+    },
+    "period_primary_returns": [
+      0.4315472782725606,
+      0.1543318436262007,
+      0.0,
+      -0.03821361973394158,
+      0.013736975276124927,
+      0.02668400964325755,
+      0.0
+    ],
+    "promotion_eligible": false,
+    "reserve_2025_2026h1": {
+      "buy_count": 6,
+      "event_hash": "a69a1607c40623c37beee68c5383406b2ad74d28b1cbde71cac41ca93b737541",
+      "max_drawdown": -0.10708832268685065,
+      "return_hash_12dp": "9712f2f7ad716af7efa6369a032220d6014c27c31f56573fa95c9a2ea7158d51",
+      "sell_count": 6,
+      "sharpe_per_bar": 0.002585342731015089,
+      "total_return": 0.02668400964325755
+    },
+    "selected_trial": "interpretation=CONTRARIAN_LOW|baseline_weeks=52|threshold=1.0",
+    "validation_2023_2024": {
+      "buy_count": 13,
+      "event_hash": "a9c319de4d687672b76d135ddcf3e2fa92abece7cf39cd017f9e13cf5f60a564",
+      "max_drawdown": -0.2728700452010169,
+      "return_hash_12dp": "67d0ec25cd1b0d30816940b306f8eeac0990303c22c7854af7982754664177bf",
+      "sell_count": 13,
+      "sharpe_per_bar": 0.00013427535650839287,
+      "total_return": -0.025001584007313046
+    }
+  },
+  "execution_authority": "NONE",
+  "parity": {
+    "phase_one": {
+      "maximum_absolute_metric_difference": 1.5987211554602254e-14,
+      "mismatches": [],
+      "numeric_tolerance": 1e-10,
+      "status": "PASS",
+      "versions": {
+        "freqtrade": "2026.6",
+        "nautilus": "1.230.0",
+        "vectorbt": "1.1.0"
+      }
+    },
+    "phase_two": {
+      "maximum_absolute_metric_difference": 2.0650148258027912e-14,
+      "mismatches": [],
+      "numeric_tolerance": 1e-10,
+      "status": "PASS",
+      "versions": {
+        "freqtrade": "2026.6",
+        "nautilus": "1.230.0",
+        "vectorbt": "1.1.0"
+      }
+    },
+    "status": "PASS"
+  },
+  "preregistration_sha256": "19adfd87584bf917ff861088b600e44d2476e181552eead14f279231fed04245",
+  "promotion_eligible": false,
+  "run_commit": "b3bc0246e460db4414687edf0755eafcd862959a",
+  "schema": "tios-cftc-positioning-campaign-result-v1",
+  "sealed_v2_holdout_accessed": false,
+  "selection_barrier": {
+    "reserve_evaluated_only_after_selection": true,
+    "selection_artifact": "selection_0d903bb2b8fccfd0ef7a456820107f58772d97e02e04d8b20c25e7286ccd744f.json",
+    "selection_sha256": "0d903bb2b8fccfd0ef7a456820107f58772d97e02e04d8b20c25e7286ccd744f",
+    "status": "PASS"
+  }
+}

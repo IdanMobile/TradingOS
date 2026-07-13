@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.71 CFTC positioning campaign freeze (2026-07-13). Supersedes v8.70 hashes.
+Package version: v8.72 CFTC positioning campaign rejection (2026-07-13). Supersedes v8.71 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `d358a4d7bb2a83c5c4db88e9f8b36c2f1ffd19d739646b5d20486a29518a771e` |
-| `DECISION_LOG.md` | `45afaaed99bfad20564874bf3803b885b2556497efd6af8c9ecefe545c13d694` |
+| `PROJECT_STATE.md` | `210c15d9d4808c81f2353cd669dae9430a06e38d1683eac11e946db4ad2855a8` |
+| `DECISION_LOG.md` | `d8c580498f3a0a4c599f679572898cdcb3975d0cd626cf180ca25f874cfde585` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `17b4f3db5ee817e8ca86c9881b62793cbecc69020b54ec61f19a1edb0e1fff58` |
+| `MISSING_AND_OPEN_ITEMS.md` | `79d3295cfa22b43b9fc16d29c2f52dae55131bf61eb8621595e0b1e9911cb4fb` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -379,6 +379,19 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `tests/test_cftc_positioning_strategy.py` | `b77070aa4cb6595f3ef2c2846fd6d8918e2bc326e90133e83532800c66d68d0f` |
 | `tests/test_cftc_positioning_reference.py` | `0fb08a000f18718a2523c4262913338f93e02c2362126f599de70ce9dec33e34` |
 | `tests/test_cftc_positioning_campaign.py` | `34d4c06a6ebee211070e43f667abf3908b0e6c223d2473273a948bc349e0f19f` |
+
+## CFTC positioning campaign rejection (added v8.72)
+
+| Path | SHA-256 |
+|---|---|
+| `artifacts/reports/CFTC_BTC_POSITIONING_SPOT_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md` | `ec5e5625b0b38d47bfffe67d71a870c741a3310ab78426ce98889cfd57ecf3fe` |
+| `artifacts/validation/campaigns/CFTC-BTC-POSITIONING-SPOT-G1-G11-V1/campaign_result_cdab10252bd99ec144aede9a018c38ef58043f8feef5d808b0d9a3b8907a0cdc.json` | `cdab10252bd99ec144aede9a018c38ef58043f8feef5d808b0d9a3b8907a0cdc` |
+| `artifacts/validation/campaigns/CFTC-BTC-POSITIONING-SPOT-G1-G11-V1/selection_0d903bb2b8fccfd0ef7a456820107f58772d97e02e04d8b20c25e7286ccd744f.json` | `0d903bb2b8fccfd0ef7a456820107f58772d97e02e04d8b20c25e7286ccd744f` |
+| `artifacts/validation/campaigns/CFTC-BTC-POSITIONING-SPOT-G1-G11-V1/phase_one_reference_a37719dde317f73257b84205256d262d12b822ccc972c0d02cfc37e1fce6bdc0.json` | `a37719dde317f73257b84205256d262d12b822ccc972c0d02cfc37e1fce6bdc0` |
+| `artifacts/validation/campaigns/CFTC-BTC-POSITIONING-SPOT-G1-G11-V1/phase_one_workers_813a679f1a5a6ae26a89c26483545571be244b916a15e157defdf2144994c5f3.json` | `813a679f1a5a6ae26a89c26483545571be244b916a15e157defdf2144994c5f3` |
+| `artifacts/validation/campaigns/CFTC-BTC-POSITIONING-SPOT-G1-G11-V1/phase_two_reference_4ba5d259f036d2175131505d20cd0453b1c7666bf19dfb2c245adfc98d1512a3.json` | `4ba5d259f036d2175131505d20cd0453b1c7666bf19dfb2c245adfc98d1512a3` |
+| `artifacts/validation/campaigns/CFTC-BTC-POSITIONING-SPOT-G1-G11-V1/phase_two_workers_077adca87622761c7fa3f008adf1484260f3edbdb942a5da2654560958a52d34.json` | `077adca87622761c7fa3f008adf1484260f3edbdb942a5da2654560958a52d34` |
+| `artifacts/validation/campaigns/CFTC-BTC-POSITIONING-SPOT-G1-G11-V1/preregistration_19adfd87584bf917ff861088b600e44d2476e181552eead14f279231fed04245.yaml` | `19adfd87584bf917ff861088b600e44d2476e181552eead14f279231fed04245` |
 
 ## Expected generated artifacts
 

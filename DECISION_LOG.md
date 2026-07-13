@@ -639,6 +639,22 @@ Evidence: `research/CFTC_BTC_POSITIONING_SPOT_G1_G11_CAMPAIGN_V1.yaml`, canonica
 and focused tests under `tests/test_cftc_positioning_*`.
 Status: **Approved constrained-S2 immutable offline campaign; preregistered and not run.**
 
+### D-069 — CFTC positioning Spot campaign rejected without rescue
+
+Decision: the frozen campaign completed from clean commit `b3bc024` with its development-only
+selection barrier intact. It selected `CONTRARIAN_LOW` / 52 reports / 1.0 z. Four-role parity
+passed with no mismatches, but validation lost 2.50%; development and reserve completed only 27
+and 6 trades; full drawdown was 63.35%; only four of seven periods were positive; strategy Sharpe
+trailed buy-and-hold; PBO was 0.5578; and DSR was 0.3493. G5/G6/G7/G8/G9/G10 fail.
+
+Consequence: G11 rejects the exact CFTC positioning-pulse context without tuning, filtering, or
+reinterpretation. It is not promotion eligible. No bot, venue, credential, order,
+paper/demo/live state, human gate, sealed V2 holdout, closed-family context, or execution
+authority was activated.
+
+Evidence: `artifacts/reports/CFTC_BTC_POSITIONING_SPOT_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md`.
+Status: **Completed negative campaign; execution authority remains NONE.**
+
 ### D-063 — Bitcoin MVRV dislocation family admitted to data/canonical construction
 
 Decision: a source-only cycle compared exactly three new mechanisms without computing local family

@@ -1,5 +1,13 @@
 # Package Changelog
 
+## v8.72 — 2026-07-13
+
+- Completed the frozen CFTC positioning campaign from clean commit `b3bc024` with the hashed
+  development-selection barrier intact and exact four-role parity.
+- Rejected the family at G11: validation -2.50%, insufficient sample, 63.35% drawdown,
+  four-of-seven positive periods, benchmark-Sharpe failure, PBO 0.5578, and DSR 0.3493.
+- Closed the exact context without rescue; execution authority remains `NONE`.
+
 ## v8.71 — 2026-07-13
 
 - Froze 12 CFTC-positioning StrategyVersions and exact report-to-Spot pulse semantics.

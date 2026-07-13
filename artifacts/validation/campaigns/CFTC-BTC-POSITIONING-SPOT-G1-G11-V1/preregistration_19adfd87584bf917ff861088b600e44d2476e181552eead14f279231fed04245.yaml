@@ -1,0 +1,76 @@
+schema: tios-cftc-positioning-campaign-v1
+campaign_id: CFTC-BTC-POSITIONING-SPOT-G1-G11-V1
+status: PREREGISTERED_NOT_RUN
+family_id: FAM-CFTC-BTC-POSITIONING-01
+safety:
+  execution_authority: NONE
+  venue_connection: NONE
+  orders: DISABLED
+  network: PROHIBITED
+  credentials_required: false
+  sealed_v2_holdout_access: PROHIBITED
+  closed_family_context_access: PROHIBITED
+dataset:
+  package_path: research/CFTC_BTC_POSITIONING_DATA_PACKAGE_V1.json
+canonical_spec:
+  path: strategies/research/cftc-btc-positioning/canonical_strategy_spec.yaml
+pinned_files:
+  - {path: research/CFTC_BTC_POSITIONING_DATA_PACKAGE_V1.json, sha256: 06fa27b23a17b0f6900e604b9127a9554e4526da5cf18e9d40ef9eeb9ecc925c}
+  - {path: strategies/research/cftc-btc-positioning/canonical_strategy_spec.yaml, sha256: add699a520952953f5c9a6fa0dcaff16cad49f240290c3240a34ab5422a44c98}
+  - {path: src/tios/strategy/cftc_positioning.py, sha256: 0f81b5e7b3c7488ab3829d1f75a91919e164fb291ecce9abea9fd4a0e89c8aa4}
+  - {path: engines/cftc_positioning_data.py, sha256: c6c10bfdf3b74a95d6c01265970eccfe5f11c411b2cfedc04cf88acb4699e568}
+  - {path: engines/reference/cftc_positioning.py, sha256: cebc16351b25eabfe231882a7943ea45578dcd630a815f442124a5c0d3bfdae1}
+  - {path: engines/vectorbt/cftc_positioning_returns.py, sha256: 5224438f2157ddecf1dae36378ec5502624f59e3c51210420c73fc5663601af3}
+  - {path: engines/freqtrade/cftc_positioning_signals.py, sha256: d858673ea21169f055dc538b49086273d0d44521c78871d746bc7834cfe67f0a}
+  - {path: engines/nautilus/cftc_positioning_events.py, sha256: b7930dc76e482b760987ef5d143542c6751627176c405f250063ce7f379c5eff}
+splits:
+  development: ["2018-04-01", "2022-12-31 23:00:00+00:00"]
+  validation_2023_2024: ["2023-01-01", "2024-12-31 23:00:00+00:00"]
+  reserve_2025_2026h1: ["2025-01-01", "2026-06-30 23:00:00+00:00"]
+selection:
+  phase_one_scope: development_only
+  scenario: F1/S1
+  metric: nonannualized_per_1h_bar_sharpe_with_zero_cash_returns
+  direction: maximum
+  tie_break: lexical_interpretation_baseline_weeks_threshold
+  immutable_hashed_selection_required_before_phase_two: true
+scenarios:
+  - {name: F0/S0, fee: 0, slippage_bps: 0}
+  - {name: F1/S1, fee: 0.001, slippage_bps: 1}
+  - {name: F1/S2, fee: 0.001, slippage_bps: 5}
+  - {name: F1/S3, fee: 0.001, slippage_bps: 10}
+  - {name: F2/S2, fee: 0.0015, slippage_bps: 5}
+  - {name: F2/S3, fee: 0.0015, slippage_bps: 10}
+trial_roster:
+  - {interpretation: ALIGNED_HIGH, baseline_weeks: 13, threshold: 0.5, strategy_version_id: SV-25089aa63edcd047}
+  - {interpretation: ALIGNED_HIGH, baseline_weeks: 13, threshold: 1.0, strategy_version_id: SV-07fa0af7d0d68f1c}
+  - {interpretation: ALIGNED_HIGH, baseline_weeks: 26, threshold: 0.5, strategy_version_id: SV-fdfa6fd6bb5fd571}
+  - {interpretation: ALIGNED_HIGH, baseline_weeks: 26, threshold: 1.0, strategy_version_id: SV-f0a5812e3b21860c}
+  - {interpretation: ALIGNED_HIGH, baseline_weeks: 52, threshold: 0.5, strategy_version_id: SV-78ab60f4be1ffd29}
+  - {interpretation: ALIGNED_HIGH, baseline_weeks: 52, threshold: 1.0, strategy_version_id: SV-ab7b21b4ad007e92}
+  - {interpretation: CONTRARIAN_LOW, baseline_weeks: 13, threshold: 0.5, strategy_version_id: SV-dd447e861f03b385}
+  - {interpretation: CONTRARIAN_LOW, baseline_weeks: 13, threshold: 1.0, strategy_version_id: SV-b01d38fa555b113d}
+  - {interpretation: CONTRARIAN_LOW, baseline_weeks: 26, threshold: 0.5, strategy_version_id: SV-ce77971cdb3b5233}
+  - {interpretation: CONTRARIAN_LOW, baseline_weeks: 26, threshold: 1.0, strategy_version_id: SV-c9b0f1c0d3e14ab9}
+  - {interpretation: CONTRARIAN_LOW, baseline_weeks: 52, threshold: 0.5, strategy_version_id: SV-5da3a334bc12ac6d}
+  - {interpretation: CONTRARIAN_LOW, baseline_weeks: 52, threshold: 1.0, strategy_version_id: SV-0bf55e2fa7d34ff8}
+gates:
+  parity_numeric_tolerance: 1.0e-10
+  development_completed_trades_minimum: 30
+  validation_completed_trades_minimum: 8
+  reserve_completed_trades_minimum: 12
+  required_positive_periods_of_7: 5
+  maximum_drawdown: 0.25
+  pbo_maximum: 0.5
+  dsr_minimum: 0.95
+  require_positive_validation_primary: true
+  require_positive_reserve_primary: true
+  require_positive_full_stress: true
+  require_positive_one_bar_delay: true
+  require_benchmark_sharpe_and_drawdown_superiority: true
+  all_12_trials_enter_g10: true
+stop_rules:
+  any_hard_fail_rejects_context: true
+  zero_validation_activity_rejects_context: true
+  no_post_result_rescue: true
+  numeric_pass_cannot_activate_paper_demo_live: true
