@@ -60,7 +60,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `research/ETH_VOLUME_BREAKOUT_PROSPECTIVE_CANDIDATE_V1.yaml` | `f60d6e857b61b30c0fccb0fea8a0c108241f3e469f2cef1235455cec7d8bf233` |
 | `strategies/research/eth-volume-breakout-prospective/canonical_strategy_spec.yaml` | `c4a1a11bf7c78440869dfc6744b5756d70581f7f9425610d18036cb92d7e6721` |
-| `scripts/verify_eth_volume_breakout_flow.py` | `25c6051637b14cfd1f868249da4e88b5c4b3f30692a3b5a047890d7223f4590d` |
+| `scripts/verify_eth_volume_breakout_flow.py` | `449ab26880ba28d47b5a1b620deb2c99988f32eeabca11be82d23c429576d0e7` |
 | `tests/test_eth_volume_breakout_flow.py` | `3ce7472f58681da06f51177dabda8dbc60570d344f334b51f50830fc11e58b1e` |
 | `tests/test_strategy_evaluator.py` | `da08d37cc72d0281fc7504910a9590f4c964c7447b30ad49a7287a99a25ca562` |
 

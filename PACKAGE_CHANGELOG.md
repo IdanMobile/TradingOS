@@ -8,6 +8,8 @@
   the old screen's exact 511 signal transitions over the pinned 48,154-bar dataset.
 - Added a deterministic data-to-`SignalEvent`-to-independent-`BLOCK` verifier. Orders, paper/live,
   venues, credentials, promotion, and execution authority remain disabled.
+- Added the human-readable `make eth-signal` console command; machine-readable JSON remains the
+  verifier default when called directly.
 
 ## v8.105 — 2026-07-14 — Prospective association/overlay campaign freeze
 

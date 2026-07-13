@@ -36,4 +36,8 @@ jobs-init:
 jobs-once:
 	uv run python scripts/run_job_worker.py run-once
 
-.PHONY: check bootstrap audit required dashboard jobs-init jobs-once
+# Read-only ETH strategy signal + independent risk result. Never creates orders.
+eth-signal:
+	@uv run python scripts/verify_eth_volume_breakout_flow.py --summary
+
+.PHONY: check bootstrap audit required dashboard jobs-init jobs-once eth-signal

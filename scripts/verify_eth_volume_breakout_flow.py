@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import sys
@@ -160,7 +161,20 @@ def build_projection() -> dict[str, object]:
 
 
 def main() -> None:
-    print(json.dumps(build_projection(), indent=2, sort_keys=True))
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--summary", action="store_true")
+    args = parser.parse_args()
+    projection = build_projection()
+    if args.summary:
+        last = projection["last_signal"]
+        assert isinstance(last, dict)
+        print("ETH volume breakout — read-only research")
+        print(f"Latest historical transition: {last['side']} at {last['observed_at']}")
+        print(f"Signals reproduced: {projection['signal_count']} / {projection['bars']} bars")
+        print(f"Risk: {projection['risk_decision']} — {projection['risk_reason']}")
+        print("Orders: DISABLED")
+        return
+    print(json.dumps(projection, indent=2, sort_keys=True))
 
 
 if __name__ == "__main__":
