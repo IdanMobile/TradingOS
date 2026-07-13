@@ -1,5 +1,14 @@
 # Package Changelog
 
+## v8.91 — 2026-07-13 — Fail-closed continuity evidence and observer V3 freeze
+
+- Retained a 26m49s source session that ended `FAILED_LiquidationStressError`; correctly admitted
+  zero windows and emitted `FLAT/SOURCE_WINDOW_INCOMPLETE/BLOCK`.
+- Recorded the V2 diagnostic gap: the exact cause is unknown because error text and the rejected
+  public message were not preserved.
+- Froze V3 exact failure evidence and offline reconstruction before another capture. Signal,
+  labels, scoring, promotion, venue connection, and authority remain unchanged.
+
 ## v8.90 — 2026-07-13 — Second complete prospective window
 
 - Retained `[19:05Z,19:10Z)` as a second valid zero-event `FLAT/WARMUP_BLOCK/BLOCK` window.

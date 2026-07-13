@@ -1,0 +1,44 @@
+schema_version: 1
+observer_id: PROSPECTIVE-BTC-LIQUIDATION-OBSERVER-V3
+decision_id: D-088
+status: FROZEN_NOT_RUN
+signal_spec_id: PROSPECTIVE-BTC-LIQUIDATION-STRESS-V1
+signal_spec_sha256: a2a5553ee5286a46b9972d6a31edd727ef3e9cfe25bdbdd09c4861012d1c3fb1
+execution_authority: NONE
+promotion_eligible: false
+
+v2_failed_session:
+  session_sha256: 78e77d1ff354e7d7078c4ca1df84b1e42b9ef96e4326945e4a805485ebbba8ed
+  run_commit: 0febd4e936ff0cb307028b6184f04c30cea6e5ba
+  coverage_started_at: 2026-07-13T19:16:06.378168+00:00
+  coverage_ended_at: 2026-07-13T19:42:55.367740+00:00
+  status: FAILED_LiquidationStressError
+  admitted_complete_windows: 0
+  diagnostic_limit: V2 discarded the rejected event and retained only the exception class
+
+operational_evidence_change_only:
+  - Retain exception type and exact message for every failed source session.
+  - Retain the exact public raw message and local receipt time when message validation fails.
+  - Reconstruct the rejected message to the same exception type and message offline.
+  - Network failures without a rejected message retain type and message with rejected_event null.
+
+unchanged_signal_and_safety_terms:
+  source: wss://dstream.binance.com/ws/btcusd_perp@forceOrder
+  source_semantics: LATEST_ONE_PER_SYMBOL_PER_1000MS_SNAPSHOT_NOT_COMPLETE_TAPE
+  window_seconds: 300
+  baseline_windows: 8640
+  failed_session_complete_windows: 0
+  incomplete_or_warmup_state: FLAT_AND_BLOCK
+  metric_eligible: false
+  scorecard_eligible: false
+  promotion_eligible: false
+  venue_connection: NONE
+  paper_orders: DISABLED
+  live_orders: DISABLED
+
+acceptance:
+  - Existing V1/V2 sessions continue to verify.
+  - A synthetic rejected event reconstructs its exact failure offline.
+  - Rehashed error-message drift fails verification.
+  - A V3 successful source session retains source_failure null.
+  - No post-freeze capture begins before this observer amendment is committed.

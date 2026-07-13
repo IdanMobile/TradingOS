@@ -58,6 +58,9 @@ class CaptureResult:
     status: str
     coverage_started_at: datetime
     coverage_ended_at: datetime
+    error_type: str | None = None
+    error_message: str | None = None
+    rejected_event: dict[str, str] | None = None
 
 
 def utc_now() -> datetime:
@@ -114,6 +117,8 @@ async def capture(
     events: list[dict[str, str]] = []
     status = "COMPLETE"
     coverage_started_at = coverage_ended_at = utc_now()
+    error_type = error_message = None
+    rejected_event = None
     try:
         async with connect(
             WEBSOCKET_URL,
@@ -139,19 +144,36 @@ async def capture(
                 if not isinstance(message, str):
                     raise LiquidationStressError("binary websocket message is not accepted")
                 received_at = utc_now()
-                parse_force_order_message(
-                    message,
-                    received_at=received_at,
-                    expected_symbol=EXPECTED_SYMBOL,
-                    expected_pair=EXPECTED_PAIR,
-                    contract_size_usd=contract_size,
-                )
+                try:
+                    parse_force_order_message(
+                        message,
+                        received_at=received_at,
+                        expected_symbol=EXPECTED_SYMBOL,
+                        expected_pair=EXPECTED_PAIR,
+                        contract_size_usd=contract_size,
+                    )
+                except Exception:
+                    rejected_event = {
+                        "raw_message": message,
+                        "received_at": received_at.isoformat(),
+                    }
+                    raise
                 events.append({"raw_message": message, "received_at": received_at.isoformat()})
             coverage_ended_at = utc_now()
     except Exception as error:
-        status = f"FAILED_{type(error).__name__}"
+        error_type = type(error).__name__
+        error_message = str(error)
+        status = f"FAILED_{error_type}"
         coverage_ended_at = utc_now()
-    return CaptureResult(events, status, coverage_started_at, coverage_ended_at)
+    return CaptureResult(
+        events,
+        status,
+        coverage_started_at,
+        coverage_ended_at,
+        error_type,
+        error_message,
+        rejected_event,
+    )
 
 
 def write_content_addressed(directory: Path, prefix: str, payload: object) -> Path:
@@ -264,7 +286,7 @@ def build_session(
         :24
     ]
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "signal_spec_id": "PROSPECTIVE-BTC-LIQUIDATION-STRESS-V1",
         "signal_spec_sha256": spec_hash,
         "run_commit": run_commit,
@@ -287,6 +309,15 @@ def build_session(
             "complete_liquidation_tape": False,
         },
         "raw_events": capture_result.events,
+        "source_failure": (
+            None
+            if capture_result.status == "COMPLETE"
+            else {
+                "error_type": capture_result.error_type,
+                "error_message": capture_result.error_message,
+                "rejected_event": capture_result.rejected_event,
+            }
+        ),
         "observation": {
             "event_count": len(capture_result.events),
             "window_start": observed_start.isoformat(),
@@ -347,7 +378,8 @@ def verify_directory(directory: Path) -> int:
         if expected_hash != sha256(path.read_bytes()):
             raise LiquidationStressError(f"session hash mismatch: {path.name}")
         payload = json.loads(path.read_text())
-        if payload.get("schema_version") not in {1, 2}:
+        schema_version = payload.get("schema_version")
+        if schema_version not in {1, 2, 3}:
             raise LiquidationStressError("unsupported prospective session schema")
         if payload.get("signal_spec_sha256") != spec_hash:
             raise LiquidationStressError("prospective session spec hash mismatch")
@@ -363,6 +395,35 @@ def verify_directory(directory: Path) -> int:
             or source.get("complete_liquidation_tape") is not False
         ):
             raise LiquidationStressError("prospective session source contract changed")
+        if schema_version == 3:
+            failure = payload.get("source_failure")
+            if source["status"] == "COMPLETE":
+                if failure is not None:
+                    raise LiquidationStressError("complete source cannot retain a failure")
+            else:
+                if not isinstance(failure, dict):
+                    raise LiquidationStressError("failed source must retain failure evidence")
+                error_type = failure.get("error_type")
+                error_message = failure.get("error_message")
+                if source["status"] != f"FAILED_{error_type}" or not isinstance(error_message, str):
+                    raise LiquidationStressError("source failure identity mismatch")
+                rejected = failure.get("rejected_event")
+                if rejected is not None:
+                    try:
+                        parse_force_order_message(
+                            rejected["raw_message"],
+                            received_at=parse_utc(rejected["received_at"]),
+                            expected_symbol=EXPECTED_SYMBOL,
+                            expected_pair=EXPECTED_PAIR,
+                            contract_size_usd=Decimal(source["contract_size_usd"]),
+                        )
+                    except Exception as error:
+                        if type(error).__name__ != error_type or str(error) != error_message:
+                            raise LiquidationStressError(
+                                "rejected source event failure mismatch"
+                            ) from error
+                    else:
+                        raise LiquidationStressError("rejected source event is valid")
         raw_hash = source["exchange_info_sha256"]
         raw_path = directory / "raw" / f"exchange_info_{raw_hash}.json"
         if not raw_path.is_file() or sha256(raw_path.read_bytes()) != raw_hash:

@@ -228,6 +228,11 @@ schedule. The two complete windows are separated by three unobserved windows, so
 warm-up chain remains one. Continuous capture, the first 1h outcome after `19:52Z`, 8,639 further
 consecutive windows, review minima, costs, G1-G11, and promotion remain open.
 
+D-088 retains a failed seven-window continuity attempt with zero admitted windows. The root cause
+is unknown because V2 preserved only `LiquidationStressError`, not its message or rejected source
+record. V3 freezes exact failure evidence and reconstruction without changing the signal. A clean
+V3 capture, continuous warm-up, first available label, and every validation gate remain open.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

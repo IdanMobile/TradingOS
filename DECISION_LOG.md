@@ -846,6 +846,27 @@ Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_SECOND_COMPLETE_WINDOW_
 session `f1655057…`, and label snapshot `f5453680…`.
 Status: **Two complete windows total; longest consecutive chain one; authority NONE.**
 
+### D-088 — Opaque continuity failure retained; observer V3 diagnostics frozen
+
+Decision: the bounded seven-window session from commit `0febd4e` covered
+`19:16:06Z` through `19:42:55Z` but ended `FAILED_LiquidationStressError`. V2 correctly admitted
+zero complete windows from the failed source and emitted deterministic
+`FLAT/SOURCE_WINDOW_INCOMPLETE/BLOCK`. The attempted continuity run therefore adds no warm-up
+credit.
+
+The underlying cause is unknown: V2 retained only the exception class and discarded the exact
+error text and rejected public message. Observer V3 changes only failure evidence, retaining and
+offline-reconstructing exception type, message, rejected message, and receipt time. All source,
+signal, window, baseline, risk, label, eligibility, and authority semantics remain unchanged.
+
+Consequence: another capture may begin only after V3 is committed. No failed interval may be
+partially rescued. No analysis, score, strategy change, credential, venue connection, order,
+paper/demo/live state, promotion, or execution authority is authorized.
+
+Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_CONTINUITY_SESSION_FAILURE_2026_07_13.md`,
+session `78e77d1f…`, `research/PROSPECTIVE_BTC_LIQUIDATION_OBSERVER_V3.yaml`, and focused tests.
+Status: **Failed continuity session retained with zero windows; V3 frozen and unrun.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

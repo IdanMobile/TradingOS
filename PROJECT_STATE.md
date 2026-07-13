@@ -930,6 +930,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   zero-event `FLAT/WARMUP_BLOCK/BLOCK` observation. It is not consecutive with the `18:45Z` window,
   so the longest warm-up chain remains 1/8,640. After V2 froze at `7cc6ef0`, a six-row label
   schedule retained all outcomes as `NOT_AVAILABLE`; both snapshots reconstruct offline.
+- **Continuity attempt failed closed; observer V3 frozen (D-088):** a seven-window session ended
+  `FAILED_LiquidationStressError` after 26m49s and admitted zero windows. V2 lacks enough evidence
+  to identify the cause. V3 now retains and reconstructs exact exception/message/rejected-event
+  evidence without changing the signal; it is not yet run.
 
 ## Operational SSOT (unchanged)
 
@@ -988,11 +992,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Begin an uninterrupted bounded source session to grow a genuinely consecutive window chain. At or
-after `2026-07-13T19:52:00Z`, only the first window's 1h label may be requested and retained while
-later horizons stay unavailable. Verify exact bytes without aggregating or interpreting returns.
-Do not backfill, score, access the sealed V2 holdout, activate a bot, request credentials, or cross
-any human S3/S4 gate.
+Commit observer V3, then at or after `2026-07-13T19:52:00Z` run the unchanged causal evaluator so
+only the first window's 1h label may be requested and retained. Verify exact bytes without
+aggregating or interpreting the return. Then retry bounded continuous capture under V3 so any
+failure is diagnosable. Do not backfill, score, access the sealed V2 holdout, activate a bot,
+request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

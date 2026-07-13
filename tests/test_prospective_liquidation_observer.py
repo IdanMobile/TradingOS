@@ -42,3 +42,37 @@ def test_verifier_rejects_byte_and_rehashed_semantic_drift(tmp_path: Path) -> No
     semantic_drift = verify(target)
     assert semantic_drift.returncode != 0
     assert "authority boundary changed" in semantic_drift.stderr
+
+
+def test_v3_reconstructs_rejected_source_event_and_error(tmp_path: Path) -> None:
+    target = tmp_path / "prospective"
+    shutil.copytree(SOURCE, target)
+    failed = next(
+        path
+        for path in target.glob("session_*.json")
+        if json.loads(path.read_text())["source"]["status"].startswith("FAILED_")
+    )
+    payload = json.loads(failed.read_text())
+    payload["schema_version"] = 3
+    payload["source_failure"] = {
+        "error_type": "LiquidationStressError",
+        "error_message": "invalid force-order snapshot schema",
+        "rejected_event": {
+            "raw_message": "{}",
+            "received_at": payload["source"]["coverage_ended_at"],
+        },
+    }
+    changed = (json.dumps(payload, sort_keys=True, separators=(",", ":")) + "\n").encode()
+    failed.unlink()
+    failed = target / f"session_{hashlib.sha256(changed).hexdigest()}.json"
+    failed.write_bytes(changed)
+    assert verify(target).returncode == 0
+
+    payload["source_failure"]["error_message"] = "different failure"
+    changed = (json.dumps(payload, sort_keys=True, separators=(",", ":")) + "\n").encode()
+    failed.unlink()
+    failed = target / f"session_{hashlib.sha256(changed).hexdigest()}.json"
+    failed.write_bytes(changed)
+    mismatch = verify(target)
+    assert mismatch.returncode != 0
+    assert "rejected source event failure mismatch" in mismatch.stderr
