@@ -153,6 +153,12 @@ D-074 closes the Spot taker-imbalance family. Development, validation, reserve, 
 regime, drawdown, benchmark, DSR, and full-parity evidence fail; G11 rejects promotion without
 rescue. No strategy or bot is approved; the next distinct family comparison remains open.
 
+D-075 admits only a quote-normalized Coinbase-versus-Binance BTC premium from a source-only
+comparison with U.S. Spot Bitcoin ETP flow and USDt peg stress. The exact 12-trial roster, causal
+boundary, quote conversion, gaps, and no-rescue rules are preregistered without local performance.
+Exact Coinbase data packaging, offline restoration, canonical roles, campaign freeze, G1-G11
+evidence, and supervision remain open; no strategy or bot is approved.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

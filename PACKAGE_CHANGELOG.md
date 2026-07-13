@@ -1,5 +1,13 @@
 # Package Changelog
 
+## v8.78 — 2026-07-13
+
+- Compared three new mechanisms from primary sources without computing local family performance.
+- Admitted only the quote-normalized Coinbase/Binance BTC premium to exact data packaging and
+  froze its 12-trial roster, causal boundary, quote conversion, gaps, and no-rescue rules.
+- Rejected U.S. Spot Bitcoin ETP flow and USDt peg stress for this cycle; retained execution
+  authority `NONE` and every sealed-holdout/human-gate boundary.
+
 ## v8.77 — 2026-07-13
 
 - Completed taker-imbalance V2 from clean commit `eba18df` with the hashed selection barrier intact.

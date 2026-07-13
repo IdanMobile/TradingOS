@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.77 Spot taker-imbalance campaign rejection (2026-07-13). Supersedes v8.76 hashes.
+Package version: v8.78 cross-venue premium family admission (2026-07-13). Supersedes v8.77 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `e5c3bde8e07d5d7893f2527c3285bfa50f42abe30227dbfdb14f5f0dd5a502d7` |
-| `DECISION_LOG.md` | `209f618028ed168096aa31fd8edf497ae65dc2223c3c2a40b8f0676d578502a8` |
+| `PROJECT_STATE.md` | `e321b227200c40522f572910934939038ddd9b95135bbe60cf211b12b4c09d0b` |
+| `DECISION_LOG.md` | `2e45b3e8f2b6c04289c342009f0aa7db10140fc7ee109868bea8bb4d36dd0479` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `1fa98d95edd336136f744fe29a95f179b293e9b088a5881dc48e0fb7c4162227` |
+| `MISSING_AND_OPEN_ITEMS.md` | `5a28b1729aa331d3b992ed1da8f20530af3936820bf4a35c190ecb31bfdd641b` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -443,6 +443,12 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `artifacts/validation/campaigns/BTC-SPOT-TAKER-IMBALANCE-G1-G11-V2/phase_two_reference_ffd38662f6aa2673d111d773531d244ff050413318ccf946e6e7b1dc6428629e.json` | `ffd38662f6aa2673d111d773531d244ff050413318ccf946e6e7b1dc6428629e` |
 | `artifacts/validation/campaigns/BTC-SPOT-TAKER-IMBALANCE-G1-G11-V2/phase_two_workers_83647b0dbd93cd608058d060e6475dee2f99d894a359946ae8532585fc9e423d.json` | `83647b0dbd93cd608058d060e6475dee2f99d894a359946ae8532585fc9e423d` |
 | `artifacts/validation/campaigns/BTC-SPOT-TAKER-IMBALANCE-G1-G11-V2/preregistration_8a10f00f9d7450eb41865e23ad385ff11a02610df9583c424e4267a0e6795479.yaml` | `8a10f00f9d7450eb41865e23ad385ff11a02610df9583c424e4267a0e6795479` |
+
+## Cross-venue premium family admission (added v8.78)
+
+| Path | SHA-256 |
+|---|---|
+| `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V8.md` | `cc7146b906a80720550f0d3c73756a3bebcfc12ec0586e622317241ef880f502` |
 
 ## Expected generated artifacts
 

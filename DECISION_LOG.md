@@ -559,6 +559,30 @@ the content-addressed campaign directory under
 `artifacts/validation/campaigns/CALENDAR-UTC-G1-G11-V1/`.
 Status: **Completed negative campaign; execution authority remains NONE.**
 
+### D-075 — Quote-normalized cross-venue BTC premium admitted without scoring
+
+Decision: `FAMILY-SELECT-V8` compared exactly three new mechanisms without computing local family
+performance: a quote-normalized Coinbase-versus-Binance BTC Spot premium, U.S. Spot Bitcoin ETP
+primary-market flow, and USDt peg-stress conditioning. ETP flow is rejected because the uniform
+official point-in-time daily aggregate and independent regime sample are insufficient. USDt peg
+stress is rejected as a standalone alpha family because independent stress episodes are sparse and
+current issuer/redemption terms make it primarily a changing quote-asset risk state.
+
+`FAM-CROSS-VENUE-USD-PREMIUM-01` alone advances to exact data packaging. It uses completed Coinbase
+`BTC-USD` and `USDT-USD` hourly closes to construct a quote-normalized premium versus retained
+Binance `BTCUSDT`, then permits only a strictly later unlevered Binance Spot long/cash pulse. The
+two-interpretation, three-baseline, two-threshold population is frozen at 12 trials. It is not
+simultaneous arbitrage, Coinbase execution, carry, margin, a transfer strategy, or a rescue of any
+closed price/order-flow context.
+
+Consequence: exact public Coinbase bytes, provenance, gaps, normalization, and mappings may be
+packaged offline before scoring. No premium-conditioned return may be computed until the data and
+campaign freeze are committed. No bot, venue session, credential, order, paper/demo/live state,
+human gate, sealed V2 holdout access, promotion, or execution authority is activated.
+
+Evidence: `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V8.md`.
+Status: **Approved constrained-S2 data build; performance unobserved and authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing
