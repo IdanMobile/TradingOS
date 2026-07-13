@@ -1,5 +1,13 @@
 # Package Changelog
 
+## v8.94 — 2026-07-13 — Observer V4 complete-window proof
+
+- Retained a successful schema-4 `[20:00Z,20:05Z)` source session with
+  `source_failure=null`, zero events, `FLAT/WARMUP_BLOCK`, and independent `BLOCK`.
+- Retained a nine-row causal label schedule: one prior 1h label available, eight unavailable.
+- Recorded that three total complete windows remain isolated and the longest consecutive chain is
+  still one. No analysis, score, promotion, venue connection, order, or authority exists.
+
 ## v8.93 — 2026-07-13 — First causally available prospective label
 
 - From clean V4 freeze commit `e8805cc`, retained exact 1m Spot entry/exit bytes after the frozen

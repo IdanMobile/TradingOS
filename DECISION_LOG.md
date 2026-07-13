@@ -905,6 +905,26 @@ Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_FIRST_AVAILABLE_1H_LABE
 label snapshot `3a713180…`, and exact raw response hashes `48c1eb72…` / `61e24812…`.
 Status: **One causal label retained for warm-up only; eligibility false; authority NONE.**
 
+### D-091 — V4 successful complete window and nine-row label schedule retained
+
+Decision: from clean commit `ab5a088`, observer V4 continuously enclosed
+`[2026-07-13T20:00Z,20:05Z)` and retained a schema-4 successful session with
+`source_failure=null`. The source published zero snapshots; the deterministic result is
+`SIG-a512bf546de4bb5cb3c893c2`, `FLAT`, `WARMUP_BLOCK`, and independent `BLOCK`. This proves the
+post-correction success path; the prior exact live record and tests prove `o.st` parsing.
+
+The refreshed label snapshot contains nine rows: the first 1h label remains retain-only and the
+other eight are causally unavailable. Three complete windows exist in total, but none form a
+multi-window consecutive chain, so warm-up remains 1/8,640.
+
+Consequence: V4 is operational for bounded prospective observation, not validated for persistent
+30-day collection or signal usefulness. No analysis, score, strategy approval, credential, venue
+connection, order, paper/demo/live state, promotion, or execution authority is authorized.
+
+Evidence: `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_V4_FIRST_COMPLETE_WINDOW_2026_07_13.md`,
+session `54ea7fae…`, and label snapshot `566efb70…`.
+Status: **V4 complete-window path proven; longest chain one; authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

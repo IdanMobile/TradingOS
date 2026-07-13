@@ -942,6 +942,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   `62012` and `62196` produced the frozen 1h gross arithmetic label `0.002967167644971940914661678`.
   Five later labels stayed unavailable. This is one retained warm-up observation with analysis,
   scoring, promotion, venue connection, and authority prohibited—not evidence of edge.
+- **V4 complete-window path proven (D-091):** clean commit `ab5a088` retained schema-4 coverage of
+  `[20:00Z,20:05Z)`, zero events, `source_failure=null`, `SIG-a512bf546de4bb5cb3c893c2`, and
+  independent `BLOCK`. A nine-row label snapshot verifies. Three complete windows are retained,
+  but the longest consecutive chain remains one; V4 persistence and signal usefulness are unproven.
 
 ## Operational SSOT (unchanged)
 
@@ -1000,10 +1004,10 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Retain this first causal label, then run one complete V4 source window to prove the corrected live
-`o.st` parser and successful schema-4 `source_failure=null` path. Continue append-only labels
-without aggregation or interpretation. Do not backfill, score, access the sealed V2 holdout,
-activate a bot, request credentials, or cross any human S3/S4 gate.
+At or after `2026-07-13T20:12:00Z`, retain and verify only the second window's now-causal 1h label;
+all later labels must remain unavailable. Then continue bounded V4 continuity evidence. Do not
+aggregate or interpret labels, backfill, score, access the sealed V2 holdout, activate a bot,
+request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

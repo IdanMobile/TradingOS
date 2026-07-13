@@ -243,6 +243,11 @@ reconstruction. It is one gross warm-up observation and is prohibited from aggre
 interpretation, scoring, or promotion. A clean V4 complete source window, continuous warm-up,
 remaining label horizons, review minima, costs, G1-G11, and strategy validation remain open.
 
+D-091 retains a successful schema-4 complete window with `source_failure=null`, deterministic
+`FLAT/BLOCK`, and a nine-row causal label schedule. Three complete windows exist but are isolated,
+so continuous-operation evidence and warm-up remain open. The second window's 1h label first
+becomes available at `2026-07-13T20:12Z`; all analysis and promotion gates remain closed.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

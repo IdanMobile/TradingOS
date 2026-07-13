@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.93 first causally available prospective label (2026-07-13). Supersedes v8.92 hashes.
+Package version: v8.94 observer V4 complete-window proof (2026-07-13). Supersedes v8.93 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `7e46ba1a5f7cd3b07a92edb2cd713d04d0c77497ef2cd93eefd4ba497993e48d` |
-| `DECISION_LOG.md` | `7b73a86618e8ba0b94dcd62673c97208b694bd845279540fb7f5caaec9d01a89` |
+| `PROJECT_STATE.md` | `06e650728a717b9b56fc55e61896cac7674a996223b6af0a7d20230011609c97` |
+| `DECISION_LOG.md` | `feacb699c4fc08356f6ad748acce88c099727fb22e79fad23a36ea21cac00cf3` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `984aa34c8a813379d26cf6ab6e824fd672f5bdd85d2785f206ce08222eb59fd4` |
+| `MISSING_AND_OPEN_ITEMS.md` | `50a9dc471c0d782f4ebc2b98a30858c016df25792847e0750f308487c6bdcf95` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -68,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `c6fe56dc80be7db5e3d079a1c493a7c0c59dbb5eeede64a84bb72044450e9ccf` |
+| `research/RESEARCH_GAP_MATRIX.md` | `e96790abbba59259539284a87f8163baea9556e879a277256d9c9607080f572c` |
 
 ## Post-V2 family selection V1 (added v8.55)
 
@@ -542,6 +542,14 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `src/tios/strategy/prospective_labels.py` | `54958c2cf6660fe1af12554042c8bc2ebae27c285eff16f6f22dab4048cf7496` |
 | `scripts/run_prospective_liquidation_labels.py` | `c7bc1301128ffd5d4615090a40bed795a29205ef7f7eb52764be25c09d39a9c4` |
 | `tests/test_prospective_liquidation_labels.py` | `8c2ad7edfc4cffe5d97bad7721a9b8252299d35388381b4651fb44dac43b4ba5` |
+
+## Observer V4 complete-window proof (added v8.94)
+
+| Path | SHA-256 |
+|---|---|
+| `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_V4_FIRST_COMPLETE_WINDOW_2026_07_13.md` | `0feae7db5863418435a62c61cedc7a46d7362364a4ce06edb017dd7fa78f54da` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/session_54ea7fae90fbcbbcbd78b0c9bc510d62eacf0bb17f3181a74a5a970842a9cdbc.json` | `54ea7fae90fbcbbcbd78b0c9bc510d62eacf0bb17f3181a74a5a970842a9cdbc` |
+| `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/labels/label_snapshot_566efb7010ebb16f98dece601a743ef0016735b75078c396d88b0fad894517fc.json` | `566efb7010ebb16f98dece601a743ef0016735b75078c396d88b0fad894517fc` |
 
 ## First causal prospective label schedule (added v8.88)
 
