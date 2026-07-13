@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.67 Bitcoin MVRV campaign freeze (2026-07-13). Supersedes v8.66 hashes.
+Package version: v8.68 Bitcoin MVRV campaign rejection (2026-07-13). Supersedes v8.67 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `c338b2c914c69fcb4b5d1b2384abf385363b987f48105c8ffacc36ec1754811a` |
-| `DECISION_LOG.md` | `30e95b712804693be12b101803709486ea6ec0c2eb94f96f563f1e6c0a73bb5d` |
+| `PROJECT_STATE.md` | `598c3b13fec3b4a2d3062e673ee05c35351612feb82d797589a4fc00d661e9f0` |
+| `DECISION_LOG.md` | `6b4b506deb9c62b05c39efd1ef277dafc2580868a10de1c49665348c3bfee3ef` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `d7b35c2cc381bcc99d1f5c4bf5c9fb5a3f5dd307562080f330b93a8555ce5a51` |
+| `MISSING_AND_OPEN_ITEMS.md` | `92f287abcb3d1f6cbabe7f4fd7d6e0a7d4d77e6809da1aec64a3bbc460e37595` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -68,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `061810b0c339c8d902fb3ed5f36d15a7143a87f248f25d6756c3472cfb9a2f97` |
+| `research/RESEARCH_GAP_MATRIX.md` | `9cfb7072eb880466df8e08837e7da19571fa9d6cbfaa9a31fca7fe04efbc18fe` |
 
 ## Post-V2 family selection V1 (added v8.55)
 
@@ -261,7 +261,20 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `scripts/run_mvrv_campaign.py` | `45c85c59f1d54ecdb80f50978c1a84ffc8e420cb06f46cdc3d103f6168efad53` |
 | `tests/test_mvrv_dislocation_strategy.py` | `ded93ed2f1cb10df93b85f22effe69437ed47548590843e9a34fe7b62f43b987` |
 | `tests/test_mvrv_dislocation_reference.py` | `e33ab03ea7c9ac76fec6eac0ba3df8f08ea6a54044efc3ee5f0ca4b0d9e3f20c` |
-| `tests/test_mvrv_campaign.py` | `7fb7261eafe12c44ce64455d9f00abd2cdc9cc535290352fd960dcc56f6dcf5d` |
+| `tests/test_mvrv_campaign.py` | `cf1cec970875e1417dac7ae4570fa1a99a826dcf26ea5c181ec3ac9744144c7d` |
+
+## Bitcoin MVRV campaign rejection (added v8.68)
+
+| Path | SHA-256 |
+|---|---|
+| `artifacts/reports/BTC_MVRV_SPOT_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md` | `85612066a98524df3a9cd720448e0461079034087c44739ca93a49fffe7c676c` |
+| `artifacts/validation/campaigns/BTC-MVRV-SPOT-G1-G11-V1/campaign_result_a815461f8a8c049dc9ac85eab97f8e2ff9c2d52c52d1861e3c4f8802aa7a398c.json` | `a815461f8a8c049dc9ac85eab97f8e2ff9c2d52c52d1861e3c4f8802aa7a398c` |
+| `artifacts/validation/campaigns/BTC-MVRV-SPOT-G1-G11-V1/phase_one_reference_0512f417f6bde10f5017a04eaf5f7583c6931370c3c1af886e60f37e8a2281ef.json` | `0512f417f6bde10f5017a04eaf5f7583c6931370c3c1af886e60f37e8a2281ef` |
+| `artifacts/validation/campaigns/BTC-MVRV-SPOT-G1-G11-V1/phase_one_workers_c1e063a6d44d5756f79c2ad65b303c020ce6d0b175a9e4cbc2ef4d1d0f584000.json` | `c1e063a6d44d5756f79c2ad65b303c020ce6d0b175a9e4cbc2ef4d1d0f584000` |
+| `artifacts/validation/campaigns/BTC-MVRV-SPOT-G1-G11-V1/phase_two_reference_27b3a02a380545b133a545ef2ff7eab93932df56a5bb3a61d690515826e21a42.json` | `27b3a02a380545b133a545ef2ff7eab93932df56a5bb3a61d690515826e21a42` |
+| `artifacts/validation/campaigns/BTC-MVRV-SPOT-G1-G11-V1/phase_two_workers_ed5e469f5d1fad0cfabea96dccf410535d744cba24e43ee7701334c2cae8446d.json` | `ed5e469f5d1fad0cfabea96dccf410535d744cba24e43ee7701334c2cae8446d` |
+| `artifacts/validation/campaigns/BTC-MVRV-SPOT-G1-G11-V1/preregistration_838767c48f9c4ae095e0ed9be8d5e6ec10b0fbcadc6533c61e2d59397c0b2867.yaml` | `838767c48f9c4ae095e0ed9be8d5e6ec10b0fbcadc6533c61e2d59397c0b2867` |
+| `artifacts/validation/campaigns/BTC-MVRV-SPOT-G1-G11-V1/selection_e23c47178700c81b3a2a636741957f4ba0504ca3768e1a3b837e02a336f3b748.json` | `e23c47178700c81b3a2a636741957f4ba0504ca3768e1a3b837e02a336f3b748` |
 
 ## Expected generated artifacts
 

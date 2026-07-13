@@ -604,6 +604,21 @@ Evidence: `research/BTC_MVRV_SPOT_G1_G11_CAMPAIGN_V1.yaml` and focused tests und
 `tests/test_mvrv_*`.
 Status: **Approved constrained-S2 immutable offline campaign; preregistered and not run.**
 
+### D-065 — Bitcoin MVRV dislocation campaign rejected without rescue
+
+Decision: the campaign selected HIGH/180/1-day from development. Development returned +44.50%,
+but validation returned -21.00%, reserve -10.42%, full stress -45.53%, and one-bar delay -20.08%.
+Reserve had 10 completed trades versus 12 required, only one of six periods was positive, full
+drawdown was -36.51%, PBO was 0.5895, and DSR was 0.4632. Four-role parity passed without mismatch,
+but G5/G6/G7/G8/G9/G10 fail.
+
+Consequence: G11 rejects the exact MVRV pulse family without tuning or reinterpretation. It is not
+promotion eligible. No bot, venue, credential, order, paper/demo/live state, human gate, holdout,
+closed-family context, or execution authority was activated.
+
+Evidence: `artifacts/reports/BTC_MVRV_SPOT_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md`.
+Status: **Completed negative campaign; execution authority remains NONE.**
+
 ### D-060 — Finalized Bitcoin transaction-activity family admitted to canonical construction
 
 Decision: the fourth bounded source cycle compared exactly finalized Bitcoin L1 confirmed-

@@ -12,7 +12,6 @@ Status: v3, 2026-07-13. Gaps CLOSED by retained execution evidence are listed in
 | RG-13 | Divergence model: backtest-vs-paper reconciliation method | S3 qualification design | G12 sketch | paper-lane data | S3 | paper gates | no until S3 | architect | S3 |
 | RG-14 | CI provider choice (or none) for a single-operator local-first repo | dev workflow | none | cost/benefit at S2 scale | decide at S2 entry with repo evidence | AD §AH | no | operator+agent | S2 entry |
 | RG-16 | Ontology seed scope: which concepts do MVP artifacts actually reference? | dictionary seeding batch | none | extraction from S1 artifacts | run ONTOLOGY_CURATOR over S1 outputs | S2 dictionary batch | no | R6 | S2 |
-| RG-18 | Can BTC MVRV dislocations provide new unseen validation evidence? | blocks a defensible validated StrategyVersion and any promotion decision | D-063/D-064 freeze the official metric/catalog bytes, exact 12-version canonical roster, four roles, six costs, and hashed two-phase barrier without scoring | one governed run, complete G1-G11 evidence, and independent supervisor disposition | run once from clean freeze commit | MVRV campaign completion | blocks promotion and bot activation, not offline execution | supervisor R1/R4/R5/R8 | now |
 
 ## 2. Gaps closed 2026-07-06 (this planning pass)
 
@@ -38,6 +37,7 @@ Status: v3, 2026-07-13. Gaps CLOSED by retained execution evidence are listed in
 | CG-18 | (was RG-08, closed 2026-07-10 source re-check) OpenAI GPT-5.6 pricing + Gemini 3.x context/pricing/deprecation primary sources | Official OpenAI and Google AI Developers pages now provide enough pricing/context/deprecation evidence for pre-paid-benchmark planning. Real-provider runs remain credential/human-authority gated. | `artifacts/reports/AI_PROVIDER_SOURCE_RECHECK_2026_07_10.md` |
 | CG-19 | (was RG-09, closed as not applicable 2026-07-10) promptfoo ownership neutrality check | Not applicable in current S2 because promptfoo is not proposed for WS8; MLflow/null-provider harness remains selected. Reopen if promptfoo enters tooling. | `todos/01_research_completion.md` |
 | CG-20 | (was RG-17, closed negative 2026-07-13) Can finalized Bitcoin L1 transaction shocks provide new unseen validation evidence? | The exact delayed HIGH/LOW transaction-count pulse family does not validate: validation -1.57%, reserve -22.22%, full -3.02%, DSR 0.3422; G5-G10 and G11 fail despite clean four-role parity. | `artifacts/reports/BTC_TX_ACTIVITY_SPOT_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md` |
+| CG-21 | (was RG-18, closed negative 2026-07-13) Can BTC MVRV dislocations provide new unseen validation evidence? | The exact delayed MVRV pulse family does not validate: validation -21.00%, reserve -10.42%, stress -45.53%, PBO 0.5895, DSR 0.4632; G5-G10 and G11 fail despite clean parity. | `artifacts/reports/BTC_MVRV_SPOT_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md` |
 
 ## 3. Standing re-verification triggers
 

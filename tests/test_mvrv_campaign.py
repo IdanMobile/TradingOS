@@ -11,13 +11,14 @@ from run_funding_pressure_campaign import SelectionBarrier  # noqa: E402
 from run_mvrv_campaign import CAMPAIGN, OUTPUT_ROOT, _post_selection_reference  # noqa: E402
 
 
-def test_campaign_contract_is_frozen_safe_complete_and_unrun() -> None:
+def test_campaign_contract_is_frozen_safe_and_complete() -> None:
     campaign = yaml.safe_load(CAMPAIGN.read_text())
     assert len(campaign["trial_roster"]) == 12
     assert campaign["safety"]["execution_authority"] == "NONE"
     assert campaign["safety"]["network"] == "PROHIBITED"
     assert campaign["selection"]["immutable_hashed_selection_required_before_phase_two"] is True
-    assert not OUTPUT_ROOT.exists()
+    if OUTPUT_ROOT.exists():
+        assert len(list(OUTPUT_ROOT.glob("campaign_result_*.json"))) == 1
 
 
 def test_reserve_cannot_run_without_hashed_selection() -> None:

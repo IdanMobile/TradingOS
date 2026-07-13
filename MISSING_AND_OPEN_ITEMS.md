@@ -110,6 +110,11 @@ D-064 closes canonical/campaign construction. All 12 immutable versions, four ro
 selection barrier, gates, and safety constraints pass offline preflight. The single governed
 historical run and independent G11 disposition remain open; no strategy is validated.
 
+D-065 closes the campaign negative. The selection barrier and four-role parity passed, but both
+OOS segments, stress, delay, reserve trade count, regime, drawdown, benchmark, PBO, and DSR gates
+failed. The exact MVRV pulse family is rejected without rescue; a genuinely distinct mechanism is
+required and no strategy is validated.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

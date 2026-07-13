@@ -835,6 +835,9 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   six cost cells, chronological splits, G1-G11 thresholds, and hashed development selection
   barrier are immutable. Focused causal/preflight checks pass; performance remains unobserved and
   authority remains `NONE`.
+- **Bitcoin MVRV campaign rejected (D-065):** HIGH/180/1-day won development (+44.50%), but
+  validation (-21.00%), reserve (-10.42%), stress (-45.53%), and delay (-20.08%) failed. PBO
+  0.5895 and DSR 0.4632 fail; G5-G10 and G11 reject the family without rescue.
 
 ## Operational SSOT (unchanged)
 
@@ -893,10 +896,9 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-From the clean campaign-freeze commit, run `BTC-MVRV-SPOT-G1-G11-V1` once offline. Require the
-hashed development selection before any validation/reserve access, then issue the independent G11
-review. Do not reuse closed-family results or access the sealed V2 holdout, activate a bot, connect
-a venue, request credentials, or cross any human S3/S4 gate.
+Begin another bounded source-only comparison of at most three genuinely distinct mechanisms. Do
+not rescue MVRV or reuse any closed-family context. Do not access the sealed V2 holdout, activate a
+bot, connect a venue, request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

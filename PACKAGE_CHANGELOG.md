@@ -1,5 +1,12 @@
 # Package Changelog
 
+## v8.68 — 2026-07-13
+
+- Recorded the completed Bitcoin MVRV campaign and independent G11 rejection.
+- Preserved the selection barrier and four-role parity evidence.
+- Closed the exact MVRV pulse family without rescue.
+- Retained execution authority `NONE`; no bot, venue, credential, order, or holdout was activated.
+
 ## v8.67 — 2026-07-13
 
 - Froze the canonical 12-trial Bitcoin MVRV campaign before scoring.

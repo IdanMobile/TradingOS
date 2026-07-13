@@ -1,0 +1,21 @@
+{
+  "development_metric": 0.006390522106179697,
+  "g10": {
+    "average_trial_return_correlation_clipped_at_zero": 0.29107647373877327,
+    "dsr": 0.46319203129291386,
+    "effective_trials": 8.798158788873494,
+    "pbo": 0.5895104895104896,
+    "pbo_split_count": 12870,
+    "raw_statistical_trials": 12,
+    "status": "FAIL"
+  },
+  "schema": "tios-mvrv-dislocation-selection-v1",
+  "selected_trial": {
+    "holding_days": 1,
+    "side": "HIGH",
+    "strategy_version_id": "SV-e5eadedce6b89139",
+    "window": 180
+  },
+  "selected_trial_name": "side=HIGH|window=180|holding_days=1",
+  "selection_source": "development/F1-S1/sharpe_per_bar"
+}
