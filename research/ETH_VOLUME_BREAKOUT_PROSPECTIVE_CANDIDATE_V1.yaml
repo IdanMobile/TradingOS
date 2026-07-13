@@ -1,0 +1,118 @@
+schema: tios-eth-volume-breakout-prospective-candidate-v1
+candidate_id: ETH-VOLUME-BREAKOUT-PROSPECTIVE-V1
+decision: GO_PROSPECTIVE_ONLY
+status: FROZEN_NOT_VALIDATED
+frozen_at_utc: "2026-07-13T22:52:40Z"
+prospective_boundary_utc: "2026-07-14T00:00:00Z"
+
+conclusion: >-
+  Admit exactly one ETHUSDT Spot 1h volume-confirmed Donchian breakout as a
+  deterministic prospective candidate. Historical results are discovery evidence only;
+  they cannot validate or promote the candidate because the context and parameters were
+  selected after exploratory search.
+
+context:
+  instrument: ETH-USDT.BINANCE_SPOT
+  timeframe: 1h
+  direction: LONG_ONLY_SPOT
+  signal_time: CLOSED_BAR
+  hypothetical_fill_time: EXACTLY_ADJACENT_NEXT_OPEN
+  position_state: LONG_OR_CASH
+  leverage: NONE
+  execution_authority: NONE
+  venue_connection: NONE
+  paper_orders: DISABLED
+  live_orders: DISABLED
+
+canonical_strategy:
+  path: strategies/research/eth-volume-breakout-prospective/canonical_strategy_spec.yaml
+  canonical_spec_sha256: efb46b48f678db68545880828a51af3166c8156bccfb67cf8679e429eb659524
+  file_sha256: c4a1a11bf7c78440869dfc6744b5756d70581f7f9425610d18036cb92d7e6721
+  strategy_version_id: SV-418ab5d64825c74b
+  resolved_parameters:
+    instrument: ETH-USDT.BINANCE_SPOT
+    timeframe: 1h
+    window: 40
+    volume_multiplier: "1.5"
+  entry: >-
+    close exceeds the maximum high of the prior 40 completed bars and current
+    base volume exceeds 1.5 times the current-inclusive 40-bar base-volume mean.
+  exit: close is below the minimum low of the prior 40 completed bars.
+
+historical_discovery_evidence:
+  artifact: artifacts/research_lab/signal_strategy_search/SIGNAL_STRATEGY_SEARCH.json
+  artifact_sha256: ea65cc2da2bcb18b55e418964278f06fd6cd0c4c06901ae4b5cf0e6871e1a24d
+  disclosed_result:
+    total_return: "1.538638258913098383855430973"
+    buy_and_hold_return: "1.124475554221775617174981668"
+    action_count: 511
+    train_return: "0.387762352531680604139005965"
+    validation_return: "0.358540849767188131936239315"
+    holdout_return: "0.346520648195500479632839668"
+  limitations:
+    - The artifact is an exposed exploratory screen and declares NOT_ELIGIBLE.
+    - The old artifact does not retain a complete global selection hierarchy.
+    - The directly visible signal search contains 5 families x 3 variants x 6 contexts.
+    - A separate adjacent trend search reports 3263 trials; it is broader search exposure,
+      not falsely counted as this candidate's exact statistical hierarchy.
+    - Historical reproduction may verify code semantics but can never become confirmation.
+
+historical_dataset_for_reproduction_only:
+  path: data/normalized/ETHUSDT_1h.parquet
+  parquet_sha256: 324b3a704560103d9d49453e48d5b24839df6ab2ca67c6fcd5da2d2365d3b1da
+  logical_content_sha256: 12c4ae9a846c777948cfa9c3f5add36efbcb54129edec8cf6a0d2b16ab0433e9
+  rows: 48154
+  coverage: ["2021-01-01T00:00:00Z", "2026-06-30T23:00:00Z"]
+  gaps: RETAINED_NO_INTERPOLATION
+
+prospective_campaign:
+  candidate_count: 1
+  parameter_changes: PROHIBITED
+  instrument_or_timeframe_changes: PROHIBITED
+  data: public closed ETHUSDT Spot 1h klines strictly at or after prospective_boundary_utc
+  first_review_minimum:
+    elapsed_days: 365
+    completed_round_trips: 80
+  primary_cost_model:
+    fee_bps_per_executed_side: 10
+    slippage_bps_per_executed_side: 5
+  stress_cost_model:
+    fee_bps_per_executed_side: 15
+    slippage_bps_per_executed_side: 10
+  benchmarks: [CASH, ETHUSDT_BUY_AND_HOLD, UNFILTERED_DONCHIAN_40]
+  minimum_numeric_conditions:
+    - positive after-cost total return under the primary and stress cost models
+    - positive expectancy per completed round trip under the primary cost model
+    - primary Sharpe above buy-and-hold Sharpe
+    - primary maximum drawdown less severe than buy-and-hold maximum drawdown
+    - at least 3 of 4 chronological quarters have non-negative return
+  stop_rules:
+    - No early performance read, parameter rescue, alternate asset, or alternate timeframe.
+    - Any semantic, data-lineage, timing, or authority mismatch fails closed.
+    - A failed review rejects this exact candidate and requires a new identity.
+    - Passing numeric conditions still requires independent risk review and a human HG-3 decision.
+
+source_records:
+  - source_id: SRC-BINANCE-SPOT-KLINES
+    url: https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#klinecandlestick-data
+    authority: OFFICIAL_EXCHANGE_DOCUMENTATION
+    retrieved_utc: "2026-07-14"
+    claim: Klines are keyed by open time and expose OHLC, base-asset volume, close time, quote volume, trades, and taker-buy volumes.
+    limitation: Documentation defines fields; it does not establish profitability or future availability.
+  - source_id: SRC-BLUME-EASLEY-OHARA-1994
+    url: https://onlinelibrary.wiley.com/doi/10.1111/j.1540-6261.1994.tb04424.x
+    authority: PEER_REVIEWED_PRIMARY_RESEARCH
+    retrieved_utc: "2026-07-14"
+    claim: Trading volume may contain information about information quality not present in price alone.
+    limitation: General market theory and evidence; not crypto-specific and not proof of this rule.
+  - source_id: SRC-HUANG-SANGIORGI-URQUHART-2024
+    url: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4825389
+    authority: ACADEMIC_WORKING_PAPER
+    retrieved_utc: "2026-07-14"
+    claim: Reports cryptocurrency evidence for a volume-weighted time-series momentum construction.
+    limitation: Different portfolio construction; hypothesis support only, not transferable performance.
+
+separation:
+  sealed_btc_v2_holdout_access: PROHIBITED
+  sealed_btc_v2_holdout_used: false
+  rationale: This campaign uses a new ETH-only boundary and does not read or score BTC V2 holdout data.

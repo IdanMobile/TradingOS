@@ -127,6 +127,7 @@ def _indicator_contexts(
             "low": bar.low,
             "close": bar.close,
             "volume": bar.volume,
+            "volume_base": bar.volume,
         }
         for bar in bars
     ]
@@ -153,6 +154,8 @@ def _indicator_values(
         raise StrategyEvaluationError(f"indicator {name!r} requires a positive window")
     if name == "donchian_channel":
         return _donchian(indicator, bars, window)
+    if name == "volume_average_threshold":
+        return _volume_average_threshold(indicator, bars, window)
     if name == "supertrend":
         return _supertrend(indicator, bars, window)
     source_name = str(indicator.parameters.get("source", "close"))
@@ -306,6 +309,25 @@ def _donchian(
             "donchian_lower": min(bar.low for bar in prior),
         }
     return result
+
+
+def _volume_average_threshold(
+    indicator: Indicator, bars: tuple[MarketBar, ...], window: int
+) -> list[dict[str, Decimal] | None]:
+    if tuple(indicator.outputs) != ("volume_threshold",):
+        raise StrategyEvaluationError("volume_average_threshold must output volume_threshold")
+    if indicator.parameters.get("include_current_bar") is not True:
+        raise StrategyEvaluationError(
+            "volume_average_threshold requires explicit current-bar semantics"
+        )
+    multiplier = Decimal(str(indicator.parameters["multiplier"]))
+    if multiplier <= 0:
+        raise StrategyEvaluationError("volume_average_threshold multiplier must be positive")
+    averages = _sma([bar.volume for bar in bars], window)
+    return [
+        None if average is None else {"volume_threshold": average * multiplier}
+        for average in averages
+    ]
 
 
 def _supertrend(

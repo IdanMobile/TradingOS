@@ -1,5 +1,14 @@
 # Package Changelog
 
+## v8.106 — 2026-07-14 — Prospective ETH volume-breakout strategy slice
+
+- Froze one exact ETHUSDT Spot 1h volume-confirmed Donchian StrategyVersion behind a new future
+  boundary; all exposed historical performance remains discovery evidence only.
+- Added current-inclusive base-volume threshold support to the canonical evaluator and reproduced
+  the old screen's exact 511 signal transitions over the pinned 48,154-bar dataset.
+- Added a deterministic data-to-`SignalEvent`-to-independent-`BLOCK` verifier. Orders, paper/live,
+  venues, credentials, promotion, and execution authority remain disabled.
+
 ## v8.105 — 2026-07-14 — Prospective association/overlay campaign freeze
 
 - Froze exactly three prospective association trials with a sole 6H primary endpoint,

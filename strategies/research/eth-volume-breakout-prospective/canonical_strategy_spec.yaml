@@ -1,0 +1,34 @@
+strategy_id: STRAT-ETH-volume-breakout-prospective-v1
+family: breakout
+inputs: [close, high, low, volume_base]
+indicators:
+  - name: donchian_channel
+    parameters: {window: 40, source: high_low, include_current_bar: false}
+    outputs: [donchian_upper, donchian_lower]
+  - name: volume_average_threshold
+    parameters: {window: 40, source: volume_base, multiplier: 1.5, include_current_bar: true}
+    outputs: [volume_threshold]
+entry_long:
+  all:
+    - close > donchian_upper
+    - volume_base > volume_threshold
+exit_long:
+  all:
+    - close < donchian_lower
+position_sizing: {type: all_in}
+risk:
+  stop_loss: null
+  take_profit: null
+  execution_authority: NONE
+assumptions:
+  - "signal evaluated only after the 1h bar close; any later simulation fills at the exactly adjacent next bar open"
+  - "warm-up: no signal until 40 prior price bars exist and the current-inclusive 40-bar base-volume average exists"
+  - "Donchian bounds use the prior 40 completed bars and exclude the current bar"
+  - "the volume threshold is 1.5 times the arithmetic mean of base volume over the current bar plus the prior 39 bars; this preserves the exposed exploratory rule"
+  - "long-only Binance Spot research context; no leverage, short, derivative, venue connection, or order authority"
+ambiguities: []
+source_refs:
+  - SRC-BINANCE-SPOT-KLINES
+  - SRC-BLUME-EASLEY-OHARA-1994
+  - SRC-HUANG-SANGIORGI-URQUHART-2024
+license_ref: LIC-INTERNAL-PROSPECTIVE-SPEC

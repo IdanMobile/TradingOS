@@ -994,6 +994,11 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   rescue. The verifier currently reports `WAITING` while reading zero warm-up label files and
   computing zero metrics. Overlay evaluation remains blocked on a separately validated exact alpha
   StrategyVersion.
+- **Prospective ETH alpha candidate frozen (D-103):** one exact ETHUSDT Spot 1h
+  volume-confirmed Donchian StrategyVersion now runs through canonical `SignalEvent` generation
+  and an independent promotion `BLOCK`. Frozen historical reproduction yields the same 511 signal
+  transitions over 48,154 bars. The new ETH-only boundary begins `2026-07-14T00:00:00Z`; historical
+  results remain exposed discovery evidence, not validation.
 
 ## Operational SSOT (unchanged)
 
@@ -1052,12 +1057,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Let the managed observer continue its preregistered 8,640-checkpoint warm-up while retaining and
-verifying immutable evidence at bounded milestones. Keep D-102 in `WAITING` and do not aggregate
-warm-up outcomes. The next independent workstream is an exact alpha StrategyVersion campaign that
-can pass promotion without using this risk signal or the sealed V2 holdout. Only after that may a
-new child overlay campaign be frozen. Do not activate a bot, request credentials, create orders, or
-cross any human S3/S4 gate.
+Let both prospective lanes collect without early outcome reads. Keep D-102 in `WAITING`; begin
+retaining closed ETHUSDT Spot 1h observations for D-103 strictly from its frozen boundary. The
+deterministic candidate signal path may run read-only, but risk remains `BLOCK` until the frozen
+365-day/80-round-trip minimum and independent review. Do not activate a bot, request credentials,
+create orders, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

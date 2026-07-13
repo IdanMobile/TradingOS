@@ -1,4 +1,5 @@
 import csv
+from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
@@ -133,6 +134,52 @@ def test_canonical_signal_ids_are_deterministic_and_transition_only() -> None:
     assert first == second
     assert [item.rationale_code for item in first] == ["ENTRY_LONG", "EXIT_LONG"]
     assert all(item.instrument == MARKET.instrument for item in first)
+
+
+def test_volume_breakout_preserves_current_inclusive_volume_semantics() -> None:
+    payload = yaml.safe_load(
+        (
+            ROOT
+            / "strategies/research/eth-volume-breakout-prospective/canonical_strategy_spec.yaml"
+        ).read_text()
+    )
+    payload["indicators"][0]["parameters"]["window"] = 2
+    payload["indicators"][1]["parameters"].update(window=2, multiplier=1.5)
+    candidate = parse_spec(payload)
+    original = bars("bars.csv")[:5]
+    values = (
+        ("10", "10.5", "9.5", "10", "100"),
+        ("10", "10.5", "9.5", "10", "100"),
+        ("11", "12.5", "10.5", "12", "200"),
+        ("13", "14.5", "12.5", "14", "700"),
+        ("8", "9", "7", "8", "100"),
+    )
+    fixture = tuple(
+        replace(
+            bar,
+            open=Decimal(open_),
+            high=Decimal(high),
+            low=Decimal(low),
+            close=Decimal(close),
+            volume=Decimal(volume),
+        )
+        for bar, (open_, high, low, close, volume) in zip(original, values, strict=True)
+    )
+    result = evaluate_strategy_signals(
+        spec=candidate,
+        bars=fixture,
+        strategy_version_ref=StrategyVersionId("SV-volume-breakout-golden"),
+        run_ref=RunId("RUN-volume-breakout-golden"),
+        created_at=CREATED_AT,
+        creator_type=CreatorType.SYSTEM,
+        provenance=PROVENANCE,
+    )
+    # Bar 3 would pass a prior-only volume average (200 > 1.5 * 100) but must not
+    # pass the frozen current-inclusive average (200 < 1.5 * ((100 + 200) / 2)).
+    assert [(signal.observed_at, signal.side) for signal in result] == [
+        (fixture[3].close_time, Side.BUY),
+        (fixture[4].close_time, Side.SELL),
+    ]
 
 
 def test_multi_leg_research_spec_cannot_be_projected_as_a_long_only_signal() -> None:

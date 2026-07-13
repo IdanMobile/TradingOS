@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.105 prospective association/overlay campaign freeze (2026-07-14). Supersedes v8.104 hashes.
+Package version: v8.106 prospective ETH volume-breakout strategy slice (2026-07-14). Supersedes v8.105 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `1e95e8d7fe0d16e3927d613018a899b5ebbe06f23a07ba6fe83f14d4d6ddddd4` |
-| `DECISION_LOG.md` | `9c238367675524ddb40171888b1edb08c6646910f8bfd9bc95b17a988419fa55` |
+| `PROJECT_STATE.md` | `6dd96ce8b09139d73a5372258f25f026b0b2380596bb0eb427cde07510684bae` |
+| `DECISION_LOG.md` | `178372696a67142be900510d53f85e9264b6cf4545fe6dbaa668653215f00bf4` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -53,6 +53,16 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `scripts/run_canonical_baseline_campaign.py` | `e7fbcb31a17ff7c3ecc9e4525c0d8c7ca765ccf0d9ef62f3e9f1f6881c02e7b1` |
 | `artifacts/reports/CANONICAL_BASELINE_CAMPAIGN_V2_REPORT_2026_07_13.md` | `095795b94b3d232d7bc47aa12da366d4b7c55d36f38218c797922023b0ce967d` |
 | `artifacts/validation/campaigns/SEARCH-CANONICAL-BASELINE-G10-V2/campaign_index_96d746a1e8084c6a9a39e2d8752936d166c32c2685a9c31b48f5feb7a7a93950.json` | `96d746a1e8084c6a9a39e2d8752936d166c32c2685a9c31b48f5feb7a7a93950` |
+
+## Prospective ETH volume-breakout strategy slice (added v8.106)
+
+| Path | SHA-256 |
+|---|---|
+| `research/ETH_VOLUME_BREAKOUT_PROSPECTIVE_CANDIDATE_V1.yaml` | `f60d6e857b61b30c0fccb0fea8a0c108241f3e469f2cef1235455cec7d8bf233` |
+| `strategies/research/eth-volume-breakout-prospective/canonical_strategy_spec.yaml` | `c4a1a11bf7c78440869dfc6744b5756d70581f7f9425610d18036cb92d7e6721` |
+| `scripts/verify_eth_volume_breakout_flow.py` | `25c6051637b14cfd1f868249da4e88b5c4b3f30692a3b5a047890d7223f4590d` |
+| `tests/test_eth_volume_breakout_flow.py` | `3ce7472f58681da06f51177dabda8dbc60570d344f334b51f50830fc11e58b1e` |
+| `tests/test_strategy_evaluator.py` | `da08d37cc72d0281fc7504910a9590f4c964c7447b30ad49a7287a99a25ca562` |
 
 ## Required handoff inputs — planning system (added v8)
 
@@ -126,7 +136,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `research/source_snapshots/calendar_utc_v1/binance_public_data_README.md` | `085ab91377aa9325d44f4c7ad27cce4ab381e158403e1d7df2bad39d1a66f7c6` |
 | `strategies/research/calendar-utc-weekday/canonical_strategy_spec.yaml` | `b7f85a146818130abe330fe639b7b38c6b7f7cca7c84e1246c174d7cbc6bf9d4` |
 | `src/tios/strategy/spec.py` | `50d34972215d0a1aef793bf23a8fa8121bd89b7e0123dc23b3e3d23f2e536e10` |
-| `src/tios/strategy/evaluator.py` | `81325dc8442a97082c35852d046ff217f0eb22dc7fba6d027bdd7be9ae4d6d20` |
+| `src/tios/strategy/evaluator.py` | `cf495577545515623c81959ef2c5706fcd48a2f0a0d53c6c08ff5b6392f4c8d4` |
 | `engines/reference/calendar_utc.py` | `e7885a873d2c7e500a50c651f91c600f4534321fba6abfb2dcc669df3062733b` |
 | `engines/vectorbt/calendar_utc_returns.py` | `cd04c0a2d4933f20b7b1f4b7675d0dc2f457d001131f5ebfd0de6a320239f0e0` |
 | `scripts/verify_calendar_utc_data.py` | `f863b1d3f763daf11698096f624c9398cc42cc6511102cbe3a3e75453b1ebcd1` |

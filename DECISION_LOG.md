@@ -1178,6 +1178,29 @@ Evidence: `research/PROSPECTIVE_BTC_LIQUIDATION_ASSOCIATION_OVERLAY_CAMPAIGN_V1.
 `scripts/verify_prospective_association_campaign.py`, and focused campaign tests.
 Status: **Parent campaign frozen and preflight-verifiable; metrics and overlay blocked.**
 
+### D-103 — ETH volume-breakout admitted as one prospective alpha candidate
+
+Decision: the exposed `SIG-VOLUME-BREAKOUT` ETHUSDT Spot 1h screen is admitted only as the
+mechanism and exact parameter source for a new immutable prospective candidate. Its historical
+result remains discovery evidence: the old screen is `NOT_ELIGIBLE`, its global selection lineage
+is incomplete, and adjacent technical research contains thousands of additional exposures.
+
+The exact candidate is `SV-418ab5d64825c74b`: prior-40-bar Donchian entry/exit with entry also
+requiring current base volume above 1.5 times the current-inclusive 40-bar base-volume mean.
+Canonical evaluation over the frozen 48,154-row ETHUSDT 1h dataset reproduces the old 511 signal
+transitions exactly. This proves semantic parity, not alpha. A new ETH-only prospective boundary
+starts at `2026-07-14T00:00:00Z`; no parameters, asset, timeframe, or early performance read may
+rescue it.
+
+Consequence: TradingOS now has a deterministic strategy-bound vertical slice from frozen bars to
+typed `SignalEvent` and independent `BLOCK`. Promotion remains false until the preregistered
+prospective minimum and independent review pass. No sealed BTC V2 holdout, bot, order, paper/demo/
+live state, credential, venue, or execution authority is activated.
+
+Evidence: `research/ETH_VOLUME_BREAKOUT_PROSPECTIVE_CANDIDATE_V1.yaml`, canonical spec,
+`scripts/verify_eth_volume_breakout_flow.py`, and focused tests.
+Status: **Prospective candidate and signal flow available; validation incomplete and risk BLOCK.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing
