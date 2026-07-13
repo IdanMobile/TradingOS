@@ -814,6 +814,11 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   trades, reserve lost 2.52% on two trades, DSR was 0.8235, and Nautilus parity failed on one
   declared development trial. G4/G5/G6/G7/G8/G10 and G11 fail; the context is closed without
   rescue and no bot or execution authority exists.
+- **Bitcoin transaction-activity family admitted (D-060):** an exactly-three-family source cycle
+  rejects stablecoin supply and miner recovery, admitting only finalized L1 confirmed-transaction
+  shocks. Exact official response bytes, 2,004 campaign observations, a two-day availability lag,
+  the known November 2025 gap, strict later Spot mapping, and drift tests pass. Twelve pulse trials
+  are frozen without performance; canonical/campaign work remains offline and authority-free.
 
 ## Operational SSOT (unchanged)
 

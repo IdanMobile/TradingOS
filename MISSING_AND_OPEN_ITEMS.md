@@ -89,6 +89,11 @@ rescue zero validation trades, a losing two-trade reserve, failed DSR, or the Na
 residual. The exact directional funding-pressure context is closed; a distinct family and new
 unseen evidence are required.
 
+D-060 completes a new source/data admission cycle without scoring. Finalized Bitcoin L1
+transaction-count shocks advance with exact retained bytes, a two-day lag, gap quarantine, and a
+12-trial pulse roster. Canonical implementations, the two-phase campaign, all G1-G11 outcomes,
+and independent supervision remain open; no strategy is yet validated.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

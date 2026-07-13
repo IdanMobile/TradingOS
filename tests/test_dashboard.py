@@ -1648,7 +1648,7 @@ def test_dashboard_check_pass_requires_fresh_machine_readable_artifact(
             "command": "make check",
             "status": "PASS",
             "includes_dependency_audit": False,
-            "generated_at": (datetime.now(tz=UTC) + timedelta(minutes=1)).isoformat(),
+            "generated_at": (datetime.now(tz=UTC) + timedelta(minutes=10)).isoformat(),
         },
     ],
 )

@@ -559,6 +559,28 @@ the content-addressed campaign directory under
 `artifacts/validation/campaigns/CALENDAR-UTC-G1-G11-V1/`.
 Status: **Completed negative campaign; execution authority remains NONE.**
 
+### D-060 — Finalized Bitcoin transaction-activity family admitted to canonical construction
+
+Decision: the fourth bounded source cycle compared exactly finalized Bitcoin L1 confirmed-
+transaction shocks, stablecoin-supply growth, and miner hash-rate/difficulty recovery without
+computing local family performance. Stablecoin supply is rejected on direct null price evidence,
+endogeneity, aggregation, migration, and revision risk. Miner recovery is rejected because price
+materially drives hash rate/mining economics and OOS return evidence is weak.
+
+`FAM-BTC-TX-ACTIVITY-01` alone advances as a short unlevered BTCUSDT Spot long/cash pulse. The
+official `n-transactions` response is frozen at 2,187 observations; 2,004 enter the campaign after
+coverage limits. A two-full-day availability lag, strict later 01:00 UTC fill, one known source
+gap, exact byte/logical hashes, and no-interpolation behavior pass offline drift tests. The exact
+12-trial activity-side/window/holding roster is preregistered.
+
+Consequence: canonical and campaign construction may proceed without scoring. Transaction count
+must not be represented as unique users, economic value, exchange flow, or causal adoption. No
+bot, venue, credential, order, paper/demo/live state, holdout reuse, or authority is activated.
+
+Evidence: `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V4.md` and
+`research/BTC_TX_ACTIVITY_DATA_PACKAGE_V1.json`.
+Status: **Approved constrained-S2 data/canonical build; performance unobserved and authority NONE.**
+
 ### D-055 — Funding-pressure Spot family admitted to canonical campaign construction
 
 Decision: `FAMILY-SELECT-V3` compared exactly three distinct mechanisms without computing local

@@ -1,0 +1,74 @@
+{
+  "schema": "tios-btc-tx-activity-data-package-v1",
+  "package_id": "DATA-BTC-TX-ACTIVITY-SPOT-1H-V1",
+  "family_id": "FAM-BTC-TX-ACTIVITY-01",
+  "created_at_utc": "2026-07-13T13:38:48Z",
+  "execution_authority": "NONE",
+  "venue_connection": "NONE",
+  "activity_feature": {
+    "authority": "Blockchain.com official Charts API",
+    "documentation_url": "https://www.blockchain.com/explorer/api/charts_api",
+    "request_url": "https://api.blockchain.info/charts/n-transactions?timespan=6years&format=json&sampled=false",
+    "http_status": 200,
+    "response_date_utc": "Mon, 13 Jul 2026 13:38:48 GMT",
+    "content_type": "application/json; charset=utf-8",
+    "cache_max_age_seconds": 14400,
+    "raw_path": "data/raw/onchain/blockchain_info_n_transactions_6y_2026-07-13.json",
+    "raw_sha256": "884abab27dbbae21e989d27808349acdbbe372cb90f10e758abfb214ea21a7f1",
+    "raw_bytes": 65782,
+    "response_contract": {
+      "status": "ok",
+      "name": "Confirmed Transactions Per Day",
+      "unit": "Transactions",
+      "period": "day",
+      "description": "The number of daily confirmed Bitcoin transactions."
+    },
+    "observations": 2187,
+    "logical_records_sha256": "aec3f4c10bb6ad53c7cdd77288369819ccd2848277c6c1e599de232f354d75f5",
+    "coverage_start_utc": "2020-07-14T00:00:00+00:00",
+    "coverage_end_utc": "2026-07-12T00:00:00+00:00",
+    "known_gaps": [
+      {
+        "left_utc": "2025-11-12T00:00:00+00:00",
+        "right_utc": "2025-11-16T00:00:00+00:00",
+        "missing_daily_observations": 3
+      }
+    ],
+    "campaign_source_start_utc": "2020-12-30T00:00:00+00:00",
+    "campaign_source_end_utc": "2026-06-28T00:00:00+00:00",
+    "campaign_observations": 2004,
+    "availability_lag_full_utc_days": 2,
+    "revision_boundary": "exact retained response bytes govern; future upstream revisions prohibited"
+  },
+  "spot_execution": {
+    "dataset_id": "DS-CRYPTO-SPOT-BAKEOFF-V1",
+    "instrument": "BTCUSDT",
+    "market": "SPOT_LONG_CASH_ONLY",
+    "interval": "1h",
+    "manifest_path": "artifacts/datasets/DS-CRYPTO-SPOT-BAKEOFF-V1.manifest.json",
+    "manifest_sha256": "f2b729627adb5d75a99c90dd7dd25ea6dcabf83de4baea5784397424034dfc56",
+    "normalized_path": "data/normalized/BTCUSDT_1h.parquet",
+    "normalized_parquet_sha256": "d44c70c3c87a3e342dd0496c3975d3b54a2b50dd4c5c1b8873ef84eece99947c",
+    "logical_content_sha256": "49981c5cf5f3376ea60e931415feefa252c5970d902732dd68d8e95c46a2a3b3",
+    "rows": 48154,
+    "coverage_start_utc": "2021-01-01 00:00:00+00:00",
+    "coverage_end_utc": "2026-06-30 23:00:00+00:00",
+    "fill_rule": "first retained 1h open strictly later than source day plus two full UTC days",
+    "mapped_campaign_observations": 2004,
+    "missing_expected_entry_opens": 0
+  },
+  "fail_closed": {
+    "network_allowed": false,
+    "interpolation_allowed": false,
+    "duplicate_or_non_monotone_timestamp_allowed": false,
+    "non_midnight_timestamp_allowed": false,
+    "non_positive_or_non_finite_count_allowed": false,
+    "same_open_fill_allowed": false,
+    "future_upstream_revision_allowed": false
+  },
+  "contamination": {
+    "activity_conditioned_spot_results_computed_before_freeze": false,
+    "closed_calendar_or_funding_results_reused": false,
+    "v2_prospective_holdout_accessed": false
+  }
+}

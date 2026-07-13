@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.62 funding-pressure campaign rejection (2026-07-13). Supersedes v8.61 hashes.
+Package version: v8.63 Bitcoin transaction-activity family and data freeze (2026-07-13). Supersedes v8.62 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `d0664850392fc52771aa9fbf9f5193e18775008c581e4bedbd1b06de812f031d` |
-| `DECISION_LOG.md` | `d6092aaefdd7d4dd949fd5dfac1b69aef25523fbb4dafe122d72279b1d62a56c` |
+| `PROJECT_STATE.md` | `f3c6020f699ffdc0cfececfff626de50a85dc7c234044f8f9fb70b37a704fe54` |
+| `DECISION_LOG.md` | `d85693a6923ccf178ea291e7f3057d2a0fdeff9b4d4c2a0cf038a86062469439` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `c05ae8774cdcf727a1320de5c6209440a0da3b6331816751b9f55b07494dc688` |
+| `MISSING_AND_OPEN_ITEMS.md` | `b38f481da2578b632b1760ea9e3f5f147000a19ecd2ed5ecfbc2af7c2d20becd` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -68,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `e71ba46fd41ba5493444ad07fb5cb4da3f9db86b6678d4a60fac48c84a523669` |
+| `research/RESEARCH_GAP_MATRIX.md` | `41928b01a1c54a04c9a961867d570c8fcf465799d028821e7468497169ec3782` |
 
 ## Post-V2 family selection V1 (added v8.55)
 
@@ -194,6 +194,16 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `artifacts/validation/campaigns/FUNDING-PRESSURE-SPOT-G1-G11-V3/phase_two_workers_119b2b769de0d1f20ad79adc06274387651ba0a2b9cb83b5713c8a5866ac84ed.json` | `119b2b769de0d1f20ad79adc06274387651ba0a2b9cb83b5713c8a5866ac84ed` |
 | `artifacts/validation/campaigns/FUNDING-PRESSURE-SPOT-G1-G11-V3/preregistration_79864bd116fdb50ff584a4f701a88571f482bb653dedc7aabb2ffc8a1c527044.yaml` | `79864bd116fdb50ff584a4f701a88571f482bb653dedc7aabb2ffc8a1c527044` |
 | `artifacts/validation/campaigns/FUNDING-PRESSURE-SPOT-G1-G11-V3/selection_0ed042349014ef9b9d90011c41f33ad92d8bbdd155ecc0f38db59279da4030ed.json` | `0ed042349014ef9b9d90011c41f33ad92d8bbdd155ecc0f38db59279da4030ed` |
+
+## Bitcoin transaction-activity family and data freeze (added v8.63)
+
+| Path | SHA-256 |
+|---|---|
+| `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V4.md` | `8253dbbde2e61e62b8fd36c8e38707526a623e303bdbbba70d75c4658d25267f` |
+| `research/BTC_TX_ACTIVITY_DATA_PACKAGE_V1.json` | `00b36574e6721ef46baf7bb6684c1cdd26f0a5741657058b5144db84dc51fd74` |
+| `data/raw/onchain/blockchain_info_n_transactions_6y_2026-07-13.json` | `884abab27dbbae21e989d27808349acdbbe372cb90f10e758abfb214ea21a7f1` |
+| `scripts/verify_btc_tx_activity_data.py` | `46d213cc07971c323ac561400d27d24221f405aa016f6650a3fb4413426264ad` |
+| `tests/test_btc_tx_activity_data.py` | `f96d94fba2232aadd3d33c4559609fa4438975408f1d47834b0789968fa6f650` |
 
 ## Expected generated artifacts
 

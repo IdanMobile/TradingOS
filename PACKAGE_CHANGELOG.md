@@ -902,3 +902,14 @@ Key outcomes:
   trial-parity failure cause G4/G5/G6/G7/G8/G10/G11 failure.
 - D-059 closes the context without rescue. No bot, venue, order, paper/demo/live state, human gate,
   promotion, or execution authority was activated.
+
+## v8.63 — 2026-07-13 — Bitcoin transaction-activity family and data freeze
+
+- Added a fourth exactly-three-family source dossier. D-060 rejects stablecoin supply and miner
+  recovery, admitting only delayed finalized L1 confirmed-transaction shocks without scoring.
+- Froze the official 2,187-observation `n-transactions` response, 2,004 campaign observations,
+  exact bytes/logical records, one known source gap, and two-full-day availability lag.
+- Added offline verification and deliberate byte, schema, gap, and lag drift tests. All expected
+  campaign decisions map to a strictly later retained Spot open.
+- Froze a 12-trial activity-side/baseline-window/holding-period pulse roster. No bot, venue,
+  credential, order, paper/demo/live state, or authority was activated.
