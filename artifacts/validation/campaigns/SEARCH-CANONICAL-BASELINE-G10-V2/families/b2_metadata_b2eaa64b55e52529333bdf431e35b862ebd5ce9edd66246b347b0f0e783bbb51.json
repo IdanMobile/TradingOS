@@ -1,0 +1,200 @@
+{
+  "artifact_id": "SEARCH-CANONICAL-BASELINE-G10-V2-B2-5644d70104b9",
+  "artifact_schema": "tios.substantive_strategy_research.v1",
+  "code": {
+    "dirty": false,
+    "git_commit": "6bac8bfa64ac38af2425e33fbb42fb73d90d79e3",
+    "module_sha256": "e7fbcb31a17ff7c3ecc9e4525c0d8c7ca765ccf0d9ef62f3e9f1f6881c02e7b1",
+    "module_sha256_by_path": {
+      "engines/vectorbt/canonical_baseline_returns.py": "ffca97a92ecefe1be2b187316320e5c486ed64618962571d25f4d06c1850299e",
+      "scripts/run_canonical_baseline_campaign.py": "e7fbcb31a17ff7c3ecc9e4525c0d8c7ca765ccf0d9ef62f3e9f1f6881c02e7b1",
+      "scripts/run_g10_candidate.py": "0e46ea7d86c1fa683fbce8fbfd27f1574f7b64d86e0240026746b9036d3d072f",
+      "src/tios/evidence/provenance.py": "49b1690e07e47dd4218992cb0b78c3049b269e5e36f8749c617c32720986a1a3",
+      "src/tios/validation/multiple_testing.py": "bd25dca76e7639beebbc5e8381aaff9e3e6c044e82ce61d721c697900cde4e54"
+    }
+  },
+  "dataset": {
+    "availability": "PUBLIC_CHECKSUM_PINNED_DETERMINISTIC_REBUILD",
+    "data_sha256": "d4d6b3306c44e242f3fb7f71c44bacabf9a6af1f1f8d507ca2de0853b6a727d0",
+    "dataset_id": "DS-CRYPTO-SPOT-BTCUSDT-5M-V1",
+    "manifest_sha256": "f9d986bd48c9baa060871721fc849be3f72b472d4c8859b35d07ec29b0d93139",
+    "range_end": "2026-06-30T23:55:00Z",
+    "range_start": "2021-01-01T00:00:00Z"
+  },
+  "execution_authority": "NONE",
+  "generated_at": "2026-07-13T10:40:35.844074+00:00",
+  "method": {
+    "all_trials_population_ref": "artifacts/validation/campaigns/SEARCH-CANONICAL-BASELINE-G10-V2/inputs/b2_trials_05ba97cbb214b08a3b3b370bd30fbc5796c6f873f3774adfcab8e28083e77807.json",
+    "cost_model": {
+      "buy_price": "open * (1 + slippage_rate)",
+      "fee_application": "EACH_EXECUTED_SIDE_ON_NOTIONAL",
+      "funding": "NOT_APPLICABLE_SPOT",
+      "initial_cash": 1000.0,
+      "interpretation": [
+        "F0/S0 can diagnose mechanics but cannot support an economic claim.",
+        "No trial or family is selected separately per cost cell.",
+        "Report the complete surface, turnover, and trade count without inventing capacity."
+      ],
+      "latency": "NOT_OBSERVED",
+      "market_impact": "NOT_OBSERVED",
+      "order_assumption": "MARKET_TAKER_AT_NEXT_OPEN_WITH_ADVERSE_SLIPPAGE",
+      "primary_economic_scenario": "F1/S1",
+      "scenarios": [
+        {
+          "fee_rate_per_side": 0.0,
+          "id": "F0/S0",
+          "role": "diagnostic_only",
+          "slippage_bps_per_side": 0
+        },
+        {
+          "fee_rate_per_side": 0.001,
+          "id": "F1/S1",
+          "role": "selection_and_primary",
+          "slippage_bps_per_side": 1
+        },
+        {
+          "fee_rate_per_side": 0.001,
+          "id": "F1/S2",
+          "role": "stress",
+          "slippage_bps_per_side": 5
+        },
+        {
+          "fee_rate_per_side": 0.001,
+          "id": "F1/S3",
+          "role": "stress",
+          "slippage_bps_per_side": 10
+        },
+        {
+          "fee_rate_per_side": 0.0015,
+          "id": "F2/S2",
+          "role": "stress",
+          "slippage_bps_per_side": 5
+        },
+        {
+          "fee_rate_per_side": 0.0015,
+          "id": "F2/S3",
+          "role": "stress",
+          "slippage_bps_per_side": 10
+        }
+      ],
+      "selection_scenario": "F1/S1",
+      "sell_price": "open * (1 - slippage_rate)",
+      "spread": "NOT_SEPARATELY_OBSERVED"
+    },
+    "selection_metric": "non_annualized_per_bar_sharpe",
+    "selection_scope": "WITHIN_FAMILY_AND_CAMPAIGN_WIDE_DIAGNOSTICS_ONLY_NO_PROMOTED_WINNER",
+    "split": {
+      "cscv": {
+        "contiguous_slice_count": 16,
+        "full_sample_policy": "USE_ALL_BARS_FOR_SELECTION_DSR_AND_COST_SURFACE",
+        "in_sample_slices_per_split": 8,
+        "out_of_sample_slices_per_split": 8,
+        "scopes": [
+          "each_family",
+          "all_67_trials"
+        ],
+        "tail_policy": "EXCLUDE_REMAINDER_FROM_CSCV_ONLY"
+      },
+      "prospective_holdout": {
+        "adaptation_rule": "ANY_CHANGE_AFTER_OBSERVING_HOLDOUT_REQUIRES_V3_AND_NEW_HOLDOUT",
+        "current_campaign_consumes_holdout": false,
+        "evaluation_frequency": "ONCE_AFTER_MINIMUM_WINDOW",
+        "evaluation_not_before_utc": "2027-01-14T00:00:00Z",
+        "evidence_label": "PROSPECTIVE_POST_FREEZE_HOLDOUT",
+        "freeze_date_utc": "2026-07-13T00:00:00Z",
+        "minimum_observation_days": 184,
+        "observation_start_utc": "2026-07-14T00:00:00Z",
+        "pre_start_warmup": "ALLOWED_WITH_NO_PRE_START_SIGNALS_OR_FILLS",
+        "selected_trial_source": "THIS_CAMPAIGN_F1_S1_RESULTS_FROZEN_BEFORE_OBSERVATION_START",
+        "start_position": "FLAT",
+        "status": "SEALED_WAITING_FOR_FUTURE_DATA"
+      },
+      "walk_forward": {
+        "boundary_gap_bars": 1,
+        "boundary_gap_duration": "5m",
+        "evidence_label": "HISTORICAL_PSEUDO_OOS",
+        "folds": [
+          {
+            "gap_utc": "2021-12-31T23:55:00Z",
+            "id": "WF-2022",
+            "selection_end_utc": "2021-12-31T23:50:00Z",
+            "test_end_utc": "2022-12-31T23:55:00Z",
+            "test_start_utc": "2022-01-01T00:00:00Z"
+          },
+          {
+            "gap_utc": "2022-12-31T23:55:00Z",
+            "id": "WF-2023",
+            "selection_end_utc": "2022-12-31T23:50:00Z",
+            "test_end_utc": "2023-12-31T23:55:00Z",
+            "test_start_utc": "2023-01-01T00:00:00Z"
+          },
+          {
+            "gap_utc": "2023-12-31T23:55:00Z",
+            "id": "WF-2024",
+            "selection_end_utc": "2023-12-31T23:50:00Z",
+            "test_end_utc": "2024-12-31T23:55:00Z",
+            "test_start_utc": "2024-01-01T00:00:00Z"
+          },
+          {
+            "gap_utc": "2024-12-31T23:55:00Z",
+            "id": "WF-2025",
+            "selection_end_utc": "2024-12-31T23:50:00Z",
+            "test_end_utc": "2025-12-31T23:55:00Z",
+            "test_start_utc": "2025-01-01T00:00:00Z"
+          },
+          {
+            "gap_utc": "2025-12-31T23:55:00Z",
+            "id": "WF-2026-H1",
+            "selection_end_utc": "2025-12-31T23:50:00Z",
+            "test_end_utc": "2026-06-30T23:55:00Z",
+            "test_start_utc": "2026-01-01T00:00:00Z"
+          }
+        ],
+        "indicator_warmup": "TRAILING_PRE_TEST_HISTORY_INCLUDING_GAP_ALLOWED_SIGNALS_AND_FILLS_FORBIDDEN",
+        "reason_not_untouched": "The 2021-2026 data and these families influenced earlier repository work.",
+        "scopes": [
+          "each_family",
+          "all_67_trials"
+        ],
+        "selection_metric": "non_annualized_per_bar_sharpe",
+        "selection_scenario": "F1/S1",
+        "test_position_start": "FLAT",
+        "training": "EXPANDING_FROM_2021_01_01"
+      }
+    }
+  },
+  "output_sha256": "5644d70104b9dbbe37e03b4e66e7e0f3d63f5ea71353d786376b88e59ea228f7",
+  "promotion_eligible": false,
+  "strategy": {
+    "canonical_spec_sha256": "da3b238432f5e7085f901a87ca6ac3b527055382abacd3d4c21f0476ed15356a",
+    "implementation_conformance": "CANONICAL_RULES_NEXT_ADJACENT_OPEN_FLOAT64",
+    "parameters": {
+      "exact_spec_control": {
+        "fast": 3,
+        "slow": 5
+      },
+      "inherited_grid": {
+        "constraint": "fast < slow",
+        "fast": [
+          2,
+          3,
+          5,
+          8,
+          10,
+          15
+        ],
+        "raw_trial_count": 34,
+        "slow": [
+          10,
+          20,
+          30,
+          40,
+          50,
+          60
+        ]
+      },
+      "raw_trial_count": 35
+    },
+    "search_campaign_ref": "research/CANONICAL_BASELINE_G10_CAMPAIGN_V2.yaml@sha256:8696412b87fbc4817a4cca25e9fc585466431881529b006627dcaad857a21dd4"
+  }
+}

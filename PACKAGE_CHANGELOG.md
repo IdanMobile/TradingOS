@@ -807,3 +807,10 @@ Key outcomes:
   therefore V2 is a reproducibility/conformance diagnostic, not unseen evidence. The future
   holdout is the only prospective test. No strategy, venue, order, or execution authority
   was enabled.
+- Executed the formal campaign from clean commit `6bac8bf` and retained 13 immutable,
+  content-addressed evidence files. A second complete run reproduced the all-trial inputs
+  byte-for-byte.
+- Recorded the negative result: B2/B4 fail, B3/campaign-wide remain method-blocked on
+  retained zero-trade correlations, all active exact controls lose effectively all capital
+  at F1/S1, and historical walk-forward does not rescue them. Further B2/B3/B4 grid
+  expansion is closed; the future holdout remains sealed.

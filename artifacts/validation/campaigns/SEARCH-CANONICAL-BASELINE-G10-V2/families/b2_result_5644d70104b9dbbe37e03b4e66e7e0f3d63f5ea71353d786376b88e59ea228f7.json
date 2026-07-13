@@ -1,0 +1,2752 @@
+{
+  "campaign_id": "SEARCH-CANONICAL-BASELINE-G10-V2",
+  "cost_surface": {
+    "cells": [
+      {
+        "capacity_estimation": "NOT_ESTIMATED_FROM_5M_OHLCV",
+        "diagnostic_only": true,
+        "fee_rate_per_side": 0.0,
+        "scenario": "F0/S0",
+        "slippage_application": "adverse_by_order_side_at_next_bar_open",
+        "slippage_bps_per_side": 0.0,
+        "trials": [
+          {
+            "buy_orders": 41120,
+            "executed_sides": 82239,
+            "gross_executed_notional": 16685166.558041915,
+            "sell_orders": 41119,
+            "total_return": -0.9142747700263992,
+            "trades": 41120,
+            "trial_key": "fast=2,slow=10",
+            "turnover_on_initial_cash": 16685.166558041914
+          },
+          {
+            "buy_orders": 27285,
+            "executed_sides": 54569,
+            "gross_executed_notional": 21553764.194622383,
+            "sell_orders": 27284,
+            "total_return": -0.7924151618026439,
+            "trades": 27285,
+            "trial_key": "fast=2,slow=20",
+            "turnover_on_initial_cash": 21553.76419462238
+          },
+          {
+            "buy_orders": 22173,
+            "executed_sides": 44345,
+            "gross_executed_notional": 26705152.453008927,
+            "sell_orders": 22172,
+            "total_return": -0.6124509487543739,
+            "trades": 22173,
+            "trial_key": "fast=2,slow=30",
+            "turnover_on_initial_cash": 26705.152453008926
+          },
+          {
+            "buy_orders": 19094,
+            "executed_sides": 38187,
+            "gross_executed_notional": 29646213.706841018,
+            "sell_orders": 19093,
+            "total_return": -0.4837403826944046,
+            "trades": 19094,
+            "trial_key": "fast=2,slow=40",
+            "turnover_on_initial_cash": 29646.21370684102
+          },
+          {
+            "buy_orders": 16820,
+            "executed_sides": 33640,
+            "gross_executed_notional": 25346773.326950826,
+            "sell_orders": 16820,
+            "total_return": -0.43276380402867254,
+            "trades": 16820,
+            "trial_key": "fast=2,slow=50",
+            "turnover_on_initial_cash": 25346.773326950824
+          },
+          {
+            "buy_orders": 15221,
+            "executed_sides": 30442,
+            "gross_executed_notional": 15647568.282330053,
+            "sell_orders": 15221,
+            "total_return": -0.6176317272867113,
+            "trades": 15221,
+            "trial_key": "fast=2,slow=60",
+            "turnover_on_initial_cash": 15647.568282330052
+          },
+          {
+            "buy_orders": 36054,
+            "executed_sides": 72107,
+            "gross_executed_notional": 9985963.885309886,
+            "sell_orders": 36053,
+            "total_return": -0.940402406064276,
+            "trades": 36054,
+            "trial_key": "fast=3,slow=10",
+            "turnover_on_initial_cash": 9985.963885309886
+          },
+          {
+            "buy_orders": 23102,
+            "executed_sides": 46203,
+            "gross_executed_notional": 18356168.453047697,
+            "sell_orders": 23101,
+            "total_return": -0.7863922452545441,
+            "trades": 23102,
+            "trial_key": "fast=3,slow=20",
+            "turnover_on_initial_cash": 18356.168453047696
+          },
+          {
+            "buy_orders": 18439,
+            "executed_sides": 36877,
+            "gross_executed_notional": 19016620.901989855,
+            "sell_orders": 18438,
+            "total_return": -0.6653866062559596,
+            "trades": 18439,
+            "trial_key": "fast=3,slow=30",
+            "turnover_on_initial_cash": 19016.620901989856
+          },
+          {
+            "buy_orders": 15803,
+            "executed_sides": 31606,
+            "gross_executed_notional": 34433848.69673646,
+            "sell_orders": 15803,
+            "total_return": -0.014261887039306543,
+            "trades": 15803,
+            "trial_key": "fast=3,slow=40",
+            "turnover_on_initial_cash": 34433.84869673646
+          },
+          {
+            "buy_orders": 13955,
+            "executed_sides": 27910,
+            "gross_executed_notional": 21495327.732773136,
+            "sell_orders": 13955,
+            "total_return": -0.3429689897701977,
+            "trades": 13955,
+            "trial_key": "fast=3,slow=50",
+            "turnover_on_initial_cash": 21495.327732773138
+          },
+          {
+            "buy_orders": 12581,
+            "executed_sides": 25162,
+            "gross_executed_notional": 14627312.483544124,
+            "sell_orders": 12581,
+            "total_return": -0.5306330049010285,
+            "trades": 12581,
+            "trial_key": "fast=3,slow=60",
+            "turnover_on_initial_cash": 14627.312483544125
+          },
+          {
+            "buy_orders": 33452,
+            "executed_sides": 66904,
+            "gross_executed_notional": 6743264.340712959,
+            "sell_orders": 33452,
+            "total_return": -0.9702048606248174,
+            "trades": 33452,
+            "trial_key": "fast=5,slow=10",
+            "turnover_on_initial_cash": 6743.264340712959
+          },
+          {
+            "buy_orders": 19190,
+            "executed_sides": 38379,
+            "gross_executed_notional": 15307460.924392024,
+            "sell_orders": 19189,
+            "total_return": -0.7590786963307895,
+            "trades": 19190,
+            "trial_key": "fast=5,slow=20",
+            "turnover_on_initial_cash": 15307.460924392024
+          },
+          {
+            "buy_orders": 14898,
+            "executed_sides": 29796,
+            "gross_executed_notional": 17786194.63464486,
+            "sell_orders": 14898,
+            "total_return": -0.5742814273031945,
+            "trades": 14898,
+            "trial_key": "fast=5,slow=30",
+            "turnover_on_initial_cash": 17786.19463464486
+          },
+          {
+            "buy_orders": 12531,
+            "executed_sides": 25062,
+            "gross_executed_notional": 28575075.216579407,
+            "sell_orders": 12531,
+            "total_return": 0.049457259277280625,
+            "trades": 12531,
+            "trial_key": "fast=5,slow=40",
+            "turnover_on_initial_cash": 28575.075216579407
+          },
+          {
+            "buy_orders": 11059,
+            "executed_sides": 22118,
+            "gross_executed_notional": 19691909.107910234,
+            "sell_orders": 11059,
+            "total_return": -0.17553184967185576,
+            "trades": 11059,
+            "trial_key": "fast=5,slow=50",
+            "turnover_on_initial_cash": 19691.909107910233
+          },
+          {
+            "buy_orders": 9999,
+            "executed_sides": 19998,
+            "gross_executed_notional": 10933333.46070831,
+            "sell_orders": 9999,
+            "total_return": -0.5582566829440991,
+            "trades": 9999,
+            "trial_key": "fast=5,slow=60",
+            "turnover_on_initial_cash": 10933.33346070831
+          },
+          {
+            "buy_orders": 41936,
+            "executed_sides": 83871,
+            "gross_executed_notional": 23009521.40881151,
+            "sell_orders": 41935,
+            "total_return": -0.9174404344648606,
+            "trades": 41936,
+            "trial_key": "fast=8,slow=10",
+            "turnover_on_initial_cash": 23009.52140881151
+          },
+          {
+            "buy_orders": 16970,
+            "executed_sides": 33939,
+            "gross_executed_notional": 30213148.711142622,
+            "sell_orders": 16969,
+            "total_return": -0.2911629193091994,
+            "trades": 16970,
+            "trial_key": "fast=8,slow=20",
+            "turnover_on_initial_cash": 30213.14871114262
+          },
+          {
+            "buy_orders": 12604,
+            "executed_sides": 25208,
+            "gross_executed_notional": 31567991.902716126,
+            "sell_orders": 12604,
+            "total_return": 0.07517780228240645,
+            "trades": 12604,
+            "trial_key": "fast=8,slow=30",
+            "turnover_on_initial_cash": 31567.991902716127
+          },
+          {
+            "buy_orders": 10377,
+            "executed_sides": 20754,
+            "gross_executed_notional": 32195486.97417754,
+            "sell_orders": 10377,
+            "total_return": 0.7310522212537682,
+            "trades": 10377,
+            "trial_key": "fast=8,slow=40",
+            "turnover_on_initial_cash": 32195.48697417754
+          },
+          {
+            "buy_orders": 9095,
+            "executed_sides": 18190,
+            "gross_executed_notional": 25148886.186609328,
+            "sell_orders": 9095,
+            "total_return": 0.4786936343119669,
+            "trades": 9095,
+            "trial_key": "fast=8,slow=50",
+            "turnover_on_initial_cash": 25148.88618660933
+          },
+          {
+            "buy_orders": 8186,
+            "executed_sides": 16372,
+            "gross_executed_notional": 17891188.048772395,
+            "sell_orders": 8186,
+            "total_return": 0.028817324339081893,
+            "trades": 8186,
+            "trial_key": "fast=8,slow=60",
+            "turnover_on_initial_cash": 17891.188048772394
+          },
+          {
+            "buy_orders": 16777,
+            "executed_sides": 33553,
+            "gross_executed_notional": 37758738.6466301,
+            "sell_orders": 16776,
+            "total_return": -0.14276349203954863,
+            "trades": 16777,
+            "trial_key": "fast=10,slow=20",
+            "turnover_on_initial_cash": 37758.7386466301
+          },
+          {
+            "buy_orders": 11830,
+            "executed_sides": 23660,
+            "gross_executed_notional": 24176429.582716506,
+            "sell_orders": 11830,
+            "total_return": -0.07803961254732894,
+            "trades": 11830,
+            "trial_key": "fast=10,slow=30",
+            "turnover_on_initial_cash": 24176.429582716504
+          },
+          {
+            "buy_orders": 9614,
+            "executed_sides": 19228,
+            "gross_executed_notional": 31852089.581928637,
+            "sell_orders": 9614,
+            "total_return": 0.7873062596521808,
+            "trades": 9614,
+            "trial_key": "fast=10,slow=40",
+            "turnover_on_initial_cash": 31852.089581928638
+          },
+          {
+            "buy_orders": 8362,
+            "executed_sides": 16724,
+            "gross_executed_notional": 27788918.527744893,
+            "sell_orders": 8362,
+            "total_return": 0.9098523429138261,
+            "trades": 8362,
+            "trial_key": "fast=10,slow=50",
+            "turnover_on_initial_cash": 27788.918527744892
+          },
+          {
+            "buy_orders": 7441,
+            "executed_sides": 14882,
+            "gross_executed_notional": 17710178.464491352,
+            "sell_orders": 7441,
+            "total_return": 0.36717470720574036,
+            "trades": 7441,
+            "trial_key": "fast=10,slow=60",
+            "turnover_on_initial_cash": 17710.178464491353
+          },
+          {
+            "buy_orders": 19413,
+            "executed_sides": 38826,
+            "gross_executed_notional": 47353184.64866694,
+            "sell_orders": 19413,
+            "total_return": -0.20489457134418956,
+            "trades": 19413,
+            "trial_key": "fast=15,slow=20",
+            "turnover_on_initial_cash": 47353.18464866694
+          },
+          {
+            "buy_orders": 11252,
+            "executed_sides": 22504,
+            "gross_executed_notional": 24039002.525158655,
+            "sell_orders": 11252,
+            "total_return": -0.11871233309540946,
+            "trades": 11252,
+            "trial_key": "fast=15,slow=30",
+            "turnover_on_initial_cash": 24039.002525158656
+          },
+          {
+            "buy_orders": 8616,
+            "executed_sides": 17232,
+            "gross_executed_notional": 34385692.99327841,
+            "sell_orders": 8616,
+            "total_return": 1.5566873810248152,
+            "trades": 8616,
+            "trial_key": "fast=15,slow=40",
+            "turnover_on_initial_cash": 34385.692993278404
+          },
+          {
+            "buy_orders": 7358,
+            "executed_sides": 14716,
+            "gross_executed_notional": 20088900.734385844,
+            "sell_orders": 7358,
+            "total_return": 0.6710083453471741,
+            "trades": 7358,
+            "trial_key": "fast=15,slow=50",
+            "turnover_on_initial_cash": 20088.900734385843
+          },
+          {
+            "buy_orders": 6442,
+            "executed_sides": 12884,
+            "gross_executed_notional": 11839226.549306681,
+            "sell_orders": 6442,
+            "total_return": 0.035439544087327135,
+            "trades": 6442,
+            "trial_key": "fast=15,slow=60",
+            "turnover_on_initial_cash": 11839.22654930668
+          },
+          {
+            "buy_orders": 66459,
+            "executed_sides": 132917,
+            "gross_executed_notional": 27798469.54445362,
+            "sell_orders": 66458,
+            "total_return": -0.945295619628681,
+            "trades": 66459,
+            "trial_key": "fast=3,slow=5",
+            "turnover_on_initial_cash": 27798.46954445362
+          }
+        ]
+      },
+      {
+        "capacity_estimation": "NOT_ESTIMATED_FROM_5M_OHLCV",
+        "diagnostic_only": false,
+        "fee_rate_per_side": 0.001,
+        "scenario": "F1/S1",
+        "slippage_application": "adverse_by_order_side_at_next_bar_open",
+        "slippage_bps_per_side": 1.0,
+        "trials": [
+          {
+            "buy_orders": 6455,
+            "executed_sides": 12910,
+            "gross_executed_notional": 915561.9976080363,
+            "sell_orders": 6455,
+            "total_return": -0.9999998430863267,
+            "trades": 6455,
+            "trial_key": "fast=2,slow=10",
+            "turnover_on_initial_cash": 915.5619976080362
+          },
+          {
+            "buy_orders": 6674,
+            "executed_sides": 13348,
+            "gross_executed_notional": 1128791.6768477955,
+            "sell_orders": 6674,
+            "total_return": -0.9999998433148204,
+            "trades": 6674,
+            "trial_key": "fast=2,slow=20",
+            "turnover_on_initial_cash": 1128.7916768477955
+          },
+          {
+            "buy_orders": 6696,
+            "executed_sides": 13392,
+            "gross_executed_notional": 1404739.4249569776,
+            "sell_orders": 6696,
+            "total_return": -0.999999843091563,
+            "trades": 6696,
+            "trial_key": "fast=2,slow=30",
+            "turnover_on_initial_cash": 1404.7394249569777
+          },
+          {
+            "buy_orders": 6626,
+            "executed_sides": 13252,
+            "gross_executed_notional": 1369305.0578510507,
+            "sell_orders": 6626,
+            "total_return": -0.9999998428827219,
+            "trades": 6626,
+            "trial_key": "fast=2,slow=40",
+            "turnover_on_initial_cash": 1369.3050578510508
+          },
+          {
+            "buy_orders": 6523,
+            "executed_sides": 13046,
+            "gross_executed_notional": 1211743.6251393382,
+            "sell_orders": 6523,
+            "total_return": -0.9999997962836278,
+            "trades": 6523,
+            "trial_key": "fast=2,slow=50",
+            "turnover_on_initial_cash": 1211.7436251393383
+          },
+          {
+            "buy_orders": 6294,
+            "executed_sides": 12588,
+            "gross_executed_notional": 1000991.8818815852,
+            "sell_orders": 6294,
+            "total_return": -0.9999997501187263,
+            "trades": 6294,
+            "trial_key": "fast=2,slow=60",
+            "turnover_on_initial_cash": 1000.9918818815852
+          },
+          {
+            "buy_orders": 6248,
+            "executed_sides": 12496,
+            "gross_executed_notional": 815819.7420525658,
+            "sell_orders": 6248,
+            "total_return": -0.9999998426329973,
+            "trades": 6248,
+            "trial_key": "fast=3,slow=10",
+            "turnover_on_initial_cash": 815.8197420525657
+          },
+          {
+            "buy_orders": 6617,
+            "executed_sides": 13234,
+            "gross_executed_notional": 1072165.6254445517,
+            "sell_orders": 6617,
+            "total_return": -0.9999998428311916,
+            "trades": 6617,
+            "trial_key": "fast=3,slow=20",
+            "turnover_on_initial_cash": 1072.1656254445518
+          },
+          {
+            "buy_orders": 6481,
+            "executed_sides": 12962,
+            "gross_executed_notional": 1258658.6773647973,
+            "sell_orders": 6481,
+            "total_return": -0.9999998352118872,
+            "trades": 6481,
+            "trial_key": "fast=3,slow=30",
+            "turnover_on_initial_cash": 1258.6586773647973
+          },
+          {
+            "buy_orders": 6727,
+            "executed_sides": 13454,
+            "gross_executed_notional": 1389126.778529034,
+            "sell_orders": 6727,
+            "total_return": -0.9999997482416476,
+            "trades": 6727,
+            "trial_key": "fast=3,slow=40",
+            "turnover_on_initial_cash": 1389.126778529034
+          },
+          {
+            "buy_orders": 6494,
+            "executed_sides": 12988,
+            "gross_executed_notional": 1164566.771177784,
+            "sell_orders": 6494,
+            "total_return": -0.9999997413734062,
+            "trades": 6494,
+            "trial_key": "fast=3,slow=50",
+            "turnover_on_initial_cash": 1164.5667711777842
+          },
+          {
+            "buy_orders": 6316,
+            "executed_sides": 12632,
+            "gross_executed_notional": 969161.4014786753,
+            "sell_orders": 6316,
+            "total_return": -0.9999997386564462,
+            "trades": 6316,
+            "trial_key": "fast=3,slow=60",
+            "turnover_on_initial_cash": 969.1614014786753
+          },
+          {
+            "buy_orders": 5987,
+            "executed_sides": 11974,
+            "gross_executed_notional": 768116.393113434,
+            "sell_orders": 5987,
+            "total_return": -0.9999998426149607,
+            "trades": 5987,
+            "trial_key": "fast=5,slow=10",
+            "turnover_on_initial_cash": 768.116393113434
+          },
+          {
+            "buy_orders": 6392,
+            "executed_sides": 12784,
+            "gross_executed_notional": 1020217.9889807167,
+            "sell_orders": 6392,
+            "total_return": -0.9999998427146678,
+            "trades": 6392,
+            "trial_key": "fast=5,slow=20",
+            "turnover_on_initial_cash": 1020.2179889807167
+          },
+          {
+            "buy_orders": 6472,
+            "executed_sides": 12944,
+            "gross_executed_notional": 1203033.87564988,
+            "sell_orders": 6472,
+            "total_return": -0.9999997481618361,
+            "trades": 6472,
+            "trial_key": "fast=5,slow=30",
+            "turnover_on_initial_cash": 1203.03387564988
+          },
+          {
+            "buy_orders": 6635,
+            "executed_sides": 13270,
+            "gross_executed_notional": 1483721.7133186408,
+            "sell_orders": 6635,
+            "total_return": -0.9999996356766697,
+            "trades": 6635,
+            "trial_key": "fast=5,slow=40",
+            "turnover_on_initial_cash": 1483.721713318641
+          },
+          {
+            "buy_orders": 6434,
+            "executed_sides": 12868,
+            "gross_executed_notional": 1195670.7528987902,
+            "sell_orders": 6434,
+            "total_return": -0.9999994623877494,
+            "trades": 6434,
+            "trial_key": "fast=5,slow=50",
+            "turnover_on_initial_cash": 1195.6707528987902
+          },
+          {
+            "buy_orders": 6248,
+            "executed_sides": 12496,
+            "gross_executed_notional": 899359.4666092183,
+            "sell_orders": 6248,
+            "total_return": -0.9999994468941639,
+            "trades": 6248,
+            "trial_key": "fast=5,slow=60",
+            "turnover_on_initial_cash": 899.3594666092183
+          },
+          {
+            "buy_orders": 6648,
+            "executed_sides": 13296,
+            "gross_executed_notional": 853372.0727751643,
+            "sell_orders": 6648,
+            "total_return": -0.999999843424699,
+            "trades": 6648,
+            "trial_key": "fast=8,slow=10",
+            "turnover_on_initial_cash": 853.3720727751643
+          },
+          {
+            "buy_orders": 6753,
+            "executed_sides": 13506,
+            "gross_executed_notional": 996982.9643755801,
+            "sell_orders": 6753,
+            "total_return": -0.9999997912635488,
+            "trades": 6753,
+            "trial_key": "fast=8,slow=20",
+            "turnover_on_initial_cash": 996.9829643755801
+          },
+          {
+            "buy_orders": 6684,
+            "executed_sides": 13368,
+            "gross_executed_notional": 1389912.2232947277,
+            "sell_orders": 6684,
+            "total_return": -0.999999635682041,
+            "trades": 6684,
+            "trial_key": "fast=8,slow=30",
+            "turnover_on_initial_cash": 1389.9122232947277
+          },
+          {
+            "buy_orders": 6799,
+            "executed_sides": 13598,
+            "gross_executed_notional": 1397095.5562449086,
+            "sell_orders": 6799,
+            "total_return": -0.9999994509605454,
+            "trades": 6799,
+            "trial_key": "fast=8,slow=40",
+            "turnover_on_initial_cash": 1397.0955562449085
+          },
+          {
+            "buy_orders": 6901,
+            "executed_sides": 13802,
+            "gross_executed_notional": 1255994.5531573656,
+            "sell_orders": 6901,
+            "total_return": -0.9999994142032362,
+            "trades": 6901,
+            "trial_key": "fast=8,slow=50",
+            "turnover_on_initial_cash": 1255.9945531573655
+          },
+          {
+            "buy_orders": 6698,
+            "executed_sides": 13396,
+            "gross_executed_notional": 1104598.2223365505,
+            "sell_orders": 6698,
+            "total_return": -0.9999994075358001,
+            "trades": 6698,
+            "trial_key": "fast=8,slow=60",
+            "turnover_on_initial_cash": 1104.5982223365504
+          },
+          {
+            "buy_orders": 6855,
+            "executed_sides": 13710,
+            "gross_executed_notional": 1136744.4520659053,
+            "sell_orders": 6855,
+            "total_return": -0.9999997496505938,
+            "trades": 6855,
+            "trial_key": "fast=10,slow=20",
+            "turnover_on_initial_cash": 1136.7444520659053
+          },
+          {
+            "buy_orders": 6653,
+            "executed_sides": 13306,
+            "gross_executed_notional": 1276200.6064832883,
+            "sell_orders": 6653,
+            "total_return": -0.9999996012154482,
+            "trades": 6653,
+            "trial_key": "fast=10,slow=30",
+            "turnover_on_initial_cash": 1276.2006064832883
+          },
+          {
+            "buy_orders": 6767,
+            "executed_sides": 13534,
+            "gross_executed_notional": 1452207.507661541,
+            "sell_orders": 6767,
+            "total_return": -0.999999415449107,
+            "trades": 6767,
+            "trial_key": "fast=10,slow=40",
+            "turnover_on_initial_cash": 1452.207507661541
+          },
+          {
+            "buy_orders": 6916,
+            "executed_sides": 13832,
+            "gross_executed_notional": 1408013.9685734375,
+            "sell_orders": 6916,
+            "total_return": -0.9999994108137994,
+            "trades": 6916,
+            "trial_key": "fast=10,slow=50",
+            "turnover_on_initial_cash": 1408.0139685734375
+          },
+          {
+            "buy_orders": 6732,
+            "executed_sides": 13464,
+            "gross_executed_notional": 1158626.4115644624,
+            "sell_orders": 6732,
+            "total_return": -0.9999994117528931,
+            "trades": 6732,
+            "trial_key": "fast=10,slow=60",
+            "turnover_on_initial_cash": 1158.6264115644624
+          },
+          {
+            "buy_orders": 6896,
+            "executed_sides": 13792,
+            "gross_executed_notional": 1336758.9023636472,
+            "sell_orders": 6896,
+            "total_return": -0.9999998350106397,
+            "trades": 6896,
+            "trial_key": "fast=15,slow=20",
+            "turnover_on_initial_cash": 1336.7589023636472
+          },
+          {
+            "buy_orders": 6689,
+            "executed_sides": 13378,
+            "gross_executed_notional": 1371033.0987149272,
+            "sell_orders": 6689,
+            "total_return": -0.9999994505072181,
+            "trades": 6689,
+            "trial_key": "fast=15,slow=30",
+            "turnover_on_initial_cash": 1371.0330987149273
+          },
+          {
+            "buy_orders": 6938,
+            "executed_sides": 13876,
+            "gross_executed_notional": 1487390.0759638082,
+            "sell_orders": 6938,
+            "total_return": -0.9999994156102315,
+            "trades": 6938,
+            "trial_key": "fast=15,slow=40",
+            "turnover_on_initial_cash": 1487.3900759638082
+          },
+          {
+            "buy_orders": 6867,
+            "executed_sides": 13734,
+            "gross_executed_notional": 1173707.92872855,
+            "sell_orders": 6867,
+            "total_return": -0.9999994088013081,
+            "trades": 6867,
+            "trial_key": "fast=15,slow=50",
+            "turnover_on_initial_cash": 1173.70792872855
+          },
+          {
+            "buy_orders": 6442,
+            "executed_sides": 12884,
+            "gross_executed_notional": 945833.174361162,
+            "sell_orders": 6442,
+            "total_return": -0.9999992753508892,
+            "trades": 6442,
+            "trial_key": "fast=15,slow=60",
+            "turnover_on_initial_cash": 945.833174361162
+          },
+          {
+            "buy_orders": 6761,
+            "executed_sides": 13522,
+            "gross_executed_notional": 920356.6321860341,
+            "sell_orders": 6761,
+            "total_return": -0.9999998429140591,
+            "trades": 6761,
+            "trial_key": "fast=3,slow=5",
+            "turnover_on_initial_cash": 920.3566321860341
+          }
+        ]
+      },
+      {
+        "capacity_estimation": "NOT_ESTIMATED_FROM_5M_OHLCV",
+        "diagnostic_only": false,
+        "fee_rate_per_side": 0.001,
+        "scenario": "F1/S2",
+        "slippage_application": "adverse_by_order_side_at_next_bar_open",
+        "slippage_bps_per_side": 5.0,
+        "trials": [
+          {
+            "buy_orders": 4752,
+            "executed_sides": 9504,
+            "gross_executed_notional": 689514.0862116137,
+            "sell_orders": 4752,
+            "total_return": -0.9999998425935761,
+            "trades": 4752,
+            "trial_key": "fast=2,slow=10",
+            "turnover_on_initial_cash": 689.5140862116137
+          },
+          {
+            "buy_orders": 4905,
+            "executed_sides": 9810,
+            "gross_executed_notional": 827863.9589246168,
+            "sell_orders": 4905,
+            "total_return": -0.999999843264834,
+            "trades": 4905,
+            "trial_key": "fast=2,slow=20",
+            "turnover_on_initial_cash": 827.8639589246168
+          },
+          {
+            "buy_orders": 5035,
+            "executed_sides": 10070,
+            "gross_executed_notional": 1003946.403384342,
+            "sell_orders": 5035,
+            "total_return": -0.9999998428623148,
+            "trades": 5035,
+            "trial_key": "fast=2,slow=30",
+            "turnover_on_initial_cash": 1003.9464033843419
+          },
+          {
+            "buy_orders": 5016,
+            "executed_sides": 10032,
+            "gross_executed_notional": 968434.7278400018,
+            "sell_orders": 5016,
+            "total_return": -0.9999998426932092,
+            "trades": 5016,
+            "trial_key": "fast=2,slow=40",
+            "turnover_on_initial_cash": 968.4347278400018
+          },
+          {
+            "buy_orders": 5005,
+            "executed_sides": 10010,
+            "gross_executed_notional": 867587.6588048422,
+            "sell_orders": 5005,
+            "total_return": -0.9999998430711878,
+            "trades": 5005,
+            "trial_key": "fast=2,slow=50",
+            "turnover_on_initial_cash": 867.5876588048421
+          },
+          {
+            "buy_orders": 4796,
+            "executed_sides": 9592,
+            "gross_executed_notional": 731386.825186575,
+            "sell_orders": 4796,
+            "total_return": -0.9999998426010784,
+            "trades": 4796,
+            "trial_key": "fast=2,slow=60",
+            "turnover_on_initial_cash": 731.3868251865749
+          },
+          {
+            "buy_orders": 4676,
+            "executed_sides": 9352,
+            "gross_executed_notional": 632460.825120015,
+            "sell_orders": 4676,
+            "total_return": -0.9999998432196472,
+            "trades": 4676,
+            "trial_key": "fast=3,slow=10",
+            "turnover_on_initial_cash": 632.460825120015
+          },
+          {
+            "buy_orders": 4950,
+            "executed_sides": 9900,
+            "gross_executed_notional": 792947.057680144,
+            "sell_orders": 4950,
+            "total_return": -0.9999998426402866,
+            "trades": 4950,
+            "trial_key": "fast=3,slow=20",
+            "turnover_on_initial_cash": 792.947057680144
+          },
+          {
+            "buy_orders": 4903,
+            "executed_sides": 9806,
+            "gross_executed_notional": 923272.3075122058,
+            "sell_orders": 4903,
+            "total_return": -0.9999998428377738,
+            "trades": 4903,
+            "trial_key": "fast=3,slow=30",
+            "turnover_on_initial_cash": 923.2723075122058
+          },
+          {
+            "buy_orders": 5033,
+            "executed_sides": 10066,
+            "gross_executed_notional": 973553.2445908913,
+            "sell_orders": 5033,
+            "total_return": -0.9999998428337382,
+            "trades": 5033,
+            "trial_key": "fast=3,slow=40",
+            "turnover_on_initial_cash": 973.5532445908913
+          },
+          {
+            "buy_orders": 4835,
+            "executed_sides": 9670,
+            "gross_executed_notional": 840874.2898794622,
+            "sell_orders": 4835,
+            "total_return": -0.999999842981276,
+            "trades": 4835,
+            "trial_key": "fast=3,slow=50",
+            "turnover_on_initial_cash": 840.8742898794623
+          },
+          {
+            "buy_orders": 4708,
+            "executed_sides": 9416,
+            "gross_executed_notional": 708727.0744342627,
+            "sell_orders": 4708,
+            "total_return": -0.9999998011141094,
+            "trades": 4708,
+            "trial_key": "fast=3,slow=60",
+            "turnover_on_initial_cash": 708.7270744342627
+          },
+          {
+            "buy_orders": 4441,
+            "executed_sides": 8882,
+            "gross_executed_notional": 599690.896419371,
+            "sell_orders": 4441,
+            "total_return": -0.999999842550897,
+            "trades": 4441,
+            "trial_key": "fast=5,slow=10",
+            "turnover_on_initial_cash": 599.690896419371
+          },
+          {
+            "buy_orders": 4845,
+            "executed_sides": 9690,
+            "gross_executed_notional": 755014.7618503206,
+            "sell_orders": 4845,
+            "total_return": -0.9999998431529078,
+            "trades": 4845,
+            "trial_key": "fast=5,slow=20",
+            "turnover_on_initial_cash": 755.0147618503206
+          },
+          {
+            "buy_orders": 4821,
+            "executed_sides": 9642,
+            "gross_executed_notional": 878422.4607367892,
+            "sell_orders": 4821,
+            "total_return": -0.9999998427346763,
+            "trades": 4821,
+            "trial_key": "fast=5,slow=30",
+            "turnover_on_initial_cash": 878.4224607367892
+          },
+          {
+            "buy_orders": 4959,
+            "executed_sides": 9918,
+            "gross_executed_notional": 1048653.2344919255,
+            "sell_orders": 4959,
+            "total_return": -0.9999997964317131,
+            "trades": 4959,
+            "trial_key": "fast=5,slow=40",
+            "turnover_on_initial_cash": 1048.6532344919256
+          },
+          {
+            "buy_orders": 4849,
+            "executed_sides": 9698,
+            "gross_executed_notional": 862929.8028538099,
+            "sell_orders": 4849,
+            "total_return": -0.9999997426138794,
+            "trades": 4849,
+            "trial_key": "fast=5,slow=50",
+            "turnover_on_initial_cash": 862.9298028538099
+          },
+          {
+            "buy_orders": 4659,
+            "executed_sides": 9318,
+            "gross_executed_notional": 667924.0130279881,
+            "sell_orders": 4659,
+            "total_return": -0.9999997412253341,
+            "trades": 4659,
+            "trial_key": "fast=5,slow=60",
+            "turnover_on_initial_cash": 667.9240130279882
+          },
+          {
+            "buy_orders": 4905,
+            "executed_sides": 9810,
+            "gross_executed_notional": 646662.4374942504,
+            "sell_orders": 4905,
+            "total_return": -0.999999844120142,
+            "trades": 4905,
+            "trial_key": "fast=8,slow=10",
+            "turnover_on_initial_cash": 646.6624374942504
+          },
+          {
+            "buy_orders": 5084,
+            "executed_sides": 10168,
+            "gross_executed_notional": 715629.1085940154,
+            "sell_orders": 5084,
+            "total_return": -0.999999843094948,
+            "trades": 5084,
+            "trial_key": "fast=8,slow=20",
+            "turnover_on_initial_cash": 715.6291085940154
+          },
+          {
+            "buy_orders": 5026,
+            "executed_sides": 10052,
+            "gross_executed_notional": 973520.534501094,
+            "sell_orders": 5026,
+            "total_return": -0.9999997972605984,
+            "trades": 5026,
+            "trial_key": "fast=8,slow=30",
+            "turnover_on_initial_cash": 973.5205345010941
+          },
+          {
+            "buy_orders": 5019,
+            "executed_sides": 10038,
+            "gross_executed_notional": 975345.0872806468,
+            "sell_orders": 5019,
+            "total_return": -0.9999997480406462,
+            "trades": 5019,
+            "trial_key": "fast=8,slow=40",
+            "turnover_on_initial_cash": 975.3450872806468
+          },
+          {
+            "buy_orders": 4974,
+            "executed_sides": 9948,
+            "gross_executed_notional": 899155.8689178154,
+            "sell_orders": 4974,
+            "total_return": -0.9999996013726761,
+            "trades": 4974,
+            "trial_key": "fast=8,slow=50",
+            "turnover_on_initial_cash": 899.1558689178154
+          },
+          {
+            "buy_orders": 4913,
+            "executed_sides": 9826,
+            "gross_executed_notional": 809786.1409630391,
+            "sell_orders": 4913,
+            "total_return": -0.9999994495139946,
+            "trades": 4913,
+            "trial_key": "fast=8,slow=60",
+            "turnover_on_initial_cash": 809.7861409630391
+          },
+          {
+            "buy_orders": 5126,
+            "executed_sides": 10252,
+            "gross_executed_notional": 799411.6393134553,
+            "sell_orders": 5126,
+            "total_return": -0.9999998427959802,
+            "trades": 5126,
+            "trial_key": "fast=10,slow=20",
+            "turnover_on_initial_cash": 799.4116393134553
+          },
+          {
+            "buy_orders": 4936,
+            "executed_sides": 9872,
+            "gross_executed_notional": 911843.8318844553,
+            "sell_orders": 4936,
+            "total_return": -0.9999997487959795,
+            "trades": 4936,
+            "trial_key": "fast=10,slow=30",
+            "turnover_on_initial_cash": 911.8438318844553
+          },
+          {
+            "buy_orders": 5037,
+            "executed_sides": 10074,
+            "gross_executed_notional": 1021408.943243498,
+            "sell_orders": 5037,
+            "total_return": -0.999999653735476,
+            "trades": 5037,
+            "trial_key": "fast=10,slow=40",
+            "turnover_on_initial_cash": 1021.408943243498
+          },
+          {
+            "buy_orders": 5037,
+            "executed_sides": 10074,
+            "gross_executed_notional": 1010962.8180782569,
+            "sell_orders": 5037,
+            "total_return": -0.9999994553125467,
+            "trades": 5037,
+            "trial_key": "fast=10,slow=50",
+            "turnover_on_initial_cash": 1010.9628180782569
+          },
+          {
+            "buy_orders": 4895,
+            "executed_sides": 9790,
+            "gross_executed_notional": 848927.4251435361,
+            "sell_orders": 4895,
+            "total_return": -0.9999994495999279,
+            "trades": 4895,
+            "trial_key": "fast=10,slow=60",
+            "turnover_on_initial_cash": 848.9274251435361
+          },
+          {
+            "buy_orders": 5202,
+            "executed_sides": 10404,
+            "gross_executed_notional": 949460.5188121791,
+            "sell_orders": 5202,
+            "total_return": -0.9999998429294442,
+            "trades": 5202,
+            "trial_key": "fast=15,slow=20",
+            "turnover_on_initial_cash": 949.4605188121791
+          },
+          {
+            "buy_orders": 4914,
+            "executed_sides": 9828,
+            "gross_executed_notional": 988190.998002617,
+            "sell_orders": 4914,
+            "total_return": -0.999999748187265,
+            "trades": 4914,
+            "trial_key": "fast=15,slow=30",
+            "turnover_on_initial_cash": 988.190998002617
+          },
+          {
+            "buy_orders": 5053,
+            "executed_sides": 10106,
+            "gross_executed_notional": 1072348.6025862184,
+            "sell_orders": 5053,
+            "total_return": -0.999999445976398,
+            "trades": 5053,
+            "trial_key": "fast=15,slow=40",
+            "turnover_on_initial_cash": 1072.3486025862185
+          },
+          {
+            "buy_orders": 4917,
+            "executed_sides": 9834,
+            "gross_executed_notional": 880339.0680642199,
+            "sell_orders": 4917,
+            "total_return": -0.9999994510446679,
+            "trades": 4917,
+            "trial_key": "fast=15,slow=50",
+            "turnover_on_initial_cash": 880.3390680642199
+          },
+          {
+            "buy_orders": 4918,
+            "executed_sides": 9836,
+            "gross_executed_notional": 722654.5560475308,
+            "sell_orders": 4918,
+            "total_return": -0.9999994114075587,
+            "trades": 4918,
+            "trial_key": "fast=15,slow=60",
+            "turnover_on_initial_cash": 722.6545560475308
+          },
+          {
+            "buy_orders": 4957,
+            "executed_sides": 9914,
+            "gross_executed_notional": 690381.9210615384,
+            "sell_orders": 4957,
+            "total_return": -0.9999998428476781,
+            "trades": 4957,
+            "trial_key": "fast=3,slow=5",
+            "turnover_on_initial_cash": 690.3819210615384
+          }
+        ]
+      },
+      {
+        "capacity_estimation": "NOT_ESTIMATED_FROM_5M_OHLCV",
+        "diagnostic_only": false,
+        "fee_rate_per_side": 0.001,
+        "scenario": "F1/S3",
+        "slippage_application": "adverse_by_order_side_at_next_bar_open",
+        "slippage_bps_per_side": 10.0,
+        "trials": [
+          {
+            "buy_orders": 3588,
+            "executed_sides": 7176,
+            "gross_executed_notional": 526232.910317098,
+            "sell_orders": 3588,
+            "total_return": -0.9999998427655875,
+            "trades": 3588,
+            "trial_key": "fast=2,slow=10",
+            "turnover_on_initial_cash": 526.232910317098
+          },
+          {
+            "buy_orders": 3773,
+            "executed_sides": 7546,
+            "gross_executed_notional": 615413.7647128549,
+            "sell_orders": 3773,
+            "total_return": -0.9999998426931704,
+            "trades": 3773,
+            "trial_key": "fast=2,slow=20",
+            "turnover_on_initial_cash": 615.4137647128549
+          },
+          {
+            "buy_orders": 3866,
+            "executed_sides": 7732,
+            "gross_executed_notional": 728720.7774351947,
+            "sell_orders": 3866,
+            "total_return": -0.9999998432615606,
+            "trades": 3866,
+            "trial_key": "fast=2,slow=30",
+            "turnover_on_initial_cash": 728.7207774351947
+          },
+          {
+            "buy_orders": 3870,
+            "executed_sides": 7740,
+            "gross_executed_notional": 697808.5156659812,
+            "sell_orders": 3870,
+            "total_return": -0.9999998425912181,
+            "trades": 3870,
+            "trial_key": "fast=2,slow=40",
+            "turnover_on_initial_cash": 697.8085156659812
+          },
+          {
+            "buy_orders": 3815,
+            "executed_sides": 7630,
+            "gross_executed_notional": 633036.8549566065,
+            "sell_orders": 3815,
+            "total_return": -0.9999998424137349,
+            "trades": 3815,
+            "trial_key": "fast=2,slow=50",
+            "turnover_on_initial_cash": 633.0368549566065
+          },
+          {
+            "buy_orders": 3744,
+            "executed_sides": 7488,
+            "gross_executed_notional": 543256.2278437101,
+            "sell_orders": 3744,
+            "total_return": -0.9999998423218123,
+            "trades": 3744,
+            "trial_key": "fast=2,slow=60",
+            "turnover_on_initial_cash": 543.2562278437101
+          },
+          {
+            "buy_orders": 3500,
+            "executed_sides": 7000,
+            "gross_executed_notional": 495006.37032640656,
+            "sell_orders": 3500,
+            "total_return": -0.9999998426302243,
+            "trades": 3500,
+            "trial_key": "fast=3,slow=10",
+            "turnover_on_initial_cash": 495.00637032640657
+          },
+          {
+            "buy_orders": 3777,
+            "executed_sides": 7554,
+            "gross_executed_notional": 595757.1271201019,
+            "sell_orders": 3777,
+            "total_return": -0.9999998430346447,
+            "trades": 3777,
+            "trial_key": "fast=3,slow=20",
+            "turnover_on_initial_cash": 595.7571271201019
+          },
+          {
+            "buy_orders": 3708,
+            "executed_sides": 7416,
+            "gross_executed_notional": 685122.2811347232,
+            "sell_orders": 3708,
+            "total_return": -0.9999998424616794,
+            "trades": 3708,
+            "trial_key": "fast=3,slow=30",
+            "turnover_on_initial_cash": 685.1222811347233
+          },
+          {
+            "buy_orders": 3888,
+            "executed_sides": 7776,
+            "gross_executed_notional": 695046.956554345,
+            "sell_orders": 3888,
+            "total_return": -0.9999998425493094,
+            "trades": 3888,
+            "trial_key": "fast=3,slow=40",
+            "turnover_on_initial_cash": 695.046956554345
+          },
+          {
+            "buy_orders": 3756,
+            "executed_sides": 7512,
+            "gross_executed_notional": 617033.1608483869,
+            "sell_orders": 3756,
+            "total_return": -0.999999842524671,
+            "trades": 3756,
+            "trial_key": "fast=3,slow=50",
+            "turnover_on_initial_cash": 617.033160848387
+          },
+          {
+            "buy_orders": 3684,
+            "executed_sides": 7368,
+            "gross_executed_notional": 526727.3122694796,
+            "sell_orders": 3684,
+            "total_return": -0.9999998423394721,
+            "trades": 3684,
+            "trial_key": "fast=3,slow=60",
+            "turnover_on_initial_cash": 526.7273122694796
+          },
+          {
+            "buy_orders": 3331,
+            "executed_sides": 6662,
+            "gross_executed_notional": 472043.93588849186,
+            "sell_orders": 3331,
+            "total_return": -0.999999842968807,
+            "trades": 3331,
+            "trial_key": "fast=5,slow=10",
+            "turnover_on_initial_cash": 472.0439358884919
+          },
+          {
+            "buy_orders": 3684,
+            "executed_sides": 7368,
+            "gross_executed_notional": 567276.6772556929,
+            "sell_orders": 3684,
+            "total_return": -0.9999998424248134,
+            "trades": 3684,
+            "trial_key": "fast=5,slow=20",
+            "turnover_on_initial_cash": 567.2766772556929
+          },
+          {
+            "buy_orders": 3726,
+            "executed_sides": 7452,
+            "gross_executed_notional": 649190.4891586934,
+            "sell_orders": 3726,
+            "total_return": -0.9999998424200283,
+            "trades": 3726,
+            "trial_key": "fast=5,slow=30",
+            "turnover_on_initial_cash": 649.1904891586934
+          },
+          {
+            "buy_orders": 3824,
+            "executed_sides": 7648,
+            "gross_executed_notional": 750698.1513400588,
+            "sell_orders": 3824,
+            "total_return": -0.9999998421062963,
+            "trades": 3824,
+            "trial_key": "fast=5,slow=40",
+            "turnover_on_initial_cash": 750.6981513400588
+          },
+          {
+            "buy_orders": 3692,
+            "executed_sides": 7384,
+            "gross_executed_notional": 629872.4274442726,
+            "sell_orders": 3692,
+            "total_return": -0.9999998390071042,
+            "trades": 3692,
+            "trial_key": "fast=5,slow=50",
+            "turnover_on_initial_cash": 629.8724274442726
+          },
+          {
+            "buy_orders": 3538,
+            "executed_sides": 7076,
+            "gross_executed_notional": 502068.9096675823,
+            "sell_orders": 3538,
+            "total_return": -0.9999998382244296,
+            "trades": 3538,
+            "trial_key": "fast=5,slow=60",
+            "turnover_on_initial_cash": 502.0689096675823
+          },
+          {
+            "buy_orders": 3675,
+            "executed_sides": 7350,
+            "gross_executed_notional": 499189.1978423161,
+            "sell_orders": 3675,
+            "total_return": -0.9999998443008158,
+            "trades": 3675,
+            "trial_key": "fast=8,slow=10",
+            "turnover_on_initial_cash": 499.1891978423161
+          },
+          {
+            "buy_orders": 3920,
+            "executed_sides": 7840,
+            "gross_executed_notional": 528856.1791768841,
+            "sell_orders": 3920,
+            "total_return": -0.9999998427184271,
+            "trades": 3920,
+            "trial_key": "fast=8,slow=20",
+            "turnover_on_initial_cash": 528.8561791768841
+          },
+          {
+            "buy_orders": 3851,
+            "executed_sides": 7702,
+            "gross_executed_notional": 697138.8179342018,
+            "sell_orders": 3851,
+            "total_return": -0.9999998424893337,
+            "trades": 3851,
+            "trial_key": "fast=8,slow=30",
+            "turnover_on_initial_cash": 697.1388179342018
+          },
+          {
+            "buy_orders": 3793,
+            "executed_sides": 7586,
+            "gross_executed_notional": 692256.781312044,
+            "sell_orders": 3793,
+            "total_return": -0.9999998338043672,
+            "trades": 3793,
+            "trial_key": "fast=8,slow=40",
+            "turnover_on_initial_cash": 692.256781312044
+          },
+          {
+            "buy_orders": 3787,
+            "executed_sides": 7574,
+            "gross_executed_notional": 651382.6614260816,
+            "sell_orders": 3787,
+            "total_return": -0.9999997491453354,
+            "trades": 3787,
+            "trial_key": "fast=8,slow=50",
+            "turnover_on_initial_cash": 651.3826614260815
+          },
+          {
+            "buy_orders": 3700,
+            "executed_sides": 7400,
+            "gross_executed_notional": 600650.2753792433,
+            "sell_orders": 3700,
+            "total_return": -0.9999997404016482,
+            "trades": 3700,
+            "trial_key": "fast=8,slow=60",
+            "turnover_on_initial_cash": 600.6502753792433
+          },
+          {
+            "buy_orders": 3943,
+            "executed_sides": 7886,
+            "gross_executed_notional": 581415.4585763843,
+            "sell_orders": 3943,
+            "total_return": -0.9999998426177416,
+            "trades": 3943,
+            "trial_key": "fast=10,slow=20",
+            "turnover_on_initial_cash": 581.4154585763844
+          },
+          {
+            "buy_orders": 3786,
+            "executed_sides": 7572,
+            "gross_executed_notional": 663537.3564236956,
+            "sell_orders": 3786,
+            "total_return": -0.9999998434026018,
+            "trades": 3786,
+            "trial_key": "fast=10,slow=30",
+            "turnover_on_initial_cash": 663.5373564236955
+          },
+          {
+            "buy_orders": 3826,
+            "executed_sides": 7652,
+            "gross_executed_notional": 729229.4472865396,
+            "sell_orders": 3826,
+            "total_return": -0.9999997999500462,
+            "trades": 3826,
+            "trial_key": "fast=10,slow=40",
+            "turnover_on_initial_cash": 729.2294472865395
+          },
+          {
+            "buy_orders": 3814,
+            "executed_sides": 7628,
+            "gross_executed_notional": 732457.8969838768,
+            "sell_orders": 3814,
+            "total_return": -0.9999997425555761,
+            "trades": 3814,
+            "trial_key": "fast=10,slow=50",
+            "turnover_on_initial_cash": 732.4578969838768
+          },
+          {
+            "buy_orders": 3710,
+            "executed_sides": 7420,
+            "gross_executed_notional": 627810.2109846459,
+            "sell_orders": 3710,
+            "total_return": -0.9999997386331215,
+            "trades": 3710,
+            "trial_key": "fast=10,slow=60",
+            "turnover_on_initial_cash": 627.8102109846459
+          },
+          {
+            "buy_orders": 4021,
+            "executed_sides": 8042,
+            "gross_executed_notional": 691021.9371123873,
+            "sell_orders": 4021,
+            "total_return": -0.999999842612885,
+            "trades": 4021,
+            "trial_key": "fast=15,slow=20",
+            "turnover_on_initial_cash": 691.0219371123873
+          },
+          {
+            "buy_orders": 3760,
+            "executed_sides": 7520,
+            "gross_executed_notional": 722780.1669253863,
+            "sell_orders": 3760,
+            "total_return": -0.999999842698899,
+            "trades": 3760,
+            "trial_key": "fast=15,slow=30",
+            "turnover_on_initial_cash": 722.7801669253863
+          },
+          {
+            "buy_orders": 3834,
+            "executed_sides": 7668,
+            "gross_executed_notional": 780687.5330563672,
+            "sell_orders": 3834,
+            "total_return": -0.9999997484304769,
+            "trades": 3834,
+            "trial_key": "fast=15,slow=40",
+            "turnover_on_initial_cash": 780.6875330563672
+          },
+          {
+            "buy_orders": 3747,
+            "executed_sides": 7494,
+            "gross_executed_notional": 665677.1580156318,
+            "sell_orders": 3747,
+            "total_return": -0.9999997326006519,
+            "trades": 3747,
+            "trial_key": "fast=15,slow=50",
+            "turnover_on_initial_cash": 665.6771580156318
+          },
+          {
+            "buy_orders": 3622,
+            "executed_sides": 7244,
+            "gross_executed_notional": 555606.3903523434,
+            "sell_orders": 3622,
+            "total_return": -0.9999996009333441,
+            "trades": 3622,
+            "trial_key": "fast=15,slow=60",
+            "turnover_on_initial_cash": 555.6063903523434
+          },
+          {
+            "buy_orders": 3802,
+            "executed_sides": 7604,
+            "gross_executed_notional": 524532.9040419955,
+            "sell_orders": 3802,
+            "total_return": -0.9999998429684204,
+            "trades": 3802,
+            "trial_key": "fast=3,slow=5",
+            "turnover_on_initial_cash": 524.5329040419955
+          }
+        ]
+      },
+      {
+        "capacity_estimation": "NOT_ESTIMATED_FROM_5M_OHLCV",
+        "diagnostic_only": false,
+        "fee_rate_per_side": 0.0015,
+        "scenario": "F2/S2",
+        "slippage_application": "adverse_by_order_side_at_next_bar_open",
+        "slippage_bps_per_side": 5.0,
+        "trials": [
+          {
+            "buy_orders": 3589,
+            "executed_sides": 7178,
+            "gross_executed_notional": 526232.943507866,
+            "sell_orders": 3589,
+            "total_return": -0.9999998427406307,
+            "trades": 3589,
+            "trial_key": "fast=2,slow=10",
+            "turnover_on_initial_cash": 526.232943507866
+          },
+          {
+            "buy_orders": 3773,
+            "executed_sides": 7546,
+            "gross_executed_notional": 615413.8736603186,
+            "sell_orders": 3773,
+            "total_return": -0.999999842693765,
+            "trades": 3773,
+            "trial_key": "fast=2,slow=20",
+            "turnover_on_initial_cash": 615.4138736603186
+          },
+          {
+            "buy_orders": 3866,
+            "executed_sides": 7732,
+            "gross_executed_notional": 728720.9838951519,
+            "sell_orders": 3866,
+            "total_return": -0.9999998432621664,
+            "trades": 3866,
+            "trial_key": "fast=2,slow=30",
+            "turnover_on_initial_cash": 728.7209838951519
+          },
+          {
+            "buy_orders": 3870,
+            "executed_sides": 7740,
+            "gross_executed_notional": 697808.6884581652,
+            "sell_orders": 3870,
+            "total_return": -0.9999998425918286,
+            "trades": 3870,
+            "trial_key": "fast=2,slow=40",
+            "turnover_on_initial_cash": 697.8086884581652
+          },
+          {
+            "buy_orders": 3815,
+            "executed_sides": 7630,
+            "gross_executed_notional": 633036.9720738169,
+            "sell_orders": 3815,
+            "total_return": -0.9999998424143377,
+            "trades": 3815,
+            "trial_key": "fast=2,slow=50",
+            "turnover_on_initial_cash": 633.036972073817
+          },
+          {
+            "buy_orders": 3744,
+            "executed_sides": 7488,
+            "gross_executed_notional": 543256.2656054443,
+            "sell_orders": 3744,
+            "total_return": -0.9999998423224026,
+            "trades": 3744,
+            "trial_key": "fast=2,slow=60",
+            "turnover_on_initial_cash": 543.2562656054444
+          },
+          {
+            "buy_orders": 3500,
+            "executed_sides": 7000,
+            "gross_executed_notional": 495006.3817386004,
+            "sell_orders": 3500,
+            "total_return": -0.9999998426307758,
+            "trades": 3500,
+            "trial_key": "fast=3,slow=10",
+            "turnover_on_initial_cash": 495.0063817386004
+          },
+          {
+            "buy_orders": 3777,
+            "executed_sides": 7554,
+            "gross_executed_notional": 595757.2226949722,
+            "sell_orders": 3777,
+            "total_return": -0.999999843035239,
+            "trades": 3777,
+            "trial_key": "fast=3,slow=20",
+            "turnover_on_initial_cash": 595.7572226949721
+          },
+          {
+            "buy_orders": 3708,
+            "executed_sides": 7416,
+            "gross_executed_notional": 685122.4578327284,
+            "sell_orders": 3708,
+            "total_return": -0.9999998424622641,
+            "trades": 3708,
+            "trial_key": "fast=3,slow=30",
+            "turnover_on_initial_cash": 685.1224578327284
+          },
+          {
+            "buy_orders": 3888,
+            "executed_sides": 7776,
+            "gross_executed_notional": 695047.1210716682,
+            "sell_orders": 3888,
+            "total_return": -0.9999998425499228,
+            "trades": 3888,
+            "trial_key": "fast=3,slow=40",
+            "turnover_on_initial_cash": 695.0471210716682
+          },
+          {
+            "buy_orders": 3756,
+            "executed_sides": 7512,
+            "gross_executed_notional": 617033.2648740896,
+            "sell_orders": 3756,
+            "total_return": -0.9999998425252639,
+            "trades": 3756,
+            "trial_key": "fast=3,slow=50",
+            "turnover_on_initial_cash": 617.0332648740896
+          },
+          {
+            "buy_orders": 3684,
+            "executed_sides": 7368,
+            "gross_executed_notional": 526727.3340192898,
+            "sell_orders": 3684,
+            "total_return": -0.9999998423400509,
+            "trades": 3684,
+            "trial_key": "fast=3,slow=60",
+            "turnover_on_initial_cash": 526.7273340192899
+          },
+          {
+            "buy_orders": 3331,
+            "executed_sides": 6662,
+            "gross_executed_notional": 472043.9258722266,
+            "sell_orders": 3331,
+            "total_return": -0.9999998429693312,
+            "trades": 3331,
+            "trial_key": "fast=5,slow=10",
+            "turnover_on_initial_cash": 472.0439258722266
+          },
+          {
+            "buy_orders": 3684,
+            "executed_sides": 7368,
+            "gross_executed_notional": 567276.7448941864,
+            "sell_orders": 3684,
+            "total_return": -0.999999842425393,
+            "trades": 3684,
+            "trial_key": "fast=5,slow=20",
+            "turnover_on_initial_cash": 567.2767448941864
+          },
+          {
+            "buy_orders": 3726,
+            "executed_sides": 7452,
+            "gross_executed_notional": 649190.6282622155,
+            "sell_orders": 3726,
+            "total_return": -0.9999998424206161,
+            "trades": 3726,
+            "trial_key": "fast=5,slow=30",
+            "turnover_on_initial_cash": 649.1906282622156
+          },
+          {
+            "buy_orders": 3824,
+            "executed_sides": 7648,
+            "gross_executed_notional": 750698.369087846,
+            "sell_orders": 3824,
+            "total_return": -0.9999998421069006,
+            "trades": 3824,
+            "trial_key": "fast=5,slow=40",
+            "turnover_on_initial_cash": 750.698369087846
+          },
+          {
+            "buy_orders": 3692,
+            "executed_sides": 7384,
+            "gross_executed_notional": 629872.5402900649,
+            "sell_orders": 3692,
+            "total_return": -0.9999998390076983,
+            "trades": 3692,
+            "trial_key": "fast=5,slow=50",
+            "turnover_on_initial_cash": 629.8725402900649
+          },
+          {
+            "buy_orders": 3538,
+            "executed_sides": 7076,
+            "gross_executed_notional": 502068.91132646723,
+            "sell_orders": 3538,
+            "total_return": -0.9999998382250032,
+            "trades": 3538,
+            "trial_key": "fast=5,slow=60",
+            "turnover_on_initial_cash": 502.06891132646723
+          },
+          {
+            "buy_orders": 3675,
+            "executed_sides": 7350,
+            "gross_executed_notional": 499189.20892888744,
+            "sell_orders": 3675,
+            "total_return": -0.9999998443013892,
+            "trades": 3675,
+            "trial_key": "fast=8,slow=10",
+            "turnover_on_initial_cash": 499.18920892888747
+          },
+          {
+            "buy_orders": 3892,
+            "executed_sides": 7784,
+            "gross_executed_notional": 528856.1893417827,
+            "sell_orders": 3892,
+            "total_return": -0.9999998426970551,
+            "trades": 3892,
+            "trial_key": "fast=8,slow=20",
+            "turnover_on_initial_cash": 528.8561893417827
+          },
+          {
+            "buy_orders": 3851,
+            "executed_sides": 7702,
+            "gross_executed_notional": 697138.9871565693,
+            "sell_orders": 3851,
+            "total_return": -0.9999998424899398,
+            "trades": 3851,
+            "trial_key": "fast=8,slow=30",
+            "turnover_on_initial_cash": 697.1389871565692
+          },
+          {
+            "buy_orders": 3793,
+            "executed_sides": 7586,
+            "gross_executed_notional": 692256.9392930918,
+            "sell_orders": 3793,
+            "total_return": -0.999999833804998,
+            "trades": 3793,
+            "trial_key": "fast=8,slow=40",
+            "turnover_on_initial_cash": 692.2569392930918
+          },
+          {
+            "buy_orders": 3787,
+            "executed_sides": 7574,
+            "gross_executed_notional": 651382.7908576888,
+            "sell_orders": 3787,
+            "total_return": -0.9999997491462855,
+            "trades": 3787,
+            "trial_key": "fast=8,slow=50",
+            "turnover_on_initial_cash": 651.3827908576887
+          },
+          {
+            "buy_orders": 3700,
+            "executed_sides": 7400,
+            "gross_executed_notional": 600650.3680654409,
+            "sell_orders": 3700,
+            "total_return": -0.9999997404026078,
+            "trades": 3700,
+            "trial_key": "fast=8,slow=60",
+            "turnover_on_initial_cash": 600.650368065441
+          },
+          {
+            "buy_orders": 3943,
+            "executed_sides": 7886,
+            "gross_executed_notional": 581415.5270368817,
+            "sell_orders": 3943,
+            "total_return": -0.9999998426183634,
+            "trades": 3943,
+            "trial_key": "fast=10,slow=20",
+            "turnover_on_initial_cash": 581.4155270368817
+          },
+          {
+            "buy_orders": 3786,
+            "executed_sides": 7572,
+            "gross_executed_notional": 663537.5016361985,
+            "sell_orders": 3786,
+            "total_return": -0.9999998434031959,
+            "trades": 3786,
+            "trial_key": "fast=10,slow=30",
+            "turnover_on_initial_cash": 663.5375016361985
+          },
+          {
+            "buy_orders": 3826,
+            "executed_sides": 7652,
+            "gross_executed_notional": 729229.643429379,
+            "sell_orders": 3826,
+            "total_return": -0.9999997999508106,
+            "trades": 3826,
+            "trial_key": "fast=10,slow=40",
+            "turnover_on_initial_cash": 729.2296434293789
+          },
+          {
+            "buy_orders": 3814,
+            "executed_sides": 7628,
+            "gross_executed_notional": 732458.1037493116,
+            "sell_orders": 3814,
+            "total_return": -0.9999997425565569,
+            "trades": 3814,
+            "trial_key": "fast=10,slow=50",
+            "turnover_on_initial_cash": 732.4581037493116
+          },
+          {
+            "buy_orders": 3710,
+            "executed_sides": 7420,
+            "gross_executed_notional": 627810.328321074,
+            "sell_orders": 3710,
+            "total_return": -0.999999738634093,
+            "trades": 3710,
+            "trial_key": "fast=10,slow=60",
+            "turnover_on_initial_cash": 627.810328321074
+          },
+          {
+            "buy_orders": 4021,
+            "executed_sides": 8042,
+            "gross_executed_notional": 691022.1103151273,
+            "sell_orders": 4021,
+            "total_return": -0.9999998426135179,
+            "trades": 4021,
+            "trial_key": "fast=15,slow=20",
+            "turnover_on_initial_cash": 691.0221103151273
+          },
+          {
+            "buy_orders": 3760,
+            "executed_sides": 7520,
+            "gross_executed_notional": 722780.3719062798,
+            "sell_orders": 3760,
+            "total_return": -0.9999998426994913,
+            "trades": 3760,
+            "trial_key": "fast=15,slow=30",
+            "turnover_on_initial_cash": 722.7803719062798
+          },
+          {
+            "buy_orders": 3834,
+            "executed_sides": 7668,
+            "gross_executed_notional": 780687.7894539082,
+            "sell_orders": 3834,
+            "total_return": -0.9999997484314405,
+            "trades": 3834,
+            "trial_key": "fast=15,slow=40",
+            "turnover_on_initial_cash": 780.6877894539082
+          },
+          {
+            "buy_orders": 3747,
+            "executed_sides": 7494,
+            "gross_executed_notional": 665677.3247934703,
+            "sell_orders": 3747,
+            "total_return": -0.9999997326016533,
+            "trades": 3747,
+            "trial_key": "fast=15,slow=50",
+            "turnover_on_initial_cash": 665.6773247934703
+          },
+          {
+            "buy_orders": 3622,
+            "executed_sides": 7244,
+            "gross_executed_notional": 555606.4548870166,
+            "sell_orders": 3622,
+            "total_return": -0.9999996009347895,
+            "trades": 3622,
+            "trial_key": "fast=15,slow=60",
+            "turnover_on_initial_cash": 555.6064548870165
+          },
+          {
+            "buy_orders": 3802,
+            "executed_sides": 7604,
+            "gross_executed_notional": 524532.9327170884,
+            "sell_orders": 3802,
+            "total_return": -0.9999998429690161,
+            "trades": 3802,
+            "trial_key": "fast=3,slow=5",
+            "turnover_on_initial_cash": 524.5329327170883
+          }
+        ]
+      },
+      {
+        "capacity_estimation": "NOT_ESTIMATED_FROM_5M_OHLCV",
+        "diagnostic_only": false,
+        "fee_rate_per_side": 0.0015,
+        "scenario": "F2/S3",
+        "slippage_application": "adverse_by_order_side_at_next_bar_open",
+        "slippage_bps_per_side": 10.0,
+        "trials": [
+          {
+            "buy_orders": 3010,
+            "executed_sides": 6020,
+            "gross_executed_notional": 424988.6884742968,
+            "sell_orders": 3010,
+            "total_return": -0.9999998433853721,
+            "trades": 3010,
+            "trial_key": "fast=2,slow=10",
+            "turnover_on_initial_cash": 424.98868847429685
+          },
+          {
+            "buy_orders": 3021,
+            "executed_sides": 6042,
+            "gross_executed_notional": 486991.0360485426,
+            "sell_orders": 3021,
+            "total_return": -0.9999998427891605,
+            "trades": 3021,
+            "trial_key": "fast=2,slow=20",
+            "turnover_on_initial_cash": 486.9910360485426
+          },
+          {
+            "buy_orders": 3092,
+            "executed_sides": 6184,
+            "gross_executed_notional": 566953.5548791732,
+            "sell_orders": 3092,
+            "total_return": -0.9999998430356123,
+            "trades": 3092,
+            "trial_key": "fast=2,slow=30",
+            "turnover_on_initial_cash": 566.9535548791732
+          },
+          {
+            "buy_orders": 3182,
+            "executed_sides": 6364,
+            "gross_executed_notional": 540801.6748899434,
+            "sell_orders": 3182,
+            "total_return": -0.9999998429869128,
+            "trades": 3182,
+            "trial_key": "fast=2,slow=40",
+            "turnover_on_initial_cash": 540.8016748899435
+          },
+          {
+            "buy_orders": 3113,
+            "executed_sides": 6226,
+            "gross_executed_notional": 495106.6577815476,
+            "sell_orders": 3113,
+            "total_return": -0.9999998424976322,
+            "trades": 3113,
+            "trial_key": "fast=2,slow=50",
+            "turnover_on_initial_cash": 495.1066577815476
+          },
+          {
+            "buy_orders": 3009,
+            "executed_sides": 6018,
+            "gross_executed_notional": 430481.17719025275,
+            "sell_orders": 3009,
+            "total_return": -0.9999998429996435,
+            "trades": 3009,
+            "trial_key": "fast=2,slow=60",
+            "turnover_on_initial_cash": 430.48117719025277
+          },
+          {
+            "buy_orders": 2878,
+            "executed_sides": 5756,
+            "gross_executed_notional": 406723.129881979,
+            "sell_orders": 2878,
+            "total_return": -0.9999998427297302,
+            "trades": 2878,
+            "trial_key": "fast=3,slow=10",
+            "turnover_on_initial_cash": 406.72312988197905
+          },
+          {
+            "buy_orders": 3036,
+            "executed_sides": 6072,
+            "gross_executed_notional": 475967.5422361488,
+            "sell_orders": 3036,
+            "total_return": -0.999999842684516,
+            "trades": 3036,
+            "trial_key": "fast=3,slow=20",
+            "turnover_on_initial_cash": 475.9675422361488
+          },
+          {
+            "buy_orders": 3049,
+            "executed_sides": 6098,
+            "gross_executed_notional": 541460.1051986924,
+            "sell_orders": 3049,
+            "total_return": -0.9999998424435491,
+            "trades": 3049,
+            "trial_key": "fast=3,slow=30",
+            "turnover_on_initial_cash": 541.4601051986924
+          },
+          {
+            "buy_orders": 3143,
+            "executed_sides": 6286,
+            "gross_executed_notional": 534920.7211454388,
+            "sell_orders": 3143,
+            "total_return": -0.9999998426986524,
+            "trades": 3143,
+            "trial_key": "fast=3,slow=40",
+            "turnover_on_initial_cash": 534.9207211454388
+          },
+          {
+            "buy_orders": 3045,
+            "executed_sides": 6090,
+            "gross_executed_notional": 484057.1832247714,
+            "sell_orders": 3045,
+            "total_return": -0.9999998423674273,
+            "trades": 3045,
+            "trial_key": "fast=3,slow=50",
+            "turnover_on_initial_cash": 484.0571832247714
+          },
+          {
+            "buy_orders": 3012,
+            "executed_sides": 6024,
+            "gross_executed_notional": 417668.86802680435,
+            "sell_orders": 3012,
+            "total_return": -0.9999998423347197,
+            "trades": 3012,
+            "trial_key": "fast=3,slow=60",
+            "turnover_on_initial_cash": 417.6688680268044
+          },
+          {
+            "buy_orders": 2760,
+            "executed_sides": 5520,
+            "gross_executed_notional": 389552.3692327475,
+            "sell_orders": 2760,
+            "total_return": -0.9999998434196131,
+            "trades": 2760,
+            "trial_key": "fast=5,slow=10",
+            "turnover_on_initial_cash": 389.5523692327475
+          },
+          {
+            "buy_orders": 3026,
+            "executed_sides": 6052,
+            "gross_executed_notional": 454183.6312199433,
+            "sell_orders": 3026,
+            "total_return": -0.9999998429207022,
+            "trades": 3026,
+            "trial_key": "fast=5,slow=20",
+            "turnover_on_initial_cash": 454.18363121994327
+          },
+          {
+            "buy_orders": 3017,
+            "executed_sides": 6034,
+            "gross_executed_notional": 511801.9393861168,
+            "sell_orders": 3017,
+            "total_return": -0.9999998432771269,
+            "trades": 3017,
+            "trial_key": "fast=5,slow=30",
+            "turnover_on_initial_cash": 511.8019393861168
+          },
+          {
+            "buy_orders": 3100,
+            "executed_sides": 6200,
+            "gross_executed_notional": 576807.7584990828,
+            "sell_orders": 3100,
+            "total_return": -0.9999998432813186,
+            "trades": 3100,
+            "trial_key": "fast=5,slow=40",
+            "turnover_on_initial_cash": 576.8077584990828
+          },
+          {
+            "buy_orders": 2999,
+            "executed_sides": 5998,
+            "gross_executed_notional": 491219.40473103424,
+            "sell_orders": 2999,
+            "total_return": -0.9999998387792407,
+            "trades": 2999,
+            "trial_key": "fast=5,slow=50",
+            "turnover_on_initial_cash": 491.2194047310342
+          },
+          {
+            "buy_orders": 2932,
+            "executed_sides": 5864,
+            "gross_executed_notional": 400858.88856684725,
+            "sell_orders": 2932,
+            "total_return": -0.9999998388422304,
+            "trades": 2932,
+            "trial_key": "fast=5,slow=60",
+            "turnover_on_initial_cash": 400.85888856684727
+          },
+          {
+            "buy_orders": 3036,
+            "executed_sides": 6072,
+            "gross_executed_notional": 407419.39958759455,
+            "sell_orders": 3036,
+            "total_return": -0.9999998433027444,
+            "trades": 3036,
+            "trial_key": "fast=8,slow=10",
+            "turnover_on_initial_cash": 407.41939958759457
+          },
+          {
+            "buy_orders": 3131,
+            "executed_sides": 6262,
+            "gross_executed_notional": 420640.02055057837,
+            "sell_orders": 3131,
+            "total_return": -0.9999998428347527,
+            "trades": 3131,
+            "trial_key": "fast=8,slow=20",
+            "turnover_on_initial_cash": 420.64002055057836
+          },
+          {
+            "buy_orders": 3143,
+            "executed_sides": 6286,
+            "gross_executed_notional": 538656.878371183,
+            "sell_orders": 3143,
+            "total_return": -0.9999998423984884,
+            "trades": 3143,
+            "trial_key": "fast=8,slow=30",
+            "turnover_on_initial_cash": 538.656878371183
+          },
+          {
+            "buy_orders": 3089,
+            "executed_sides": 6178,
+            "gross_executed_notional": 529936.431194812,
+            "sell_orders": 3089,
+            "total_return": -0.9999998433409235,
+            "trades": 3089,
+            "trial_key": "fast=8,slow=40",
+            "turnover_on_initial_cash": 529.9364311948119
+          },
+          {
+            "buy_orders": 3068,
+            "executed_sides": 6136,
+            "gross_executed_notional": 504886.35464468267,
+            "sell_orders": 3068,
+            "total_return": -0.9999998390661213,
+            "trades": 3068,
+            "trial_key": "fast=8,slow=50",
+            "turnover_on_initial_cash": 504.8863546446827
+          },
+          {
+            "buy_orders": 2976,
+            "executed_sides": 5952,
+            "gross_executed_notional": 473888.70962562435,
+            "sell_orders": 2976,
+            "total_return": -0.9999998346482305,
+            "trades": 2976,
+            "trial_key": "fast=8,slow=60",
+            "turnover_on_initial_cash": 473.88870962562436
+          },
+          {
+            "buy_orders": 3161,
+            "executed_sides": 6322,
+            "gross_executed_notional": 457484.9859569924,
+            "sell_orders": 3161,
+            "total_return": -0.9999998425332031,
+            "trades": 3161,
+            "trial_key": "fast=10,slow=20",
+            "turnover_on_initial_cash": 457.4849859569924
+          },
+          {
+            "buy_orders": 3098,
+            "executed_sides": 6196,
+            "gross_executed_notional": 517720.81728706043,
+            "sell_orders": 3098,
+            "total_return": -0.9999998426444886,
+            "trades": 3098,
+            "trial_key": "fast=10,slow=30",
+            "turnover_on_initial_cash": 517.7208172870604
+          },
+          {
+            "buy_orders": 3099,
+            "executed_sides": 6198,
+            "gross_executed_notional": 559770.9001967286,
+            "sell_orders": 3099,
+            "total_return": -0.999999842809942,
+            "trades": 3099,
+            "trial_key": "fast=10,slow=40",
+            "turnover_on_initial_cash": 559.7709001967287
+          },
+          {
+            "buy_orders": 3067,
+            "executed_sides": 6134,
+            "gross_executed_notional": 566382.3328025243,
+            "sell_orders": 3067,
+            "total_return": -0.9999998353375822,
+            "trades": 3067,
+            "trial_key": "fast=10,slow=50",
+            "turnover_on_initial_cash": 566.3823328025243
+          },
+          {
+            "buy_orders": 2999,
+            "executed_sides": 5998,
+            "gross_executed_notional": 493612.59583174996,
+            "sell_orders": 2999,
+            "total_return": -0.9999997581773734,
+            "trades": 2999,
+            "trial_key": "fast=10,slow=60",
+            "turnover_on_initial_cash": 493.61259583174996
+          },
+          {
+            "buy_orders": 3258,
+            "executed_sides": 6516,
+            "gross_executed_notional": 540490.6665821001,
+            "sell_orders": 3258,
+            "total_return": -0.9999998431103475,
+            "trades": 3258,
+            "trial_key": "fast=15,slow=20",
+            "turnover_on_initial_cash": 540.4906665821001
+          },
+          {
+            "buy_orders": 3047,
+            "executed_sides": 6094,
+            "gross_executed_notional": 564827.1164712936,
+            "sell_orders": 3047,
+            "total_return": -0.9999998433981208,
+            "trades": 3047,
+            "trial_key": "fast=15,slow=30",
+            "turnover_on_initial_cash": 564.8271164712936
+          },
+          {
+            "buy_orders": 3070,
+            "executed_sides": 6140,
+            "gross_executed_notional": 605463.631459237,
+            "sell_orders": 3070,
+            "total_return": -0.9999998360119559,
+            "trades": 3070,
+            "trial_key": "fast=15,slow=40",
+            "turnover_on_initial_cash": 605.4636314592369
+          },
+          {
+            "buy_orders": 3015,
+            "executed_sides": 6030,
+            "gross_executed_notional": 531311.2302418102,
+            "sell_orders": 3015,
+            "total_return": -0.9999997487661327,
+            "trades": 3015,
+            "trial_key": "fast=15,slow=50",
+            "turnover_on_initial_cash": 531.3112302418102
+          },
+          {
+            "buy_orders": 2912,
+            "executed_sides": 5824,
+            "gross_executed_notional": 449230.21807570895,
+            "sell_orders": 2912,
+            "total_return": -0.9999997486734359,
+            "trades": 2912,
+            "trial_key": "fast=15,slow=60",
+            "turnover_on_initial_cash": 449.23021807570893
+          },
+          {
+            "buy_orders": 3025,
+            "executed_sides": 6050,
+            "gross_executed_notional": 421636.8907445534,
+            "sell_orders": 3025,
+            "total_return": -0.9999998430505986,
+            "trades": 3025,
+            "trial_key": "fast=3,slow=5",
+            "turnover_on_initial_cash": 421.6368907445534
+          }
+        ]
+      }
+    ],
+    "primary_statistical_cell": "F1/S1"
+  },
+  "declared_v2_scope_lineage": {
+    "all_trials_ref": "artifacts/validation/campaigns/SEARCH-CANONICAL-BASELINE-G10-V2/inputs/b2_trials_05ba97cbb214b08a3b3b370bd30fbc5796c6f873f3774adfcab8e28083e77807.json",
+    "all_trials_sha256": "05ba97cbb214b08a3b3b370bd30fbc5796c6f873f3774adfcab8e28083e77807",
+    "raw_trial_count": 35,
+    "status": "COMPLETE"
+  },
+  "execution_audit": {
+    "bar_interval": "5m",
+    "conflict_policy": "flat_entry; held_exit",
+    "estimated_missing_bars": 213,
+    "fill_time": "next_exact_adjacent_bar_open",
+    "final_position_policy": "mark_at_final_close_without_forced_liquidation",
+    "float_policy": "source decimal strings converted to float64 in frozen vectorbt lane",
+    "gap_policy": "pending_signal_expires; indicator_warmup_resets; held_position_carries",
+    "non_adjacent_transitions": 7,
+    "signal_time": "bar_close",
+    "trials": [
+      {
+        "buy_orders": 41120,
+        "ending_open_position": true,
+        "final_bar_entry_signal_unfilled": true,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 291274,
+        "raw_exit_signals": 286437,
+        "sell_orders": 41119,
+        "trial_key": "fast=2,slow=10"
+      },
+      {
+        "buy_orders": 27285,
+        "ending_open_position": true,
+        "final_bar_entry_signal_unfilled": true,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 293168,
+        "raw_exit_signals": 284483,
+        "sell_orders": 27284,
+        "trial_key": "fast=2,slow=20"
+      },
+      {
+        "buy_orders": 22173,
+        "ending_open_position": true,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 293917,
+        "raw_exit_signals": 283654,
+        "sell_orders": 22172,
+        "trial_key": "fast=2,slow=30"
+      },
+      {
+        "buy_orders": 19094,
+        "ending_open_position": true,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 294567,
+        "raw_exit_signals": 282923,
+        "sell_orders": 19093,
+        "trial_key": "fast=2,slow=40"
+      },
+      {
+        "buy_orders": 16820,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 294802,
+        "raw_exit_signals": 282609,
+        "sell_orders": 16820,
+        "trial_key": "fast=2,slow=50"
+      },
+      {
+        "buy_orders": 15221,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 294903,
+        "raw_exit_signals": 282428,
+        "sell_orders": 15221,
+        "trial_key": "fast=2,slow=60"
+      },
+      {
+        "buy_orders": 36054,
+        "ending_open_position": true,
+        "final_bar_entry_signal_unfilled": true,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 291036,
+        "raw_exit_signals": 286679,
+        "sell_orders": 36053,
+        "trial_key": "fast=3,slow=10"
+      },
+      {
+        "buy_orders": 23102,
+        "ending_open_position": true,
+        "final_bar_entry_signal_unfilled": true,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 292903,
+        "raw_exit_signals": 284748,
+        "sell_orders": 23101,
+        "trial_key": "fast=3,slow=20"
+      },
+      {
+        "buy_orders": 18439,
+        "ending_open_position": true,
+        "final_bar_entry_signal_unfilled": true,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 294045,
+        "raw_exit_signals": 283526,
+        "sell_orders": 18438,
+        "trial_key": "fast=3,slow=30"
+      },
+      {
+        "buy_orders": 15803,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 294445,
+        "raw_exit_signals": 283046,
+        "sell_orders": 15803,
+        "trial_key": "fast=3,slow=40"
+      },
+      {
+        "buy_orders": 13955,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 294729,
+        "raw_exit_signals": 282682,
+        "sell_orders": 13955,
+        "trial_key": "fast=3,slow=50"
+      },
+      {
+        "buy_orders": 12581,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 294942,
+        "raw_exit_signals": 282389,
+        "sell_orders": 12581,
+        "trial_key": "fast=3,slow=60"
+      },
+      {
+        "buy_orders": 33452,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 290739,
+        "raw_exit_signals": 286967,
+        "sell_orders": 33452,
+        "trial_key": "fast=5,slow=10"
+      },
+      {
+        "buy_orders": 19190,
+        "ending_open_position": true,
+        "final_bar_entry_signal_unfilled": true,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 292562,
+        "raw_exit_signals": 285087,
+        "sell_orders": 19189,
+        "trial_key": "fast=5,slow=20"
+      },
+      {
+        "buy_orders": 14898,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 293717,
+        "raw_exit_signals": 283853,
+        "sell_orders": 14898,
+        "trial_key": "fast=5,slow=30"
+      },
+      {
+        "buy_orders": 12531,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 294606,
+        "raw_exit_signals": 282885,
+        "sell_orders": 12531,
+        "trial_key": "fast=5,slow=40"
+      },
+      {
+        "buy_orders": 11059,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 294850,
+        "raw_exit_signals": 282561,
+        "sell_orders": 11059,
+        "trial_key": "fast=5,slow=50"
+      },
+      {
+        "buy_orders": 9999,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 294810,
+        "raw_exit_signals": 282521,
+        "sell_orders": 9999,
+        "trial_key": "fast=5,slow=60"
+      },
+      {
+        "buy_orders": 41936,
+        "ending_open_position": true,
+        "final_bar_entry_signal_unfilled": true,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 290386,
+        "raw_exit_signals": 287328,
+        "sell_orders": 41935,
+        "trial_key": "fast=8,slow=10"
+      },
+      {
+        "buy_orders": 16970,
+        "ending_open_position": true,
+        "final_bar_entry_signal_unfilled": true,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 292352,
+        "raw_exit_signals": 285297,
+        "sell_orders": 16969,
+        "trial_key": "fast=8,slow=20"
+      },
+      {
+        "buy_orders": 12604,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 293404,
+        "raw_exit_signals": 284166,
+        "sell_orders": 12604,
+        "trial_key": "fast=8,slow=30"
+      },
+      {
+        "buy_orders": 10377,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 294243,
+        "raw_exit_signals": 283248,
+        "sell_orders": 10377,
+        "trial_key": "fast=8,slow=40"
+      },
+      {
+        "buy_orders": 9095,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 294726,
+        "raw_exit_signals": 282684,
+        "sell_orders": 9095,
+        "trial_key": "fast=8,slow=50"
+      },
+      {
+        "buy_orders": 8186,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 294971,
+        "raw_exit_signals": 282360,
+        "sell_orders": 8186,
+        "trial_key": "fast=8,slow=60"
+      },
+      {
+        "buy_orders": 16777,
+        "ending_open_position": true,
+        "final_bar_entry_signal_unfilled": true,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 292053,
+        "raw_exit_signals": 285596,
+        "sell_orders": 16776,
+        "trial_key": "fast=10,slow=20"
+      },
+      {
+        "buy_orders": 11830,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 293433,
+        "raw_exit_signals": 284138,
+        "sell_orders": 11830,
+        "trial_key": "fast=10,slow=30"
+      },
+      {
+        "buy_orders": 9614,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 294120,
+        "raw_exit_signals": 283371,
+        "sell_orders": 9614,
+        "trial_key": "fast=10,slow=40"
+      },
+      {
+        "buy_orders": 8362,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 294839,
+        "raw_exit_signals": 282572,
+        "sell_orders": 8362,
+        "trial_key": "fast=10,slow=50"
+      },
+      {
+        "buy_orders": 7441,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 295120,
+        "raw_exit_signals": 282210,
+        "sell_orders": 7441,
+        "trial_key": "fast=10,slow=60"
+      },
+      {
+        "buy_orders": 19413,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 291688,
+        "raw_exit_signals": 285963,
+        "sell_orders": 19413,
+        "trial_key": "fast=15,slow=20"
+      },
+      {
+        "buy_orders": 11252,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 293229,
+        "raw_exit_signals": 284341,
+        "sell_orders": 11252,
+        "trial_key": "fast=15,slow=30"
+      },
+      {
+        "buy_orders": 8616,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 293850,
+        "raw_exit_signals": 283641,
+        "sell_orders": 8616,
+        "trial_key": "fast=15,slow=40"
+      },
+      {
+        "buy_orders": 7358,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 294743,
+        "raw_exit_signals": 282667,
+        "sell_orders": 7358,
+        "trial_key": "fast=15,slow=50"
+      },
+      {
+        "buy_orders": 6442,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 295071,
+        "raw_exit_signals": 282260,
+        "sell_orders": 6442,
+        "trial_key": "fast=15,slow=60"
+      },
+      {
+        "buy_orders": 66459,
+        "ending_open_position": true,
+        "final_bar_entry_signal_unfilled": true,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 289141,
+        "raw_exit_signals": 288598,
+        "sell_orders": 66458,
+        "trial_key": "fast=3,slow=5"
+      }
+    ]
+  },
+  "execution_authority": "NONE",
+  "family": "b2",
+  "g10_gate_status": "METHOD_BLOCKED",
+  "generated_at_utc": "2026-07-13T10:40:35.844074+00:00",
+  "method_contract": {
+    "blockers": [
+      "hierarchical_search_lineage_incomplete",
+      "hierarchy_effective_independent_trials_unavailable",
+      "family_effective_independent_trials_unavailable"
+    ],
+    "governed_selection_metric": "non_annualized_per_bar_sharpe",
+    "metric_applies_to": [
+      "candidate_selection",
+      "PBO_IS",
+      "PBO_OOS",
+      "DSR"
+    ],
+    "status": "METHOD_BLOCKED"
+  },
+  "numeric_result": {
+    "average_trial_return_correlation": 0.6649221876008067,
+    "bars_excluded_tail": 11,
+    "correlation_observation_count": 577803,
+    "declared_selection_metric": "non_annualized_per_bar_sharpe",
+    "dsr": {
+      "independent": {
+        "dsr": 0.0,
+        "expected_maximum_noise_sharpe": 0.006957946921185165,
+        "z_score": -19.05650402611858
+      },
+      "max_abs_delta": 8.673617379884035e-19,
+      "primary": {
+        "dsr": 0.0,
+        "expected_maximum_noise_sharpe": 0.006957946921185166,
+        "z_score": -19.05650402611858
+      },
+      "status": "COMPUTED"
+    },
+    "dsr_metric": "sharpe_per_bar",
+    "effective_independent_trials": 12.392645621572573,
+    "effective_independent_trials_scope": "RETAINED_FAMILY_GRID_ONLY",
+    "independent_trials_basis": "DSR_2014_APPENDIX_3_AVERAGE_RETURN_CORRELATION",
+    "numeric_verdict": "FAIL",
+    "pbo": {
+      "independent": {
+        "mean_logit": -0.5745484813176502,
+        "pbo": 0.5066045066045066,
+        "split_count": 12870
+      },
+      "max_abs_delta": 0.0,
+      "primary": {
+        "pbo": 0.5066045066045066,
+        "split_count": 12870
+      }
+    },
+    "pbo_slice_metric": "non_annualized_per_bar_sharpe",
+    "promotion_verdict": "METHOD_BLOCKED",
+    "raw_trial_count": 35,
+    "sample_count": 577803,
+    "search_lineage_complete": false,
+    "selected_returns_kurtosis": 78.09585865727297,
+    "selected_returns_skewness": 0.9402786972379705,
+    "selected_sharpe_per_bar": -0.018409110145077623,
+    "selected_total_return": -0.9999992753508892,
+    "selected_trial_key": "fast=15,slow=60",
+    "selection_metrics_aligned": true,
+    "selection_procedure": "max full-sample non-annualized per-bar Sharpe over retained family grid",
+    "sharpe_variance_across_trials": 1.7145329068126365e-05,
+    "slice_count": 16,
+    "slice_length_bars": 36112,
+    "trial_count": 35,
+    "verdict": "FAIL",
+    "verdict_rule": "PASS requires DSR >= 0.95 and PBO <= 0.5; a PASS additionally requires validation-stats-specialist review before promotion use (RG-07)"
+  },
+  "preregistration_sha256": "8696412b87fbc4817a4cca25e9fc585466431881529b006627dcaad857a21dd4",
+  "promotion_eligible": false,
+  "schema": "tios-canonical-baseline-family-result-v2",
+  "semantic_conformance": "CANONICAL_RULES_NEXT_ADJACENT_OPEN_FLOAT64",
+  "upstream_family_admission": {
+    "promotion_effect": "METHOD_BLOCKED",
+    "status": "INCOMPLETE"
+  },
+  "walk_forward": {
+    "classification": "HISTORICAL_PSEUDO_OOS",
+    "first_possible_test_fill": "second exact-adjacent test bar",
+    "folds": [
+      {
+        "fold": "2022",
+        "fold_id": "WF-2022",
+        "gap_bar": "2021-12-31T23:55:00+00:00",
+        "selected_train_sharpe_per_bar": -0.013873910112828788,
+        "selected_trial_key": "fast=15,slow=50",
+        "test_bars": 105120,
+        "test_end": "2022-12-31T23:55:00+00:00",
+        "test_ending_open_position": false,
+        "test_sharpe_per_bar": -0.02391748198629433,
+        "test_start": "2022-01-01T00:00:00+00:00",
+        "test_total_return": -0.9727917102961048,
+        "test_trades": 1371,
+        "train_end": "2021-12-31T23:50:00+00:00",
+        "train_start": "2021-01-01T00:00:00+00:00"
+      },
+      {
+        "fold": "2023",
+        "fold_id": "WF-2023",
+        "gap_bar": "2022-12-31T23:55:00+00:00",
+        "selected_train_sharpe_per_bar": -0.017660705359932683,
+        "selected_trial_key": "fast=15,slow=60",
+        "test_bars": 105104,
+        "test_end": "2023-12-31T23:55:00+00:00",
+        "test_ending_open_position": false,
+        "test_sharpe_per_bar": -0.016650850774923856,
+        "test_start": "2023-01-01T00:00:00+00:00",
+        "test_total_return": -0.8351374037310632,
+        "test_trades": 1191,
+        "train_end": "2022-12-31T23:50:00+00:00",
+        "train_start": "2021-01-01T00:00:00+00:00"
+      },
+      {
+        "fold": "2024",
+        "fold_id": "WF-2024",
+        "gap_bar": "2023-12-31T23:55:00+00:00",
+        "selected_train_sharpe_per_bar": -0.017046342067123434,
+        "selected_trial_key": "fast=15,slow=60",
+        "test_bars": 105408,
+        "test_end": "2024-12-31T23:55:00+00:00",
+        "test_ending_open_position": false,
+        "test_sharpe_per_bar": -0.016433690927973154,
+        "test_start": "2024-01-01T00:00:00+00:00",
+        "test_total_return": -0.8698499236882606,
+        "test_trades": 1157,
+        "train_end": "2023-12-31T23:50:00+00:00",
+        "train_start": "2021-01-01T00:00:00+00:00"
+      },
+      {
+        "fold": "2025",
+        "fold_id": "WF-2025",
+        "gap_bar": "2024-12-31T23:55:00+00:00",
+        "selected_train_sharpe_per_bar": -0.016833834312688072,
+        "selected_trial_key": "fast=15,slow=60",
+        "test_bars": 105120,
+        "test_end": "2025-12-31T23:55:00+00:00",
+        "test_ending_open_position": true,
+        "test_sharpe_per_bar": -0.02264081219889548,
+        "test_start": "2025-01-01T00:00:00+00:00",
+        "test_total_return": -0.8999746494649624,
+        "test_trades": 1129,
+        "train_end": "2024-12-31T23:50:00+00:00",
+        "train_start": "2021-01-01T00:00:00+00:00"
+      },
+      {
+        "fold": "2026H1",
+        "fold_id": "WF-2026-H1",
+        "gap_bar": "2025-12-31T23:55:00+00:00",
+        "selected_train_sharpe_per_bar": -0.017522603090865403,
+        "selected_trial_key": "fast=15,slow=60",
+        "test_bars": 52128,
+        "test_end": "2026-06-30T23:55:00+00:00",
+        "test_ending_open_position": false,
+        "test_sharpe_per_bar": -0.03088202982446245,
+        "test_start": "2026-01-01T00:00:00+00:00",
+        "test_total_return": -0.802169975152564,
+        "test_trades": 577,
+        "train_end": "2025-12-31T23:50:00+00:00",
+        "train_start": "2021-01-01T00:00:00+00:00"
+      }
+    ],
+    "gap": "one complete 5m bar",
+    "indicator_warmup": "trailing history only; no pre-test signal or position imported",
+    "scenario": "F1/S1",
+    "selection_metric": "max expanding-train non_annualized_per_bar_sharpe",
+    "selection_tie_breaker": "frozen trial order",
+    "status": "COMPLETED",
+    "stitched_test_bars": 472880,
+    "stitched_test_sharpe_per_bar": -0.02094448297883801,
+    "stitched_test_total_return_compounded": -0.9999884476565307,
+    "test_initial_position": "FLAT",
+    "winner_selected": false
+  },
+  "winner_selected": false
+}

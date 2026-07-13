@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.54 Canonical V2 formal-run freeze and portable dataset restoration (2026-07-13). Supersedes v8.53 hashes.
+Package version: v8.54 Canonical V2 formal-run freeze, immutable execution, and negative result (2026-07-13). Supersedes v8.53 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `9db3e71409d96d9f1a890b037c8e43c9d2569a62aa9a5202774796c62136b4a2` |
-| `DECISION_LOG.md` | `c55d9624363e53885b858f59491fe117e1fd00377814a8c0874d99e18bbd9581` |
+| `PROJECT_STATE.md` | `e1cd43d89edfb8e71afb87cbc8b429e8c0a4392b03c7fbed3af842966416cb95` |
+| `DECISION_LOG.md` | `f2c49b5be554cf62d14a7681bb7ddba4c1de9418fe4da771a7b70832b746ba7d` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,15 +27,15 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `7e18f3c6d2fdc002b8894457ca779669aed4527de92aa3ed6fef0466a4e4bf19` |
+| `MISSING_AND_OPEN_ITEMS.md` | `51d9ceda5a6385ecc7ec49b1bcac31767047ca3ab37b9940161c4fd3234ea64f` |
 
 ## Supervisory correction package (added v8.52)
 
 | Path | SHA-256 |
 |---|---|
 | `docs/supervisor/SUPERVISORY_BASELINE_2026-07-13.md` | `63313a6771b5640fe620e6bea5ae036e44c8a06bf25650d68f0314e1259cf9f3` |
-| `docs/supervisor/IMPROVEMENT_PLAN_2026-07-13.md` | `6db92c314ef6c459ece70aad39054235750af644383fd4efa108d8353dbeb68c` |
-| `docs/supervisor/FINAL_SUPERVISORY_REPORT_2026-07-13.md` | `955bc883fa221faf3ca58120f9fb2cd2f09296044dc69c9f3dc6d1e0091b1eb2` |
+| `docs/supervisor/IMPROVEMENT_PLAN_2026-07-13.md` | `8c29b781bafabd522562eade37c388e752e3845b12460b5ed319b1cd0ef8a933` |
+| `docs/supervisor/FINAL_SUPERVISORY_REPORT_2026-07-13.md` | `171ed81058caef3ba983eb55bdd274cbe4a922734b7936ba813299d35d8609d1` |
 | `artifacts/reports/G10_PREREGISTERED_CAMPAIGN_REPORT_2026_07_13.md` | `67b0be7e43777bf31ba3e33dffa81795bdebd84d84683c7a010e84bc945bf59d` |
 | `strategies/research/funding-carry-basis-delta-neutral/canonical_strategy_spec.yaml` | `87ee0ecfc39515547a09ffa2108b93f7f65785de2ec28e2f4a895190d1ca86b0` |
 | `strategies/research/funding-carry-basis-delta-neutral/canonical_strategy_spec.sha256` | `02b3be727ee2d86a4b80eeb5fdf31779827b604f16e76f7c9f562d82ede8713a` |
@@ -46,11 +46,13 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | Path | SHA-256 |
 |---|---|
 | `data/raw/manifests/DS-CRYPTO-SPOT-BTCUSDT-5M-V1.source.json` | `f9d986bd48c9baa060871721fc849be3f72b472d4c8859b35d07ec29b0d93139` |
-| `research/CANONICAL_BASELINE_G10_CAMPAIGN_V2.yaml` | `8696412b87fbc4817a4cca25e9fc585466431881529b006627dcaad857a21dd4` |
+| `research/CANONICAL_BASELINE_G10_CAMPAIGN_V2.yaml` | `effe683f7c41502b50efbc2070ee3246fc14dbb98f895f155de812dcf78d4e2f` |
 | `research/CANONICAL_BASELINE_METHOD_SOURCES_V2.yaml` | `366643eb382c81d41043813c15fefb50ab2a05b31454b185ba597577bfe0d478` |
 | `engines/vectorbt/canonical_baseline_returns.py` | `ffca97a92ecefe1be2b187316320e5c486ed64618962571d25f4d06c1850299e` |
 | `scripts/restore_canonical_btcusdt_5m.py` | `5fa0417f23b4211f0ebccd6b32f903ae48e6fd61d9cafa5f272aa9001cbafca1` |
 | `scripts/run_canonical_baseline_campaign.py` | `e7fbcb31a17ff7c3ecc9e4525c0d8c7ca765ccf0d9ef62f3e9f1f6881c02e7b1` |
+| `artifacts/reports/CANONICAL_BASELINE_CAMPAIGN_V2_REPORT_2026_07_13.md` | `095795b94b3d232d7bc47aa12da366d4b7c55d36f38218c797922023b0ce967d` |
+| `artifacts/validation/campaigns/SEARCH-CANONICAL-BASELINE-G10-V2/campaign_index_96d746a1e8084c6a9a39e2d8752936d166c32c2685a9c31b48f5feb7a7a93950.json` | `96d746a1e8084c6a9a39e2d8752936d166c32c2685a9c31b48f5feb7a7a93950` |
 
 ## Required handoff inputs — planning system (added v8)
 
@@ -66,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `1d35a8c19038c8b1990d6c74b8f164ba9e9acbd122dfd73328a61eea076f1f09` |
+| `research/RESEARCH_GAP_MATRIX.md` | `5004ffc905dc899a55e70133edcd1bd721545bc71f9dadcfe5fce0b136edba89` |
 | `audits/ARCHITECTURE_COMPLETENESS_AUDIT.md` | `729af643828c44b8b59d6dd95a209d9bfe53ed90e9ffd9a404e62db60944cef0` |
 | `audits/TODO_COMPLETENESS_AUDIT.md` | `22ca004dfd4049637db6be5128186a3e51411e2b606c45413d344d46508ad666` |
 | `audits/RED_TEAM_PLAN_REVIEW.md` | `a8d0f8850fdce2fbcfa985016b69d8755a52ed16b8c01e7d8652f6bcb9ee833c` |

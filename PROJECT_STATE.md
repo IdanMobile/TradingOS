@@ -751,6 +751,21 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   method-blocked, and the overall gate is `METHOD_BLOCKED`. The retained implementations are
   explicitly legacy current-close/F1-S0 accelerator proxies, not canonical next-open strategy
   conformance. Evidence: `artifacts/reports/G10_PREREGISTERED_CAMPAIGN_REPORT_2026_07_13.md`.
+- **Canonical baseline V2 completed as a negative reproducibility/conformance diagnostic:**
+  `research/CANONICAL_BASELINE_G10_CAMPAIGN_V2.yaml` froze a separate 67-trial canonical-rule
+  population at commit `6bac8bf`: B2 persistent state, B3 population variance, B4 prior-high
+  exclusion, exact-adjacent next-open fills, gap-expired pending signals, segment warm-up reset,
+  position-aware conflicts, six cost cells, five expanding historical pseudo-OOS folds, and
+  family plus campaign-wide PBO/DSR. The portable 66-archive source manifest rebuilds the exact
+  577,803-row Parquet. Formal execution and a second complete byte-identical recomputation pass.
+  B2 fails (PBO 0.5066, DSR 0; selected F1/S1 return effectively -100%), B4 fails (PBO 0.3739,
+  DSR 0; already -96.99% at F0/S0), and B3/campaign-wide are method-blocked because the selected
+  diagnostic is a structural zero-trade variant and correlations are undefined. A full-history
+  implementation smoke occurred before the commit and is disclosed, so this is not unseen
+  evidence. The only prospective test is sealed from 2026-07-14 and cannot be evaluated before
+  2027-01-14. No winner, promotion, venue, order, or execution authority exists. Evidence:
+  `artifacts/reports/CANONICAL_BASELINE_CAMPAIGN_V2_REPORT_2026_07_13.md` and the content-addressed
+  index under `artifacts/validation/campaigns/SEARCH-CANONICAL-BASELINE-G10-V2/`.
 
 ## Operational SSOT (unchanged)
 
@@ -809,11 +824,12 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Do not expand the failed legacy proxy grids. If baseline conformance remains useful, create a
-new preregistered campaign with canonical next-bar-open execution, B2's declared state rule,
-F1/S1-or-stricter costs, and distributable frozen data. In parallel-safe work, reconstruct
-stat-arb/cross-sectional/combination methods and canonical ownership before drawing family-wide
-claims. Authenticated demo networking stays quarantined and all human S3/S4 gates remain untouched.
+Do not expand or rescue the failed B2/B3/B4 grids. Keep the post-2026-07-14 prospective holdout
+sealed and calculate no interim strategy scores; its one evaluation is not allowed before
+2027-01-14. In parallel-safe offline work, reconstruct one economically distinct strategy
+family's method, canonical ownership, point-in-time data, realistic costs, and hierarchical
+search contract before any new parameter search. Authenticated demo networking stays quarantined
+and all human S3/S4 gates remain untouched.
 
 ## Exit condition of next phase (unchanged)
 

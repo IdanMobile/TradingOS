@@ -1,0 +1,3317 @@
+{
+  "bars_excluded_tail": 11,
+  "bars_total": 577803,
+  "baseline": "b3",
+  "canonical_spec": {
+    "ddof": 0,
+    "deviation": 1.0,
+    "spec_file": "fixtures/strategies/baselines/B3_bollinger_mean_reversion.yaml",
+    "strategy_id": "STRAT-B3-bollinger-mr",
+    "window": 3
+  },
+  "cost_surface": {
+    "cells": [
+      {
+        "capacity_estimation": "NOT_ESTIMATED_FROM_5M_OHLCV",
+        "diagnostic_only": true,
+        "fee_rate_per_side": 0.0,
+        "scenario": "F0/S0",
+        "slippage_application": "adverse_by_order_side_at_next_bar_open",
+        "slippage_bps_per_side": 0.0,
+        "trials": [
+          {
+            "buy_orders": 100336,
+            "executed_sides": 200672,
+            "gross_executed_notional": 5372985962.95663,
+            "sell_orders": 100336,
+            "total_return": 53.39212548641496,
+            "trades": 100336,
+            "trial_key": "window=3,deviation=0.5",
+            "turnover_on_initial_cash": 5372985.96295663
+          },
+          {
+            "buy_orders": 87323,
+            "executed_sides": 174646,
+            "gross_executed_notional": 6124847978.680904,
+            "sell_orders": 87323,
+            "total_return": 92.80008719042044,
+            "trades": 87323,
+            "trial_key": "window=3,deviation=1",
+            "turnover_on_initial_cash": 6124847.978680904
+          },
+          {
+            "buy_orders": 0,
+            "executed_sides": 0,
+            "gross_executed_notional": 0.0,
+            "sell_orders": 0,
+            "total_return": 0.0,
+            "trades": 0,
+            "trial_key": "window=3,deviation=1.5",
+            "turnover_on_initial_cash": 0.0
+          },
+          {
+            "buy_orders": 0,
+            "executed_sides": 0,
+            "gross_executed_notional": 0.0,
+            "sell_orders": 0,
+            "total_return": 0.0,
+            "trades": 0,
+            "trial_key": "window=3,deviation=2",
+            "turnover_on_initial_cash": 0.0
+          },
+          {
+            "buy_orders": 68032,
+            "executed_sides": 136064,
+            "gross_executed_notional": 1581870740.7663383,
+            "sell_orders": 68032,
+            "total_return": 22.39769266561512,
+            "trades": 68032,
+            "trial_key": "window=5,deviation=0.5",
+            "turnover_on_initial_cash": 1581870.7407663383
+          },
+          {
+            "buy_orders": 57163,
+            "executed_sides": 114326,
+            "gross_executed_notional": 2163968322.8922176,
+            "sell_orders": 57163,
+            "total_return": 52.36627011505967,
+            "trades": 57163,
+            "trial_key": "window=5,deviation=1",
+            "turnover_on_initial_cash": 2163968.3228922174
+          },
+          {
+            "buy_orders": 39714,
+            "executed_sides": 79428,
+            "gross_executed_notional": 3726298486.422674,
+            "sell_orders": 39714,
+            "total_return": 158.98315331314788,
+            "trades": 39714,
+            "trial_key": "window=5,deviation=1.5",
+            "turnover_on_initial_cash": 3726298.4864226743
+          },
+          {
+            "buy_orders": 0,
+            "executed_sides": 0,
+            "gross_executed_notional": 0.0,
+            "sell_orders": 0,
+            "total_return": 0.0,
+            "trades": 0,
+            "trial_key": "window=5,deviation=2",
+            "turnover_on_initial_cash": 0.0
+          },
+          {
+            "buy_orders": 42032,
+            "executed_sides": 84064,
+            "gross_executed_notional": 955675623.75467,
+            "sell_orders": 42032,
+            "total_return": 18.2444141348769,
+            "trades": 42032,
+            "trial_key": "window=10,deviation=0.5",
+            "turnover_on_initial_cash": 955675.62375467
+          },
+          {
+            "buy_orders": 33650,
+            "executed_sides": 67300,
+            "gross_executed_notional": 982575728.7217667,
+            "sell_orders": 33650,
+            "total_return": 32.63535156246852,
+            "trades": 33650,
+            "trial_key": "window=10,deviation=1",
+            "turnover_on_initial_cash": 982575.7287217667
+          },
+          {
+            "buy_orders": 25941,
+            "executed_sides": 51882,
+            "gross_executed_notional": 2217037577.5627766,
+            "sell_orders": 25941,
+            "total_return": 120.15762127410862,
+            "trades": 25941,
+            "trial_key": "window=10,deviation=1.5",
+            "turnover_on_initial_cash": 2217037.5775627764
+          },
+          {
+            "buy_orders": 15435,
+            "executed_sides": 30870,
+            "gross_executed_notional": 955889308.131749,
+            "sell_orders": 15435,
+            "total_return": 71.88020752767817,
+            "trades": 15435,
+            "trial_key": "window=10,deviation=2",
+            "turnover_on_initial_cash": 955889.308131749
+          },
+          {
+            "buy_orders": 25761,
+            "executed_sides": 51522,
+            "gross_executed_notional": 225378252.1817503,
+            "sell_orders": 25761,
+            "total_return": 5.1934645933261585,
+            "trades": 25761,
+            "trial_key": "window=20,deviation=0.5",
+            "turnover_on_initial_cash": 225378.2521817503
+          },
+          {
+            "buy_orders": 19631,
+            "executed_sides": 39262,
+            "gross_executed_notional": 189030208.54513967,
+            "sell_orders": 19631,
+            "total_return": 5.805363795729818,
+            "trades": 19631,
+            "trial_key": "window=20,deviation=1",
+            "turnover_on_initial_cash": 189030.20854513967
+          },
+          {
+            "buy_orders": 15126,
+            "executed_sides": 30252,
+            "gross_executed_notional": 170667137.09544304,
+            "sell_orders": 15126,
+            "total_return": 6.559390026667789,
+            "trades": 15126,
+            "trial_key": "window=20,deviation=1.5",
+            "turnover_on_initial_cash": 170667.13709544303
+          },
+          {
+            "buy_orders": 10904,
+            "executed_sides": 21808,
+            "gross_executed_notional": 234934240.7440543,
+            "sell_orders": 10904,
+            "total_return": 18.341023073929225,
+            "trades": 10904,
+            "trial_key": "window=20,deviation=2",
+            "turnover_on_initial_cash": 234934.2407440543
+          }
+        ]
+      },
+      {
+        "capacity_estimation": "NOT_ESTIMATED_FROM_5M_OHLCV",
+        "diagnostic_only": false,
+        "fee_rate_per_side": 0.001,
+        "scenario": "F1/S1",
+        "slippage_application": "adverse_by_order_side_at_next_bar_open",
+        "slippage_bps_per_side": 1.0,
+        "trials": [
+          {
+            "buy_orders": 7693,
+            "executed_sides": 15386,
+            "gross_executed_notional": 1041301.0526914756,
+            "sell_orders": 7693,
+            "total_return": -0.9999998429093511,
+            "trades": 7693,
+            "trial_key": "window=3,deviation=0.5",
+            "turnover_on_initial_cash": 1041.3010526914757
+          },
+          {
+            "buy_orders": 7821,
+            "executed_sides": 15642,
+            "gross_executed_notional": 1007253.4989351435,
+            "sell_orders": 7821,
+            "total_return": -0.9999998430390206,
+            "trades": 7821,
+            "trial_key": "window=3,deviation=1",
+            "turnover_on_initial_cash": 1007.2534989351435
+          },
+          {
+            "buy_orders": 0,
+            "executed_sides": 0,
+            "gross_executed_notional": 0.0,
+            "sell_orders": 0,
+            "total_return": 0.0,
+            "trades": 0,
+            "trial_key": "window=3,deviation=1.5",
+            "turnover_on_initial_cash": 0.0
+          },
+          {
+            "buy_orders": 0,
+            "executed_sides": 0,
+            "gross_executed_notional": 0.0,
+            "sell_orders": 0,
+            "total_return": 0.0,
+            "trades": 0,
+            "trial_key": "window=3,deviation=2",
+            "turnover_on_initial_cash": 0.0
+          },
+          {
+            "buy_orders": 7676,
+            "executed_sides": 15352,
+            "gross_executed_notional": 1045297.8890085696,
+            "sell_orders": 7676,
+            "total_return": -0.9999998431118107,
+            "trades": 7676,
+            "trial_key": "window=5,deviation=0.5",
+            "turnover_on_initial_cash": 1045.2978890085697
+          },
+          {
+            "buy_orders": 7873,
+            "executed_sides": 15746,
+            "gross_executed_notional": 1070658.5634638623,
+            "sell_orders": 7873,
+            "total_return": -0.9999998429245346,
+            "trades": 7873,
+            "trial_key": "window=5,deviation=1",
+            "turnover_on_initial_cash": 1070.6585634638623
+          },
+          {
+            "buy_orders": 8291,
+            "executed_sides": 16582,
+            "gross_executed_notional": 1189899.136469031,
+            "sell_orders": 8291,
+            "total_return": -0.9999998431662913,
+            "trades": 8291,
+            "trial_key": "window=5,deviation=1.5",
+            "turnover_on_initial_cash": 1189.899136469031
+          },
+          {
+            "buy_orders": 0,
+            "executed_sides": 0,
+            "gross_executed_notional": 0.0,
+            "sell_orders": 0,
+            "total_return": 0.0,
+            "trades": 0,
+            "trial_key": "window=5,deviation=2",
+            "turnover_on_initial_cash": 0.0
+          },
+          {
+            "buy_orders": 7997,
+            "executed_sides": 15994,
+            "gross_executed_notional": 1199331.962668975,
+            "sell_orders": 7997,
+            "total_return": -0.9999998420805362,
+            "trades": 7997,
+            "trial_key": "window=10,deviation=0.5",
+            "turnover_on_initial_cash": 1199.331962668975
+          },
+          {
+            "buy_orders": 7958,
+            "executed_sides": 15916,
+            "gross_executed_notional": 1295806.5482345573,
+            "sell_orders": 7958,
+            "total_return": -0.9999998420102506,
+            "trades": 7958,
+            "trial_key": "window=10,deviation=1",
+            "turnover_on_initial_cash": 1295.8065482345573
+          },
+          {
+            "buy_orders": 8329,
+            "executed_sides": 16658,
+            "gross_executed_notional": 1740781.7782203485,
+            "sell_orders": 8329,
+            "total_return": -0.9999998423567324,
+            "trades": 8329,
+            "trial_key": "window=10,deviation=1.5",
+            "turnover_on_initial_cash": 1740.7817782203485
+          },
+          {
+            "buy_orders": 8208,
+            "executed_sides": 16416,
+            "gross_executed_notional": 2148435.594818195,
+            "sell_orders": 8208,
+            "total_return": -0.9999996433384077,
+            "trades": 8208,
+            "trial_key": "window=10,deviation=2",
+            "turnover_on_initial_cash": 2148.4355948181947
+          },
+          {
+            "buy_orders": 7423,
+            "executed_sides": 14846,
+            "gross_executed_notional": 917867.5427567922,
+            "sell_orders": 7423,
+            "total_return": -0.9999998414412039,
+            "trades": 7423,
+            "trial_key": "window=20,deviation=0.5",
+            "turnover_on_initial_cash": 917.8675427567922
+          },
+          {
+            "buy_orders": 7459,
+            "executed_sides": 14918,
+            "gross_executed_notional": 995765.0474579642,
+            "sell_orders": 7459,
+            "total_return": -0.9999997850703511,
+            "trades": 7459,
+            "trial_key": "window=20,deviation=1",
+            "turnover_on_initial_cash": 995.7650474579642
+          },
+          {
+            "buy_orders": 7628,
+            "executed_sides": 15256,
+            "gross_executed_notional": 1222134.8405082037,
+            "sell_orders": 7628,
+            "total_return": -0.9999997392826845,
+            "trades": 7628,
+            "trial_key": "window=20,deviation=1.5",
+            "turnover_on_initial_cash": 1222.1348405082038
+          },
+          {
+            "buy_orders": 7770,
+            "executed_sides": 15540,
+            "gross_executed_notional": 1622857.7289700226,
+            "sell_orders": 7770,
+            "total_return": -0.9999994128590102,
+            "trades": 7770,
+            "trial_key": "window=20,deviation=2",
+            "turnover_on_initial_cash": 1622.8577289700227
+          }
+        ]
+      },
+      {
+        "capacity_estimation": "NOT_ESTIMATED_FROM_5M_OHLCV",
+        "diagnostic_only": false,
+        "fee_rate_per_side": 0.001,
+        "scenario": "F1/S2",
+        "slippage_application": "adverse_by_order_side_at_next_bar_open",
+        "slippage_bps_per_side": 5.0,
+        "trials": [
+          {
+            "buy_orders": 5596,
+            "executed_sides": 11192,
+            "gross_executed_notional": 750252.4844679759,
+            "sell_orders": 5596,
+            "total_return": -0.9999998432278285,
+            "trades": 5596,
+            "trial_key": "window=3,deviation=0.5",
+            "turnover_on_initial_cash": 750.2524844679759
+          },
+          {
+            "buy_orders": 5584,
+            "executed_sides": 11168,
+            "gross_executed_notional": 729460.1726846847,
+            "sell_orders": 5584,
+            "total_return": -0.9999998427038909,
+            "trades": 5584,
+            "trial_key": "window=3,deviation=1",
+            "turnover_on_initial_cash": 729.4601726846847
+          },
+          {
+            "buy_orders": 0,
+            "executed_sides": 0,
+            "gross_executed_notional": 0.0,
+            "sell_orders": 0,
+            "total_return": 0.0,
+            "trades": 0,
+            "trial_key": "window=3,deviation=1.5",
+            "turnover_on_initial_cash": 0.0
+          },
+          {
+            "buy_orders": 0,
+            "executed_sides": 0,
+            "gross_executed_notional": 0.0,
+            "sell_orders": 0,
+            "total_return": 0.0,
+            "trades": 0,
+            "trial_key": "window=3,deviation=2",
+            "turnover_on_initial_cash": 0.0
+          },
+          {
+            "buy_orders": 5615,
+            "executed_sides": 11230,
+            "gross_executed_notional": 741968.2159880439,
+            "sell_orders": 5615,
+            "total_return": -0.9999998431441599,
+            "trades": 5615,
+            "trial_key": "window=5,deviation=0.5",
+            "turnover_on_initial_cash": 741.9682159880439
+          },
+          {
+            "buy_orders": 5678,
+            "executed_sides": 11356,
+            "gross_executed_notional": 747941.9474585177,
+            "sell_orders": 5678,
+            "total_return": -0.9999998429539628,
+            "trades": 5678,
+            "trial_key": "window=5,deviation=1",
+            "turnover_on_initial_cash": 747.9419474585177
+          },
+          {
+            "buy_orders": 5976,
+            "executed_sides": 11952,
+            "gross_executed_notional": 808068.6085753009,
+            "sell_orders": 5976,
+            "total_return": -0.9999998429581005,
+            "trades": 5976,
+            "trial_key": "window=5,deviation=1.5",
+            "turnover_on_initial_cash": 808.0686085753009
+          },
+          {
+            "buy_orders": 0,
+            "executed_sides": 0,
+            "gross_executed_notional": 0.0,
+            "sell_orders": 0,
+            "total_return": 0.0,
+            "trades": 0,
+            "trial_key": "window=5,deviation=2",
+            "turnover_on_initial_cash": 0.0
+          },
+          {
+            "buy_orders": 5854,
+            "executed_sides": 11708,
+            "gross_executed_notional": 824121.9356060906,
+            "sell_orders": 5854,
+            "total_return": -0.9999998426936569,
+            "trades": 5854,
+            "trial_key": "window=10,deviation=0.5",
+            "turnover_on_initial_cash": 824.1219356060906
+          },
+          {
+            "buy_orders": 5864,
+            "executed_sides": 11728,
+            "gross_executed_notional": 867228.7379944304,
+            "sell_orders": 5864,
+            "total_return": -0.9999998429332659,
+            "trades": 5864,
+            "trial_key": "window=10,deviation=1",
+            "turnover_on_initial_cash": 867.2287379944304
+          },
+          {
+            "buy_orders": 6095,
+            "executed_sides": 12190,
+            "gross_executed_notional": 1090166.2840009846,
+            "sell_orders": 6095,
+            "total_return": -0.9999998427308914,
+            "trades": 6095,
+            "trial_key": "window=10,deviation=1.5",
+            "turnover_on_initial_cash": 1090.1662840009847
+          },
+          {
+            "buy_orders": 6086,
+            "executed_sides": 12172,
+            "gross_executed_notional": 1294812.3575133735,
+            "sell_orders": 6086,
+            "total_return": -0.9999998002288751,
+            "trades": 6086,
+            "trial_key": "window=10,deviation=2",
+            "turnover_on_initial_cash": 1294.8123575133734
+          },
+          {
+            "buy_orders": 5524,
+            "executed_sides": 11048,
+            "gross_executed_notional": 652223.7872184042,
+            "sell_orders": 5524,
+            "total_return": -0.9999998424393194,
+            "trades": 5524,
+            "trial_key": "window=20,deviation=0.5",
+            "turnover_on_initial_cash": 652.2237872184043
+          },
+          {
+            "buy_orders": 5474,
+            "executed_sides": 10948,
+            "gross_executed_notional": 687856.6502684741,
+            "sell_orders": 5474,
+            "total_return": -0.9999998404125865,
+            "trades": 5474,
+            "trial_key": "window=20,deviation=1",
+            "turnover_on_initial_cash": 687.8566502684741
+          },
+          {
+            "buy_orders": 5595,
+            "executed_sides": 11190,
+            "gross_executed_notional": 824588.2124813126,
+            "sell_orders": 5595,
+            "total_return": -0.9999998349226881,
+            "trades": 5595,
+            "trial_key": "window=20,deviation=1.5",
+            "turnover_on_initial_cash": 824.5882124813126
+          },
+          {
+            "buy_orders": 5701,
+            "executed_sides": 11402,
+            "gross_executed_notional": 1036041.6762764079,
+            "sell_orders": 5701,
+            "total_return": -0.9999996695658645,
+            "trades": 5701,
+            "trial_key": "window=20,deviation=2",
+            "turnover_on_initial_cash": 1036.041676276408
+          }
+        ]
+      },
+      {
+        "capacity_estimation": "NOT_ESTIMATED_FROM_5M_OHLCV",
+        "diagnostic_only": false,
+        "fee_rate_per_side": 0.001,
+        "scenario": "F1/S3",
+        "slippage_application": "adverse_by_order_side_at_next_bar_open",
+        "slippage_bps_per_side": 10.0,
+        "trials": [
+          {
+            "buy_orders": 4117,
+            "executed_sides": 8234,
+            "gross_executed_notional": 552598.8190360654,
+            "sell_orders": 4117,
+            "total_return": -0.9999998430444124,
+            "trades": 4117,
+            "trial_key": "window=3,deviation=0.5",
+            "turnover_on_initial_cash": 552.5988190360654
+          },
+          {
+            "buy_orders": 4146,
+            "executed_sides": 8292,
+            "gross_executed_notional": 540120.7223915401,
+            "sell_orders": 4146,
+            "total_return": -0.999999843065365,
+            "trades": 4146,
+            "trial_key": "window=3,deviation=1",
+            "turnover_on_initial_cash": 540.1207223915401
+          },
+          {
+            "buy_orders": 0,
+            "executed_sides": 0,
+            "gross_executed_notional": 0.0,
+            "sell_orders": 0,
+            "total_return": 0.0,
+            "trades": 0,
+            "trial_key": "window=3,deviation=1.5",
+            "turnover_on_initial_cash": 0.0
+          },
+          {
+            "buy_orders": 0,
+            "executed_sides": 0,
+            "gross_executed_notional": 0.0,
+            "sell_orders": 0,
+            "total_return": 0.0,
+            "trades": 0,
+            "trial_key": "window=3,deviation=2",
+            "turnover_on_initial_cash": 0.0
+          },
+          {
+            "buy_orders": 4177,
+            "executed_sides": 8354,
+            "gross_executed_notional": 544905.6521408162,
+            "sell_orders": 4177,
+            "total_return": -0.9999998431360044,
+            "trades": 4177,
+            "trial_key": "window=5,deviation=0.5",
+            "turnover_on_initial_cash": 544.9056521408162
+          },
+          {
+            "buy_orders": 4194,
+            "executed_sides": 8388,
+            "gross_executed_notional": 543810.2303852253,
+            "sell_orders": 4194,
+            "total_return": -0.9999998431251952,
+            "trades": 4194,
+            "trial_key": "window=5,deviation=1",
+            "turnover_on_initial_cash": 543.8102303852253
+          },
+          {
+            "buy_orders": 4406,
+            "executed_sides": 8812,
+            "gross_executed_notional": 578682.6432331478,
+            "sell_orders": 4406,
+            "total_return": -0.9999998432812505,
+            "trades": 4406,
+            "trial_key": "window=5,deviation=1.5",
+            "turnover_on_initial_cash": 578.6826432331478
+          },
+          {
+            "buy_orders": 0,
+            "executed_sides": 0,
+            "gross_executed_notional": 0.0,
+            "sell_orders": 0,
+            "total_return": 0.0,
+            "trades": 0,
+            "trial_key": "window=5,deviation=2",
+            "turnover_on_initial_cash": 0.0
+          },
+          {
+            "buy_orders": 4318,
+            "executed_sides": 8636,
+            "gross_executed_notional": 592264.8314892249,
+            "sell_orders": 4318,
+            "total_return": -0.9999998426038977,
+            "trades": 4318,
+            "trial_key": "window=10,deviation=0.5",
+            "turnover_on_initial_cash": 592.2648314892249
+          },
+          {
+            "buy_orders": 4378,
+            "executed_sides": 8756,
+            "gross_executed_notional": 609945.4668266276,
+            "sell_orders": 4378,
+            "total_return": -0.9999998425612286,
+            "trades": 4378,
+            "trial_key": "window=10,deviation=1",
+            "turnover_on_initial_cash": 609.9454668266276
+          },
+          {
+            "buy_orders": 4593,
+            "executed_sides": 9186,
+            "gross_executed_notional": 729110.9056286617,
+            "sell_orders": 4593,
+            "total_return": -0.999999843000153,
+            "trades": 4593,
+            "trial_key": "window=10,deviation=1.5",
+            "turnover_on_initial_cash": 729.1109056286617
+          },
+          {
+            "buy_orders": 4504,
+            "executed_sides": 9008,
+            "gross_executed_notional": 836725.6291797654,
+            "sell_orders": 4504,
+            "total_return": -0.9999998410501354,
+            "trades": 4504,
+            "trial_key": "window=10,deviation=2",
+            "turnover_on_initial_cash": 836.7256291797654
+          },
+          {
+            "buy_orders": 4119,
+            "executed_sides": 8238,
+            "gross_executed_notional": 482454.209101955,
+            "sell_orders": 4119,
+            "total_return": -0.9999998429408716,
+            "trades": 4119,
+            "trial_key": "window=20,deviation=0.5",
+            "turnover_on_initial_cash": 482.454209101955
+          },
+          {
+            "buy_orders": 4171,
+            "executed_sides": 8342,
+            "gross_executed_notional": 497822.91474451026,
+            "sell_orders": 4171,
+            "total_return": -0.9999998420056267,
+            "trades": 4171,
+            "trial_key": "window=20,deviation=1",
+            "turnover_on_initial_cash": 497.8229147445103
+          },
+          {
+            "buy_orders": 4168,
+            "executed_sides": 8336,
+            "gross_executed_notional": 582083.9836284014,
+            "sell_orders": 4168,
+            "total_return": -0.9999998402134177,
+            "trades": 4168,
+            "trial_key": "window=20,deviation=1.5",
+            "turnover_on_initial_cash": 582.0839836284014
+          },
+          {
+            "buy_orders": 4321,
+            "executed_sides": 8642,
+            "gross_executed_notional": 700376.6634385246,
+            "sell_orders": 4321,
+            "total_return": -0.9999997910258953,
+            "trades": 4321,
+            "trial_key": "window=20,deviation=2",
+            "turnover_on_initial_cash": 700.3766634385246
+          }
+        ]
+      },
+      {
+        "capacity_estimation": "NOT_ESTIMATED_FROM_5M_OHLCV",
+        "diagnostic_only": false,
+        "fee_rate_per_side": 0.0015,
+        "scenario": "F2/S2",
+        "slippage_application": "adverse_by_order_side_at_next_bar_open",
+        "slippage_bps_per_side": 5.0,
+        "trials": [
+          {
+            "buy_orders": 4117,
+            "executed_sides": 8234,
+            "gross_executed_notional": 552598.8627648228,
+            "sell_orders": 4117,
+            "total_return": -0.9999998430450586,
+            "trades": 4117,
+            "trial_key": "window=3,deviation=0.5",
+            "turnover_on_initial_cash": 552.5988627648228
+          },
+          {
+            "buy_orders": 4146,
+            "executed_sides": 8292,
+            "gross_executed_notional": 540120.7562631695,
+            "sell_orders": 4146,
+            "total_return": -0.9999998430660162,
+            "trades": 4146,
+            "trial_key": "window=3,deviation=1",
+            "turnover_on_initial_cash": 540.1207562631695
+          },
+          {
+            "buy_orders": 0,
+            "executed_sides": 0,
+            "gross_executed_notional": 0.0,
+            "sell_orders": 0,
+            "total_return": 0.0,
+            "trades": 0,
+            "trial_key": "window=3,deviation=1.5",
+            "turnover_on_initial_cash": 0.0
+          },
+          {
+            "buy_orders": 0,
+            "executed_sides": 0,
+            "gross_executed_notional": 0.0,
+            "sell_orders": 0,
+            "total_return": 0.0,
+            "trades": 0,
+            "trial_key": "window=3,deviation=2",
+            "turnover_on_initial_cash": 0.0
+          },
+          {
+            "buy_orders": 4177,
+            "executed_sides": 8354,
+            "gross_executed_notional": 544905.6884950893,
+            "sell_orders": 4177,
+            "total_return": -0.999999843136658,
+            "trades": 4177,
+            "trial_key": "window=5,deviation=0.5",
+            "turnover_on_initial_cash": 544.9056884950893
+          },
+          {
+            "buy_orders": 4194,
+            "executed_sides": 8388,
+            "gross_executed_notional": 543810.2619716561,
+            "sell_orders": 4194,
+            "total_return": -0.9999998431258535,
+            "trades": 4194,
+            "trial_key": "window=5,deviation=1",
+            "turnover_on_initial_cash": 543.8102619716561
+          },
+          {
+            "buy_orders": 4406,
+            "executed_sides": 8812,
+            "gross_executed_notional": 578682.7030431766,
+            "sell_orders": 4406,
+            "total_return": -0.9999998432819424,
+            "trades": 4406,
+            "trial_key": "window=5,deviation=1.5",
+            "turnover_on_initial_cash": 578.6827030431766
+          },
+          {
+            "buy_orders": 0,
+            "executed_sides": 0,
+            "gross_executed_notional": 0.0,
+            "sell_orders": 0,
+            "total_return": 0.0,
+            "trades": 0,
+            "trial_key": "window=5,deviation=2",
+            "turnover_on_initial_cash": 0.0
+          },
+          {
+            "buy_orders": 4318,
+            "executed_sides": 8636,
+            "gross_executed_notional": 592264.905075424,
+            "sell_orders": 4318,
+            "total_return": -0.9999998426045758,
+            "trades": 4318,
+            "trial_key": "window=10,deviation=0.5",
+            "turnover_on_initial_cash": 592.264905075424
+          },
+          {
+            "buy_orders": 4378,
+            "executed_sides": 8756,
+            "gross_executed_notional": 609945.5474965394,
+            "sell_orders": 4378,
+            "total_return": -0.9999998425619184,
+            "trades": 4378,
+            "trial_key": "window=10,deviation=1",
+            "turnover_on_initial_cash": 609.9455474965395
+          },
+          {
+            "buy_orders": 4569,
+            "executed_sides": 9138,
+            "gross_executed_notional": 729111.0566058059,
+            "sell_orders": 4569,
+            "total_return": -0.9999998430301257,
+            "trades": 4569,
+            "trial_key": "window=10,deviation=1.5",
+            "turnover_on_initial_cash": 729.1110566058059
+          },
+          {
+            "buy_orders": 4504,
+            "executed_sides": 9008,
+            "gross_executed_notional": 836725.8691344222,
+            "sell_orders": 4504,
+            "total_return": -0.9999998410508519,
+            "trades": 4504,
+            "trial_key": "window=10,deviation=2",
+            "turnover_on_initial_cash": 836.7258691344222
+          },
+          {
+            "buy_orders": 4119,
+            "executed_sides": 8238,
+            "gross_executed_notional": 482454.1886649733,
+            "sell_orders": 4119,
+            "total_return": -0.9999998429415186,
+            "trades": 4119,
+            "trial_key": "window=20,deviation=0.5",
+            "turnover_on_initial_cash": 482.4541886649733
+          },
+          {
+            "buy_orders": 4171,
+            "executed_sides": 8342,
+            "gross_executed_notional": 497822.9007307517,
+            "sell_orders": 4171,
+            "total_return": -0.9999998420062856,
+            "trades": 4171,
+            "trial_key": "window=20,deviation=1",
+            "turnover_on_initial_cash": 497.8229007307517
+          },
+          {
+            "buy_orders": 4168,
+            "executed_sides": 8336,
+            "gross_executed_notional": 582084.0384437671,
+            "sell_orders": 4168,
+            "total_return": -0.9999998402140825,
+            "trades": 4168,
+            "trial_key": "window=20,deviation=1.5",
+            "turnover_on_initial_cash": 582.0840384437671
+          },
+          {
+            "buy_orders": 4321,
+            "executed_sides": 8642,
+            "gross_executed_notional": 700376.8076591237,
+            "sell_orders": 4321,
+            "total_return": -0.9999997910267971,
+            "trades": 4321,
+            "trial_key": "window=20,deviation=2",
+            "turnover_on_initial_cash": 700.3768076591236
+          }
+        ]
+      },
+      {
+        "capacity_estimation": "NOT_ESTIMATED_FROM_5M_OHLCV",
+        "diagnostic_only": false,
+        "fee_rate_per_side": 0.0015,
+        "scenario": "F2/S3",
+        "slippage_application": "adverse_by_order_side_at_next_bar_open",
+        "slippage_bps_per_side": 10.0,
+        "trials": [
+          {
+            "buy_orders": 3199,
+            "executed_sides": 6398,
+            "gross_executed_notional": 435813.8269243538,
+            "sell_orders": 3199,
+            "total_return": -0.9999998431305104,
+            "trades": 3199,
+            "trial_key": "window=3,deviation=0.5",
+            "turnover_on_initial_cash": 435.8138269243538
+          },
+          {
+            "buy_orders": 3257,
+            "executed_sides": 6514,
+            "gross_executed_notional": 427606.2118591844,
+            "sell_orders": 3257,
+            "total_return": -0.999999842953628,
+            "trades": 3257,
+            "trial_key": "window=3,deviation=1",
+            "turnover_on_initial_cash": 427.6062118591844
+          },
+          {
+            "buy_orders": 0,
+            "executed_sides": 0,
+            "gross_executed_notional": 0.0,
+            "sell_orders": 0,
+            "total_return": 0.0,
+            "trades": 0,
+            "trial_key": "window=3,deviation=1.5",
+            "turnover_on_initial_cash": 0.0
+          },
+          {
+            "buy_orders": 0,
+            "executed_sides": 0,
+            "gross_executed_notional": 0.0,
+            "sell_orders": 0,
+            "total_return": 0.0,
+            "trades": 0,
+            "trial_key": "window=3,deviation=2",
+            "turnover_on_initial_cash": 0.0
+          },
+          {
+            "buy_orders": 3308,
+            "executed_sides": 6616,
+            "gross_executed_notional": 430414.66975123796,
+            "sell_orders": 3308,
+            "total_return": -0.9999998434524875,
+            "trades": 3308,
+            "trial_key": "window=5,deviation=0.5",
+            "turnover_on_initial_cash": 430.41466975123797
+          },
+          {
+            "buy_orders": 3316,
+            "executed_sides": 6632,
+            "gross_executed_notional": 427465.7796981999,
+            "sell_orders": 3316,
+            "total_return": -0.9999998432516999,
+            "trades": 3316,
+            "trial_key": "window=5,deviation=1",
+            "turnover_on_initial_cash": 427.46577969819987
+          },
+          {
+            "buy_orders": 3523,
+            "executed_sides": 7046,
+            "gross_executed_notional": 451354.3465622575,
+            "sell_orders": 3523,
+            "total_return": -0.9999998429376812,
+            "trades": 3523,
+            "trial_key": "window=5,deviation=1.5",
+            "turnover_on_initial_cash": 451.3543465622575
+          },
+          {
+            "buy_orders": 0,
+            "executed_sides": 0,
+            "gross_executed_notional": 0.0,
+            "sell_orders": 0,
+            "total_return": 0.0,
+            "trades": 0,
+            "trial_key": "window=5,deviation=2",
+            "turnover_on_initial_cash": 0.0
+          },
+          {
+            "buy_orders": 3384,
+            "executed_sides": 6768,
+            "gross_executed_notional": 461970.39280786796,
+            "sell_orders": 3384,
+            "total_return": -0.9999998426654557,
+            "trades": 3384,
+            "trial_key": "window=10,deviation=0.5",
+            "turnover_on_initial_cash": 461.97039280786794
+          },
+          {
+            "buy_orders": 3441,
+            "executed_sides": 6882,
+            "gross_executed_notional": 469779.3962732042,
+            "sell_orders": 3441,
+            "total_return": -0.9999998433077427,
+            "trades": 3441,
+            "trial_key": "window=10,deviation=1",
+            "turnover_on_initial_cash": 469.77939627320416
+          },
+          {
+            "buy_orders": 3630,
+            "executed_sides": 7260,
+            "gross_executed_notional": 543576.4398436277,
+            "sell_orders": 3630,
+            "total_return": -0.9999998432615751,
+            "trades": 3630,
+            "trial_key": "window=10,deviation=1.5",
+            "turnover_on_initial_cash": 543.5764398436278
+          },
+          {
+            "buy_orders": 3637,
+            "executed_sides": 7274,
+            "gross_executed_notional": 609232.6374374976,
+            "sell_orders": 3637,
+            "total_return": -0.9999998422378976,
+            "trades": 3637,
+            "trial_key": "window=10,deviation=2",
+            "turnover_on_initial_cash": 609.2326374374976
+          },
+          {
+            "buy_orders": 3280,
+            "executed_sides": 6560,
+            "gross_executed_notional": 385352.13358865294,
+            "sell_orders": 3280,
+            "total_return": -0.999999843049603,
+            "trades": 3280,
+            "trial_key": "window=20,deviation=0.5",
+            "turnover_on_initial_cash": 385.3521335886529
+          },
+          {
+            "buy_orders": 3338,
+            "executed_sides": 6676,
+            "gross_executed_notional": 391641.5643658962,
+            "sell_orders": 3338,
+            "total_return": -0.9999998427526277,
+            "trades": 3338,
+            "trial_key": "window=20,deviation=1",
+            "turnover_on_initial_cash": 391.6415643658962
+          },
+          {
+            "buy_orders": 3346,
+            "executed_sides": 6692,
+            "gross_executed_notional": 448210.571687728,
+            "sell_orders": 3346,
+            "total_return": -0.9999998415909057,
+            "trades": 3346,
+            "trial_key": "window=20,deviation=1.5",
+            "turnover_on_initial_cash": 448.210571687728
+          },
+          {
+            "buy_orders": 3448,
+            "executed_sides": 6896,
+            "gross_executed_notional": 524809.4990588487,
+            "sell_orders": 3448,
+            "total_return": -0.9999998391413009,
+            "trades": 3448,
+            "trial_key": "window=20,deviation=2",
+            "turnover_on_initial_cash": 524.8094990588487
+          }
+        ]
+      }
+    ],
+    "primary_statistical_cell": "F1/S1"
+  },
+  "dataset_file": "BTCUSDT_5m.parquet",
+  "engine": "vectorbt 1.1.0",
+  "execution_audit": {
+    "bar_interval": "5m",
+    "conflict_policy": "flat_entry; held_exit",
+    "estimated_missing_bars": 213,
+    "fill_time": "next_exact_adjacent_bar_open",
+    "final_position_policy": "mark_at_final_close_without_forced_liquidation",
+    "float_policy": "source decimal strings converted to float64 in frozen vectorbt lane",
+    "gap_policy": "pending_signal_expires; indicator_warmup_resets; held_position_carries",
+    "non_adjacent_transitions": 7,
+    "signal_time": "bar_close",
+    "trials": [
+      {
+        "buy_orders": 100336,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": true,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 238077,
+        "raw_exit_signals": 289505,
+        "sell_orders": 100336,
+        "trial_key": "window=3,deviation=0.5"
+      },
+      {
+        "buy_orders": 87323,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": true,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 167624,
+        "raw_exit_signals": 289505,
+        "sell_orders": 87323,
+        "trial_key": "window=3,deviation=1"
+      },
+      {
+        "buy_orders": 0,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 0,
+        "raw_exit_signals": 289505,
+        "sell_orders": 0,
+        "trial_key": "window=3,deviation=1.5"
+      },
+      {
+        "buy_orders": 0,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 0,
+        "raw_exit_signals": 289505,
+        "sell_orders": 0,
+        "trial_key": "window=3,deviation=2"
+      },
+      {
+        "buy_orders": 68032,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 225485,
+        "raw_exit_signals": 289883,
+        "sell_orders": 68032,
+        "trial_key": "window=5,deviation=0.5"
+      },
+      {
+        "buy_orders": 57163,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 150658,
+        "raw_exit_signals": 289883,
+        "sell_orders": 57163,
+        "trial_key": "window=5,deviation=1"
+      },
+      {
+        "buy_orders": 39714,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 64849,
+        "raw_exit_signals": 289883,
+        "sell_orders": 39714,
+        "trial_key": "window=5,deviation=1.5"
+      },
+      {
+        "buy_orders": 0,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 0,
+        "raw_exit_signals": 289883,
+        "sell_orders": 0,
+        "trial_key": "window=5,deviation=2"
+      },
+      {
+        "buy_orders": 42032,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 219761,
+        "raw_exit_signals": 291863,
+        "sell_orders": 42032,
+        "trial_key": "window=10,deviation=0.5"
+      },
+      {
+        "buy_orders": 33650,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 147420,
+        "raw_exit_signals": 291863,
+        "sell_orders": 33650,
+        "trial_key": "window=10,deviation=1"
+      },
+      {
+        "buy_orders": 25941,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 75460,
+        "raw_exit_signals": 291863,
+        "sell_orders": 25941,
+        "trial_key": "window=10,deviation=1.5"
+      },
+      {
+        "buy_orders": 15435,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 25476,
+        "raw_exit_signals": 291863,
+        "sell_orders": 15435,
+        "trial_key": "window=10,deviation=2"
+      },
+      {
+        "buy_orders": 25761,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 217419,
+        "raw_exit_signals": 293260,
+        "sell_orders": 25761,
+        "trial_key": "window=20,deviation=0.5"
+      },
+      {
+        "buy_orders": 19631,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 146459,
+        "raw_exit_signals": 293260,
+        "sell_orders": 19631,
+        "trial_key": "window=20,deviation=1"
+      },
+      {
+        "buy_orders": 15126,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 80162,
+        "raw_exit_signals": 293260,
+        "sell_orders": 15126,
+        "trial_key": "window=20,deviation=1.5"
+      },
+      {
+        "buy_orders": 10904,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 34165,
+        "raw_exit_signals": 293260,
+        "sell_orders": 10904,
+        "trial_key": "window=20,deviation=2"
+      }
+    ]
+  },
+  "execution_authority": "NONE",
+  "generated_at_utc": "2026-07-13T10:40:35.844074+00:00",
+  "initial_cash": 1000.0,
+  "primary_scenario": "F1/S1",
+  "promotion_eligible": false,
+  "purpose": "preregistered canonical B2/B3/B4 G10 and cost diagnostics",
+  "return_correlation_observation_count": 577803,
+  "return_correlations_upper_triangle": [
+    0.8882844177761366,
+    null,
+    null,
+    0.717252756184741,
+    0.646238901481603,
+    0.529876507937336,
+    null,
+    0.5554766196973837,
+    0.4981090904188997,
+    0.43952004789950605,
+    0.36853208475454224,
+    0.4876488355304661,
+    0.4445323636616379,
+    0.4095883225967907,
+    0.35683225200883373,
+    null,
+    null,
+    0.7583978287359711,
+    0.6985392775987348,
+    0.5812006994435591,
+    null,
+    0.5814492955517464,
+    0.5282714284761623,
+    0.46355653727437673,
+    0.38578859352114103,
+    0.5062285561049914,
+    0.46282915210262315,
+    0.42391305278668107,
+    0.3662625616756892,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    0.8784922902776737,
+    0.7249585351115384,
+    null,
+    0.7234715999447607,
+    0.651262910264373,
+    0.5709816418178983,
+    0.4716085450627445,
+    0.5989015860018948,
+    0.5444432959281025,
+    0.49419859014789663,
+    0.42290491846018907,
+    0.8220829941218444,
+    null,
+    0.770136063544735,
+    0.7138260923502642,
+    0.6359294419489934,
+    0.5352528556227738,
+    0.6387572936878909,
+    0.5877021734471145,
+    0.5373566475408874,
+    0.46684232568039474,
+    null,
+    0.7694901027224409,
+    0.7606946518587826,
+    0.7070538508371066,
+    0.6164055096853394,
+    0.666209859170422,
+    0.6309537604298051,
+    0.5863846863463447,
+    0.5126257899476535,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    0.9002657122124337,
+    0.7930791948376142,
+    0.6593536801093848,
+    0.7804312912334779,
+    0.7239482301058112,
+    0.6598063198143598,
+    0.5657726864429595,
+    0.8737695555629489,
+    0.7226422141407546,
+    0.8111056341873069,
+    0.7661700475753832,
+    0.7046595821694637,
+    0.6004479896190541,
+    0.8186061647924222,
+    0.8097491788556244,
+    0.8104846454668192,
+    0.7594593139802845,
+    0.6527878615259903,
+    0.6911683251343712,
+    0.7307768770591326,
+    0.7645456260318864,
+    0.7024551199197989,
+    0.9157344004037163,
+    0.8368070376556012,
+    0.7141776532956532,
+    0.9083431835749373,
+    0.7718958937387467,
+    0.8473734984494563
+  ],
+  "sample_count": 577803,
+  "schema": "tios-canonical-baseline-returns-v1",
+  "slice_count": 16,
+  "slice_length_bars": 36112,
+  "trials": [
+    {
+      "exact_canonical_control": false,
+      "family": "b3",
+      "parameters": {
+        "deviation": 0.5,
+        "window": 3
+      },
+      "returns_kurtosis": 1001.0703157201383,
+      "returns_skewness": -0.012946683347090626,
+      "sharpe_per_bar": -0.03570558372457748,
+      "slice_mean_returns": [
+        -0.00035597039040700875,
+        -5.6102767390859976e-05,
+        0.0,
+        -9.406705588144523e-07,
+        -1.2184530599595794e-05,
+        -4.1060979530283706e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -12.8548027383779,
+          0.21363857155184043
+        ],
+        [
+          36112,
+          -2.0259831360187355,
+          0.08793008258671882
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          -0.033969495219907504,
+          0.007006421546598016
+        ],
+        [
+          36112,
+          -0.4400077690126033,
+          0.009738374924995078
+        ],
+        [
+          36112,
+          -0.14827940927976052,
+          0.008375453802936894
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998429093511,
+      "trades": 7693,
+      "trial_key": "window=3,deviation=0.5"
+    },
+    {
+      "exact_canonical_control": true,
+      "family": "b3",
+      "parameters": {
+        "deviation": 1.0,
+        "window": 3
+      },
+      "returns_kurtosis": 990.6384637821452,
+      "returns_skewness": -0.05187763503936734,
+      "sharpe_per_bar": -0.03527498964080875,
+      "slice_mean_returns": [
+        -0.0003075664088740758,
+        -0.00010457500909526302,
+        0.0,
+        -8.528586949282449e-07,
+        -1.193198224324271e-05,
+        -4.291821273320476e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -11.106838157260626,
+          0.19143190019876177
+        ],
+        [
+          36112,
+          -3.776412728448138,
+          0.11769471222716948
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          -0.03079843319124878,
+          0.005364846743390975
+        ],
+        [
+          36112,
+          -0.43088774276798075,
+          0.011930349900036103
+        ],
+        [
+          36112,
+          -0.15498624982214904,
+          0.00814652471399468
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998430390206,
+      "trades": 7821,
+      "trial_key": "window=3,deviation=1"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b3",
+      "parameters": {
+        "deviation": 1.5,
+        "window": 3
+      },
+      "returns_kurtosis": 3.0,
+      "returns_skewness": 0.0,
+      "sharpe_per_bar": 0.0,
+      "slice_mean_returns": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": true,
+      "total_return": 0.0,
+      "trades": 0,
+      "trial_key": "window=3,deviation=1.5"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b3",
+      "parameters": {
+        "deviation": 2.0,
+        "window": 3
+      },
+      "returns_kurtosis": 3.0,
+      "returns_skewness": 0.0,
+      "sharpe_per_bar": 0.0,
+      "slice_mean_returns": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": true,
+      "total_return": 0.0,
+      "trades": 0,
+      "trial_key": "window=3,deviation=2"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b3",
+      "parameters": {
+        "deviation": 0.5,
+        "window": 5
+      },
+      "returns_kurtosis": 1136.6091577118002,
+      "returns_skewness": -0.7189756003546155,
+      "sharpe_per_bar": -0.03084790326131843,
+      "slice_mean_returns": [
+        -0.0002308907321896182,
+        -0.0001729940545986036,
+        0.0,
+        -8.63155090543782e-06,
+        -1.0865990772756889e-05,
+        -4.46038451107343e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -8.337926120831492,
+          0.2098678931136721
+        ],
+        [
+          36112,
+          -6.247161299664773,
+          0.1853840491857212
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          -0.3117025662971705,
+          0.014017115402570769
+        ],
+        [
+          36112,
+          -0.39239265878579677,
+          0.013490549294157588
+        ],
+        [
+          36112,
+          -0.1610734054638837,
+          0.01180324016603153
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998431118107,
+      "trades": 7676,
+      "trial_key": "window=5,deviation=0.5"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b3",
+      "parameters": {
+        "deviation": 1.0,
+        "window": 5
+      },
+      "returns_kurtosis": 1411.4129267424648,
+      "returns_skewness": -2.63117738548977,
+      "sharpe_per_bar": -0.03035468742131764,
+      "slice_mean_returns": [
+        -0.00018687274039486343,
+        -0.00020019869974470848,
+        -1.4451400447513602e-05,
+        -9.589352045973166e-06,
+        -1.2604401379895043e-05,
+        -3.894898718878637e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -6.7483484011393085,
+          0.18931998863953778
+        ],
+        [
+          36112,
+          -7.229575445180912,
+          0.20719990573596367
+        ],
+        [
+          36112,
+          -0.5218689729606112,
+          0.009599014079013637
+        ],
+        [
+          36112,
+          -0.346290681084183,
+          0.016634915941703608
+        ],
+        [
+          36112,
+          -0.45517014263076977,
+          0.014840257608250487
+        ],
+        [
+          36112,
+          -0.14065258253614535,
+          0.010706936785184909
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998429245346,
+      "trades": 7873,
+      "trial_key": "window=5,deviation=1"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b3",
+      "parameters": {
+        "deviation": 1.5,
+        "window": 5
+      },
+      "returns_kurtosis": 1502.5628611406469,
+      "returns_skewness": -3.6042571647213615,
+      "sharpe_per_bar": -0.030856652261740957,
+      "slice_mean_returns": [
+        -0.00011673435706754988,
+        -0.00012366889304731105,
+        -0.00014712349850461547,
+        -2.3815263555390648e-05,
+        -1.2028756365117059e-05,
+        -4.474019761967319e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -4.215511102423362,
+          0.14824595565784426
+        ],
+        [
+          36112,
+          -4.465931065724496,
+          0.1738874525082892
+        ],
+        [
+          36112,
+          -5.312923777998674,
+          0.064833032301123
+        ],
+        [
+          36112,
+          -0.8600167975122671,
+          0.020477474071337293
+        ],
+        [
+          36112,
+          -0.4343824498571072,
+          0.013912378017758947
+        ],
+        [
+          36112,
+          -0.16156580164416384,
+          0.012964608021387023
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998431662913,
+      "trades": 8291,
+      "trial_key": "window=5,deviation=1.5"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b3",
+      "parameters": {
+        "deviation": 2.0,
+        "window": 5
+      },
+      "returns_kurtosis": 3.0,
+      "returns_skewness": 0.0,
+      "sharpe_per_bar": 0.0,
+      "slice_mean_returns": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": true,
+      "total_return": 0.0,
+      "trades": 0,
+      "trial_key": "window=5,deviation=2"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b3",
+      "parameters": {
+        "deviation": 0.5,
+        "window": 10
+      },
+      "returns_kurtosis": 914.4103621150352,
+      "returns_skewness": -2.216299837725312,
+      "sharpe_per_bar": -0.026890597851095228,
+      "slice_mean_returns": [
+        -0.0001288096880620041,
+        -0.00013716321483591624,
+        -0.00013393489347469098,
+        -9.874134271966252e-06,
+        -1.2271245918225108e-05,
+        -3.7730716785626136e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -4.651575455295092,
+          0.21212907506894244
+        ],
+        [
+          36112,
+          -4.953238014154607,
+          0.2265855102561565
+        ],
+        [
+          36112,
+          -4.836656873158041,
+          0.0796367499811496
+        ],
+        [
+          36112,
+          -0.3565747368292453,
+          0.019354279211212983
+        ],
+        [
+          36112,
+          -0.4431392325989451,
+          0.015325477035826367
+        ],
+        [
+          36112,
+          -0.1362531644562531,
+          0.013339124987574509
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998420805362,
+      "trades": 7997,
+      "trial_key": "window=10,deviation=0.5"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b3",
+      "parameters": {
+        "deviation": 1.0,
+        "window": 10
+      },
+      "returns_kurtosis": 899.747291447502,
+      "returns_skewness": -2.938637072354215,
+      "sharpe_per_bar": -0.026890548536942054,
+      "slice_mean_returns": [
+        -9.34650332424569e-05,
+        -0.00010390691595157624,
+        -0.00012463067850733962,
+        -8.777578590959494e-05,
+        -1.1644767953959512e-05,
+        -4.387604557395252e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -3.3752092804516036,
+          0.18970715493772203
+        ],
+        [
+          36112,
+          -3.7522865488433212,
+          0.2086477011442123
+        ],
+        [
+          36112,
+          -4.500663062257049,
+          0.08014151795341289
+        ],
+        [
+          36112,
+          -3.1697591807672922,
+          0.05982355742463443
+        ],
+        [
+          36112,
+          -0.4205158603533859,
+          0.01708665210130178
+        ],
+        [
+          36112,
+          -0.15844517577665734,
+          0.010924578607319125
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998420102506,
+      "trades": 7958,
+      "trial_key": "window=10,deviation=1"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b3",
+      "parameters": {
+        "deviation": 1.5,
+        "window": 10
+      },
+      "returns_kurtosis": 890.2659396671404,
+      "returns_skewness": -2.8496052030678714,
+      "sharpe_per_bar": -0.02684299559794949,
+      "slice_mean_returns": [
+        -5.55253216260141e-05,
+        -6.959741653069945e-05,
+        -9.007283505435765e-05,
+        -0.0001053102800682017,
+        -9.772760981205037e-05,
+        -7.609530194613279e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -2.005130414558621,
+          0.16451586806066434
+        ],
+        [
+          36112,
+          -2.5133019057566184,
+          0.1869594901593726
+        ],
+        [
+          36112,
+          -3.252710219482964,
+          0.07080756671929635
+        ],
+        [
+          36112,
+          -3.8029648338228994,
+          0.06731536126244338
+        ],
+        [
+          36112,
+          -3.529139445532763,
+          0.06577447794257298
+        ],
+        [
+          36112,
+          -0.2747953543878747,
+          0.013051237942727088
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998423567324,
+      "trades": 8329,
+      "trial_key": "window=10,deviation=1.5"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b3",
+      "parameters": {
+        "deviation": 2.0,
+        "window": 10
+      },
+      "returns_kurtosis": 1129.2867956415307,
+      "returns_skewness": -3.4614523464100397,
+      "sharpe_per_bar": -0.027130291912804895,
+      "slice_mean_returns": [
+        -2.206153389747583e-05,
+        -3.6532792535430954e-05,
+        -4.989912280349093e-05,
+        -6.261283575759452e-05,
+        -5.8471248327778225e-05,
+        -4.9707483095117624e-05,
+        -5.882005671219764e-05,
+        -5.088643908636222e-05,
+        -1.5172770663730433e-05,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -0.7966861121056471,
+          0.12521411230455384
+        ],
+        [
+          36112,
+          -1.3192722040394826,
+          0.1518658282269819
+        ],
+        [
+          36112,
+          -1.8019571226796645,
+          0.05347118916684251
+        ],
+        [
+          36112,
+          -2.2610747248782532,
+          0.05074871185426628
+        ],
+        [
+          36112,
+          -2.111513719612727,
+          0.04833894412449952
+        ],
+        [
+          36112,
+          -1.7950366295308877,
+          0.02664952155737913
+        ],
+        [
+          36112,
+          -2.124109887990881,
+          0.025767205137441095
+        ],
+        [
+          36112,
+          -1.8376110882867125,
+          0.013788179754757766
+        ],
+        [
+          36112,
+          -0.5479190942086334,
+          0.005400109139584784
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999996433384077,
+      "trades": 8208,
+      "trial_key": "window=10,deviation=2"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b3",
+      "parameters": {
+        "deviation": 0.5,
+        "window": 20
+      },
+      "returns_kurtosis": 634.2186308861061,
+      "returns_skewness": -1.682735138353238,
+      "sharpe_per_bar": -0.024176944461190723,
+      "slice_mean_returns": [
+        -8.387511548380128e-05,
+        -8.33849564723849e-05,
+        -9.200665094772663e-05,
+        -0.00010408132517461019,
+        -5.597476759689195e-05,
+        -4.618812270749263e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -3.028898170351032,
+          0.2170610828635234
+        ],
+        [
+          36112,
+          -3.011197548130763,
+          0.2328189315396417
+        ],
+        [
+          36112,
+          -3.322544179024304,
+          0.08670298534565131
+        ],
+        [
+          36112,
+          -3.758584814705523,
+          0.08656290927534994
+        ],
+        [
+          36112,
+          -2.021360807458962,
+          0.057337827866163656
+        ],
+        [
+          36112,
+          -0.16679454872129737,
+          0.013877746390849585
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998414412039,
+      "trades": 7423,
+      "trial_key": "window=20,deviation=0.5"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b3",
+      "parameters": {
+        "deviation": 1.0,
+        "window": 20
+      },
+      "returns_kurtosis": 631.7718731427808,
+      "returns_skewness": -1.9323311801198935,
+      "sharpe_per_bar": -0.023709982158089712,
+      "slice_mean_returns": [
+        -5.971428313855162e-05,
+        -5.9207673193214915e-05,
+        -6.700315716438448e-05,
+        -7.979178448124049e-05,
+        -7.9942950502988e-05,
+        -6.821082038286346e-05,
+        -1.6565500345334738e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -2.156402192699376,
+          0.19647713371840986
+        ],
+        [
+          36112,
+          -2.138107494353377,
+          0.21837242179455815
+        ],
+        [
+          36112,
+          -2.419618011520252,
+          0.07945919514236777
+        ],
+        [
+          36112,
+          -2.8814409211865564,
+          0.07849342559624128
+        ],
+        [
+          36112,
+          -2.886899828563903,
+          0.07878998008187689
+        ],
+        [
+          36112,
+          -2.463229145665965,
+          0.039946513837987516
+        ],
+        [
+          36112,
+          -0.059821334847072805,
+          0.0020517976449351645
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999997850703511,
+      "trades": 7459,
+      "trial_key": "window=20,deviation=1"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b3",
+      "parameters": {
+        "deviation": 1.5,
+        "window": 20
+      },
+      "returns_kurtosis": 711.1917420410304,
+      "returns_skewness": -2.7910765880161907,
+      "sharpe_per_bar": -0.02352790086741113,
+      "slice_mean_returns": [
+        -3.984316741522e-05,
+        -4.1906434182370485e-05,
+        -4.93638375028917e-05,
+        -6.189387007370826e-05,
+        -6.356050866836858e-05,
+        -4.999584019867498e-05,
+        -5.4542598297504774e-05,
+        -4.916298848177782e-05,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -1.4388164616984245,
+          0.17847850170723412
+        ],
+        [
+          36112,
+          -1.5133251511937629,
+          0.2004801748639103
+        ],
+        [
+          36112,
+          -1.782626899904425,
+          0.07230845074453918
+        ],
+        [
+          36112,
+          -2.235111436101753,
+          0.07194223454603008
+        ],
+        [
+          36112,
+          -2.2952970890321263,
+          0.06974844747070283
+        ],
+        [
+          36112,
+          -1.805449781254551,
+          0.03611550257266468
+        ],
+        [
+          36112,
+          -1.9696423097194924,
+          0.03282830934161001
+        ],
+        [
+          36112,
+          -1.7753738400539607,
+          0.02474682710864108
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999997392826845,
+      "trades": 7628,
+      "trial_key": "window=20,deviation=1.5"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b3",
+      "parameters": {
+        "deviation": 2.0,
+        "window": 20
+      },
+      "returns_kurtosis": 661.3804424772251,
+      "returns_skewness": -2.6001787922754773,
+      "sharpe_per_bar": -0.02174433453771336,
+      "slice_mean_returns": [
+        -2.1706628983185267e-05,
+        -2.2850927322574767e-05,
+        -3.426448588683792e-05,
+        -4.270837490636204e-05,
+        -4.346780857788887e-05,
+        -3.365523373320268e-05,
+        -3.8854407459409316e-05,
+        -3.649063032237147e-05,
+        -3.271533773683029e-05,
+        -3.1681962579793655e-05,
+        -3.913483045171472e-05,
+        -5.704940769014379e-06,
+        0.0,
+        0.0,
+        -1.4993932539004875e-06,
+        -2.638397828083302e-06
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -0.7838697858407864,
+          0.15589625239897617
+        ],
+        [
+          36112,
+          -0.8251926874728199,
+          0.17860424799061816
+        ],
+        [
+          36112,
+          -1.237359114345491,
+          0.06265037238762479
+        ],
+        [
+          36112,
+          -1.542284834618546,
+          0.060323139771415804
+        ],
+        [
+          36112,
+          -1.5697095033647228,
+          0.05868246008182935
+        ],
+        [
+          36112,
+          -1.2153578005734154,
+          0.030701207952356365
+        ],
+        [
+          36112,
+          -1.4031103621741892,
+          0.028345973619760698
+        ],
+        [
+          36112,
+          -1.3177496422014785,
+          0.022813004406365037
+        ],
+        [
+          36112,
+          -1.1814162763524154,
+          0.02808282062389535
+        ],
+        [
+          36112,
+          -1.1440990326815084,
+          0.03853169751374804
+        ],
+        [
+          36112,
+          -1.413236997272322,
+          0.03783720390137339
+        ],
+        [
+          36112,
+          -0.20601682105064725,
+          0.0037038533029733834
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          -0.054146089184854404,
+          0.00568915278989612
+        ],
+        [
+          36112,
+          -0.09527782236774421,
+          0.004768788799262464
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999994128590102,
+      "trades": 7770,
+      "trial_key": "window=20,deviation=2"
+    }
+  ],
+  "walk_forward": {
+    "classification": "HISTORICAL_PSEUDO_OOS",
+    "first_possible_test_fill": "second exact-adjacent test bar",
+    "folds": [
+      {
+        "fold": "2022",
+        "fold_id": "WF-2022",
+        "gap_bar": "2021-12-31T23:55:00+00:00",
+        "selected_train_sharpe_per_bar": 0.0,
+        "selected_trial_key": "window=3,deviation=1.5",
+        "test_bars": 105120,
+        "test_end": "2022-12-31T23:55:00+00:00",
+        "test_ending_open_position": false,
+        "test_sharpe_per_bar": 0.0,
+        "test_start": "2022-01-01T00:00:00+00:00",
+        "test_total_return": 0.0,
+        "test_trades": 0,
+        "train_end": "2021-12-31T23:50:00+00:00",
+        "train_start": "2021-01-01T00:00:00+00:00"
+      },
+      {
+        "fold": "2023",
+        "fold_id": "WF-2023",
+        "gap_bar": "2022-12-31T23:55:00+00:00",
+        "selected_train_sharpe_per_bar": 0.0,
+        "selected_trial_key": "window=3,deviation=1.5",
+        "test_bars": 105104,
+        "test_end": "2023-12-31T23:55:00+00:00",
+        "test_ending_open_position": false,
+        "test_sharpe_per_bar": 0.0,
+        "test_start": "2023-01-01T00:00:00+00:00",
+        "test_total_return": 0.0,
+        "test_trades": 0,
+        "train_end": "2022-12-31T23:50:00+00:00",
+        "train_start": "2021-01-01T00:00:00+00:00"
+      },
+      {
+        "fold": "2024",
+        "fold_id": "WF-2024",
+        "gap_bar": "2023-12-31T23:55:00+00:00",
+        "selected_train_sharpe_per_bar": 0.0,
+        "selected_trial_key": "window=3,deviation=1.5",
+        "test_bars": 105408,
+        "test_end": "2024-12-31T23:55:00+00:00",
+        "test_ending_open_position": false,
+        "test_sharpe_per_bar": 0.0,
+        "test_start": "2024-01-01T00:00:00+00:00",
+        "test_total_return": 0.0,
+        "test_trades": 0,
+        "train_end": "2023-12-31T23:50:00+00:00",
+        "train_start": "2021-01-01T00:00:00+00:00"
+      },
+      {
+        "fold": "2025",
+        "fold_id": "WF-2025",
+        "gap_bar": "2024-12-31T23:55:00+00:00",
+        "selected_train_sharpe_per_bar": 0.0,
+        "selected_trial_key": "window=3,deviation=1.5",
+        "test_bars": 105120,
+        "test_end": "2025-12-31T23:55:00+00:00",
+        "test_ending_open_position": false,
+        "test_sharpe_per_bar": 0.0,
+        "test_start": "2025-01-01T00:00:00+00:00",
+        "test_total_return": 0.0,
+        "test_trades": 0,
+        "train_end": "2024-12-31T23:50:00+00:00",
+        "train_start": "2021-01-01T00:00:00+00:00"
+      },
+      {
+        "fold": "2026H1",
+        "fold_id": "WF-2026-H1",
+        "gap_bar": "2025-12-31T23:55:00+00:00",
+        "selected_train_sharpe_per_bar": 0.0,
+        "selected_trial_key": "window=3,deviation=1.5",
+        "test_bars": 52128,
+        "test_end": "2026-06-30T23:55:00+00:00",
+        "test_ending_open_position": false,
+        "test_sharpe_per_bar": 0.0,
+        "test_start": "2026-01-01T00:00:00+00:00",
+        "test_total_return": 0.0,
+        "test_trades": 0,
+        "train_end": "2025-12-31T23:50:00+00:00",
+        "train_start": "2021-01-01T00:00:00+00:00"
+      }
+    ],
+    "gap": "one complete 5m bar",
+    "indicator_warmup": "trailing history only; no pre-test signal or position imported",
+    "scenario": "F1/S1",
+    "selection_metric": "max expanding-train non_annualized_per_bar_sharpe",
+    "selection_tie_breaker": "frozen trial order",
+    "status": "COMPLETED",
+    "stitched_test_bars": 472880,
+    "stitched_test_sharpe_per_bar": 0.0,
+    "stitched_test_total_return_compounded": 0.0,
+    "test_initial_position": "FLAT",
+    "winner_selected": false
+  },
+  "winner_selected": false
+}

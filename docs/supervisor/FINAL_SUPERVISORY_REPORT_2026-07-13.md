@@ -36,6 +36,13 @@ The baseline and finding register remain authoritative:
 - Executed the preregistered 66-trial baseline G10 campaign from a clean commit with
   immutable per-family evidence. B2/B4 fail, B3 is method-blocked, and no promotion
   or execution authority was created.
+- Completed the separate 67-trial canonical V2 campaign from clean commit `6bac8bf`.
+  It uses exact-adjacent next-open fills, the full six-cell cost surface, five expanding
+  historical pseudo-OOS folds, portable checksum-pinned data restoration, family and
+  campaign-wide PBO/DSR, immutable all-trial evidence, and a byte-identical full rerun.
+  B2/B4 fail economically; B3/campaign-wide select an inert zero-trade diagnostic and
+  remain method-blocked. The pre-freeze implementation smoke is disclosed, so V2 is
+  not presented as unseen evidence.
 - Added research-only multi-leg canonical identity and deterministic Decimal carry
   accounting/lifecycle primitives for capital, funding, basis, fees, rehedging,
   closing, and isolated-margin breach. Venue-specific semantics remain absent.
@@ -45,8 +52,9 @@ The baseline and finding register remain authoritative:
 ## Validation completed
 
 - `make check`: PASS — package integrity, Ruff lint, Ruff formatting, strict mypy,
-  and **720 tests**.
-- Controlled package hashes: **76/76 PASS**.
+  and **746 tests**.
+- Controlled package hashes: **85/85 PASS**.
+- Canonical V2 immutable verification and byte-identical full recomputation: PASS.
 - Current normalized manifest and its 69 table/source chains: PASS.
 - `make audit`: PASS — no known dependency vulnerabilities.
 - `git diff --check`: PASS.
@@ -57,7 +65,7 @@ The baseline and finding register remain authoritative:
 
 | Risk | Classification | Consequence |
 |---|---|---|
-| Historical search hierarchy and historical normalization run identity cannot be reconstructed | Not enough evidence | Historical G10 cannot pass; old results remain non-promotional |
+| Historical search hierarchy and historical normalization run identity cannot be reconstructed | Not enough evidence | V2 repairs the declared 67-trial scope but cannot create a hierarchy-wide G10 PASS; all historical results remain non-promotional |
 | Stat-arb, cross-sectional, combination, ranking, MTF, and composition methods lack complete canonical/method ownership | Intentionally deferred corrective backlog | Family-wide conclusions and promotion remain blocked |
 | Carry lacks sourced venue contract semantics, point-in-time funding inputs, collateral tiers, transfers, intraperiod liquidation, empirical costs/fills, and counterparty model | Not enough evidence / future scope | Carry is a research hypothesis, not G12 or a validated strategy |
 | Exact public-strategy source/version/license identity and a single globally frozen candidate are incomplete | External evidence dependency | Public-strategy outputs remain exploratory |
@@ -73,10 +81,11 @@ credential rotation if exposure is uncertain, and any paid data or release actio
 
 ## Recommended next phase
 
-Continue offline only. Do not expand the failed legacy proxy grids. If baseline
-conformance remains useful, preregister a new canonical next-bar-open, F1/S1-or-stricter
-campaign on distributable frozen data. Otherwise reconstruct one strategy family's method
-and canonical ownership before new parameter search. Do not reactivate authenticated
+Continue offline only. Do not expand or rescue the failed B2/B3/B4 grids. Keep the sealed
+post-2026-07-14 holdout untouched until its one allowed evaluation no earlier than
+2027-01-14. If research continues before then, reconstruct one economically distinct
+strategy family's method, canonical ownership, point-in-time data, costs, and complete
+hierarchical search contract before new parameter search. Do not reactivate authenticated
 networking or treat any numeric diagnostic as promotion evidence.
 
 ## Primary method and venue references

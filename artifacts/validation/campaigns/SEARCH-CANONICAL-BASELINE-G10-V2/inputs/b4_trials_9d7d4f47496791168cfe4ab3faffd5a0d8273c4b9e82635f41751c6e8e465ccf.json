@@ -1,0 +1,3317 @@
+{
+  "bars_excluded_tail": 11,
+  "bars_total": 577803,
+  "baseline": "b4",
+  "canonical_spec": {
+    "exit_window": 3,
+    "lookback": 5,
+    "shift": 1,
+    "spec_file": "fixtures/strategies/baselines/B4_volatility_breakout.yaml",
+    "strategy_id": "STRAT-B4-vol-breakout"
+  },
+  "cost_surface": {
+    "cells": [
+      {
+        "capacity_estimation": "NOT_ESTIMATED_FROM_5M_OHLCV",
+        "diagnostic_only": true,
+        "fee_rate_per_side": 0.0,
+        "scenario": "F0/S0",
+        "slippage_application": "adverse_by_order_side_at_next_bar_open",
+        "slippage_bps_per_side": 0.0,
+        "trials": [
+          {
+            "buy_orders": 58389,
+            "executed_sides": 116778,
+            "gross_executed_notional": 15518877.713305235,
+            "sell_orders": 58389,
+            "total_return": -0.9862035034855181,
+            "trades": 58389,
+            "trial_key": "lookback=3,exit_window=2",
+            "turnover_on_initial_cash": 15518.877713305235
+          },
+          {
+            "buy_orders": 52336,
+            "executed_sides": 104671,
+            "gross_executed_notional": 15520192.011325885,
+            "sell_orders": 52335,
+            "total_return": -0.9769941108576458,
+            "trades": 52336,
+            "trial_key": "lookback=3,exit_window=3",
+            "turnover_on_initial_cash": 15520.192011325884
+          },
+          {
+            "buy_orders": 45487,
+            "executed_sides": 90973,
+            "gross_executed_notional": 11832924.43281103,
+            "sell_orders": 45486,
+            "total_return": -0.9735848738684694,
+            "trades": 45487,
+            "trial_key": "lookback=3,exit_window=5",
+            "turnover_on_initial_cash": 11832.924432811029
+          },
+          {
+            "buy_orders": 39003,
+            "executed_sides": 78005,
+            "gross_executed_notional": 9345600.599972183,
+            "sell_orders": 39002,
+            "total_return": -0.9698689331845478,
+            "trades": 39003,
+            "trial_key": "lookback=3,exit_window=10",
+            "turnover_on_initial_cash": 9345.600599972184
+          },
+          {
+            "buy_orders": 45317,
+            "executed_sides": 90634,
+            "gross_executed_notional": 10218270.30476114,
+            "sell_orders": 45317,
+            "total_return": -0.9861636293766585,
+            "trades": 45317,
+            "trial_key": "lookback=5,exit_window=2",
+            "turnover_on_initial_cash": 10218.27030476114
+          },
+          {
+            "buy_orders": 40691,
+            "executed_sides": 81382,
+            "gross_executed_notional": 9197775.178428898,
+            "sell_orders": 40691,
+            "total_return": -0.9838907500257315,
+            "trades": 40691,
+            "trial_key": "lookback=5,exit_window=3",
+            "turnover_on_initial_cash": 9197.775178428898
+          },
+          {
+            "buy_orders": 35533,
+            "executed_sides": 71066,
+            "gross_executed_notional": 6910910.741105688,
+            "sell_orders": 35533,
+            "total_return": -0.9854005932744075,
+            "trades": 35533,
+            "trial_key": "lookback=5,exit_window=5",
+            "turnover_on_initial_cash": 6910.9107411056875
+          },
+          {
+            "buy_orders": 29557,
+            "executed_sides": 59114,
+            "gross_executed_notional": 5665709.774076251,
+            "sell_orders": 29557,
+            "total_return": -0.9800518684948947,
+            "trades": 29557,
+            "trial_key": "lookback=5,exit_window=10",
+            "turnover_on_initial_cash": 5665.709774076251
+          },
+          {
+            "buy_orders": 30652,
+            "executed_sides": 61304,
+            "gross_executed_notional": 11110980.514709761,
+            "sell_orders": 30652,
+            "total_return": -0.9632385544212039,
+            "trades": 30652,
+            "trial_key": "lookback=10,exit_window=2",
+            "turnover_on_initial_cash": 11110.980514709761
+          },
+          {
+            "buy_orders": 27653,
+            "executed_sides": 55306,
+            "gross_executed_notional": 9961959.907824783,
+            "sell_orders": 27653,
+            "total_return": -0.9579429291370494,
+            "trades": 27653,
+            "trial_key": "lookback=10,exit_window=3",
+            "turnover_on_initial_cash": 9961.959907824783
+          },
+          {
+            "buy_orders": 24279,
+            "executed_sides": 48558,
+            "gross_executed_notional": 7853223.518180696,
+            "sell_orders": 24279,
+            "total_return": -0.9602274387414781,
+            "trades": 24279,
+            "trial_key": "lookback=10,exit_window=5",
+            "turnover_on_initial_cash": 7853.223518180696
+          },
+          {
+            "buy_orders": 20106,
+            "executed_sides": 40212,
+            "gross_executed_notional": 6077969.739495261,
+            "sell_orders": 20106,
+            "total_return": -0.9558600690482941,
+            "trades": 20106,
+            "trial_key": "lookback=10,exit_window=10",
+            "turnover_on_initial_cash": 6077.969739495261
+          },
+          {
+            "buy_orders": 20068,
+            "executed_sides": 40136,
+            "gross_executed_notional": 11256660.314606372,
+            "sell_orders": 20068,
+            "total_return": -0.9102599094820726,
+            "trades": 20068,
+            "trial_key": "lookback=20,exit_window=2",
+            "turnover_on_initial_cash": 11256.660314606372
+          },
+          {
+            "buy_orders": 18131,
+            "executed_sides": 36262,
+            "gross_executed_notional": 11115184.182466835,
+            "sell_orders": 18131,
+            "total_return": -0.8797368516348545,
+            "trades": 18131,
+            "trial_key": "lookback=20,exit_window=3",
+            "turnover_on_initial_cash": 11115.184182466835
+          },
+          {
+            "buy_orders": 15949,
+            "executed_sides": 31898,
+            "gross_executed_notional": 10347070.755875105,
+            "sell_orders": 15949,
+            "total_return": -0.8383036193067437,
+            "trades": 15949,
+            "trial_key": "lookback=20,exit_window=5",
+            "turnover_on_initial_cash": 10347.070755875106
+          },
+          {
+            "buy_orders": 13331,
+            "executed_sides": 26662,
+            "gross_executed_notional": 7127942.360651952,
+            "sell_orders": 13331,
+            "total_return": -0.8481420777507997,
+            "trades": 13331,
+            "trial_key": "lookback=20,exit_window=10",
+            "turnover_on_initial_cash": 7127.942360651952
+          }
+        ]
+      },
+      {
+        "capacity_estimation": "NOT_ESTIMATED_FROM_5M_OHLCV",
+        "diagnostic_only": false,
+        "fee_rate_per_side": 0.001,
+        "scenario": "F1/S1",
+        "slippage_application": "adverse_by_order_side_at_next_bar_open",
+        "slippage_bps_per_side": 1.0,
+        "trials": [
+          {
+            "buy_orders": 6545,
+            "executed_sides": 13090,
+            "gross_executed_notional": 1019663.4694060741,
+            "sell_orders": 6545,
+            "total_return": -0.9999998427437012,
+            "trades": 6545,
+            "trial_key": "lookback=3,exit_window=2",
+            "turnover_on_initial_cash": 1019.6634694060741
+          },
+          {
+            "buy_orders": 6478,
+            "executed_sides": 12956,
+            "gross_executed_notional": 1014764.5512495184,
+            "sell_orders": 6478,
+            "total_return": -0.9999998426889939,
+            "trades": 6478,
+            "trial_key": "lookback=3,exit_window=3",
+            "turnover_on_initial_cash": 1014.7645512495184
+          },
+          {
+            "buy_orders": 6280,
+            "executed_sides": 12560,
+            "gross_executed_notional": 983821.9866772946,
+            "sell_orders": 6280,
+            "total_return": -0.9999998427238858,
+            "trades": 6280,
+            "trial_key": "lookback=3,exit_window=5",
+            "turnover_on_initial_cash": 983.8219866772946
+          },
+          {
+            "buy_orders": 6221,
+            "executed_sides": 12442,
+            "gross_executed_notional": 964338.2131531325,
+            "sell_orders": 6221,
+            "total_return": -0.9999998429097122,
+            "trades": 6221,
+            "trial_key": "lookback=3,exit_window=10",
+            "turnover_on_initial_cash": 964.3382131531324
+          },
+          {
+            "buy_orders": 6235,
+            "executed_sides": 12470,
+            "gross_executed_notional": 955157.5914652008,
+            "sell_orders": 6235,
+            "total_return": -0.9999998426468462,
+            "trades": 6235,
+            "trial_key": "lookback=5,exit_window=2",
+            "turnover_on_initial_cash": 955.1575914652008
+          },
+          {
+            "buy_orders": 6177,
+            "executed_sides": 12354,
+            "gross_executed_notional": 961412.8294905784,
+            "sell_orders": 6177,
+            "total_return": -0.9999998427152308,
+            "trades": 6177,
+            "trial_key": "lookback=5,exit_window=3",
+            "turnover_on_initial_cash": 961.4128294905784
+          },
+          {
+            "buy_orders": 6028,
+            "executed_sides": 12056,
+            "gross_executed_notional": 916895.9160693538,
+            "sell_orders": 6028,
+            "total_return": -0.9999998427533053,
+            "trades": 6028,
+            "trial_key": "lookback=5,exit_window=5",
+            "turnover_on_initial_cash": 916.8959160693538
+          },
+          {
+            "buy_orders": 5878,
+            "executed_sides": 11756,
+            "gross_executed_notional": 871639.1633561654,
+            "sell_orders": 5878,
+            "total_return": -0.999999843108972,
+            "trades": 5878,
+            "trial_key": "lookback=5,exit_window=10",
+            "turnover_on_initial_cash": 871.6391633561655
+          },
+          {
+            "buy_orders": 6419,
+            "executed_sides": 12838,
+            "gross_executed_notional": 922792.1888799713,
+            "sell_orders": 6419,
+            "total_return": -0.9999998411225312,
+            "trades": 6419,
+            "trial_key": "lookback=10,exit_window=2",
+            "turnover_on_initial_cash": 922.7921888799713
+          },
+          {
+            "buy_orders": 6303,
+            "executed_sides": 12606,
+            "gross_executed_notional": 913269.4701312889,
+            "sell_orders": 6303,
+            "total_return": -0.9999998389761308,
+            "trades": 6303,
+            "trial_key": "lookback=10,exit_window=3",
+            "turnover_on_initial_cash": 913.2694701312888
+          },
+          {
+            "buy_orders": 6130,
+            "executed_sides": 12260,
+            "gross_executed_notional": 897470.6521745508,
+            "sell_orders": 6130,
+            "total_return": -0.9999998396417924,
+            "trades": 6130,
+            "trial_key": "lookback=10,exit_window=5",
+            "turnover_on_initial_cash": 897.4706521745508
+          },
+          {
+            "buy_orders": 6028,
+            "executed_sides": 12056,
+            "gross_executed_notional": 820671.0912942943,
+            "sell_orders": 6028,
+            "total_return": -0.9999998388536003,
+            "trades": 6028,
+            "trial_key": "lookback=10,exit_window=10",
+            "turnover_on_initial_cash": 820.6710912942943
+          },
+          {
+            "buy_orders": 6409,
+            "executed_sides": 12818,
+            "gross_executed_notional": 891388.8640673513,
+            "sell_orders": 6409,
+            "total_return": -0.9999998348651027,
+            "trades": 6409,
+            "trial_key": "lookback=20,exit_window=2",
+            "turnover_on_initial_cash": 891.3888640673513
+          },
+          {
+            "buy_orders": 6327,
+            "executed_sides": 12654,
+            "gross_executed_notional": 891539.8585048263,
+            "sell_orders": 6327,
+            "total_return": -0.9999997938692626,
+            "trades": 6327,
+            "trial_key": "lookback=20,exit_window=3",
+            "turnover_on_initial_cash": 891.5398585048263
+          },
+          {
+            "buy_orders": 6290,
+            "executed_sides": 12580,
+            "gross_executed_notional": 876305.262536556,
+            "sell_orders": 6290,
+            "total_return": -0.9999997479161428,
+            "trades": 6290,
+            "trial_key": "lookback=20,exit_window=5",
+            "turnover_on_initial_cash": 876.305262536556
+          },
+          {
+            "buy_orders": 6097,
+            "executed_sides": 12194,
+            "gross_executed_notional": 781685.5617194959,
+            "sell_orders": 6097,
+            "total_return": -0.9999997474622639,
+            "trades": 6097,
+            "trial_key": "lookback=20,exit_window=10",
+            "turnover_on_initial_cash": 781.6855617194959
+          }
+        ]
+      },
+      {
+        "capacity_estimation": "NOT_ESTIMATED_FROM_5M_OHLCV",
+        "diagnostic_only": false,
+        "fee_rate_per_side": 0.001,
+        "scenario": "F1/S2",
+        "slippage_application": "adverse_by_order_side_at_next_bar_open",
+        "slippage_bps_per_side": 5.0,
+        "trials": [
+          {
+            "buy_orders": 4892,
+            "executed_sides": 9784,
+            "gross_executed_notional": 738390.9926455371,
+            "sell_orders": 4892,
+            "total_return": -0.9999998427025126,
+            "trades": 4892,
+            "trial_key": "lookback=3,exit_window=2",
+            "turnover_on_initial_cash": 738.3909926455372
+          },
+          {
+            "buy_orders": 4809,
+            "executed_sides": 9618,
+            "gross_executed_notional": 735697.8090866859,
+            "sell_orders": 4809,
+            "total_return": -0.9999998427546887,
+            "trades": 4809,
+            "trial_key": "lookback=3,exit_window=3",
+            "turnover_on_initial_cash": 735.6978090866859
+          },
+          {
+            "buy_orders": 4641,
+            "executed_sides": 9282,
+            "gross_executed_notional": 727652.8276247407,
+            "sell_orders": 4641,
+            "total_return": -0.999999842559935,
+            "trades": 4641,
+            "trial_key": "lookback=3,exit_window=5",
+            "turnover_on_initial_cash": 727.6528276247407
+          },
+          {
+            "buy_orders": 4627,
+            "executed_sides": 9254,
+            "gross_executed_notional": 721571.2869376815,
+            "sell_orders": 4627,
+            "total_return": -0.9999998424996301,
+            "trades": 4627,
+            "trial_key": "lookback=3,exit_window=10",
+            "turnover_on_initial_cash": 721.5712869376815
+          },
+          {
+            "buy_orders": 4700,
+            "executed_sides": 9400,
+            "gross_executed_notional": 708397.1466858728,
+            "sell_orders": 4700,
+            "total_return": -0.9999998427474498,
+            "trades": 4700,
+            "trial_key": "lookback=5,exit_window=2",
+            "turnover_on_initial_cash": 708.3971466858728
+          },
+          {
+            "buy_orders": 4666,
+            "executed_sides": 9332,
+            "gross_executed_notional": 715842.8906561922,
+            "sell_orders": 4666,
+            "total_return": -0.9999998425748575,
+            "trades": 4666,
+            "trial_key": "lookback=5,exit_window=3",
+            "turnover_on_initial_cash": 715.8428906561923
+          },
+          {
+            "buy_orders": 4503,
+            "executed_sides": 9006,
+            "gross_executed_notional": 696679.1188355733,
+            "sell_orders": 4503,
+            "total_return": -0.9999998428158211,
+            "trades": 4503,
+            "trial_key": "lookback=5,exit_window=5",
+            "turnover_on_initial_cash": 696.6791188355733
+          },
+          {
+            "buy_orders": 4413,
+            "executed_sides": 8826,
+            "gross_executed_notional": 672439.1665462753,
+            "sell_orders": 4413,
+            "total_return": -0.9999998426717811,
+            "trades": 4413,
+            "trial_key": "lookback=5,exit_window=10",
+            "turnover_on_initial_cash": 672.4391665462753
+          },
+          {
+            "buy_orders": 4757,
+            "executed_sides": 9514,
+            "gross_executed_notional": 687492.7220742106,
+            "sell_orders": 4757,
+            "total_return": -0.9999998423060693,
+            "trades": 4757,
+            "trial_key": "lookback=10,exit_window=2",
+            "turnover_on_initial_cash": 687.4927220742106
+          },
+          {
+            "buy_orders": 4696,
+            "executed_sides": 9392,
+            "gross_executed_notional": 688737.8462967925,
+            "sell_orders": 4696,
+            "total_return": -0.9999998413123727,
+            "trades": 4696,
+            "trial_key": "lookback=10,exit_window=3",
+            "turnover_on_initial_cash": 688.7378462967926
+          },
+          {
+            "buy_orders": 4628,
+            "executed_sides": 9256,
+            "gross_executed_notional": 686554.2223220387,
+            "sell_orders": 4628,
+            "total_return": -0.9999998413190113,
+            "trades": 4628,
+            "trial_key": "lookback=10,exit_window=5",
+            "turnover_on_initial_cash": 686.5542223220388
+          },
+          {
+            "buy_orders": 4526,
+            "executed_sides": 9052,
+            "gross_executed_notional": 637005.4425230549,
+            "sell_orders": 4526,
+            "total_return": -0.9999998385313369,
+            "trades": 4526,
+            "trial_key": "lookback=10,exit_window=10",
+            "turnover_on_initial_cash": 637.0054425230549
+          },
+          {
+            "buy_orders": 4831,
+            "executed_sides": 9662,
+            "gross_executed_notional": 664167.8286227164,
+            "sell_orders": 4831,
+            "total_return": -0.9999998390425848,
+            "trades": 4831,
+            "trial_key": "lookback=20,exit_window=2",
+            "turnover_on_initial_cash": 664.1678286227163
+          },
+          {
+            "buy_orders": 4759,
+            "executed_sides": 9518,
+            "gross_executed_notional": 671105.3109435125,
+            "sell_orders": 4759,
+            "total_return": -0.9999998382075985,
+            "trades": 4759,
+            "trial_key": "lookback=20,exit_window=3",
+            "turnover_on_initial_cash": 671.1053109435124
+          },
+          {
+            "buy_orders": 4735,
+            "executed_sides": 9470,
+            "gross_executed_notional": 669356.0315217683,
+            "sell_orders": 4735,
+            "total_return": -0.9999998389431801,
+            "trades": 4735,
+            "trial_key": "lookback=20,exit_window=5",
+            "turnover_on_initial_cash": 669.3560315217683
+          },
+          {
+            "buy_orders": 4615,
+            "executed_sides": 9230,
+            "gross_executed_notional": 611315.6590695077,
+            "sell_orders": 4615,
+            "total_return": -0.9999998344656185,
+            "trades": 4615,
+            "trial_key": "lookback=20,exit_window=10",
+            "turnover_on_initial_cash": 611.3156590695078
+          }
+        ]
+      },
+      {
+        "capacity_estimation": "NOT_ESTIMATED_FROM_5M_OHLCV",
+        "diagnostic_only": false,
+        "fee_rate_per_side": 0.001,
+        "scenario": "F1/S3",
+        "slippage_application": "adverse_by_order_side_at_next_bar_open",
+        "slippage_bps_per_side": 10.0,
+        "trials": [
+          {
+            "buy_orders": 3783,
+            "executed_sides": 7566,
+            "gross_executed_notional": 547131.0299004511,
+            "sell_orders": 3783,
+            "total_return": -0.9999998428686357,
+            "trades": 3783,
+            "trial_key": "lookback=3,exit_window=2",
+            "turnover_on_initial_cash": 547.131029900451
+          },
+          {
+            "buy_orders": 3701,
+            "executed_sides": 7402,
+            "gross_executed_notional": 544336.0964719675,
+            "sell_orders": 3701,
+            "total_return": -0.9999998427871529,
+            "trades": 3701,
+            "trial_key": "lookback=3,exit_window=3",
+            "turnover_on_initial_cash": 544.3360964719675
+          },
+          {
+            "buy_orders": 3569,
+            "executed_sides": 7138,
+            "gross_executed_notional": 545805.6659205618,
+            "sell_orders": 3569,
+            "total_return": -0.9999998429817291,
+            "trades": 3569,
+            "trial_key": "lookback=3,exit_window=5",
+            "turnover_on_initial_cash": 545.8056659205618
+          },
+          {
+            "buy_orders": 3470,
+            "executed_sides": 6940,
+            "gross_executed_notional": 545492.9419551828,
+            "sell_orders": 3470,
+            "total_return": -0.9999998425202457,
+            "trades": 3470,
+            "trial_key": "lookback=3,exit_window=10",
+            "turnover_on_initial_cash": 545.4929419551828
+          },
+          {
+            "buy_orders": 3620,
+            "executed_sides": 7240,
+            "gross_executed_notional": 533756.7463807279,
+            "sell_orders": 3620,
+            "total_return": -0.9999998425764193,
+            "trades": 3620,
+            "trial_key": "lookback=5,exit_window=2",
+            "turnover_on_initial_cash": 533.7567463807278
+          },
+          {
+            "buy_orders": 3573,
+            "executed_sides": 7146,
+            "gross_executed_notional": 539375.2325523134,
+            "sell_orders": 3573,
+            "total_return": -0.9999998425984734,
+            "trades": 3573,
+            "trial_key": "lookback=5,exit_window=3",
+            "turnover_on_initial_cash": 539.3752325523134
+          },
+          {
+            "buy_orders": 3432,
+            "executed_sides": 6864,
+            "gross_executed_notional": 533105.7941697509,
+            "sell_orders": 3432,
+            "total_return": -0.9999998428831883,
+            "trades": 3432,
+            "trial_key": "lookback=5,exit_window=5",
+            "turnover_on_initial_cash": 533.1057941697509
+          },
+          {
+            "buy_orders": 3395,
+            "executed_sides": 6790,
+            "gross_executed_notional": 520994.56801851,
+            "sell_orders": 3395,
+            "total_return": -0.9999998425698351,
+            "trades": 3395,
+            "trial_key": "lookback=5,exit_window=10",
+            "turnover_on_initial_cash": 520.99456801851
+          },
+          {
+            "buy_orders": 3622,
+            "executed_sides": 7244,
+            "gross_executed_notional": 520012.445283395,
+            "sell_orders": 3622,
+            "total_return": -0.9999998421097729,
+            "trades": 3622,
+            "trial_key": "lookback=10,exit_window=2",
+            "turnover_on_initial_cash": 520.012445283395
+          },
+          {
+            "buy_orders": 3574,
+            "executed_sides": 7148,
+            "gross_executed_notional": 525167.5822373937,
+            "sell_orders": 3574,
+            "total_return": -0.9999998421392277,
+            "trades": 3574,
+            "trial_key": "lookback=10,exit_window=3",
+            "turnover_on_initial_cash": 525.1675822373937
+          },
+          {
+            "buy_orders": 3506,
+            "executed_sides": 7012,
+            "gross_executed_notional": 528831.3329135341,
+            "sell_orders": 3506,
+            "total_return": -0.999999842088635,
+            "trades": 3506,
+            "trial_key": "lookback=10,exit_window=5",
+            "turnover_on_initial_cash": 528.8313329135341
+          },
+          {
+            "buy_orders": 3482,
+            "executed_sides": 6964,
+            "gross_executed_notional": 496957.0352943773,
+            "sell_orders": 3482,
+            "total_return": -0.9999998392677588,
+            "trades": 3482,
+            "trial_key": "lookback=10,exit_window=10",
+            "turnover_on_initial_cash": 496.9570352943773
+          },
+          {
+            "buy_orders": 3674,
+            "executed_sides": 7348,
+            "gross_executed_notional": 501838.4799865781,
+            "sell_orders": 3674,
+            "total_return": -0.9999998405243679,
+            "trades": 3674,
+            "trial_key": "lookback=20,exit_window=2",
+            "turnover_on_initial_cash": 501.83847998657814
+          },
+          {
+            "buy_orders": 3661,
+            "executed_sides": 7322,
+            "gross_executed_notional": 510800.7713531601,
+            "sell_orders": 3661,
+            "total_return": -0.9999998390519699,
+            "trades": 3661,
+            "trial_key": "lookback=20,exit_window=3",
+            "turnover_on_initial_cash": 510.8007713531601
+          },
+          {
+            "buy_orders": 3609,
+            "executed_sides": 7218,
+            "gross_executed_notional": 514511.0536658101,
+            "sell_orders": 3609,
+            "total_return": -0.9999998401317023,
+            "trades": 3609,
+            "trial_key": "lookback=20,exit_window=5",
+            "turnover_on_initial_cash": 514.5110536658101
+          },
+          {
+            "buy_orders": 3496,
+            "executed_sides": 6992,
+            "gross_executed_notional": 479168.1634281179,
+            "sell_orders": 3496,
+            "total_return": -0.9999998418330617,
+            "trades": 3496,
+            "trial_key": "lookback=20,exit_window=10",
+            "turnover_on_initial_cash": 479.1681634281179
+          }
+        ]
+      },
+      {
+        "capacity_estimation": "NOT_ESTIMATED_FROM_5M_OHLCV",
+        "diagnostic_only": false,
+        "fee_rate_per_side": 0.0015,
+        "scenario": "F2/S2",
+        "slippage_application": "adverse_by_order_side_at_next_bar_open",
+        "slippage_bps_per_side": 5.0,
+        "trials": [
+          {
+            "buy_orders": 3783,
+            "executed_sides": 7566,
+            "gross_executed_notional": 547131.0714546898,
+            "sell_orders": 3783,
+            "total_return": -0.9999998428692293,
+            "trades": 3783,
+            "trial_key": "lookback=3,exit_window=2",
+            "turnover_on_initial_cash": 547.1310714546898
+          },
+          {
+            "buy_orders": 3701,
+            "executed_sides": 7402,
+            "gross_executed_notional": 544336.1342815941,
+            "sell_orders": 3701,
+            "total_return": -0.9999998427877342,
+            "trades": 3701,
+            "trial_key": "lookback=3,exit_window=3",
+            "turnover_on_initial_cash": 544.3361342815941
+          },
+          {
+            "buy_orders": 3569,
+            "executed_sides": 7138,
+            "gross_executed_notional": 545805.7105657496,
+            "sell_orders": 3569,
+            "total_return": -0.9999998429822893,
+            "trades": 3569,
+            "trial_key": "lookback=3,exit_window=5",
+            "turnover_on_initial_cash": 545.8057105657496
+          },
+          {
+            "buy_orders": 3470,
+            "executed_sides": 6940,
+            "gross_executed_notional": 545492.989370934,
+            "sell_orders": 3470,
+            "total_return": -0.9999998425207915,
+            "trades": 3470,
+            "trial_key": "lookback=3,exit_window=10",
+            "turnover_on_initial_cash": 545.492989370934
+          },
+          {
+            "buy_orders": 3620,
+            "executed_sides": 7240,
+            "gross_executed_notional": 533756.7814157308,
+            "sell_orders": 3620,
+            "total_return": -0.9999998425769892,
+            "trades": 3620,
+            "trial_key": "lookback=5,exit_window=2",
+            "turnover_on_initial_cash": 533.7567814157309
+          },
+          {
+            "buy_orders": 3573,
+            "executed_sides": 7146,
+            "gross_executed_notional": 539375.2725828349,
+            "sell_orders": 3573,
+            "total_return": -0.9999998425990351,
+            "trades": 3573,
+            "trial_key": "lookback=5,exit_window=3",
+            "turnover_on_initial_cash": 539.3752725828349
+          },
+          {
+            "buy_orders": 3432,
+            "executed_sides": 6864,
+            "gross_executed_notional": 533105.8342756386,
+            "sell_orders": 3432,
+            "total_return": -0.9999998428837276,
+            "trades": 3432,
+            "trial_key": "lookback=5,exit_window=5",
+            "turnover_on_initial_cash": 533.1058342756386
+          },
+          {
+            "buy_orders": 3395,
+            "executed_sides": 6790,
+            "gross_executed_notional": 520994.60105760326,
+            "sell_orders": 3395,
+            "total_return": -0.9999998425703686,
+            "trades": 3395,
+            "trial_key": "lookback=5,exit_window=10",
+            "turnover_on_initial_cash": 520.9946010576033
+          },
+          {
+            "buy_orders": 3622,
+            "executed_sides": 7244,
+            "gross_executed_notional": 520012.4684990465,
+            "sell_orders": 3622,
+            "total_return": -0.9999998421768204,
+            "trades": 3622,
+            "trial_key": "lookback=10,exit_window=2",
+            "turnover_on_initial_cash": 520.0124684990465
+          },
+          {
+            "buy_orders": 3574,
+            "executed_sides": 7148,
+            "gross_executed_notional": 525167.61336957,
+            "sell_orders": 3574,
+            "total_return": -0.9999998421397935,
+            "trades": 3574,
+            "trial_key": "lookback=10,exit_window=3",
+            "turnover_on_initial_cash": 525.16761336957
+          },
+          {
+            "buy_orders": 3506,
+            "executed_sides": 7012,
+            "gross_executed_notional": 528831.3718228338,
+            "sell_orders": 3506,
+            "total_return": -0.9999998420891882,
+            "trades": 3506,
+            "trial_key": "lookback=10,exit_window=5",
+            "turnover_on_initial_cash": 528.8313718228338
+          },
+          {
+            "buy_orders": 3482,
+            "executed_sides": 6964,
+            "gross_executed_notional": 496957.0470729741,
+            "sell_orders": 3482,
+            "total_return": -0.9999998392683167,
+            "trades": 3482,
+            "trial_key": "lookback=10,exit_window=10",
+            "turnover_on_initial_cash": 496.9570470729741
+          },
+          {
+            "buy_orders": 3674,
+            "executed_sides": 7348,
+            "gross_executed_notional": 501838.4840782294,
+            "sell_orders": 3674,
+            "total_return": -0.9999998405249536,
+            "trades": 3674,
+            "trial_key": "lookback=20,exit_window=2",
+            "turnover_on_initial_cash": 501.8384840782294
+          },
+          {
+            "buy_orders": 3661,
+            "executed_sides": 7322,
+            "gross_executed_notional": 510800.78714248515,
+            "sell_orders": 3661,
+            "total_return": -0.9999998390525584,
+            "trades": 3661,
+            "trial_key": "lookback=20,exit_window=3",
+            "turnover_on_initial_cash": 510.80078714248515
+          },
+          {
+            "buy_orders": 3609,
+            "executed_sides": 7218,
+            "gross_executed_notional": 514511.0767964742,
+            "sell_orders": 3609,
+            "total_return": -0.9999998401322786,
+            "trades": 3609,
+            "trial_key": "lookback=20,exit_window=5",
+            "turnover_on_initial_cash": 514.5110767964742
+          },
+          {
+            "buy_orders": 3496,
+            "executed_sides": 6992,
+            "gross_executed_notional": 479168.1582695611,
+            "sell_orders": 3496,
+            "total_return": -0.9999998418336149,
+            "trades": 3496,
+            "trial_key": "lookback=20,exit_window=10",
+            "turnover_on_initial_cash": 479.1681582695611
+          }
+        ]
+      },
+      {
+        "capacity_estimation": "NOT_ESTIMATED_FROM_5M_OHLCV",
+        "diagnostic_only": false,
+        "fee_rate_per_side": 0.0015,
+        "scenario": "F2/S3",
+        "slippage_application": "adverse_by_order_side_at_next_bar_open",
+        "slippage_bps_per_side": 10.0,
+        "trials": [
+          {
+            "buy_orders": 3059,
+            "executed_sides": 6118,
+            "gross_executed_notional": 433832.748185461,
+            "sell_orders": 3059,
+            "total_return": -0.9999998430243162,
+            "trades": 3059,
+            "trial_key": "lookback=3,exit_window=2",
+            "turnover_on_initial_cash": 433.83274818546096
+          },
+          {
+            "buy_orders": 3007,
+            "executed_sides": 6014,
+            "gross_executed_notional": 430899.6472246277,
+            "sell_orders": 3007,
+            "total_return": -0.9999998425873774,
+            "trades": 3007,
+            "trial_key": "lookback=3,exit_window=3",
+            "turnover_on_initial_cash": 430.8996472246277
+          },
+          {
+            "buy_orders": 2979,
+            "executed_sides": 5958,
+            "gross_executed_notional": 435293.1934818629,
+            "sell_orders": 2979,
+            "total_return": -0.999999842586896,
+            "trades": 2979,
+            "trial_key": "lookback=3,exit_window=5",
+            "turnover_on_initial_cash": 435.2931934818629
+          },
+          {
+            "buy_orders": 2838,
+            "executed_sides": 5676,
+            "gross_executed_notional": 436955.2616596532,
+            "sell_orders": 2838,
+            "total_return": -0.999999842619035,
+            "trades": 2838,
+            "trial_key": "lookback=3,exit_window=10",
+            "turnover_on_initial_cash": 436.9552616596532
+          },
+          {
+            "buy_orders": 2993,
+            "executed_sides": 5986,
+            "gross_executed_notional": 427551.64997884206,
+            "sell_orders": 2993,
+            "total_return": -0.9999998430601927,
+            "trades": 2993,
+            "trial_key": "lookback=5,exit_window=2",
+            "turnover_on_initial_cash": 427.5516499788421
+          },
+          {
+            "buy_orders": 2940,
+            "executed_sides": 5880,
+            "gross_executed_notional": 431356.4435020298,
+            "sell_orders": 2940,
+            "total_return": -0.9999998429346365,
+            "trades": 2940,
+            "trial_key": "lookback=5,exit_window=3",
+            "turnover_on_initial_cash": 431.35644350202983
+          },
+          {
+            "buy_orders": 2805,
+            "executed_sides": 5610,
+            "gross_executed_notional": 430441.4276056301,
+            "sell_orders": 2805,
+            "total_return": -0.9999998425305785,
+            "trades": 2805,
+            "trial_key": "lookback=5,exit_window=5",
+            "turnover_on_initial_cash": 430.44142760563005
+          },
+          {
+            "buy_orders": 2708,
+            "executed_sides": 5416,
+            "gross_executed_notional": 424174.15075538476,
+            "sell_orders": 2708,
+            "total_return": -0.9999998426599686,
+            "trades": 2708,
+            "trial_key": "lookback=5,exit_window=10",
+            "turnover_on_initial_cash": 424.17415075538474
+          },
+          {
+            "buy_orders": 2946,
+            "executed_sides": 5892,
+            "gross_executed_notional": 417916.8477498381,
+            "sell_orders": 2946,
+            "total_return": -0.9999998422872745,
+            "trades": 2946,
+            "trial_key": "lookback=10,exit_window=2",
+            "turnover_on_initial_cash": 417.9168477498381
+          },
+          {
+            "buy_orders": 2918,
+            "executed_sides": 5836,
+            "gross_executed_notional": 423719.1383338532,
+            "sell_orders": 2918,
+            "total_return": -0.9999998420086893,
+            "trades": 2918,
+            "trial_key": "lookback=10,exit_window=3",
+            "turnover_on_initial_cash": 423.7191383338532
+          },
+          {
+            "buy_orders": 2831,
+            "executed_sides": 5662,
+            "gross_executed_notional": 429345.47836279764,
+            "sell_orders": 2831,
+            "total_return": -0.9999998425365881,
+            "trades": 2831,
+            "trial_key": "lookback=10,exit_window=5",
+            "turnover_on_initial_cash": 429.3454783627976
+          },
+          {
+            "buy_orders": 2804,
+            "executed_sides": 5608,
+            "gross_executed_notional": 407281.988205244,
+            "sell_orders": 2804,
+            "total_return": -0.9999998422293296,
+            "trades": 2804,
+            "trial_key": "lookback=10,exit_window=10",
+            "turnover_on_initial_cash": 407.28198820524403
+          },
+          {
+            "buy_orders": 2963,
+            "executed_sides": 5926,
+            "gross_executed_notional": 402755.4306816592,
+            "sell_orders": 2963,
+            "total_return": -0.9999998404974796,
+            "trades": 2963,
+            "trial_key": "lookback=20,exit_window=2",
+            "turnover_on_initial_cash": 402.7554306816592
+          },
+          {
+            "buy_orders": 2943,
+            "executed_sides": 5886,
+            "gross_executed_notional": 411555.8829575846,
+            "sell_orders": 2943,
+            "total_return": -0.9999998406488163,
+            "trades": 2943,
+            "trial_key": "lookback=20,exit_window=3",
+            "turnover_on_initial_cash": 411.5558829575846
+          },
+          {
+            "buy_orders": 2933,
+            "executed_sides": 5866,
+            "gross_executed_notional": 416741.31636197394,
+            "sell_orders": 2933,
+            "total_return": -0.9999998414249929,
+            "trades": 2933,
+            "trial_key": "lookback=20,exit_window=5",
+            "turnover_on_initial_cash": 416.74131636197393
+          },
+          {
+            "buy_orders": 2838,
+            "executed_sides": 5676,
+            "gross_executed_notional": 393406.855714755,
+            "sell_orders": 2838,
+            "total_return": -0.9999998420637219,
+            "trades": 2838,
+            "trial_key": "lookback=20,exit_window=10",
+            "turnover_on_initial_cash": 393.406855714755
+          }
+        ]
+      }
+    ],
+    "primary_statistical_cell": "F1/S1"
+  },
+  "dataset_file": "BTCUSDT_5m.parquet",
+  "engine": "vectorbt 1.1.0",
+  "execution_audit": {
+    "bar_interval": "5m",
+    "conflict_policy": "flat_entry; held_exit",
+    "estimated_missing_bars": 213,
+    "fill_time": "next_exact_adjacent_bar_open",
+    "final_position_policy": "mark_at_final_close_without_forced_liquidation",
+    "float_policy": "source decimal strings converted to float64 in frozen vectorbt lane",
+    "gap_policy": "pending_signal_expires; indicator_warmup_resets; held_position_carries",
+    "non_adjacent_transitions": 7,
+    "signal_time": "bar_close",
+    "trials": [
+      {
+        "buy_orders": 58389,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 94078,
+        "raw_exit_signals": 288389,
+        "sell_orders": 58389,
+        "trial_key": "lookback=3,exit_window=2"
+      },
+      {
+        "buy_orders": 52336,
+        "ending_open_position": true,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 94078,
+        "raw_exit_signals": 288282,
+        "sell_orders": 52335,
+        "trial_key": "lookback=3,exit_window=3"
+      },
+      {
+        "buy_orders": 45487,
+        "ending_open_position": true,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 94078,
+        "raw_exit_signals": 287888,
+        "sell_orders": 45486,
+        "trial_key": "lookback=3,exit_window=5"
+      },
+      {
+        "buy_orders": 39003,
+        "ending_open_position": true,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 3785,
+        "raw_entry_signals": 94078,
+        "raw_exit_signals": 285868,
+        "sell_orders": 39002,
+        "trial_key": "lookback=3,exit_window=10"
+      },
+      {
+        "buy_orders": 45317,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 71594,
+        "raw_exit_signals": 288389,
+        "sell_orders": 45317,
+        "trial_key": "lookback=5,exit_window=2"
+      },
+      {
+        "buy_orders": 40691,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 71594,
+        "raw_exit_signals": 288282,
+        "sell_orders": 40691,
+        "trial_key": "lookback=5,exit_window=3"
+      },
+      {
+        "buy_orders": 35533,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 71594,
+        "raw_exit_signals": 287888,
+        "sell_orders": 35533,
+        "trial_key": "lookback=5,exit_window=5"
+      },
+      {
+        "buy_orders": 29557,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 132,
+        "raw_entry_signals": 71594,
+        "raw_exit_signals": 285868,
+        "sell_orders": 29557,
+        "trial_key": "lookback=5,exit_window=10"
+      },
+      {
+        "buy_orders": 30652,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 47440,
+        "raw_exit_signals": 288389,
+        "sell_orders": 30652,
+        "trial_key": "lookback=10,exit_window=2"
+      },
+      {
+        "buy_orders": 27653,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 47440,
+        "raw_exit_signals": 288282,
+        "sell_orders": 27653,
+        "trial_key": "lookback=10,exit_window=3"
+      },
+      {
+        "buy_orders": 24279,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 47440,
+        "raw_exit_signals": 287888,
+        "sell_orders": 24279,
+        "trial_key": "lookback=10,exit_window=5"
+      },
+      {
+        "buy_orders": 20106,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 47440,
+        "raw_exit_signals": 285868,
+        "sell_orders": 20106,
+        "trial_key": "lookback=10,exit_window=10"
+      },
+      {
+        "buy_orders": 20068,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 30665,
+        "raw_exit_signals": 288389,
+        "sell_orders": 20068,
+        "trial_key": "lookback=20,exit_window=2"
+      },
+      {
+        "buy_orders": 18131,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": true,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 30665,
+        "raw_exit_signals": 288282,
+        "sell_orders": 18131,
+        "trial_key": "lookback=20,exit_window=3"
+      },
+      {
+        "buy_orders": 15949,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 30665,
+        "raw_exit_signals": 287888,
+        "sell_orders": 15949,
+        "trial_key": "lookback=20,exit_window=5"
+      },
+      {
+        "buy_orders": 13331,
+        "ending_open_position": false,
+        "final_bar_entry_signal_unfilled": false,
+        "final_bar_exit_signal_unfilled": false,
+        "raw_conflicts": 0,
+        "raw_entry_signals": 30665,
+        "raw_exit_signals": 285868,
+        "sell_orders": 13331,
+        "trial_key": "lookback=20,exit_window=10"
+      }
+    ]
+  },
+  "execution_authority": "NONE",
+  "generated_at_utc": "2026-07-13T10:40:35.844074+00:00",
+  "initial_cash": 1000.0,
+  "primary_scenario": "F1/S1",
+  "promotion_eligible": false,
+  "purpose": "preregistered canonical B2/B3/B4 G10 and cost diagnostics",
+  "return_correlation_observation_count": 577803,
+  "return_correlations_upper_triangle": [
+    0.8552346081395071,
+    0.7266090970655426,
+    0.6142938468465392,
+    0.8392117645283501,
+    0.7203448031393994,
+    0.6058683511856504,
+    0.5105749564140836,
+    0.608400853815271,
+    0.5263723271058851,
+    0.4532140920636552,
+    0.3819585585342873,
+    0.43002357383389533,
+    0.3752052353419709,
+    0.3190058806104479,
+    0.28721912215866396,
+    0.8411012648467725,
+    0.7039649815510285,
+    0.7544682592191605,
+    0.8289898160637642,
+    0.6918610165369142,
+    0.5802851686335861,
+    0.5483797833072948,
+    0.6010264106268034,
+    0.5131189094934737,
+    0.4292346432473592,
+    0.3872712549343841,
+    0.4326849547556503,
+    0.36462996817306587,
+    0.3244170581135391,
+    0.8076983875434733,
+    0.6595749095611968,
+    0.7254341333854107,
+    0.8291653877932285,
+    0.6843416379855125,
+    0.48381949780006056,
+    0.5305512985531666,
+    0.6098155568184808,
+    0.5021112190339381,
+    0.34507821835777724,
+    0.38258735416975986,
+    0.44403894025051915,
+    0.38899096936119554,
+    0.5585649993612858,
+    0.6450652505181967,
+    0.7490538812415859,
+    0.8725127244272988,
+    0.4472097463303566,
+    0.49038379012764,
+    0.5588429030946169,
+    0.6559951923119615,
+    0.32430693121734144,
+    0.3585002682969093,
+    0.4106911519316751,
+    0.4943309521915038,
+    0.8555206694240248,
+    0.7119247116250716,
+    0.5840575411174516,
+    0.7233518095188708,
+    0.623961367871675,
+    0.5305781702827738,
+    0.4337474909693889,
+    0.5131028511732423,
+    0.44705510410676114,
+    0.37440141200432314,
+    0.3258038103712635,
+    0.8259113700754759,
+    0.676904626147844,
+    0.6613187504830514,
+    0.7236800012364881,
+    0.612101333779059,
+    0.49725536734803744,
+    0.47021068046339254,
+    0.5217409383401314,
+    0.4347423410852254,
+    0.37575581868349167,
+    0.805812388099133,
+    0.5800402377342052,
+    0.6369526717270042,
+    0.7284401607767657,
+    0.5832836001148956,
+    0.4154597731386575,
+    0.46043581748607204,
+    0.5301204907947044,
+    0.4515555172365185,
+    0.5106923212151299,
+    0.5603578197230873,
+    0.6410116061771165,
+    0.7473355911778529,
+    0.37376123009427364,
+    0.4138562499674852,
+    0.47166721946266293,
+    0.5656394751971477,
+    0.8596935642938052,
+    0.7273163296871596,
+    0.5778993231314585,
+    0.7160654221520901,
+    0.622723903108991,
+    0.5199456523871779,
+    0.43627178786089243,
+    0.8384786373095829,
+    0.6669207204160017,
+    0.6610725002076544,
+    0.7305659710790656,
+    0.6073795461629817,
+    0.5083009946466519,
+    0.7830828819943664,
+    0.5850370581782741,
+    0.6394950668568029,
+    0.7276158058176662,
+    0.6030371950174442,
+    0.5166129413260414,
+    0.5686342380151397,
+    0.640072039179552,
+    0.7593571338570946,
+    0.8664487673549981,
+    0.7211279837672343,
+    0.6031323294747721,
+    0.8268410441775026,
+    0.68918522599071,
+    0.8230357446856262
+  ],
+  "sample_count": 577803,
+  "schema": "tios-canonical-baseline-returns-v1",
+  "slice_count": 16,
+  "slice_length_bars": 36112,
+  "trials": [
+    {
+      "exact_canonical_control": false,
+      "family": "b4",
+      "parameters": {
+        "exit_window": 2,
+        "lookback": 3
+      },
+      "returns_kurtosis": 1186.3655797816732,
+      "returns_skewness": 1.3029371526937183,
+      "sharpe_per_bar": -0.05183928489196901,
+      "slice_mean_returns": [
+        -0.00022312987341182916,
+        -0.00018113626579563955,
+        -1.1299658956204326e-06,
+        -9.922702927683865e-06,
+        -1.14873547103843e-05,
+        -4.822197394951661e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -8.057665988647974,
+          0.07354443104856337
+        ],
+        [
+          36112,
+          -6.541192830412135,
+          0.06251294706720674
+        ],
+        [
+          36112,
+          -0.04080532842264506,
+          0.0008037007209027524
+        ],
+        [
+          36112,
+          -0.35832864812451976,
+          0.007966324599395837
+        ],
+        [
+          36112,
+          -0.41483135330139786,
+          0.009838299983312131
+        ],
+        [
+          36112,
+          -0.17413919232649439,
+          0.0022223957791239323
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998427437012,
+      "trades": 6545,
+      "trial_key": "lookback=3,exit_window=2"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b4",
+      "parameters": {
+        "exit_window": 3,
+        "lookback": 3
+      },
+      "returns_kurtosis": 792.9397176742997,
+      "returns_skewness": 2.0080941217937474,
+      "sharpe_per_bar": -0.04581244246371608,
+      "slice_mean_returns": [
+        -0.00020458621530569914,
+        -0.00019713121905695838,
+        -3.149416957138463e-06,
+        -9.878639154266742e-06,
+        -1.1450748291980441e-05,
+        -4.82395383139295e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -7.388017407119407,
+          0.0899188373509658
+        ],
+        [
+          36112,
+          -7.118802582584881,
+          0.08226529709593983
+        ],
+        [
+          36112,
+          -0.11373174515618417,
+          0.001633352104740575
+        ],
+        [
+          36112,
+          -0.3567374171388806,
+          0.010088423421338031
+        ],
+        [
+          36112,
+          -0.41350942231999765,
+          0.013580290287673123
+        ],
+        [
+          36112,
+          -0.1742026207592622,
+          0.00271257417464697
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998426889939,
+      "trades": 6478,
+      "trial_key": "lookback=3,exit_window=3"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b4",
+      "parameters": {
+        "exit_window": 5,
+        "lookback": 3
+      },
+      "returns_kurtosis": 523.5703211200986,
+      "returns_skewness": 2.047382785918867,
+      "sharpe_per_bar": -0.039879051552651985,
+      "slice_mean_returns": [
+        -0.00018598194960721892,
+        -0.0002032907807466707,
+        -1.4960564812108912e-05,
+        -9.761546306807316e-06,
+        -1.1468379794516108e-05,
+        -4.694458631128346e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -6.716180164215889,
+          0.11476256797393324
+        ],
+        [
+          36112,
+          -7.341236674323772,
+          0.10511157635247813
+        ],
+        [
+          36112,
+          -0.540255916494877,
+          0.006596251514399578
+        ],
+        [
+          36112,
+          -0.3525089602314258,
+          0.011275110227927185
+        ],
+        [
+          36112,
+          -0.41414613113956567,
+          0.020653505041348882
+        ],
+        [
+          36112,
+          -0.16952629008730682,
+          0.004614699084973542
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998427238858,
+      "trades": 6280,
+      "trial_key": "lookback=3,exit_window=5"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b4",
+      "parameters": {
+        "exit_window": 10,
+        "lookback": 3
+      },
+      "returns_kurtosis": 354.09101275873235,
+      "returns_skewness": 2.07477967232179,
+      "sharpe_per_bar": -0.033799930199216274,
+      "slice_mean_returns": [
+        -0.00016103481138319756,
+        -0.00018117441307588856,
+        -6.087504210736477e-05,
+        -8.526927092095663e-06,
+        -1.2382637103959544e-05,
+        -4.805044278052837e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -5.81528910867003,
+          0.14537030378130655
+        ],
+        [
+          36112,
+          -6.5425704049964875,
+          0.12982276881540666
+        ],
+        [
+          36112,
+          -2.1983195205811565,
+          0.03327023991938789
+        ],
+        [
+          36112,
+          -0.3079243911497586,
+          0.02120374875886234
+        ],
+        [
+          36112,
+          -0.44716179109818704,
+          0.027537489989706412
+        ],
+        [
+          36112,
+          -0.17351975896904404,
+          0.00645422940550664
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998429097122,
+      "trades": 6221,
+      "trial_key": "lookback=3,exit_window=10"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b4",
+      "parameters": {
+        "exit_window": 2,
+        "lookback": 5
+      },
+      "returns_kurtosis": 1471.494205382226,
+      "returns_skewness": 1.1690297310669404,
+      "sharpe_per_bar": -0.055690315327864046,
+      "slice_mean_returns": [
+        -0.00018444811041868814,
+        -0.00020166040259182353,
+        -1.9529792831969603e-05,
+        -9.611913602914907e-06,
+        -1.1879943721787734e-05,
+        -4.767823281144296e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -6.660790163439667,
+          0.056121636763673696
+        ],
+        [
+          36112,
+          -7.282360458395932,
+          0.0582352198009435
+        ],
+        [
+          36112,
+          -0.7052598787480864,
+          0.0032769094600149052
+        ],
+        [
+          36112,
+          -0.3471054240284631,
+          0.006642504138619952
+        ],
+        [
+          36112,
+          -0.4290085276811986,
+          0.009899527780548732
+        ],
+        [
+          36112,
+          -0.1721756343286828,
+          0.001990737594364016
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998426468462,
+      "trades": 6235,
+      "trial_key": "lookback=5,exit_window=2"
+    },
+    {
+      "exact_canonical_control": true,
+      "family": "b4",
+      "parameters": {
+        "exit_window": 3,
+        "lookback": 5
+      },
+      "returns_kurtosis": 963.8827564927084,
+      "returns_skewness": 2.096688423944612,
+      "sharpe_per_bar": -0.049009554169016666,
+      "slice_mean_returns": [
+        -0.00017138399894202813,
+        -0.00018878170953167932,
+        -4.460954346325822e-05,
+        -9.508480512396046e-06,
+        -1.237276264789759e-05,
+        -4.713233631158462e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -6.18901896979452,
+          0.06990907470059957
+        ],
+        [
+          36112,
+          -6.817285094608003,
+          0.06764603690169287
+        ],
+        [
+          36112,
+          -1.6109398335451808,
+          0.013843570325872318
+        ],
+        [
+          36112,
+          -0.34337024826364604,
+          0.008814342097573175
+        ],
+        [
+          36112,
+          -0.4468052047408778,
+          0.012662466785123205
+        ],
+        [
+          36112,
+          -0.17020429288839437,
+          0.002392361576194021
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998427152308,
+      "trades": 6177,
+      "trial_key": "lookback=5,exit_window=3"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b4",
+      "parameters": {
+        "exit_window": 5,
+        "lookback": 5
+      },
+      "returns_kurtosis": 608.4874907232368,
+      "returns_skewness": 2.136133881422119,
+      "sharpe_per_bar": -0.04195724095259323,
+      "slice_mean_returns": [
+        -0.00015755271447512206,
+        -0.00017541214306549812,
+        -7.095620120726712e-05,
+        -9.286419980151571e-06,
+        -1.2449685453203673e-05,
+        -4.851282206369637e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -5.689543625125608,
+          0.09083717807129284
+        ],
+        [
+          36112,
+          -6.334483310381268,
+          0.08326502639746733
+        ],
+        [
+          36112,
+          -2.56237033799683,
+          0.029371764279494835
+        ],
+        [
+          36112,
+          -0.3353511983232335,
+          0.010895049839158044
+        ],
+        [
+          36112,
+          -0.44958304108609104,
+          0.019471496089189747
+        ],
+        [
+          36112,
+          -0.17518950303642034,
+          0.004191796976028526
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998427533053,
+      "trades": 6028,
+      "trial_key": "lookback=5,exit_window=5"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b4",
+      "parameters": {
+        "exit_window": 10,
+        "lookback": 5
+      },
+      "returns_kurtosis": 372.03252156379256,
+      "returns_skewness": 2.086538992064265,
+      "sharpe_per_bar": -0.03475158031212359,
+      "slice_mean_returns": [
+        -0.00013264007260731052,
+        -0.00015438387724386865,
+        -0.00011572213954973379,
+        -8.126530558058887e-06,
+        -1.3327121699717372e-05,
+        -4.898944365889148e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -4.789898301995198,
+          0.12437802724189699
+        ],
+        [
+          36112,
+          -5.5751105750305845,
+          0.11028002686413434
+        ],
+        [
+          36112,
+          -4.178957903419986,
+          0.056702443213305885
+        ],
+        [
+          36112,
+          -0.2934652715126225,
+          0.018933978746992215
+        ],
+        [
+          36112,
+          -0.48126901882019374,
+          0.027881881302054108
+        ],
+        [
+          36112,
+          -0.1769106789409889,
+          0.006341677379393153
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.999999843108972,
+      "trades": 5878,
+      "trial_key": "lookback=5,exit_window=10"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b4",
+      "parameters": {
+        "exit_window": 2,
+        "lookback": 10
+      },
+      "returns_kurtosis": 1572.2311536401833,
+      "returns_skewness": 2.1664815829326205,
+      "sharpe_per_bar": -0.05700733816638331,
+      "slice_mean_returns": [
+        -0.00012066443747834161,
+        -0.00013436996421406483,
+        -0.00010864893932014867,
+        -5.129427255590196e-05,
+        -1.2243033995221602e-05,
+        -4.498236471178884e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -4.357434166217872,
+          0.04073081883396187
+        ],
+        [
+          36112,
+          -4.852368147698309,
+          0.042570117245669316
+        ],
+        [
+          36112,
+          -3.923530496729209,
+          0.023010743038053002
+        ],
+        [
+          36112,
+          -1.8523387705387317,
+          0.015516088169768504
+        ],
+        [
+          36112,
+          -0.44212044363544245,
+          0.006251689867630338
+        ],
+        [
+          36112,
+          -0.16244031544721188,
+          0.0017795879341025063
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998411225312,
+      "trades": 6419,
+      "trial_key": "lookback=10,exit_window=2"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b4",
+      "parameters": {
+        "exit_window": 3,
+        "lookback": 10
+      },
+      "returns_kurtosis": 1054.186012942065,
+      "returns_skewness": 2.942659865610846,
+      "sharpe_per_bar": -0.050434487746983926,
+      "slice_mean_returns": [
+        -0.00011346235969436604,
+        -0.00012474000425982218,
+        -0.00010176213028728264,
+        -7.402755474909868e-05,
+        -1.2525768481781871e-05,
+        -4.342130256832589e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -4.097352733282946,
+          0.05019615099542837
+        ],
+        [
+          36112,
+          -4.504611033830699,
+          0.04976686868037537
+        ],
+        [
+          36112,
+          -3.6748340489343505,
+          0.026418323393872255
+        ],
+        [
+          36112,
+          -2.6732830570994515,
+          0.02659170023530852
+        ],
+        [
+          36112,
+          -0.45233055141410694,
+          0.009262116200586822
+        ],
+        [
+          36112,
+          -0.15680300783473847,
+          0.002901253570953864
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998389761308,
+      "trades": 6303,
+      "trial_key": "lookback=10,exit_window=3"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b4",
+      "parameters": {
+        "exit_window": 5,
+        "lookback": 10
+      },
+      "returns_kurtosis": 719.495810100439,
+      "returns_skewness": 3.7670649185568874,
+      "sharpe_per_bar": -0.04386958378977939,
+      "slice_mean_returns": [
+        -0.00010362159923193984,
+        -0.00011760818397517046,
+        -9.002003176069367e-05,
+        -0.00010128712184691852,
+        -1.3082172465576028e-05,
+        -4.632557761158472e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -3.7419831914638118,
+          0.06542627722223808
+        ],
+        [
+          36112,
+          -4.2470667397113555,
+          0.060860927839638625
+        ],
+        [
+          36112,
+          -3.2508033869421697,
+          0.033045770308490235
+        ],
+        [
+          36112,
+          -3.6576805441359217,
+          0.04149398669795011
+        ],
+        [
+          36112,
+          -0.47242341207688154,
+          0.013878718117987271
+        ],
+        [
+          36112,
+          -0.16729092587095476,
+          0.002802527708823985
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998396417924,
+      "trades": 6130,
+      "trial_key": "lookback=10,exit_window=5"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b4",
+      "parameters": {
+        "exit_window": 10,
+        "lookback": 10
+      },
+      "returns_kurtosis": 400.02854487455045,
+      "returns_skewness": 2.662884165766117,
+      "sharpe_per_bar": -0.035359756247226766,
+      "slice_mean_returns": [
+        -8.81352781436039e-05,
+        -0.00010310808460061388,
+        -8.419831308967324e-05,
+        -7.997201032531413e-05,
+        -6.813982685694043e-05,
+        -4.979780196555735e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -3.182741164321824,
+          0.09125773943023004
+        ],
+        [
+          36112,
+          -3.723439151097369,
+          0.08437913722366626
+        ],
+        [
+          36112,
+          -3.04056948229428,
+          0.042934712106914734
+        ],
+        [
+          36112,
+          -2.887949236867744,
+          0.05425125674114736
+        ],
+        [
+          36112,
+          -2.460665427457833,
+          0.052537865601737614
+        ],
+        [
+          36112,
+          -0.1798298224580207,
+          0.0065458339725500865
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998388536003,
+      "trades": 6028,
+      "trial_key": "lookback=10,exit_window=10"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b4",
+      "parameters": {
+        "exit_window": 2,
+        "lookback": 20
+      },
+      "returns_kurtosis": 1302.9012331187457,
+      "returns_skewness": 4.248163167774163,
+      "sharpe_per_bar": -0.05811796385426659,
+      "slice_mean_returns": [
+        -8.101335038421148e-05,
+        -9.211661147525465e-05,
+        -6.964648370673419e-05,
+        -7.840528389449833e-05,
+        -6.997382592016061e-05,
+        -3.9570518150314425e-05,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -2.925554109074645,
+          0.031627323662820214
+        ],
+        [
+          36112,
+          -3.326515073594396,
+          0.02765480359238354
+        ],
+        [
+          36112,
+          -2.515073819617585,
+          0.016630076512407402
+        ],
+        [
+          36112,
+          -2.8313716119981236,
+          0.020642464201505974
+        ],
+        [
+          36112,
+          -2.5268948016288397,
+          0.019036695293803623
+        ],
+        [
+          36112,
+          -1.4289705514441544,
+          0.00879378517643815
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999998348651027,
+      "trades": 6409,
+      "trial_key": "lookback=20,exit_window=2"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b4",
+      "parameters": {
+        "exit_window": 3,
+        "lookback": 20
+      },
+      "returns_kurtosis": 923.0482171016907,
+      "returns_skewness": 4.616580865928785,
+      "sharpe_per_bar": -0.05129153334187548,
+      "slice_mean_returns": [
+        -7.559612925442933e-05,
+        -8.538837471401377e-05,
+        -6.529154741580673e-05,
+        -7.486257663701635e-05,
+        -5.91273130116631e-05,
+        -5.967006336777341e-05,
+        -4.230120013259206e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -2.7299274196359518,
+          0.03825861093640177
+        ],
+        [
+          36112,
+          -3.083544987672465,
+          0.03315085376987132
+        ],
+        [
+          36112,
+          -2.3578083602796127,
+          0.01925095571611398
+        ],
+        [
+          36112,
+          -2.703437367515934,
+          0.02338063851580863
+        ],
+        [
+          36112,
+          -2.135205527477178,
+          0.023295326106115503
+        ],
+        [
+          36112,
+          -2.154805328337033,
+          0.016426682752075466
+        ],
+        [
+          36112,
+          -0.15275809391881642,
+          0.0009917541171390006
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999997938692626,
+      "trades": 6327,
+      "trial_key": "lookback=20,exit_window=3"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b4",
+      "parameters": {
+        "exit_window": 5,
+        "lookback": 20
+      },
+      "returns_kurtosis": 604.8279677411215,
+      "returns_skewness": 4.521044161489875,
+      "sharpe_per_bar": -0.04336503364655026,
+      "slice_mean_returns": [
+        -7.015879436420827e-05,
+        -7.879335754566331e-05,
+        -5.637322961244445e-05,
+        -6.808415170629071e-05,
+        -5.196193026311636e-05,
+        -5.391772809655949e-05,
+        -3.7476273045165035e-05,
+        -1.0656089937095137e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -2.533574382080289,
+          0.0499488734792706
+        ],
+        [
+          36112,
+          -2.8453857276889933,
+          0.04172933442392015
+        ],
+        [
+          36112,
+          -2.035750067764594,
+          0.024453531977851724
+        ],
+        [
+          36112,
+          -2.45865488641757,
+          0.028677389751819066
+        ],
+        [
+          36112,
+          -1.876449225661658,
+          0.030278470846255956
+        ],
+        [
+          36112,
+          -1.9470769970229562,
+          0.018986544522879786
+        ],
+        [
+          36112,
+          -1.3533431722069997,
+          0.01565198875163489
+        ],
+        [
+          36112,
+          -0.03848127198083796,
+          0.0001971302044899858
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999997479161428,
+      "trades": 6290,
+      "trial_key": "lookback=20,exit_window=5"
+    },
+    {
+      "exact_canonical_control": false,
+      "family": "b4",
+      "parameters": {
+        "exit_window": 10,
+        "lookback": 20
+      },
+      "returns_kurtosis": 376.30707671446356,
+      "returns_skewness": 3.656094963827858,
+      "sharpe_per_bar": -0.036831465408520565,
+      "slice_mean_returns": [
+        -6.408318559737212e-05,
+        -7.362000126367267e-05,
+        -5.3876824171086274e-05,
+        -5.575524445792795e-05,
+        -3.9097316834980664e-05,
+        -4.794670680980275e-05,
+        -4.6912606247250644e-05,
+        -3.539241345588913e-05,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "slice_return_statistics": [
+        [
+          36112,
+          -2.314171998292302,
+          0.06741681666486275
+        ],
+        [
+          36112,
+          -2.6585654856337473,
+          0.05576015398614604
+        ],
+        [
+          36112,
+          -1.9455998744662675,
+          0.031831905607839266
+        ],
+        [
+          36112,
+          -2.013433387864694,
+          0.037317044858668956
+        ],
+        [
+          36112,
+          -1.4118823055448217,
+          0.04273015002377844
+        ],
+        [
+          36112,
+          -1.7314514763155968,
+          0.02412581044460779
+        ],
+        [
+          36112,
+          -1.6941080368007153,
+          0.022310113986886308
+        ],
+        [
+          36112,
+          -1.2780908347190683,
+          0.007767458085591342
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ],
+        [
+          36112,
+          0.0,
+          0.0
+        ]
+      ],
+      "status": "COMPLETED",
+      "structural_zero_trade_retained": false,
+      "total_return": -0.9999997474622639,
+      "trades": 6097,
+      "trial_key": "lookback=20,exit_window=10"
+    }
+  ],
+  "walk_forward": {
+    "classification": "HISTORICAL_PSEUDO_OOS",
+    "first_possible_test_fill": "second exact-adjacent test bar",
+    "folds": [
+      {
+        "fold": "2022",
+        "fold_id": "WF-2022",
+        "gap_bar": "2021-12-31T23:55:00+00:00",
+        "selected_train_sharpe_per_bar": -0.05317174365750666,
+        "selected_trial_key": "lookback=20,exit_window=10",
+        "test_bars": 105120,
+        "test_end": "2022-12-31T23:55:00+00:00",
+        "test_ending_open_position": false,
+        "test_sharpe_per_bar": -0.049445887214038295,
+        "test_start": "2022-01-01T00:00:00+00:00",
+        "test_total_return": -0.9940405509944087,
+        "test_trades": 2159,
+        "train_end": "2021-12-31T23:50:00+00:00",
+        "train_start": "2021-01-01T00:00:00+00:00"
+      },
+      {
+        "fold": "2023",
+        "fold_id": "WF-2023",
+        "gap_bar": "2022-12-31T23:55:00+00:00",
+        "selected_train_sharpe_per_bar": -0.05122051192331826,
+        "selected_trial_key": "lookback=20,exit_window=10",
+        "test_bars": 105104,
+        "test_end": "2023-12-31T23:55:00+00:00",
+        "test_ending_open_position": false,
+        "test_sharpe_per_bar": -0.06612945945362332,
+        "test_start": "2023-01-01T00:00:00+00:00",
+        "test_total_return": -0.9945579053408636,
+        "test_trades": 2446,
+        "train_end": "2022-12-31T23:50:00+00:00",
+        "train_start": "2021-01-01T00:00:00+00:00"
+      },
+      {
+        "fold": "2024",
+        "fold_id": "WF-2024",
+        "gap_bar": "2023-12-31T23:55:00+00:00",
+        "selected_train_sharpe_per_bar": -0.0457884923504618,
+        "selected_trial_key": "lookback=3,exit_window=10",
+        "test_bars": 105408,
+        "test_end": "2024-12-31T23:55:00+00:00",
+        "test_ending_open_position": true,
+        "test_sharpe_per_bar": -0.12410788208249238,
+        "test_start": "2024-01-01T00:00:00+00:00",
+        "test_total_return": -0.9999990803654962,
+        "test_trades": 6518,
+        "train_end": "2023-12-31T23:50:00+00:00",
+        "train_start": "2021-01-01T00:00:00+00:00"
+      },
+      {
+        "fold": "2025",
+        "fold_id": "WF-2025",
+        "gap_bar": "2024-12-31T23:55:00+00:00",
+        "selected_train_sharpe_per_bar": -0.03962665859214058,
+        "selected_trial_key": "lookback=3,exit_window=10",
+        "test_bars": 105120,
+        "test_end": "2025-12-31T23:55:00+00:00",
+        "test_ending_open_position": false,
+        "test_sharpe_per_bar": -0.14586890765159738,
+        "test_start": "2025-01-01T00:00:00+00:00",
+        "test_total_return": -0.9999991562697383,
+        "test_trades": 6244,
+        "train_end": "2024-12-31T23:50:00+00:00",
+        "train_start": "2021-01-01T00:00:00+00:00"
+      },
+      {
+        "fold": "2026H1",
+        "fold_id": "WF-2026-H1",
+        "gap_bar": "2025-12-31T23:55:00+00:00",
+        "selected_train_sharpe_per_bar": -0.035438229469220386,
+        "selected_trial_key": "lookback=3,exit_window=10",
+        "test_bars": 52128,
+        "test_end": "2026-06-30T23:55:00+00:00",
+        "test_ending_open_position": true,
+        "test_sharpe_per_bar": -0.15147847981769375,
+        "test_start": "2026-01-01T00:00:00+00:00",
+        "test_total_return": -0.9997063893195545,
+        "test_trades": 3499,
+        "train_end": "2025-12-31T23:50:00+00:00",
+        "train_start": "2021-01-01T00:00:00+00:00"
+      }
+    ],
+    "gap": "one complete 5m bar",
+    "indicator_warmup": "trailing history only; no pre-test signal or position imported",
+    "scenario": "F1/S1",
+    "selection_metric": "max expanding-train non_annualized_per_bar_sharpe",
+    "selection_tie_breaker": "frozen trial order",
+    "status": "COMPLETED",
+    "stitched_test_bars": 472880,
+    "stitched_test_sharpe_per_bar": -0.10362500084496822,
+    "stitched_test_total_return_compounded": -1.0,
+    "test_initial_position": "FLAT",
+    "winner_selected": false
+  },
+  "winner_selected": false
+}

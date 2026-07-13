@@ -11,8 +11,8 @@ Rule: no hard fail may be averaged away, and no item is complete until its accep
 | SUP-001 | **CONTAINED** | Default authenticated transports raise before network access; reactivation remains human/evidence gated. |
 | SUP-002 | **CORRECTED** | Shared/comparison DSR equation and fixtures corrected; dated diagnostics regenerated. |
 | SUP-003 | **CONTAINED** | Unknown fills and failed flattening remain non-success with residual state visible; venue scripts remain quarantined. |
-| SUP-004 | **COMPLETE** | `make check` enforces controlled-file hashes; v8.53 manifest and changelog are reconciled. |
-| SUP-005 | **PARTIAL / METHOD_BLOCKED** | The preregistered 66-trial campaign completed with immutable per-family evidence: B2/B4 numerically fail, B3 is method-blocked, and overall G10 remains method-blocked. Historical upstream admission is unavailable; retained proxies also deviate from canonical next-open semantics. |
+| SUP-004 | **COMPLETE** | `make check` enforces controlled-file hashes; v8.54 manifest and changelog are reconciled. |
+| SUP-005 | **PARTIAL / METHOD_BLOCKED** | V1 preserves the 66-trial legacy proxy. V2 completed 67 canonical-rule trials from clean commit `6bac8bf` with next-adjacent-open fills, six cost cells, five historical pseudo-OOS folds, family/campaign-wide PBO/DSR inputs, portable data restoration, and byte-identical recomputation. B2/B4 fail economically, B3/campaign-wide remain method-blocked, the pre-freeze implementation smoke is disclosed, and historical upstream admission is still unavailable. |
 | SUP-006 | **PARTIAL / NOT VALIDATED** | Claims are static cost stress; a research-only multi-leg spec and deterministic open/settle/rehedge/close capital/funding/basis/fee/isolated-margin lifecycle exist. Venue semantics, intraperiod liquidation, empirical costs, counterparty risk, and G12 remain open. |
 | SUP-007 | **PARTIAL / CURRENT BYTES PINNED** | Future raw/REST lineage is retained; the 69 current REST pages are content-addressed and included with the deliverable; the current 69-table normalized snapshot is deterministic and verifiable; future substantive artifacts have a fail-closed metadata contract. Original run identity and historical REST payloads cannot be reconstructed. |
 | SUP-008 | **PARTIAL / METHOD_BLOCKED** | Future public/signal/universe runners select on train only and evaluate a frozen context once on holdout. Exact source/spec/license identity and one globally frozen candidate remain open. |
@@ -86,18 +86,18 @@ Rule: no hard fail may be averaged away, and no item is complete until its accep
 - **Acceptance criteria:** `make check` includes and passes package integrity; manifest version/changelog describe this cycle.
 - **Human approval required:** No.
 
-### SUP-005 — G10 independence and selection procedure are unsubstantiated
+### SUP-005 — G10 hierarchy remains incomplete after bounded V2 repair
 
 - **Severity:** High
 - **Owning layer:** Quant validation / experiment lineage
-- **Evidence:** callers pass raw grid size as `independent_trials`; parameter/dataset trials are correlated; sequential family searches are omitted; core G10 selects by total return but deflates Sharpe; MTF passes one Sharpe with zero cross-trial variance.
-- **Current behavior:** local direction and magnitude of deflation are unknown, and MTF DSR is not a valid multiple-testing adjustment.
+- **Evidence:** V2 retains all 67 F1/S1 return streams and correlations, aligns selection/PBO/DSR on per-bar Sharpe, reports raw and effective trials, and independently recomputes PBO/DSR. B2 has PBO 0.5066 and DSR 0; B4 has PBO 0.3739 and DSR 0. B3/campaign-wide DSR are withheld because structural zero-trade trials make correlations undefined. The earlier hierarchy that admitted B2/B3/B4 is not retained.
+- **Current behavior:** the declared V2 population is complete and reproducible, but hierarchy-wide effective trials remain unknowable. A pre-freeze full-history implementation smoke also prevents an unseen historical-evidence claim. MTF and other exploratory families retain their separate method limitations.
 - **Intended behavior:** pre-register the search family, retain the actual selection population and return correlations, use one selection metric end to end, and estimate or conservatively bound effective independent trials.
 - **Why it matters:** a corrected equation alone does not make a search process statistically valid.
-- **Recommended change:** mark current G10 results method-limited; fix MTF immediately; design hierarchical trial accounting before any new strategy PASS claim.
+- **Recommended change:** accept the B2/B3/B4 negative result without parameter rescue, keep the post-2026-07-14 holdout sealed, and require a new canonical family plus complete hierarchical trial accounting before any new search or PASS claim.
 - **Dependencies:** SUP-002.
-- **Validation:** a fixture with correlated trials; a genuine multi-trial MTF training population; untouched OOS evaluation.
-- **Acceptance criteria:** artifacts distinguish raw trials from effective independent trials and record the selection metric/search lineage; future PASS requires specialist review.
+- **Validation:** V2 micro goldens, exact-next-open/gap/cost fixtures, complete retained correlations, independent PBO/DSR recomputation, five chronological folds, immutable index verification, and byte-identical full rerun pass. Genuine prospective evidence remains pending until no earlier than 2027-01-14.
+- **Acceptance criteria:** met for the declared V2 historical scope; not met for the omitted upstream hierarchy or future promotion. Any future PASS still requires specialist review and prospective evidence.
 - **Human approval required:** No, but specialist review required for PASS use.
 
 ### SUP-006 — Funding carry evidence overstates execution and validation

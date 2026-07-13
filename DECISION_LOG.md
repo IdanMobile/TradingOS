@@ -459,3 +459,30 @@ F1/S1-or-stricter costs.
 Evidence: `artifacts/reports/G10_PREREGISTERED_CAMPAIGN_REPORT_2026_07_13.md` and the
 content-addressed index under `artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/`.
 Status: **Completed diagnostic; no strategy, promotion, venue, or execution authority.**
+
+### D-051 — Canonical baseline V2 closes B2/B3/B4 expansion and seals future evidence
+Decision: `SEARCH-CANONICAL-BASELINE-G10-V2` formally ran from clean commit `6bac8bf`
+with no network, venue, credential, or order path. It retained all 67 canonical-rule trials,
+the six approved fee/slippage cells, five expanding historical pseudo-OOS folds, family and
+campaign-wide PBO/DSR inputs, per-trial turnover, validated provenance sidecars, and a
+content-addressed index. A second full computation reproduced every input JSON byte-for-byte.
+
+The corrected economics are decisively negative. B2 fails with PBO 0.5066 and DSR 0; its selected
+trial is +3.54% only at F0/S0 and effectively loses all capital at F1/S1. B4 fails with PBO 0.3739
+and DSR 0 and is already -96.99% at F0/S0. B3 and the campaign-wide scope select a retained
+mathematically inert zero-trade variant; their undefined correlations correctly withhold DSR and
+keep them method-blocked. Chronological folds do not rescue B2/B4. No parameter expansion or
+result-driven “rescue” of these grids is justified.
+
+The pre-commit implementation smoke that touched full historical data is disclosed in the frozen
+contract. V2 is therefore historical reproducibility, conformance, cost-sensitivity, and method
+evidence—not an unseen confirmatory result. The only genuinely prospective evidence is sealed from
+2026-07-14T00:00:00Z for one evaluation no earlier than 2027-01-14T00:00:00Z; any adaptation after
+viewing it requires V3 and a new holdout. The 66 official Binance source archives are portable and
+checksum-pinned, and deterministically rebuild the exact retained Parquet.
+
+Evidence: `research/CANONICAL_BASELINE_G10_CAMPAIGN_V2.yaml`,
+`artifacts/reports/CANONICAL_BASELINE_CAMPAIGN_V2_REPORT_2026_07_13.md`, and the immutable index
+under `artifacts/validation/campaigns/SEARCH-CANONICAL-BASELINE-G10-V2/`.
+Status: **Completed negative diagnostic; B2/B3/B4 expansion closed. G10 remains METHOD_BLOCKED;
+promotion, venue, order, and execution authority remain absent.**

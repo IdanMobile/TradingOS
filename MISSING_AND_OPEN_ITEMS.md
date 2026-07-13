@@ -14,9 +14,10 @@ The authoritative finding register and acceptance criteria are in
   not current execution capability or approval.
 - **SUP-002 / SUP-005 — HIGH:** DSR was corrected under D-045 and affected evidence
   was regenerated. Per-bar Sharpe is aligned across selection/PBO/DSR and family-scope
-  effective trials use retained correlations where defined, but upstream selection
-  hierarchy and hierarchy-wide dependence evidence were not retained. No G10 PASS is
-  promotion-eligible until the complete hierarchy is defensible.
+  effective trials use retained correlations where defined. Canonical V2 now retains all
+  67 B2/B3/B4 trials, six cost cells, five chronological folds, and campaign-wide inputs,
+  but upstream selection hierarchy and hierarchy-wide dependence evidence were not retained.
+  No G10 PASS is promotion-eligible until the complete hierarchy is defensible.
 - **SUP-004 — HIGH:** funding/carry evidence lacks a complete capital, collateral,
   re-hedging, settlement, liquidation, missing-data, and survivorship model. Static
   fee/slippage stress is not empirical paper divergence and does not satisfy G12.
@@ -33,6 +34,11 @@ and a complete integrated funding lifecycle/risk model remain open. Research-onl
 identity and deterministic open/settle/rehedge/close accounting fixtures now exist but create
 no execution path. The bounded 66-trial baseline G10 reproduction completed under the
 fail-closed provenance contract: B2/B4 fail, B3 is method-blocked, and no result is promotable.
+The separate canonical V2 campaign also completed: exact next-open semantics and realistic
+costs make B2/B4 decisive failures, while B3/campaign-wide select an inert zero-trade variant
+and remain method-blocked. Its 66-source portable data restoration and byte-identical rerun
+pass. A pre-freeze implementation smoke is disclosed; the only prospective evidence is the
+sealed 2026-07-14 through at-least-2027-01-14 holdout.
 
 These corrective items supersede any earlier statement that all agent-executable work
 is exhausted. They grant no credential, venue, order, paper, demo, or live authority.
@@ -52,6 +58,10 @@ is exhausted. They grant no credential, venue, order, paper, demo, or live autho
   `artifacts/reports/G10_PREREGISTERED_CAMPAIGN_REPORT_2026_07_13.md`. Future campaigns
   now fail closed on provenance; stats-specialist review remains required
   before any future G10 PASS can support promotion.
+  Canonical V2 adds complete declared-scope family and 67-trial diagnostics, but does not
+  recover omitted upstream admission: B2 PBO 0.5066/DSR 0 fails, B4 PBO 0.3739/DSR 0 fails,
+  and B3/campaign-wide DSR are withheld for undefined zero-variance correlations. Evidence:
+  `artifacts/reports/CANONICAL_BASELINE_CAMPAIGN_V2_REPORT_2026_07_13.md`.
 
 ## Current environment/coverage constraints
 

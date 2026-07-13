@@ -1,45 +1,7 @@
 schema: tios-search-campaign-preregistration-v2
 campaign_id: SEARCH-CANONICAL-BASELINE-G10-V2
-status: COMPLETED
+status: PREREGISTERED_NOT_RUN
 preregistered_at_utc: 2026-07-13T10:37:23Z
-completed_at_utc: 2026-07-13T10:40:35.844074+00:00
-completion:
-  run_commit: 6bac8bfa64ac38af2425e33fbb42fb73d90d79e3
-  preregistration_sha256: 8696412b87fbc4817a4cca25e9fc585466431881529b006627dcaad857a21dd4
-  index_ref: artifacts/validation/campaigns/SEARCH-CANONICAL-BASELINE-G10-V2/campaign_index_96d746a1e8084c6a9a39e2d8752936d166c32c2685a9c31b48f5feb7a7a93950.json
-  index_sha256: 96d746a1e8084c6a9a39e2d8752936d166c32c2685a9c31b48f5feb7a7a93950
-  declared_v2_scope_lineage: COMPLETE
-  upstream_family_admission_complete: false
-  deterministic_recomputation: PASS_BYTE_IDENTICAL
-  formal_run_classification: HISTORICAL_REPRODUCIBILITY_AND_CONFORMANCE_DIAGNOSTIC
-  g10_gate_status: METHOD_BLOCKED
-  promotion_eligible: false
-  prospective_holdout_status: SEALED_WAITING_FOR_FUTURE_DATA
-  numeric_summary:
-    b2:
-      verdict: FAIL
-      selected_trial: fast=15,slow=60
-      pbo: 0.5066045066045066
-      dsr: 0.0
-      stitched_walk_forward_total_return: -0.9999884476565307
-    b3:
-      verdict: METHOD_BLOCKED
-      selected_trial: window=3,deviation=1.5
-      pbo: 0.016317016317016316
-      dsr: WITHHELD_UNDEFINED_TRIAL_CORRELATIONS
-      stitched_walk_forward_total_return: 0.0
-    b4:
-      verdict: FAIL
-      selected_trial: lookback=3,exit_window=10
-      pbo: 0.37389277389277387
-      dsr: 0.0
-      stitched_walk_forward_total_return: -1.0
-    all_67_trials:
-      verdict: METHOD_BLOCKED
-      selected_trial: b3:window=3,deviation=1.5
-      pbo: 0.016317016317016316
-      dsr: WITHHELD_UNDEFINED_TRIAL_CORRELATIONS
-      stitched_walk_forward_total_return: 0.0
 purpose: >-
   Recompute the frozen B2/B3/B4 baseline families with their declared causal
   rules, next-adjacent-bar-open execution, a six-cell cost surface, chronological
