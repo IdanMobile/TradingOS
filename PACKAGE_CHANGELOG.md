@@ -878,3 +878,13 @@ Key outcomes:
   validation/reserve/full/period evaluation. A deliberate early phase-two call fails closed.
 - D-056 freezes all costs, chronology, benchmarks, sample/tail/clock/PBO/DSR gates, and no-rescue
   rules. Offline preflight and focused tests pass; historical family performance remains unseen.
+
+## v8.60 — 2026-07-13 — Funding-pressure V1 operational abort and V2 freeze
+
+- Recorded V1's fail-closed worker import abort after development reference computation began but
+  before selection, validation, reserve, full-history, period evaluation, or campaign output.
+- Closed V1 without a strategy verdict. No result was inspected or used to alter the roster.
+- Added V2 as a content-hash inheritance overlay whose only change bootstraps the repository root
+  in vectorbt, Freqtrade, and Nautilus worker processes before importing the shared data loader.
+- Worker import smoke, offline preflight, safety checks, and selection-barrier tests pass. No bot,
+  venue, credential, order, paper/demo/live state, or execution authority was activated.

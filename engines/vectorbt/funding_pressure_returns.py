@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -12,9 +13,11 @@ import numpy as np
 import pandas as pd
 import vectorbt as vbt
 
-from engines.funding_pressure_data import load_funding, load_spot, trial_name
-
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+from engines.funding_pressure_data import load_funding, load_spot, trial_name  # noqa: E402
+
 BAR = pd.Timedelta(hours=1)
 
 

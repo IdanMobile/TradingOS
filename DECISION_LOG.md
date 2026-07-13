@@ -607,3 +607,19 @@ and rejected calendar reserve remain prohibited.
 Evidence: `research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V1.yaml` and focused tests under
 `tests/test_funding_pressure_*`.
 Status: **Approved constrained-S2 immutable offline campaign; preregistered and not run.**
+
+### D-057 — V1 operational abort closed; import-bootstrap-only V2 authorized
+
+Decision: V1 began from clean commit `528f8a5` but aborted during the first external worker start
+because that process could not import the repository-local `engines` package. Development Decimal
+computation had begun in memory, but no selection artifact, campaign output, validation, reserve,
+full-history, or period evaluation was created. V1 is closed without a strategy verdict.
+
+V2 inherits the complete V1 strategy/statistical/safety contract by content hash. Its only change
+prepends the repository root to each external worker's Python import path before loading the
+shared read-only data parser. Worker import smoke and V2 offline preflight pass. No rule,
+StrategyVersion, polarity, lookback, threshold, cost, split, gate, or result changed.
+
+Evidence: `artifacts/reports/FUNDING_PRESSURE_SPOT_V1_OPERATIONAL_ABORT_2026_07_13.md` and
+`research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V2.yaml`.
+Status: **V1 aborted pre-selection; V2 immutable offline rerun authorized; authority NONE.**

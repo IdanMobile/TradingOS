@@ -44,8 +44,8 @@ from tios.validation.multiple_testing import (  # noqa: E402
     sharpe_variance_from_trials,
 )
 
-CAMPAIGN = ROOT / "research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V1.yaml"
-OUTPUT_ROOT = ROOT / "artifacts/validation/campaigns/FUNDING-PRESSURE-SPOT-G1-G11-V1"
+CAMPAIGN = ROOT / "research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V2.yaml"
+OUTPUT_ROOT = ROOT / "artifacts/validation/campaigns/FUNDING-PRESSURE-SPOT-G1-G11-V2"
 SCENARIOS = (
     ("F0/S0", Decimal("0"), Decimal("0")),
     ("F1/S1", Decimal("0.001"), Decimal("1")),
@@ -126,7 +126,16 @@ def _trial_key(trial: Mapping[str, Any]) -> tuple[str, int, float]:
 
 
 def preflight(*, require_clean: bool = True) -> dict[str, Any]:
-    campaign = yaml.safe_load(CAMPAIGN.read_text(encoding="utf-8"))
+    overlay = yaml.safe_load(CAMPAIGN.read_text(encoding="utf-8"))
+    base_contract = overlay.get("base_contract")
+    if base_contract:
+        base_path = ROOT / base_contract["path"]
+        if sha256(base_path) != base_contract["sha256"]:
+            raise RuntimeError("base campaign contract hash mismatch")
+        campaign = {**yaml.safe_load(base_path.read_text(encoding="utf-8")), **overlay}
+        campaign.pop("completion", None)
+    else:
+        campaign = overlay
     if campaign["status"] != "PREREGISTERED_NOT_RUN":
         raise RuntimeError("campaign is not preregistered and unrun")
     expected_safety = {

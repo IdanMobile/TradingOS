@@ -80,6 +80,10 @@ offline preflight and synthetic causal/parity goldens, and phase two fails witho
 development selection artifact. Historical scoring and independent G11 review remain open. The
 family is still unvalidated and no bot, paper/demo/live state, or venue authority exists.
 
+V1 then aborted operationally before selection because an external worker lacked the repository
+root on its import path. D-057 closes V1 without a strategy verdict and freezes V2 with only that
+bootstrap repaired. Validation/reserve remain untouched; V2 execution and G1-G11 remain open.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

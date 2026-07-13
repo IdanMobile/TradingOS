@@ -1,8 +1,17 @@
 schema: tios-funding-pressure-spot-g1-g11-campaign-v1
 campaign_id: FUNDING-PRESSURE-SPOT-G1-G11-V1
-status: PREREGISTERED_NOT_RUN
+status: ABORTED_PRE_SELECTION
 decision: D-055
 created_at_utc: 2026-07-13T13:20:00Z
+completion:
+  attempted_from_commit: 528f8a5020fc45105fda1fd180732e93fec779e9
+  aborted_at_utc: 2026-07-13T13:21:09Z
+  phase: phase_1_worker_start_after_development_reference_computation
+  reason: vectorbt worker could not import repo-local engines package
+  selection_artifact_created: false
+  validation_or_reserve_evaluated: false
+  campaign_output_created: false
+  strategy_verdict: NOT_REACHED
 
 safety:
   execution_authority: NONE

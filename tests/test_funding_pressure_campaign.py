@@ -17,7 +17,8 @@ from run_funding_pressure_campaign import (  # noqa: E402
 
 
 def test_funding_campaign_is_frozen_safe_and_complete() -> None:
-    campaign = yaml.safe_load(CAMPAIGN.read_text())
+    assert yaml.safe_load(CAMPAIGN.read_text())["schema"].endswith("campaign-v2")
+    campaign = preflight(require_clean=False)["campaign"]
     assert campaign["status"] == "PREREGISTERED_NOT_RUN"
     assert campaign["safety"] == {
         "execution_authority": "NONE",

@@ -1,0 +1,27 @@
+schema: tios-funding-pressure-spot-g1-g11-campaign-v2
+campaign_id: FUNDING-PRESSURE-SPOT-G1-G11-V2
+status: PREREGISTERED_NOT_RUN
+decision: D-057
+created_at_utc: 2026-07-13T13:21:09Z
+
+base_contract:
+  path: research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V1.yaml
+  sha256: 6b4fbff8936ba678b470c8ccdbe9c4c43b9e8fce8e5a34785946692efb900bab
+  freeze_commit: 528f8a5020fc45105fda1fd180732e93fec779e9
+  inheritance: all strategy, roster, StrategyVersion, data, timing, cost, split, gate, safety, and no-rescue terms
+
+repair_scope:
+  allowed_change: prepend repository root to sys.path in each external worker before importing the shared read-only data loader
+  strategy_or_statistical_change: NONE
+  result_driven_change: false
+  v1_selection_artifact_created: false
+  v1_validation_or_reserve_evaluated: false
+  v1_report: artifacts/reports/FUNDING_PRESSURE_SPOT_V1_OPERATIONAL_ABORT_2026_07_13.md
+
+pinned_files:
+  - {path: research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V1.yaml, sha256: 6b4fbff8936ba678b470c8ccdbe9c4c43b9e8fce8e5a34785946692efb900bab}
+  - {path: artifacts/reports/FUNDING_PRESSURE_SPOT_V1_OPERATIONAL_ABORT_2026_07_13.md, sha256: ae1d59b7b1fc4365a54398ed3c947eef5d0326eaefd6811e47d94fd0edf345b8}
+  - {path: engines/vectorbt/funding_pressure_returns.py, sha256: 656d92877e2d4950f2eeb0c33070054809b4c50429e8aa5f2f8fc0c657e016ce}
+  - {path: engines/freqtrade/funding_pressure_signals.py, sha256: 0a845f27b762ab1831802c5bcd6d4d173154f153f21819e4d1ca65261d5bd07d}
+  - {path: engines/nautilus/funding_pressure_events.py, sha256: a799fa23cb7afc0e502dd6f3e8e8dd24ed0b0b38117ceb32005d25a16dcc3577}
+  - {path: scripts/run_funding_pressure_campaign.py, sha256: 146c63bf8bf71bcb1d5e60ce94824d06ee5257170bda223d9b597866229a4f03}

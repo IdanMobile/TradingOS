@@ -803,6 +803,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   A verified selection artifact is mandatory before any validation/reserve computation, and the
   deliberate early-call test fails closed. One clean offline run is next; no execution authority
   or sealed/rejected reserve access exists.
+- **Funding-pressure V1 operational abort / V2 freeze (D-057):** V1 failed closed when its first
+  external worker could not import the repo-local loader. No selection artifact or post-selection
+  evaluation exists. V2 inherits the full V1 contract by hash and changes only worker import
+  bootstrap; all three external environments now import successfully and preflight passes.
 
 ## Operational SSOT (unchanged)
 
