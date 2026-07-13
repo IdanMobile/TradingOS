@@ -69,6 +69,12 @@ Freqtrade/Nautilus conformance was not run. The exact calendar family/context is
 rescue. A new distinct-family cycle and genuinely unseen evidence are required before another
 StrategyVersion can seek validation.
 
+D-055 completes that new source/data admission cycle without observing family performance.
+Funding pressure advances only as a timestamped exogenous feature for unlevered BTCUSDT Spot
+long/cash. Its 66 funding archives and exact Spot package are frozen and verified offline. The
+canonical strategy, independent engines, explicit selection-artifact barrier, campaign freeze,
+and all G1-G11 outcomes remain open; the family is not validated or promotion-eligible.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

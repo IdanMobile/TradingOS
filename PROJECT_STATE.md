@@ -790,6 +790,13 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   untouched-reserve claims because the frozen runner computed reserve metrics before selection,
   and notes missing Freqtrade/Nautilus certification. The exact context is closed without rescue;
   no bot, venue, credential, order, promotion, or authority exists.
+- **Funding-pressure Spot family admitted to canonical construction (D-055):** a third bounded
+  source cycle compared funding pressure, small-alt lead/lag, and options VRP without computing
+  local family returns. Only a funding-feature/unlevered-Spot long/cash mechanism advances. Its
+  exact 12-trial roster and select-before-reserve barrier are preregistered, and the frozen 66-ZIP
+  funding plus 48,154-row Spot package passes offline semantic and drift checks. No scoring may
+  occur until the whole campaign is committed cleanly; no derivative position, V2 holdout,
+  calendar reserve, bot, venue, credential, order, or authority was touched.
 
 ## Operational SSOT (unchanged)
 

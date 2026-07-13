@@ -558,3 +558,28 @@ Evidence: `artifacts/reports/CALENDAR_UTC_VALIDATION_AND_SUPERVISOR_REVIEW_2026_
 the content-addressed campaign directory under
 `artifacts/validation/campaigns/CALENDAR-UTC-G1-G11-V1/`.
 Status: **Completed negative campaign; execution authority remains NONE.**
+
+### D-055 — Funding-pressure Spot family admitted to canonical campaign construction
+
+Decision: `FAMILY-SELECT-V3` compared exactly three distinct mechanisms without computing local
+family performance: perpetual-funding pressure as an exogenous BTC Spot signal, BTC-to-small-alt
+minute-scale lead/lag, and crypto-options variance-risk-premium harvesting. Small-alt lead/lag is
+rejected because its cited edge depends on thin, ex-post-selected names and minute-scale
+microstructure that OHLCV cannot validate. Options VRP is rejected because historical surface,
+contract lifecycle, settlement, margin, and short-convexity ownership are absent.
+
+`FAM-FUNDING-PRESSURE-SPOT-01` alone advances. Funding is a timestamped feature only: the strategy
+may hold unlevered BTCUSDT Spot or cash and never opens a perpetual, short, margin, carry, or
+funding-payment position. The complete 12-trial polarity/lookback/threshold roster, chronology,
+costs, gates, no-rescue rules, and mandatory select-before-reserve barrier are preregistered.
+The 66 retained official monthly funding archives and 48,154 Spot bars are content-addressed and
+pass archive-byte, schema, timestamp, ordering, and strictly-later-open checks offline.
+
+Consequence: canonical spec, independent implementations, and an unrun immutable campaign may be
+built. No family-conditioned return may be computed before the clean campaign freeze. The sealed
+V2 holdout and rejected calendar reserve may not be used. No bot, venue, credential, order,
+paper/demo/live state, promotion, human gate, or execution authority is activated.
+
+Evidence: `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V3.md` and
+`research/FUNDING_PRESSURE_SPOT_DATA_PACKAGE_V1.json`.
+Status: **Approved constrained-S2 data/canonical build; performance unobserved and authority NONE.**

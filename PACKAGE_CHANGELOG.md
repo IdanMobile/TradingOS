@@ -854,3 +854,15 @@ Key outcomes:
   retained the missing Freqtrade/Nautilus conformance gap.
 - D-054 closes the exact context without rescue. No bot, venue, credential, order, paper/demo/live
   state, human gate, promotion, or execution authority was activated.
+
+## v8.58 — 2026-07-13 — Funding-pressure family and data freeze
+
+- Added `FAMILY-SELECT-V3`, comparing exactly funding pressure, small-alt lead/lag, and options
+  VRP from current sources without computing local family performance.
+- D-055 admits only a funding-feature/unlevered-BTCUSDT-Spot long/cash mechanism; it creates no
+  perpetual, carry, leverage, margin, short, liquidation, venue, or order dependency.
+- Froze all 66 monthly funding archives, 6,021 exact-millisecond observations, and the existing
+  48,154-row Spot package behind content hashes and strict next-open semantics.
+- Added an offline verifier and deliberate byte, schema, and timestamp drift tests. Every retained
+  funding event has a strictly later expected Spot open. Scoring remains prohibited until the
+  canonical campaign is cleanly committed.

@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.57 UTC-weekday campaign rejection (2026-07-13). Supersedes v8.56 hashes.
+Package version: v8.58 funding-pressure family and data freeze (2026-07-13). Supersedes v8.57 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `10f94b0f8c2694711005a6298c8e5c4a62ddffbb0ff76253a86f7fc1a9be9d41` |
-| `DECISION_LOG.md` | `e1011ed2e8bfc0bed3e619add6141ecb9ea6891a4e1129bddb9c27bdc81208f1` |
+| `PROJECT_STATE.md` | `b4fe57b14990b76086a3e4a7771ea0b84a95e8bd39a3705c09cf778aef903aba` |
+| `DECISION_LOG.md` | `060d1e2b8be180141ff6030a654abd35da8cfa6a1d2c75568e0a34e25d9aee2d` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `da06c5f1f9575a09cb003f512f8693734776dbcb12054773a7bbedcce7fabea0` |
+| `MISSING_AND_OPEN_ITEMS.md` | `a326ab2302b6ba4790257d825173932851d217dd654428cd9ff2f115e563d174` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -68,7 +68,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
 | `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
-| `research/RESEARCH_GAP_MATRIX.md` | `d495ac9ff5992edc53047057c059c0e5a29327eb2f971073d330cc45e160a215` |
+| `research/RESEARCH_GAP_MATRIX.md` | `336968a0892361ca3b999ab5433ac1a320efd85e75b559faf5bded8a7a6414d6` |
 
 ## Post-V2 family selection V1 (added v8.55)
 
@@ -140,6 +140,15 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `artifacts/validation/campaigns/CALENDAR-UTC-G1-G11-V1/preregistration_bce52193c0d7cf7335a25aef48f6e34b09c1545495f16e64e8fa75b65cf68eae.yaml` | `bce52193c0d7cf7335a25aef48f6e34b09c1545495f16e64e8fa75b65cf68eae` |
 | `artifacts/validation/campaigns/CALENDAR-UTC-G1-G11-V1/reference_results_ac7300038092ba8239417517118195f5674ccb71bc3385d620ba859df4c0fa08.json` | `ac7300038092ba8239417517118195f5674ccb71bc3385d620ba859df4c0fa08` |
 | `artifacts/validation/campaigns/CALENDAR-UTC-G1-G11-V1/vectorbt_results_3fdf3719e7284ec496d52b2b20b6591bc2991ff23f4f9a8d3d1f4cd2f8e685f0.json` | `3fdf3719e7284ec496d52b2b20b6591bc2991ff23f4f9a8d3d1f4cd2f8e685f0` |
+
+## Funding-pressure family and data freeze (added v8.58)
+
+| Path | SHA-256 |
+|---|---|
+| `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V3.md` | `58b3b981362d215b1611fc239ab7e2463ad04d248a670203f472a4f62d3fcaf2` |
+| `research/FUNDING_PRESSURE_SPOT_DATA_PACKAGE_V1.json` | `df28e581ccd95755d620dafef18adbad202ea41038827bff5241716d1112b251` |
+| `scripts/verify_funding_pressure_data.py` | `3135d084f7e84bae2e73a3a89c98dd5c6c35e7d909858a8690cc7481c16c376c` |
+| `tests/test_funding_pressure_data.py` | `f443ad132b342d8e2e129c9123f35648ac5c156ac92dde988500450cad25d9e0` |
 
 ## Expected generated artifacts
 

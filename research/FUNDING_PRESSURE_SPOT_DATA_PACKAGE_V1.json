@@ -1,0 +1,78 @@
+{
+  "schema": "tios-funding-pressure-spot-data-package-v1",
+  "package_id": "DATA-FUNDING-PRESSURE-BTCUSDT-1H-V1",
+  "family_id": "FAM-FUNDING-PRESSURE-SPOT-01",
+  "created_at_utc": "2026-07-13T12:59:16Z",
+  "execution_authority": "NONE",
+  "venue_connection": "NONE",
+  "funding_feature": {
+    "instrument": "BTCUSDT",
+    "market": "BINANCE_USD_M_PERPETUAL",
+    "position_use": "FEATURE_ONLY_NO_DERIVATIVE_POSITION",
+    "raw_root": "data/raw/fundingRate/BTCUSDT",
+    "archive_name_template": "BTCUSDT-fundingRate-YYYY-MM.zip",
+    "coverage_first_month": "2021-01",
+    "coverage_last_month": "2026-06",
+    "archive_count": 66,
+    "archive_total_bytes": 59186,
+    "archive_manifest_sha256": "7487d05eedb550e6d4112383e4ce05ae8f8e546ca3c65313f11442ed2836eea7",
+    "csv_header": [
+      "calc_time",
+      "funding_interval_hours",
+      "last_funding_rate"
+    ],
+    "observations": 6021,
+    "logical_records_sha256": "eb643f145a882109ae73d7f76d1f7807fc9b323ea3a7dc9f84466c6c3fb6365b",
+    "first_calc_time_ms": 1609459200002,
+    "last_calc_time_ms": 1782835200005,
+    "observed_interval_hours": [8],
+    "timestamp_semantics": "record becomes available at exact calc_time milliseconds; never round backward"
+  },
+  "spot_execution": {
+    "dataset_id": "DS-CRYPTO-SPOT-BAKEOFF-V1",
+    "instrument": "BTCUSDT",
+    "market": "SPOT_LONG_CASH_ONLY",
+    "interval": "1h",
+    "manifest_path": "artifacts/datasets/DS-CRYPTO-SPOT-BAKEOFF-V1.manifest.json",
+    "manifest_sha256": "f2b729627adb5d75a99c90dd7dd25ea6dcabf83de4baea5784397424034dfc56",
+    "normalized_path": "data/normalized/BTCUSDT_1h.parquet",
+    "normalized_parquet_sha256": "d44c70c3c87a3e342dd0496c3975d3b54a2b50dd4c5c1b8873ef84eece99947c",
+    "logical_content_sha256": "49981c5cf5f3376ea60e931415feefa252c5970d902732dd68d8e95c46a2a3b3",
+    "rows": 48154,
+    "coverage_start_utc": "2021-01-01 00:00:00+00:00",
+    "coverage_end_utc": "2026-06-30 23:00:00+00:00",
+    "entry_semantics": "first retained hourly open strictly later than calc_time",
+    "missing_expected_entry_opens": 0
+  },
+  "source_documentation": [
+    {
+      "authority": "Binance official public-data repository",
+      "repository_url": "https://github.com/binance/binance-public-data",
+      "commit": "5c7f3197591c0d54d85dc43066226bc4c671d47a",
+      "snapshot_path": "research/source_snapshots/calendar_utc_v1/binance_public_data_README.md",
+      "snapshot_sha256": "085ab91377aa9325d44f4c7ad27cce4ab381e158403e1d7df2bad39d1a66f7c6",
+      "scope": "official public archive layout, checksums, corrections warning, and Spot kline schema",
+      "limitation": "the README does not specify the funding CSV schema; exact retained ZIP member headers and bytes are the frozen numerical authority"
+    }
+  ],
+  "fail_closed": {
+    "network_allowed": false,
+    "unknown_interval_allowed": false,
+    "duplicate_calc_time_allowed": false,
+    "non_monotone_calc_time_allowed": false,
+    "non_finite_rate_allowed": false,
+    "missing_month_allowed": false,
+    "extra_month_allowed": false,
+    "same_open_fill_allowed": false
+  },
+  "restore": {
+    "offline_verification": "uv run python scripts/verify_funding_pressure_data.py",
+    "public_fetch_requires_credentials": false,
+    "public_fetch_is_part_of_campaign_execution": false
+  },
+  "contamination": {
+    "funding_conditioned_spot_results_computed_before_freeze": false,
+    "calendar_family_reserve_reused": false,
+    "v2_prospective_holdout_accessed": false
+  }
+}
