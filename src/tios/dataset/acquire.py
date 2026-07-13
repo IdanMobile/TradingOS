@@ -1,9 +1,10 @@
 """Multi-dataset Binance public-data acquirer (DS-CRYPTO-MULTI-V1).
 
 Generalises the DS-CRYPTO-SPOT-BAKEOFF-V1 downloader to more pairs, more
-timeframes, aggTrades ticks, and perp funding — all official-CHECKSUM-verified,
-never-overwrite, resumable. Operator-approved scope (2026-07-12): top spot pairs
-OHLCV (all timeframes) + BTC/ETH full-history aggTrades + funding.
+timeframes, aggTrades ticks, and perp funding — exact official CHECKSUM evidence
+retained when available, never-overwrite, resumable. Operator-approved scope
+(2026-07-12): top spot pairs OHLCV (all timeframes) + BTC/ETH full-history
+aggTrades + funding.
 
 Modes:
   plan   — HEAD every file, sum exact sizes, download nothing (answers "how many GB").
@@ -18,6 +19,7 @@ Run: uv run python -m tios.dataset.acquire plan   (then: ... fetch)
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import urllib.error
 import urllib.request
@@ -30,7 +32,6 @@ from tios.dataset.download import RETRIES, official_checksum, sha256_hex
 
 BASE = "https://data.binance.vision/data"
 RAW_ROOT = Path(__file__).resolve().parents[3] / "data" / "raw"
-MANIFEST = RAW_ROOT / "multi_raw_manifest.json"
 START_MONTH = (2021, 1)
 END_MONTH = (2026, 6)
 
@@ -71,6 +72,7 @@ class Acquired:
     size: int
     sha256: str
     checksum_verified: bool
+    official_sha256: str | None
     status: str  # downloaded | reused | missing
 
 
@@ -160,22 +162,47 @@ def download_one(spec: FileSpec) -> Acquired:
     dest.parent.mkdir(parents=True, exist_ok=True)
     if dest.exists():  # never overwrite (resumable)
         data = dest.read_bytes()
-        return Acquired(spec.rel, len(data), sha256_hex(data), True, "reused")
-    try:
-        with urllib.request.urlopen(spec.url, timeout=120) as r:
-            data = r.read()
-    except urllib.error.HTTPError as e:
-        if e.code == 404:  # symbol not listed yet that month — expected, not a failure
-            return Acquired(spec.rel, 0, "", False, "missing")
-        raise
+        status = "reused"
+    else:
+        try:
+            with urllib.request.urlopen(spec.url, timeout=120) as r:
+                data = r.read()
+        except urllib.error.HTTPError as e:
+            if e.code == 404:  # symbol not listed yet that month — expected, not a failure
+                return Acquired(spec.rel, 0, "", False, None, "missing")
+            raise
+        status = "downloaded"
     digest = sha256_hex(data)
     official = official_checksum(spec.url)
     if official is not None and official != digest:
         raise RuntimeError(f"CHECKSUM mismatch {spec.rel}: {digest} != {official}")
-    tmp = dest.with_suffix(dest.suffix + ".part")
-    tmp.write_bytes(data)
-    tmp.rename(dest)
-    return Acquired(spec.rel, len(data), digest, official is not None, "downloaded")
+    if status == "downloaded":
+        tmp = dest.with_suffix(dest.suffix + ".part")
+        tmp.write_bytes(data)
+        tmp.rename(dest)
+    return Acquired(spec.rel, len(data), digest, official is not None, official, status)
+
+
+def write_manifest(kinds: tuple[str, ...], results: list[Acquired]) -> Path:
+    """Retain a content-addressed manifest; acquisition kinds never overwrite each other."""
+    generated = datetime.now(tz=UTC).isoformat()
+    payload = {
+        "schema_version": 2,
+        "dataset_id": "DS-CRYPTO-MULTI-V1",
+        "source": "Binance public data (data.binance.vision)",
+        "generated_utc": generated,
+        "window": {"start": "2021-01", "end": "2026-06"},
+        "kinds": list(kinds),
+        "files": [asdict(r) for r in results if r.status != "missing"],
+    }
+    encoded = (json.dumps(payload, indent=2) + "\n").encode()
+    kind_key = "-".join(sorted(kinds))
+    root = RAW_ROOT / "manifests" / kind_key
+    root.mkdir(parents=True, exist_ok=True)
+    path = root / f"raw_manifest_{hashlib.sha256(encoded).hexdigest()}.json"
+    if not path.exists():
+        path.write_bytes(encoded)
+    return path
 
 
 def plan(kinds: tuple[str, ...], workers: int) -> None:
@@ -207,24 +234,11 @@ def fetch(kinds: tuple[str, ...], workers: int) -> None:
     for r in results:
         by_status[r.status] = by_status.get(r.status, 0) + 1
         nbytes += r.size
-    unverified = [r.rel for r in results if r.status == "downloaded" and not r.checksum_verified]
-    MANIFEST.write_text(
-        json.dumps(
-            {
-                "dataset_id": "DS-CRYPTO-MULTI-V1",
-                "source": "Binance public data (data.binance.vision)",
-                "generated_utc": datetime.now(tz=UTC).isoformat(),
-                "window": {"start": "2021-01", "end": "2026-06"},
-                "kinds": list(kinds),
-                "files": [asdict(r) for r in results if r.status != "missing"],
-            },
-            indent=2,
-        )
-        + "\n"
-    )
+    unverified = [r.rel for r in results if r.status != "missing" and not r.checksum_verified]
+    manifest = write_manifest(kinds, results)
     print(f"  status: {by_status}   bytes: {nbytes / 1e9:.2f} GB")
-    print(f"  checksum-unverified downloads: {len(unverified)}")
-    print(f"  manifest: {MANIFEST}")
+    print(f"  checksum-unverified files: {len(unverified)}")
+    print(f"  manifest: {manifest}")
 
 
 def main() -> None:

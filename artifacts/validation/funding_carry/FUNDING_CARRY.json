@@ -18,10 +18,13 @@
   "funding_periods": 9851,
   "g10_dsr": {
     "dsr": 1.0,
+    "effective_independent_trials": null,
     "expected_max_noise_sharpe": 0.0861,
-    "note": "A PASS here is NOT a genuine validation. This models ONLY the funding leg; it omits basis divergence, liquidation, and execution/slippage \u2014 the dominant real risks. The smooth low-vol yield inflates Sharpe/DSR. The ~8-9% carry is real and literature-consistent, but honest validation needs perp-price/basis modelling, and trading needs perps/margin (S4-gated).",
+    "note": "This numeric diagnostic is not a G10 PASS. It models ONLY the funding leg; it omits basis divergence, liquidation, and execution/slippage \u2014 the dominant risks. The smooth low-vol yield inflates Sharpe/DSR. The ~8-9% modeled carry is a hypothesis; validation needs perp-price/basis modelling, and trading needs perps/margin (S4-gated).",
+    "numeric_verdict": "PASS",
+    "search_lineage_complete": false,
     "threshold": 0.95,
-    "verdict": "PASS",
+    "verdict": "METHOD_BLOCKED",
     "verdict_is_genuine": false
   },
   "mode": "OFFLINE_RESEARCH_ONLY",

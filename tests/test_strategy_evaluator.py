@@ -3,9 +3,10 @@ from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
 
+import pytest
 import yaml
 
-from tios.strategy.evaluator import evaluate_strategy_signals
+from tios.strategy.evaluator import StrategyEvaluationError, evaluate_strategy_signals
 from tios.strategy.spec import CanonicalStrategySpec, parse_spec
 from tios.trading_domain import (
     CreatorType,
@@ -132,3 +133,22 @@ def test_canonical_signal_ids_are_deterministic_and_transition_only() -> None:
     assert first == second
     assert [item.rationale_code for item in first] == ["ENTRY_LONG", "EXIT_LONG"]
     assert all(item.instrument == MARKET.instrument for item in first)
+
+
+def test_multi_leg_research_spec_cannot_be_projected_as_a_long_only_signal() -> None:
+    payload = yaml.safe_load(
+        (
+            ROOT
+            / "strategies/research/funding-carry-basis-delta-neutral/canonical_strategy_spec.yaml"
+        ).read_text()
+    )
+    with pytest.raises(StrategyEvaluationError, match="multi-leg specs are research-only"):
+        evaluate_strategy_signals(
+            spec=parse_spec(payload),
+            bars=(),
+            strategy_version_ref=StrategyVersionId("SV-strategy-evaluator"),
+            run_ref=RunId("RUN-strategy-evaluator"),
+            created_at=CREATED_AT,
+            creator_type=CreatorType.SYSTEM,
+            provenance=PROVENANCE,
+        )

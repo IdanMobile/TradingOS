@@ -62,36 +62,18 @@ def evaluate(strategy: object, datasets: list[tuple[str, ext.Candles]]) -> dict:
     passes = []
     best_overall = None
     for name, candles in datasets:
-        trials = [ext._run_variant(candles, b, k) for k, b in variants.items()]
-        best = max(trials, key=lambda t: t.total_return)
-        pos_frac = Decimal(sum(1 for t in trials if t.total_return > 0)) / Decimal(len(trials))
-        bh = ext._buy_hold(candles)
-        thirds_ok, thirds = ext._thirds_all_positive(
-            candles, variants[best.trial_key], best.trial_key
-        )
-        screen_pass = bool(
-            best.total_return > 0
-            and best.total_return > bh
-            and thirds_ok
-            and pos_frac >= ext.MIN_NEIGHBOURHOOD_POSITIVE
-            and best.trades >= ext.MIN_TRADES
-        )
         row = {
             "dataset": name,
-            "best_trial_key": best.trial_key,
-            "best_return_pct": round(float(best.total_return) * 100, 1),
-            "buy_hold_pct": round(float(bh) * 100, 1),
-            "trades": best.trades,
-            "thirds_all_positive": thirds_ok,
-            "thirds": thirds,
-            "screen_pass": screen_pass,
+            **ext._temporal_screen(candles, variants),
         }
-        if (
-            best_overall is None
-            or best.total_return > Decimal(str(best_overall["best_return_pct"])) / 100
+        row["best_return_pct"] = round(float(row["train_total_return"]) * 100, 1)
+        row["buy_hold_pct"] = round(float(row["holdout_buy_hold_return"]) * 100, 1)
+        row["trades"] = row["total_trades"]
+        if best_overall is None or Decimal(row["train_total_return"]) > Decimal(
+            best_overall["train_total_return"]
         ):
             best_overall = row
-        if screen_pass:
+        if row["screen_pass"]:
             passes.append(row)
     return {
         "strategy_id": strategy.strategy_id,  # type: ignore[attr-defined]
@@ -103,23 +85,39 @@ def evaluate(strategy: object, datasets: list[tuple[str, ext.Candles]]) -> dict:
 def build_report() -> dict:
     datasets = _datasets()
     results = [evaluate(s, datasets) for s in ALL_STRATEGIES]
-    survivors = [
+    context_passes = [
         {"strategy_id": r["strategy_id"], "contexts": r["screen_pass_contexts"]}
         for r in results
         if r["screen_pass_contexts"]
     ]
     return {
-        "schema": "tios-universe-search-v1",
+        "schema": "tios-universe-search-v2",
         "mode": "OFFLINE_RESEARCH_ONLY",
         "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+        "promotion_status": "METHOD_BLOCKED",
+        "search_lineage_complete": False,
         "execution_authority": "NONE",
         "venue_connection": "NONE",
+        "winner_selected": False,
+        "screen": {
+            "method_id": "train-select-validation-freeze-single-holdout-v1",
+            "scope": "context-level exploratory screen; not globally frozen-candidate validation",
+            "split_rule": "chronological contiguous thirds",
+            "candidate_roster_selection": "predeclared before evaluation; no winner selected",
+            "parameter_selection_partition": "train",
+            "best_context_ranking_partition": "train",
+            "validation_used_for_selection": False,
+            "holdout_used_for_selection": False,
+            "holdout_evaluations_per_context": 1,
+            "global_candidate_frozen": False,
+            "promotion_eligible": False,
+        },
         "dataset_count": len(datasets),
         "pairs": sorted({d[0].rsplit("_", 1)[0] for d in datasets}),
         "timeframes": list(TIMEFRAMES),
         "strategy_count": len(ALL_STRATEGIES),
-        "survivor_count": len(survivors),
-        "survivors": survivors,
+        "context_pass_count": len(context_passes),
+        "context_passes": context_passes,
         "strategies": results,
     }
 
@@ -127,7 +125,7 @@ def build_report() -> dict:
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     report = build_report()
-    (OUT / "UNIVERSE_SEARCH.json").write_text(
+    (OUT / "UNIVERSE_SEARCH_TRAIN_SELECT_V2_2026_07_13.json").write_text(
         json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
     print(
@@ -136,8 +134,8 @@ def main() -> None:
                 "datasets": report["dataset_count"],
                 "pairs": len(report["pairs"]),
                 "strategies": report["strategy_count"],
-                "survivors": report["survivor_count"],
-                "survivor_ids": [s["strategy_id"] for s in report["survivors"]],
+                "context_passes": report["context_pass_count"],
+                "context_pass_ids": [s["strategy_id"] for s in report["context_passes"]],
             },
             indent=2,
         )

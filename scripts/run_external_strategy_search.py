@@ -6,11 +6,10 @@ not internally generated ones — to see whether any survives the same honest sc
 the seed validation probe uses (positive holdout, beats buy-and-hold net of fees,
 robust across its parameter neighborhood, consistent across both instruments).
 
-This is research only. Every candidate stays UNVALIDATED / NOT_ELIGIBLE /
-execution_authority=NONE. A screen PASS here is a *promotion-probe candidate*, NOT
-an approval: it still owes production G10 (DSR>=0.95, PBO) and cross-engine
-reproduction before any HG-3 / paper work. All strategy logic is long-only spot,
-reusing the reproduced-seed cycle's deterministic primitives.
+This is research only. Every context stays UNVALIDATED / NOT_ELIGIBLE /
+execution_authority=NONE. A context PASS is exploratory evidence, not a globally
+frozen candidate or promotion result. All strategy logic is long-only spot, reusing
+the reproduced-seed cycle's deterministic primitives.
 
 ponytail: reuses scripts.run_seed_research_cycle_v0 primitives + the probe's screen;
 adds only the public-strategy signal builders and the aggregate screen.
@@ -940,18 +939,73 @@ def _buy_hold(candles: Candles) -> Decimal:
     return qty * opens[-1] * (Decimal("1") - seed.FEES) / seed.INITIAL_CASH - Decimal("1")
 
 
-def _thirds_all_positive(candles: Candles, builder: SignalBuilder, key: str) -> tuple[bool, dict]:
+def _temporal_screen(candles: Candles, variants: dict[str, SignalBuilder]) -> dict:
+    """Select on train only, then evaluate the frozen variant once per later split."""
     n = len(candles["open"])
     spans = {
         "train": (0, n // 3),
         "validation": (n // 3, (2 * n) // 3),
         "holdout": ((2 * n) // 3, n),
     }
-    rows = {
-        name: _run_variant(_slice(candles, a, b), builder, key) for name, (a, b) in spans.items()
+    train = _slice(candles, *spans["train"])
+    train_trials = [_run_variant(train, builder, key) for key, builder in variants.items()]
+    selected = max(train_trials, key=lambda trial: trial.total_return)
+    builder = variants[selected.trial_key]
+    results = {
+        "train": selected,
+        "validation": _run_variant(
+            _slice(candles, *spans["validation"]), builder, selected.trial_key
+        ),
+        "holdout": _run_variant(_slice(candles, *spans["holdout"]), builder, selected.trial_key),
     }
-    all_positive = all(r.total_return > 0 for r in rows.values())
-    return all_positive, {name: str(r.total_return) for name, r in rows.items()}
+    thirds = {name: str(result.total_return) for name, result in results.items()}
+    positive_fraction = Decimal(
+        sum(1 for trial in train_trials if trial.total_return > 0)
+    ) / Decimal(len(train_trials))
+    holdout = _slice(candles, *spans["holdout"])
+    holdout_bh = _buy_hold(holdout)
+    all_positive = all(result.total_return > 0 for result in results.values())
+    total_trades = sum(result.trades for result in results.values())
+    screen_pass = bool(
+        all_positive
+        and results["holdout"].total_return > holdout_bh
+        and positive_fraction >= MIN_NEIGHBOURHOOD_POSITIVE
+        and total_trades >= MIN_TRADES
+    )
+    return {
+        # Compatibility aliases now explicitly mean the train-selected result.
+        "best_trial_key": selected.trial_key,
+        "best_total_return": str(selected.total_return),
+        "best_trades": selected.trades,
+        "selected_trial_key": selected.trial_key,
+        "selection_partition": "train",
+        "selection_objective": "max_net_total_return",
+        "selection_candidate_count": len(train_trials),
+        "selection_tie_break": "variant_declaration_order",
+        "split_indices": {
+            name: {"start_inclusive": start, "stop_exclusive": stop}
+            for name, (start, stop) in spans.items()
+        },
+        "parameters_frozen_after_train": True,
+        "validation_used_for_selection": False,
+        "holdout_used_for_selection": False,
+        "holdout_evaluation_count": 1,
+        "train_total_return": str(results["train"].total_return),
+        "validation_total_return": str(results["validation"].total_return),
+        "holdout_total_return": str(results["holdout"].total_return),
+        "train_trades": results["train"].trades,
+        "validation_trades": results["validation"].trades,
+        "holdout_trades": results["holdout"].trades,
+        "total_trades": total_trades,
+        "holdout_buy_hold_return": str(holdout_bh),
+        "beats_buy_hold": results["holdout"].total_return > holdout_bh,
+        "neighbourhood_positive_fraction": str(positive_fraction),
+        "thirds": thirds,
+        "thirds_all_positive": all_positive,
+        "screen_pass": screen_pass,
+        "evidence_scope": "CONTEXT_LEVEL_EXPLORATORY_SCREEN",
+        "promotion_eligible": False,
+    }
 
 
 def evaluate_strategy(strategy: Strategy) -> dict:
@@ -962,34 +1016,12 @@ def evaluate_strategy(strategy: Strategy) -> dict:
         for timeframe in TIMEFRAMES:
             dataset = f"{instrument}_{timeframe}"
             candles = seed.load_candles(seed.DATASETS[dataset])
-            trials = [_run_variant(candles, b, k) for k, b in strategy.variants.items()]
-            best = max(trials, key=lambda t: t.total_return)
-            positive_fraction = Decimal(sum(1 for t in trials if t.total_return > 0)) / Decimal(
-                len(trials)
-            )
-            bh = _buy_hold(candles)
-            builder = strategy.variants[best.trial_key]
-            thirds_ok, thirds = _thirds_all_positive(candles, builder, best.trial_key)
-            beats_bh = best.total_return > bh
-            robust = positive_fraction >= MIN_NEIGHBOURHOOD_POSITIVE
-            enough_trades = best.trades >= MIN_TRADES
-            screen_pass = bool(
-                best.total_return > 0 and beats_bh and thirds_ok and robust and enough_trades
-            )
             row = {
                 "dataset": dataset,
-                "best_trial_key": best.trial_key,
-                "best_total_return": str(best.total_return),
-                "best_trades": best.trades,
-                "buy_hold_return": str(bh),
-                "beats_buy_hold": beats_bh,
-                "neighbourhood_positive_fraction": str(positive_fraction),
-                "thirds": thirds,
-                "thirds_all_positive": thirds_ok,
-                "screen_pass": screen_pass,
+                **_temporal_screen(candles, strategy.variants),
             }
             contexts.append(row)
-            if screen_pass:
+            if row["screen_pass"]:
                 best_contexts.append(row)
     return {
         "strategy_id": strategy.strategy_id,
@@ -1005,31 +1037,44 @@ def evaluate_strategy(strategy: Strategy) -> dict:
 
 def build_report() -> dict:
     results = [evaluate_strategy(s) for s in STRATEGIES]
-    survivors = [
+    context_passes = [
         {"strategy_id": r["strategy_id"], "contexts": r["screen_pass_contexts"]}
         for r in results
         if r["screen_pass_contexts"]
     ]
     return {
-        "schema": "tios-external-strategy-search-v1",
+        "schema": "tios-external-strategy-search-v2",
         "mode": "OFFLINE_RESEARCH_ONLY",
         "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+        "promotion_status": "METHOD_BLOCKED",
+        "search_lineage_complete": False,
         "winner_selected": False,
         "execution_authority": "NONE",
         "venue_connection": "NONE",
         "paper_orders": "DISABLED",
         "live_orders": "DISABLED",
         "screen": {
-            "rule": "best>0 AND beats_buy_hold AND all_three_thirds_positive "
-            "AND neighbourhood_positive_fraction>=0.6 AND trades>=10",
-            "note": "A screen PASS is a promotion-PROBE candidate only; production G10 "
-            "(DSR>=0.95, PBO) and cross-engine reproduction remain mandatory before HG-3.",
+            "method_id": "train-select-validation-freeze-single-holdout-v1",
+            "scope": "context-level exploratory screen; not globally frozen-candidate validation",
+            "split_rule": "chronological contiguous thirds",
+            "candidate_roster_selection": "predeclared before evaluation; no winner selected",
+            "selection_rule": "select max net total return on train only; "
+            "declaration order breaks ties",
+            "freeze_rule": "selected parameters are unchanged for validation and holdout",
+            "holdout_rule": "evaluate the frozen variant once; holdout never participates "
+            "in selection",
+            "global_candidate_frozen": False,
+            "promotion_eligible": False,
+            "pass_rule": "all thirds positive AND holdout beats holdout buy-and-hold "
+            "AND train-neighbourhood positive fraction>=0.6 AND total trades>=10",
+            "note": "A context PASS is exploratory evidence only; source/spec lineage "
+            "and one globally frozen candidate are still missing.",
             "min_trades": MIN_TRADES,
             "min_neighbourhood_positive": str(MIN_NEIGHBOURHOOD_POSITIVE),
         },
         "strategy_count": len(STRATEGIES),
-        "survivor_count": len(survivors),
-        "survivors": survivors,
+        "context_pass_count": len(context_passes),
+        "context_passes": context_passes,
         "strategies": results,
     }
 
@@ -1037,15 +1082,15 @@ def build_report() -> dict:
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     report = build_report()
-    artifact = OUT / "EXTERNAL_STRATEGY_SEARCH_2026_07_12.json"
+    artifact = OUT / "EXTERNAL_STRATEGY_SEARCH_TRAIN_SELECT_V2_2026_07_13.json"
     artifact.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(
         json.dumps(
             {
                 "artifact": str(artifact.relative_to(ROOT)),
                 "strategies": report["strategy_count"],
-                "survivors": report["survivor_count"],
-                "survivor_ids": [s["strategy_id"] for s in report["survivors"]],
+                "context_passes": report["context_pass_count"],
+                "context_pass_ids": [s["strategy_id"] for s in report["context_passes"]],
             },
             indent=2,
         )

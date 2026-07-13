@@ -230,32 +230,12 @@ def evaluate(strategy: Strategy) -> dict:
     for instrument in ext.INSTRUMENTS:
         for timeframe in ext.TIMEFRAMES:
             candles = load_rich(instrument, timeframe)
-            trials = [ext._run_variant(candles, b, k) for k, b in strategy.variants.items()]
-            best = max(trials, key=lambda t: t.total_return)
-            pos_frac = Decimal(sum(1 for t in trials if t.total_return > 0)) / Decimal(len(trials))
-            bh = ext._buy_hold(candles)
-            builder = strategy.variants[best.trial_key]
-            thirds_ok, thirds = ext._thirds_all_positive(candles, builder, best.trial_key)
-            screen_pass = bool(
-                best.total_return > 0
-                and best.total_return > bh
-                and thirds_ok
-                and pos_frac >= ext.MIN_NEIGHBOURHOOD_POSITIVE
-                and best.trades >= ext.MIN_TRADES
-            )
             row = {
                 "dataset": f"{instrument}_{timeframe}",
-                "best_trial_key": best.trial_key,
-                "best_total_return": str(best.total_return),
-                "best_trades": best.trades,
-                "buy_hold_return": str(bh),
-                "neighbourhood_positive_fraction": str(pos_frac),
-                "thirds_all_positive": thirds_ok,
-                "thirds": thirds,
-                "screen_pass": screen_pass,
+                **ext._temporal_screen(candles, strategy.variants),
             }
             contexts.append(row)
-            if screen_pass:
+            if row["screen_pass"]:
                 survivors.append(row)
     return {
         "strategy_id": strategy.strategy_id,
@@ -269,24 +249,38 @@ def evaluate(strategy: Strategy) -> dict:
 
 def build_report() -> dict:
     results = [evaluate(s) for s in STRATEGIES]
-    survivors = [
+    context_passes = [
         {"strategy_id": r["strategy_id"], "contexts": r["screen_pass_contexts"]}
         for r in results
         if r["screen_pass_contexts"]
     ]
     return {
-        "schema": "tios-signal-strategy-search-v1",
+        "schema": "tios-signal-strategy-search-v2",
         "mode": "OFFLINE_RESEARCH_ONLY",
         "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
+        "promotion_status": "METHOD_BLOCKED",
+        "search_lineage_complete": False,
         "winner_selected": False,
         "execution_authority": "NONE",
         "venue_connection": "NONE",
         "paper_orders": "DISABLED",
         "live_orders": "DISABLED",
+        "screen": {
+            "method_id": "train-select-validation-freeze-single-holdout-v1",
+            "scope": "context-level exploratory screen; not globally frozen-candidate validation",
+            "split_rule": "chronological contiguous thirds",
+            "candidate_roster_selection": "predeclared before evaluation; no winner selected",
+            "selection_partition": "train",
+            "validation_used_for_selection": False,
+            "holdout_used_for_selection": False,
+            "holdout_evaluations_per_context": 1,
+            "global_candidate_frozen": False,
+            "promotion_eligible": False,
+        },
         "uses_signals": ["rolling_vwap", "volume", "taker_buy_sell_imbalance", "atr_volatility"],
         "strategy_count": len(STRATEGIES),
-        "survivor_count": len(survivors),
-        "survivors": survivors,
+        "context_pass_count": len(context_passes),
+        "context_passes": context_passes,
         "strategies": results,
     }
 
@@ -294,15 +288,15 @@ def build_report() -> dict:
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     report = build_report()
-    (OUT / "SIGNAL_STRATEGY_SEARCH.json").write_text(
+    (OUT / "SIGNAL_STRATEGY_SEARCH_TRAIN_SELECT_V2_2026_07_13.json").write_text(
         json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
     print(
         json.dumps(
             {
                 "strategies": report["strategy_count"],
-                "survivors": report["survivor_count"],
-                "survivor_ids": [s["strategy_id"] for s in report["survivors"]],
+                "context_passes": report["context_pass_count"],
+                "context_pass_ids": [s["strategy_id"] for s in report["context_passes"]],
             },
             indent=2,
         )

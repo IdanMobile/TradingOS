@@ -58,9 +58,82 @@ def probability_of_backtest_overfitting(
     }
 
 
+def _sharpe_from_return_statistics(statistics: Sequence[Sequence[float]]) -> float:
+    """Compute non-annualized Sharpe from retained ``count,sum,sum_squares`` rows."""
+
+    count = sum(int(row[0]) for row in statistics)
+    total = sum(float(row[1]) for row in statistics)
+    total_squares = sum(float(row[2]) for row in statistics)
+    if count < 2:
+        raise ValueError("return statistics require at least two observations")
+    sample_variance = (total_squares - total * total / count) / (count - 1)
+    if sample_variance <= 0 and total == 0 and total_squares == 0:
+        return 0.0
+    if sample_variance <= 0 or not isfinite(sample_variance):
+        raise ValueError("return statistics require positive finite variance")
+    return (total / count) / sqrt(sample_variance)
+
+
+def probability_of_backtest_overfitting_from_return_statistics(
+    statistics_by_trial_slice: Sequence[Sequence[Sequence[float]]],
+) -> dict[str, object]:
+    """Estimate CSCV PBO with per-bar Sharpe as the governed score.
+
+    Each slice is represented by sufficient statistics ``(count, sum, sum_squares)``.
+    This lets every in-sample and out-of-sample half use the same per-bar Sharpe
+    definition as candidate selection and DSR without retaining every bar return.
+    """
+
+    if not statistics_by_trial_slice:
+        raise ValueError("at least one trial is required")
+    slice_count = len(statistics_by_trial_slice[0])
+    if slice_count < 2 or slice_count % 2:
+        raise ValueError("an even number of at least two slices is required")
+    if any(len(row) != slice_count for row in statistics_by_trial_slice):
+        raise ValueError("all trials must have the same slice count")
+    if any(len(item) != 3 for row in statistics_by_trial_slice for item in row):
+        raise ValueError("each slice requires count, sum, and sum_squares")
+
+    trial_count = len(statistics_by_trial_slice)
+    split_size = slice_count // 2
+    lambdas: list[float] = []
+    for train_columns in combinations(range(slice_count), split_size):
+        train = set(train_columns)
+        test_columns = tuple(index for index in range(slice_count) if index not in train)
+        train_scores = [
+            _sharpe_from_return_statistics([row[index] for index in train])
+            for row in statistics_by_trial_slice
+        ]
+        selected = max(range(trial_count), key=lambda index: (train_scores[index], -index))
+        test_scores = [
+            _sharpe_from_return_statistics([row[index] for index in test_columns])
+            for row in statistics_by_trial_slice
+        ]
+        selected_test_score = test_scores[selected]
+        rank_from_worst = 1 + sum(score < selected_test_score for score in test_scores)
+        omega = rank_from_worst / (trial_count + 1)
+        lambdas.append(log(omega / (1 - omega)))
+
+    return {
+        "split_count": len(lambdas),
+        "lambda_logits": tuple(lambdas),
+        "pbo": sum(value <= 0 for value in lambdas) / len(lambdas),
+    }
+
+
+def implied_independent_trials(raw_trials: int, average_correlation: float) -> float:
+    """Bailey/López de Prado Appendix-3 linear implied-trials estimate."""
+
+    if raw_trials < 1:
+        raise ValueError("raw_trials must be positive")
+    if not 0 <= average_correlation <= 1 or not isfinite(average_correlation):
+        raise ValueError("average_correlation must be finite and between zero and one")
+    return 1.0 + (1.0 - average_correlation) * (raw_trials - 1)
+
+
 def expected_maximum_noise_sharpe(
     sharpe_variance: float,
-    independent_trials: int,
+    independent_trials: float,
 ) -> float:
     """False-strategy-theorem threshold used by DSR."""
 
@@ -79,7 +152,7 @@ def expected_maximum_noise_sharpe(
 def deflated_sharpe_ratio(
     observed_sharpe: float,
     sharpe_variance: float,
-    independent_trials: int,
+    independent_trials: float,
     sample_count: int,
     skewness: float = 0.0,
     kurtosis: float = 3.0,
@@ -89,7 +162,7 @@ def deflated_sharpe_ratio(
     if sample_count < 2:
         raise ValueError("sample_count must be at least 2")
     sr0 = expected_maximum_noise_sharpe(sharpe_variance, independent_trials)
-    variance_adjustment = 1 - skewness * sr0 + ((kurtosis - 1) / 4) * sr0**2
+    variance_adjustment = 1 - skewness * observed_sharpe + ((kurtosis - 1) / 4) * observed_sharpe**2
     if variance_adjustment <= 0 or not isfinite(variance_adjustment):
         raise ValueError("invalid skew/kurtosis variance adjustment")
     z_score = (observed_sharpe - sr0) * sqrt(sample_count - 1) / sqrt(variance_adjustment)
@@ -104,5 +177,5 @@ def sharpe_variance_from_trials(sharpes: Sequence[float]) -> float:
     """Cross-sectional sample variance for trial Sharpe ratios."""
 
     if len(sharpes) < 2:
-        return 0.0
+        raise ValueError("at least two trial Sharpes are required")
     return variance(sharpes)

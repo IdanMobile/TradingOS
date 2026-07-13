@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 import shutil
@@ -15,6 +16,12 @@ def _project(tmp_path: Path) -> tuple[Path, dict[str, str]]:
     root = tmp_path / "project"
     root.mkdir()
     shutil.copy2(Path(__file__).resolve().parents[1] / "Makefile", root / "Makefile")
+    controlled = root / "CONTROLLED.txt"
+    controlled.write_text("fixture\n")
+    digest = hashlib.sha256(controlled.read_bytes()).hexdigest()
+    (root / "PACKAGE_INTEGRITY_MANIFEST.md").write_text(
+        f"| Path | SHA-256 |\n|---|---|\n| `CONTROLLED.txt` | `{digest}` |\n"
+    )
     fake_bin = root / "bin"
     fake_bin.mkdir()
     uv = fake_bin / "uv"
@@ -80,6 +87,22 @@ def test_failed_check_removes_old_pass_and_temporary_artifacts(tmp_path: Path) -
     assert result.returncode != 0
     assert not artifact.exists()
     assert not list(artifact.parent.glob("check.json.tmp.*"))
+
+
+def test_integrity_mismatch_fails_and_removes_old_pass(tmp_path: Path) -> None:
+    root, environment = _project(tmp_path)
+    artifact = root / "artifacts/quality/check.json"
+    artifact.parent.mkdir(parents=True)
+    artifact.write_text('{"status":"PASS"}')
+    (root / "CONTROLLED.txt").write_text("drifted\n")
+
+    result = subprocess.run(
+        ["make", "check"], cwd=root, env=environment, capture_output=True, text=True, check=False
+    )
+
+    assert result.returncode != 0
+    assert "package integrity: FAIL CONTROLLED.txt" in result.stdout
+    assert not artifact.exists()
 
 
 def test_interrupted_check_removes_old_pass_and_temporary_artifacts(tmp_path: Path) -> None:

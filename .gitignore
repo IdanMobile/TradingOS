@@ -1,5 +1,6 @@
 # --- Secrets: never commit ---
 .env
+.env.*
 .env.local
 .env.*.local
 *.pem
@@ -27,7 +28,14 @@ engines/*/.venv/
 engines/*/venv/
 
 # --- Data & runtime artifacts (regenerated; manifests are committed) ---
-data/raw/
+data/raw/*
+!data/raw/manifests/
+!data/raw/manifests/*.json
+!data/raw/manifests/**/*.json
+# Small content-addressed REST update pages are provenance inputs, not disposable cache.
+!data/raw/rest_klines/
+!data/raw/rest_klines/**/
+!data/raw/rest_klines/**/*.json
 data/normalized/
 mlruns/
 mlartifacts/

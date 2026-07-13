@@ -2,15 +2,16 @@
 
 Instead of re-downloading history, this reads each normalized parquet, asks
 Binance's REST klines API for bars *after* the last one it holds, and appends them
-through the same canonical schema + dedup as the bulk normalizer. The result stays
-reproducible: content is deterministic from the source, and the manifest records the
-new coverage end + sha256 per refresh (golden rule intact).
+through the same canonical schema + dedup as the bulk normalizer. Decoded REST pages
+are retained by content hash before use, and the normalized manifest records the new
+coverage, source references, and hashes per refresh.
 
 Run: uv run python -m tios.dataset.daily_update           (updates data/normalized_multi)
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import urllib.request
 from datetime import UTC, datetime
@@ -24,6 +25,7 @@ import pyarrow.parquet
 from tios.dataset.normalize import (
     DEC,
     RAW_COLUMNS,
+    code_commit,
     content_sha256,
     dedup_sorted,
     to_canonical,
@@ -31,6 +33,7 @@ from tios.dataset.normalize import (
 
 REST = "https://api.binance.com/api/v3/klines"
 DEFAULT_DIR = Path(__file__).resolve().parents[3] / "data" / "normalized_multi"
+RAW_REST_ROOT = Path(__file__).resolve().parents[3] / "data" / "raw" / "rest_klines"
 _INT_COLS = {"open_time", "close_time", "count"}
 
 
@@ -62,6 +65,24 @@ def fetch_klines(symbol: str, interval: str, start_ms: int, limit: int = 1000) -
         return json.loads(r.read())  # type: ignore[no-any-return]
 
 
+def _retain_page(
+    symbol: str, interval: str, start_ms: int, rows: list[list[Any]]
+) -> dict[str, object]:
+    """Retain the exact decoded REST payload before it can change normalized data."""
+    encoded = (json.dumps(rows, separators=(",", ":")) + "\n").encode()
+    digest = hashlib.sha256(encoded).hexdigest()
+    path = RAW_REST_ROOT / symbol / interval / f"{digest}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if not path.exists():
+        path.write_bytes(encoded)
+    return {
+        "path": path.relative_to(RAW_REST_ROOT.parent).as_posix(),
+        "url": f"{REST}?symbol={symbol}&interval={interval}&startTime={start_ms}&limit=1000",
+        "sha256": digest,
+        "rows": len(rows),
+    }
+
+
 def _last_open_ms(table: pa.Table) -> int:
     """Last open timestamp in ms (canonical stores µs)."""
     return int(table.column("timestamp_open_utc")[-1].value) // 1000
@@ -72,8 +93,10 @@ def update_file(path: Path) -> dict[str, object]:
     existing = pyarrow.parquet.read_table(path)
     since = _last_open_ms(existing) + 1
     added = 0
+    source_pages = []
     while True:
         page = fetch_klines(symbol, interval, since)
+        source_pages.append(_retain_page(symbol, interval, since, page))
         page = [row for row in page if int(row[0]) >= since]
         if not page:
             break
@@ -91,7 +114,9 @@ def update_file(path: Path) -> dict[str, object]:
         "added_rows": added,
         "rows": existing.num_rows,
         "coverage_end_utc": str(existing.column("timestamp_open_utc")[-1]),
+        "parquet_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
         "content_sha256": content_sha256(existing),
+        "source_pages": source_pages,
     }
 
 
@@ -104,6 +129,11 @@ def main() -> None:
     total = sum(cast(int, r["added_rows"]) for r in results)
     status = {
         "last_run_utc": datetime.now(tz=UTC).isoformat(),
+        "update_code": {
+            "module": "src/tios/dataset/daily_update.py",
+            "module_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+            "git_commit": code_commit(),
+        },
         "files_updated": len(results),
         "bars_added": total,
         "target": str(target),
@@ -112,6 +142,9 @@ def main() -> None:
     (target / "daily_update_status.json").write_text(
         json.dumps(status, indent=2, default=str) + "\n"
     )
+    from tios.dataset.normalize_multi import snapshot_existing, write_manifest
+
+    write_manifest(snapshot_existing())
     print(f"updated {len(results)} files, +{total} bars in {target}")
 
 

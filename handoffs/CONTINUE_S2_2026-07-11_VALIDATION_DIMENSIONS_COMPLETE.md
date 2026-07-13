@@ -1,5 +1,11 @@
 # Handoff — Continue S2 after validation-dimension completion (2026-07-11)
 
+**Status: SUPERSEDED on 2026-07-13 by D-045/D-047 and
+`docs/supervisor/IMPROVEMENT_PLAN_2026-07-13.md`. Preserve this file as historical
+evidence, but do not follow its next action or inherit its G10/PBO/DSR claims. Current
+G10 evidence is `artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_13.json` and
+`artifacts/validation/seed_candidates/SEED_G10_QC2_ETHUSDT_1H_2026_07_13.json`.**
+
 Audience: the next coding agent/session (any AI). Read order: this file →
 `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` (SSOT, still the controller) →
 `PROJECT_STATE.md` → `TODO.md`/`todos/` → `MISSING_AND_OPEN_ITEMS.md`.

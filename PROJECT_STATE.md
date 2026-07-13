@@ -1,6 +1,6 @@
 # Trading Intelligence OS — Project State
 
-Last updated: 2026-07-11 (HG-2 approved; constrained S2 active)
+Last updated: 2026-07-13 (supervisory baseline; constrained S2 active)
 Package version: v8 (planning system) + S1 evidence + S2 governance entry
 Status: **S2 AUTONOMOUS RESEARCH LAB ACTIVE (CONSTRAINED).** No strategy, venue connection, or real-money trading is approved.
 
@@ -142,11 +142,12 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   lacks cross-engine, production G10, and paper/demo divergence evidence. All rows
   remain `UNVALIDATED` / `NOT_ELIGIBLE`, with `execution_authority=NONE`.
 - **Seed-context G10 follow-through (2026-07-11):**
-  `artifacts/validation/seed_candidates/SEED_G10_QC2_ETHUSDT_1H_2026_07_11.json`
+  `artifacts/validation/seed_candidates/SEED_G10_QC2_ETHUSDT_1H_2026_07_13.json`
   runs production-style PBO/DSR on the QC2 ETHUSDT 1h searched window grid. The
-  surviving `window=40` context **FAILS G10**: PBO 0.2614 is below the overfit
-  threshold, but DSR 0.7564 is below the 0.95 rule. No seed context is validated or
-  promotion-eligible.
+  surviving `window=40` context has a numeric FAIL diagnostic under the aligned v2
+  method: PBO 0.2662 and DSR 0.8548. G10 itself remains `METHOD_BLOCKED` because the
+  prior 258-trial context shortlist and hierarchy-wide dependence evidence are
+  unresolved. No seed context is validated or promotion-eligible.
 - **Cross-engine reproduction dimension closed (2026-07-11):** the canonical B2
   candidate now has three-way reproduction evidence
   (`artifacts/validation/CROSS_ENGINE_REPRODUCTION_2026_07_11.json`): an
@@ -161,20 +162,24 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   shows **zero BLOCKED score dimensions**: every dimension has a definite
   evidence-backed state and the candidate remains rejected on economics, drawdown,
   walk-forward, robustness, baseline, and G10 grounds. No winner; no authority.
-- **T-009-04 completed / production G10 active (2026-07-11):** candidate-specific
+- **T-009-04 numeric integration retained; production G10 method-blocked:** candidate-specific
   PBO/CSCV and DSR now run on the retained B2/B3/B4 trial populations
   (`scripts/run_g10_candidate.py` + engine-side `engines/vectorbt/g10_returns.py`),
   with exact per-trial parity verification against the retained LAB Parquet and an
   independent second implementation agreeing to ≤1e-9 (PBO) / ≤1e-6 (DSR) over
-  12,870 CSCV splits. **All families FAIL** (B2: PBO 0.8685, DSR≈0, z −18.6; B3:
-  selected trial has zero trades; B4: PBO 1.0). The B2 validation package gate G10
-  is now an evidence-backed FAIL (was NOT_RUN), and the refreshed batch
+  12,870 CSCV splits. The v2 contract aligns per-bar Sharpe across selection, both
+  CSCV halves, and DSR, and estimates family-scope effective trials only from retained
+  return correlations. B2 numerically FAILS (PBO 0.2960, DSR≈0); B4 numerically FAILS
+  (PBO 0.3810, DSR≈0); B3 is `METHOD_BLOCKED` because no-trade trials make required
+  correlations undefined. The historical refreshed batch
   `LAB-73ebd3a3bb3e4086b2408552559e77a26d1334ae9cc789c4459beadc27b6844a` shows
-  `multiple_testing_selection_bias_control = FAIL` (no longer BLOCKED) with 66
-  trials retained, no winner, `execution_authority=NONE`. RG-07 is closed for
-  production activation; a stats-specialist review gate remains before any future
-  G10 PASS may count toward promotion. Evidence:
-  `artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_11.json`.
+  projected `multiple_testing_selection_bias_control = FAIL` with 66 trials retained,
+  no winner, `execution_authority=NONE`. Complete upstream family/dataset/engine/scenario
+  search lineage and hierarchy-wide dependence evidence were never retained, so production
+  G10 remains `METHOD_BLOCKED`. Evidence:
+  Historical evidence: `artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_11.json`;
+  corrected method-limited evidence:
+  `artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_13.json`.
 - **T-002-05 resolved / D-038 API contract clarification (2026-07-11):** the operator
   approved keeping `POST /api/v1/workspace-actions/decision` as the single audited,
   operator-driven, loopback, allowlist-validated, append-only write exception. AD §AI
@@ -495,31 +500,30 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   public data only; paid vendors/L2/on-chain remain operator-procured (agent never
   enters payment or credentials). Everything stays `execution_authority=NONE`.
 
-- **Strategy research arc — rigorous negative result (2026-07-12):** with the expanded
-  multi-pair data flow in place, the full strategy space was tested honestly through
-  production G10 (Deflated Sharpe Ratio, threshold 0.95). Results, all `NOT_ELIGIBLE`:
+- **Strategy research arc — exploratory negative evidence (2026-07-12):** with the expanded
+  multi-pair data flow in place, the tested strategy implementations produced corrected
+  DSR diagnostics (nominal threshold 0.95). Results remain `NOT_ELIGIBLE`:
   single-asset technical (20 public + 5 signal + 18-strategy trend cluster with realistic
   vol-targeted sizing across 40 datasets, 2277 trials) → DSR ~0.69–0.76; cross-sectional
   momentum long-only with dual-momentum cash filter + vol targeting → DSR **0.9456**
   (28 pairs, the closest) but degrades to 0.9091 at 34 pairs (fragile); cross-sectional
-  long-short → DSR ~0.70 (crypto short side is noise). **Nothing clears DSR 0.95.**
+  long-short → DSR ~0.70. **Nothing clears the numeric 0.95 screen.**
   Methodology fixes applied: realistic sizing (removed all-in-compounding fantasy
   numbers), complete-history filter (removed a 1-month UNI listing-pump artifact), proper
-  deflation for the full search. Tooling: `scripts/run_universe_search.py`,
+  raw-trial deflation diagnostics. Tooling: `scripts/run_universe_search.py`,
   `run_trend_validation.py`, `run_cross_sectional_momentum.py`. Honest conclusion: no
-  price/technical strategy — single-asset or cross-sectional, long-only or long-short —
-  yields a DSR-validated edge on this universe. A validated edge needs structurally new
-  input (order-book/on-chain — paid; or the downloaded-but-unused funding data), not more
-  price-strategy variations (which would be p-hacking). Thresholds untouched throughout;
+  the tested price/technical implementations did not produce a validated edge. This does
+  not reject whole strategy families; survivor/cost, provenance, holdout, search-lineage,
+  and effective-trial gaps remain. Thresholds were not changed;
   `execution_authority=NONE`.
 
 - **Funding-carry (first non-predictive strategy) + honest caveat (2026-07-12):** after
   web research (recorded in `research/SOURCE_REGISTRY.md` + AD §R + graphify) pointed to
   delta-neutral funding carry as crypto's most robust NON-predictive edge, it was
   backtested from the downloaded funding data (`scripts/run_funding_carry.py`, 50 pairs,
-  9851 8h periods). The raw carry signal is REAL and literature-consistent: BTC +11.6%/yr,
-  ETH +12.5%/yr; a selective positive-funding basket ~8.8%/yr. G10 reports DSR 1.0 PASS —
-  **but this is explicitly NOT a genuine validation** (`verdict_is_genuine: false`): the
+  9851 8h periods). The simplified carry hypothesis produced BTC +11.6%/yr,
+  ETH +12.5%/yr; a selective positive-funding basket ~8.8%/yr. Its numeric DSR diagnostic
+  is 1.0, **not a G10 PASS or genuine validation** (`verdict_is_genuine: false`): the
   model includes ONLY the funding leg and omits basis divergence, liquidation, and
   execution/slippage — the dominant real risks — so the smooth low-vol yield inflates
   Sharpe (~11) and DSR. Naive all-pairs carry is negative (alt tail); selection is
@@ -622,6 +626,13 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   T-015-02 stays blocked on a real validation + the human gates. All agent-authored work green;
   the one red test (`test_dashboard_includes_read_only_tradingview_market_monitor`) is a
   separate concurrent stream's half-built dashboard feature, deliberately left to that stream.
+- **Supersession notice for all retained demo entries below (D-046, 2026-07-13):**
+  these authenticated venue-demo runs occurred outside the required HG-3/HG-4,
+  validation, security, and integration-approval chain. Their use of
+  `execution_authority=NONE` incorrectly treated “no real money” as “no execution
+  authority required.” They are historical unauthorized governance-probe evidence,
+  not current capability, qualification, or permission; all authenticated transports
+  are now quarantined before network access.
 - **Demo venue execution proven — first real order→fill→reconcile (2026-07-13):** operator
   obtained a Bybit **demo** account and drove the venue-testnet rung end to end. New self-contained
   tooling (kept out of the concurrently-edited paper module): `scripts/demo_preflight.py` (read-only
@@ -681,18 +692,61 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   principle: mixing zero-edge components cannot manufacture edge — confluence just cuts trade count.
   Patterns/mixes are coverage + rigorous negatives, not alpha; useful only as confluence FILTERS on a
   real edge (carry). RESEARCH-ONLY; execution_authority=NONE. `make check` = 649 green.
-- **Multi-timeframe confluence — a full-sample PASS caught and killed out-of-sample (2026-07-13):**
+- **Multi-timeframe confluence — method-invalid full-sample statistic fails OOS screen (2026-07-13):**
   operator asked to test MTF (trade the lower TF only with the higher TF trend). `run_mtf_confluence.py`
   gates 1h entries by the 1d trend (daily close > SMA50), aligned CAUSALLY (each hour uses only daily
   bars that have already closed — no lookahead, unit-tested). Result: the daily-trend filter HELPED
-  5/6 trend strategies in-sample, and the full-sample **DSR hit 0.9778 → "PASS"** — the first TA thing
-  to cross 0.95 all session. BUT the honest out-of-sample test (select best on first 60%, measure DSR
-  on held-out 40%, deflated by the selection pool) **collapsed it: golden-cross/SOL OOS Sharpe 0.52,
-  DSR 0.7802 → FAIL.** The full-sample pass was a bull-regime + selection artifact (long-only trend
-  following rides 2021; the "best" was golden-cross where MTF didn't even help). Lesson re-confirmed:
-  a high full-sample DSR is NOT an edge — OOS is the gate, same test that killed the stat-arb pass.
-  MTF is a genuine, useful FILTER (helps trade selection) but does not manufacture out-of-sample edge.
-  The wall holds: carry remains the only real edge, still counterparty-gated. `make check` = 652 green.
+  5/6 trend strategies in-sample. The old full-sample value 0.9778 is now explicitly a
+  legacy collapsed statistic: best-pair selection hid up to 36 searched strategy/pair
+  trials, so it cannot satisfy G10. The untouched tail reports PSR-versus-zero 0.7802,
+  not DSR, and fails its screen. This is implementation-specific negative evidence;
+  neither MTF nor carry is validated. Historical `make check` count: 652 green.
+
+- **Full supervisory baseline and corrective containment (2026-07-13):** the repository-local
+  Trading OS Supervisor completed the intake/full-baseline review at commit `672e2da`.
+  It found no durable HG-3, HG-4, validation approval, security-review approval, or
+  Bybit-specific integration approval, despite retained authenticated Bybit demo-order
+  evidence. D-046 classifies those runs as historical unauthorized governance probes and
+  quarantines the authenticated GET/POST transports before network access. No demo bot or
+  paper worker was running at review time; no secret value or venue was accessed.
+- **DSR correction (D-045, 2026-07-13):** the shared G10 implementation incorrectly used
+  the expected maximum noise Sharpe in the skew/kurtosis denominator. The primary-paper
+  formula uses the selected strategy's observed Sharpe. The shared and comparison
+  implementations plus method fixtures are corrected. Corrective offline reruns preserve
+  the non-approvable conclusion (B2/B4 and the seed context fail; B3 is method-blocked;
+  funding PASS labels remain explicitly non-genuine), while the effective-independent-trial,
+  selection-lineage, MTF, and funding-model gaps remain open in the supervisor plan.
+- **Supervisory truth boundary:** the current safe stage is offline S2. The retained funding
+  synthetic run is static fee/slippage cost stress, not observed G12 paper execution; no
+  strategy is validation-approved or promotion-eligible. See
+  `docs/supervisor/SUPERVISORY_BASELINE_2026-07-13.md` and
+  `docs/supervisor/IMPROVEMENT_PLAN_2026-07-13.md`.
+- **Immutable multi-data provenance correction:** future public-archive acquisition writes
+  per-kind content-addressed manifests with exact official-checksum evidence; reused bytes are
+  no longer presumed verified. Future REST update payloads are retained before normalization.
+  The current normalized-multi snapshot pins 69 tables / 40 pairs with source, range, content,
+  Parquet, code, and status hashes in `data/normalized_multi/normalized_multi_manifest.json`.
+  It is explicitly `reconstructed_from_retained_files`: original run identity and historical
+  REST responses cannot be recovered retroactively.
+- **Holdout and canonical-strategy correction:** future public, signal, and universe searches
+  select parameters on the chronological train third, freeze them, and evaluate each declared
+  context once on validation/holdout. They remain context-level exploratory screens with
+  `search_lineage_complete=false`, no global winner, and no promotion status. Funding carry now
+  has a pinned canonical research registration under
+  `strategies/research/funding-carry-basis-delta-neutral/`; it validates only
+  `VALID_WITH_AMBIGUITIES`. The canonical schema now records research-only long-spot and
+  short-perpetual legs with shared eligibility and refuses long-only evaluation. Pure Decimal
+  accounting fixtures cover deployable capital, isolated collateral/buffer, funding, basis,
+  open/settle/rehedge/close fees, timestamp ordering, capital conservation, missing data, and
+  terminal maintenance breach. Funding input contracts, venue-specific lifecycle integration,
+  intraperiod liquidation, empirical execution, and counterparty semantics remain unresolved.
+- **Future research fail-closed contracts:**
+  `research/BASELINE_G10_SEARCH_CAMPAIGN_V1.yaml` freezes the next bounded 66-trial
+  B2/B3/B4 reproduction roster, dataset, specs, engine, scenario, parameters, Sharpe metric,
+  CSCV policy, hashes, stop rules, and non-authority before any run. New substantive strategy
+  artifacts must pass `tios.evidence.validate_substantive_research_metadata`, including exact
+  code/data/manifest/spec/campaign/cost/split/trial-population/output lineage. These contracts
+  do not reconstruct omitted historical search stages or authorize a new campaign result.
 
 ## Operational SSOT (unchanged)
 
@@ -742,19 +796,21 @@ source-registry and TradingView public-strategy replay evidence refreshes; this 
 strategy promotion and demo activation, not offline research. Open items are tracked in
 `MISSING_AND_OPEN_ITEMS.md`.
 
+The supervisory correction cycle repaired the shared DSR equation, aligned the retained
+G10 metrics, pinned the current multi-data snapshot, added future research provenance and
+preregistration contracts, removed holdout selection from future search runners, added a
+research-only multi-leg funding specification and deterministic carry lifecycle, reconciled
+authoritative claims, and quarantined authenticated venue transports. Historical selection
+lineage and original data-run identity remain unrecoverable and are explicitly method-blocked.
+
 ## Exact next action
 
-The current AD/roadmap/TODO inventory has **zero actionable open agent-executable
-tasks** in the live workspace status projection (`/api/v1/status`: 88 total, 74 done,
-0 open, 7 gated, 4 recurring). The completion audit is retained at
-`artifacts/reports/AGENT_EXECUTABLE_COMPLETION_AUDIT_2026_07_11.md`.
-Do not manufacture strategy-operation work as a substitute for product development:
-additional replays should run only when needed to verify a new application feature or
-after an explicit research-direction decision changes inputs. The next finite work is
-human/credential/S3 gated: AI provider key + spend for T-011-05/T-017-05, or S2 exit/
-HG-3/paper-demo preparation after a future complete approvable strategy exists. The
-live progress surface remains `make dashboard` at `http://127.0.0.1:8765`, including
-read-only Automation, Search, Comparisons, and Trading Domain/demo-wallet readiness.
+Continue the remaining dependency-ordered initiatives in
+`docs/supervisor/IMPROVEMENT_PLAN_2026-07-13.md`: execute future searches only under the
+preregistered campaign/provenance contract, reconstruct stat-arb/cross-sectional/combination
+methods and canonical ownership, and extend carry into sourced venue-specific collateral,
+settlement, intraperiod liquidation, reconciliation, and empirical-cost models. Authenticated
+demo networking stays quarantined and all human S3/S4 gates remain untouched.
 
 ## Exit condition of next phase (unchanged)
 

@@ -75,3 +75,20 @@ def test_volume_breakout_requires_a_volume_surge() -> None:
     entries, _ = sig.volume_breakout(10, Decimal("2"))(c)
     assert entries[21], "breakout on 10x-average volume must fire"
     assert not entries[20], "breakout on average volume must not fire"
+
+
+def test_report_is_method_blocked_without_global_candidate(monkeypatch) -> None:
+    monkeypatch.setattr(
+        sig,
+        "evaluate",
+        lambda strategy: {
+            "strategy_id": strategy.strategy_id,
+            "screen_pass_contexts": [],
+        },
+    )
+    report = sig.build_report()
+    assert report["winner_selected"] is False
+    assert report["search_lineage_complete"] is False
+    assert report["promotion_status"] == "METHOD_BLOCKED"
+    assert report["screen"]["global_candidate_frozen"] is False
+    assert report["screen"]["promotion_eligible"] is False

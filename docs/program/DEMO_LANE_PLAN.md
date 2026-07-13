@@ -1,27 +1,33 @@
 # Demo-lane integration plan (venue testnet/demo)
 
-Prepared: 2026-07-13. Purpose: everything needed to connect the paper lane to a real exchange
-**demo** account (fake money, real exchange system) the moment an account confirms — designed
-so live activation is a small, safe, human-triggered step, never an automatic one.
+**Status: QUARANTINED under D-046. This is a historical design note, not an activation
+checklist. No current authenticated demo transport may reach a venue.**
 
-Boundary: this plan and the preflight tool touch **no venue and no credentials** until you have
-demo keys and explicitly proceed. Demo keys must be **least-privilege, isolated, revocable, and
-never withdrawal-enabled** (`.env` rule + AD §AA). Real-money keys are never used here.
+Prepared: 2026-07-13. Historical purpose: outline a possible connection from the paper lane to
+a real exchange **demo** account (fake money, real exchange system). It is now retained only as
+design context for a future fully governed integration.
+
+Correction: historical authenticated Bybit demo activity occurred without the complete durable
+approval chain and is retained as governance-breach evidence, not S3 qualification. The
+preflight and order transports now fail before network access. Future reactivation requires
+HG-3, HG-4, validation approval, security review, venue-specific approval, and a typed
+adapter/reconciliation review; merely removing a guard or possessing demo keys is insufficient.
 
 ## The three rungs (unchanged)
 1. **Local synthetic simulator** — built now; no account, no money, on your machine.
 2. **Venue demo/testnet** — *this plan*; fake money on the exchange's real live system, via API.
 3. **Limited-live** — real money, capped (HG-5).
 
-Demo sits behind a light human step (you generate the keys + say go); real money is HG-4/HG-5.
+Demo is venue execution with fake funds. It is therefore behind the complete D-046 predicate,
+not a light key-generation step. Real money additionally remains behind HG-5.
 
 ## Venue recommendation
 
-**Primary: Bybit demo.** Best fit for driving a bot by API — a real demo API
+**Historical candidate: Bybit demo.** It offers a real demo API
 (`api-demo.bybit.com`), generous virtual balance (~50k USDT + 1 BTC + 1 ETH), and it covers
 **both spot and perpetuals** (the perp leg matters if a funding-carry-style strategy is ever the
 one validated). Secondary: **OKX demo** (simulated trading on real live prices, demo API keys) —
-a clean fallback; its connector is a ~15-line signer swap from Bybit's.
+a possible fallback requiring its own current research, approvals, and typed integration.
 
 | Venue | Demo API | Spot | Perps | Notes |
 |---|---|---|---|---|
@@ -29,9 +35,9 @@ a clean fallback; its connector is a ~15-line signer swap from Bybit's.
 | **OKX** | demo flag on `www.okx.com` API | ✓ | ✓ | Real live prices; good fallback |
 | Binance | Spot Testnet | ✓ | testnet | More manual-oriented; usable with caveats |
 
-Whichever account confirms first, tell me and I build that exact connector.
+This table is capability context only; it does not select or approve a venue.
 
-## Env vars (add to `.env` only when keys exist; never commit real values)
+## Historical env shape (do not populate while quarantined; never commit real values)
 ```
 DEMO_VENUE=bybit                 # bybit | okx
 BYBIT_DEMO_API_KEY=              # a DEMO key — trade permission, NO withdrawal
@@ -42,25 +48,20 @@ BYBIT_DEMO_API_SECRET=
 # OKX_DEMO_API_PASSPHRASE=
 ```
 
-## Activation checklist (when your account confirms)
-1. In the exchange UI, create a demo API key. On **Bybit**: log in at bybit.com → switch to the
-   **Demo Trading** module (a separate demo account) → hover avatar → **API** → create key. Enable
-   **trade** permission; **disable withdrawal/transfer**. Copy key + secret into `.env`. (Use the
-   Demo Trading module, not testnet.bybit.com — testnet keys are meaningless here. Demo
-   orders/data persist ~7 days.)
-2. Run **`python scripts/demo_preflight.py`** (built now). It verifies, without placing any order:
-   - you are pointed at the **demo host** (never mainnet);
-   - the connection + signing work;
-   - the key is **safe** — trade-only, no withdrawal permission;
-   - your demo balances are visible.
-3. Only after preflight is green do we build/enable the **execution adapter** that routes the
-   paper lane's orders to the demo endpoint (a scoped follow-up, behind the same gate guard as
-   the local simulator). It stays inert until you switch the lane mode on.
-4. Run the strategy on the demo lane for the defined stability window; compare demo fills vs the
-   backtest via the existing divergence report.
+## Future reactivation checklist (not currently executable)
+1. Record current HG-3, HG-4, validation, security-review, and venue-specific approvals for the
+   exact strategy, operator, venue, account, permissions, and time window.
+2. Implement and review a typed adapter behind the locked paper contracts, including
+   fail-closed partial/unknown-fill handling, asymmetric-leg recovery, final position/balance
+   reconciliation, idempotency, and append-only evidence.
+3. Verify least-privilege isolated demo credentials without exposing them and prove the exact
+   demo origin; fund removal remains forbidden.
+4. Only after all predicates are durable and current may a bounded preflight or demo exercise be
+   separately authorized. Empirical fills must be recorded as G12/divergence evidence; static
+   synthetic cost stress does not qualify.
 
 ## What is built now vs later
-- **Now (safe, no venue):** this plan + `scripts/demo_preflight.py` + its offline tests.
-- **When keys confirm:** the venue-specific signer is already the recommended Bybit one; OKX is a
-  small swap.
-- **After preflight green + your go:** the execution adapter (order routing) — not before.
+- **Now:** retained historical scripts, fail-closed network quarantine, and injected offline
+  tests. There is no active authenticated signer or venue connection.
+- **Later, only after the full predicate:** a venue-specific typed adapter and reconciliation
+  review. Another venue is not a trivial signer swap; it needs its own semantics and approval.

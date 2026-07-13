@@ -116,3 +116,34 @@ def test_bot_stops_when_preflight_is_not_green() -> None:
 
     report = bot.run_bot(KEY, SECRET, get_transport=get, market_transport=boom)
     assert report["ok"] is False and report["stage"] == "preflight"
+
+
+def test_failed_flatten_reports_residual_holding(monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    candles = {key: [Decimal("100")] * 6 for key in ("open", "high", "low", "close")}
+    monkeypatch.setattr(bot.pf, "preflight", lambda *_args: {"ok": True})
+    monkeypatch.setattr(bot, "fetch_klines", lambda *_args: candles)
+    monkeypatch.setattr(
+        bot.ext,
+        "donchian_breakout",
+        lambda *_args: (
+            lambda _candles: (
+                [False, False, False, True, False, False],
+                [False] * 6,
+            )
+        ),
+    )
+    monkeypatch.setattr(
+        bot,
+        "_buy",
+        lambda *_args: {"ok": True, "qty": 0.25, "fill_price": "100"},
+    )
+    monkeypatch.setattr(
+        bot,
+        "_sell",
+        lambda *_args: {"ok": False, "qty": 0.25, "fill_price": None},
+    )
+
+    report = bot.run_bot(KEY, SECRET, entry_w=3, exit_w=2, bars=6)
+
+    assert report["ok"] is False
+    assert report["residual_holding"] == 0.25

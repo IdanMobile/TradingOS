@@ -12,6 +12,11 @@ Evidence base: package research (2026-07-05) + refreshed web research (2026-07-0
 - **Purpose**: a self-measuring machine for discovering, rejecting, validating, approving, monitoring, degrading, and retiring trading edges — measuring its own tools, models, agents, and research assets along the way (North Star §2).
 - **Philosophy**: composable reuse around a custom evidence spine. Engines, trackers, indicator libraries, dashboards are replaceable commodities behind ports; the durable custom core is the Trading Evidence Registry + approval/provenance semantics (North Star §15, D-009, D-016).
 - **S2 boundary**: Crypto Spot, BTCUSDT/ETHUSDT, 5m/15m/1h, historical research→validation evidence pipeline and a bounded console with exactly three audited POST exceptions. The paper runtime is implemented but dormant and gate-bound; no paper state or bot is active. See `docs/product/MVP_SCOPE.md` and the S2 plan.
+- **Corrective boundary note (D-046)**: retained authenticated Bybit demo activity was
+  an out-of-architecture governance probe, not an approved capability. Its standalone
+  scripts are now fail-closed and network-quarantined. Current execution authority and
+  venue connection remain `NONE`; any future demo use still requires the complete
+  recorded gate, validation, security, and venue-approval predicate.
 - **Long-term boundary**: multi-market (perps, US equities/ETFs), paper→limited-live under human gates, full 27-page console, evidence-routed AI.
 - **Non-goals**: universal bot, single score, AI-in-live-path, architecture for its own sake (North Star §17).
 - **Core risks**: overfitting theater, cost-model optimism, leakage, engine semantic mismatch, AI hallucination provenance, single-operator maintenance ceiling (North Star §18; red team in `audits/RED_TEAM_PLAN_REVIEW.md`).
@@ -34,6 +39,10 @@ Evidence base: package research (2026-07-05) + refreshed web research (2026-07-0
 Actors/systems: Operator (sole human; approver of HG gates) · Coding agent (R7, SSOT-bound) · AI providers (future adapter boundary; S2 remains null/mock only) · Research/strategy sources (untrusted input; ingestion workflow) · Exchanges (public historical data only in S2; future venue candidates remain outside the boundary) · Market-data vendors (deferred tiers, D-018) · Future paper environments (not authorized) · Future live environments (S4, not authorized) · Local machine (macOS ARM; primary) · Optional cloud (none in S2) · Storage (local FS + Git + SQLite operational DB).
 
 Trust boundaries: (1) everything fetched from the internet is untrusted data — prompt-injection surface (§AB); (2) S2 Research Lab uses null/mock AI only; any later provider API requires a separate credential intake; (3) no exchange, demo, testnet, sandbox, paper, or live credential exists in S2.
+
+D-046 preserves the intended trust boundary after historical drift: demo evidence may
+exist in retained artifacts, but no approved or reachable demo credential/network/order
+path exists in the current architecture.
 
 ## D. Bounded contexts
 
@@ -113,6 +122,12 @@ Transition gates: SPEC requires validator PASS; BACKTESTED requires G1–G3; PAP
 ## J. Strategy architecture [APPROVED]
 
 CanonicalStrategySpec is the framework-neutral center (type catalog §2): provenance (SRC refs, license), family, indicators, entry/exit rule trees, sizing, risk fields, execution assumptions, ambiguities, reproduction status. Engine implementations are *projections* of the spec via adapters; the spec, not any engine file, is the versioned identity. Public-source profitability never imports (D-011).
+
+Research-only multi-leg hypotheses may additionally record shared eligibility and two or more
+typed leg descriptions (instrument kind, `LONG|SHORT`, role, notional fraction, and explicit
+execution assumptions). This representation carries no order semantics, requires
+`execution_authority=NONE`, and is rejected by the long-only signal evaluator. Funding,
+collateral, settlement, liquidation, and reconciliation remain separate evidence contracts.
 
 ## K. Engine adapter architecture [APPROVED for evidenced S2 roles]
 

@@ -94,6 +94,8 @@ def _family_payload(
     used = returns.iloc[: slice_length * SLICES]
     slice_labels = pd.Series(range(len(used)), index=used.index) // slice_length
     slice_means = used.groupby(slice_labels.to_numpy()).mean()
+    slice_sums = used.groupby(slice_labels.to_numpy()).sum()
+    slice_sums_squared = (used * used).groupby(slice_labels.to_numpy()).sum()
     means = returns.mean()
     deviations = returns.std(ddof=1)
     totals = portfolio.total_return()
@@ -111,17 +113,35 @@ def _family_payload(
                 "trades": int(trade_counts[key]),
                 "sharpe_per_bar": (float(means[key]) / deviation) if deviation > 0 else 0.0,
                 "slice_mean_returns": [float(value) for value in slice_means[key]],
+                "slice_return_statistics": [
+                    [
+                        slice_length,
+                        float(slice_sums.loc[index, key]),
+                        float(slice_sums_squared.loc[index, key]),
+                    ]
+                    for index in range(SLICES)
+                ],
                 "returns_skewness": float(returns[key].skew()),
                 # pandas kurt() is Fisher (excess); DSR expects raw kurtosis (normal = 3).
                 "returns_kurtosis": float(returns[key].kurt()) + 3.0,
             }
         )
+    correlation = returns.corr()
+    upper_triangle = [
+        (float(correlation.iloc[left, right]) if pd.notna(correlation.iloc[left, right]) else None)
+        for left in range(len(correlation.columns))
+        for right in range(left + 1, len(correlation.columns))
+    ]
+    if not upper_triangle:
+        raise ValueError("trial-return correlations are unavailable")
     return {
         "slice_count": SLICES,
         "slice_length_bars": slice_length,
         "bars_total": bar_count,
         "bars_excluded_tail": bar_count - slice_length * SLICES,
         "sample_count": bar_count,
+        "return_correlation_observation_count": bar_count,
+        "return_correlations_upper_triangle": upper_triangle,
         "trials": rows,
     }
 
@@ -138,7 +158,7 @@ def main(dataset_path: Path | str = DATASET, out: Path | str = VALIDATION_OUT) -
     families = _signals(candles)
     for baseline, trials in families.items():
         payload = {
-            "schema": "tios-g10-returns-v1",
+            "schema": "tios-g10-returns-v2",
             "purpose": "candidate-specific G10 PBO/DSR inputs (T-009-04 / RG-07)",
             "engine": f"vectorbt {vbt.__version__}",
             "dataset_file": dataset_path.name,

@@ -12,8 +12,9 @@ Hard boundaries (unchanged, D-036/D-037/AD SS AA):
   * mode = SYNTHETIC_LOCAL_SIMULATOR; venue_connection=NONE; no order route
   * paper/live orders DISABLED; this is a local historical replay, not trading
 The candidate used (QC2 Donchian, ETHUSDT 1h, window=40) is the strongest proxy
-row found so far, but it FAILED validation (G10 DSR 0.7564 < 0.95). It is used
-ONLY as plumbing input; nothing here approves or promotes it.
+row found so far, but its corrected G10 evidence is METHOD_BLOCKED and its local
+numeric verdict is FAIL (DSR 0.8548 < 0.95). It is used ONLY as plumbing input;
+nothing here approves or promotes it.
 
 ponytail: reuses the trading_domain synthetic reducers + seed proxy + donchian
 builder; adds only the bar-walk that wires signals into fills.
@@ -390,7 +391,10 @@ def build_report(candidate: Candidate) -> dict:
             "strategy_id": candidate.strategy_id,
             "dataset": candidate.dataset,
             "donchian_window": candidate.donchian_window,
-            "validation_note": "FAILED validation (G10 DSR 0.7564 < 0.95); plumbing input only",
+            "validation_note": (
+                "METHOD_BLOCKED corrected G10 evidence; local numeric verdict FAIL "
+                "(DSR 0.8548 < 0.95); plumbing input only"
+            ),
         },
         "paper_lane_proposal": {
             "proposal_id": str(proposal.proposal_id),

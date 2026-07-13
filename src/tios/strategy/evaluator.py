@@ -66,6 +66,10 @@ def evaluate_strategy_signals(
     """Emit deduplicated long-only state transitions; signals never become orders."""
     if not isinstance(initial_held, bool):
         raise StrategyEvaluationError("initial_held must be boolean")
+    if spec.multi_leg is not None:
+        raise StrategyEvaluationError(
+            "multi-leg specs are research-only and cannot be projected as long-only signals"
+        )
     if not bars:
         return ()
     market = bars[0].market

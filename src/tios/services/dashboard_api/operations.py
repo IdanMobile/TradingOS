@@ -110,7 +110,7 @@ _DEMO_BOT_FIELDS = ("recorded_at", "symbol", "signal", "side", "signal_price", "
 
 
 def build_demo_bot(root: Path) -> dict[str, Any]:
-    """Read-only projection of the demo bot's persisted orders + last P&L snapshot."""
+    """Read-only projection of quarantined historical demo evidence."""
     entries: list[dict[str, Any]] = []
     try:
         for line in (root / DEMO_BOT_ACTIVITY_PATH).read_text().splitlines():
@@ -124,18 +124,22 @@ def build_demo_bot(root: Path) -> dict[str, Any]:
         entries = []
     pnl = _read_json(root / DEMO_BOT_PNL_PATH)
     heartbeat = _read_json(root / DEMO_BOT_HEARTBEAT_PATH)
+    has_evidence = bool(entries or pnl or heartbeat)
     return {
         "total_orders": len(entries),
         "buys": sum(1 for e in entries if e.get("side") == "BUY"),
         "sells": sum(1 for e in entries if e.get("side") == "SELL"),
         "last_activity_utc": entries[-1].get("recorded_at") if entries else None,
-        "heartbeat": heartbeat or None,  # from the always-on managed bot; None if never run
-        "pnl": pnl or None,  # from scripts/demo_pnl.py; None until it has been run
+        "heartbeat": heartbeat or None,  # retained historical snapshot; not current liveness
+        "pnl": pnl or None,  # retained historical snapshot; not current venue state
         "orders": [
             {field: entry.get(field) for field in _DEMO_BOT_FIELDS}
             for entry in entries[-25:][::-1]  # newest first
         ],
-        "venue": "BYBIT_DEMO",
+        "activity_classification": "HISTORICAL_EVIDENCE" if has_evidence else "NONE",
+        "evidence_venue": "BYBIT_DEMO" if has_evidence else None,
+        "current_network_state": "QUARANTINED",
+        "venue_connection": "NONE",
         "execution_authority": "NONE",
     }
 

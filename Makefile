@@ -6,6 +6,7 @@ check:
 	rm -f "$$artifact" "$$artifact".tmp.*; \
 	trap 'status=$$?; rm -f "$$temporary"; if [ "$$status" -ne 0 ]; then rm -f "$$artifact"; fi; exit "$$status"' EXIT; \
 	trap 'exit 130' HUP INT TERM; \
+	python3 -c 'import hashlib,pathlib,re; text=pathlib.Path("PACKAGE_INTEGRITY_MANIFEST.md").read_text(); rows=re.findall(r"\| `([^`]+)` \| `([a-f0-9]{64})`", text); bad=[path for path,digest in rows if not pathlib.Path(path).is_file() or hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()!=digest]; print("package integrity:", "PASS" if not bad else "FAIL " + ", ".join(bad)); raise SystemExit(bool(bad))'; \
 	uv run ruff check src tests scripts; \
 	uv run ruff format --check src tests scripts; \
 	uv run mypy; \

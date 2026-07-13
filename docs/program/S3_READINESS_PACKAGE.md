@@ -1,9 +1,15 @@
 # S3 Paper-Trading Qualification — Readiness Package
 
-Prepared: 2026-07-12. Audience: operator (human gate-holder). Purpose: collapse the
-remaining work to finish Stage S3 down to the irreducible decisions only a human can make,
-and record the AI-completable work as done. Nothing here activates a gate, connects a venue,
-or crosses `execution_authority=NONE`.
+Prepared: 2026-07-12. Audience: operator (human gate-holder). Original purpose: summarize S3
+qualification evidence and human decisions. The 2026-07-13 correction below supersedes its
+former readiness claim. Nothing here activates a gate, connects a venue, or crosses
+`execution_authority=NONE`.
+
+> **Supervisor correction (2026-07-13; D-045/D-046).** This package is not a current
+> readiness attestation. The retained carry run applies static synthetic fee/slippage stress;
+> it is not empirical paper divergence or G12 evidence. No strategy is validated, and
+> authenticated Bybit demo networking is quarantined pending the complete durable approval,
+> validation, security, venue, adapter, and reconciliation predicate.
 
 Source of truth: `docs/program/PROGRAM_PLAN.md` (S3 exit criteria + HG-3/4/5),
 `todos/15_paper_trading.md` (T-015 tasks), `MISSING_AND_OPEN_ITEMS.md` (ten human-only items).
@@ -16,7 +22,7 @@ review (cannot be delegated).
 
 | Exit criterion | Owner | Status |
 |---|---|---|
-| (a) Divergence model quantified | AI | **DONE** — typed backtest-vs-paper divergence reports (signal/fill/cost/P&L); exercised on the carry candidate. |
+| (a) Divergence model quantified | AI | **BLOCKED** — typed synthetic comparison machinery exists, but the carry run is static cost stress, not observed paper fills or empirical G12 divergence. |
 | (b) Paper stability period **defined** | AI | **DONE** — heartbeat-derived stability + immutable incident lifecycle + drill-evidence validation implemented. |
 | (b) Paper stability period **met** | AI+gate | **BLOCKED** — requires a live paper lane running a *validated* strategy over the defined window. |
 | (c) Human-only venue gates resolved | Human | **OPEN** — HG-4, ten items below. |
@@ -30,38 +36,41 @@ review (cannot be delegated).
 - **T-015-02 — Paper deployment of first validated strategy.** **BLOCKED — no strategy is
   genuinely validation-approved.** This is the true bottleneck (see next section). The
   deployment *machinery* (`src/tios/services/paper/`) exists; it has nothing valid to run.
-- **T-015-03 — Backtest-vs-paper divergence tracking.** **AI-part DONE.** Real observations
-  need an active lane (gated by T-015-02).
+- **T-015-03 — Backtest-vs-paper divergence tracking.** **PARTIAL.** Typed synthetic
+  comparison machinery exists; empirical observations remain absent and require a properly
+  approved active lane after T-015-02.
 - **T-015-04 — Operational drills.** **AI-part DONE** (lifecycle/evaluation). Real
   operational evidence needs an active lane.
 - **T-015-05 — Human-only venue gates package.** **100% operator-owned** (HG-4 prep).
 
-## The real bottleneck: there is no genuinely-validated strategy, and carry cannot be backtest-validated
+## Current bottleneck: no genuinely validated strategy and an incomplete carry model
 
 T-015-02 requires a strategy that passed validation. The full research arc (recorded in
 `PROJECT_STATE.md`) found none:
 
-- Predictive / single-asset & cross-sectional TA: rigorously ruled out (best DSR ~0.69–0.95, fragile).
-- Professional stat-arb (cointegration + hedge ratio + OOS + 1h): **fails out-of-sample**
-  (DSR 0.0088) — cointegration decays.
-- **Funding carry** is the one real market-neutral edge, but its DSR "pass" is stamped
-  `verdict_is_genuine: false`, and that is not a formality that more computation can clear:
+- Predictive / single-asset and cross-sectional TA: retained implementations failed, but
+  method/provenance gaps prevent a family-wide rejection claim.
+- The retained professional stat-arb implementation fails out of sample; that result does not
+  establish that cointegration as a family has decayed.
+- **Funding carry** is a market-neutral research hypothesis, not a verified edge. Its DSR
+  "pass" is stamped `verdict_is_genuine: false`; computation on the current model cannot make
+  that result genuine:
 
-  1. **The dominant risk is off-sample.** Carry's killer is exchange counterparty default
-     (FTX/LUNA 2022) — a one-shot, unrecoverable tail that is simply absent from the
-     historical return series. Any Sharpe/DSR computed on carry returns is therefore
-     structurally optimistic; the stress sweep shows a 100% haircut is unrecoverable at any
-     carry rate. A backtest number cannot validate away a risk it cannot see.
-  2. **The headline is regime-inflated.** Realistic-execution carry is +42.6%/yr in the 2021
-     bull but −3.8%/yr in the 2022 bear and +3.7%/yr in 2023–26. The 8.4%/yr full-period
-     figure is mostly one regime.
+  1. **Counterparty loss is outside the retained return series.** The simplified stress sweep
+     assumes a 100% haircut is unrecoverable, but it is not an empirical default model. A
+     Sharpe/DSR number cannot validate a risk absent from its observations.
+  2. **The modeled headline is regime-dependent.** Static-cost outputs vary sharply by period;
+     because the model is incomplete, those values are exploratory rather than realistic
+     execution estimates.
 
-**Conclusion:** carry's remaining validation is *definitionally* execution-level (needs a
-real paper lane) and operational (eventual venue/counterparty facts). Local-simulator
+**Conclusion:** carry still needs a corrected offline two-leg capital/collateral, funding-event,
+rehedging, liquidation, point-in-time-universe, and provenance model before execution evidence
+could become decision-useful. Empirical execution and operational venue/counterparty evidence
+would then remain separate later requirements. Local-simulator
 activation requires HG-3 plus a validation-approved strategy context; HG-4 is required only
-for a later venue testnet/demo path. This is not a gap in the work; it is the exact reason the
-project made activation and venue eligibility hard human gates. **S3 cannot be "finished" by
-the AI — by design.**
+for a later venue testnet/demo path. The offline model gaps are AI-remediable; the activation
+and venue-eligibility decisions remain hard human gates. **S3 cannot be "finished" by the AI
+alone — by design.**
 
 ## T-015-01 — Paper-lane architecture decision (adopted in D-043)
 
@@ -94,18 +103,19 @@ approval. **All account-level facts an agent cannot know or obtain.**
 
 ## Honest recommendation
 
-Do **not** rush carry to live capital on the strength of its backtest. The evidence supports a
-*deliberate, staged, diversified* entry, not an autonomous one:
+Do **not** move carry toward live capital on the strength of its current backtest. The evidence
+supports no live entry; if a corrected strategy ever validates, any proposal should be staged:
 
-1. Resolve **HG-3** to formally enter the paper phase.
+1. Complete the supervisory corrective criteria, then review **HG-3**.
 2. Treat carry only as a candidate: after HG-3, it may enter the **local synthetic paper
    lane** only if its specific strategy context becomes validation-approved. Until both
    conditions hold, do not run it; the local lane needs no venue or credentials.
-3. Resolve **HG-4** for a *specific* venue, with **per-venue equity caps** so no single
-   default is fatal (directly attacks the −100% tail).
+3. Resolve **HG-4** for the specific proposed venue setup, with reviewed concentration and
+   correlated-counterparty assumptions; do not use the simplified `1/K`/`p^K` scenario as a
+   sizing rule.
 4. Only then **HG-5** limited-live with a capital amount you can fully lose.
 
-After HG-3 and validation approval for a specific context, the hardening/fine-tuning targets
-are already known. HG-4 is additionally required before multi-venue carry allocation or a
-venue-testnet adapter: counterparty diversification, a funding-regime deploy filter (skip the
-2022-style bleed), and the venue-testnet adapter behind the paper contracts.
+After HG-3 and validation approval for a specific context, further risk and execution work
+would still be required. HG-4 is additionally required before any multi-venue allocation or
+venue-testnet adapter; the current diversification scenario and regime filter are exploratory,
+not approved controls.

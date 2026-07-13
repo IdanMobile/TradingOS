@@ -18,7 +18,9 @@ from tios.validation.gates import (
 from tios.validation.multiple_testing import (
     deflated_sharpe_ratio,
     expected_maximum_noise_sharpe,
+    implied_independent_trials,
     probability_of_backtest_overfitting,
+    probability_of_backtest_overfitting_from_return_statistics,
     sharpe_variance_from_trials,
 )
 from tios.validation.risk import RiskPreconditionResult, evaluate_risk_preconditions
@@ -39,7 +41,9 @@ __all__ = [
     "evaluate_g10_retention_evidence",
     "deflated_sharpe_ratio",
     "expected_maximum_noise_sharpe",
+    "implied_independent_trials",
     "probability_of_backtest_overfitting",
+    "probability_of_backtest_overfitting_from_return_statistics",
     "sharpe_variance_from_trials",
     "RiskPreconditionResult",
     "evaluate_risk_preconditions",

@@ -404,14 +404,15 @@ def test_dashboard_projects_read_only_comparison_evidence() -> None:
     assert candidate["dimensions"]["multiple_testing_selection_bias_control"] == "FAIL"
     assert candidate["dimensions"]["cross_engine_reproduction"] == "PASS_WITH_SCOPE_NOTE"
     assert any(
-        row["gate"] == "G10" and row["status"] == "FAIL" for row in comparisons["validation_gates"]
+        row["gate"] == "G10" and row["status"] == "METHOD_BLOCKED"
+        for row in comparisons["validation_gates"]
     )
     assert any(
         row["family"] == "B2" and row["verdict"] == "FAIL" for row in comparisons["g10_rows"]
     )
     assert comparisons["cross_engine"]["verdict"] == "PASS_WITH_SCOPE_NOTE"
     assert comparisons["cross_engine"]["economic_direction_agreement"] is True
-    assert comparisons["seed_g10"]["status"] == "FAIL"
+    assert comparisons["seed_g10"]["status"] == "METHOD_BLOCKED"
     assert comparisons["seed_contexts"]
     assert all(ref.startswith("artifacts/") for ref in comparisons["evidence_refs"])
 
@@ -668,7 +669,7 @@ def test_dashboard_projects_typed_research_sources() -> None:
         "TVPINE-ASSASSINSGRID-SUPER8-BTC",
         "TVPINE-PRESENTTRADING-AI-SUPERTREND-PIVOT",
     ]
-    assert sources["checked_date"] == "2026-07-11"
+    assert sources["checked_date"] == "2026-07-13"
     assert len(sources["digest"]) == 64
     assert sources["family_counts"]["multiple_testing_controls"] == 4
     assert sources["family_counts"]["exchange_bot_replay"] == 1

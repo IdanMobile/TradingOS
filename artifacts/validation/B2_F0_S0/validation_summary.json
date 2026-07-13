@@ -46,8 +46,8 @@
       "reason": "holdout trades segmented by ex-post volatility, trend, and volume labels"
     },
     "G10": {
-      "status": "FAIL",
-      "reason": "candidate-specific PBO/DSR with independent recomputation on the retained B2 trial population: PBO=0.8685, DSR=0.000000 for selected fast=15,slow=60; method fixtures pass"
+      "status": "METHOD_BLOCKED",
+      "reason": "Aligned v2 numeric diagnostics fail (PBO=0.2960, DSR=0.000000), but complete upstream search lineage and hierarchy-wide effective-trial evidence are unresolved"
     },
     "G11": {
       "status": "PASS",
@@ -81,7 +81,7 @@
     "dataset_quality": "artifacts/datasets/QUALITY_REPORT.json",
     "signal_parity": "artifacts/bakeoff/freqtrade/signal_parity/results.json",
     "g10_method_fixtures": "artifacts/validation/G10_METHOD_FIXTURES_2026_07_11.json",
-    "g10_candidate_evidence": "artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_11.json"
+    "g10_candidate_evidence": "artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_13.json"
   },
   "risk_preconditions": {
     "status": "PASS",

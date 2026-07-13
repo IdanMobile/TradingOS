@@ -6,23 +6,26 @@
   "entry_timeframe": "1h",
   "execution_authority": "NONE",
   "g10_dsr": {
-    "dsr": 0.9778,
-    "note": "MTF is a causal higher-TF trend FILTER; it can improve trade selection but cannot create edge from nothing. Full-sample; see out_of_sample for the honest test.",
+    "collapsed_strategy_trials": 6,
+    "legacy_collapsed_dsr": 0.978,
+    "note": "The legacy full-sample statistic selected the best pair inside each strategy before DSR, hiding the searched pair dimension. It is retained descriptively and cannot satisfy G10; effective independent trials are not estimated.",
+    "raw_strategy_pair_search_bound": 36,
+    "status": "NOT_RUN_METHOD_INVALID",
     "threshold": 0.95,
-    "verdict": "PASS",
+    "verdict": "NOT_RUN",
     "verdict_is_genuine": false
   },
   "mode": "OFFLINE_RESEARCH_ONLY",
   "mtf_helped_count": "5/6",
   "out_of_sample": {
-    "oos_dsr": 0.7802,
+    "note": "Untouched OOS probabilistic Sharpe ratio versus zero; not DSR or G10.",
+    "oos_psr_vs_zero": 0.7802,
     "oos_sharpe_ann": 0.52,
+    "promotion_eligible": false,
+    "screen_status": "FAIL",
     "selected": "EXT-GOLDEN-CROSS on SOLUSDT",
     "selection_pool": 36,
-    "takeaway": "full-sample PASS was a regime/selection artifact \u2014 collapses out-of-sample",
-    "train_sharpe_ann": 1.68,
-    "verdict": "FAIL",
-    "verdict_is_genuine": false
+    "train_sharpe_ann": 1.68
   },
   "pairs": [
     "BTCUSDT",
@@ -82,7 +85,7 @@
       "strategy_id": "EXT-VORTEX"
     }
   ],
-  "schema": "tios-mtf-confluence-v1",
+  "schema": "tios-mtf-confluence-v2",
   "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
   "trend_filter": "daily close > SMA50",
   "trend_timeframe": "1d"

@@ -1,4 +1,5 @@
 {
+  "artifact_status": "SUPERSEDED_HISTORICAL",
   "assumptions": [
     "slice matrix uses 16 equal contiguous time slices of per-bar mean returns; the tail remainder bars are excluded from slices and documented per family",
     "Sharpe is per-bar (not annualized) so DSR sample_count equals bar count",
@@ -6,7 +7,7 @@
     "population is the vectorbt accelerator sweep; cross-engine reproduction remains a separate, still-blocked dimension",
     "trials share one dataset/period, so 'independent_trials = trial count' is the conservative upper bound used by the false-strategy theorem"
   ],
-  "effect": "This activates production G10 for the retained candidate populations. It approves no strategy, selects no winner, and enables no execution path.",
+  "effect": "SUPERSEDED: this historical v1 artifact does not activate production G10. Use the corrected 2026-07-13 v2 artifact; no strategy is approved, no winner is selected, and no execution path is enabled.",
   "failure_modes": [
     "parity mismatch vs retained Parquet aborts the run (no partial evidence)",
     "primary-vs-independent disagreement beyond tolerance aborts the run",
@@ -167,6 +168,8 @@
   },
   "schema": "tios-g10-candidate-evidence-v1",
   "status": "COMPLETE",
+  "superseded_by": "artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_13.json",
+  "supersession_reason": "D-045 corrected the DSR equation and D-047 aligned selection, PBO, DSR, effective-trial, and hierarchy semantics; retained numeric values below are historical only.",
   "task": "T-009-04 candidate-specific integration (RG-07)",
   "validation_package_family": "b2"
 }

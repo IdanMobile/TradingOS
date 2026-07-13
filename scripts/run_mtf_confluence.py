@@ -4,8 +4,9 @@
 Tests the "trade with the bigger trend" idea: take the entry signal on the LOWER timeframe (1h),
 but only when the HIGHER timeframe (1d) trend agrees (daily close above its SMA). The higher-TF
 trend is aligned to each 1h bar CAUSALLY — only daily bars that have fully closed before the hour
-are used, so there is no lookahead. Each base strategy is scored unfiltered vs MTF-filtered, and
-the best is DSR-deflated by the trial count.
+are used, so there is no lookahead. Each base strategy is scored unfiltered vs MTF-filtered. The
+retained full-sample statistic is descriptive only because the implementation first chooses the
+best pair inside each strategy and therefore collapses the actual search population.
 
 MTF is more defensible than same-timeframe mixing (trend persists across scales), but it is still a
 FILTER, not an edge source — the honest question is whether the daily-trend gate improves the DSR.
@@ -114,7 +115,8 @@ def _score(builder: ext.SignalBuilder, *, filtered: bool) -> tuple[float, int, l
     return best
 
 
-def _dsr(returns: list[float], sharpes: list[float], trials: int) -> float:
+def _legacy_collapsed_dsr(returns: list[float], sharpes: list[float], trials: int) -> float:
+    """Preserve the old descriptive statistic; it is not valid G10 evidence."""
     mr, sd = mean(returns), pstdev(returns)
     skew = (sum((r - mr) ** 3 for r in returns) / len(returns)) / sd**3 if sd > 0 else 0.0
     kurt = (sum((r - mr) ** 4 for r in returns) / len(returns)) / sd**4 if sd > 0 else 3.0
@@ -128,10 +130,27 @@ def _dsr(returns: list[float], sharpes: list[float], trials: int) -> float:
     )["dsr"]
 
 
+def _probabilistic_sharpe_vs_zero(returns: list[float]) -> float:
+    """Test one untouched OOS series against zero without a multiple-trial claim."""
+    mr, sd = mean(returns), pstdev(returns)
+    skew = (sum((r - mr) ** 3 for r in returns) / len(returns)) / sd**3 if sd > 0 else 0.0
+    kurt = (sum((r - mr) ** 4 for r in returns) / len(returns)) / sd**4 if sd > 0 else 3.0
+    return deflated_sharpe_ratio(
+        observed_sharpe=mr / sd if sd > 0 else 0.0,
+        sharpe_variance=0.0,
+        independent_trials=1,
+        sample_count=len(returns),
+        skewness=skew,
+        kurtosis=kurt,
+    )["dsr"]
+
+
 def _out_of_sample(by_id: dict, split: float = 0.6) -> dict:  # type: ignore[type-arg]
-    """Select the best MTF (strategy, pair) on the first `split`, then measure its DSR on the
-    held-out tail (deflated by the selection pool). A full-sample edge that is really a bull/regime
-    artifact collapses here — the same honest test that failed the stat-arb 'pass'."""
+    """Select on the training prefix, then screen the one untouched OOS series.
+
+    The tail statistic is a probabilistic Sharpe ratio versus zero, not DSR: the
+    strategy/pair search happens only on the training prefix.
+    """
     pool = 0
     best: tuple[float, str, str, list[float], int] | None = None
     for sid in BASE_IDS:
@@ -158,19 +177,17 @@ def _out_of_sample(by_id: dict, split: float = 0.6) -> dict:  # type: ignore[typ
     tsh, sid, pair, returns, cut = best
     test = returns[cut:]
     oos_sharpe = mean(test) / pstdev(test) if pstdev(test) > 0 else 0.0
-    oos_dsr = _dsr(test, [oos_sharpe], max(pool, 1))
-    genuine = oos_dsr >= DSR_PASS
+    oos_psr = _probabilistic_sharpe_vs_zero(test)
+    passed_screen = oos_psr >= DSR_PASS
     return {
         "selected": f"{sid} on {pair}",
         "selection_pool": pool,
         "train_sharpe_ann": round(tsh * sqrt(PPY), 2),
         "oos_sharpe_ann": round(oos_sharpe * sqrt(PPY), 2),
-        "oos_dsr": round(oos_dsr, 4),
-        "verdict": "PASS" if genuine else "FAIL",
-        "verdict_is_genuine": genuine,
-        "takeaway": "survives out-of-sample"
-        if genuine
-        else "full-sample PASS was a regime/selection artifact — collapses out-of-sample",
+        "oos_psr_vs_zero": round(oos_psr, 4),
+        "screen_status": "PASS_SCREEN_ONLY" if passed_screen else "FAIL",
+        "promotion_eligible": False,
+        "note": "Untouched OOS probabilistic Sharpe ratio versus zero; not DSR or G10.",
     }
 
 
@@ -193,10 +210,12 @@ def build_report() -> dict:
             mtf_trials.append({"strategy_id": sid, "sharpe_bar": mtf_s, "returns": mtf_ret})
 
     best = max(mtf_trials, key=lambda t: t["sharpe_bar"])
-    dsr = _dsr(best["returns"], [t["sharpe_bar"] for t in mtf_trials], len(mtf_trials))
+    legacy_dsr = _legacy_collapsed_dsr(
+        best["returns"], [t["sharpe_bar"] for t in mtf_trials], len(mtf_trials)
+    )
     helped = sum(1 for r in rows if r["mtf_helped"])
     return {
-        "schema": "tios-mtf-confluence-v1",
+        "schema": "tios-mtf-confluence-v2",
         "mode": "OFFLINE_RESEARCH_ONLY",
         "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
         "execution_authority": "NONE",
@@ -212,12 +231,16 @@ def build_report() -> dict:
         },  # fmt: skip
         "out_of_sample": _out_of_sample(by_id),
         "g10_dsr": {
-            "dsr": round(dsr, 4),
+            "status": "NOT_RUN_METHOD_INVALID",
+            "legacy_collapsed_dsr": round(legacy_dsr, 4),
             "threshold": DSR_PASS,
-            "verdict": "PASS" if dsr >= DSR_PASS else "FAIL",
+            "verdict": "NOT_RUN",
             "verdict_is_genuine": False,
-            "note": "MTF is a causal higher-TF trend FILTER; it can improve trade selection but "
-            "cannot create edge from nothing. Full-sample; see out_of_sample for the honest test.",
+            "collapsed_strategy_trials": len(mtf_trials),
+            "raw_strategy_pair_search_bound": len(BASE_IDS) * len(PAIRS),
+            "note": "The legacy full-sample statistic selected the best pair inside each strategy "
+            "before DSR, hiding the searched pair dimension. It is retained descriptively and "
+            "cannot satisfy G10; effective independent trials are not estimated.",
         },
     }
 
@@ -235,10 +258,13 @@ def main() -> None:
         flag = "helped" if r["mtf_helped"] else "no help"
         print(f"  {r['strategy_id']:<20} {r['base_sharpe_ann']} -> {r['mtf_sharpe_ann']} ({flag})")
     g, oos = report["g10_dsr"], report["out_of_sample"]
-    print(f"MTF helped {report['mtf_helped_count']} | full-sample DSR {g['dsr']} -> {g['verdict']}")
+    print(
+        f"MTF helped {report['mtf_helped_count']} | G10 {g['status']} "
+        f"(legacy collapsed statistic {g['legacy_collapsed_dsr']})"
+    )
     print(
         f"OUT-OF-SAMPLE (train-select {oos['selected']} -> test): Sharpe {oos['oos_sharpe_ann']}, "
-        f"DSR {oos['oos_dsr']} -> {oos['verdict']}  [{oos['takeaway']}]"
+        f"PSR-vs-zero {oos['oos_psr_vs_zero']} -> {oos['screen_status']}"
     )
 
 

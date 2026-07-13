@@ -44,3 +44,13 @@ def test_ledger_reconstructs_net_equity_without_overdraw() -> None:
     ledger = cp.build_ledger(net_equity=Decimal("12000.00"), total_fees=Decimal("34.56"))
     assert len(ledger.entries) == 3  # initial + settlement + fees
     assert ledger.balances[0].amount == Decimal("12000.00")
+
+
+def test_report_is_static_cost_stress_not_paper_or_g12(monkeypatch) -> None:
+    monkeypatch.setattr(cp.fcb, "build_matrix", lambda: (list(range(15)), _toy_data()))
+    monkeypatch.setattr(cp, "select_best", lambda _data: (0.0, 3, 3))
+    report = cp.build_report()
+    assert report["status"] == "STATIC_COST_STRESS_NOT_G12"
+    assert report["observed_venue_fills"] is False
+    assert report["g12_status"] == "NOT_RUN"
+    assert report["paper_lane_qualification"] is False

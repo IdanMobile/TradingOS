@@ -17,4 +17,4 @@ Requirement source: AD §AB, SSOT secret rules, intake gate. Skills: R7 + SKILL_
 
 ## T-018-04 Stage-exit security reviews
 - Purpose: SKILL_SECURITY_REVIEWER pass at each stage exit. Requirement: REQ-055.
-- Acceptance: review reports; blocking findings resolved or open-itemed. Complexity: S recurring. Status: **DONE FOR S1 AND S2 NO-LIVE BOUNDARY 2026-07-10** — review #2 passes with zero blockers, and `S2_LIVE_UNREACHABILITY_REPORT.md` verifies no paper/demo/testnet/live execution path. Full S2 exit remains blocked by validation, not by a discovered live-reachability security issue.
+- Acceptance: review reports; blocking findings resolved or open-itemed. Complexity: S recurring. Status: **REOPENED 2026-07-13** — the 2026-07-10 review was valid only for its then-current scope and is superseded by authenticated Bybit demo scripts subsequently added and exercised. D-046 now quarantines their transports and repository tests verify current network unreachability, but a refreshed formal stage-exit security review remains required before HG-3/S3.

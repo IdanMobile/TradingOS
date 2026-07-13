@@ -1,5 +1,11 @@
 # Seed Cycle Multi-Grid Report — 2026-07-11
 
+> **Superseded validation method:** The G10 values recorded below are retained as
+> historical evidence and must not be used as current validation. The corrected
+> 2026-07-13 artifact reports local DSR `0.8548093977372498`, PBO
+> `0.2662004662004662`, numeric `FAIL`, and overall `METHOD_BLOCKED` because the
+> upstream 258-trial selection hierarchy cannot be reconstructed.
+
 ## Scope
 
 This report records the D-040 AI-decided offline A/B test: run the five reproduced
@@ -81,6 +87,10 @@ Current read:
 All three contexts remain `UNVALIDATED` / `NOT_ELIGIBLE`.
 
 ## G10 follow-through
+
+The figures in this section use the superseded 2026-07-11 implementation. Current
+status is defined by
+`artifacts/validation/seed_candidates/SEED_G10_QC2_ETHUSDT_1H_2026_07_13.json`.
 
 Production-style G10 evidence for the surviving probe context is retained at:
 

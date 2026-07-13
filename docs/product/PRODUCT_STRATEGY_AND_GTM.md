@@ -4,21 +4,24 @@ Author view: written as PM/CEO, 2026-07-12. Honest, not promotional. This is the
 strategic frame around the code; the SSOT for what is *authorized* is still the
 program plan and decision log.
 
+> **Supervisor correction (2026-07-13; D-045/D-046).** This is a strategic aspiration, not a
+> deployment-readiness claim. The project has no validated strategy; DSR/search lineage, data
+> provenance, carry economics, and empirical divergence remain incomplete. Historical Bybit
+> demo activity is not qualification evidence, and authenticated demo networking is currently
+> quarantined.
+
 ---
 
 ## 1. Where we actually are (the board-level truth)
 
-- The **infrastructure is strong and honest**: a strict validation harness (G1–G11 +
-  production G10 DSR/PBO), a working synthetic paper lane (fill → ledger → position →
-  portfolio → divergence), a human-readable backtester, and hard gates that keep
-  anything unproven away from real money.
-- The **product's problem is not engineering — it is that we have no edge yet.**
-  Every strategy tested (our seeds, 20 copied public systems, and now volume/flow
-  signals) is statistically indistinguishable from luck on liquid crypto majors.
-- **That is the expected result, not a failure.** BTC/ETH spot is the most efficient,
-  most-picked-over corner of crypto. If a simple public edge worked there, it would
-  already be arbitraged away. Finding edge *here* is the hardest possible starting
-  point.
+- The repository has **substantial research infrastructure**: a validation harness, synthetic
+  paper components, a human-readable backtester, and human gates. Critical statistical and
+  execution-governance corrections are in progress, so the pipeline is not yet deployment-ready.
+- The **product has both engineering/methodology gaps and no validated edge.** Retained strategy
+  implementations have not produced a complete approvable package; this does not prove every
+  family is statistically indistinguishable from luck.
+- Negative results are useful when their exact data, source, selection procedure, and limits are
+  retained. Claims about relative market efficiency remain hypotheses requiring evidence.
 
 **CEO takeaway:** we do not have a product until something passes the gates. Rushing an
 unvalidated strategy to live is how a trading firm dies on day one. The gates are the
@@ -41,11 +44,10 @@ data) and **less-efficient markets** (a data download). Everything else is heavi
 
 ## 3. The real moat
 
-Not a magic strategy — nobody has one reliably. Our moat is the **honest, automated
-pipeline from idea → validated → paper → tiny-live**, with the discipline to reject
-99% of ideas. A firm that can *safely and quickly* test hundreds of strategies and
-deploy the one real winner at small size, with a kill switch, beats a firm chasing a
-single overfit backtest. **We sell trust and speed-of-validation, not a crystal ball.**
+Not a magic strategy. The potential moat is a defensible pipeline from idea → validated →
+paper → limited-live, with immutable lineage and disciplined rejection. That remains a target,
+not a current product claim. Trust depends on completing the corrective plan and preserving
+every human gate.
 
 ## 4. Path to live — the confidence ramp
 
@@ -56,16 +58,16 @@ and only the instant — something passes honestly.
 idea → offline backtest → HONEST SCREEN (holdout + beat B&H + robust)
      → full validation (G1–G11 + G10 DSR≥0.95)         ← the wall almost everything dies at
      → [HUMAN GATE HG-3] operator approves S2 exit
-     → PAPER lane, real observation window (weeks)       ← proves backtest ≈ live behaviour
+     → PAPER lane, defined observation window             ← tests backtest/live divergence
      → paper divergence within tolerance?
      → [HUMAN GATE] operator approves tiny live
      → LIVE, $100s, ONE strategy, kill switch armed       ← real money, real small
      → scale ONLY on live evidence, never on backtest
 ```
 
-The key idea: **be one approval away from deploying at all times.** Automate everything
-up to each human gate so that when a winner appears, it reaches tiny-live in days, not
-months. We are already ~80% of the way there on infra.
+The key idea is to make each prerequisite explicit and independently reviewable. A candidate
+must clear methodology, provenance, validation, security, paper evidence, venue eligibility,
+and the applicable human gates; it is not currently one approval from deployment.
 
 ## 5. What to build / acquire, prioritized (value ÷ effort)
 
@@ -96,16 +98,15 @@ months. We are already ~80% of the way there on infra.
 
 The honest answer to "how fast can we trade for real?":
 
-1. **Weeks, for the *pipeline* to be deploy-ready** — mostly done.
-2. **Unknown, for a *validated edge* to appear** — this is a search/data problem, and
-   the way to shorten it is breadth: more coins + more signals = more shots on goal.
-3. **Days from edge-found to tiny-live** — if we finish the automation up to the human
-   gates.
+1. **Unknown, for the pipeline to be deploy-ready** — critical/high corrective criteria remain.
+2. **Unknown, for a validated edge to appear** — methodology and immutable provenance take
+   precedence over additional search breadth.
+3. **Unknown, from validation to limited-live** — empirical paper evidence, venue/security
+   review, and nondelegable human gates remain.
 
-So the fastest *responsible* GTM is: **maximize breadth of the search (more coins, more
-signals) while keeping the deploy pipeline one-approval-ready, then go live at trivial
-size the moment one strategy clears the gates, and scale only on live P&L.** Confidence
-comes from the gates + small size + kill switch; speed comes from automation + breadth.
+So the fastest responsible route is to repair statistical selection, provenance, canonical
+strategy identity, and carry semantics before expanding breadth. A future limited-live proposal
+must clear the full chain and scale only on decision-useful live evidence.
 
 **What we will NOT do:** lower a statistical threshold to force a known-overfit strategy
 through, connect a venue or credential without the operator's explicit gate, or size up
@@ -114,17 +115,19 @@ on backtest results instead of live results.
 ## 7. Top risks
 
 - **Overfitting via search breadth** — more strategies/coins = more chances to find
-  *fake* edge. Mitigation: the DSR deflation already scales with trial count; keep it.
+  *fake* edge. Mitigation: preregister the full hierarchy, preserve the actual selection
+  population, and justify effective independent trials; raw trial count is insufficient.
 - **Backtest ≠ live** — no order book means slippage is assumed. Mitigation: acquire L2
   before meaningful size; the paper lane's divergence report is the early-warning.
 - **Regime dependence** — an "edge" that only worked in the 2021 bull. Mitigation: the
   all-three-thirds screen + walk-forward.
-- **Operational/venue risk** — key leakage, fat fingers, outages. Mitigation: restricted
-  credentials, kill switch, manual-only escalation (already modeled in the S4 contracts).
+- **Operational/venue risk** — key leakage, fat fingers, partial/unknown fills, asymmetric
+  legs, outages, and counterparty failure. Current mitigation is quarantine; any future adapter
+  needs typed reconciliation, least privilege, security review, and explicit human approval.
 
 ---
 
 ### Immediate recommended next actions
-1. Wire the new volume/volatility/flow signals into the canonical engine + validation.
-2. Operator decision: authorize a **top-N coin** klines download (highest value/effort).
-3. Keep the paper→tiny-live automation moving so we are one approval from deploy.
+1. Complete the critical statistical and execution-governance corrections.
+2. Repair immutable data/experiment provenance and canonical strategy identity.
+3. Rebuild funding carry semantics or retain it explicitly as an unvalidated hypothesis.

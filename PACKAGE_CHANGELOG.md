@@ -732,3 +732,45 @@ Key outcomes:
 - Extended readiness/dashboard projections with the available inert evidence ledger
   and zero active evidence events. No execution, credential, venue, wallet mutation,
   scheduler, paper order, or live order capability was enabled.
+
+## v8.52 — 2026-07-13 — Supervisory truth restoration and execution quarantine
+
+- Added the full-system supervisory baseline and dependency-ordered improvement plan;
+  reconciled authoritative architecture, program, product, task, and handoff documents.
+- Corrected the DSR non-normality denominator against the primary method source and
+  regenerated affected offline diagnostics without inheriting any prior PASS claim.
+- Marked production G10 `METHOD_BLOCKED` until effective independent trials, complete
+  search lineage, and selection-metric alignment are defensible; reclassified the MTF
+  one-series statistic as PSR-versus-zero rather than DSR.
+- Quarantined every authenticated Bybit demo transport before network access, tightened
+  demo origin/environment/permission checks, and made fill/flatten reconciliation fail
+  closed. Historical demo activity is retained as an unauthorized governance probe,
+  not current connectivity or approval.
+- Reclassified funding-carry paper claims as static synthetic cost stress, not empirical
+  execution, G12, or validation evidence. No strategy became promotion-eligible.
+- Added package-integrity verification to `make check`, standardized demo environment
+  names and ignore rules, and regenerated all changed controlled-file hashes below.
+- Added future-safe, content-addressed raw/REST provenance plus a deterministic reconstructed
+  manifest for the current 69-table normalized-multi snapshot; the 69 small REST source pages
+  are included with the deliverable, while historical lineage limits remain explicit.
+- Changed future public/signal/universe research runners to train-only parameter selection with
+  one frozen context-level holdout evaluation and fail-closed method status.
+- Registered the funding-carry hypothesis in the canonical strategy spine as deliberately
+  non-executable `VALID_WITH_AMBIGUITIES`, with pinned parameters, failure modes, and gates.
+- Aligned G10 candidate selection, both CSCV halves, and DSR on non-annualized per-bar
+  Sharpe; retained correlation-derived family-scope effective trials under DSR Appendix 3
+  where defined, while keeping the missing upstream hierarchy `METHOD_BLOCKED`.
+- Added backward-compatible research-only multi-leg canonical identity with explicit
+  long-only evaluator rejection, plus pure Decimal carry accounting fixtures for deployable
+  capital, spot/perp basis, funding, fees, isolated margin, missing data, and endpoint shocks.
+- Added deterministic open/settle/rehedge/close carry lifecycle reduction with capital
+  conservation, strict timestamps, terminal margin breach, and no venue semantics.
+- Preregistered the next bounded 66-trial baseline G10 reproduction and added a fail-closed
+  provenance envelope for all future substantive strategy-research artifacts.
+- Superseded obsolete 2026-07-11 G10 artifacts/continuation instructions and the pre-demo
+  2026-07-10 live-unreachability review; the coding-agent SSOT now routes to the supervisor
+  plan and requires a fresh formal security review before HG-3/S3.
+- Current execution authority and venue connection remain `NONE`; all human S3/S4 gates
+  and live-capital prohibitions remain unchanged.
+- Added `docs/supervisor/FINAL_SUPERVISORY_REPORT_2026-07-13.md` with the verified
+  conclusion, validation results, residual classifications, human decisions, and next phase.

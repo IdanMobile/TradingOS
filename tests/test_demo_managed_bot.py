@@ -6,11 +6,18 @@ import json
 import sys
 from pathlib import Path
 
+import pytest
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import scripts.demo_managed_bot as mb  # noqa: E402
 
 KEY, SECRET = "demo-key", "demo-secret"
+
+
+@pytest.fixture(autouse=True)
+def _isolate_heartbeat(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(mb, "HEARTBEAT", tmp_path / "heartbeat.json")
 
 
 def _klines(closes: list[float]) -> dict:
@@ -87,3 +94,33 @@ def test_managed_bot_stops_when_preflight_is_not_green() -> None:
 
     report = mb.run_managed(KEY, SECRET, cycles=1, get_transport=get, market_transport=boom)
     assert report["ok"] is False and report["stage"] == "preflight"
+
+
+def test_spot_sell_does_not_treat_missing_status_as_filled() -> None:
+    def get(url: str, headers: dict[str, str]) -> bytes:
+        return json.dumps({"retCode": 0, "result": {"list": []}}).encode()
+
+    def post(url: str, headers: dict[str, str], body: bytes) -> bytes:
+        return json.dumps({"retCode": 0, "result": {"orderId": "OID"}}).encode()
+
+    result = mb._spot_sell(KEY, SECRET, "BTCUSDT", 0.001, get, post, lambda _s: None)
+    assert result["ok"] is False
+
+
+def test_failed_final_flatten_retains_residual_position(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    breakout = [100.0] * 50 + [130, 130]
+    monkeypatch.setattr(
+        mb,
+        "_spot_sell",
+        lambda *_args, **_kwargs: {"ok": False, "qty": "0.003", "fill": None},
+    )
+
+    report = _run([breakout])
+    heartbeat = json.loads(mb.HEARTBEAT.read_text())
+
+    assert report["ok"] is False
+    assert report["residual_position_qty"] == "0.003"
+    assert heartbeat["in_position"] is True
+    assert heartbeat["remaining_qty"] == "0.003"

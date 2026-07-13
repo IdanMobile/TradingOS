@@ -27,7 +27,6 @@ import json
 import math
 import sys
 import time
-import urllib.request
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -58,8 +57,7 @@ def _order_create(
     base: str,
     order: dict[str, str],
 ) -> dict[str, Any]:
-    if pf.DEMO_HOST not in base:
-        raise ValueError(f"refuses a non-demo host: {base}")
+    pf.require_demo_base(base)
     body = json.dumps(order)
     headers = {
         "X-BAPI-API-KEY": api_key,
@@ -185,10 +183,7 @@ def _poll_filled(
 
 
 def _post_transport(url: str, headers: dict[str, str], body: bytes) -> bytes:
-    request = urllib.request.Request(url, data=body, headers=headers, method="POST")  # noqa: S310
-    with urllib.request.urlopen(request, timeout=15) as response:  # noqa: S310
-        out: bytes = response.read()
-        return out
+    raise RuntimeError(pf.NETWORK_QUARANTINE)
 
 
 def _delta(before: dict[str, str], after: dict[str, str], coin: str) -> float:

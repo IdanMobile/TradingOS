@@ -42,6 +42,12 @@ Research Lab batch evidence and a bounded read-only job/schedule projection now 
 strategy promotion, paper/demo connectivity, and S2 exit remain unclaimed and
 gate-controlled.
 
+The 2026-07-13 supervisory corrective plan at
+`docs/supervisor/IMPROVEMENT_PLAN_2026-07-13.md` takes priority over earlier claims
+that agent-executable work is exhausted. Its statistical-validity, provenance,
+strategy-methodology, evidence-claim, and security remediations stay inside the
+authorized historical/local scope and create no demo, paper, venue, or live authority.
+
 ## Anti-vagueness rule
 
 No task may say "build X" without exact outputs + acceptance evidence. Any task found vague during execution is split before starting, and the split is recorded in `PACKAGE_CHANGELOG.md`.

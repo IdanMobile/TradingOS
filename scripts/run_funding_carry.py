@@ -166,12 +166,15 @@ def build_report() -> dict:
             "dsr": round(dsr["dsr"], 4),
             "expected_max_noise_sharpe": round(dsr["expected_maximum_noise_sharpe"], 4),
             "threshold": DSR_PASS,
-            "verdict": "PASS" if dsr["dsr"] >= DSR_PASS else "FAIL",
+            "numeric_verdict": "PASS" if dsr["dsr"] >= DSR_PASS else "FAIL",
+            "verdict": "METHOD_BLOCKED",
             "verdict_is_genuine": False,
-            "note": "A PASS here is NOT a genuine validation. This models ONLY the funding "
+            "effective_independent_trials": None,
+            "search_lineage_complete": False,
+            "note": "This numeric diagnostic is not a G10 PASS. It models ONLY the funding "
             "leg; it omits basis divergence, liquidation, and execution/slippage — the "
-            "dominant real risks. The smooth low-vol yield inflates Sharpe/DSR. The ~8-9% "
-            "carry is real and literature-consistent, but honest validation needs "
+            "dominant risks. The smooth low-vol yield inflates Sharpe/DSR. The ~8-9% "
+            "modeled carry is a hypothesis; validation needs "
             "perp-price/basis modelling, and trading needs perps/margin (S4-gated).",
         },
         "top_configs": [
@@ -199,7 +202,7 @@ def main() -> None:
         f"best selective: Sharpe {b['sharpe_ann']} (thr={b['threshold']} lb={b['lookback']}) "
         f"ann {b['ann_return_pct']}% maxDD {b['max_drawdown_pct']}%"
     )
-    print(f"G10 DSR: {g['dsr']}  (need >= {g['threshold']})  -> {g['verdict']}")
+    print(f"numeric DSR diagnostic: {g['dsr']} (threshold {g['threshold']}) -> {g['verdict']}")
 
 
 if __name__ == "__main__":

@@ -8,13 +8,13 @@ rebuilds the exact sweep and emits per-trial slice returns; this script
 1. verifies the dataset against the frozen manifest;
 2. verifies recomputed per-trial `total_return`/`trades` match the retained
    research-lab Parquet exactly (ties the G10 inputs to the retained population);
-3. computes PBO/CSCV and DSR with the validated method implementations in
-   `tios.validation.multiple_testing`;
+3. uses non-annualized per-bar Sharpe for candidate selection, both CSCV halves,
+   and DSR, retaining slice sufficient statistics and trial-return correlations;
 4. independently recomputes both statistics with the separate implementations in
    this file (different combination enumeration, erf-based normal CDF, two-pass
    variance) and requires agreement within 1e-9;
-5. writes `artifacts/validation/G10_CANDIDATE_EVIDENCE_<date>.json` with full
-   provenance and an explicit per-family verdict.
+5. writes `artifacts/validation/G10_CANDIDATE_EVIDENCE_<date>.json` with the
+   known hierarchy, explicit missing upstream stages, and fail-closed status.
 
 Offline research only. A PASS verdict here never promotes a strategy by itself:
 it still requires validation-stats-specialist review (RG-07 reverify rule) and
@@ -39,7 +39,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from tios.validation.multiple_testing import (  # noqa: E402
     deflated_sharpe_ratio,
-    probability_of_backtest_overfitting,
+    implied_independent_trials,
+    probability_of_backtest_overfitting_from_return_statistics,
     sharpe_variance_from_trials,
 )
 
@@ -54,8 +55,8 @@ OUT_DIR = ROOT / "artifacts/validation/g10_candidate"
 BASELINES = ("b2", "b3", "b4")
 SPEC_FILES = {
     "b2": ROOT / "fixtures/strategies/baselines/B2_ma_crossover.yaml",
-    "b3": ROOT / "fixtures/strategies/baselines/B3_bollinger_mr.yaml",
-    "b4": ROOT / "fixtures/strategies/baselines/B4_vol_breakout.yaml",
+    "b3": ROOT / "fixtures/strategies/baselines/B3_bollinger_mean_reversion.yaml",
+    "b4": ROOT / "fixtures/strategies/baselines/B4_volatility_breakout.yaml",
 }
 TOLERANCE = 1e-9
 # Conventional confidence thresholds from the primary papers (Bailey & López de
@@ -115,17 +116,60 @@ def independent_pbo(matrix: list[list[float]]) -> dict[str, Any]:
     }
 
 
+def _independent_sharpe(statistics: list[list[float]]) -> float:
+    count = sum(int(item[0]) for item in statistics)
+    total = sum(float(item[1]) for item in statistics)
+    squares = sum(float(item[2]) for item in statistics)
+    if count < 2:
+        raise ValueError("invalid retained return statistics")
+    sample_variance = (squares - total * total / count) / (count - 1)
+    if sample_variance <= 0 and total == 0 and squares == 0:
+        return 0.0
+    if sample_variance <= 0:
+        raise ValueError("invalid retained return statistics")
+    return (total / count) / sqrt(sample_variance)
+
+
+def independent_pbo_from_return_statistics(
+    matrix: list[list[list[float]]],
+) -> dict[str, Any]:
+    """Independent CSCV enumeration using per-bar Sharpe on retained statistics."""
+
+    slice_count = len(matrix[0])
+    trial_count = len(matrix)
+    half = slice_count // 2
+    logits: list[float] = []
+    from math import log
+
+    for test_columns in combinations(range(slice_count), half):
+        test = frozenset(test_columns)
+        train = [index for index in range(slice_count) if index not in test]
+        train_scores = [_independent_sharpe([row[index] for index in train]) for row in matrix]
+        selected = max(range(trial_count), key=lambda index: (train_scores[index], -index))
+        test_scores = [_independent_sharpe([row[index] for index in test]) for row in matrix]
+        rank = 1 + sum(score < test_scores[selected] for score in test_scores)
+        omega = rank / (trial_count + 1)
+        logits.append(log(omega) - log(1.0 - omega))
+    return {
+        "split_count": len(logits),
+        "pbo": sum(value <= 0 for value in logits) / len(logits),
+        "mean_logit": sum(logits) / len(logits),
+    }
+
+
 def independent_dsr(
     observed_sharpe: float,
     sharpes: list[float],
     sample_count: int,
     skewness: float,
     kurtosis: float,
+    independent_trial_count: float | None = None,
 ) -> dict[str, float]:
     """DSR re-derived independently (two-pass variance, erf CDF, bisection inverse)."""
-    count = len(sharpes)
-    mean = sum(sharpes) / count
-    variance = sum((value - mean) ** 2 for value in sharpes) / (count - 1)
+    raw_count = len(sharpes)
+    count = independent_trial_count if independent_trial_count is not None else float(raw_count)
+    mean = sum(sharpes) / raw_count
+    variance = sum((value - mean) ** 2 for value in sharpes) / (raw_count - 1)
     euler_gamma = 0.5772156649015329
     natural_e = 2.718281828459045
     if count == 1 or variance == 0:
@@ -135,7 +179,7 @@ def independent_dsr(
             (1 - euler_gamma) * _normal_inv_cdf(1 - 1 / count)
             + euler_gamma * _normal_inv_cdf(1 - 1 / (count * natural_e))
         )
-    adjustment = 1 - skewness * threshold + ((kurtosis - 1) / 4) * threshold**2
+    adjustment = 1 - skewness * observed_sharpe + ((kurtosis - 1) / 4) * observed_sharpe**2
     z_score = (observed_sharpe - threshold) * sqrt(sample_count - 1) / sqrt(adjustment)
     return {
         "expected_maximum_noise_sharpe": threshold,
@@ -197,52 +241,97 @@ def _verify_parity(lab_dir: Path, baseline: str, trials: list[dict[str, Any]]) -
 def evaluate_family(payload: dict[str, Any]) -> dict[str, Any]:
     """Pure evaluation of one family payload — testable without the engine."""
     trials = payload["trials"]
-    matrix = [trial["slice_mean_returns"] for trial in trials]
+    matrix = [trial["slice_return_statistics"] for trial in trials]
     sharpes = [trial["sharpe_per_bar"] for trial in trials]
     selection = max(
         range(len(trials)),
-        key=lambda i: (trials[i]["total_return"], -i),
+        key=lambda i: (trials[i]["sharpe_per_bar"], -i),
     )
     candidate = trials[selection]
-    primary_pbo = probability_of_backtest_overfitting(matrix)
-    independent_pbo_result = independent_pbo(matrix)
+    primary_pbo = probability_of_backtest_overfitting_from_return_statistics(matrix)
+    independent_pbo_result = independent_pbo_from_return_statistics(matrix)
     pbo_delta = abs(float(primary_pbo["pbo"]) - float(independent_pbo_result["pbo"]))
     if pbo_delta > TOLERANCE:
         raise RuntimeError(f"PBO independent recomputation disagrees by {pbo_delta}")
+    retained_correlations = payload["return_correlations_upper_triangle"]
+    expected_correlations = len(trials) * (len(trials) - 1) // 2
+    if len(retained_correlations) != expected_correlations:
+        raise RuntimeError("retained trial-return correlation count is incomplete")
+    if int(payload["return_correlation_observation_count"]) < len(trials):
+        raise RuntimeError("too few return observations for the retained correlation population")
+    correlations_available = all(value is not None for value in retained_correlations)
+    average_correlation = (
+        sum(float(value) for value in retained_correlations) / len(retained_correlations)
+        if correlations_available
+        else None
+    )
+    effective_trials = (
+        implied_independent_trials(len(trials), average_correlation)
+        if average_correlation is not None
+        else None
+    )
     sharpe_variance = sharpe_variance_from_trials(sharpes)
-    dsr_arguments = {
-        "observed_sharpe": candidate["sharpe_per_bar"],
-        "sharpe_variance": sharpe_variance,
-        "independent_trials": len(trials),
-        "sample_count": payload["sample_count"],
-        "skewness": candidate["returns_skewness"],
-        "kurtosis": candidate["returns_kurtosis"],
-    }
-    primary_dsr = deflated_sharpe_ratio(**dsr_arguments)
-    independent_dsr_result = independent_dsr(
-        candidate["sharpe_per_bar"],
-        sharpes,
-        payload["sample_count"],
-        candidate["returns_skewness"],
-        candidate["returns_kurtosis"],
-    )
-    dsr_delta = max(
-        abs(primary_dsr[key] - independent_dsr_result[key])
-        for key in ("expected_maximum_noise_sharpe", "z_score", "dsr")
-    )
-    if dsr_delta > 1e-6:  # bisection inverse-CDF is ~1e-9; z-scale amplifies to <1e-6
-        raise RuntimeError(f"DSR independent recomputation disagrees by {dsr_delta}")
-    passed = (
-        float(primary_dsr["dsr"]) >= DSR_PASS_MINIMUM
-        and float(primary_pbo["pbo"]) <= PBO_PASS_MAXIMUM
-    )
+    if effective_trials is None:
+        primary_dsr: dict[str, float] = {}
+        independent_dsr_result: dict[str, float] = {}
+        dsr_delta = None
+        numeric_verdict = (
+            "FAIL" if float(primary_pbo["pbo"]) > PBO_PASS_MAXIMUM else "METHOD_BLOCKED"
+        )
+    else:
+        dsr_arguments = {
+            "observed_sharpe": candidate["sharpe_per_bar"],
+            "sharpe_variance": sharpe_variance,
+            "independent_trials": effective_trials,
+            "sample_count": payload["sample_count"],
+            "skewness": candidate["returns_skewness"],
+            "kurtosis": candidate["returns_kurtosis"],
+        }
+        primary_dsr = deflated_sharpe_ratio(**dsr_arguments)
+        independent_dsr_result = independent_dsr(
+            candidate["sharpe_per_bar"],
+            sharpes,
+            payload["sample_count"],
+            candidate["returns_skewness"],
+            candidate["returns_kurtosis"],
+            effective_trials,
+        )
+        dsr_delta = max(
+            abs(primary_dsr[key] - independent_dsr_result[key])
+            for key in ("expected_maximum_noise_sharpe", "z_score", "dsr")
+        )
+        if dsr_delta > 1e-6:  # bisection inverse-CDF is ~1e-9; z-scale amplifies to <1e-6
+            raise RuntimeError(f"DSR independent recomputation disagrees by {dsr_delta}")
+        numeric_verdict = (
+            "PASS"
+            if float(primary_dsr["dsr"]) >= DSR_PASS_MINIMUM
+            and float(primary_pbo["pbo"]) <= PBO_PASS_MAXIMUM
+            else "FAIL"
+        )
     return {
         "trial_count": len(trials),
+        "raw_trial_count": len(trials),
+        "effective_independent_trials": effective_trials,
+        "independent_trials_basis": (
+            "DSR_2014_APPENDIX_3_AVERAGE_RETURN_CORRELATION"
+            if effective_trials is not None
+            else "UNAVAILABLE_UNDEFINED_TRIAL_RETURN_CORRELATIONS"
+        ),
+        "effective_independent_trials_scope": "RETAINED_FAMILY_GRID_ONLY",
+        "average_trial_return_correlation": average_correlation,
+        "correlation_observation_count": payload["return_correlation_observation_count"],
+        "search_lineage_complete": False,
+        "declared_selection_metric": "non_annualized_per_bar_sharpe",
+        "pbo_slice_metric": "non_annualized_per_bar_sharpe",
+        "dsr_metric": "sharpe_per_bar",
+        "selection_metrics_aligned": True,
         "slice_count": payload["slice_count"],
         "slice_length_bars": payload["slice_length_bars"],
         "bars_excluded_tail": payload["bars_excluded_tail"],
         "sample_count": payload["sample_count"],
-        "selection_procedure": "max in-sample total_return over the declared grid",
+        "selection_procedure": (
+            "max full-sample non-annualized per-bar Sharpe over retained family grid"
+        ),
         "selected_trial_key": candidate["trial_key"],
         "selected_total_return": candidate["total_return"],
         "selected_sharpe_per_bar": candidate["sharpe_per_bar"],
@@ -258,16 +347,77 @@ def evaluate_family(payload: dict[str, Any]) -> dict[str, Any]:
             "max_abs_delta": pbo_delta,
         },
         "dsr": {
+            "status": "COMPUTED" if primary_dsr else "METHOD_BLOCKED",
             "primary": primary_dsr,
             "independent": independent_dsr_result,
             "max_abs_delta": dsr_delta,
         },
-        "verdict": "PASS" if passed else "FAIL",
+        "numeric_verdict": numeric_verdict,
+        "verdict": numeric_verdict,
+        "promotion_verdict": "METHOD_BLOCKED",
         "verdict_rule": (
             f"PASS requires DSR >= {DSR_PASS_MINIMUM} and PBO <= {PBO_PASS_MAXIMUM}; "
             "a PASS additionally requires validation-stats-specialist review before "
             "promotion use (RG-07)"
         ),
+    }
+
+
+def build_search_lineage(lab_dir: Path) -> dict[str, Any]:
+    """Retain the known lab stage and state exactly which upstream stages are absent."""
+
+    records = [
+        json.loads(line)
+        for line in (lab_dir / "trial_ledger.jsonl").read_text().splitlines()
+        if line.strip()
+    ]
+    experiments = [row["record"] for row in records if row.get("kind") == "experiment"]
+    runs = [row["record"] for row in records if row.get("kind") == "run"]
+    if not experiments or not runs or any(row.get("status") != "COMPLETED" for row in runs):
+        raise RuntimeError("research-lab lineage is incomplete")
+    return {
+        "status": "INCOMPLETE",
+        "raw_trial_count_retained": len(runs),
+        "effective_independent_trials": None,
+        "retained_stages": [
+            {
+                "stage_id": "accelerator_family_parameter_grids",
+                "experiment_ids": sorted(str(row["experiment_id"]) for row in experiments),
+                "raw_trial_count": len(runs),
+                "selection_procedure": sorted(
+                    {str(row["selection_procedure"]) for row in experiments}
+                ),
+                "source": str((lab_dir / "trial_ledger.jsonl").relative_to(ROOT)),
+            }
+        ],
+        "missing_stages": [
+            (
+                "the pre-lab hypothesis/family process that admitted B2/B3/B4 and "
+                "excluded alternatives"
+            ),
+            (
+                "the complete dataset, engine, scenario, and transformation search "
+                "attempted before this lab batch"
+            ),
+        ],
+    }
+
+
+def build_method_contract(lineage: dict[str, Any], families: dict[str, Any]) -> dict[str, Any]:
+    blockers: list[str] = []
+    if lineage.get("status") != "COMPLETE":
+        blockers.append("hierarchical_search_lineage_incomplete")
+    if lineage.get("effective_independent_trials") is None:
+        blockers.append("hierarchy_effective_independent_trials_unavailable")
+    if any(not result.get("selection_metrics_aligned") for result in families.values()):
+        blockers.append("selection_metric_not_aligned")
+    if any(result.get("effective_independent_trials") is None for result in families.values()):
+        blockers.append("family_effective_independent_trials_unavailable")
+    return {
+        "status": "METHOD_BLOCKED" if blockers else "METHOD_READY_FOR_SPECIALIST_REVIEW",
+        "governed_selection_metric": "non_annualized_per_bar_sharpe",
+        "metric_applies_to": ["candidate_selection", "PBO_IS", "PBO_OOS", "DSR"],
+        "blockers": blockers,
     }
 
 
@@ -298,15 +448,30 @@ def main() -> dict[str, Any]:
         parquet_hashes[baseline] = _verify_parity(lab_dir, baseline, payload["trials"])
         input_hashes[baseline] = sha256(inputs_path)
         families[baseline] = evaluate_family(payload)
+    search_lineage = build_search_lineage(lab_dir)
+    method_contract = build_method_contract(search_lineage, families)
     date_tag = datetime.now(tz=UTC).strftime("%Y_%m_%d")
     evidence = {
-        "schema": "tios-g10-candidate-evidence-v1",
+        "schema": "tios-g10-candidate-evidence-v2",
         "gate": "G10",
         "task": "T-009-04 candidate-specific integration (RG-07)",
         "generated_at_utc": datetime.now(tz=UTC).isoformat(),
         "status": "COMPLETE",
-        "g10_gate_status": families["b2"]["verdict"],
+        "g10_gate_status": method_contract["status"],
         "validation_package_family": "b2",
+        "method_contract": method_contract,
+        "search_lineage": search_lineage,
+        "method_sources": {
+            "dsr": {
+                "url": "https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf",
+                "scope": "Equations 1-2 and Appendix 3 average-correlation implied trials",
+            },
+            "pbo": {
+                "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253",
+                "scope": "CSCV probability-of-backtest-overfitting selection procedure",
+            },
+            "retrieved_at_utc": "2026-07-13",
+        },
         "provenance": {
             **provenance,
             "research_lab_batch": lab_dir.name,
@@ -325,12 +490,14 @@ def main() -> dict[str, Any]:
             "slice matrix uses 16 equal contiguous time slices of per-bar mean returns; "
             "the tail remainder bars are excluded from slices and documented per family",
             "Sharpe is per-bar (not annualized) so DSR sample_count equals bar count",
-            "selection procedure is max in-sample total_return, matching the retained "
-            "accelerator sweep's implicit ranking; no winner is thereby selected",
+            "the governed selection metric is non-annualized per-bar Sharpe for candidate "
+            "selection, both PBO halves, and DSR; no winner is thereby promoted",
             "population is the vectorbt accelerator sweep; cross-engine reproduction "
             "remains a separate, still-blocked dimension",
-            "trials share one dataset/period, so 'independent_trials = trial count' is "
-            "the conservative upper bound used by the false-strategy theorem",
+            "family-scope implied independent trials use the DSR paper's Appendix-3 "
+            "average-correlation interpolation over retained full bar-return correlations",
+            "complete upstream hierarchical search lineage and its effective independent "
+            "trial count are not present in the retained evidence",
         ],
         "failure_modes": [
             "parity mismatch vs retained Parquet aborts the run (no partial evidence)",
@@ -339,8 +506,10 @@ def main() -> dict[str, Any]:
         ],
         "families": families,
         "effect": (
-            "This activates production G10 for the retained candidate populations. It "
-            "approves no strategy, selects no winner, and enables no execution path."
+            "This retains corrected numeric diagnostics for the candidate populations. "
+            "G10 remains METHOD_BLOCKED because the upstream search lineage and its "
+            "effective independent-trial count are unresolved. It approves no "
+            "strategy, selects no winner, and enables no execution path."
         ),
     }
     out = ROOT / "artifacts/validation" / f"G10_CANDIDATE_EVIDENCE_{date_tag}.json"

@@ -34,7 +34,7 @@
       },
       {
         "all_venues_default_is_unrecoverable": true,
-        "all_venues_default_prob": 8e-06,
+        "all_venues_default_prob": 8.000000000000001e-06,
         "expected_annual_counterparty_drag_pct": 2.0,
         "net_expected_ann_return_pct": 6.23,
         "per_venue_cap_pct": 33.3,
@@ -44,7 +44,7 @@
       },
       {
         "all_venues_default_is_unrecoverable": true,
-        "all_venues_default_prob": 0.0,
+        "all_venues_default_prob": 1.6e-07,
         "expected_annual_counterparty_drag_pct": 2.0,
         "net_expected_ann_return_pct": 6.23,
         "per_venue_cap_pct": 25.0,
@@ -54,7 +54,7 @@
       },
       {
         "all_venues_default_is_unrecoverable": true,
-        "all_venues_default_prob": 0.0,
+        "all_venues_default_prob": 3.2000000000000005e-09,
         "expected_annual_counterparty_drag_pct": 2.0,
         "net_expected_ann_return_pct": 6.23,
         "per_venue_cap_pct": 20.0,
@@ -76,7 +76,7 @@
       },
       {
         "all_venues_default_is_unrecoverable": true,
-        "all_venues_default_prob": 0.0025,
+        "all_venues_default_prob": 0.0025000000000000005,
         "expected_annual_counterparty_drag_pct": 5.0,
         "net_expected_ann_return_pct": 2.98,
         "per_venue_cap_pct": 50.0,
@@ -86,7 +86,7 @@
       },
       {
         "all_venues_default_is_unrecoverable": true,
-        "all_venues_default_prob": 0.000125,
+        "all_venues_default_prob": 0.00012500000000000003,
         "expected_annual_counterparty_drag_pct": 5.0,
         "net_expected_ann_return_pct": 2.98,
         "per_venue_cap_pct": 33.3,
@@ -96,7 +96,7 @@
       },
       {
         "all_venues_default_is_unrecoverable": true,
-        "all_venues_default_prob": 6e-06,
+        "all_venues_default_prob": 6.250000000000001e-06,
         "expected_annual_counterparty_drag_pct": 5.0,
         "net_expected_ann_return_pct": 2.98,
         "per_venue_cap_pct": 25.0,
@@ -106,7 +106,7 @@
       },
       {
         "all_venues_default_is_unrecoverable": true,
-        "all_venues_default_prob": 0.0,
+        "all_venues_default_prob": 3.125000000000001e-07,
         "expected_annual_counterparty_drag_pct": 5.0,
         "net_expected_ann_return_pct": 2.98,
         "per_venue_cap_pct": 20.0,
@@ -128,7 +128,7 @@
       },
       {
         "all_venues_default_is_unrecoverable": true,
-        "all_venues_default_prob": 0.01,
+        "all_venues_default_prob": 0.010000000000000002,
         "expected_annual_counterparty_drag_pct": 10.0,
         "net_expected_ann_return_pct": -2.44,
         "per_venue_cap_pct": 50.0,
@@ -138,7 +138,7 @@
       },
       {
         "all_venues_default_is_unrecoverable": true,
-        "all_venues_default_prob": 0.001,
+        "all_venues_default_prob": 0.0010000000000000002,
         "expected_annual_counterparty_drag_pct": 10.0,
         "net_expected_ann_return_pct": -2.44,
         "per_venue_cap_pct": 33.3,
@@ -148,7 +148,7 @@
       },
       {
         "all_venues_default_is_unrecoverable": true,
-        "all_venues_default_prob": 0.0001,
+        "all_venues_default_prob": 0.00010000000000000002,
         "expected_annual_counterparty_drag_pct": 10.0,
         "net_expected_ann_return_pct": -2.44,
         "per_venue_cap_pct": 25.0,
@@ -158,7 +158,7 @@
       },
       {
         "all_venues_default_is_unrecoverable": true,
-        "all_venues_default_prob": 1e-05,
+        "all_venues_default_prob": 1.0000000000000003e-05,
         "expected_annual_counterparty_drag_pct": 10.0,
         "net_expected_ann_return_pct": -2.44,
         "per_venue_cap_pct": 20.0,

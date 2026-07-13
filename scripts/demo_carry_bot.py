@@ -67,8 +67,7 @@ def perp_position(get: pf.Transport, api_key: str, secret: str, symbol: str) -> 
 def _poll_leg(
     get: pf.Transport, api_key: str, secret: str, category: str, symbol: str, order_id: str, sleep
 ) -> dict:  # type: ignore[no-untyped-def]
-    """Category-aware order status (spot vs linear). A filled market order leaves the open-orders
-    book and returns empty — the caller treats accepted-and-gone as filled."""
+    """Category-aware status. Unknown or missing status remains unverified."""
     status: dict = {}
     for _ in range(5):
         sleep(0.4)
@@ -77,6 +76,17 @@ def _poll_leg(
             get, pf.DEMO_BASE, "/v5/order/realtime", params, api_key, secret, rt._now()
         )
         rows = resp.get("result", {}).get("list", [])
+        if not rows:
+            resp = pf._signed_get(
+                get,
+                pf.DEMO_BASE,
+                "/v5/order/history",
+                params,
+                api_key,
+                secret,
+                rt._now(),
+            )
+            rows = resp.get("result", {}).get("list", [])
         status = rows[0] if rows else {}
         if status.get("orderStatus") in {"Filled", "Cancelled", "Rejected"}:
             break
@@ -107,6 +117,15 @@ def run_carry(
         f"funding {funding * 100:.4f}%/8h, mark {price:.1f} — carry "
         f"{'FAVORABLE (short perp earns)' if favorable else 'unfavorable (would pay)'}"
     )
+    if not favorable:
+        return {
+            "ok": False,
+            "stage": "signal",
+            "signal": signal,
+            "carry_favorable": False,
+            "legs": [],
+            "note": "No orders: the current funding sign would make the short-perp leg pay.",
+        }
     base_coin = symbol.removesuffix("USDT")
     quote = round(base_qty * price * 1.01, 2)  # spend a hair over to receive ~base_qty spot
 
@@ -129,9 +148,8 @@ def run_carry(
             get_transport, api_key, secret, str(order["category"]), symbol,
             str(placed["result"]["orderId"]), sleep,
         )  # fmt: skip
-        # Accepted (retCode 0) + gone from open-orders = a filled market order.
-        filled = status.get("orderStatus") == "Filled" or not status
-        fill = status.get("avgPrice") or (f"{price:.1f}" if filled else None)
+        filled = status.get("orderStatus") == "Filled"
+        fill = status.get("avgPrice") if filled else None
         out = {"ok": filled, "qty": order.get("qty"), "fill": fill}
         log(f"  {name}: {'Filled' if filled else status.get('orderStatus')} "
             f"{order.get('qty')} @ {fill}")  # fmt: skip
@@ -140,17 +158,25 @@ def run_carry(
         return out
 
     # OPEN delta-neutral: buy spot + short perp.
-    leg("SPOT_BUY", {"category": "spot", "symbol": symbol, "side": "Buy", "orderType": "Market",
-                     "qty": str(quote), "marketUnit": "quoteCoin"}, quote)  # fmt: skip
-    leg("PERP_SHORT", {"category": "linear", "symbol": symbol, "side": "Sell",
-                       "orderType": "Market", "qty": str(base_qty)}, base_qty * price)  # fmt: skip
+    spot_open = leg(
+        "SPOT_BUY",
+        {"category": "spot", "symbol": symbol, "side": "Buy", "orderType": "Market",
+         "qty": str(quote), "marketUnit": "quoteCoin"}, quote,
+    )  # fmt: skip
+    if not spot_open["ok"]:
+        return {"ok": False, "stage": "spot_open", "signal": signal, "legs": legs}
+    perp_open = leg(
+        "PERP_SHORT",
+        {"category": "linear", "symbol": symbol, "side": "Sell", "orderType": "Market",
+         "qty": str(base_qty)}, base_qty * price,
+    )  # fmt: skip
     position = perp_position(get_transport, api_key, secret, symbol)
     log(
         f"  position: perp {position.get('side', '?')} {position.get('size', '?')} "
         f"{base_coin}, spot long ~{base_qty} — delta-neutral; would collect {funding * 100:.3f}%/8h"
     )
 
-    # CLOSE both legs back to flat.
+    # CLOSE both legs back to flat, including immediate unwind after an asymmetric open.
     spot_qty = rt._round_down(base_qty, rt.BASE_STEP_DECIMALS)
     sell_order = {
         "category": "spot", "symbol": symbol, "side": "Sell",
@@ -160,14 +186,27 @@ def run_carry(
         "category": "linear", "symbol": symbol, "side": "Buy",
         "orderType": "Market", "qty": str(base_qty), "reduceOnly": True,
     }  # fmt: skip
+    if perp_open["ok"]:
+        leg("PERP_CLOSE", close_order, base_qty * price)
     leg("SPOT_SELL", sell_order, spot_qty * price)
-    leg("PERP_CLOSE", close_order, base_qty * price)
+
+    final_position = perp_position(get_transport, api_key, secret, symbol)
+    final_wallet = rt.wallet(get_transport, api_key, secret, rt._now())
+    perp_flat = float(final_position.get("size", 0) or 0) == 0
+    spot_delta = abs(rt._delta(pre["balances"], final_wallet, base_coin))
+    reconciled_flat = perp_flat and spot_delta <= 10 ** (-rt.BASE_STEP_DECIMALS)
 
     return {
-        "ok": all(leg_result.get("ok") for leg_result in legs) and len(legs) == 4,
+        "ok": (
+            perp_open["ok"]
+            and all(leg_result.get("ok") for leg_result in legs)
+            and len(legs) == 4
+            and reconciled_flat
+        ),
         "signal": signal,
         "carry_favorable": favorable,
         "legs": legs,
+        "reconciliation": {"perp_flat": perp_flat, "spot_base_delta": spot_delta},
         "note": "Delta-neutral carry, demo/fake money, ends flat. Machinery + candidate — carry's "
         "validation is NOT genuine (counterparty tail); real execution_authority stays NONE.",
     }

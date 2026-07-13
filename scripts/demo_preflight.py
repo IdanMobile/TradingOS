@@ -27,7 +27,6 @@ import os
 import sys
 import time
 import urllib.parse
-import urllib.request
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -35,9 +34,28 @@ from typing import Any
 DEMO_HOST = "api-demo.bybit.com"
 DEMO_BASE = f"https://{DEMO_HOST}"
 RECV_WINDOW = "5000"
+NETWORK_QUARANTINE = (
+    "authenticated Bybit demo networking is quarantined until the required signed "
+    "HG-3/HG-4, security-review, validation, and venue-approval evidence exists"
+)
 
 # (url, headers) -> raw response body. Injected in tests; real urllib version in main().
 Transport = Callable[[str, dict[str, str]], bytes]
+
+
+def require_demo_base(base: str) -> None:
+    parsed = urllib.parse.urlsplit(base)
+    if (
+        parsed.scheme != "https"
+        or parsed.hostname != DEMO_HOST
+        or parsed.port is not None
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.path.rstrip("/")
+        or parsed.query
+        or parsed.fragment
+    ):
+        raise ValueError(f"preflight refuses a non-demo host: {base}")
 
 
 def sign(secret: str, timestamp: str, api_key: str, query: str) -> str:
@@ -104,8 +122,7 @@ def preflight(
     timestamp: str | None = None,
 ) -> dict[str, Any]:
     """Run the read-only safety checks. Never places an order. `ok` is the go/no-go."""
-    if DEMO_HOST not in base:
-        raise ValueError(f"preflight refuses a non-demo host: {base}")
+    require_demo_base(base)
     ts = timestamp or str(int(time.time() * 1000))
     api_info = _signed_get(transport, base, "/v5/user/query-api", {}, api_key, secret, ts)
     if api_info.get("retCode") != 0:
@@ -122,15 +139,17 @@ def preflight(
         secret,
         ts,
     )
+    can_trade = _can_trade(permissions, read_only=read_only)
+    wallet_ok = wallet.get("retCode") == 0
     return {
-        "ok": not fund_removal,  # the critical safety gate: a demo key must not move funds out
+        "ok": can_trade and wallet_ok and not fund_removal,
         "host": base,
         "is_demo_host": True,
         "permissions": permissions,
         "read_only": read_only,
-        "can_trade": _can_trade(permissions, read_only=read_only),
+        "can_trade": can_trade,
         "fund_removal_enabled": fund_removal,
-        "wallet_ok": wallet.get("retCode") == 0,
+        "wallet_ok": wallet_ok,
         "balances": _balances(wallet),
         "note": (
             "SAFE: trade-only demo key, cannot move funds."
@@ -142,20 +161,16 @@ def preflight(
 
 
 def _urllib_transport(url: str, headers: dict[str, str]) -> bytes:
-    request = urllib.request.Request(url, headers=headers, method="GET")  # noqa: S310 (https only)
-    with urllib.request.urlopen(request, timeout=15) as response:  # noqa: S310
-        body: bytes = response.read()
-        return body
+    raise RuntimeError(NETWORK_QUARANTINE)
 
 
 ROOT = Path(__file__).resolve().parents[1]
-KEY_NAMES = ("BYBIT_DEMO_API_KEY", "PYBIT_API_KEY")
-SECRET_NAMES = ("BYBIT_DEMO_API_SECRET", "PYBIT_API_SECRET")
+KEY_NAMES = ("BYBIT_DEMO_API_KEY",)
+SECRET_NAMES = ("BYBIT_DEMO_API_SECRET",)
 
 
 def load_dotenv(path: Path) -> None:
-    """Fill os.environ from a local .env (KEY=VALUE lines), no dependency. Existing environment
-    values win; the file only fills what is unset. Skips blanks, comments, and malformed lines."""
+    """Load only the two demo-specific names from a local ignored `.env`."""
     if not path.is_file():
         return
     for raw in path.read_text().splitlines():
@@ -163,7 +178,9 @@ def load_dotenv(path: Path) -> None:
         if not line or line.startswith("#") or "=" not in line:
             continue
         key, _, value = line.partition("=")
-        os.environ.setdefault(key.removeprefix("export ").strip(), value.strip().strip("'\""))
+        name = key.removeprefix("export ").strip()
+        if name in {*KEY_NAMES, *SECRET_NAMES}:
+            os.environ.setdefault(name, value.strip().strip("'\""))
 
 
 def _first(names: tuple[str, ...]) -> str:
@@ -175,8 +192,8 @@ def main() -> int:
     api_key, secret = _first(KEY_NAMES), _first(SECRET_NAMES)
     if not api_key or not secret:
         print(
-            "No demo key found in .env. Add PYBIT_API_KEY / PYBIT_API_SECRET (or "
-            "BYBIT_DEMO_API_KEY / BYBIT_DEMO_API_SECRET) — a DEMO key, trade-only, no withdrawal. "
+            "No demo key found in .env. Add BYBIT_DEMO_API_KEY / "
+            "BYBIT_DEMO_API_SECRET — a DEMO key, trade-only, no withdrawal. "
             "See docs/program/DEMO_LANE_PLAN.md."
         )
         return 2

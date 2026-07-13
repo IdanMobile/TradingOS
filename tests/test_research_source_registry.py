@@ -126,10 +126,27 @@ def test_all_initial_seeds_are_hypothesis_only_and_noneligible(
 ) -> None:
     for record in registry.list():
         assert record.evidence_strength is EvidenceStrength.HYPOTHESIS_ONLY
-        assert record.exact_span_status is ExactSpanStatus.NOT_CAPTURED
+        expected_span = (
+            ExactSpanStatus.CAPTURED
+            if record.source_id == "SRC-DSR-2014"
+            else ExactSpanStatus.NOT_CAPTURED
+        )
+        assert record.exact_span_status is expected_span
         assert record.profit_claims_inherited is False
         assert record.locally_reproduced is False
         assert record.approval_eligible is False
+
+
+def test_dsr_primary_source_records_the_rechecked_equation_span(
+    registry: ResearchSourceRegistry,
+) -> None:
+    record = registry.get("SRC-DSR-2014")
+    assert record.lawful_full_text_url == (
+        "https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf"
+    )
+    assert record.checked_at == "2026-07-13T02:30:00Z"
+    assert record.exact_span_status is ExactSpanStatus.CAPTURED
+    assert "observed Sharpe" in record.claim_summary
 
 
 def test_external_bot_signal_and_copy_sources_are_read_only_hypothesis_inputs(

@@ -1,0 +1,259 @@
+{
+  "assumptions": [
+    "slice matrix uses 16 equal contiguous time slices of per-bar mean returns; the tail remainder bars are excluded from slices and documented per family",
+    "Sharpe is per-bar (not annualized) so DSR sample_count equals bar count",
+    "the governed selection metric is non-annualized per-bar Sharpe for candidate selection, both PBO halves, and DSR; no winner is thereby promoted",
+    "population is the vectorbt accelerator sweep; cross-engine reproduction remains a separate, still-blocked dimension",
+    "family-scope implied independent trials use the DSR paper's Appendix-3 average-correlation interpolation over retained full bar-return correlations",
+    "complete upstream hierarchical search lineage and its effective independent trial count are not present in the retained evidence"
+  ],
+  "effect": "This retains corrected numeric diagnostics for the candidate populations. G10 remains METHOD_BLOCKED because the upstream search lineage and its effective independent-trial count are unresolved. It approves no strategy, selects no winner, and enables no execution path.",
+  "failure_modes": [
+    "parity mismatch vs retained Parquet aborts the run (no partial evidence)",
+    "primary-vs-independent disagreement beyond tolerance aborts the run",
+    "non-COMPLETED trials abort the run"
+  ],
+  "families": {
+    "b2": {
+      "average_trial_return_correlation": 0.6747258782762057,
+      "bars_excluded_tail": 11,
+      "correlation_observation_count": 577803,
+      "declared_selection_metric": "non_annualized_per_bar_sharpe",
+      "dsr": {
+        "independent": {
+          "dsr": 0.0,
+          "expected_maximum_noise_sharpe": 0.006010755647911555,
+          "z_score": -17.025716773398198
+        },
+        "max_abs_delta": 0.0,
+        "primary": {
+          "dsr": 0.0,
+          "expected_maximum_noise_sharpe": 0.006010755647911555,
+          "z_score": -17.025716773398198
+        },
+        "status": "COMPUTED"
+      },
+      "dsr_metric": "sharpe_per_bar",
+      "effective_independent_trials": 11.734046016885213,
+      "effective_independent_trials_scope": "RETAINED_FAMILY_GRID_ONLY",
+      "independent_trials_basis": "DSR_2014_APPENDIX_3_AVERAGE_RETURN_CORRELATION",
+      "numeric_verdict": "FAIL",
+      "pbo": {
+        "independent": {
+          "mean_logit": 1.0972187458792122,
+          "pbo": 0.29603729603729606,
+          "split_count": 12870
+        },
+        "max_abs_delta": 0.0,
+        "primary": {
+          "pbo": 0.29603729603729606,
+          "split_count": 12870
+        }
+      },
+      "pbo_slice_metric": "non_annualized_per_bar_sharpe",
+      "promotion_verdict": "METHOD_BLOCKED",
+      "raw_trial_count": 34,
+      "sample_count": 577803,
+      "search_lineage_complete": false,
+      "selected_returns_kurtosis": 78.03942641656673,
+      "selected_returns_skewness": 0.9190177214687036,
+      "selected_sharpe_per_bar": -0.01661699676401509,
+      "selected_total_return": -0.9999973429551194,
+      "selected_trial_key": "fast=15,slow=60",
+      "selection_metrics_aligned": true,
+      "selection_procedure": "max full-sample non-annualized per-bar Sharpe over retained family grid",
+      "sharpe_variance_across_trials": 1.3207911267005887e-05,
+      "slice_count": 16,
+      "slice_length_bars": 36112,
+      "trial_count": 34,
+      "verdict": "FAIL",
+      "verdict_rule": "PASS requires DSR >= 0.95 and PBO <= 0.5; a PASS additionally requires validation-stats-specialist review before promotion use (RG-07)"
+    },
+    "b3": {
+      "average_trial_return_correlation": null,
+      "bars_excluded_tail": 11,
+      "correlation_observation_count": 577803,
+      "declared_selection_metric": "non_annualized_per_bar_sharpe",
+      "dsr": {
+        "independent": {},
+        "max_abs_delta": null,
+        "primary": {},
+        "status": "METHOD_BLOCKED"
+      },
+      "dsr_metric": "sharpe_per_bar",
+      "effective_independent_trials": null,
+      "effective_independent_trials_scope": "RETAINED_FAMILY_GRID_ONLY",
+      "independent_trials_basis": "UNAVAILABLE_UNDEFINED_TRIAL_RETURN_CORRELATIONS",
+      "numeric_verdict": "METHOD_BLOCKED",
+      "pbo": {
+        "independent": {
+          "mean_logit": 1.480192601719528,
+          "pbo": 0.016317016317016316,
+          "split_count": 12870
+        },
+        "max_abs_delta": 0.0,
+        "primary": {
+          "pbo": 0.016317016317016316,
+          "split_count": 12870
+        }
+      },
+      "pbo_slice_metric": "non_annualized_per_bar_sharpe",
+      "promotion_verdict": "METHOD_BLOCKED",
+      "raw_trial_count": 16,
+      "sample_count": 577803,
+      "search_lineage_complete": false,
+      "selected_returns_kurtosis": 3.0,
+      "selected_returns_skewness": 0.0,
+      "selected_sharpe_per_bar": 0.0,
+      "selected_total_return": 0.0,
+      "selected_trial_key": "window=3,deviation=1.5",
+      "selection_metrics_aligned": true,
+      "selection_procedure": "max full-sample non-annualized per-bar Sharpe over retained family grid",
+      "sharpe_variance_across_trials": 0.0001524002815976385,
+      "slice_count": 16,
+      "slice_length_bars": 36112,
+      "trial_count": 16,
+      "verdict": "METHOD_BLOCKED",
+      "verdict_rule": "PASS requires DSR >= 0.95 and PBO <= 0.5; a PASS additionally requires validation-stats-specialist review before promotion use (RG-07)"
+    },
+    "b4": {
+      "average_trial_return_correlation": 0.5529775452203778,
+      "bars_excluded_tail": 11,
+      "correlation_observation_count": 577803,
+      "declared_selection_metric": "non_annualized_per_bar_sharpe",
+      "dsr": {
+        "independent": {
+          "dsr": 0.0,
+          "expected_maximum_noise_sharpe": 0.009882467944484986,
+          "z_score": -29.8872346960902
+        },
+        "max_abs_delta": 3.552713678800501e-15,
+        "primary": {
+          "dsr": 0.0,
+          "expected_maximum_noise_sharpe": 0.009882467944484987,
+          "z_score": -29.887234696090204
+        },
+        "status": "COMPUTED"
+      },
+      "dsr_metric": "sharpe_per_bar",
+      "effective_independent_trials": 7.705336821694333,
+      "effective_independent_trials_scope": "RETAINED_FAMILY_GRID_ONLY",
+      "independent_trials_basis": "DSR_2014_APPENDIX_3_AVERAGE_RETURN_CORRELATION",
+      "numeric_verdict": "FAIL",
+      "pbo": {
+        "independent": {
+          "mean_logit": 0.14277657515041065,
+          "pbo": 0.380963480963481,
+          "split_count": 12870
+        },
+        "max_abs_delta": 0.0,
+        "primary": {
+          "pbo": 0.380963480963481,
+          "split_count": 12870
+        }
+      },
+      "pbo_slice_metric": "non_annualized_per_bar_sharpe",
+      "promotion_verdict": "METHOD_BLOCKED",
+      "raw_trial_count": 16,
+      "sample_count": 577803,
+      "search_lineage_complete": false,
+      "selected_returns_kurtosis": 288.6088717599647,
+      "selected_returns_skewness": 1.5073542240619444,
+      "selected_sharpe_per_bar": -0.031732614114345484,
+      "selected_total_return": -0.9999998428296542,
+      "selected_trial_key": "lookback=3,exit_window=10",
+      "selection_metrics_aligned": true,
+      "selection_procedure": "max full-sample non-annualized per-bar Sharpe over retained family grid",
+      "sharpe_variance_across_trials": 4.7166575385399146e-05,
+      "slice_count": 16,
+      "slice_length_bars": 36112,
+      "trial_count": 16,
+      "verdict": "FAIL",
+      "verdict_rule": "PASS requires DSR >= 0.95 and PBO <= 0.5; a PASS additionally requires validation-stats-specialist review before promotion use (RG-07)"
+    }
+  },
+  "g10_gate_status": "METHOD_BLOCKED",
+  "gate": "G10",
+  "generated_at_utc": "2026-07-13T03:38:58.159291+00:00",
+  "method_contract": {
+    "blockers": [
+      "hierarchical_search_lineage_incomplete",
+      "hierarchy_effective_independent_trials_unavailable",
+      "family_effective_independent_trials_unavailable"
+    ],
+    "governed_selection_metric": "non_annualized_per_bar_sharpe",
+    "metric_applies_to": [
+      "candidate_selection",
+      "PBO_IS",
+      "PBO_OOS",
+      "DSR"
+    ],
+    "status": "METHOD_BLOCKED"
+  },
+  "method_sources": {
+    "dsr": {
+      "scope": "Equations 1-2 and Appendix 3 average-correlation implied trials",
+      "url": "https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf"
+    },
+    "pbo": {
+      "scope": "CSCV probability-of-backtest-overfitting selection procedure",
+      "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253"
+    },
+    "retrieved_at_utc": "2026-07-13"
+  },
+  "provenance": {
+    "dataset_file": "BTCUSDT_5m.parquet",
+    "dataset_id": "DS-CRYPTO-SPOT-BAKEOFF-V1",
+    "dataset_sha256": "d4d6b3306c44e242f3fb7f71c44bacabf9a6af1f1f8d507ca2de0853b6a727d0",
+    "engine_env_manifest_sha256": "c55ce4ec3b333a7872da99424ed6187222cc3f70e0ed5ad40825e755c36407d8",
+    "extractor": "engines/vectorbt/g10_returns.py",
+    "extractor_sha256": "b287fdc9573d01c48568094a4dab45d1ddd5a95acd771b2bc7f63c2e34ccab34",
+    "frozen_manifest_sha256": "f2b729627adb5d75a99c90dd7dd25ea6dcabf83de4baea5784397424034dfc56",
+    "g10_returns_input_sha256": {
+      "b2": "e90ceb2d3bfb00ab07e40d102655edc36dc5d1a140dff22de5a5991d288cad67",
+      "b3": "8499734a3cea7e265895f835ab3478aa75765beeb3e5800fa35df15f7cf97b60",
+      "b4": "97d19acc1149b51f6f67ee06190646fe05fc7d706bcd572d36473abd8b1af43e"
+    },
+    "method_fixtures": "artifacts/validation/G10_METHOD_FIXTURES_2026_07_11.json",
+    "methods_implementation": "src/tios/validation/multiple_testing.py",
+    "research_lab_batch": "LAB-f04ef5d705e0de4d3fff5fe83ada90b2d91223dc89cfa35364c5fd8439ca3121",
+    "retained_trial_parquet_sha256": {
+      "b2": "f0e419b8c2b1bfeaca58d391508a492c1eff510afeeb76d66135ccee65f10550",
+      "b3": "c188b898082191579e2bbc235553c8fbd697bb4145344234224a3dec40434ada",
+      "b4": "ffea44805e07a4000d03949c5984055691fcbeb62264f3df92256d1e8a0dde92"
+    },
+    "strategy_spec_sha256": {
+      "b2": "da3b238432f5e7085f901a87ca6ac3b527055382abacd3d4c21f0476ed15356a",
+      "b3": "347384f3102770c588c7a8e5451bfdb7ac929785120227e39a20559b99fb8ef1",
+      "b4": "ae7ac1faffe1f083c6b74aabbeb73ab2c99ba7737c1cd387a95b7508363eaeae"
+    }
+  },
+  "schema": "tios-g10-candidate-evidence-v2",
+  "search_lineage": {
+    "effective_independent_trials": null,
+    "missing_stages": [
+      "the pre-lab hypothesis/family process that admitted B2/B3/B4 and excluded alternatives",
+      "the complete dataset, engine, scenario, and transformation search attempted before this lab batch"
+    ],
+    "raw_trial_count_retained": 66,
+    "retained_stages": [
+      {
+        "experiment_ids": [
+          "EXP-VECTORBT-B2-F1",
+          "EXP-VECTORBT-B3-F1",
+          "EXP-VECTORBT-B4-F1"
+        ],
+        "raw_trial_count": 66,
+        "selection_procedure": [
+          "retain all trials; no in-sample winner; require temporal validation, multiple-testing control, and event-engine reproduction"
+        ],
+        "source": "artifacts/research_lab/v0/LAB-f04ef5d705e0de4d3fff5fe83ada90b2d91223dc89cfa35364c5fd8439ca3121/trial_ledger.jsonl",
+        "stage_id": "accelerator_family_parameter_grids"
+      }
+    ],
+    "status": "INCOMPLETE"
+  },
+  "status": "COMPLETE",
+  "task": "T-009-04 candidate-specific integration (RG-07)",
+  "validation_package_family": "b2"
+}

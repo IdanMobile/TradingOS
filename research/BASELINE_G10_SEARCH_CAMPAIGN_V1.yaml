@@ -1,0 +1,84 @@
+schema: tios-search-campaign-preregistration-v1
+campaign_id: SEARCH-BASELINE-G10-REPRO-V1
+status: PREREGISTERED_NOT_RUN
+purpose: Reproduce the bounded B2/B3/B4 family grids under the D-047 G10 contract.
+execution_authority: NONE
+promotion_eligible: false
+winner_selected: false
+
+scope:
+  admitted_families: [b2_ma_crossover, b3_bollinger_mean_reversion, b4_volatility_breakout]
+  excluded_upstream_history: >-
+    This campaign does not reconstruct the historical process that admitted these families.
+    Its conclusions are limited to this preregistered roster.
+  dataset:
+    dataset_id: DS-CRYPTO-SPOT-BAKEOFF-V1
+    context: BTCUSDT_5m
+    file: data/normalized/BTCUSDT_5m.parquet
+    file_sha256: d4d6b3306c44e242f3fb7f71c44bacabf9a6af1f1f8d507ca2de0853b6a727d0
+    manifest: artifacts/datasets/DS-CRYPTO-SPOT-BAKEOFF-V1.manifest.json
+    manifest_sha256: f2b729627adb5d75a99c90dd7dd25ea6dcabf83de4baea5784397424034dfc56
+  engine:
+    role: vectorbt_research_accelerator
+    environment_manifest: engines/vectorbt/env_manifest.txt
+    environment_manifest_sha256: c55ce4ec3b333a7872da99424ed6187222cc3f70e0ed5ad40825e755c36407d8
+  scenarios: [F1_fee_aware]
+  transformations: [none]
+
+candidate_roster:
+  - family: b2
+    canonical_spec: fixtures/strategies/baselines/B2_ma_crossover.yaml
+    canonical_spec_file_sha256: da3b238432f5e7085f901a87ca6ac3b527055382abacd3d4c21f0476ed15356a
+    parameters:
+      fast: [2, 3, 5, 8, 10, 15]
+      slow: [10, 20, 30, 40, 50, 60]
+      constraint: fast < slow
+    raw_trial_count: 34
+  - family: b3
+    canonical_spec: fixtures/strategies/baselines/B3_bollinger_mean_reversion.yaml
+    canonical_spec_file_sha256: 347384f3102770c588c7a8e5451bfdb7ac929785120227e39a20559b99fb8ef1
+    parameters:
+      window: [3, 5, 10, 20]
+      deviation: [0.5, 1.0, 1.5, 2.0]
+    raw_trial_count: 16
+  - family: b4
+    canonical_spec: fixtures/strategies/baselines/B4_volatility_breakout.yaml
+    canonical_spec_file_sha256: ae7ac1faffe1f083c6b74aabbeb73ab2c99ba7737c1cd387a95b7508363eaeae
+    parameters:
+      lookback: [3, 5, 10, 20]
+      exit_window: [2, 3, 5, 10]
+    raw_trial_count: 16
+
+method:
+  governed_selection_metric: non_annualized_per_bar_sharpe
+  metric_applies_to: [candidate_selection, PBO_IS, PBO_OOS, DSR]
+  cscv_contiguous_slice_count: 16
+  raw_trial_count: 66
+  effective_trial_policy: >-
+    Retain full bar-return correlations; compute family-scope Appendix-3 implied trials only
+    where correlations are defined. This campaign cannot estimate omitted upstream trials.
+  holdout_policy: >-
+    CSCV uses complementary in/out halves inside the declared dataset. No external holdout is
+    consumed, and no result is promotion evidence.
+  thresholds:
+    pbo_maximum: 0.5
+    dsr_minimum: 0.95
+
+implementation:
+  extractor: engines/vectorbt/g10_returns.py
+  extractor_sha256: b287fdc9573d01c48568094a4dab45d1ddd5a95acd771b2bc7f63c2e34ccab34
+  method_module: src/tios/validation/multiple_testing.py
+  method_module_sha256: bd25dca76e7639beebbc5e8381aaff9e3e6c044e82ce61d721c697900cde4e54
+
+stop_rules:
+  - Abort on any missing/non-completed trial, parity mismatch, undefined required input, or independent-recomputation disagreement.
+  - Do not add candidates, parameters, datasets, engines, scenarios, or transformations after the campaign starts; create a new campaign version instead.
+  - Retain every trial and correlation input even when the result is negative or method-blocked.
+  - Never convert a numeric PASS into promotion eligibility; the normal validation and human gates remain separate.
+
+required_output_contract:
+  metadata_validator: tios.evidence.validate_substantive_research_metadata
+  all_trials_population_required: true
+  immutable_output_hash_required: true
+  search_lineage_complete_within_declared_scope: true
+  upstream_family_admission_complete: false

@@ -236,15 +236,17 @@ def build_report() -> dict:
             "dsr": round(dsr["dsr"], 4),
             "expected_max_noise_sharpe": round(dsr["expected_maximum_noise_sharpe"], 4),
             "threshold": DSR_PASS,
-            "verdict": "PASS" if dsr["dsr"] >= DSR_PASS else "FAIL",
+            "numeric_verdict": "PASS" if dsr["dsr"] >= DSR_PASS else "FAIL",
+            "verdict": "METHOD_BLOCKED",
             "verdict_is_genuine": False,
-            "note": "Basis-aware (funding + spot-perp divergence) — and the carry SURVIVES "
-            "basis risk (that is real: a well-arbitraged perp tracks spot within ~0.1%). But "
+            "effective_independent_trials": None,
+            "search_lineage_complete": False,
+            "note": "This numeric diagnostic is not a G10 PASS. The simplified basis-aware "
+            "model remains positive under its own assumptions, but "
             "Sharpe ~9 is still inflated: it omits execution slippage, intraperiod basis "
-            "spikes (8h closes), leverage/liquidation, and exchange COUNTERPARTY risk (the "
-            "actual 2022 killer). Real-world carry Sharpe is ~2-4. The remaining validation "
-            "is EXECUTION-level — it needs S3 paper trading to measure real fills/slippage — "
-            "and counterparty risk is an operator/venue decision, not a backtest number.",
+            "spikes (8h closes), leverage/liquidation, capital/collateral accounting, and "
+            "exchange counterparty risk. Empirical fill/divergence evidence requires a later "
+            "approved paper lane; counterparty selection is an operator decision.",
         },
         "top_configs": [
             {k: t[k] for k in keys}
@@ -266,7 +268,7 @@ def main() -> None:
         f"best basis-aware carry: Sharpe {b['sharpe_ann']} ({cfg}) "
         f"ann {b['ann_return_pct']}% maxDD {b['max_drawdown_pct']}%"
     )
-    print(f"G10 DSR: {g['dsr']} (need >= {g['threshold']}) -> {g['verdict']}")
+    print(f"numeric DSR diagnostic: {g['dsr']} (threshold {g['threshold']}) -> {g['verdict']}")
 
 
 if __name__ == "__main__":

@@ -1,70 +1,70 @@
 {
   "benchmark_equal_weight_all": {
-    "ann_return_pct": 18.6,
-    "bars": 2007,
+    "ann_return_pct": 20.2,
+    "bars": 2019,
     "max_drawdown_pct": -83.9,
-    "sharpe_ann": 0.62,
-    "sharpe_bar": 0.03264534993566367,
-    "total_return_pct": 155.5
+    "sharpe_ann": 0.64,
+    "sharpe_bar": 0.03351069532086345,
+    "total_return_pct": 177.3
   },
-  "days": 2007,
+  "days": 2019,
   "execution_authority": "NONE",
   "long_only": {
     "best": {
-      "ann_return_pct": 33.7,
+      "ann_return_pct": 34.3,
       "lookback": 20,
       "max_drawdown_pct": -51.6,
       "rebalance": 7,
-      "sharpe_ann": 1.01,
+      "sharpe_ann": 1.03,
       "top_k": 8,
-      "total_return_pct": 393.7
+      "total_return_pct": 411.2
     },
     "g10_dsr": {
-      "dsr": 0.9091,
-      "expected_max_noise_sharpe": 0.0233,
+      "dsr": 0.9135,
+      "expected_max_noise_sharpe": 0.0236,
       "note": "PASS still requires stats-specialist review (RG-07) before promotion.",
       "threshold": 0.95,
       "verdict": "FAIL"
     },
     "top_configs": [
       {
-        "ann_return_pct": 33.7,
+        "ann_return_pct": 34.3,
         "lookback": 20,
         "max_drawdown_pct": -51.6,
         "rebalance": 7,
-        "sharpe_ann": 1.01,
+        "sharpe_ann": 1.03,
         "top_k": 8
       },
       {
-        "ann_return_pct": 32.2,
+        "ann_return_pct": 33.4,
         "lookback": 20,
         "max_drawdown_pct": -49.9,
         "rebalance": 7,
-        "sharpe_ann": 0.96,
+        "sharpe_ann": 0.98,
         "top_k": 3
       },
       {
-        "ann_return_pct": 31.1,
+        "ann_return_pct": 32.0,
         "lookback": 20,
         "max_drawdown_pct": -49.9,
         "rebalance": 7,
-        "sharpe_ann": 0.95,
+        "sharpe_ann": 0.98,
         "top_k": 5
       },
       {
-        "ann_return_pct": 30.2,
+        "ann_return_pct": 30.8,
         "lookback": 20,
         "max_drawdown_pct": -50.6,
         "rebalance": 30,
-        "sharpe_ann": 0.9,
+        "sharpe_ann": 0.91,
         "top_k": 8
       },
       {
-        "ann_return_pct": 25.4,
+        "ann_return_pct": 26.5,
         "lookback": 40,
         "max_drawdown_pct": -51.2,
         "rebalance": 7,
-        "sharpe_ann": 0.82,
+        "sharpe_ann": 0.84,
         "top_k": 5
       }
     ],
@@ -72,48 +72,32 @@
   },
   "long_short": {
     "best": {
-      "ann_return_pct": 23.5,
+      "ann_return_pct": 23.2,
       "lookback": 20,
       "max_drawdown_pct": -25.9,
       "rebalance": 7,
-      "sharpe_ann": 1.0,
+      "sharpe_ann": 0.99,
       "top_k": 8,
-      "total_return_pct": 219.1
+      "total_return_pct": 217.0
     },
     "g10_dsr": {
-      "dsr": 0.7115,
-      "expected_max_noise_sharpe": 0.0393,
+      "dsr": 0.6933,
+      "expected_max_noise_sharpe": 0.04,
       "note": "PASS still requires stats-specialist review (RG-07) before promotion.",
       "threshold": 0.95,
       "verdict": "FAIL"
     },
     "top_configs": [
       {
-        "ann_return_pct": 23.5,
+        "ann_return_pct": 23.2,
         "lookback": 20,
         "max_drawdown_pct": -25.9,
         "rebalance": 7,
-        "sharpe_ann": 1.0,
+        "sharpe_ann": 0.99,
         "top_k": 8
       },
       {
-        "ann_return_pct": 17.8,
-        "lookback": 20,
-        "max_drawdown_pct": -33.5,
-        "rebalance": 14,
-        "sharpe_ann": 0.85,
-        "top_k": 8
-      },
-      {
-        "ann_return_pct": 22.6,
-        "lookback": 20,
-        "max_drawdown_pct": -33.4,
-        "rebalance": 30,
-        "sharpe_ann": 0.85,
-        "top_k": 3
-      },
-      {
-        "ann_return_pct": 23.2,
+        "ann_return_pct": 23.1,
         "lookback": 20,
         "max_drawdown_pct": -41.0,
         "rebalance": 7,
@@ -121,12 +105,28 @@
         "top_k": 5
       },
       {
-        "ann_return_pct": 20.9,
-        "lookback": 40,
-        "max_drawdown_pct": -37.7,
-        "rebalance": 7,
+        "ann_return_pct": 17.5,
+        "lookback": 20,
+        "max_drawdown_pct": -33.5,
+        "rebalance": 14,
         "sharpe_ann": 0.84,
+        "top_k": 8
+      },
+      {
+        "ann_return_pct": 20.3,
+        "lookback": 40,
+        "max_drawdown_pct": -40.7,
+        "rebalance": 7,
+        "sharpe_ann": 0.82,
         "top_k": 5
+      },
+      {
+        "ann_return_pct": 21.8,
+        "lookback": 20,
+        "max_drawdown_pct": -33.4,
+        "rebalance": 30,
+        "sharpe_ann": 0.82,
+        "top_k": 3
       }
     ],
     "tradeability": "RESEARCH_ONLY \u2014 shorting needs perps/margin (S4-gated)",

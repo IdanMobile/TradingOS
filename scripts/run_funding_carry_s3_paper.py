@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""S3 paper-lane EXECUTION probe for the basis-aware funding carry.
+"""Offline static cost-stress replay for the basis-aware funding-carry hypothesis.
 
 `run_funding_carry_basis.py` proved the carry survives basis risk, but it charged
 only a coarse 4bps toggle fee. The handoff's honest remaining step is EXECUTION-level
-validation: does REALISTIC execution erode the carry? Being delta-neutral, every
+screen: do assumed per-leg costs erode the modeled carry? Being delta-neutral, every
 rebalance trades BOTH legs (buy/sell spot AND short/cover perp); each leg pays a taker
 fee plus slippage. This drives the SAME best config through explicit per-leg costs,
-routes the resulting cash flows through the real synthetic ledger contract, and reports
-the paper-vs-backtest divergence.
+routes the resulting cash flows through the synthetic ledger contract. It uses no
+observed fills and is not empirical paper-vs-backtest divergence or G12 evidence.
 
 Finding shape: signals (held-set path) are identical, so TRADE_COUNT matches; the
 execution COST diverges — that gap is exactly the number S3 exists to measure.
@@ -46,10 +46,8 @@ from tios.trading_domain import (  # noqa: E402
     LedgerDirection,
     LedgerId,
     Money,
-    PaperLaneMode,
     Provenance,
     RunId,
-    Stage,
     SyntheticLedgerEntryKind,
     apply_synthetic_ledger_change,
     build_synthetic_divergence_report,
@@ -63,7 +61,7 @@ EVIDENCE = (DomainRef("EV-S3-CARRY-PAPER-2026-07-12"),)
 PROVENANCE = Provenance(EVIDENCE)
 INITIAL_CAPITAL = Decimal("10000")
 
-# Realistic per-leg execution: a delta-neutral pair trades spot + perp (2 legs); each leg
+# Assumed per-leg costs: a delta-neutral pair trades spot + perp (2 legs); each leg
 # pays a taker fee + slippage. The backtest's coarse fee (fcb.FEE = 4bps per toggle) is the
 # baseline; this is what it omits.
 TAKER_FEE_BPS = 10.0
@@ -226,13 +224,14 @@ def build_report() -> dict:
 
     carry_survives = pp_m["ann_return_pct"] > 0
     finding = (
-        f"Realistic per-leg execution (spot+perp, taker {TAKER_FEE_BPS}bps + slippage "
+        f"Static assumed per-leg costs (spot+perp, taker {TAKER_FEE_BPS}bps + slippage "
         f"{SLIPPAGE_BPS}bps = {PAPER_TOGGLE_COST * 10000:.0f}bps/toggle vs the backtest's "
         f"{BACKTEST_TOGGLE_COST * 10000:.0f}bps) cuts annual carry from {bt_m['ann_return_pct']}% "
         f"to {pp_m['ann_return_pct']}% ({pp_toggles} leg-toggles, ${pp_fees} execution cost). "
         + (
-            "Carry stays net-positive after realistic execution — the edge is execution-robust "
-            "at this turnover; remaining risk is COUNTERPARTY (operator/venue), not backtest math."
+            "Modeled carry stays positive under these fixed cost assumptions. This is not "
+            "empirical execution robustness; capital, collateral, liquidation, re-hedging, "
+            "missing-data, and counterparty risks remain unresolved."
             if carry_survives
             else "Carry goes net-negative once realistic execution is charged — the coarse "
             "backtest fee was masking a turnover cost the edge cannot pay. NOT tradeable as-is."
@@ -240,10 +239,14 @@ def build_report() -> dict:
     )
 
     return {
-        "schema": "tios-s3-carry-paper-v1",
-        "mode": PaperLaneMode.SYNTHETIC_LOCAL_SIMULATOR.value,
-        "stage": Stage.S3_PAPER_DEMO.value,
-        "status": "PAPER_LANE_RAN_SYNTHETICALLY_NOT_VALIDATED",
+        "schema": "tios-carry-static-cost-stress-v2",
+        "mode": "OFFLINE_HISTORICAL_COST_STRESS",
+        "stage": "S2_RESEARCH",
+        "status": "STATIC_COST_STRESS_NOT_G12",
+        "evidence_classification": "STATIC_SYNTHETIC_ASSUMPTIONS",
+        "observed_venue_fills": False,
+        "g12_status": "NOT_RUN",
+        "paper_lane_qualification": False,
         "approval_status": "NOT_ELIGIBLE",
         "execution_authority": "NONE",
         "venue_connection": "NONE",
@@ -258,8 +261,8 @@ def build_report() -> dict:
                 "lookback": lookback,
                 "rebalance": rebalance,
             },
-            "validation_note": "basis-aware carry DSR 1.0 but verdict_is_genuine=false; this "
-            "probe measures the EXECUTION piece that DSR omitted. Still NOT_ELIGIBLE.",
+            "validation_note": "The basis-aware numeric DSR diagnostic is method-blocked. "
+            "This replay applies fixed costs only and does not measure execution or G12.",
         },
         "backtest_baseline": {
             "toggle_fee_bps": BACKTEST_TOGGLE_COST * 10000,

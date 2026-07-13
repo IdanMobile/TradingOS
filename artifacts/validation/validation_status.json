@@ -1,6 +1,6 @@
 {
   "cross_engine_reproduction_evidence": "artifacts/validation/CROSS_ENGINE_REPRODUCTION_2026_07_11.json",
-  "g10_candidate_evidence": "artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_11.json",
+  "g10_candidate_evidence": "artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_13.json",
   "implemented_gates": [
     "G1",
     "G2",
@@ -30,7 +30,7 @@
   "not_implemented": [],
   "notes": [
     "G5-G9 and G11 now have retained B2 evidence, but the evidence is negative or descriptive and does not support promotion.",
-    "G10 retention evidence is retained and tested; local PBO/CSCV and DSR known-answer method fixtures pass in artifacts/validation/G10_METHOD_FIXTURES_2026_07_11.json. Production G10 estimator evidence is active and currently fails the retained candidate families.",
+    "G10 retention evidence is retained and tested; selection/PBO/DSR use aligned per-bar Sharpe. B2/B4 numeric diagnostics fail and B3 is method-blocked. Production G10 remains METHOD_BLOCKED on missing upstream hierarchy and hierarchy-wide dependence evidence.",
     "No validation gate promotes a strategy, claims production readiness, or authorizes paper/demo/live execution."
   ],
   "production_complete": false,

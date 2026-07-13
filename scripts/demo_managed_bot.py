@@ -82,7 +82,7 @@ def _spot_sell(api_key, secret, symbol, base_qty, get, post, sleep) -> dict:  # 
         return {"ok": False, "error": str(placed.get("retMsg")), "qty": qty}
     status = rt._poll_filled(get, api_key, secret, str(placed["result"]["orderId"]), symbol, sleep)
     return {
-        "ok": status.get("orderStatus") == "Filled" or True,
+        "ok": status.get("orderStatus") == "Filled",
         "qty": qty,
         "fill": status.get("avgPrice"),
     }
@@ -187,39 +187,58 @@ def run_managed(
                     post_transport,
                     sleep,
                 )
-                log(f"  STOP @ {price:.1f} — sold {sold['qty']} (stop {position.stop:.1f})")
-                remember("STOP_SELL", price, sold["qty"], sold["fill"])
-                position = None
+                if sold["ok"]:
+                    log(f"  STOP @ {price:.1f} — sold {sold['qty']} (stop {position.stop:.1f})")
+                    remember("STOP_SELL", price, sold["qty"], sold["fill"])
+                    position = None
+                else:
+                    log("  STOP SELL UNVERIFIED — position remains open locally")
             elif decision.triggered_tps:
                 qty = decision.close_fraction * position.original_qty
                 sold = _spot_sell(
                     api_key, secret, symbol, qty, get_transport, post_transport, sleep
                 )
-                position.taken |= set(decision.triggered_tps)
-                position.remaining_qty -= Decimal(str(sold["qty"]))
-                if decision.new_stop_loss is not None:
-                    position.stop = decision.new_stop_loss
-                levels = "/".join(f"TP{i}" for i in decision.triggered_tps)
-                log(f"  {levels} @ {price:.1f} — sold {sold['qty']} | stop {position.stop:.1f}")
-                remember(f"{levels}_SELL", price, sold["qty"], sold["fill"])
-                if position.remaining_qty <= Decimal("0.000001"):
-                    position = None
+                if sold["ok"]:
+                    position.taken |= set(decision.triggered_tps)
+                    position.remaining_qty -= Decimal(str(sold["qty"]))
+                    if decision.new_stop_loss is not None:
+                        position.stop = decision.new_stop_loss
+                    levels = "/".join(f"TP{i}" for i in decision.triggered_tps)
+                    log(f"  {levels} @ {price:.1f} — sold {sold['qty']} | stop {position.stop:.1f}")
+                    remember(f"{levels}_SELL", price, sold["qty"], sold["fill"])
+                    if position.remaining_qty <= Decimal("0.000001"):
+                        position = None
+                else:
+                    log("  TAKE-PROFIT SELL UNVERIFIED — position remains unchanged locally")
         if cycle < cycles:
             sleep(interval_seconds)
 
-    if position is not None:  # end the run flat
+    flattened = position is None
+    if position is not None:  # attempt to end the run flat
         sold = _spot_sell(
             api_key, secret, symbol, position.remaining_qty, get_transport, post_transport, sleep
         )
-        remember("FLATTEN_SELL", price, sold["qty"], sold["fill"])
+        flattened = sold["ok"]
+        if flattened:
+            remember("FLATTEN_SELL", price, sold["qty"], sold["fill"])
+    residual_qty = str(position.remaining_qty) if not flattened and position is not None else None
     HEARTBEAT.write_text(
-        json.dumps({"running": False, "stopped_utc": datetime.now(UTC).isoformat()}) + "\n"
+        json.dumps(
+            {
+                "running": False,
+                "stopped_utc": datetime.now(UTC).isoformat(),
+                "in_position": residual_qty is not None,
+                "remaining_qty": residual_qty,
+            }
+        )
+        + "\n"
     )
     return {
-        "ok": True,
+        "ok": flattened,
         "symbol": symbol,
         "cycles": cycles,
         "trades": trades,
+        "residual_position_qty": residual_qty,
         "note": "Managed by tios.execution.exit_ladder. Demo/fake money; Donchian NOT validated; "
         "real execution_authority stays NONE.",
     }

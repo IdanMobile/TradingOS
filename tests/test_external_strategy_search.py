@@ -69,6 +69,56 @@ def test_run_variant_profits_on_clean_uptrend() -> None:
     assert result.trades >= 1
 
 
+def test_temporal_screen_selects_without_seeing_holdout() -> None:
+    def always_long(candles):
+        n = len(candles["open"])
+        return [True] * n, [False] * n
+
+    def never_trade(candles):
+        n = len(candles["open"])
+        return [False] * n, [False] * n
+
+    prefix = [100 + i for i in range(60)]
+    rising_holdout = prefix + [160 + i for i in range(30)]
+    falling_holdout = prefix + [160 - 2 * i for i in range(30)]
+    variants = {"always-long": always_long, "never-trade": never_trade}
+
+    rising = ext._temporal_screen(_candles(rising_holdout), variants)
+    falling = ext._temporal_screen(_candles(falling_holdout), variants)
+
+    assert rising["selected_trial_key"] == falling["selected_trial_key"] == "always-long"
+    assert rising["train_total_return"] == falling["train_total_return"]
+    assert rising["holdout_total_return"] != falling["holdout_total_return"]
+    assert rising["split_indices"] == {
+        "train": {"start_inclusive": 0, "stop_exclusive": 30},
+        "validation": {"start_inclusive": 30, "stop_exclusive": 60},
+        "holdout": {"start_inclusive": 60, "stop_exclusive": 90},
+    }
+    assert rising["selection_partition"] == "train"
+    assert rising["parameters_frozen_after_train"] is True
+    assert rising["validation_used_for_selection"] is False
+    assert rising["holdout_used_for_selection"] is False
+    assert rising["holdout_evaluation_count"] == 1
+    assert rising["promotion_eligible"] is False
+
+
+def test_report_is_method_blocked_without_global_candidate(monkeypatch) -> None:
+    monkeypatch.setattr(
+        ext,
+        "evaluate_strategy",
+        lambda strategy: {
+            "strategy_id": strategy.strategy_id,
+            "screen_pass_contexts": [],
+        },
+    )
+    report = ext.build_report()
+    assert report["winner_selected"] is False
+    assert report["search_lineage_complete"] is False
+    assert report["promotion_status"] == "METHOD_BLOCKED"
+    assert report["screen"]["global_candidate_frozen"] is False
+    assert report["screen"]["promotion_eligible"] is False
+
+
 def seed_fees() -> Decimal:
     return ext.seed.FEES
 

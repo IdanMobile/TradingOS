@@ -64,10 +64,11 @@ ambiguity:
   spec variant for quote-based strategies or an explicit "out of schema
   scope" rejection path.
 - **Items 9-10 (academic papers)**: cross-sectional decile/rank strategies
-  do not fit a single-instrument rule schema at all; the long-short design
-  is also unrepresentable (this project's spec is long-only,
-  entry_long/exit_long). Any future ingestion of relative-value or
-  cross-sectional academic strategies will hit the same wall.
+  still do not fit the executable single-instrument rule semantics. The current
+  research-only `multi_leg` extension can retain long/short leg identity, but it
+  does not express ranking, portfolio formation, rebalance, borrow, or execution
+  semantics. Any future ingestion of relative-value or cross-sectional academic
+  strategies must remain non-executable until those primitives are governed.
 
 Everything else (single-instrument directional/breakout/mean-reversion
 rules from frameworks 1-5, 7-8) mapped cleanly — the schema fits the

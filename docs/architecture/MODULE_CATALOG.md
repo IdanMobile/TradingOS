@@ -25,6 +25,16 @@ S2 infrastructure allocation: SQLite owns operational rows and read models; Parq
 - Responsibility: value objects, IDs, enums, decimal/money/timestamp discipline, and inert Market/Signal/Order/Fill/Position/Account/Portfolio/Risk/Approval/ChartAnnotation records (§0–2 of type catalog).
 - Public API: constructors + validation only. No I/O, no config.
 - S2 boundary: trading-domain records normalize historical evidence/read models only; they expose no venue client, mutation method, account state, or execution authority.
+- Strategy research may retain non-executable multi-leg identity (shared eligibility plus typed
+  leg roles/sides/notional assumptions). It is not an engine projection or execution plan, and
+  the long-only evaluator must reject it.
+- Evidence validates future substantive strategy-research metadata fail closed: code identity,
+  immutable dataset/manifest range, canonical spec, preregistered campaign, costs, split,
+  governed selection metric, all-trial population, output hash, and no-authority flags.
+- D-046 correction: standalone `scripts/demo_*.py` files and their retained artifacts
+  are quarantined historical governance-probe evidence, not modules, adapters, or an
+  active venue capability. Their network transports fail closed; no module may invoke
+  them as a demo/order path without the complete recorded approval predicate.
 - Forbidden deps: everything else.
 - Tests: property-based validation tests; serialization round-trips.
 - MVP: required first. Replacement strategy: none (foundational).

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
 from dataclasses import dataclass
 from typing import Any
@@ -30,6 +31,7 @@ FAMILIES = (
     "other",
 )
 SIZING_TYPES = ("fixed_fraction", "fixed_amount", "all_in")
+LEG_SIDES = ("LONG", "SHORT")
 
 
 class SpecError(ValueError):
@@ -120,6 +122,46 @@ class Indicator:
 
 
 @dataclass(frozen=True)
+class StrategyLeg:
+    """Research description of one leg; it carries no order semantics."""
+
+    instrument: str
+    side: str
+    role: str
+    notional_fraction: float | int
+    execution_assumptions: tuple[str, ...]
+
+    def to_obj(self) -> dict[str, Any]:
+        return {
+            "instrument": self.instrument,
+            "side": self.side,
+            "role": self.role,
+            "notional_fraction": self.notional_fraction,
+            "execution_assumptions": list(self.execution_assumptions),
+        }
+
+
+@dataclass(frozen=True)
+class MultiLegResearchSpec:
+    """Non-executable shared eligibility and leg descriptions for research."""
+
+    research_only: bool
+    shared_entry_eligibility: RuleTree
+    shared_exit_eligibility: RuleTree | None
+    legs: tuple[StrategyLeg, ...]
+
+    def to_obj(self) -> dict[str, Any]:
+        return {
+            "research_only": self.research_only,
+            "shared_entry_eligibility": self.shared_entry_eligibility.to_obj(),
+            "shared_exit_eligibility": (
+                self.shared_exit_eligibility.to_obj() if self.shared_exit_eligibility else None
+            ),
+            "legs": [leg.to_obj() for leg in self.legs],
+        }
+
+
+@dataclass(frozen=True)
 class CanonicalStrategySpec:
     strategy_id: str
     family: str
@@ -134,6 +176,7 @@ class CanonicalStrategySpec:
     source_refs: tuple[str, ...] = ()
     license_ref: str | None = None
     always_in_market: bool = False  # buy-and-hold style: no rule trees required
+    multi_leg: MultiLegResearchSpec | None = None
 
     def available_identifiers(self) -> set[str]:
         out = set(self.inputs)
@@ -142,7 +185,7 @@ class CanonicalStrategySpec:
         return out
 
     def to_obj(self) -> dict[str, Any]:
-        return {
+        obj = {
             "strategy_id": self.strategy_id,
             "family": self.family,
             "inputs": list(self.inputs),
@@ -157,6 +200,10 @@ class CanonicalStrategySpec:
             "license_ref": self.license_ref,
             "always_in_market": self.always_in_market,
         }
+        # Preserve the canonical JSON (and therefore hashes) of legacy specs.
+        if self.multi_leg is not None:
+            obj["multi_leg"] = self.multi_leg.to_obj()
+        return obj
 
     def spec_hash(self) -> str:
         canonical = json.dumps(self.to_obj(), sort_keys=True, separators=(",", ":"))
@@ -183,6 +230,64 @@ def _str_list(data: dict[str, Any], key: str, path: str, required: bool = True) 
     return tuple(val)
 
 
+def _parse_multi_leg(data: dict[str, Any]) -> MultiLegResearchSpec | None:
+    raw = data.get("multi_leg")
+    if raw is None:
+        return None
+    if not isinstance(raw, dict):
+        raise SpecError("$.multi_leg", "must be a mapping")
+    if raw.get("research_only") is not True:
+        raise SpecError("$.multi_leg.research_only", "must be true")
+
+    raw_legs = _require(raw, "legs", list, "$.multi_leg")
+    if len(raw_legs) < 2:
+        raise SpecError("$.multi_leg.legs", "must contain at least two legs")
+    legs: list[StrategyLeg] = []
+    roles: set[str] = set()
+    for index, raw_leg in enumerate(raw_legs):
+        path = f"$.multi_leg.legs[{index}]"
+        if not isinstance(raw_leg, dict):
+            raise SpecError(path, "leg must be a mapping")
+        instrument = _require(raw_leg, "instrument", str, path)
+        if not instrument.strip():
+            raise SpecError(f"{path}.instrument", "must be non-empty")
+        side = _require(raw_leg, "side", str, path)
+        if side not in LEG_SIDES:
+            raise SpecError(f"{path}.side", f"must be one of {LEG_SIDES}")
+        role = _require(raw_leg, "role", str, path)
+        if not re.fullmatch(_IDENT, role):
+            raise SpecError(f"{path}.role", "must be a lower_snake identifier")
+        if role in roles:
+            raise SpecError(f"{path}.role", f"duplicate role {role!r}")
+        roles.add(role)
+        notional = raw_leg.get("notional_fraction")
+        if (
+            isinstance(notional, bool)
+            or not isinstance(notional, (float, int))
+            or not math.isfinite(float(notional))
+            or notional <= 0
+        ):
+            raise SpecError(f"{path}.notional_fraction", "must be a positive finite number")
+        assumptions = _str_list(raw_leg, "execution_assumptions", path)
+        if not assumptions or any(not assumption.strip() for assumption in assumptions):
+            raise SpecError(f"{path}.execution_assumptions", "must contain non-empty strings")
+        legs.append(StrategyLeg(instrument, side, role, notional, assumptions))
+
+    return MultiLegResearchSpec(
+        research_only=True,
+        shared_entry_eligibility=RuleTree.parse(
+            _require(raw, "shared_entry_eligibility", dict, "$.multi_leg"),
+            "$.multi_leg.shared_entry_eligibility",
+        ),
+        shared_exit_eligibility=(
+            RuleTree.parse(raw["shared_exit_eligibility"], "$.multi_leg.shared_exit_eligibility")
+            if raw.get("shared_exit_eligibility") is not None
+            else None
+        ),
+        legs=tuple(legs),
+    )
+
+
 def parse_spec(data: object) -> CanonicalStrategySpec:
     """Strict structural parse of a spec mapping (already YAML-loaded)."""
     if not isinstance(data, dict):
@@ -205,11 +310,20 @@ def parse_spec(data: object) -> CanonicalStrategySpec:
         outputs = _str_list(raw, "outputs", ipath)
         indicators.append(Indicator(name, params, outputs))
 
+    multi_leg = _parse_multi_leg(data)
     always_in = bool(data.get("always_in_market", False))
     entry = RuleTree.parse(data["entry_long"], "$.entry_long") if data.get("entry_long") else None
     exit_ = RuleTree.parse(data["exit_long"], "$.exit_long") if data.get("exit_long") else None
-    if not always_in and entry is None:
-        raise SpecError("$.entry_long", "required unless always_in_market: true")
+    if multi_leg is not None:
+        if always_in:
+            raise SpecError("$.always_in_market", "cannot be true for a multi-leg research spec")
+        if entry is not None or exit_ is not None:
+            raise SpecError(
+                "$.multi_leg",
+                "cannot be combined with directional entry_long or exit_long rules",
+            )
+    elif not always_in and entry is None:
+        raise SpecError("$.entry_long", "required unless always_in_market or multi_leg is set")
 
     sizing = _require(data, "position_sizing", dict, path)
     if sizing.get("type") not in SIZING_TYPES:
@@ -229,4 +343,5 @@ def parse_spec(data: object) -> CanonicalStrategySpec:
         source_refs=_str_list(data, "source_refs", path, required=False),
         license_ref=data.get("license_ref"),
         always_in_market=always_in,
+        multi_leg=multi_leg,
     )

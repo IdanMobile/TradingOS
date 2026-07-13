@@ -1,5 +1,12 @@
 # Handoff — Continue from the funding-carry / market-neutral finding (2026-07-12)
 
+**Status: SUPERSEDED on 2026-07-13 by D-045/D-046,
+`docs/supervisor/SUPERVISORY_BASELINE_2026-07-13.md`, and
+`docs/supervisor/IMPROVEMENT_PLAN_2026-07-13.md`. Do not execute this file's exact next action
+or inherit its DSR, carry-edge, paper-divergence, venue, or validation claims. Current safe
+stage is constrained offline S2; authenticated Bybit demo networking is quarantined; the
+retained carry runs are static/model-limited hypotheses, not empirical G12 or validated edge.**
+
 Audience: the next session (post-compaction), any AI. Read order: this file →
 `docs/product/STRATEGY_RESEARCH_DIRECTION.md` (the CEO/CTO brief) → `PROJECT_STATE.md`
 (dated entries at the end) → `research/SOURCE_REGISTRY.md` (strategy-discovery section)

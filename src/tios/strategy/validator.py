@@ -37,10 +37,27 @@ def completeness_errors(spec: CanonicalStrategySpec) -> list[str]:
 
     if spec.entry_long is not None and spec.exit_long is None and not _has_risk_exit(spec):
         errors.append("entry_long has no exit path: define exit_long or a risk stop/take-profit")
+    if (
+        spec.multi_leg is not None
+        and spec.multi_leg.shared_exit_eligibility is None
+        and not _has_risk_exit(spec)
+    ):
+        errors.append(
+            "multi_leg has no exit path: define shared_exit_eligibility or a risk stop/take-profit"
+        )
+    if spec.multi_leg is not None and spec.risk.get("execution_authority") != "NONE":
+        errors.append("multi_leg research specs require risk.execution_authority: NONE")
 
     available = spec.available_identifiers() | DATASET_IDENTIFIERS
-    for tree_name in ("entry_long", "exit_long"):
-        tree = getattr(spec, tree_name)
+    trees = [("entry_long", spec.entry_long), ("exit_long", spec.exit_long)]
+    if spec.multi_leg is not None:
+        trees.extend(
+            (
+                ("multi_leg.shared_entry_eligibility", spec.multi_leg.shared_entry_eligibility),
+                ("multi_leg.shared_exit_eligibility", spec.multi_leg.shared_exit_eligibility),
+            )
+        )
+    for tree_name, tree in trees:
         if tree is None:
             continue
         unknown = sorted(tree.identifiers() - available)

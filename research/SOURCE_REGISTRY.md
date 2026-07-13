@@ -1,6 +1,6 @@
 # Source Registry
 
-Checked: 2026-07-05
+Checked: 2026-07-13
 
 ## Primary / official technical sources
 
@@ -24,8 +24,8 @@ Checked: 2026-07-05
 
 | Source | Use |
 |---|---|
-| Bailey et al., Probability of Backtest Overfitting | PBO / CSCV validation |
-| Bailey & López de Prado, Deflated Sharpe Ratio | multiple-testing and non-normality correction |
+| [Bailey et al., Probability of Backtest Overfitting](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253) | PBO / CSCV validation |
+| [Bailey & López de Prado, Deflated Sharpe Ratio](https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf) | multiple-testing and non-normality correction; equation rechecked 2026-07-13 |
 | BacktestBench (2026) | AI automated backtest benchmark prior art |
 | QuantEval (2026) | quant LLM benchmark prior art |
 | QuantCode-Bench (2026) | executable strategy-generation benchmark prior art |

@@ -2,6 +2,7 @@
 rejected with precise errors, spec-hash stability, SV immutability."""
 
 import dataclasses
+from copy import deepcopy
 
 import pytest
 from hypothesis import given
@@ -37,6 +38,39 @@ VALID_SPEC: dict[str, object] = {
     ],
     "ambiguities": [],
 }
+
+
+def _multi_leg_spec() -> dict[str, object]:
+    payload = deepcopy(VALID_SPEC)
+    payload["entry_long"] = None
+    payload["exit_long"] = None
+    payload["risk"] = {
+        "stop_loss": None,
+        "take_profit": None,
+        "execution_authority": "NONE",
+    }
+    payload["multi_leg"] = {
+        "research_only": True,
+        "shared_entry_eligibility": {"all": ["sma_fast > sma_slow"]},
+        "shared_exit_eligibility": {"any": ["sma_fast <= sma_slow"]},
+        "legs": [
+            {
+                "instrument": "SAME_SYMBOL_SPOT",
+                "side": "LONG",
+                "role": "asset",
+                "notional_fraction": 1.0,
+                "execution_assumptions": ["Spot fills are not modeled."],
+            },
+            {
+                "instrument": "SAME_SYMBOL_PERPETUAL",
+                "side": "SHORT",
+                "role": "hedge",
+                "notional_fraction": 1.0,
+                "execution_assumptions": ["Perpetual fills are not modeled."],
+            },
+        ],
+    }
+    return payload
 
 
 # ---------- property tests: rule trees ----------
@@ -105,6 +139,51 @@ def test_ambiguities_change_verdict() -> None:
     assert validate(spec).verdict == "VALID_WITH_AMBIGUITIES"
 
 
+def test_research_only_multi_leg_spec_preserves_shared_eligibility_and_legs() -> None:
+    payload = _multi_leg_spec()
+    parsed = parse_spec(payload)
+
+    assert validate(payload).verdict == "VALID"
+    assert parsed.entry_long is None
+    assert parsed.exit_long is None
+    assert parsed.multi_leg is not None
+    assert parsed.multi_leg.research_only is True
+    assert parsed.multi_leg.shared_entry_eligibility.identifiers() == {"sma_fast", "sma_slow"}
+    assert [(leg.side, leg.role, leg.notional_fraction) for leg in parsed.multi_leg.legs] == [
+        ("LONG", "asset", 1.0),
+        ("SHORT", "hedge", 1.0),
+    ]
+
+
+def test_multi_leg_spec_fails_closed_on_executable_or_ambiguous_shape() -> None:
+    cases: list[tuple[dict[str, object], str]] = []
+
+    not_research = _multi_leg_spec()
+    assert isinstance(not_research["multi_leg"], dict)
+    not_research["multi_leg"]["research_only"] = False
+    cases.append((not_research, "research_only"))
+
+    one_leg = _multi_leg_spec()
+    assert isinstance(one_leg["multi_leg"], dict)
+    assert isinstance(one_leg["multi_leg"]["legs"], list)
+    one_leg["multi_leg"]["legs"] = one_leg["multi_leg"]["legs"][:1]
+    cases.append((one_leg, "at least two legs"))
+
+    directional = _multi_leg_spec()
+    directional["entry_long"] = VALID_SPEC["entry_long"]
+    cases.append((directional, "cannot be combined"))
+
+    authority = _multi_leg_spec()
+    assert isinstance(authority["risk"], dict)
+    authority["risk"]["execution_authority"] = "PAPER"
+    cases.append((authority, "execution_authority: NONE"))
+
+    for payload, expected in cases:
+        report = validate(payload)
+        assert report.verdict == "INVALID"
+        assert any(expected in error for error in report.errors), report.errors
+
+
 @pytest.mark.parametrize(
     ("mutation", "error_fragment"),
     [
@@ -152,6 +231,7 @@ def test_spec_hash_stable_and_sensitive() -> None:
     assert a.spec_hash() == b.spec_hash()
     changed = parse_spec(dict(VALID_SPEC, family="mean_reversion"))
     assert changed.spec_hash() != a.spec_hash()
+    assert a.spec_hash() == "a8c78087542365d4bfb5582e84f5650d16feb8e322c551e647b1ae4caf603279"
 
 
 def test_strategy_version_is_immutable() -> None:

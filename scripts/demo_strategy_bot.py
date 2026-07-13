@@ -156,12 +156,13 @@ def run_bot(
             holding = 0.0
     log(f"done — {len(trades)} demo order(s); final {'FLAT' if holding == 0 else holding}")
     return {
-        "ok": True,
+        "ok": holding == 0,
         "symbol": symbol,
         "interval": interval,
         "signal": f"donchian({entry_w}/{exit_w})",
         "bars": len(close),
         "trades": trades,
+        "residual_holding": holding,
         "note": "Machinery + candidate test on demo/fake money. Donchian is NOT validated "
         "(fails DSR); real execution_authority stays NONE.",
     }

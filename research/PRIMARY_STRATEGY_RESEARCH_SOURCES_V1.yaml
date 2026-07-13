@@ -207,14 +207,17 @@ sources:
     pages: "94-107"
     doi: 10.3905/jpm.2014.40.5.094
     canonical_publisher_url: "https://www.pm-research.com/content/iijpormgmt/40/5/94"
-    lawful_full_text_url: null
-    checked_at: "2026-07-10T00:00:00Z"
-    access_license_status: publisher_page_only
+    lawful_full_text_url: "https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf"
+    checked_at: "2026-07-13T02:30:00Z"
+    access_license_status: lawful_full_text_linked
     hypothesis_families: [multiple_testing_controls]
     claim_summary: >-
       Primary method source for adjusting Sharpe-ratio interpretation for selection, multiple
-      trials, and non-normal returns; no local statistic is validated merely by citing it.
-    exact_span_status: not_captured
+      trials, and non-normal returns. Equation 2 and the surrounding definition state that the
+      selected strategy's observed Sharpe, sample length, skewness, and kurtosis enter the DSR
+      statistic; the expected maximum noise Sharpe is the adjusted rejection threshold. No local
+      statistic is validated merely by citing the paper.
+    exact_span_status: captured
     evidence_strength: hypothesis_only
     profit_claims_inherited: false
     locally_reproduced: false

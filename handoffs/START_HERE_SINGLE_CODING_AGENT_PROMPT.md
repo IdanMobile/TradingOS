@@ -6,6 +6,12 @@ You are the coding agent for the Trading Intelligence OS project.
 
 This file is the **single operational source of truth (SSOT) for coding-agent execution**.
 
+**Current amendment — 2026-07-13:** the supervisory correction baseline and
+dependency-ordered plan under `docs/supervisor/` supersede completed S2 startup tasks
+and every older continuation handoff. Continue only its remaining offline initiatives.
+Authenticated venue transports are quarantined, G10 is `METHOD_BLOCKED`, no strategy
+is validated or promotion-eligible, and no paper/demo/live authority exists.
+
 You must start here. Do not treat any other file as an independent controller prompt.
 
 The repository contains supporting authority, decisions, specifications, research, and state. Those files are subordinate to this SSOT according to the precedence rules below.
@@ -20,7 +26,7 @@ When instructions conflict, use this exact order:
 2. **This file:** `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md`.
 3. `TRADING_OS_NORTH_STAR.md` for immutable product intent, approved principles, and strategic boundaries.
 4. `DECISION_LOG.md` and files under `decisions/` for approved scoped decisions.
-5. Files under `specs/` and `benchmarks/` for executable requirements and acceptance gates, and `docs/` planning authorities (`docs/architecture/AD.md`, `docs/architecture/MODULE_CATALOG.md`, `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md`, `docs/program/PROGRAM_PLAN.md`, `docs/program/S2_AUTONOMOUS_RESEARCH_LAB_PLAN.md`, `docs/product/MVP_SCOPE.md`, `docs/testing/TEST_MASTER_PLAN.md`, `docs/traceability/TRACEABILITY_MATRIX.md`, `docs/ai/AGENT_ROLES.md`, `skills/`) for architecture, scope, and task design (D-030/D-036). Maturity labels inside AD.md (APPROVED/PROVISIONAL/UNRESOLVED) are binding: PROVISIONAL/UNRESOLVED items may not be treated as final selections.
+5. Files under `specs/` and `benchmarks/` for executable requirements and acceptance gates, and `docs/` planning authorities (`docs/supervisor/SUPERVISORY_BASELINE_2026-07-13.md`, `docs/supervisor/IMPROVEMENT_PLAN_2026-07-13.md`, `docs/architecture/AD.md`, `docs/architecture/MODULE_CATALOG.md`, `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md`, `docs/program/PROGRAM_PLAN.md`, `docs/program/S2_AUTONOMOUS_RESEARCH_LAB_PLAN.md`, `docs/product/MVP_SCOPE.md`, `docs/testing/TEST_MASTER_PLAN.md`, `docs/traceability/TRACEABILITY_MATRIX.md`, `docs/ai/AGENT_ROLES.md`, `skills/`) for architecture, scope, and task design (D-030/D-036). Maturity labels inside AD.md (APPROVED/PROVISIONAL/UNRESOLVED) are binding: PROVISIONAL/UNRESOLVED items may not be treated as final selections.
 6. `TODO.md` + `todos/` for task ordering *within* the phase this file authorizes. TODO never expands authorized scope.
 7. `PROJECT_STATE.md` for current phase/status only.
 8. `MISSING_AND_OPEN_ITEMS.md`, `RESEARCH_BACKLOG.md`, and `research/RESEARCH_GAP_MATRIX.md` for unresolved/deferred work.
@@ -255,12 +261,14 @@ The active goal is autonomous evidence operations: sourced hypotheses, reproduci
 offline research/backtests, retained trials, independent scoring, validation, and a
 read-only research console.
 
-## Stage and first initiative (2026-07-10 HG-2 decision)
+## Stage and current initiative (amended 2026-07-13)
 
 - Program stage: **S2 — constrained autonomous research lab** (HG-2 approved in D-036).
-- **Exact first initiative:** `todos/02_architecture_foundation.md`, T-002-01 through
-  T-002-04, followed by the S2 delivery waves in
-  `docs/program/S2_AUTONOMOUS_RESEARCH_LAB_PLAN.md`.
+- T-002-01 through T-002-04 and the completed S2 delivery waves are retained history,
+  not work to rerun.
+- **Exact current initiative:** continue the unresolved, dependency-ordered offline
+  work in `docs/supervisor/IMPROVEMENT_PLAN_2026-07-13.md`. Its progress snapshot is
+  binding; contained/corrected items must not be reopened except by new evidence.
 - S1 workstreams WS1–WS9 in §5 are completed evidence inputs, not instructions to
   rerun or expand the prototype.
 - Implementation must respect module boundaries and test gates. S2 may resolve

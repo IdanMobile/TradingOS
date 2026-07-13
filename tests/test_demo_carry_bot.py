@@ -33,6 +33,12 @@ def test_order_enforces_carry_cap() -> None:
 
 def test_run_carry_opens_and_closes_four_legs() -> None:
     bodies: list[dict] = []
+    positions = iter(
+        [
+            {"retCode": 0, "result": {"list": [{"side": "Sell", "size": "0.001"}]}},
+            {"retCode": 0, "result": {"list": [{"side": "None", "size": "0"}]}},
+        ]
+    )
 
     responses = {
         "query-api": {
@@ -52,13 +58,11 @@ def test_run_carry_opens_and_closes_four_legs() -> None:
                 "list": [{"orderStatus": "Filled", "avgPrice": "63800", "cumExecQty": "0.001"}]
             },
         },
-        "position/list": {
-            "retCode": 0,
-            "result": {"list": [{"side": "Sell", "size": "0.001", "unrealisedPnl": "0"}]},
-        },
     }
 
     def get(url: str, headers: dict[str, str]) -> bytes:
+        if "position/list" in url:
+            return json.dumps(next(positions)).encode()
         for key, payload in responses.items():
             if key in url:
                 return json.dumps(payload).encode()
@@ -83,8 +87,8 @@ def test_run_carry_opens_and_closes_four_legs() -> None:
     assert [leg["leg"] for leg in report["legs"]] == [
         "SPOT_BUY",
         "PERP_SHORT",
-        "SPOT_SELL",
         "PERP_CLOSE",
+        "SPOT_SELL",
     ]
     # The short leg is a linear-perp SELL; the close is a reduce-only linear BUY.
     short = next(b for b in bodies if b["category"] == "linear" and b["side"] == "Sell")
@@ -105,3 +109,41 @@ def test_run_carry_stops_when_preflight_is_not_green() -> None:
 
     report = cb.run_carry(KEY, SECRET, get_transport=get, market_transport=boom)
     assert report["ok"] is False and report["stage"] == "preflight"
+
+
+def test_run_carry_does_not_trade_when_funding_is_unfavorable() -> None:
+    responses = {
+        "query-api": {
+            "retCode": 0,
+            "result": {"readOnly": 0, "permissions": {"Spot": ["SpotTrade"]}},
+        },
+        "wallet-balance": {"retCode": 0, "result": {"list": []}},
+    }
+
+    def get(url: str, headers: dict[str, str]) -> bytes:
+        payload = next(payload for key, payload in responses.items() if key in url)
+        return json.dumps(payload).encode()
+
+    def market(url: str, headers: dict[str, str]) -> bytes:
+        return json.dumps(
+            {
+                "result": {
+                    "list": [{"fundingRate": "-0.0001", "markPrice": "63800", "lastPrice": "63800"}]
+                }
+            }
+        ).encode()
+
+    def post(url: str, headers: dict[str, str], body: bytes) -> bytes:
+        raise AssertionError("unfavorable funding must not place orders")
+
+    report = cb.run_carry(
+        KEY, SECRET, get_transport=get, market_transport=market, post_transport=post
+    )
+    assert report["ok"] is False and report["stage"] == "signal" and report["legs"] == []
+
+
+def test_poll_leg_does_not_treat_missing_status_as_filled() -> None:
+    def get(url: str, headers: dict[str, str]) -> bytes:
+        return json.dumps({"retCode": 0, "result": {"list": []}}).encode()
+
+    assert cb._poll_leg(get, KEY, SECRET, "spot", "BTCUSDT", "OID", lambda _s: None) == {}

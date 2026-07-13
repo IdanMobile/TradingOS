@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from run_g10_candidate import (  # noqa: E402
+    build_method_contract,
     evaluate_family,
     independent_dsr,
     independent_pbo,
@@ -55,6 +56,10 @@ def _payload(trials: list[dict], slices: int = 4) -> dict:
         "slice_length_bars": 10,
         "bars_excluded_tail": 0,
         "sample_count": 200,
+        "return_correlation_observation_count": 200,
+        "return_correlations_upper_triangle": [
+            0.0 for _ in range(len(trials) * (len(trials) - 1) // 2)
+        ],
     }
 
 
@@ -66,6 +71,9 @@ def _trial(key: str, slice_returns: list[float], sharpe: float, total: float) ->
         "trades": 1,
         "sharpe_per_bar": sharpe,
         "slice_mean_returns": slice_returns,
+        "slice_return_statistics": [
+            [2, 2 * value, 2 * (value * value + 1)] for value in slice_returns
+        ],
         "returns_skewness": 0.0,
         "returns_kurtosis": 3.0,
     }
@@ -82,12 +90,12 @@ def test_evaluate_family_fails_an_overfit_population() -> None:
         )
     )
     assert result["verdict"] == "FAIL"
-    assert result["selected_trial_key"] == "a"
+    assert result["selected_trial_key"] == "c"
     assert result["pbo"]["max_abs_delta"] <= 1e-9
     assert result["dsr"]["max_abs_delta"] <= 1e-6
 
 
-def test_evaluate_family_passes_only_a_dominant_stable_candidate() -> None:
+def test_numeric_pass_remains_method_blocked_without_search_lineage() -> None:
     result = evaluate_family(
         _payload(
             [
@@ -98,20 +106,46 @@ def test_evaluate_family_passes_only_a_dominant_stable_candidate() -> None:
         )
     )
     assert result["verdict"] == "PASS"
+    assert result["promotion_verdict"] == "METHOD_BLOCKED"
+    assert result["effective_independent_trials"] == 3
+    assert result["search_lineage_complete"] is False
+    assert result["selection_metrics_aligned"] is True
     assert "specialist review" in result["verdict_rule"]
 
 
-def test_retained_candidate_evidence_is_complete_and_failing() -> None:
-    path = ROOT / "artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_11.json"
+def test_method_contract_fails_closed_on_missing_hierarchy() -> None:
+    contract = build_method_contract(
+        {"status": "INCOMPLETE", "effective_independent_trials": None},
+        {"b2": {"selection_metrics_aligned": True, "effective_independent_trials": 2.5}},
+    )
+    assert contract["status"] == "METHOD_BLOCKED"
+    assert contract["blockers"] == [
+        "hierarchical_search_lineage_incomplete",
+        "hierarchy_effective_independent_trials_unavailable",
+    ]
+
+
+def test_retained_candidate_evidence_fails_closed() -> None:
+    path = ROOT / "artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_13.json"
     data = json.loads(path.read_text())
-    assert data["schema"] == "tios-g10-candidate-evidence-v1"
-    assert data["g10_gate_status"] == "FAIL"
+    assert data["schema"] == "tios-g10-candidate-evidence-v2"
+    assert data["g10_gate_status"] == "METHOD_BLOCKED"
     for family in ("b2", "b3", "b4"):
         result = data["families"][family]
-        assert result["verdict"] == "FAIL"
+        assert result["verdict"] in {"FAIL", "METHOD_BLOCKED"}
+        assert result["promotion_verdict"] == "METHOD_BLOCKED"
+        if result["effective_independent_trials"] is None:
+            assert result["dsr"]["status"] == "METHOD_BLOCKED"
+        else:
+            assert 1 <= result["effective_independent_trials"] <= result["raw_trial_count"]
+            assert result["dsr"]["max_abs_delta"] <= 1e-6
+        assert result["search_lineage_complete"] is False
+        assert result["selection_metrics_aligned"] is True
         assert result["pbo"]["max_abs_delta"] <= 1e-9
-        assert result["dsr"]["max_abs_delta"] <= 1e-6
         assert result["trial_count"] >= 16
+    assert data["method_contract"]["status"] == "METHOD_BLOCKED"
+    assert data["search_lineage"]["status"] == "INCOMPLETE"
+    assert data["search_lineage"]["raw_trial_count_retained"] == 66
     provenance = data["provenance"]
     assert provenance["dataset_id"] == "DS-CRYPTO-SPOT-BAKEOFF-V1"
     for key in (
@@ -121,4 +155,19 @@ def test_retained_candidate_evidence_is_complete_and_failing() -> None:
         "strategy_spec_sha256",
     ):
         assert provenance[key]
+    assert set(provenance["strategy_spec_sha256"]) == {"b2", "b3", "b4"}
     assert "approves no strategy" in data["effect"]
+
+
+def test_extractor_inputs_retain_sharpe_statistics_and_correlations() -> None:
+    for family in ("b2", "b3", "b4"):
+        data = json.loads(
+            (ROOT / f"artifacts/validation/g10_candidate/g10_returns_{family}.json").read_text()
+        )
+        assert data["schema"] == "tios-g10-returns-v2"
+        assert len(data["return_correlations_upper_triangle"]) == (
+            len(data["trials"]) * (len(data["trials"]) - 1) // 2
+        )
+        for trial in data["trials"]:
+            assert len(trial["slice_return_statistics"]) == data["slice_count"]
+            assert all(len(statistics) == 3 for statistics in trial["slice_return_statistics"])

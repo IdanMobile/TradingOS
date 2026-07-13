@@ -356,3 +356,87 @@ credential, stage-gate/approval transition, venue, exchange-order, or live-contr
 does not approve HG-3 or activate a bot, and it preserves `execution_authority=NONE`,
 `venue_connection=NONE`, `paper_orders=DISABLED`, and `live_orders=DISABLED`.
 Status: **Approved (operator); implemented as the third bounded audited POST route.**
+
+## 2026-07-13 — Supervisory corrective decisions
+
+### D-045 — Correct the production DSR equation and supersede affected numeric evidence
+Decision: the DSR non-normality adjustment must use the selected strategy's observed
+Sharpe ratio, not the expected maximum noise threshold. The shared implementation and
+both comparison implementations are corrected from the primary Bailey/López de Prado
+formula. Every dependent DSR artifact must be recomputed or explicitly superseded.
+
+Consequence: prior FAIL decisions remain non-approvable, but their numeric DSR values
+are not inherited. No current or future PASS may count toward promotion until the
+effective-independent-trial and selection-procedure gaps receive the existing
+validation-stats-specialist review.
+
+Evidence: `docs/supervisor/SUPERVISORY_BASELINE_2026-07-13.md`,
+`src/tios/validation/multiple_testing.py`, corrected method fixtures, and the
+author-hosted primary paper recorded under `SRC-DSR-2014`.
+Status: **Approved corrective implementation decision; grants no strategy or execution authority.**
+
+### D-046 — Quarantine unapproved authenticated Bybit demo tooling
+Decision: the retained Bybit demo order activity is historical venue-demo evidence,
+not an approved S3 qualification run. No durable HG-3, HG-4, validation approval,
+security-review approval, or Bybit-specific integration approval exists. The two
+authenticated network transports are therefore fail-closed and quarantined before
+network access. Injected offline transports remain available for tests.
+
+This correction enforces D-036/D-037/D-042/D-043 and AD §AA; it does not create a new
+human approval, discard historical evidence, or imply real-money activity. Any future
+reactivation requires the complete matching predicate and a typed adapter/reconciliation
+review rather than merely removing the guard.
+
+Evidence: `docs/supervisor/SUPERVISORY_BASELINE_2026-07-13.md` and
+`docs/supervisor/IMPROVEMENT_PLAN_2026-07-13.md` (SUP-001/SUP-003).
+Status: **Quarantined; current safe stage remains constrained offline S2.**
+
+### D-047 — Govern G10 with one Sharpe metric and explicit hierarchical blocking
+Decision: non-annualized per-bar Sharpe is the single governed metric for retained-family
+candidate selection, both CSCV/PBO halves, and DSR. Slice sufficient statistics must reproduce
+that metric exactly. Raw trials and effective independent trials are separate fields;
+family-scope effective trials may use the DSR paper's Appendix-3 average-return-correlation
+interpolation only when the complete family return population is retained and correlations are
+defined.
+
+This does not complete G10. The pre-lab hypothesis/family, dataset, engine, scenario, and
+transformation search was not retained, so no hierarchy-wide dependence estimate exists. B2
+and B4 are numeric FAIL diagnostics, B3 is method-blocked, and the overall gate remains
+`METHOD_BLOCKED`. No family-scope estimate can stand in for missing hierarchy evidence.
+
+Evidence: `artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_13.json`,
+`artifacts/validation/seed_candidates/SEED_G10_QC2_ETHUSDT_1H_2026_07_13.json`,
+the DSR author paper, and the PBO primary paper recorded in the source registry.
+Status: **Approved offline validation contract; no strategy or execution authority.**
+
+### D-048 — Research-only multi-leg identity has no execution semantics
+Decision: `CanonicalStrategySpec` may carry an optional research-only multi-leg block with
+shared eligibility and typed leg descriptions (instrument kind, `LONG|SHORT`, unique role,
+positive notional fraction, and explicit execution assumptions). It requires
+`execution_authority=NONE`, cannot coexist with directional long-only entry/exit rules, and is
+rejected by the long-only evaluator. Legacy specs preserve their canonical hashes.
+
+This records hypothesis identity only. It creates no paired-order atomicity, venue mapping,
+credential, collateral, margin, funding-settlement, liquidation, reconciliation, or order
+route. Pure carry-accounting primitives are calculation fixtures, not an active portfolio,
+risk engine, backtest verdict, or G12 evidence.
+
+Evidence: `strategies/research/funding-carry-basis-delta-neutral/`,
+`src/tios/strategy/spec.py`, and `src/tios/validation/carry_accounting.py`.
+Status: **Approved constrained-S2 research representation; execution remains unreachable.**
+
+### D-049 — Future substantive research requires preregistration and complete metadata
+Decision: a future substantive strategy campaign must freeze its admitted roster, immutable
+data, specs, engines, scenarios, transformations, parameter grids, derived raw-trial count,
+selection metric, split/holdout policy, effective-trial evidence policy, and stop rules before
+execution. Results must declare full code/data/manifest/spec/campaign/cost/split/all-trial/output
+lineage through the fail-closed substantive-research metadata contract.
+
+The first retained instance is the bounded 66-trial B2/B3/B4 reproduction campaign. It does
+not recover the historical process that admitted those families and cannot create promotion
+evidence. Contract validation checks declarations only and always requires
+`execution_authority=NONE` and `promotion_eligible=false`.
+
+Evidence: `research/BASELINE_G10_SEARCH_CAMPAIGN_V1.yaml` and
+`src/tios/evidence/provenance.py`.
+Status: **Approved future offline-research contract; campaign not run and no authority granted.**

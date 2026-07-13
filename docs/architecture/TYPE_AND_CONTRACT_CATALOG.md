@@ -13,6 +13,23 @@ Rule: implementation must not begin from this file alone; it binds names, semant
 - Every durable identity-bearing entity carries `created_at`, `creator_type` (`HUMAN|AGENT|SYSTEM`), provenance links, and an environment tag. Immutable ephemeral value/projection rows (for example freshness, equity points, paper snapshots, and aggregate cockpit views) are not durable entities and are exempt from stable entity identity and creator metadata when their typed identifier/subject/source and event/observation/as-of fields provide the necessary context. They still carry source, environment, and provenance where applicable and cannot serve as approval authority. Evidence-bearing records are append-only; corrections are new records referencing the old (supersession, never mutation).
 - S2 accepts `environment=HISTORICAL_RESEARCH`, `execution_authority=NONE`, `venue_connection=NONE`, `paper_orders=DISABLED`, and `live_orders=DISABLED` only. `DEMO`, `PAPER`, and `LIVE` are reserved vocabulary, not reachable S2 states.
 - The dormant or gate-approved S3 local simulator also retains `execution_authority=NONE`, `venue_connection=NONE`, `paper_orders=DISABLED`, and `live_orders=DISABLED`. Its fills are local synthetic evidence; these flags describe the absence of exchange-order capability, not the absence of local simulation.
+- D-046 records historical authenticated Bybit demo activity as an unauthorized
+  governance probe. The current contract remains unchanged: there is no reachable S2
+  demo command, credential, venue connection, or order capability, and the standalone
+  demo transports are network-quarantined. Historical demo artifacts must be labeled
+  as such and cannot satisfy a gate or represent current connectivity.
+- `CanonicalStrategySpec.multi_leg` is an optional research-only structure with shared
+  entry/exit eligibility and at least two legs carrying instrument kind, `LONG|SHORT`, unique
+  role, positive target-notional fraction, and nonempty execution assumptions. It requires
+  `execution_authority=NONE`, cannot coexist with directional `entry_long`/`exit_long`, preserves
+  legacy spec hashes when absent, and has no evaluator, adapter, venue, collateral, settlement,
+  reconciliation, or order semantics.
+- `SubstantiveResearchMetadata` (`tios.substantive_strategy_research.v1`) is a declaration
+  envelope for future strategy artifacts. It requires full Git/module identity, immutable
+  data+manifest hashes and UTC range, canonical spec hash and parameters, a preregistered search
+  campaign ref, nonempty cost/split declarations, one governed selection metric, all-trial
+  population ref, an external output hash, `execution_authority=NONE`, and
+  `promotion_eligible=false`. Validation reads no venue or legacy artifact and grants no verdict.
 
 ## 1. Scalar / value types
 

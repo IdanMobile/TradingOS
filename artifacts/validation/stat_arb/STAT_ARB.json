@@ -1,17 +1,17 @@
 {
   "best": {
-    "ann_return_pct": 17.9,
+    "ann_return_pct": 19.1,
     "entry_z": 2.5,
     "max_drawdown_pct": -84.7,
     "pair": "AVAXUSDT/SOLUSDT",
-    "sharpe_ann": 0.58,
-    "total_return_pct": 147.7,
+    "sharpe_ann": 0.6,
+    "total_return_pct": 163.5,
     "trades": 105,
     "window": 30
   },
   "execution_authority": "NONE",
   "g10_dsr": {
-    "dsr": 0.1538,
+    "dsr": 0.1615,
     "expected_max_noise_sharpe": 0.0534,
     "note": "PASS still requires RG-07 review; models spread P&L + fees, not short-borrow/funding cost or execution slippage.",
     "threshold": 0.95,
@@ -22,39 +22,39 @@
   "status": "EVIDENCE_RETAINED_NOT_VALIDATED",
   "top_configs": [
     {
-      "ann_return_pct": 17.9,
+      "ann_return_pct": 19.1,
       "entry_z": 2.5,
       "max_drawdown_pct": -84.7,
       "pair": "AVAXUSDT/SOLUSDT",
-      "sharpe_ann": 0.58,
+      "sharpe_ann": 0.6,
       "trades": 105,
       "window": 30
     },
     {
-      "ann_return_pct": 17.4,
+      "ann_return_pct": 16.8,
       "entry_z": 2.0,
       "max_drawdown_pct": -68.8,
       "pair": "ADAUSDT/DOTUSDT",
-      "sharpe_ann": 0.56,
-      "trades": 134,
+      "sharpe_ann": 0.55,
+      "trades": 135,
       "window": 30
     },
     {
-      "ann_return_pct": 9.2,
-      "entry_z": 2.0,
-      "max_drawdown_pct": -71.9,
-      "pair": "XRPUSDT/XLMUSDT",
-      "sharpe_ann": 0.43,
-      "trades": 77,
-      "window": 60
-    },
-    {
-      "ann_return_pct": 9.6,
+      "ann_return_pct": 13.2,
       "entry_z": 2.0,
       "max_drawdown_pct": -63.1,
       "pair": "ADAUSDT/DOTUSDT",
-      "sharpe_ann": 0.42,
-      "trades": 69,
+      "sharpe_ann": 0.49,
+      "trades": 72,
+      "window": 60
+    },
+    {
+      "ann_return_pct": 7.3,
+      "entry_z": 2.0,
+      "max_drawdown_pct": -71.9,
+      "pair": "XRPUSDT/XLMUSDT",
+      "sharpe_ann": 0.39,
+      "trades": 78,
       "window": 60
     },
     {
@@ -67,12 +67,12 @@
       "window": 60
     },
     {
-      "ann_return_pct": 3.8,
+      "ann_return_pct": 3.3,
       "entry_z": 2.5,
       "max_drawdown_pct": -67.0,
       "pair": "ADAUSDT/DOTUSDT",
-      "sharpe_ann": 0.3,
-      "trades": 96,
+      "sharpe_ann": 0.29,
+      "trades": 97,
       "window": 30
     }
   ],

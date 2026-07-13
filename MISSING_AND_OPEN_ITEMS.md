@@ -1,6 +1,41 @@
 # Trading Intelligence OS — Missing and Open Items
 
-Last updated: 2026-07-11
+Last updated: 2026-07-13
+
+## Supervisory corrective items (2026-07-13)
+
+The authoritative finding register and acceptance criteria are in
+`docs/supervisor/IMPROVEMENT_PLAN_2026-07-13.md`. The highest-priority open work is:
+
+- **SUP-001 / SUP-003 — CRITICAL:** authenticated Bybit demo scripts were used without
+  the recorded HG-3, HG-4, security, validation, and venue approvals required by the
+  locked architecture. All outbound transports are now quarantined under D-046;
+  historical demo records are evidence of an out-of-architecture governance probe,
+  not current execution capability or approval.
+- **SUP-002 / SUP-005 — HIGH:** DSR was corrected under D-045 and affected evidence
+  was regenerated. Per-bar Sharpe is aligned across selection/PBO/DSR and family-scope
+  effective trials use retained correlations where defined, but upstream selection
+  hierarchy and hierarchy-wide dependence evidence were not retained. No G10 PASS is
+  promotion-eligible until the complete hierarchy is defensible.
+- **SUP-004 — HIGH:** funding/carry evidence lacks a complete capital, collateral,
+  re-hedging, settlement, liquidation, missing-data, and survivorship model. Static
+  fee/slippage stress is not empirical paper divergence and does not satisfy G12.
+- **SUP-006 through SUP-010 — HIGH/MEDIUM:** expanded-data provenance, immutable
+  manifests, public-strategy holdout discipline, stat-arb methodology, canonical-spec
+  coverage, survivor/cost controls, and research-source claim strength remain open.
+
+Bounded corrective progress: future raw/REST provenance and a deterministic current
+normalized snapshot are implemented; future public/signal/universe searches select on train
+only; and funding carry has a pinned non-executable canonical registration. Historical REST
+payloads/original normalization identity, exact public-source/spec identity, one globally
+frozen candidate, hierarchy-wide effective trials, schema support for ranking/MTF/composition,
+and a complete integrated funding lifecycle/risk model remain open. Research-only multi-leg
+identity and deterministic open/settle/rehedge/close accounting fixtures now exist but create
+no execution path. The next bounded baseline G10 reproduction is preregistered, and future
+substantive artifacts must satisfy the new fail-closed provenance metadata contract.
+
+These corrective items supersede any earlier statement that all agent-executable work
+is exhausted. They grant no credential, venue, order, paper, demo, or live authority.
 
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
@@ -8,10 +43,13 @@ Last updated: 2026-07-11
   2026-07-11 recheck. Human/account-specific venue eligibility, permissions,
   terms, product availability, and fee-tier checks remain before S3 paper venue
   selection.
-- RG-07 is closed for production activation (2026-07-11): candidate-specific G10
-  PBO/DSR with independent recomputation ran on the retained trial populations and
-  FAILED all families (`artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_11.json`).
-  Remaining slice: stats-specialist review before honoring any future G10 PASS.
+- RG-07 remains **METHOD_BLOCKED** (2026-07-13): candidate-specific G10 PBO/DSR
+  was corrected and independently recomputed on retained family populations. B2/B4
+  numerically fail, B3 cannot define trial correlations, and no family result can
+  clear the gate because the upstream search hierarchy was not retained. Evidence:
+  `artifacts/validation/G10_CANDIDATE_EVIDENCE_2026_07_13.json`. A preregistered
+  future campaign prevents recurrence; stats-specialist review remains required
+  before any future G10 PASS can support promotion.
 
 ## Current environment/coverage constraints
 
@@ -68,10 +106,10 @@ evidence-only/deferred assets under D-037.
    produced `LAB-f99dcc214f377ecca4710bbb41d445c8331d2a1b06f93931ed1c88bdf3af5924`,
    again with 66 trials, no winner, and `execution_authority=NONE`.
 2. Strategy validation remains `INCOMPLETE_NOT_APPROVABLE`: B2 is rejected for paper,
-   G4 remains WARN, and production G10 now returns an evidence-backed **FAIL**
-   (candidate-specific PBO/DSR with independent recomputation; B2 PBO 0.8685,
-   DSR≈0). The multiple-testing dimension is no longer BLOCKED — it is FAIL in
-   `LAB-73ebd3a3bb3e4086b2408552559e77a26d1334ae9cc789c4459beadc27b6844a`.
+   G4 remains WARN, and aligned v2 PBO/DSR diagnostics numerically fail B2 (PBO 0.2960,
+   DSR≈0). Production G10 remains `METHOD_BLOCKED` because the complete upstream
+   search hierarchy and hierarchy-wide effective-trial evidence are unresolved.
+   The historical LAB FAIL projection is retained but cannot establish method completion.
 3. The research-lab `cross_engine_reproduction` dimension is closed
    PASS_WITH_SCOPE_NOTE (2026-07-11): three-way B2 signal reproduction with 99.904%
    event-lane reconciliation; fill/P&L parity is NOT claimed. Remaining Hummingbot
@@ -87,7 +125,8 @@ evidence-only/deferred assets under D-037.
    QC2 ETHUSDT 1h window=40 is the only positive proxy context that remains
    positive across chronological thirds and beats buy-and-hold under normal fees,
    but it is parameter-fragile and now fails seed-context G10
-   (`SEED_G10_QC2_ETHUSDT_1H_2026_07_11.json`: PBO 0.2614, DSR 0.7564 < 0.95).
+   (`SEED_G10_QC2_ETHUSDT_1H_2026_07_13.json`: aligned numeric PBO 0.2662 and
+   DSR 0.8548 < 0.95; hierarchy method status remains blocked).
    Next agent-executable work is failure confirmation/cross-engine reproduction or a
    D-039 AI decision to move to new source-family ingestion.
 6. New source-family ingestion has begun in read-only form. The primary research
@@ -331,8 +370,11 @@ evidence-only/deferred assets under D-037.
   hash restore, LAB-799 no-winner status, and validation non-approvability. Evidence:
   `artifacts/reports/S2_RESTORE_REPLAY_REPORT.md` and
   `artifacts/quality/s2_restore_replay.json`.
-- S2 live-unreachability evidence passes. Evidence:
-  `artifacts/reports/S2_LIVE_UNREACHABILITY_REPORT.md`.
+- The 2026-07-10 S2 live-unreachability report is superseded historical evidence:
+  authenticated Bybit demo scripts were added and used after its review window.
+  Current repository safety comes from D-046 transport quarantine plus
+  `tests/test_live_unreachable.py` and the demo-script fail-closed tests. A refreshed
+  formal stage-exit security report remains required before HG-3/S3.
 - S2 requirement audit is complete and blocks exit/HG-3 on evidence grounds. Evidence:
   `artifacts/reports/S2_REQUIREMENT_AUDIT.md`.
 - Durable local evidence retention and gated approval history are implemented but

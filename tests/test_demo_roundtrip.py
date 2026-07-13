@@ -33,6 +33,11 @@ def test_place_market_buy_refuses_non_demo_host() -> None:
         )
 
 
+def test_authenticated_post_transport_is_quarantined() -> None:
+    with pytest.raises(RuntimeError, match="quarantined"):
+        rt._post_transport("https://api-demo.bybit.com/v5/order/create", {}, b"{}")
+
+
 def test_place_market_buy_enforces_notional_cap() -> None:
     with pytest.raises(ValueError, match="exceeds"):
         rt.place_market_buy(lambda u, h, b: b"{}", KEY, SECRET, TS, quote_qty=rt.MAX_NOTIONAL + 1)

@@ -1334,7 +1334,7 @@ def _comparisons(root: Path, validation_package: dict[str, Any]) -> dict[str, An
         for gate, value in sorted(gates.items())
     ]
 
-    g10_path = root / "artifacts" / "validation" / "G10_CANDIDATE_EVIDENCE_2026_07_11.json"
+    g10_path = root / "artifacts" / "validation" / "G10_CANDIDATE_EVIDENCE_2026_07_13.json"
     g10 = _json(g10_path)
     families_raw = g10.get("families")
     families = families_raw if isinstance(families_raw, dict) else {}
@@ -1415,7 +1415,7 @@ def _comparisons(root: Path, validation_package: dict[str, Any]) -> dict[str, An
         / "artifacts"
         / "validation"
         / "seed_candidates"
-        / "SEED_G10_QC2_ETHUSDT_1H_2026_07_11.json"
+        / "SEED_G10_QC2_ETHUSDT_1H_2026_07_13.json"
     )
     seed_g10 = _json(seed_g10_path)
     seed_pbo = seed_g10.get("pbo")

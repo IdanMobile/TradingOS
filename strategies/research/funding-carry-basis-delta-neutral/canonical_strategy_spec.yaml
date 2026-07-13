@@ -1,0 +1,118 @@
+# Internal research hypothesis registration. The paired position is described for
+# research identity only; no evaluator, adapter, venue route, or order semantics exist.
+strategy_id: STRAT-FUNDING-CARRY-BASIS-DELTA-NEUTRAL
+family: carry
+inputs: [close]
+indicators:
+  - name: trailing_funding_mean
+    parameters:
+      source: prior_settled_funding_rate
+      lookback_periods: 21
+      funding_period_hours: 8
+      minimum_observations: 21
+    outputs: [trailing_funding_mean]
+multi_leg:
+  research_only: true
+  shared_entry_eligibility:
+    all:
+      - trailing_funding_mean > 0
+  shared_exit_eligibility:
+    any:
+      - trailing_funding_mean <= 0
+  legs:
+    - instrument: SAME_SYMBOL_USDT_SPOT
+      side: LONG
+      role: carry_asset
+      notional_fraction: 1.0
+      execution_assumptions:
+        - "Target notional is one fraction of pair capital before any capital, collateral, fee, or reserve model."
+        - "The spot instrument shares the eligible symbol's base and quote assets; concrete venue mapping, fill, and settlement mechanics are unresolved."
+    - instrument: SAME_SYMBOL_USDT_PERPETUAL
+      side: SHORT
+      role: delta_hedge
+      notional_fraction: 1.0
+      execution_assumptions:
+        - "Target perpetual notional equals the spot target at entry; contract multiplier, mark/index behavior, and dynamic delta drift are unresolved."
+        - "Funding receipt assumes short-side entitlement to positive settled funding; venue margin, settlement, and liquidation mechanics are unmodeled."
+position_sizing:
+  type: fixed_fraction
+  fraction: 1.0
+  target_gross_notional_fraction: 2.0
+  target_net_delta_fraction: 0.0
+  equal_weight_across_eligible_pairs: true
+  rebalance_periods: 3
+risk:
+  stop_loss: null
+  take_profit: null
+  status: RESEARCH_ONLY_NOT_VALIDATED
+  execution_authority: NONE
+  venue: UNSELECTED
+  objective: "Test whether positive perpetual-funding carry survives basis movement and costs in a fully hedged long-spot/short-perp basket."
+  universe:
+    quote_asset: USDT
+    symbols: [BTCUSDT, ETHUSDT, BNBUSDT, SOLUSDT, XRPUSDT, ADAUSDT, DOGEUSDT, AVAXUSDT, LINKUSDT, LTCUSDT, DOTUSDT, MATICUSDT]
+    eligibility: "Both aligned spot and perpetual 8-hour closes and a settled funding observation must exist; the trailing 21-period funding mean must be positive."
+  instruments:
+    spot_leg: "long spot"
+    hedge_leg: "short same-symbol perpetual"
+    leverage: "Unlevered-notional research assumption only; collateral and liquidation are not modeled."
+  timing:
+    signal: "Evaluate after an 8-hour funding observation settles, using that observation and 20 earlier settled observations."
+    rebalance: "Every 3 funding periods; a newly eligible pair is held from the following period."
+    time_stop: "No fixed maximum holding period; exit at the next rebalance when eligibility fails."
+  costs:
+    basis_backtest_toggle_fraction: 0.0004
+    static_cost_stress_toggle_fraction: 0.0024
+    observed_fills: false
+    unmodeled: [spread, market_impact, latency, partial_fills, rejects, rehedging, borrow, collateral_transfer, taxes]
+  portfolio_limits:
+    pair_weighting: equal
+    concentration_limit: "Unspecified; must be defined before any promotion."
+    correlation_limit: "Unspecified; shared venue, quote-asset, and crypto-beta concentration remain."
+  no_trade_conditions:
+    - "Any execution, security, validation, risk, venue, or nondelegable human gate is absent."
+    - "Either leg, its point-in-time funding/basis data, or its contract metadata is missing, stale, ambiguous, or not aligned."
+    - "The trailing settled-funding mean is not strictly above the configured threshold."
+    - "Two-leg atomicity or a proven asymmetric-fill unwind cannot be guaranteed."
+    - "Available capital, collateral, margin headroom, liquidity, or venue health is unknown or below approved limits."
+    - "Expected funding after empirically measured fees, spread, slippage, latency, and rehedging cost is not positive."
+    - "Basis, mark/index divergence, liquidation distance, concentration, or counterparty exposure breaches approved limits."
+  failure_modes:
+    - "Funding reverses or is repriced before the hedge earns the expected payment."
+    - "Spot and perpetual basis diverge, especially intraperiod beyond the sampled 8-hour closes."
+    - "One leg fills, rejects, liquidates, delists, or becomes unavailable before the other can be hedged or unwound."
+    - "Collateral segregation, margin rules, settlement definitions, or contract specifications differ from the research assumptions."
+    - "Fees, spread, slippage, impact, latency, or rehedging turnover consume the carry."
+    - "Missing-data handling or a survivor-only universe suppresses losses and overstates diversification."
+    - "Shared venue, stablecoin, legal, operational, custody, or counterparty failure creates correlated loss."
+    - "Grid selection and dependent trials inflate Sharpe or the deflated-Sharpe diagnostic."
+  kill_conditions:
+    - "Any unresolved reconciliation, orphan leg, unexplained PnL, stale data, venue incident, or risk-limit breach."
+    - "Any loss of approval, execution isolation, credential isolation, monitoring, or deterministic flatten capability."
+    - "Observed paper/backtest divergence exceeds approved G12 tolerances after G12 is validly authorized and run."
+  promotion_gates:
+    - "Freeze point-in-time data and complete immutable lineage, including delisted/missing symbols and the full search hierarchy."
+    - "Resolve effective independent trials and rerun G10; the current numeric DSR is method-blocked and is not a PASS."
+    - "Implement and independently validate capital, collateral, margin, liquidation, settlement, rehedging, and missing-data models."
+    - "Measure venue-specific fills and G12 divergence only in a separately approved paper lane."
+    - "Obtain all applicable nondelegable human, security, risk, venue, and capital approvals before any venue connection."
+assumptions:
+  - "signal evaluated at the aligned 8-hour bar close after the current funding settlement; any position change occurs only for the following period"
+  - "warm-up: no eligibility signal until 21 settled funding observations exist for the pair"
+  - "the 21-period lookback, zero threshold, and 3-period rebalance are the retained research configuration, not validated optimal parameters"
+  - "research return is funding plus spot return minus perpetual return; equal spot/perpetual notional targets zero initial delta but does not eliminate basis, mark, collateral, or liquidation risk"
+  - "the 4 bps toggle cost is the basis-backtest proxy and 24 bps is a static stress assumption; neither is empirical execution evidence"
+  - "public Binance archive data is an input source only and does not select or authorize Binance or any other execution venue"
+ambiguities:
+  - "The research-only multi-leg block records instrument kind, side, role, target notional fraction, shared eligibility, and leg assumptions, but has no paired-order atomicity, concrete instrument mapping, venue, collateral, margin, settlement, reconciliation, or liquidation semantics. It MUST NOT be interpreted as executable."
+  - "The validator accepts only OHLCV inputs. close is retained solely for schema compatibility; funding rate and spot/perpetual basis are out-of-schema indicator sources whose point-in-time availability is not mechanically validated."
+  - "The retained configuration was selected from a dependent parameter grid. Search lineage and effective independent-trial count are incomplete, so the numeric DSR result is method-blocked."
+  - "Capital allocation, collateral location, margin mode, liquidation distance, rehedging threshold, concentration limits, and venue-specific contract semantics are unresolved."
+  - "No observed fills or empirical paper-versus-backtest divergence exist; the 24 bps cost stress is a fixed assumption, not G12 evidence."
+source_refs:
+  - data/raw/multi_raw_manifest.json
+  - artifacts/validation/funding_carry_basis/FUNDING_CARRY_BASIS.json
+  - artifacts/validation/funding_carry_robustness/FUNDING_CARRY_ROBUSTNESS.json
+  - artifacts/validation/funding_carry_regime_filter/FUNDING_CARRY_REGIME_FILTER.json
+  - artifacts/trading_domain/s3_carry_paper/S3_CARRY_PAPER_2026_07_12.json
+license_ref: null

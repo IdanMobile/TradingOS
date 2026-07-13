@@ -1,4 +1,5 @@
 {
+  "artifact_status": "SUPERSEDED_HISTORICAL",
   "candidate_id": "STRAT-QC2-donchian-breakout",
   "dataset": "ETHUSDT_1h",
   "dsr": {
@@ -14,7 +15,7 @@
       "z_score": 0.6949078563215947
     }
   },
-  "effect": "Approves no strategy, selects no winner, and enables no execution path.",
+  "effect": "SUPERSEDED: use the corrected 2026-07-13 v2 artifact. This historical evidence approves no strategy, selects no winner, and enables no execution path.",
   "execution_authority": "NONE",
   "g10_gate_status": "FAIL",
   "live_orders": "DISABLED",
@@ -36,6 +37,8 @@
   "selection_procedure": "max total_return over declared QC2 window grid",
   "slice_count": 16,
   "status": "COMPLETE",
+  "superseded_by": "artifacts/validation/seed_candidates/SEED_G10_QC2_ETHUSDT_1H_2026_07_13.json",
+  "supersession_reason": "D-045 corrected the DSR equation and D-047 aligned metric and hierarchy semantics; retained numeric values below are historical only.",
   "trial_count": 4,
   "trials": [
     {

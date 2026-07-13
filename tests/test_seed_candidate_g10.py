@@ -5,8 +5,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_seed_candidate_g10_is_retained_without_execution_authority() -> None:
-    path = ROOT / "artifacts/validation/seed_candidates/SEED_G10_QC2_ETHUSDT_1H_2026_07_11.json"
+    path = ROOT / "artifacts/validation/seed_candidates/SEED_G10_QC2_ETHUSDT_1H_2026_07_13.json"
     data = json.loads(path.read_text())
+    assert data["schema"] == "tios-seed-candidate-g10-v2"
     assert data["candidate_id"] == "STRAT-QC2-donchian-breakout"
     assert data["dataset"] == "ETHUSDT_1h"
     assert data["selected_trial_key"] == "window=40"
@@ -14,12 +15,19 @@ def test_seed_candidate_g10_is_retained_without_execution_authority() -> None:
     assert data["paper_orders"] == "DISABLED"
     assert data["live_orders"] == "DISABLED"
     assert data["trial_count"] == 4
-    assert data["g10_gate_status"] in {"FAIL", "PASS_REQUIRES_REVIEW"}
+    assert data["g10_gate_status"] == "METHOD_BLOCKED"
+    assert data["numeric_verdict"] == "FAIL"
+    assert 1 <= data["effective_independent_trials"] <= data["raw_trial_count"]
+    assert data["search_lineage_complete"] is False
+    assert data["selection_metrics_aligned"] is True
+    assert data["search_lineage"]["status"] == "INCOMPLETE"
+    assert data["search_lineage"]["hierarchy_effective_independent_trials"] is None
+    assert data["search_lineage"]["retained_stages"][0]["raw_trial_count"] == 258
     assert "Approves no strategy" in data["effect"]
 
 
 def test_seed_candidate_g10_has_independent_recomputations() -> None:
-    path = ROOT / "artifacts/validation/seed_candidates/SEED_G10_QC2_ETHUSDT_1H_2026_07_11.json"
+    path = ROOT / "artifacts/validation/seed_candidates/SEED_G10_QC2_ETHUSDT_1H_2026_07_13.json"
     data = json.loads(path.read_text())
     assert data["pbo"]["max_abs_delta"] <= 1e-9
     assert data["dsr"]["max_abs_delta"] <= 1e-6

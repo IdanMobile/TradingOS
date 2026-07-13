@@ -40,6 +40,8 @@ def test_sign_matches_independent_hmac() -> None:
 def test_preflight_refuses_non_demo_host() -> None:
     with pytest.raises(ValueError, match="non-demo host"):
         pf.preflight(_transport({}, {}), KEY, SECRET, base="https://api.bybit.com")
+    with pytest.raises(ValueError, match="non-demo host"):
+        pf.preflight(_transport({}, {}), KEY, SECRET, base="https://api-demo.bybit.com.evil.test")
 
 
 def test_trade_only_key_is_safe() -> None:
@@ -79,19 +81,39 @@ def test_auth_failure_reports_cleanly() -> None:
     assert report["ok"] is False and report["stage"] == "auth"
 
 
+def test_preflight_requires_trade_permission_and_wallet_success() -> None:
+    read_only = {"retCode": 0, "result": {"readOnly": 1, "permissions": {}}}
+    report = pf.preflight(_transport(read_only, {"retCode": 0}), KEY, SECRET, timestamp=TS)
+    assert report["ok"] is False and report["can_trade"] is False
+
+    trade = {"retCode": 0, "result": {"readOnly": 0, "permissions": {"Spot": ["SpotTrade"]}}}
+    report = pf.preflight(_transport(trade, {"retCode": 10001}), KEY, SECRET, timestamp=TS)
+    assert report["ok"] is False and report["wallet_ok"] is False
+
+
 def test_load_dotenv_fills_unset_and_respects_existing(tmp_path: Path, monkeypatch) -> None:
     env = tmp_path / ".env"
-    env.write_text("# comment\n\nPYBIT_API_KEY='k1'\nexport PYBIT_API_SECRET = s1 \nMALFORMED\n")
-    monkeypatch.delenv("PYBIT_API_KEY", raising=False)
-    monkeypatch.setenv("PYBIT_API_SECRET", "already-set")  # existing env must win
+    env.write_text(
+        "# comment\n\nBYBIT_DEMO_API_KEY='k1'\n"
+        "export BYBIT_DEMO_API_SECRET = s1\nOPENAI_API_KEY=must-not-load\n"
+    )
+    monkeypatch.delenv("BYBIT_DEMO_API_KEY", raising=False)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.setenv("BYBIT_DEMO_API_SECRET", "already-set")
     pf.load_dotenv(env)
-    assert pf._first(("PYBIT_API_KEY",)) == "k1"  # quotes stripped, unset filled
-    assert pf._first(("PYBIT_API_SECRET",)) == "already-set"  # not overwritten
+    assert pf._first(pf.KEY_NAMES) == "k1"
+    assert pf._first(pf.SECRET_NAMES) == "already-set"
+    assert "OPENAI_API_KEY" not in pf.os.environ
 
 
-def test_first_prefers_documented_name_then_falls_back(monkeypatch) -> None:
+def test_first_reads_only_documented_name(monkeypatch) -> None:
     monkeypatch.delenv("BYBIT_DEMO_API_KEY", raising=False)
     monkeypatch.setenv("PYBIT_API_KEY", "fallback")
-    assert pf._first(pf.KEY_NAMES) == "fallback"
+    assert pf._first(pf.KEY_NAMES) == ""
     monkeypatch.setenv("BYBIT_DEMO_API_KEY", "primary")
-    assert pf._first(pf.KEY_NAMES) == "primary"  # documented name wins when both present
+    assert pf._first(pf.KEY_NAMES) == "primary"
+
+
+def test_authenticated_network_transport_is_quarantined() -> None:
+    with pytest.raises(RuntimeError, match="quarantined"):
+        pf._urllib_transport("https://api-demo.bybit.com", {})

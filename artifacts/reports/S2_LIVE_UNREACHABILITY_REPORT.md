@@ -1,7 +1,12 @@
 # S2 Live-Unreachability Review
 
 Date: 2026-07-10
-Status: **PASS — LIVE/PAPER/DEMO EXECUTION UNREACHABLE**
+Status: **SUPERSEDED HISTORICAL PASS — NOT CURRENT STAGE-EXIT EVIDENCE**
+
+> Superseded 2026-07-13: authenticated Bybit demo scripts were added and exercised
+> after this review window. D-046 now quarantines those transports before network
+> access, and repository tests verify the current boundary. This report cannot be
+> used for HG-3/S3; a refreshed formal security review is still required.
 
 ## Scope
 
@@ -32,6 +37,7 @@ uv run pytest tests/test_s2_restore_replay.py tests/test_validation_package.py t
 
 ## Result
 
-No paper/demo/testnet venue connection, credential-bearing client, order route, live
-command, approval-write endpoint, synthetic wallet, or real-money capability is present
-or authorized in S2.
+At the 2026-07-10 review snapshot, no paper/demo/testnet venue connection,
+credential-bearing client, order route, live command, approval-write endpoint,
+synthetic wallet, or real-money capability was present or authorized in S2. This
+historical conclusion does not describe the later demo scripts or replace D-046.

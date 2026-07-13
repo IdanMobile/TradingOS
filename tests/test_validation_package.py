@@ -15,9 +15,9 @@ def test_validation_package_is_explicitly_not_approvable() -> None:
     assert data["status"] == "INCOMPLETE_NOT_APPROVABLE"
     assert data["gates"]["G1"]["status"] == "PASS"
     assert data["gates"]["G5"]["status"] == "PASS"
-    assert data["gates"]["G10"]["status"] == "FAIL"
-    assert "candidate-specific PBO/DSR" in data["gates"]["G10"]["reason"]
-    assert "independent recomputation" in data["gates"]["G10"]["reason"]
+    assert data["gates"]["G10"]["status"] == "METHOD_BLOCKED"
+    assert "numeric diagnostics fail" in data["gates"]["G10"]["reason"]
+    assert "hierarchy-wide effective-trial" in data["gates"]["G10"]["reason"]
     assert data["provenance"]["g10_method_fixtures"].endswith("G10_METHOD_FIXTURES_2026_07_11.json")
     assert "G10_CANDIDATE_EVIDENCE_" in data["provenance"]["g10_candidate_evidence"]
     assert data["risk_preconditions"]["status"] == "PASS"
@@ -35,9 +35,13 @@ def test_multiple_testing_method_evidence_is_retained_but_not_activated() -> Non
     )
     data = json.loads(path.read_text())
     assert data["status"] == "METHOD_EVIDENCE_RETAINED"
-    assert data["g10_gate_status"] == "FAIL"
-    assert data["production_gate_activated"] is True
-    assert data["candidate_evidence"]["verdicts"] == {"b2": "FAIL", "b3": "FAIL", "b4": "FAIL"}
+    assert data["g10_gate_status"] == "METHOD_BLOCKED"
+    assert data["production_gate_activated"] is False
+    assert data["candidate_evidence"]["verdicts"] == {
+        "b2": "FAIL",
+        "b3": "METHOD_BLOCKED",
+        "b4": "FAIL",
+    }
     assert data["candidate_evidence"]["independent_recomputation"] == "AGREES"
     evidence = data["retained_method_evidence"]
     assert evidence["status"] == "PASS"

@@ -9,7 +9,7 @@
     "dataset": "ETHUSDT_1h",
     "donchian_window": 40,
     "strategy_id": "STRAT-QC2-donchian-breakout",
-    "validation_note": "FAILED validation (G10 DSR 0.7564 < 0.95); plumbing input only"
+    "validation_note": "METHOD_BLOCKED corrected G10 evidence; local numeric verdict FAIL (DSR 0.8548 < 0.95); plumbing input only"
   },
   "divergence_report": {
     "observations": [

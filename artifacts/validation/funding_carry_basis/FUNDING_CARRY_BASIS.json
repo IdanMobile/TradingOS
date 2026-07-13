@@ -11,10 +11,13 @@
   "execution_authority": "NONE",
   "g10_dsr": {
     "dsr": 1.0,
+    "effective_independent_trials": null,
     "expected_max_noise_sharpe": 0.1171,
-    "note": "Basis-aware (funding + spot-perp divergence) \u2014 and the carry SURVIVES basis risk (that is real: a well-arbitraged perp tracks spot within ~0.1%). But Sharpe ~9 is still inflated: it omits execution slippage, intraperiod basis spikes (8h closes), leverage/liquidation, and exchange COUNTERPARTY risk (the actual 2022 killer). Real-world carry Sharpe is ~2-4. The remaining validation is EXECUTION-level \u2014 it needs S3 paper trading to measure real fills/slippage \u2014 and counterparty risk is an operator/venue decision, not a backtest number.",
+    "note": "This numeric diagnostic is not a G10 PASS. The simplified basis-aware model remains positive under its own assumptions, but Sharpe ~9 is still inflated: it omits execution slippage, intraperiod basis spikes (8h closes), leverage/liquidation, capital/collateral accounting, and exchange counterparty risk. Empirical fill/divergence evidence requires a later approved paper lane; counterparty selection is an operator decision.",
+    "numeric_verdict": "PASS",
+    "search_lineage_complete": false,
     "threshold": 0.95,
-    "verdict": "PASS",
+    "verdict": "METHOD_BLOCKED",
     "verdict_is_genuine": false
   },
   "mode": "OFFLINE_RESEARCH_ONLY",

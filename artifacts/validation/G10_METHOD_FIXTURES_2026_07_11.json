@@ -34,11 +34,11 @@
       "expected_sharpe_variance": 0.016666666666666666,
       "expected_maximum_noise_sharpe": 0.1358284725416625,
       "strong_observed_sharpe": 0.5,
-      "strong_expected_z_score": 2.144598891621087,
-      "strong_expected_dsr": 0.9840075344965666,
+      "strong_expected_z_score": 2.0312517321749834,
+      "strong_expected_dsr": 0.9788852674948445,
       "weak_observed_sharpe": 0.1,
-      "weak_expected_z_score": -0.210993163132767,
-      "weak_expected_dsr": 0.4164463031498148
+      "weak_expected_z_score": -0.2114361707275827,
+      "weak_expected_dsr": 0.4162734672557345
     }
   },
   "effect": "This validates local PBO/CSCV and DSR arithmetic on synthetic known-answer fixtures only. It does not approve any strategy, select any winner, authorize paper/demo/live execution, or make any candidate promotion-eligible."

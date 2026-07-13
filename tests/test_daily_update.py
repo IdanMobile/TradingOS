@@ -6,11 +6,13 @@ conversion, and the append/dedup that must not double-count an overlapping bar.
 
 from __future__ import annotations
 
+import hashlib
 from decimal import Decimal
 from typing import Any
 
 import pyarrow as pa
 
+from tios.dataset import daily_update as du
 from tios.dataset.daily_update import _append_dedup, _klines_json_to_raw
 from tios.dataset.normalize import to_canonical
 
@@ -46,3 +48,14 @@ def test_append_dedup_drops_the_overlapping_bar() -> None:
     assert merged.num_rows == 3  # t0, t1, t2
     opens = merged.column("timestamp_open_utc").to_pylist()
     assert opens == sorted(opens) and len(set(opens)) == 3
+
+
+def test_rest_page_is_retained_by_content_hash(tmp_path, monkeypatch) -> None:
+    monkeypatch.setattr(du, "RAW_REST_ROOT", tmp_path / "rest_klines")
+    rows = [_row(1_609_459_200_000, "101")]
+    ref = du._retain_page("BTCUSDT", "1h", 1_609_459_200_000, rows)
+    path = du.RAW_REST_ROOT.parent / ref["path"]
+
+    assert path.exists()
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == ref["sha256"]
+    assert ref["rows"] == 1
