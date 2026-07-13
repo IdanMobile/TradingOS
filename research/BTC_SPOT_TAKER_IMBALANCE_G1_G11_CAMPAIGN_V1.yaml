@@ -1,0 +1,76 @@
+schema: tios-btc-spot-taker-imbalance-campaign-v1
+campaign_id: BTC-SPOT-TAKER-IMBALANCE-G1-G11-V1
+status: PREREGISTERED_NOT_RUN
+family_id: FAM-BTC-SPOT-TAKER-IMBALANCE-01
+safety:
+  execution_authority: NONE
+  venue_connection: NONE
+  orders: DISABLED
+  network: PROHIBITED
+  credentials_required: false
+  sealed_v2_holdout_access: PROHIBITED
+  closed_family_context_access: PROHIBITED
+dataset:
+  package_path: research/BTC_SPOT_TAKER_IMBALANCE_DATA_PACKAGE_V1.json
+canonical_spec:
+  path: strategies/research/btc-spot-taker-imbalance/canonical_strategy_spec.yaml
+pinned_files:
+  - {path: research/BTC_SPOT_TAKER_IMBALANCE_DATA_PACKAGE_V1.json, sha256: 9cc2919a3bcdb977f780d65db1c371ac02b8aa310417472abe02c05f009e1db2}
+  - {path: strategies/research/btc-spot-taker-imbalance/canonical_strategy_spec.yaml, sha256: 1077781b5b376c774717e61db770a7a66ba981fbdb7fa8874ce860288adb25de}
+  - {path: src/tios/strategy/taker_imbalance.py, sha256: 48af30c6d862c8aa4652ef1cdce08327d9a04d0e457957e455e452370640d0a3}
+  - {path: engines/taker_imbalance_data.py, sha256: e28189ace5a76ef5c6b8c95e5420dc8316d4fc6d70552c37a6296224314186b6}
+  - {path: engines/reference/taker_imbalance.py, sha256: 7a9a0619ef764ec49c26aa760674cd669b7d52255de5f867af4e41f6f79738cf}
+  - {path: engines/vectorbt/taker_imbalance_returns.py, sha256: 76ab7e5eaf1046f9898241ea45888237f6c9777406201171bea58d09dc16a3c3}
+  - {path: engines/freqtrade/taker_imbalance_signals.py, sha256: 131908ee9d708847ee1828d5adfb2272a925f0b2bf3d83dc1c992cabe6804881}
+  - {path: engines/nautilus/taker_imbalance_events.py, sha256: e620b13b2c528a22cecdd7dc8950f3245add0dacac11fddb13b3b6880049dea4}
+splits:
+  development: ["2018-04-01", "2022-12-31 23:00:00+00:00"]
+  validation_2023_2024: ["2023-01-01", "2024-12-31 23:00:00+00:00"]
+  reserve_2025_2026h1: ["2025-01-01", "2026-06-30 23:00:00+00:00"]
+selection:
+  phase_one_scope: development_only
+  scenario: F1/S1
+  metric: nonannualized_per_1h_bar_sharpe_with_zero_cash_returns
+  direction: maximum
+  tie_break: lexical_interpretation_baseline_hours_threshold
+  immutable_hashed_selection_required_before_phase_two: true
+scenarios:
+  - {name: F0/S0, fee: 0, slippage_bps: 0}
+  - {name: F1/S1, fee: 0.001, slippage_bps: 1}
+  - {name: F1/S2, fee: 0.001, slippage_bps: 5}
+  - {name: F1/S3, fee: 0.001, slippage_bps: 10}
+  - {name: F2/S2, fee: 0.0015, slippage_bps: 5}
+  - {name: F2/S3, fee: 0.0015, slippage_bps: 10}
+trial_roster:
+  - {interpretation: CONTINUATION_HIGH, baseline_hours: 24, threshold: 1.0, strategy_version_id: SV-35dd58a5dd431385}
+  - {interpretation: CONTINUATION_HIGH, baseline_hours: 24, threshold: 2.0, strategy_version_id: SV-395416d468527602}
+  - {interpretation: CONTINUATION_HIGH, baseline_hours: 168, threshold: 1.0, strategy_version_id: SV-21bed31bedaf1074}
+  - {interpretation: CONTINUATION_HIGH, baseline_hours: 168, threshold: 2.0, strategy_version_id: SV-388d495a5155319b}
+  - {interpretation: CONTINUATION_HIGH, baseline_hours: 720, threshold: 1.0, strategy_version_id: SV-58809ce50d6a7064}
+  - {interpretation: CONTINUATION_HIGH, baseline_hours: 720, threshold: 2.0, strategy_version_id: SV-0222e2f988ec8a68}
+  - {interpretation: REVERSAL_LOW, baseline_hours: 24, threshold: 1.0, strategy_version_id: SV-1460abac8e56e2f1}
+  - {interpretation: REVERSAL_LOW, baseline_hours: 24, threshold: 2.0, strategy_version_id: SV-d62bc95610fa2a64}
+  - {interpretation: REVERSAL_LOW, baseline_hours: 168, threshold: 1.0, strategy_version_id: SV-1594b86305ffb598}
+  - {interpretation: REVERSAL_LOW, baseline_hours: 168, threshold: 2.0, strategy_version_id: SV-f503916a91001bca}
+  - {interpretation: REVERSAL_LOW, baseline_hours: 720, threshold: 1.0, strategy_version_id: SV-85bc4df789d87816}
+  - {interpretation: REVERSAL_LOW, baseline_hours: 720, threshold: 2.0, strategy_version_id: SV-4a4ba6a0e46b1ebb}
+gates:
+  parity_numeric_tolerance: 1.0e-10
+  development_completed_trades_minimum: 100
+  validation_completed_trades_minimum: 30
+  reserve_completed_trades_minimum: 20
+  required_positive_periods_of_7: 5
+  maximum_drawdown: 0.25
+  pbo_maximum: 0.5
+  dsr_minimum: 0.95
+  require_positive_validation_primary: true
+  require_positive_reserve_primary: true
+  require_positive_full_stress: true
+  require_positive_one_bar_delay: true
+  require_benchmark_sharpe_and_drawdown_superiority: true
+  all_12_trials_enter_g10: true
+stop_rules:
+  any_hard_fail_rejects_context: true
+  zero_validation_activity_rejects_context: true
+  no_post_result_rescue: true
+  numeric_pass_cannot_activate_paper_demo_live: true

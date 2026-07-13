@@ -140,6 +140,11 @@ D-071 closes the exact data boundary: 72,225 rows, 72,221 valid features, four q
 gaps, and 72,220 strict post-close mappings pass offline verification. Canonical roles, campaign
 freeze, G1-G11 evidence, and supervision remain open; no strategy or bot is approved.
 
+D-072 closes canonical/campaign construction. All 12 immutable StrategyVersions, four roles, six
+cost cells, seven periods, causal goldens, strict development-selection barrier, and G1-G11
+thresholds pass offline preflight. The single clean historical run and independent G11 disposition
+remain open; no strategy or bot is approved.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

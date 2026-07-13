@@ -1,5 +1,16 @@
 # Package Changelog
 
+## v8.75 — 2026-07-13
+
+- Froze 12 Spot taker-imbalance StrategyVersions and exact completed-hour-to-next-open pulse
+  semantics.
+- Added canonical, independent Decimal, vectorbt, Freqtrade-environment, and Nautilus-environment
+  roles plus causal micro-goldens.
+- Added a hashed development-selection barrier before all OOS evaluation and retained execution
+  authority `NONE`; the complete campaign remains unrun.
+- Made the dashboard future-timestamp fixture collection-delay-proof after the expanded offline
+  verifier suite exposed its ten-minute boundary race; production clock semantics are unchanged.
+
 ## v8.74 — 2026-07-13
 
 - Froze the dedicated BTCUSDT Spot taker-imbalance data identity from retained official-checksum

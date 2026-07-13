@@ -862,6 +862,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   rows with 72,221 valid completed-hour features, four quarantined rows, 25 gaps, and 72,220
   strict-later mappings. Offline drift tests pass; no imbalance-conditioned return has been
   computed and authority remains `NONE`.
+- **Spot taker-imbalance campaign frozen (D-072):** 12 immutable interpretation × baseline ×
+  threshold StrategyVersions, four implementation roles, six cost cells, seven periods, causal
+  goldens, G1-G11 gates, and a hashed development-selection barrier pass preflight. The complete
+  campaign is unrun and no eligible signal performance, bot, venue, or authority exists.
 
 ## Operational SSOT (unchanged)
 
@@ -920,10 +924,10 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Build canonical/reference/vectorbt/Freqtrade/Nautilus Spot taker-imbalance roles, causal
-micro-goldens, and the complete two-phase G1-G11 campaign. Commit the full campaign before
-computing an imbalance-conditioned return. Do not access the sealed V2 holdout, activate a bot,
-connect a venue, request credentials, or cross any human S3/S4 gate.
+Commit the complete Spot taker-imbalance campaign freeze, then execute its one authorized offline
+historical run from that clean commit. Preserve the selection barrier, retain every trial, and
+complete independent G11 supervision without tuning or rescue. Do not access the sealed V2
+holdout, activate a bot, connect a venue, request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

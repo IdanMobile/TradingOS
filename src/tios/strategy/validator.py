@@ -33,6 +33,9 @@ DATASET_IDENTIFIERS = frozenset(
         "cftc_report_date_utc",
         "cftc_available_at_utc",
         "cftc_noncommercial_net_share",
+        "source_close_utc",
+        "taker_buy_quote_volume",
+        "timestamp_open_utc",
     }
 )
 

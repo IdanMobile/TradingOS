@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.74 Spot taker-imbalance data freeze (2026-07-13). Supersedes v8.73 hashes.
+Package version: v8.75 Spot taker-imbalance campaign freeze (2026-07-13). Supersedes v8.74 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `b758bc687bba70e14507c987025570f874b987c8260b0298ed05dadc6719040f` |
-| `DECISION_LOG.md` | `5fe9f4075c2f569e70e3a67e4ec60c5bee8dc2ff847ee2a39bdf1ae1270b43b2` |
+| `PROJECT_STATE.md` | `6bb03a8b11bcbe9aee21469af773fbc7e51786c9a9b77309bd097b465732125b` |
+| `DECISION_LOG.md` | `cc0cbf2b5035e4e49c355a85454b10cd540ad6731e31c52696a9cc766fb24854` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `bc1f42c68cd4f2131a2a1a1cb162a63a17c541fe92741a7f9183ac36d8946122` |
+| `MISSING_AND_OPEN_ITEMS.md` | `d1472c269e86fd0d927220f952b0b30f56c36d216e6e44f28142bb7ed9552082` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -125,7 +125,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `research/CALENDAR_UTC_G1_G11_CAMPAIGN_V1.yaml` | `dbf84679e97e892f86610e80fc735e4c4dad89942a9a3b5d6a610e634daff985` |
 | `research/source_snapshots/calendar_utc_v1/binance_public_data_README.md` | `085ab91377aa9325d44f4c7ad27cce4ab381e158403e1d7df2bad39d1a66f7c6` |
 | `strategies/research/calendar-utc-weekday/canonical_strategy_spec.yaml` | `b7f85a146818130abe330fe639b7b38c6b7f7cca7c84e1246c174d7cbc6bf9d4` |
-| `src/tios/strategy/spec.py` | `e4da4db1add6d036c5c6a86088e8bec2e4da3a60f9463b6b57a09d25a25f34b7` |
+| `src/tios/strategy/spec.py` | `fbc84c54e76fe0a9a8fc066718b0be9fee4c050d598b3896c1a7822159b31f1c` |
 | `src/tios/strategy/evaluator.py` | `81325dc8442a97082c35852d046ff217f0eb22dc7fba6d027bdd7be9ae4d6d20` |
 | `engines/reference/calendar_utc.py` | `e7885a873d2c7e500a50c651f91c600f4534321fba6abfb2dcc669df3062733b` |
 | `engines/vectorbt/calendar_utc_returns.py` | `cd04c0a2d4933f20b7b1f4b7675d0dc2f457d001131f5ebfd0de6a320239f0e0` |
@@ -156,7 +156,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V1.yaml` | `6b4fbff8936ba678b470c8ccdbe9c4c43b9e8fce8e5a34785946692efb900bab` |
 | `strategies/research/funding-pressure-spot/canonical_strategy_spec.yaml` | `98bb073bd7c1ff46383d8837c39dee3dd2dfb2a7e303c22986afc8e2c5c742aa` |
-| `src/tios/strategy/validator.py` | `0ea11749cf96fe1ccd8d50d32d21b9130634e7daf78be16abf41a262713d1dca` |
+| `src/tios/strategy/validator.py` | `cfb696d19246bbde9d5bfb59907304cc17163f99c6ed03fc049383ba005b37ed` |
 | `src/tios/strategy/funding_pressure.py` | `2bb4bc766a54aff687824e0edc103213ce05abf8a077de29dad4975dcbe6a76a` |
 | `engines/funding_pressure_data.py` | `1dca9cde1da9657c990a6d43026c883c15e6915918496b1262f9eae7c5bf9e8a` |
 | `engines/reference/funding_pressure.py` | `8e660df18f0c001f2d06e10cd25c45b80ef71ac2399de5f163869adcaf9ef4f4` |
@@ -406,6 +406,23 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `research/BTC_SPOT_TAKER_IMBALANCE_DATA_PACKAGE_V1.json` | `9cc2919a3bcdb977f780d65db1c371ac02b8aa310417472abe02c05f009e1db2` |
 | `scripts/verify_btc_spot_taker_imbalance_data.py` | `4c2a7438c5a155c2d4b0a1785db2f0fb83ce722051b5b7b61e0c1aecc6a86b82` |
 | `tests/test_btc_spot_taker_imbalance_data.py` | `42854d5bce21a922b4a0d2966e160433e277530cf72e101ef20c8ee3ded5a288` |
+
+## Spot taker-imbalance campaign freeze (added v8.75)
+
+| Path | SHA-256 |
+|---|---|
+| `strategies/research/btc-spot-taker-imbalance/canonical_strategy_spec.yaml` | `1077781b5b376c774717e61db770a7a66ba981fbdb7fa8874ce860288adb25de` |
+| `src/tios/strategy/taker_imbalance.py` | `48af30c6d862c8aa4652ef1cdce08327d9a04d0e457957e455e452370640d0a3` |
+| `engines/taker_imbalance_data.py` | `e28189ace5a76ef5c6b8c95e5420dc8316d4fc6d70552c37a6296224314186b6` |
+| `engines/reference/taker_imbalance.py` | `7a9a0619ef764ec49c26aa760674cd669b7d52255de5f867af4e41f6f79738cf` |
+| `engines/vectorbt/taker_imbalance_returns.py` | `76ab7e5eaf1046f9898241ea45888237f6c9777406201171bea58d09dc16a3c3` |
+| `engines/freqtrade/taker_imbalance_signals.py` | `131908ee9d708847ee1828d5adfb2272a925f0b2bf3d83dc1c992cabe6804881` |
+| `engines/nautilus/taker_imbalance_events.py` | `e620b13b2c528a22cecdd7dc8950f3245add0dacac11fddb13b3b6880049dea4` |
+| `research/BTC_SPOT_TAKER_IMBALANCE_G1_G11_CAMPAIGN_V1.yaml` | `9799517e360ebb40b7e497b5dc13d65f1c65347c5a4c846632ee2eda9b42f776` |
+| `scripts/run_btc_spot_taker_imbalance_campaign.py` | `1302459222472316adf89cdd878e4c56aa71fd2f54bc19abeb97f90f2860c8e4` |
+| `tests/test_taker_imbalance_strategy.py` | `55292b75c86cb98458437c07646846a256d6d70f93f75427e3a2a9caa04d33df` |
+| `tests/test_taker_imbalance_reference.py` | `e79084014fca5d6bf0ee52904e4c3cb0cacda8d62126dc641f4e2be674359be7` |
+| `tests/test_taker_imbalance_campaign.py` | `bb44a26e73ba283ca18c9e35079553b22581cc9d6165677d14c0784086d472aa` |
 
 ## Expected generated artifacts
 

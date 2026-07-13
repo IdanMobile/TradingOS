@@ -697,6 +697,33 @@ Evidence: `research/BTC_SPOT_TAKER_IMBALANCE_DATA_PACKAGE_V1.json`,
 `scripts/verify_btc_spot_taker_imbalance_data.py`, and focused fail-closed tests.
 Status: **Verified offline data boundary; performance unobserved and authority NONE.**
 
+### D-072 — Spot taker-imbalance campaign frozen behind the development selection barrier
+
+Decision: `BTC-SPOT-TAKER-IMBALANCE-G1-G11-V1` is fully specified before scoring. Twelve
+StrategyVersions exhaust continuation-high/reversal-low × 24/168/720-hour prior baseline ×
+1.0/2.0 strict-z thresholds. Every entry is strictly after the measured source-hour close and
+creates an unlevered six-hour BTCUSDT Spot long/cash pulse that never stacks or extends. Invalid
+volume/clock rows and gaps reset warm-up and exit held exposure at the first observable open.
+
+The implementation has canonical point-in-time semantics, an independent Decimal ledger, a
+vectorbt retained-trial accelerator, and separate Freqtrade/Nautilus environment conformance roles.
+Causal goldens cover strict-later fill, polarity, zero variance, nonextension, exact costs,
+invalid-row reset, invalid inputs, and future-append causality. The runner requires a hashed
+development selection before 2023-2026 evaluation and freezes six costs, seven periods,
+stress/delay/benchmark tests, sample/drawdown/PBO/DSR thresholds, and G1-G11.
+
+A pre-freeze worker smoke used only the first 12 source hours, structurally shorter than the
+minimum 24-hour prior baseline. It produced zero signals in every role and could not reveal an
+eligible return or direction. The complete campaign remains unrun.
+
+Consequence: one clean-commit offline campaign run is authorized. Numeric output cannot
+self-promote. No bot, venue, credential, order, paper/demo/live state, human gate, sealed V2
+holdout, closed-family context, or execution authority is authorized.
+
+Evidence: `research/BTC_SPOT_TAKER_IMBALANCE_G1_G11_CAMPAIGN_V1.yaml`, canonical/role modules,
+and focused tests under `tests/test_taker_imbalance_*`.
+Status: **Approved constrained-S2 immutable offline campaign; preregistered and not run.**
+
 ### D-063 — Bitcoin MVRV dislocation family admitted to data/canonical construction
 
 Decision: a source-only cycle compared exactly three new mechanisms without computing local family

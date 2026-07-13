@@ -1,0 +1,42 @@
+strategy_id: STRAT-BTC-SPOT-TAKER-IMBALANCE
+family: taker_imbalance
+inputs: [timestamp_open_utc, source_close_utc, quote_volume, taker_buy_quote_volume, open, close]
+indicators:
+  - name: prior_taker_imbalance_zscore
+    parameters:
+      interpretation: CONTINUATION_HIGH
+      prior_baseline_hours: 24
+      z_threshold: 1.0
+      population_std: true
+      pulse_holding_hours: 6
+    outputs: [taker_pulse_entry, taker_pulse_exit]
+entry_long:
+  all:
+    - taker_pulse_entry == 1
+exit_long:
+  all:
+    - taker_pulse_exit == 1
+position_sizing: {type: all_in}
+risk:
+  stop_loss: null
+  take_profit: null
+  source_gap_exit: FIRST_OBSERVABLE_OPEN
+  spot_gap_exit: FIRST_OBSERVABLE_OPEN
+  execution_authority: NONE
+assumptions:
+  - "feature is two times completed-hour taker-buy quote volume divided by positive total quote volume, minus one"
+  - "feature is evaluated only after the recorded source bar close timestamp; entry fills at the first retained bar open strictly later"
+  - "warm-up requires 24, 168, or 720 immediately preceding valid consecutive hourly observations"
+  - "z-score uses the prior-window population mean and population standard deviation and excludes the current hour"
+  - "CONTINUATION_HIGH requires z above threshold and REVERSAL_LOW requires z below negative threshold; equality and zero variance do not signal"
+  - "zero quote volume, taker-buy volume outside zero-to-total, an invalid clock, or a source gap resets warm-up"
+  - "a held pulse ignores later signals, never extends or stacks, and exits at the first retained open at least six hours after entry"
+  - "a source or Spot gap exits held exposure at the first observable retained open"
+  - "the feature is exchange-local and does not identify trader intent or global order flow"
+  - "the strategy is unlevered BTCUSDT Spot long/cash only"
+ambiguities: []
+source_refs:
+  - FS7-BINANCE-PUBLIC-SPOT-KLINES
+  - FS7-BINANCE-PUBLIC-DATA-CHECKSUMS
+  - FS7-ORDER-FLOW-MICROSTRUCTURE
+license_ref: PROJECT-ORIGINAL-SPEC
