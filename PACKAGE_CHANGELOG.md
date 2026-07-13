@@ -1,5 +1,13 @@
 # Package Changelog
 
+## v8.74 — 2026-07-13
+
+- Froze the dedicated BTCUSDT Spot taker-imbalance data identity from retained official-checksum
+  archives and canonical normalized data.
+- Verified 72,225 rows, 72,221 valid features, four quarantined rows, 25 gaps, and 72,220 strict
+  post-close mappings with deliberate drift tests.
+- Retained execution authority `NONE`; no imbalance-conditioned return was computed.
+
 ## v8.73 — 2026-07-13
 
 - Compared exactly three new source-backed mechanisms after the CFTC rejection.

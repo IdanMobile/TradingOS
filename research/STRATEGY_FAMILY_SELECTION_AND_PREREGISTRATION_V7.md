@@ -1,8 +1,8 @@
 # Strategy family selection and preregistration V7
 
-Status: **GO — `FAM-BTC-SPOT-TAKER-IMBALANCE-01` admitted to data packaging only**  
-Decision class: constrained-S2 source/data feasibility; no family performance computed  
-Execution authority: `NONE`  
+Status: **GO — `FAM-BTC-SPOT-TAKER-IMBALANCE-01` admitted to data packaging only**
+Decision class: constrained-S2 source/data feasibility; no family performance computed
+Execution authority: `NONE`
 Retrieved: 2026-07-13 UTC
 
 ## Decision

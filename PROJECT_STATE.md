@@ -858,6 +858,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   Binance BTCUSDT taker imbalance. Twelve interpretation × baseline × threshold trials, a fixed
   six-hour pulse, strict-later fill, splits, costs, gates, and no-rescue rules are preregistered.
   Performance remains unobserved; dedicated data/campaign construction is open.
+- **Spot taker-imbalance data frozen (D-071):** exact official-checksum data reconstructs 72,225
+  rows with 72,221 valid completed-hour features, four quarantined rows, 25 gaps, and 72,220
+  strict-later mappings. Offline drift tests pass; no imbalance-conditioned return has been
+  computed and authority remains `NONE`.
 
 ## Operational SSOT (unchanged)
 
@@ -916,11 +920,10 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Freeze and verify the dedicated Spot taker-imbalance data package from already-retained exact
-Binance bytes, then build canonical/reference/vectorbt/Freqtrade/Nautilus roles and the complete
-two-phase G1-G11 campaign. Commit the full campaign before computing an imbalance-conditioned
-return. Do not access the sealed V2 holdout, activate a bot, connect a venue, request credentials,
-or cross any human S3/S4 gate.
+Build canonical/reference/vectorbt/Freqtrade/Nautilus Spot taker-imbalance roles, causal
+micro-goldens, and the complete two-phase G1-G11 campaign. Commit the full campaign before
+computing an imbalance-conditioned return. Do not access the sealed V2 holdout, activate a bot,
+connect a venue, request credentials, or cross any human S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

@@ -679,6 +679,24 @@ activated.
 Evidence: `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V7.md`.
 Status: **Approved constrained-S2 data/canonical build; performance unobserved and authority NONE.**
 
+### D-071 — Spot taker-imbalance exact data boundary frozen
+
+Decision: the dedicated package retains the exact official-checksum BTCUSDT Spot 1h archives and
+canonical normalized data covering 2018-04-01 through 2026-06-30. Offline reconstruction verifies
+72,225 rows, 25 gaps, and the completed-hour feature fields. Exactly four zero-volume or
+invalid-clock rows are quarantined and reset the consecutive baseline; 72,221 feature rows are
+valid and 72,220 map to a strictly later retained open. The package pins archive/checksum bytes,
+decoded hashes, schema, timestamp-unit handling, logical feature content, gaps, invalid rows, and
+mapping counts.
+
+Consequence: canonical/reference/worker implementations and an immutable two-phase campaign may
+be built. No imbalance-conditioned return has been computed. No bot, venue, credential, order,
+paper/demo/live state, human gate, sealed V2 holdout, or execution authority is activated.
+
+Evidence: `research/BTC_SPOT_TAKER_IMBALANCE_DATA_PACKAGE_V1.json`,
+`scripts/verify_btc_spot_taker_imbalance_data.py`, and focused fail-closed tests.
+Status: **Verified offline data boundary; performance unobserved and authority NONE.**
+
 ### D-063 — Bitcoin MVRV dislocation family admitted to data/canonical construction
 
 Decision: a source-only cycle compared exactly three new mechanisms without computing local family

@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.73 Spot taker-imbalance family selection (2026-07-13). Supersedes v8.72 hashes.
+Package version: v8.74 Spot taker-imbalance data freeze (2026-07-13). Supersedes v8.73 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `198a4e0d4a1ac57a84ad1a0f31bd5bd5f00874a08940189998436b3f642e3d86` |
-| `DECISION_LOG.md` | `e5f78fb9b3702d04f1720d310472883735b52c3fadc885edd23369ecd29fea5c` |
+| `PROJECT_STATE.md` | `b758bc687bba70e14507c987025570f874b987c8260b0298ed05dadc6719040f` |
+| `DECISION_LOG.md` | `5fe9f4075c2f569e70e3a67e4ec60c5bee8dc2ff847ee2a39bdf1ae1270b43b2` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `881853e10742ba2857fb976e71624d8339d4dc7ebf9f9e84a92c5205aa058873` |
+| `MISSING_AND_OPEN_ITEMS.md` | `bc1f42c68cd4f2131a2a1a1cb162a63a17c541fe92741a7f9183ac36d8946122` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -397,7 +397,15 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 
 | Path | SHA-256 |
 |---|---|
-| `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V7.md` | `443aee27e491ae31257c964ecaa04d540a7bc5a9fee9aec8330dc55031eb0b3f` |
+| `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V7.md` | `d33c566d9ac9dd14f0c71260094bfd011ab6374647e8401fbe0cd465d8ee61f1` |
+
+## Spot taker-imbalance data freeze (added v8.74)
+
+| Path | SHA-256 |
+|---|---|
+| `research/BTC_SPOT_TAKER_IMBALANCE_DATA_PACKAGE_V1.json` | `9cc2919a3bcdb977f780d65db1c371ac02b8aa310417472abe02c05f009e1db2` |
+| `scripts/verify_btc_spot_taker_imbalance_data.py` | `4c2a7438c5a155c2d4b0a1785db2f0fb83ce722051b5b7b61e0c1aecc6a86b82` |
+| `tests/test_btc_spot_taker_imbalance_data.py` | `42854d5bce21a922b4a0d2966e160433e277530cf72e101ef20c8ee3ded5a288` |
 
 ## Expected generated artifacts
 
