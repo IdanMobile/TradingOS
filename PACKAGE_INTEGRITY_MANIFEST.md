@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.79 cross-venue premium data freeze (2026-07-13). Supersedes v8.78 hashes.
+Package version: v8.80 cross-venue premium campaign freeze (2026-07-13). Supersedes v8.79 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `78422f454d5a45f4cd0307b1db8780f1dd00dff46890c441cc5c6400659e80c8` |
-| `DECISION_LOG.md` | `29c2d87562a605ad3fc4707b0deffa4644c21cf529c581ba12c543d8d595a6e3` |
+| `PROJECT_STATE.md` | `87e78e47d4ba3b092e1045b11cfb0bd94b7f1ec40c65450b375d5847d7ed8421` |
+| `DECISION_LOG.md` | `bcce914a8b370ffd4b61354dc3f5cf6adda44b1db7049649af6446d2140b4c23` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -27,7 +27,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
 | `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `82eba79d06ef3cca4226f1d7f52cb9d93f07886f9257ecd368fe2e2ff033333c` |
+| `MISSING_AND_OPEN_ITEMS.md` | `c8158d13b1322d72f3ad1a19211a49d77bb04746b42fe5ebc139c5bff2b0ba8d` |
 
 ## Supervisory correction package (added v8.52)
 
@@ -125,7 +125,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `research/CALENDAR_UTC_G1_G11_CAMPAIGN_V1.yaml` | `dbf84679e97e892f86610e80fc735e4c4dad89942a9a3b5d6a610e634daff985` |
 | `research/source_snapshots/calendar_utc_v1/binance_public_data_README.md` | `085ab91377aa9325d44f4c7ad27cce4ab381e158403e1d7df2bad39d1a66f7c6` |
 | `strategies/research/calendar-utc-weekday/canonical_strategy_spec.yaml` | `b7f85a146818130abe330fe639b7b38c6b7f7cca7c84e1246c174d7cbc6bf9d4` |
-| `src/tios/strategy/spec.py` | `fbc84c54e76fe0a9a8fc066718b0be9fee4c050d598b3896c1a7822159b31f1c` |
+| `src/tios/strategy/spec.py` | `50d34972215d0a1aef793bf23a8fa8121bd89b7e0123dc23b3e3d23f2e536e10` |
 | `src/tios/strategy/evaluator.py` | `81325dc8442a97082c35852d046ff217f0eb22dc7fba6d027bdd7be9ae4d6d20` |
 | `engines/reference/calendar_utc.py` | `e7885a873d2c7e500a50c651f91c600f4534321fba6abfb2dcc669df3062733b` |
 | `engines/vectorbt/calendar_utc_returns.py` | `cd04c0a2d4933f20b7b1f4b7675d0dc2f457d001131f5ebfd0de6a320239f0e0` |
@@ -156,7 +156,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `research/FUNDING_PRESSURE_SPOT_G1_G11_CAMPAIGN_V1.yaml` | `6b4fbff8936ba678b470c8ccdbe9c4c43b9e8fce8e5a34785946692efb900bab` |
 | `strategies/research/funding-pressure-spot/canonical_strategy_spec.yaml` | `98bb073bd7c1ff46383d8837c39dee3dd2dfb2a7e303c22986afc8e2c5c742aa` |
-| `src/tios/strategy/validator.py` | `cfb696d19246bbde9d5bfb59907304cc17163f99c6ed03fc049383ba005b37ed` |
+| `src/tios/strategy/validator.py` | `5182b042f0d62727aecbbfcb00b3818c6ad24807470473ab13f138fa9e01d0bf` |
 | `src/tios/strategy/funding_pressure.py` | `2bb4bc766a54aff687824e0edc103213ce05abf8a077de29dad4975dcbe6a76a` |
 | `engines/funding_pressure_data.py` | `1dca9cde1da9657c990a6d43026c883c15e6915918496b1262f9eae7c5bf9e8a` |
 | `engines/reference/funding_pressure.py` | `8e660df18f0c001f2d06e10cd25c45b80ef71ac2399de5f163869adcaf9ef4f4` |
@@ -461,6 +461,23 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `scripts/build_cross_venue_premium_data.py` | `0d1c625225e5b2d94a25c5edb272033836d47dafc154805deef9eab64b0b10af` |
 | `scripts/verify_cross_venue_premium_data.py` | `4359adf79504aff7d4dfb995dbc534dcebad7cda2c6737b68817e03a4fa27f57` |
 | `tests/test_cross_venue_premium_data.py` | `45788b30a2e8e3ca34184cf3945af6d5eaf853c7c83693698ac6f7ba76c76c6f` |
+
+## Cross-venue premium campaign freeze (added v8.80)
+
+| Path | SHA-256 |
+|---|---|
+| `research/CROSS_VENUE_BTC_PREMIUM_G1_G11_CAMPAIGN_V1.yaml` | `f672f0d5dea03096c8912a4a6a889df8809d8987081093f91490801daa70bccf` |
+| `strategies/research/cross-venue-btc-premium/canonical_strategy_spec.yaml` | `0eddfa5977085034811bd1c86dc2e3d0dc95fae7746b4fb675c1f031a06d8fc8` |
+| `src/tios/strategy/cross_venue_premium.py` | `c4bc851f49dab8a5ed680a421883324a094def07a80270d554ab188dab48dfb6` |
+| `engines/cross_venue_premium_data.py` | `a6125a3b50817b39def967d0e922d8df179693c10eef5eadaa454d9f1e9daefc` |
+| `engines/reference/cross_venue_premium.py` | `13c1894b248b4dd098f2ec0f22b989d24e4dbad355e70fd52286c607a3c5c511` |
+| `engines/vectorbt/cross_venue_premium_returns.py` | `2c6cfbb86a55231d577938ba4bdecb90602a3399db709e112c3bf4268bf22739` |
+| `engines/freqtrade/cross_venue_premium_signals.py` | `e452335012ee53d3bc6a96597dae299235050525fe91744fe3049d6cfe6cf438` |
+| `engines/nautilus/cross_venue_premium_events.py` | `ee4a817280b0c6eccbe378f94a9779fb2b41f36a98d3bc406503cf25ace82f51` |
+| `scripts/run_cross_venue_btc_premium_campaign.py` | `3810dadfd1ca930fe20b6975f5ef750f959e42b1e6ec1118c36a5b3054ef9eb3` |
+| `tests/test_cross_venue_premium_strategy.py` | `6a7650d69a960cdb91b70cf2ff27aaac838e994adf2f1dbd5a46a9a2a4673515` |
+| `tests/test_cross_venue_premium_reference.py` | `421282cca592fa1b806e5ac1b8e271b20ddb8033a1fc060e557977ba606259c9` |
+| `tests/test_cross_venue_premium_campaign.py` | `06fde5563a4dc087f126f0cfdc98c0e47cc041626d057fd933da51d964987d8b` |
 
 ## Expected generated artifacts
 

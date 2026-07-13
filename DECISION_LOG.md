@@ -608,6 +608,31 @@ Evidence: `research/CROSS_VENUE_BTC_PREMIUM_DATA_PACKAGE_V1.json`, retained raw/
 `scripts/verify_cross_venue_premium_data.py`, and `tests/test_cross_venue_premium_data.py`.
 Status: **Verified offline data package; performance unobserved and authority NONE.**
 
+### D-077 — Cross-venue premium canonical campaign frozen behind selection barrier
+
+Decision: `CROSS-VENUE-BTC-PREMIUM-G1-G11-V1` is fully specified before any
+premium-conditioned future return is computed. Twelve content-derived StrategyVersions exhaust the
+two-interpretation, three-baseline, two-threshold roster. Canonical Decimal timing and an independent
+Decimal ledger are paired with isolated vectorbt, Freqtrade-environment dataframe, and
+Nautilus-environment event-order roles. Causal micro-goldens cover strict-later fills, polarity,
+zero variance, gap reset, non-extending six-hour exits, and two-sided cost accounting.
+
+The runner freezes six cost cells, development/validation/reserve chronology, six period slices,
+trade minima, one-bar delay, benchmark, drawdown, PBO/DSR, parity, and G1-G11 thresholds. Phase one
+may evaluate all 12 trials on development only and must write a content-addressed selected-version
+artifact. Phase two refuses validation, reserve, full-history, or period evaluation without that
+verified artifact. Offline preflight, data verification, focused tests, strict mypy, and isolated
+engine import checks pass.
+
+Consequence: one clean-commit offline historical run is authorized. Numeric output cannot
+self-promote and G11 remains an independent supervisory decision. No bot, credential, venue trading
+session, order, paper/demo/live state, HG-3, sealed V2 holdout access, closed-family reuse, or
+execution authority is authorized.
+
+Evidence: `research/CROSS_VENUE_BTC_PREMIUM_G1_G11_CAMPAIGN_V1.yaml`, canonical/engine roles, and
+focused tests under `tests/test_cross_venue_premium_*`.
+Status: **Approved constrained-S2 immutable offline campaign; preregistered and not run.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

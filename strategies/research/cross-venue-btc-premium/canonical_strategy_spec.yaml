@@ -1,0 +1,42 @@
+strategy_id: STRAT-CROSS-VENUE-BTC-PREMIUM
+family: cross_venue_premium
+inputs: [timestamp_open_utc, source_close_utc, coinbase_btcusd_close, coinbase_usdtusd_close, binance_btcusdt_open, binance_btcusdt_close, log_premium]
+indicators:
+  - name: prior_cross_venue_premium_zscore
+    parameters:
+      interpretation: CONTINUATION_POSITIVE
+      prior_baseline_hours: 168
+      z_threshold: 1.0
+      population_std: true
+      pulse_holding_hours: 6
+    outputs: [premium_pulse_entry, premium_pulse_exit]
+entry_long:
+  all:
+    - premium_pulse_entry == 1
+exit_long:
+  all:
+    - premium_pulse_exit == 1
+position_sizing: {type: all_in}
+risk:
+  stop_loss: null
+  take_profit: null
+  source_gap_exit: FIRST_OBSERVABLE_OPEN
+  spot_gap_exit: FIRST_OBSERVABLE_OPEN
+  execution_authority: NONE
+assumptions:
+  - "feature is ln of Coinbase BTC-USD divided by Coinbase USDT-USD, then divided by Binance BTCUSDT, using completed-hour bar closes"
+  - "feature is available only after all three source candles complete; entry fills at the first retained Binance bar open strictly later"
+  - "warm-up requires 168, 720, or 2160 immediately preceding valid consecutive hourly observations"
+  - "z-score uses the prior-window population mean and population standard deviation and excludes the current hour"
+  - "CONTINUATION_POSITIVE requires z above threshold and REVERSAL_NEGATIVE requires z below negative threshold; equality and zero variance do not signal"
+  - "a missing or conflicting source hour resets warm-up; prices are never forward-filled"
+  - "a held pulse ignores later signals, never extends or stacks, and exits at the first retained open at least six hours after entry"
+  - "a source or Binance Spot gap exits held exposure at the first observable retained open"
+  - "this is a predictive association test, not simultaneous arbitrage or Coinbase execution"
+  - "the strategy is unlevered Binance BTCUSDT Spot long/cash only"
+ambiguities: []
+source_refs:
+  - FS8-COINBASE-EXCHANGE-CANDLES
+  - FS8-BINANCE-PUBLIC-SPOT-KLINES
+  - FS8-CROSS-VENUE-PRICE-FORMATION
+license_ref: PROJECT-ORIGINAL-SPEC

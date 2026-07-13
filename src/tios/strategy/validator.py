@@ -35,6 +35,11 @@ DATASET_IDENTIFIERS = frozenset(
         "cftc_noncommercial_net_share",
         "source_close_utc",
         "taker_buy_quote_volume",
+        "coinbase_btcusd_close",
+        "coinbase_usdtusd_close",
+        "binance_btcusdt_open",
+        "binance_btcusdt_close",
+        "log_premium",
         "timestamp_open_utc",
     }
 )

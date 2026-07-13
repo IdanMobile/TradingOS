@@ -883,6 +883,10 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   content-addressed with request/response provenance. Deterministic normalization produces 45,193
   aligned rows, six combined-source gaps, and 45,192 strict-later Binance-open mappings. Offline
   reconstruction, byte-identical rebuild, and deliberate drift tests pass; no return was computed.
+- **Cross-venue premium campaign frozen (D-077):** 12 immutable interpretation × baseline ×
+  threshold StrategyVersions, four implementation roles, six cost cells, six periods, causal
+  goldens, G1-G11 gates, and a hashed development-selection barrier pass preflight. The complete
+  campaign is unrun and no eligible signal performance, bot, venue, or authority exists.
 
 ## Operational SSOT (unchanged)
 
@@ -941,12 +945,11 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Build the minimal immutable StrategyVersions and four independent implementation roles for the
-D-075/D-076 cross-venue premium context, then freeze the complete G1-G11 campaign and hashed
-development-selection barrier before any premium-conditioned future return is computed. Preserve
-the exact 12-trial roster, six gaps, quote conversion, strict-later fills, costs, splits, thresholds,
-and no-rescue rule. Do not access the sealed V2 holdout, activate a bot, connect a trading venue,
-request credentials, or cross any human S3/S4 gate.
+Execute `CROSS-VENUE-BTC-PREMIUM-G1-G11-V1` once from the clean freeze commit. Preserve the hashed
+development-selection barrier before validation/reserve access, retain all 12 trials and four-role
+parity evidence, then issue an independent G11 supervisor decision without rescue. Do not access the
+sealed V2 holdout, activate a bot, connect a trading venue, request credentials, or cross any human
+S3/S4 gate.
 
 ## Exit condition of next phase (unchanged)
 

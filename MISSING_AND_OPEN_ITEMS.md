@@ -165,6 +165,11 @@ aligned rows, six gap events, and 45,192 strict-later mappings. Byte-identical r
 deliberate drift classes pass offline. Canonical roles, campaign freeze, G1-G11 evidence, and
 supervision remain open; no strategy or bot is approved.
 
+D-077 closes canonical/campaign construction. All 12 immutable StrategyVersions, four roles, six
+cost cells, six period slices, causal goldens, strict development-selection barrier, and G1-G11
+thresholds pass offline preflight. The single clean historical run and independent G11 disposition
+remain open; no strategy or bot is approved.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

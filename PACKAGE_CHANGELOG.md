@@ -1,5 +1,13 @@
 # Package Changelog
 
+## v8.80 — 2026-07-13
+
+- Added the cross-venue premium canonical family and 12 immutable StrategyVersion identities.
+- Added independent Decimal, vectorbt, Freqtrade-environment, and Nautilus-environment roles with
+  causal timing/gap/polarity/cost goldens.
+- Froze the six-cost, six-period G1-G11 campaign behind a hashed development-selection barrier;
+  the campaign remains unrun and execution authority remains `NONE`.
+
 ## v8.79 — 2026-07-13
 
 - Froze 382 exact public Coinbase documentation/product/candle responses with complete request and

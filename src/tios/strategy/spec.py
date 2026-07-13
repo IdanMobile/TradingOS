@@ -30,6 +30,7 @@ FAMILIES = (
     "mvrv_dislocation",
     "cftc_positioning",
     "taker_imbalance",
+    "cross_venue_premium",
     "carry",
     "market_making",
     "arbitrage",
