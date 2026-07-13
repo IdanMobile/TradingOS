@@ -968,6 +968,29 @@ Evidence: `research/PROSPECTIVE_BTC_LIQUIDATION_PERSISTENT_OBSERVATION_V1.yaml` 
 COIN-M WebSocket connection documentation retrieved 2026-07-13.
 Status: **Persistent-observation contract frozen and unrun; authority NONE.**
 
+### D-094 — Checkpoint observer V5 frozen before public continuity proof
+
+Decision: the D-093 operating contract is implemented as one finite public-data process with one
+schema-5 immutable checkpoint per fully enclosed UTC five-minute window and one atomic mutable
+heartbeat. Previously finalized checkpoints survive later source failure. An unplanned gap
+discards only the partial window and increments continuity epoch; a planned connection rotation
+may preserve continuity only when replacement coverage overlaps the handoff boundary.
+
+Offline tests prove two consecutive checkpoints on one synthetic connection, checkpoint
+preservation and continuity reset after a synthetic mid-window disconnect, continuity preservation
+through a synthetic overlapping rotation, schema-5 reconstruction, and heartbeat authority-drift
+rejection. The exact implementation and test hashes are frozen before observing a public result.
+
+Consequence: one clean-commit run requesting exactly two public read-only checkpoint windows is
+authorized as operational evidence. It may retain source/checkpoint/heartbeat evidence only. It
+cannot aggregate labels, score a signal, validate a strategy, activate a bot, connect an account,
+use credentials, create an order, enter paper/demo/live state, access the sealed V2 holdout, or
+grant execution authority.
+
+Evidence: `research/PROSPECTIVE_BTC_LIQUIDATION_CHECKPOINT_OBSERVER_V5.yaml`, the V5 scripts, and
+focused prospective/safety tests.
+Status: **V5 frozen and unrun; first two-window public proof authorized; authority NONE.**
+
 ### D-066 — CFTC Bitcoin-futures positioning admitted to data packaging
 
 Decision: a new source-only cycle compared exactly three distinct mechanisms without computing

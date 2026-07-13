@@ -1,5 +1,14 @@
 # Package Changelog
 
+## v8.97 — 2026-07-13 — Checkpoint observer V5 freeze
+
+- Implemented finite schema-5 per-window checkpoints on one public read-only WebSocket, atomic
+  operational heartbeats, bounded reconnect/reset behavior, and overlap-proven planned rotation.
+- Added offline tests for two consecutive checkpoints, mid-window disconnect preservation,
+  continuity reset, planned rotation, reconstruction, and authority drift; all pass.
+- Froze the exact code and test hashes before the first bounded two-window public proof. No label
+  analysis, score, bot, credential, order, paper/demo/live state, or execution authority exists.
+
 ## v8.96 — 2026-07-13 — Persistent checkpoint operations contract
 
 - Rejected a simple process loop because intentional reconnects can never build the consecutive

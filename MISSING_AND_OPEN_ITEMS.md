@@ -258,6 +258,12 @@ per-window checkpoints on one continuous connection plus overlap-proven rotation
 documented 24-hour disconnect. V5 implementation, synthetic rotation/failure tests, a two-window
 post-freeze run, 8,639 further consecutive windows, and all validation/promotion gates remain open.
 
+D-094 freezes V5 after offline tests prove atomic multi-window checkpoints, preservation across a
+mid-window disconnect, continuity reset after a gap, overlap-preserving planned rotation, heartbeat
+authority rejection, and schema-5 reconstruction. The post-freeze two-window public proof, 8,638
+additional consecutive warm-up windows after that proof, causal label maturity, review minima,
+costs, G1-G11, strategy approval, and every bot/paper gate remain open.
+
 ## Open research gaps (tracked in detail in `research/RESEARCH_GAP_MATRIX.md`)
 
 - RG-05 public-source venue availability slice is complete for the authorized

@@ -1,0 +1,50 @@
+schema_version: 1
+observer_id: PROSPECTIVE-BTC-LIQUIDATION-CHECKPOINT-OBSERVER-V5
+decision_id: D-094
+status: FROZEN_NOT_RUN
+signal_spec_id: PROSPECTIVE-BTC-LIQUIDATION-STRESS-V1
+signal_spec_sha256: a2a5553ee5286a46b9972d6a31edd727ef3e9cfe25bdbdd09c4861012d1c3fb1
+operations_contract_id: PROSPECTIVE-BTC-LIQUIDATION-PERSISTENT-OBSERVATION-V1
+operations_contract_sha256: c58ce02837c86b28b8b956fb2eb37ab1cd500e36a63516272c6dac71798e191d
+execution_authority: NONE
+promotion_eligible: false
+
+frozen_implementation:
+  base_commit: 86c914d8597b1ea88d3fb5f3d7e73394d72c89df
+  observer_script_sha256: b828afe7e614664c80a3f78ffa1c985ff232874064af7646de4c5f9ca47802f4
+  checkpoint_script_sha256: 23490946d021387e3db125af1c49b609ab182a4218cb47b0c5714594455fda88
+  observer_test_sha256: c6c52a47aa9fac5b5307f02443e91865feb07fa3cd090767534b910185bee0a5
+  checkpoint_test_sha256: fdace96f52941a4693b9305b01b1654b4d3e3aa51e16112874943dc4bac03f76
+  new_runtime_dependencies: []
+
+verified_offline_behavior:
+  - One synthetic public-source connection finalizes two consecutive atomic checkpoints.
+  - A synthetic mid-window disconnect preserves the prior checkpoint, discards the partial window, and increments continuity epoch.
+  - A synthetic overlapping planned rotation changes connection epoch without changing continuity epoch.
+  - Schema-5 checkpoints reconstruct signal, risk, source-failure, authority, and handoff metadata offline.
+  - Mutable heartbeat authority drift fails closed.
+
+first_public_proof:
+  command: uv run python scripts/run_prospective_liquidation_checkpoints.py --checkpoint-windows 2
+  start_condition: clean committed V5 freeze
+  required_result:
+    - exactly two finalized five-minute checkpoints from one bounded process
+    - consecutive UTC windows in one continuity epoch
+    - one public read-only source connection
+    - COMPLETED heartbeat with execution authority NONE
+  failure_result:
+    - retain any finalized checkpoint and exact partial failure evidence
+    - do not count a broken continuity chain
+    - do not retry by changing the frozen observer
+
+unchanged_safety:
+  venue_connection: NONE
+  market_data_transport: PUBLIC_READ_ONLY
+  credentials_used: false
+  paper_orders: DISABLED
+  live_orders: DISABLED
+  metric_eligible: false
+  scorecard_eligible: false
+  promotion_eligible: false
+  warmup_analysis: PROHIBITED
+  sealed_v2_holdout_access: PROHIBITED

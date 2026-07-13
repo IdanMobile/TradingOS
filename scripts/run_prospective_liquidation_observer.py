@@ -37,6 +37,7 @@ from tios.strategy.liquidation_stress import (
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = ROOT / "research/PROSPECTIVE_BTC_LIQUIDATION_STRESS_SIGNAL_V1.yaml"
+PERSISTENT_SPEC = ROOT / "research/PROSPECTIVE_BTC_LIQUIDATION_PERSISTENT_OBSERVATION_V1.yaml"
 DEFAULT_OUTPUT = ROOT / "artifacts/prospective/BTC-LIQUIDATION-STRESS-V1"
 EXCHANGE_INFO_URL = "https://dapi.binance.com/dapi/v1/exchangeInfo"
 WEBSOCKET_URL = "wss://dstream.binance.com/ws/btcusd_perp@forceOrder"
@@ -380,7 +381,7 @@ def verify_directory(directory: Path) -> int:
             raise LiquidationStressError(f"session hash mismatch: {path.name}")
         payload = json.loads(path.read_text())
         schema_version = payload.get("schema_version")
-        if schema_version not in {1, 2, 3, 4}:
+        if schema_version not in {1, 2, 3, 4, 5}:
             raise LiquidationStressError("unsupported prospective session schema")
         if payload.get("signal_spec_sha256") != spec_hash:
             raise LiquidationStressError("prospective session spec hash mismatch")
@@ -396,7 +397,38 @@ def verify_directory(directory: Path) -> int:
             or source.get("complete_liquidation_tape") is not False
         ):
             raise LiquidationStressError("prospective session source contract changed")
-        if schema_version in {3, 4}:
+        if schema_version == 5:
+            metadata = payload.get("persistent_observation")
+            if not isinstance(metadata, dict):
+                raise LiquidationStressError("persistent checkpoint metadata is missing")
+            if metadata.get("operations_contract_sha256") != sha256(PERSISTENT_SPEC.read_bytes()):
+                raise LiquidationStressError("persistent checkpoint contract hash mismatch")
+            if not re.fullmatch(r"[0-9a-f]{24}", str(metadata.get("run_id"))):
+                raise LiquidationStressError("persistent checkpoint run identity is invalid")
+            if any(
+                not isinstance(metadata.get(key), int) or metadata[key] < 1
+                for key in ("checkpoint_index", "connection_epoch", "continuity_epoch")
+            ):
+                raise LiquidationStressError("persistent checkpoint counters are invalid")
+            parse_utc(metadata["connection_opened_at"])
+            expected_checkpoint_status = (
+                "FINALIZED" if source["status"] == "COMPLETE" else "FAILED_PARTIAL"
+            )
+            if metadata.get("checkpoint_status") != expected_checkpoint_status:
+                raise LiquidationStressError("persistent checkpoint status mismatch")
+            handoff = metadata.get("planned_handoff")
+            if handoff is not None:
+                if (
+                    not isinstance(handoff, dict)
+                    or not isinstance(handoff.get("from_connection_epoch"), int)
+                    or handoff["from_connection_epoch"] >= metadata["connection_epoch"]
+                ):
+                    raise LiquidationStressError("persistent handoff identity is invalid")
+                overlap = parse_utc(handoff["overlap_started_at"])
+                boundary = parse_utc(handoff["handoff_boundary"])
+                if overlap > boundary or boundary != parse_utc(payload["started_at"]):
+                    raise LiquidationStressError("persistent handoff coverage is invalid")
+        if schema_version in {3, 4, 5}:
             failure = payload.get("source_failure")
             if source["status"] == "COMPLETE":
                 if failure is not None:
