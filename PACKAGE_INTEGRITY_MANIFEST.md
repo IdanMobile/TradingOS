@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.106 prospective ETH volume-breakout strategy slice (2026-07-14). Supersedes v8.105 hashes.
+Package version: v8.107 web-console ETH signal check (2026-07-14). Supersedes v8.106 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -63,6 +63,15 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `scripts/verify_eth_volume_breakout_flow.py` | `449ab26880ba28d47b5a1b620deb2c99988f32eeabca11be82d23c429576d0e7` |
 | `tests/test_eth_volume_breakout_flow.py` | `3ce7472f58681da06f51177dabda8dbc60570d344f334b51f50830fc11e58b1e` |
 | `tests/test_strategy_evaluator.py` | `da08d37cc72d0281fc7504910a9590f4c964c7447b30ad49a7287a99a25ca562` |
+
+## Web-console ETH signal check (added v8.107)
+
+| Path | SHA-256 |
+|---|---|
+| `src/tios/services/dashboard_api/eth_signal.py` | `8b1a35780a5ef492d304cee65e4af33ea08e84a245a58290e99889e8fcb8a027` |
+| `src/tios/services/dashboard_ui/server.py` | `269c32a04a23d1a2841ff8b6a527810e96b7932e96a539d2a9fa83da9e5e676e` |
+| `src/tios/services/dashboard_ui/dashboard.html` | `e5fa268b8c69445a0699aa87dc891c8cdc23ffca90e581c6a3727c0b54d2ba77` |
+| `tests/test_dashboard.py` | `c9b5c20b1de2af8f9a58240590b320100e64805294fe68f9c65f2a7d5f91609c` |
 
 ## Required handoff inputs — planning system (added v8)
 
@@ -620,8 +629,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `scripts/run_prospective_observation_flow.py` | `049a30eae86bba0abb071016149a3414726a1d47655dcb1b1c19d5e69917f449` |
 | `tests/test_observation_flow.py` | `06bdf250404373a9e3636c5e40e09bde1ff03a0ceb538a7af9dcb95813b70611` |
 | `src/tios/services/dashboard_api/status.py` | `fa74b95cae671e1c03d9b595347ba6ec1fe5316aa36cbb1820572f2d46273e57` |
-| `src/tios/services/dashboard_ui/dashboard.html` | `df43e5a8d416dbf8233858383cf221c89bb911abbe072090875c485907777cdf` |
-| `tests/test_dashboard.py` | `a2cbd3cea65bb01f9d8f49c1dcf244928fa51fa0055f37a01ae959b0c2708f53` |
+| `src/tios/services/dashboard_ui/dashboard.html` | `e5fa268b8c69445a0699aa87dc891c8cdc23ffca90e581c6a3727c0b54d2ba77` |
+| `tests/test_dashboard.py` | `c9b5c20b1de2af8f9a58240590b320100e64805294fe68f9c65f2a7d5f91609c` |
 
 ## Managed observation adoption (added v8.101)
 

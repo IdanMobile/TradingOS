@@ -1,5 +1,12 @@
 # Package Changelog
 
+## v8.107 — 2026-07-14 — Web-console ETH signal check
+
+- Added a one-click ETH signal verification card to the default web-console Overview page.
+- Reused the fixed offline verifier through a GET-only, fail-closed dashboard endpoint; the result
+  remains historical reproduction evidence with independent risk `BLOCK`.
+- Kept venue connection and execution authority at `NONE`, with paper/live orders disabled.
+
 ## v8.106 — 2026-07-14 — Prospective ETH volume-breakout strategy slice
 
 - Froze one exact ETHUSDT Spot 1h volume-confirmed Donchian StrategyVersion behind a new future

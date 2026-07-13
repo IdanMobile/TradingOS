@@ -831,6 +831,11 @@ def test_dashboard_ui_a11y_responsive_and_state_contracts() -> None:
         "crypto.randomUUID()",
         "idempotency_key:idempotencyKey",
         "dataUpdateKey||(dataUpdateKey=crypto.randomUUID())",
+        'id="runEthSignal"',
+        'id="ethSignalResult"',
+        "fetchJson('/api/v1/eth-signal')",
+        "button.disabled=true",
+        "historical reproduction only",
     ):
         assert contract in html
     assert "POLL_MS=5000" not in html
@@ -1765,6 +1770,30 @@ def test_live_status_api_contract_without_listening_server(tmp_path: Path) -> No
     assert payload["schema_version"] == 1
     assert payload["checks"]["status"] == "UNKNOWN"
     assert payload["observation"]["state"] == "MISSING"
+
+
+def test_eth_signal_api_runs_fixed_read_only_verifier() -> None:
+    root = Path(__file__).resolve().parents[1]
+    response = _handle_request(b"GET /api/v1/eth-signal HTTP/1.1\r\nHost: localhost\r\n\r\n", root)
+    headers, body = response.split(b"\r\n\r\n", 1)
+    assert b" 200 " in headers
+    payload = json.loads(body)
+    assert payload["strategy_version_id"] == "SV-418ab5d64825c74b"
+    assert payload["signal_count"] == 511
+    assert payload["risk_decision"] == "BLOCK"
+    assert payload["capabilities"]["order_creation"] is False
+
+
+def test_eth_signal_api_fails_closed_without_fixed_verifier(tmp_path: Path) -> None:
+    response = _handle_request(
+        b"GET /api/v1/eth-signal HTTP/1.1\r\nHost: localhost\r\n\r\n", tmp_path
+    )
+    headers, body = response.split(b"\r\n\r\n", 1)
+    assert b" 503 " in headers
+    assert json.loads(body) == {
+        "schema_version": 1,
+        "error": "ETH signal verifier is unavailable",
+    }
 
 
 def test_live_market_api_schema_contract_without_listening_server(tmp_path: Path) -> None:

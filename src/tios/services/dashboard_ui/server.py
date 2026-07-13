@@ -15,6 +15,7 @@ from tios.services.dashboard_api.cockpit import (
     build_cockpit,
     perform_cockpit_action,
 )
+from tios.services.dashboard_api.eth_signal import EthSignalCheckError, build_eth_signal_check
 from tios.services.dashboard_api.market import build_market_snapshot
 from tios.services.dashboard_api.operations import build_operations, trigger_data_update
 from tios.services.dashboard_api.search import build_search_results
@@ -88,6 +89,13 @@ class Handler(BaseHTTPRequestHandler):
                 payload = build_cockpit(self.root, query.get("range", ["24h"])[0])
             except (ValueError, TypeError) as error:
                 self._json_error(400, str(error))
+                return
+            self._send(200, "application/json", json.dumps(payload).encode())
+        elif path == "/api/v1/eth-signal":
+            try:
+                payload = build_eth_signal_check(self.root)
+            except EthSignalCheckError as error:
+                self._json_error(503, str(error))
                 return
             self._send(200, "application/json", json.dumps(payload).encode())
         elif path in {"/", "/index.html"}:
