@@ -1,8 +1,9 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "gate": "check",
   "command": "make check",
   "status": "PASS",
+  "includes_slow_data_tests": false,
   "includes_dependency_audit": false,
-  "generated_at": "2026-07-13T21:07:41.335840+00:00"
+  "generated_at": "2026-07-21T15:59:41.120490+00:00"
 }

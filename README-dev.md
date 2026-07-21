@@ -25,7 +25,7 @@ five seconds while the coding work continues.
 - `artifacts/` — evidence tree (SSOT WS1); reports tracked, large files hashed
 - `data/{raw,normalized}/` — gitignored payloads, tracked manifests
 - `scripts/bootstrap.py` — idempotent workspace bootstrap
-- `EXECUTION_PLAN.md` — single execution index for the current S1 work
+- `DECISION_LOG.md` + `PROJECT_STATE.md` — live execution authority (finished plans are archived in `docs/archive/`)
 
 ## Secrets
 

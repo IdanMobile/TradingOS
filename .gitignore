@@ -73,3 +73,9 @@ artifacts/lineage/prototype/
 
 # Mutable prospective-observer liveness; immutable sessions are committed evidence.
 artifacts/prospective/*/operations/status.json
+
+# --- Operator attestation ---
+# The filled attestation states account eligibility, fee tier, and capital limits.
+# It holds no credentials, but it is operator-personal. Only the template is committed.
+ops/OPERATOR_ATTESTATION.json
+!ops/OPERATOR_ATTESTATION.example.json

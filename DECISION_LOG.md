@@ -1609,3 +1609,432 @@ credential, order, paper/demo/live state, human gate, or authority is activated.
 
 Evidence: `artifacts/reports/FUNDING_PRESSURE_SPOT_VALIDATION_AND_SUPERVISOR_REVIEW_2026_07_13.md`.
 Status: **Completed negative campaign; execution authority remains NONE.**
+
+### D-104 — Operator authorizes S3 demo lane in execution-measurement mode
+
+Decision: the operator (2026-07-19, recorded from an interactive session) authorizes entering
+the S3 paper/demo lane in **execution-measurement mode**: a venue demo account trading
+synthetic/demo funds only, running an explicitly `UNVALIDATED` / `NOT_ELIGIBLE` candidate, for
+the sole purpose of collecting real execution evidence (fills, fees, slippage, divergence,
+operational stability). This amends the D-036 precondition that a `COMPLETE_APPROVABLE`
+validated strategy must exist before any paper/demo activation — for this measurement lane only.
+
+Rationale: the retained evidence contains a circular dependency. The surviving candidates'
+remaining validation gaps are execution-level (PROJECT_STATE 2026-07-12: funding carry's
+"remaining validation is EXECUTION-level — needs S3 paper trading to measure real fills/
+slippage"), while S3 itself was gated on completed validation. Demo trading commits no real
+money; withholding it blocked the only evidence that could complete validation.
+
+Boundaries preserved, not weakened:
+- No live path: S4, real credentials with trading/withdrawal power, and real-money authority
+  remain locked behind their existing gates. Live states must remain unreachable in code.
+- Demo credentials are operator-created, demo-scoped, and live only in the git-ignored `.env`;
+  no agent requests, reads, or handles them in conversation.
+- The D-046 quarantine is NOT removed by this decision. Reactivation of authenticated demo
+  transports still requires the security review and typed adapter/reconciliation review that
+  D-046 demands; this decision supplies the missing operator approval, not a bypass.
+- Demo results are execution evidence only. Demo P&L cannot validate, promote, or approve a
+  strategy; candidates remain `NOT_ELIGIBLE` until the normal validation gates pass.
+- Kill-switch, runbook, heartbeat, and divergence-report contracts (already modeled inert)
+  must be active in the lane before the first demo order.
+
+Venue: Bybit demo (operator demo account already exists; quarantined transports already
+implement it), with OKX demo as the recorded fallback for Israel availability.
+
+Consequence: T-015-01 (paper-lane architecture) is decided as "venue demo, execution-
+measurement mode". Next work: security + adapter/reconciliation review of the quarantined
+transports, scoped un-quarantine for demo endpoints, lane wiring, then a 30-day stability and
+divergence window.
+
+Evidence: operator selection recorded in-session 2026-07-19; deadlock analysis from
+`PROJECT_STATE.md` (2026-07-12 carry S3-paper entry) and `docs/supervisor/IMPROVEMENT_PLAN_2026-07-13.md`.
+Status: **Approved; demo lane unlocked pending D-046-mandated security review.**
+
+### D-105 — Typed demo lane approved as the sole order path (stage 2 complete)
+
+Decision: the D-046-mandated typed adapter/reconciliation review is complete and recorded at
+`artifacts/reports/DEMO_TRANSPORT_SECURITY_REVIEW_STAGE2_2026_07_19.md`. Order capability on
+the Bybit demo account exists exclusively through `scripts/demo_eth_lane.py`: typed
+`LaneIntent` orders, kill-switch gate, 50-USDT buy cap, independent 120-USDT sell cap,
+instrument-step quantization, wallet reconciliation, and an append-only fsync'd ledger. The
+raw demo scripts' POST transports remain quarantined permanently — the guard is not removed;
+the sanctioned path goes around it, exactly as D-046 required.
+
+Core `tios.trading_domain` contracts are unchanged: demo/paper/live environments remain
+unconstructable in the domain model, and all existing unreachability tests pass untouched.
+Lane records are explicitly `VENUE_DEMO` / `real_money: false` / `UNVALIDATED`.
+
+The lane runs the D-103 canonical candidate through the unchanged spec + evaluator
+(`SV-418ab5d64825c74b`) over demo-venue 1h klines and trades only signal transitions newer
+than its persisted cursor: restarts cannot re-fire history, and only post-start transitions
+execute. Demo fills are execution-measurement evidence (G12-class); they cannot validate,
+promote, or approve any strategy. S4/live gates are untouched.
+
+Evidence: stage-2 review artifact; `tests/test_demo_eth_lane.py` (8 tests incl. canonical-
+evaluator breakout-to-order); demo suite 28 green; ruff + mypy gates green.
+Status: **Demo order lane ACTIVE in execution-measurement mode under D-104.**
+
+### D-106 — Dashboard gains a second audited write surface: demo lane start/stop
+
+Decision: the local loopback dashboard may start and stop the D-105 demo lane from
+Wallets → Demo. This is a deliberate, recorded expansion of the write boundary set by D-038
+(which admitted exactly one write route, the workspace decision). It is not a general
+write-API approval.
+
+Scope: `GET /api/v1/demo-lane` (read-only projection) and `POST /api/v1/demo-lane-actions`
+with a closed allowlist of exactly three actions — `START`, `STOP`, `RUN_ONCE`. The payload
+accepts only `action` and `idempotency_key`; any other key is rejected. No symbol, size,
+price, side, venue, or credential is expressible through this route, so no free-form input
+reaches the spawned command. The subprocess argv is fixed (`sys.executable`, the lane script,
+one internal literal flag), `shell=False`.
+
+The dashboard gains NO trading capability of its own: it never reads a credential, signs a
+request, or places an order. Every safety rail stays where D-105 put it — inside the lane
+process (demo-host lock, 50/120 USDT caps, quantization, kill switch, reconciliation,
+append-only ledger). The dashboard only starts or stops that process.
+
+Supporting controls: same-origin/`Sec-Fetch-Site` guards and loopback-only binding already
+applied to the existing POST routes cover this one; every action appends an operator record
+to `artifacts/human_decisions/demo_lane_actions.jsonl`; STOP writes the kill switch (which
+refuses orders immediately) before signalling the process, so a wedged process still cannot
+trade; START and RUN_ONCE refuse with 409 while a lane holds the advisory lock, so the
+dashboard cannot create a second lane racing the first on cursor/inventory state.
+
+Related fix: `scripts/demo_eth_lane.py` now takes an exclusive `flock` for its lifetime.
+Two concurrent lanes could previously have raced the cursor and double-traded from the
+terminal as well; single-lane exclusivity is now enforced for every launch path.
+
+Evidence: `tests/test_demo_lane_api.py` (12 tests incl. allowlist closure, lock-based
+refusal, stop-flag audit); `src/tios/services/dashboard_api/demo_lane.py`; ruff + mypy green.
+Status: **Approved; demo lane controllable from the dashboard, live gates untouched.**
+
+### D-107 — Autonomous orchestration substrate: trial budget, attestation, self-modification bounds
+
+Decision: the project gains an autonomous orchestration layer whose authority is
+deliberately asymmetric. The orchestrator may freely do anything that *adds* evidence and
+may do nothing that *weakens* a conclusion. The bounds are enforced in code, not policy.
+
+Rationale: an orchestrator that can rewrite its own success criteria has no success
+criteria. Under sustained optimisation pressure, relaxing a threshold is always cheaper
+than meeting it, and nothing in an objective function marks that as cheating. Every
+constraint below exists because its absence makes the system's output unverifiable rather
+than merely risky.
+
+Components:
+
+1. **Global trial budget** (`src/tios/validation/trial_budget.py`). `ScorecardEvidence`
+   previously proved only that a scorecard agreed with itself: `declared_trial_count ==
+   terminal_trial_count` is self-reported, so a search over three thousand parameter sets
+   could declare three and satisfy every other check. Families now pre-register their search
+   space before running, every evaluated trial appends to a persistent ledger, and declared
+   counts are verified against it. Unregistered searches cannot be scored at all. This is the
+   precondition for safe parallel search: false-discovery rate scales with automation, and
+   deflation thresholds are meaningless against a trial count that does not reflect the
+   actual search. Wired into `evaluate_strategy_eligibility` as a fail-closed blocker —
+   omitting the verification is `TRIAL_BUDGET_NOT_VERIFIED`, never a default pass.
+
+2. **Operator attestation** (`src/tios/approval/attestation.py`). The ten human-only facts
+   in `MISSING_AND_OPEN_ITEMS.md` become one signed, expiring attestation the engine enforces
+   predicates against automatically, replacing per-decision approval for everything except
+   real-money commitment. The file holds no credentials — only assertions about them.
+   Attestations expire (90 days default) because venue terms, fee tiers, and product
+   availability drift; a stale attestation reads as absent, not as continuing consent. Live
+   authority is a separate explicit opt-in that a demo attestation never escalates into.
+
+3. **Self-modification bounds** (`src/tios/ops/self_modification.py`). Every orchestrator
+   code change lands on a branch, passes the full local gate, and auto-reverts on failure;
+   `main` is never edited directly and never left red. An immutable-path guard rejects any
+   diff touching the eligibility contract, the trial budget, the attestation module, the
+   integrity manifest, or sealed holdout directories. The immutable check runs *before* the
+   gate: a constraint edit that passes the suite is more dangerous, not less. Arguments for
+   revising a constraint are recorded for operator review rather than acted on.
+
+4. **Evidence-producer driver** (`src/tios/ops/driver.py`). D-100 already mapped every
+   blocker to its owning producer, verifier, release condition, and earliest lawful
+   evaluation point — a dependency graph with executable nodes that was never wired to a
+   scheduler. The driver walks it. Verifiers are allowlisted to `scripts/*.py` and never
+   shell-executed, because an autonomous process reading instructions from a config file is
+   exactly where command injection matters. Declared `semantic_boundaries` prohibitions
+   withhold all dispatch. Verifiers naming future work report PENDING and are never invented
+   as evidence.
+
+5. **Orchestrator** (`src/tios/ops/orchestrator.py`, `make orchestrator`). Observes
+   constraint integrity, statistical health, evidence freshness, strategy coverage, blocker
+   movement, execution envelope, and parked work. Halts on any ESCALATE rather than
+   continuing past something it cannot explain. Read-only dashboard projection at
+   Operations → Orchestrator; the view exposes no control.
+
+Objective: trustworthy verdicts per unit time, never the rate of positive verdicts. An
+honest FAIL counts as progress; a PASS obtained by weakening a gate is a critical incident.
+
+Supporting corrective work: SUP-007's achievable half is closed — `src/tios/evidence/
+staleness.py` re-hashes every module an artifact names and classifies it CURRENT / STALE /
+BROKEN, making artifact-code drift visible and failing on one byte of change. All six shipped
+G10 campaign artifacts verify CURRENT. SUP-008 is closed structurally rather than by
+convention — `src/tios/validation/splits.py` makes holdout leakage impossible: validation is
+unavailable until selection is frozen, holdout is unreachable as an attribute, opening it
+requires a recorded reason, respects the seal date, and may happen exactly once. SUP-010 is
+closed for coverage — all 20 canonical specs now hold content-addressed immutable
+`StrategyVersion` identities, and artifacts citing an unregistered strategy are blocked.
+
+Parked as genuinely unrecoverable (`artifacts/driver/parked_items.jsonl`): historical REST
+payload reconstruction and original run identity (bytes never retained); hierarchy-wide
+effective trial accounting for the pre-V2 search (upstream hierarchy not retained).
+Resolution for the latter is a new pre-registered family with complete accounting from the
+start, not recovery of the old one.
+
+No credential, venue, order, paper, demo, or live authority is created. The sealed holdout
+remains sealed until at least 2027-01-14 and every component treats reading it as prohibited.
+
+Evidence: 115 new tests across `tests/test_trial_budget.py`,
+`tests/test_operator_attestation.py`, `tests/test_self_modification.py`,
+`tests/test_driver.py`, `tests/test_artifact_staleness.py`, `tests/test_temporal_splits.py`,
+`tests/test_strategy_registry.py`, `tests/test_orchestrator.py`,
+`tests/test_orchestrator_view.py`; ruff, ruff format, and mypy green across 115 source files.
+Status: **Substrate implemented and tested; no promotion, venue, or execution authority created.**
+
+### D-108 — Family admission is budgeted, and the gate is split by what it verifies
+
+Decision: two changes that together let the orchestrator choose strategy families itself.
+
+**Family selection becomes the orchestrator's, because it is now budgeted.** D-107 counted
+trials *within* a family. That leaves the outer search uncounted: an agent free to spawn a new
+family whenever the last one failed is searching over families, and fifty families of twenty
+trials each would each be deflated against twenty while the ecosystem actually searched a
+thousand. The winner is then noise that survived a search nobody counted — SUP-005's defect
+one level up.
+
+`trial_budget.family_count`, `families`, and `effective_trials_hierarchy_wide` now expose the
+outer search, and `campaign.run_campaign` deflates against the hierarchy-wide trial count
+rather than the per-family one. Admitting a family therefore raises the bar every subsequent
+family must clear. The correction is structural: no human has to decide when to say enough,
+because searching more costs more automatically. Campaign artifacts report `hierarchy_trials`
+and `admitted_families` so the correction is auditable rather than merely applied.
+
+This supersedes the D-107-era position that family choice was reserved to a supervisor. That
+framing described a statistical problem as a governance one. D-052/D-053 remain the record of
+how families were selected historically; future admission is delegated, budgeted, and logged.
+
+**The gate is split by what it verifies.** Ten data-package byte-integrity tests were 94% of
+suite runtime (1753s of 1865s). They verify that retained archives still hash correctly — they
+change when DATA changes, not when code does, so gating every code edit on them was checking
+the wrong thing frequently, and a 31-minute gate made autonomous self-modification impractical.
+
+`make check` now excludes them (1:29, 1081 tests) and is what the orchestrator gates on.
+`make check-full` runs everything and is what `required` depends on. The artifact records
+`gate` and `includes_slow_data_tests` at `schema_version: 3`, and the dashboard reads the gate
+name from the payload — a fast-gate PASS must not be readable as though it verified data
+integrity. A schema-2 artifact no longer satisfies the check and fails closed to `UNKNOWN`.
+
+Considered and rejected: caching decoded archives (a cache sits directly in front of tests
+whose purpose is detecting byte drift) and `pytest-xdist` (new dependency, gains capped by
+core count, and it would not change what is being verified).
+
+Evidence: `tests/test_campaign.py::test_spawning_a_family_raises_the_bar_for_every_family`,
+`tests/test_trial_budget.py` hierarchy tests, `tests/test_check_artifact.py` both-gate
+artifacts, `tests/test_dashboard.py` gate-coverage projection. `make check` PASS in 1:29.
+Status: **Family admission delegated under budget; gate split by verification target.**
+
+### D-109 — First campaign executed through the substrate: FAM-VOL-CONTRACTION-BREAKOUT-V1 rejected
+
+Decision: `FAM-VOL-CONTRACTION-BREAKOUT-V1` was admitted by the orchestrator under the D-108
+hierarchy-wide budget, executed end to end through the D-107 substrate, and is rejected. No
+rescue, no reparameterisation.
+
+Family rationale: enter long only after a preceding low-volatility regime resolves upward
+through its own range; exit on a trailing low. Distinct from the retained Donchian baseline
+(B2) in the claim it tests — a plain N-bar-high breakout fires in any regime, whereas this is
+armed only after realised range contracts, so it tests whether contraction precedes
+directional resolution rather than reparameterising a family already closed under D-054.
+
+Execution: 48,614 real BTCUSDT 1h bars, chronological 60/20/20 split with 96-bar boundary gaps
+(>= the longest lookback, so no indicator window straddles a boundary). 36 pre-registered
+parameter sets, every one recorded to the ledger as evaluated. Selection ran on training data
+only; validation was unreadable until selection froze and was then read exactly once. F1/S1
+costs, next-open fills with adverse slippage on both sides.
+
+Result: selected `contraction_window=24, breakout_window=48, exit_window=24, quantile=0.3`
+with train per-bar Sharpe **+0.0411** and validation per-bar Sharpe **-0.0807**. The sign
+inversion between selection and validation is the textbook overfitting signature: the winner
+was the best of 36 on the training window and reversed out of sample. Deflated against the
+hierarchy-wide ledger (36 trials, noise threshold 0.0642), z = -14.19 and **DSR = 0.000**.
+
+Consequence: the family is closed. The negative result is genuine evidence — it was produced
+under pre-registration, leak-proof splits, complete trial accounting, and a correct deflation,
+which is precisely what the retained B2/B3/B4 and MTF results could not claim. The sealed
+holdout was never touched (`holdout_sealed: true`) and remains sealed to at least 2027-01-14.
+
+This is also the substrate's first end-to-end proof on real data: pre-registration, train-only
+search, per-trial ledger, single validation read, hierarchy-wide deflation, and an untouched
+holdout all held under a live run rather than a fixture.
+
+Evidence: `artifacts/validation/campaigns/PREREG-4305189f44984fe1af6979379028d653.json`,
+`scripts/run_first_budgeted_campaign.py`, ledger at `artifacts/validation/trial_budget/`.
+Status: **Family rejected; substrate proven end to end. No promotion, venue, or execution authority.**
+
+### D-110 — Campaigns #2 and #3: taker imbalance rejected decisively; MVRV dislocation is the first promising negative
+
+Decision: two further families ran end to end through the D-107/D-108 substrate against
+frozen in-repo data. Both FAIL their pre-registered thresholds; both are closed without
+rescue. The hierarchy ledger now holds 108 trials across 3 admitted families, and every
+future campaign deflates against all of them.
+
+**FAM-TAKER-IMBALANCE-V1 — decisive FAIL.** 36 trials over baseline {24,168,720}h x
+z {1.0,1.5,2.0} x hold {6,24}h x {continuation, reversal}, on 48,154 normalized BTCUSDT 1h
+bars with gap/validity resets per the canonical spec. The best-of-36 was negative on its own
+training data (-0.0021 per-bar Sharpe) and worse on validation (-0.0254). When even
+selection bias cannot manufacture an in-sample edge, the family carries nothing at F1/S1
+costs on this data. Closed.
+
+**FAM-MVRV-DISLOCATION-V1 — FAIL, and the first promising negative.** 36 trials over
+window {20,30,45}d x z {1.0,1.5,2.0} x side {HIGH,LOW} x hold {24,168}h, with the metric's
+publication lag enforced structurally: each hourly row carries only the daily value already
+released under the spec's D+3 availability rule, so no evaluation could touch an
+unpublished value. Selected: buy when log-MVRV sits 2 sigma below its 30-day norm, hold
+24h. Train +0.0451, validation +0.0548 — the first family in three campaigns whose
+validation score *exceeded* training (no overfitting signature; campaign #1 inverted sign).
+DSR 0.7585 against the 0.95 pre-registered threshold with a hierarchy-wide noise bar of
+0.0472: the edge clears the raw bar but not with promotable confidence after deflating
+against 108 trials.
+
+Consequence: the exact searched context is closed — no re-parameterisation, per the frozen
+stop rules; a re-run with tweaks is precisely the rescue the rules exist to forbid. Two
+legitimate future paths remain, both forward-looking rather than backward-mining:
+(1) the campaign artifact freezes the selected variant, and one untouched holdout read
+after 2027-01-14 is lawful under the seal protocol; (2) a new preregistered *prospective*
+observation of the frozen rule (D-103-style) may collect genuinely unseen evidence going
+forward. Either produces new information; neither reopens the search.
+
+Evidence: `artifacts/validation/campaigns/PREREG-111ee260c67cd6765c7c0bbe58dc0a48.json`,
+`artifacts/validation/campaigns/PREREG-ca9c9e0891ca05f357757943eba8c79a.json`,
+`scripts/run_family_campaigns_v2.py`, trial ledger at `artifacts/validation/trial_budget/`.
+Status: **Both families closed honestly. No promotion, venue, or execution authority.**
+
+### D-111 — Campaigns #4–#7 complete the family sweep; CFTC positioning is the first family to clear the deflated bar; two prospective lanes opened
+
+Decision: the remaining four data-backed families ran end to end through the same
+substrate (`scripts/run_family_campaigns_v3.py`), each with its availability lag enforced
+structurally at data-join time. The hierarchy ledger now holds 234 trials across 7
+admitted families; every number below is deflated against that full history.
+
+**FAM-TX-ACTIVITY-V1 — FAIL.** 36 trials (window {7,14,30}d x z {1,1.5,2} x side x hold
+{24,168}h), daily on-chain tx count under the spec's D+3 availability. Best-of-36 train
++0.0199, validation −0.0059, DSR 0. Overfit signature; closed.
+
+**FAM-CROSS-VENUE-PREMIUM-V1 — FAIL.** 36 trials on the Coinbase-implied vs Binance
+hourly log premium, fills at `binance_btcusdt_open`. Best-of-36 was *negative* in-sample
+(−0.0044) with validation +0.0250 — noise, not signal. DSR 0.0004; closed.
+
+**FAM-FUNDING-PRESSURE-V1 — FAIL.** 18 trials on the last-N funding-observation mean
+regime rule (exact calc-time availability). The selected contrarian variant showed the
+sweep's largest in-sample score (+0.1903) and produced *zero* validation trades — a
+textbook regime-mined artifact. DSR 0; closed.
+
+**FAM-CFTC-POSITIONING-V1 — first PASS-ELIGIBLE.** 36 trials (baseline {13,26,52}w x
+z {0.5,1.0,1.5} x side x hold {168,672}h) on the weekly noncommercial net position share
+of open interest, availability enforced at report date + 8 calendar days 00:00 UTC.
+Selected: buy when net share sits 1.5 sigma below its 26-week norm, hold 168h. Train
++0.0243, validation +0.0772, DSR 0.9996 against the 0.95 threshold with a 216-trial
+hierarchy noise bar of 0.0391. Honest caveats recorded now, before anyone is tempted to
+forget them: validation exceeding train 3x warrants suspicion of a favorable validation
+window rather than celebration; the signal fires from only ~431 weekly observations; and
+weekly-cadence pulses mean few independent bets. Clearing the statistical bar creates NO
+promotion, paper, demo, or live authority — G1-G11, independent specialist review, and
+prospective evidence all still stand between this rule and any capital.
+
+**Two prospective observation lanes opened (D-103-style), boundaries frozen today:**
+(1) `research/PROSPECTIVE_MVRV_DISLOCATION_V1.yaml` + `scripts/run_prospective_mvrv_observer.py`
+for the D-110 frozen MVRV variant — the observer fetched live public CoinMetrics data and
+recorded its first honest row (source day 2026-07-18 under D+3, z +1.41, FLAT);
+(2) `research/PROSPECTIVE_CFTC_POSITIONING_V1.yaml` for the frozen CFTC variant —
+boundary frozen at the 2026-07-14 report; the weekly fetcher is flagged NOT_YET_BUILT and
+loses nothing before the next report's availability date. Both lanes record signal state
+only; outcome reads are prohibited until first-review minima (180 prospective days / 26
+weeks, independent reviewer, no tuning).
+
+Consequence: the searchable in-repo family backlog is exhausted — all seven data-backed
+families have now been searched once under pre-registration and closed or frozen. Further
+in-sample searching of these families is forbidden by their stop rules; new information
+can only come from prospective observation, the sealed holdout reads lawful after
+2027-01-14, or a *new* family backed by new data.
+
+Evidence: `artifacts/validation/campaigns/PREREG-{19b3b09af958a19525446b3e635402e7,
+a02a77353d87d56814709d13fc3d636e,83b7575e59ee7983f56b24a45a58e55d,
+90ff157e14b32e0f3bbdd27aa3cff355}.json`, `scripts/run_family_campaigns_v3.py`,
+`artifacts/prospective/MVRV-DISLOCATION-V1/observations.jsonl`, trial ledger at
+`artifacts/validation/trial_budget/`.
+Status: **Three families closed honestly; one frozen pending G1-G11 + specialist review + prospective evidence. No promotion, venue, or execution authority.**
+
+### D-112 — Methodology audit retracts the CFTC PASS-ELIGIBLE; validation scoring corrected to trade-level significance for all future campaigns
+
+Decision: an independent Opus red-team audit of the campaign scoring core, confirmed by a
+bit-for-bit verification recompute, found the deflated-Sharpe verdict on the recorded campaign
+path (`src/tios/validation/campaign.py::run_campaign`) was computed on a count inconsistent with
+the series it scored. The affected verdicts have been corrected, the one optimistic verdict
+formally retracted, and the scoring math fixed so the defect cannot recur.
+
+**Findings (each with file reference):**
+- **F1 — sample-count mismatch.** `run_campaign` computed a per-bar Sharpe over only in-position
+  bars (the evaluators append a 0.0 mark bar while held and a realized return on exit, never a
+  cash bar) but passed `sample_count=len(split.validation)` — the *total* validation bars — to
+  the DSR (`campaign.py:192`, old). This inflated `z` by `1/sqrt(in-position fraction)`.
+- **F2 — serial correlation.** The 0.0 mark-bar runs (168h/672h holds) are not independent
+  observations; the honest `n` is the number of completed, non-overlapping trades, not the bar
+  count (evaluators in `scripts/run_family_campaigns_v3.py`, `_v2.py`).
+- **F3a — declared-but-unenforced PBO.** `thresholds` pre-registered `pbo_max=0.5` in every
+  campaign, yet PBO was never computed on this path (the verdict step checked only `dsr>=0.95`
+  and `validation>0`).
+- **F3b — no correlation haircut.** `independent_trials` passed the raw hierarchy count while
+  `multiple_testing.py::implied_independent_trials` sat unused.
+- **F4 — dead nested folds.** `walk_forward_folds` were computed and `fold_scores` stored, but
+  `fold.test` was never scored and `fold_scores` fed nothing (`gap_bars=0`).
+- **F5 — no minimum-activity guard.** A family producing zero/one validation trade still received
+  a Sharpe-of-0.0 → guaranteed hollow FAIL, with no distinct "insufficient activity" outcome.
+- **F6 — inconsistent variance.** `_per_bar_sharpe` used population variance (÷n) while
+  `sharpe_variance_from_trials` used sample variance (÷n-1).
+
+**Verification (FAM-CFTC-POSITIONING-V1, artifact `PREREG-83b7575e59ee7983f56b24a45a58e55d.json`):**
+reproduced train 0.024257871728695 and validation 0.077151674981046 exactly, DSR block bit-for-bit.
+The recorded PASS-ELIGIBLE (DSR 0.999551, z 3.3208, hierarchy 216 trials) rested on **169 in-position
+bars out of 7,630 validation bars (2.21%)** and exactly **one completed validation trade**. Under the
+corrected count (sample_count = trade count = 1), no trade-level Sharpe is even computable
+(`z 3.32 → n/a`, `DSR 0.9996 → n/a`); the variant is **INSUFFICIENT_ACTIVITY**, not a pass.
+
+**RETRACTION.** FAM-CFTC-POSITIONING-V1's PASS-ELIGIBLE (D-111) is formally **retracted**. Its
+corrected verdict is INSUFFICIENT_ACTIVITY (one completed trade, below the pre-registered floor of
+10). It was never a statistically supported result; the single-trade window produced no computable
+trade-level significance. There was and is **no promotion, paper, demo, venue, or execution
+authority** attached to it — the retraction removes an inflated confidence number, nothing more.
+
+**Corrected methodology now in force** (`src/tios/validation/campaign.py`, all future campaigns):
+significance is built on per-completed-trade returns with `sample_count == len(trade returns)`,
+enforced by a fail-closed invariant (F1/F2); a pre-registered `min_validation_trades` floor (default
+10) yields INSUFFICIENT_ACTIVITY rather than a claimed DSR, and `n<2` never attempts a Sharpe (F5);
+`pbo_max` is removed from the schema and the module documents that PBO is not computed on this path,
+since a declared-but-unenforced control is worse than an honestly absent one (F3a); `independent_trials`
+now routes through `implied_independent_trials`, haircutting the (still hierarchy-wide) trial count
+for cross-trial correlation (F3b); the dead nested-fold scoring is deleted (F4); and the DSR-path
+Sharpe uses sample variance (÷n-1), consistent with `sharpe_variance_from_trials` (F6).
+
+**The six other FAIL verdicts stand.** Re-scored under the corrected statistics
+(`scripts/rescore_frozen_campaigns.py`, correction artifacts under
+`artifacts/validation/campaigns/corrections/`), every one remains a rejection — the original bias
+was optimistic, so they fail *a fortiori*: TX-ACTIVITY FAIL (53 trades, z −2.36), CROSS-VENUE-PREMIUM
+FAIL (213 trades, z −0.05, DSR 0.48 < 0.95), TAKER-IMBALANCE FAIL (115 trades, z −2.35),
+MVRV-DISLOCATION FAIL (16 trades, z −0.10, DSR 0.46), FUNDING-PRESSURE INSUFFICIENT_ACTIVITY (0
+trades), VOL-CONTRACTION-BREAKOUT INSUFFICIENT_ACTIVITY (7 trades < 10; its `normalized_multi` input
+has since drifted under parallel work, so re-scored on committed data — the decisive FAIL/z −14.2 is
+invariant to the drift). No family flips toward a pass under the correction.
+
+**Both prospective observation lanes continue unchanged.** Signal-state observation records what the
+signal *did*, which the scoring math does not touch, so the MVRV and CFTC lanes keep recording. Their
+first reviews (2027) must apply these corrected statistics. The CFTC lane's founding premise is
+*weakened* by this retraction: it is now **hypothesis-generating, not confirmation** of a prior in-repo
+pass, and its first-review threshold should reflect that — a prospective pass would be the first real
+evidence for the family, not corroboration of one.
+
+Evidence: `src/tios/validation/campaign.py`, `scripts/rescore_frozen_campaigns.py`,
+`artifacts/validation/campaigns/corrections/PREREG-83b7575e59ee7983f56b24a45a58e55d_corrected.json`
+(and the six siblings), verification recompute reproduced train/validation bit-for-bit.
+Status: **CFTC PASS-ELIGIBLE retracted (INSUFFICIENT_ACTIVITY); six FAILs stand; corrected scoring in
+force. No promotion, venue, or execution authority anywhere. No trial-ledger writes, holdout unread.**

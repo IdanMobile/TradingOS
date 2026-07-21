@@ -117,9 +117,19 @@ def evaluate_strategy_eligibility(
     metrics: tuple[MetricEvidence, ...],
     scorecard: ScorecardEvidence,
     promotion: PromotionEvidence,
+    budget_verdict: Any | None = None,
 ) -> StrategyEligibility:
+    """Evaluate metric, scorecard, and promotion eligibility.
+
+    `budget_verdict` is a `trial_budget.BudgetVerdict` cross-checking the scorecard's
+    self-reported trial count against the persistent ledger. It is required: a scorecard
+    whose search width was never verified cannot support a multiple-testing claim, so
+    omitting it is a blocker rather than a default-pass. Callers verify and pass the
+    verdict so this module stays pure.
+    """
     metric_results = tuple(evaluate_metric_eligibility(metric) for metric in metrics)
     scorecard_blockers = _scorecard_blockers(scorecard)
+    scorecard_blockers.extend(_budget_blockers(scorecard, budget_verdict))
     promotion_blockers = _promotion_blockers(scorecard, promotion)
     if scorecard_blockers:
         promotion_blockers.insert(0, "SCORECARD_INELIGIBLE")
@@ -175,6 +185,25 @@ def _scorecard_blockers(evidence: ScorecardEvidence) -> list[str]:
         }
         if unavailable - declared:
             blockers.append("UNAVAILABLE_DIMENSION_BLOCKERS_MISSING")
+    return blockers
+
+
+def _budget_blockers(scorecard: ScorecardEvidence, verdict: Any | None) -> list[str]:
+    """Cross-check the declared trial population against the persistent ledger.
+
+    Without this, `declared_trial_count == terminal_trial_count` only proves a scorecard
+    agrees with itself. A search of three thousand parameter sets can declare three and
+    satisfy every other check, leaving PBO and DSR deflating against a number that bears
+    no relation to how much searching actually happened.
+    """
+    if verdict is None:
+        return ["TRIAL_BUDGET_NOT_VERIFIED"]
+
+    blockers: list[str] = []
+    if not getattr(verdict, "verified", False):
+        blockers.append("TRIAL_BUDGET_VERIFICATION_FAILED")
+    if getattr(verdict, "registration_ref", "") != scorecard.preregistration_ref:
+        blockers.append("TRIAL_BUDGET_REGISTRATION_MISMATCH")
     return blockers
 
 

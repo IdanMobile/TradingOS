@@ -114,6 +114,11 @@ def test_first_reads_only_documented_name(monkeypatch) -> None:
     assert pf._first(pf.KEY_NAMES) == "primary"
 
 
-def test_authenticated_network_transport_is_quarantined() -> None:
-    with pytest.raises(RuntimeError, match="quarantined"):
-        pf._urllib_transport("https://api-demo.bybit.com", {})
+def test_get_transport_refuses_non_demo_urls() -> None:
+    # D-104 stage 1: read-only GETs are live, but ONLY against https on the demo host.
+    with pytest.raises(ValueError, match="non-demo"):
+        pf._urllib_transport("http://api-demo.bybit.com/v5/user/query-api", {})
+    with pytest.raises(ValueError, match="non-demo"):
+        pf._urllib_transport("https://api.bybit.com/v5/user/query-api", {})
+    with pytest.raises(ValueError, match="non-demo"):
+        pf._urllib_transport("https://api-demo.bybit.com.evil.example/v5/user/query-api", {})

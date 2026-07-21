@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "registration_ref": "PREREG-a02a77353d87d56814709d13fc3d636e",
+  "family": "FAM-CROSS-VENUE-PREMIUM-V1",
+  "generated_at": "2026-07-21T08:59:42.935672+00:00",
+  "raw_trials": 36,
+  "ledger_trials": 36,
+  "hierarchy_trials": 180,
+  "admitted_families": 5,
+  "selected": {
+    "trial_key": "PREREG-a02a77353d87d56814709d13fc3d636e-00006",
+    "parameters": {
+      "prior_baseline_hours": 24,
+      "z_threshold": 1.5,
+      "pulse_holding_hours": 24,
+      "interpretation": "CONTINUATION_POSITIVE"
+    },
+    "train_score": -0.00435672851082202,
+    "fold_scores": [
+      -0.019794762524345096,
+      -0.02298292870488278,
+      -0.017084908016894575,
+      -0.012389201536579901,
+      -0.007875907618302272
+    ]
+  },
+  "validation_score": 0.02495697128644804,
+  "dsr": {
+    "expected_maximum_noise_sharpe": 0.061979003007949826,
+    "z_score": -3.3595195056945957,
+    "dsr": 0.00039039069633189927
+  },
+  "blockers": [],
+  "holdout_sealed": true,
+  "promotion_eligible": false,
+  "execution_authority": "NONE",
+  "interpretation": "Campaign evidence only. Deflation uses the hierarchy-wide trial count (180 trials across 5 admitted families), so both a wider search and an extra family lower the result rather than hiding. No promotion follows from this artifact; the sealed holdout remains unread."
+}

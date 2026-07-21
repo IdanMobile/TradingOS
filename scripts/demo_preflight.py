@@ -27,6 +27,7 @@ import os
 import sys
 import time
 import urllib.parse
+import urllib.request
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -35,8 +36,9 @@ DEMO_HOST = "api-demo.bybit.com"
 DEMO_BASE = f"https://{DEMO_HOST}"
 RECV_WINDOW = "5000"
 NETWORK_QUARANTINE = (
-    "authenticated Bybit demo networking is quarantined until the required signed "
-    "HG-3/HG-4, security-review, validation, and venue-approval evidence exists"
+    "authenticated Bybit demo ORDER networking is quarantined pending the D-046-mandated "
+    "typed adapter/reconciliation review (D-104 stage 2); read-only signed GETs were "
+    "un-quarantined by the 2026-07-19 stage-1 security review"
 )
 
 # (url, headers) -> raw response body. Injected in tests; real urllib version in main().
@@ -161,7 +163,17 @@ def preflight(
 
 
 def _urllib_transport(url: str, headers: dict[str, str]) -> bytes:
-    raise RuntimeError(NETWORK_QUARANTINE)
+    """Read-only signed GET, un-quarantined under D-104 stage 1 (2026-07-19 security review).
+
+    Defense in depth: refuses any URL that is not https on the demo host, independently of
+    the `require_demo_base` check upstream. Order POSTs remain quarantined in demo_roundtrip.
+    """
+    parsed = urllib.parse.urlsplit(url)
+    if parsed.scheme != "https" or parsed.hostname != DEMO_HOST:
+        raise ValueError(f"GET transport refuses a non-demo URL: {url}")
+    request = urllib.request.Request(url, headers=headers, method="GET")
+    with urllib.request.urlopen(request, timeout=10) as response:
+        return bytes(response.read())
 
 
 ROOT = Path(__file__).resolve().parents[1]

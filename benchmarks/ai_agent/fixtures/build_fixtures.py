@@ -292,7 +292,11 @@ T6_ITEMS: list[dict[str, Any]] = [
         "id": "T6-01",
         "tool_names": list(T6_DOCS.keys()),
         "docs": T6_DOCS,
-        "ground_truth_matrix_keys": ["language", "backtest_live_code_parity", "vectorized_backtesting"],  # noqa: E501
+        "ground_truth_matrix_keys": [
+            "language",
+            "backtest_live_code_parity",
+            "vectorized_backtesting",
+        ],  # noqa: E501
     }
 ]
 
@@ -307,7 +311,10 @@ T7_ITEMS: list[dict[str, Any]] = [
         },
         "ground_truth_concepts": [
             {"concept": "leverage (spot)", "meaning": "not applicable / always 1x"},
-            {"concept": "leverage (perpetual futures)", "meaning": "margin multiple up to an exchange maximum"},  # noqa: E501
+            {
+                "concept": "leverage (perpetual futures)",
+                "meaning": "margin multiple up to an exchange maximum",
+            },  # noqa: E501
         ],
     },
     {
@@ -319,21 +326,64 @@ T7_ITEMS: list[dict[str, Any]] = [
         },
         "ground_truth_concepts": [
             {"concept": "fill (live exchange)", "meaning": "real order-book match, maker or taker"},
-            {"concept": "fill (backtest engine)", "meaning": "simulated execution event, no real matching"},  # noqa: E501
+            {
+                "concept": "fill (backtest engine)",
+                "meaning": "simulated execution event, no real matching",
+            },  # noqa: E501
         ],
     },
 ]
 
 # --- T8: research asset synthesis (1 item, 8 sources with a contradiction) ---
 T8_SOURCES: list[dict[str, str]] = [
-    {"ref": "S1", "kind": "primary", "date": "2026-06-01", "text": "Exchange fee schedule page: BTCUSDT taker fee 0.10%."},  # noqa: E501
-    {"ref": "S2", "kind": "primary", "date": "2026-06-15", "text": "Exchange fee schedule page (updated): BTCUSDT taker fee 0.075% for VIP0 with a native-token discount."},  # noqa: E501
-    {"ref": "S3", "kind": "secondary", "date": "2026-05-01", "text": "Blog post: 'BTCUSDT taker fee is 0.10%' (cites S1, predates S2's update)."},  # noqa: E501
-    {"ref": "S4", "kind": "secondary", "date": "2026-01-10", "text": "Old forum post: 'fees are basically free on this exchange' (no date-stamped fee figure)."},  # noqa: E501
-    {"ref": "S5", "kind": "primary", "date": "2026-06-15", "text": "Exchange API docs: fee endpoint returns effective per-account fee tier, may differ from the published schedule."},  # noqa: E501
-    {"ref": "S6", "kind": "secondary", "date": "2026-06-20", "text": "Third-party fee comparison site lists this exchange at 0.10% taker, last checked 2026-05-01 per its own footer."},  # noqa: E501
-    {"ref": "S7", "kind": "primary", "date": "2026-06-15", "text": "Exchange fee schedule page: native-token discount requires opt-in and a minimum balance."},  # noqa: E501
-    {"ref": "S8", "kind": "secondary", "date": "2026-06-25", "text": "Community wiki: repeats the 0.075% figure without noting the opt-in/minimum-balance condition."},  # noqa: E501
+    {
+        "ref": "S1",
+        "kind": "primary",
+        "date": "2026-06-01",
+        "text": "Exchange fee schedule page: BTCUSDT taker fee 0.10%.",
+    },  # noqa: E501
+    {
+        "ref": "S2",
+        "kind": "primary",
+        "date": "2026-06-15",
+        "text": "Exchange fee schedule page (updated): BTCUSDT taker fee 0.075% for VIP0 with a native-token discount.",
+    },  # noqa: E501
+    {
+        "ref": "S3",
+        "kind": "secondary",
+        "date": "2026-05-01",
+        "text": "Blog post: 'BTCUSDT taker fee is 0.10%' (cites S1, predates S2's update).",
+    },  # noqa: E501
+    {
+        "ref": "S4",
+        "kind": "secondary",
+        "date": "2026-01-10",
+        "text": "Old forum post: 'fees are basically free on this exchange' (no date-stamped fee figure).",
+    },  # noqa: E501
+    {
+        "ref": "S5",
+        "kind": "primary",
+        "date": "2026-06-15",
+        "text": "Exchange API docs: fee endpoint returns effective per-account fee tier, may differ from the published schedule.",
+    },  # noqa: E501
+    {
+        "ref": "S6",
+        "kind": "secondary",
+        "date": "2026-06-20",
+        "text": "Third-party fee comparison site lists this exchange at 0.10% taker, last checked 2026-05-01 per its own footer.",
+    },  # noqa: E501
+    {
+        "ref": "S7",
+        "kind": "primary",
+        "date": "2026-06-15",
+        "text": "Exchange fee schedule page: native-token discount requires opt-in and a minimum balance.",
+    },  # noqa: E501
+    {
+        "ref": "S8",
+        "kind": "secondary",
+        "date": "2026-06-25",
+        "text": "Community wiki: repeats the 0.075% figure without noting the opt-in/minimum-balance condition.",
+    },  # noqa: E501
 ]
 T8_ITEMS: list[dict[str, Any]] = [
     {

@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-20T02:01:31.442684+00:00",
+  "artifact_count": 6,
+  "counts": {
+    "CURRENT": 6,
+    "STALE": 0,
+    "BROKEN": 0
+  },
+  "interpretation": "STALE artifacts were computed with code that has since changed. They remain historical records but must not be counted as current evidence for any gate without regeneration.",
+  "artifacts": [
+    {
+      "artifact_path": "artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/families/b2_metadata_624f744b6c556079c99fb809f79198a0a5445115a146c60b753c22b61daa8e28.json",
+      "artifact_id": "SEARCH-BASELINE-G10-REPRO-V1-B2-41af2d74e392",
+      "state": "CURRENT",
+      "generated_at": "2026-07-13T09:49:02.422360+00:00",
+      "git_commit": "77827521c09c2ffeee7f12490a9ef2ec3555d474",
+      "drifted_modules": []
+    },
+    {
+      "artifact_path": "artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/families/b3_metadata_84bdd8e22093e241b7f415faf74fc6d7e41870b3385356465aa98f8189252702.json",
+      "artifact_id": "SEARCH-BASELINE-G10-REPRO-V1-B3-2ae7ff5e2817",
+      "state": "CURRENT",
+      "generated_at": "2026-07-13T09:49:02.422360+00:00",
+      "git_commit": "77827521c09c2ffeee7f12490a9ef2ec3555d474",
+      "drifted_modules": []
+    },
+    {
+      "artifact_path": "artifacts/validation/campaigns/SEARCH-BASELINE-G10-REPRO-V1/families/b4_metadata_1982d86c5561ee8ffdf941cba81f9a445901befe3ccc938b1f714db4d57494f7.json",
+      "artifact_id": "SEARCH-BASELINE-G10-REPRO-V1-B4-e750d432bc6b",
+      "state": "CURRENT",
+      "generated_at": "2026-07-13T09:49:02.422360+00:00",
+      "git_commit": "77827521c09c2ffeee7f12490a9ef2ec3555d474",
+      "drifted_modules": []
+    },
+    {
+      "artifact_path": "artifacts/validation/campaigns/SEARCH-CANONICAL-BASELINE-G10-V2/families/b2_metadata_b2eaa64b55e52529333bdf431e35b862ebd5ce9edd66246b347b0f0e783bbb51.json",
+      "artifact_id": "SEARCH-CANONICAL-BASELINE-G10-V2-B2-5644d70104b9",
+      "state": "CURRENT",
+      "generated_at": "2026-07-13T10:40:35.844074+00:00",
+      "git_commit": "6bac8bfa64ac38af2425e33fbb42fb73d90d79e3",
+      "drifted_modules": []
+    },
+    {
+      "artifact_path": "artifacts/validation/campaigns/SEARCH-CANONICAL-BASELINE-G10-V2/families/b3_metadata_83c95428d54cdb3d1733c433d2d41a6c9923255085a3cc2d2b5b2ec0d1961644.json",
+      "artifact_id": "SEARCH-CANONICAL-BASELINE-G10-V2-B3-e72f169e4e3b",
+      "state": "CURRENT",
+      "generated_at": "2026-07-13T10:40:35.844074+00:00",
+      "git_commit": "6bac8bfa64ac38af2425e33fbb42fb73d90d79e3",
+      "drifted_modules": []
+    },
+    {
+      "artifact_path": "artifacts/validation/campaigns/SEARCH-CANONICAL-BASELINE-G10-V2/families/b4_metadata_63200a15ec6e8f4efdc84fe8fe33c2b649dc23bc31cdf76627e9e9a66995aed0.json",
+      "artifact_id": "SEARCH-CANONICAL-BASELINE-G10-V2-B4-2e673aea7086",
+      "state": "CURRENT",
+      "generated_at": "2026-07-13T10:40:35.844074+00:00",
+      "git_commit": "6bac8bfa64ac38af2425e33fbb42fb73d90d79e3",
+      "drifted_modules": []
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.107 web-console ETH signal check (2026-07-14). Supersedes v8.106 hashes.
+Package version: v8.122 TODO-page session-prompt copy button (2026-07-21). Supersedes v8.121 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `6dd96ce8b09139d73a5372258f25f026b0b2380596bb0eb427cde07510684bae` |
-| `DECISION_LOG.md` | `178372696a67142be900510d53f85e9264b6cf4545fe6dbaa668653215f00bf4` |
+| `PROJECT_STATE.md` | `7c0449156900a4658b0d5f137cd13900573db27f296dc0f1220b67dd1a7c991b` |
+| `DECISION_LOG.md` | `66a25f98c02e79d1202bb768f9383835ca625db60762b688153e0ae0c5bbc89b` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -26,16 +26,16 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `specs/AI_AGENT_EVALUATION_BLUEPRINT_V1.md` | `50e6f528e9e816a3f2700055f1e310554bb194c7c4b6cea3c94053d87d725626` |
 | `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` | `61d13a81b76ea0b0c49f465ce6cabf18d7c45130b433564216c319f04347652f` |
 | `specs/ENVIRONMENT_AND_CREDENTIALS_INTAKE_GATE_V1.md` | `0c53e737e82d1b984e6d252013bdb1eeab0145e2e15ee9643cfc98e7853f8160` |
-| `RESEARCH_BACKLOG.md` | `cc422de856277be6b7a991777b51d8d4b9bef5f23688399d89087d59e39f3824` |
-| `MISSING_AND_OPEN_ITEMS.md` | `5e7c0bb5bc51ad608cc25568dba2a8a0934a96db7d02c88cc0a430462551fcd3` |
+| `RESEARCH_BACKLOG.md` | `b103f12d3d5169986f1a5f444589b6c85b905b0243bbac918704eb1e7441f674` |
+| `MISSING_AND_OPEN_ITEMS.md` | `3becdf12ac1280b73eb1147233f63efe3e9dde17287b275542afaeb3278861b0` |
 
 ## Supervisory correction package (added v8.52)
 
 | Path | SHA-256 |
 |---|---|
-| `docs/supervisor/SUPERVISORY_BASELINE_2026-07-13.md` | `63313a6771b5640fe620e6bea5ae036e44c8a06bf25650d68f0314e1259cf9f3` |
-| `docs/supervisor/IMPROVEMENT_PLAN_2026-07-13.md` | `8c29b781bafabd522562eade37c388e752e3845b12460b5ed319b1cd0ef8a933` |
-| `docs/supervisor/FINAL_SUPERVISORY_REPORT_2026-07-13.md` | `171ed81058caef3ba983eb55bdd274cbe4a922734b7936ba813299d35d8609d1` |
+| `docs/supervisor/SUPERVISORY_BASELINE_2026-07-13.md` | `2fa0b8a4f6f933626224f702e3a5f022340975e446780e898b272eda242714b1` |
+| `docs/supervisor/IMPROVEMENT_PLAN_2026-07-13.md` | `8fe253cdc92a347d5067da9267c55191f820a4b9d660911bdacc189af9f83c10` |
+| `docs/supervisor/FINAL_SUPERVISORY_REPORT_2026-07-13.md` | `0626c065dcd293f5122f7dee225ad5dba2b6c92add39acaf9c91ad5350681003` |
 | `artifacts/reports/G10_PREREGISTERED_CAMPAIGN_REPORT_2026_07_13.md` | `67b0be7e43777bf31ba3e33dffa81795bdebd84d84683c7a010e84bc945bf59d` |
 | `strategies/research/funding-carry-basis-delta-neutral/canonical_strategy_spec.yaml` | `87ee0ecfc39515547a09ffa2108b93f7f65785de2ec28e2f4a895190d1ca86b0` |
 | `strategies/research/funding-carry-basis-delta-neutral/canonical_strategy_spec.sha256` | `02b3be727ee2d86a4b80eeb5fdf31779827b604f16e76f7c9f562d82ede8713a` |
@@ -69,15 +69,15 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | Path | SHA-256 |
 |---|---|
 | `src/tios/services/dashboard_api/eth_signal.py` | `8b1a35780a5ef492d304cee65e4af33ea08e84a245a58290e99889e8fcb8a027` |
-| `src/tios/services/dashboard_ui/server.py` | `269c32a04a23d1a2841ff8b6a527810e96b7932e96a539d2a9fa83da9e5e676e` |
-| `src/tios/services/dashboard_ui/dashboard.html` | `e5fa268b8c69445a0699aa87dc891c8cdc23ffca90e581c6a3727c0b54d2ba77` |
-| `tests/test_dashboard.py` | `c9b5c20b1de2af8f9a58240590b320100e64805294fe68f9c65f2a7d5f91609c` |
+| `src/tios/services/dashboard_ui/server.py` | `1c85a7b9f71c32538c4fc6128a582f205d9391f076535b81af7e46be686afe3c` |
+| `src/tios/services/dashboard_ui/dashboard.html` | `b67a1ef386769cf93ccdad9e37557b1650c9888d7c90395a5c121feaa5277568` |
+| `tests/test_dashboard.py` | `7215bccce45b2a4866efd7a9b880328391ae534e74c86083810fed3477b46433` |
 
 ## Required handoff inputs — planning system (added v8)
 
 | Path | SHA-256 |
 |---|---|
-| `docs/architecture/AD.md` | `a61f86aafccdb4f013cf3e84b90eb869cbffc65aeeb7c427a65ebad1f6b03cc5` |
+| `docs/architecture/AD.md` | `62ae0e8dc3b181eed9faa302e66b5c59d280a288cbaf9f7a5898f0a5be48856e` |
 | `docs/architecture/MODULE_CATALOG.md` | `6cadf37032da66afbff75a0e7de0bcbeffe440b33cf80a3ce565f0e704feef19` |
 | `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md` | `4abea649d619535bd7c8dfc5846307e52fcdb0feea7ede52a2123503a92ef5f1` |
 | `docs/program/PROGRAM_PLAN.md` | `b491591bc5376a4bf3b93f7c42f68c25200f7e4420c05445a925bca7bd60f298` |
@@ -85,7 +85,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `docs/testing/TEST_MASTER_PLAN.md` | `fb4bd18aed50ff4367c1fb15ff8dbfe33b4399ca7f74ee78e06ed365af350b54` |
 | `docs/traceability/TRACEABILITY_MATRIX.md` | `cc4b43ba2613ecd1948cd86f5c243243546e2340944cb346cc232b80fa1513e9` |
 | `docs/ai/AGENT_ROLES.md` | `15059de1a50206ba8e85595d68dae8f5f568bc4a3b0270606973b4d947523d49` |
-| `TODO.md` | `69a9c9016296410258d367dedd4f6f0d8194a30214b979dc071258bc7423f714` |
+| `TODO.md` | `e722373c151dd3c7b568bbc78f07f78dceefc2c7390bc10b9ef8588b0e1728fa` |
 | `research/EXISTING_CAPABILITY_REGISTRY.md` | `f01d15ad4dae4be25f12bfab29e230192d49f08d3bf8e47ca10890098da7fc82` |
 | `research/RESEARCH_GAP_MATRIX.md` | `e56f9197282ddda139ef364e2cf0dc85fa505eeb14a8c8d5580678973dba378a` |
 
@@ -98,7 +98,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `audits/TODO_COMPLETENESS_AUDIT.md` | `22ca004dfd4049637db6be5128186a3e51411e2b606c45413d344d46508ad666` |
 | `audits/RED_TEAM_PLAN_REVIEW.md` | `a8d0f8850fdce2fbcfa985016b69d8755a52ed16b8c01e7d8652f6bcb9ee833c` |
 | `audits/PLANNING_HANDOFF_SIMULATION.md` | `99f70334d411ebbeb58039f95d6e8a20636700269e5b8755b72f4d71316694b3` |
-| `skills/README.md` | `3d84002f72c58dc744fa8beb582701cd610e766e992c2ddd4d8de3fa1ef134c7` |
+| `skills/README.md` | `43c2df4897b5b3465937776e063d9bc4bc04c23ca0198745d17d360f24ad71b3` |
 | `todos/00_program.md` | `8e9a11b37f5728c8260eb96b0f4a9382a09a1da9bee25393d4fb1515e3d9082e` |
 | `todos/01_research_completion.md` | `20d8f8d5fad0f26ff9dd07efd65270163dbf2203f9d1c61029f0b5444df1b95b` |
 | `todos/02_architecture_foundation.md` | `5f9d92c7246ad7b6249ba61fbfc30cebdf2f3be6a179fc3852a6b3153c8945ce` |
@@ -110,14 +110,14 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `todos/08_backtesting.md` | `85bf5bc925fa217fc4bff13352ff586ab0753a71de5b528eb6db717ce942486f` |
 | `todos/09_validation.md` | `e1eda19285849cb5127660728ffc90eb018b59bb8d54d64e6d24c8aca4e0b485` |
 | `todos/10_strategy_ingestion.md` | `544ffeb89068e553b5ca8bb75a1710812fa733eee087e64b56bef1d29a77bf5f` |
-| `todos/11_ai_agent_eval.md` | `f32abb43c847f3c609192abbf127a43b7edb330ddbb455ab217301176c0cc80b` |
+| `todos/11_ai_agent_eval.md` | `b06bad5281b30160763421c57c1b90f1f1ed3315d82814b0beb683be09270e4c` |
 | `todos/12_dictionary_ontology.md` | `f1f19b5250ad1aaefecc7dbb87bb9d837a0f1f12e48af99d490e26cc6038ce4f` |
 | `todos/13_research_assets.md` | `423f9814bfc6e920324cbc827ebd4ad65e7fb51cb50a6af72b42ae9eac2a40ee` |
 | `todos/14_dashboard.md` | `02d09ccde77a854bed6360b7983c5b6be4ffac13c1ad4b09f6faab23bb7c8ed3` |
-| `todos/15_paper_trading.md` | `055ed8032f4090100da330ce1429e5fe9547d69f78fa32ab947881d284ccc766` |
+| `todos/15_paper_trading.md` | `93b3c6aa212c09b665c0ba3e0fbb01357be675d46be07f36ce9b598413b3ab5e` |
 | `todos/16_risk_approvals.md` | `5dba2879e27ac1ce17ac3770afe21873969355ecfaef042d0775e905736966c7` |
-| `todos/17_observability.md` | `242400130779daef1be64c532ba3dd883f68aacbf1eb12841cd82997798a9326` |
-| `todos/18_security.md` | `222e9fe4c8b757ef431fad2bb1a974aa33e44e7c937288656b7239704eb0ee73` |
+| `todos/17_observability.md` | `25b7fe8ff7dfd224e058836b5559c5190fb032837c9fc6838965811662b9d7e5` |
+| `todos/18_security.md` | `e6402132ae679510595e393f4b37957b636a25aba0ed58118af7e88ce3a19d71` |
 | `todos/19_operations.md` | `68f73a470e79241098afec113b99274ef498da7691169269eb7f9ce14188a260` |
 | `todos/20_future_market_expansion.md` | `97cb7ff36f065aca69de5dce6493d02fa0e3fb67564ccc93d9884208122d1436` |
 | `skills/SKILL_ARCHITECTURE_GUARDIAN.md` | `c11eb205b3dc89bf3ed9be4436aaabbc1883488c2c8a4b47d911496c39a19a82` |
@@ -148,9 +148,9 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `src/tios/strategy/evaluator.py` | `cf495577545515623c81959ef2c5706fcd48a2f0a0d53c6c08ff5b6392f4c8d4` |
 | `engines/reference/calendar_utc.py` | `e7885a873d2c7e500a50c651f91c600f4534321fba6abfb2dcc669df3062733b` |
 | `engines/vectorbt/calendar_utc_returns.py` | `cd04c0a2d4933f20b7b1f4b7675d0dc2f457d001131f5ebfd0de6a320239f0e0` |
-| `scripts/verify_calendar_utc_data.py` | `f863b1d3f763daf11698096f624c9398cc42cc6511102cbe3a3e75453b1ebcd1` |
+| `scripts/verify_calendar_utc_data.py` | `1566bcb16d2e14bf21481a1a9820bd5752b2256aa508336aea7cd2675d0b647e` |
 | `scripts/run_calendar_utc_campaign.py` | `2f765066ef920e089b263efc0a19d0763def43a84c9c61ff5f08733d0f1617f1` |
-| `tests/test_calendar_utc_data.py` | `ad0148c9dab11d4b4dc5c6baf2492ba423ff49866db88c24c83db1eeffb3eefd` |
+| `tests/test_calendar_utc_data.py` | `e5bbf290a79798a53af92675f5d6686e465545e164e367ba95e88e0e10bb1b70` |
 | `tests/test_calendar_utc_reference.py` | `1a23ba4a08149db235a02b710e72b5a9da8cc653bf672b36f9ee621d6297e988` |
 | `tests/test_calendar_utc_strategy.py` | `4c9b503c31899807d7ca8727f9261c22ea578352eb35a7771cb59029c1023473` |
 | `tests/test_calendar_utc_campaign.py` | `ba5bab4b7e39685321d9dd0a9ce81637017b09054f7cfcc0470557b180189f79` |
@@ -166,8 +166,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V3.md` | `0e74d76408fb75e0564be374281acb851f5acb0061a4ca000882479937c30f7a` |
 | `research/FUNDING_PRESSURE_SPOT_DATA_PACKAGE_V1.json` | `df28e581ccd95755d620dafef18adbad202ea41038827bff5241716d1112b251` |
-| `scripts/verify_funding_pressure_data.py` | `3135d084f7e84bae2e73a3a89c98dd5c6c35e7d909858a8690cc7481c16c376c` |
-| `tests/test_funding_pressure_data.py` | `f443ad132b342d8e2e129c9123f35648ac5c156ac92dde988500450cad25d9e0` |
+| `scripts/verify_funding_pressure_data.py` | `4312b09dfe898be3d403c0658fc2516c1ec78998064b17a8413677ca7c87861a` |
+| `tests/test_funding_pressure_data.py` | `fd20db0d8501e6dd77ddd181ec35c64e6514df44b06df25fa5bea3cdcf49afae` |
 
 ## Funding-pressure immutable campaign freeze (added v8.59)
 
@@ -221,8 +221,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `research/STRATEGY_FAMILY_SELECTION_AND_PREREGISTRATION_V4.md` | `8253dbbde2e61e62b8fd36c8e38707526a623e303bdbbba70d75c4658d25267f` |
 | `research/BTC_TX_ACTIVITY_DATA_PACKAGE_V1.json` | `00b36574e6721ef46baf7bb6684c1cdd26f0a5741657058b5144db84dc51fd74` |
 | `data/raw/onchain/blockchain_info_n_transactions_6y_2026-07-13.json` | `884abab27dbbae21e989d27808349acdbbe372cb90f10e758abfb214ea21a7f1` |
-| `scripts/verify_btc_tx_activity_data.py` | `46d213cc07971c323ac561400d27d24221f405aa016f6650a3fb4413426264ad` |
-| `tests/test_btc_tx_activity_data.py` | `f96d94fba2232aadd3d33c4559609fa4438975408f1d47834b0789968fa6f650` |
+| `scripts/verify_btc_tx_activity_data.py` | `d3c7eb5074a2388cfe483aea7ac908a842683a0eec74e2375df68baae108a67a` |
+| `tests/test_btc_tx_activity_data.py` | `56f444d522b70c3e8eb434d0ac7d1402edebd88be9cda831f725f91c52767216` |
 
 ## Bitcoin transaction-activity campaign freeze (added v8.64)
 
@@ -262,8 +262,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `research/BTC_MVRV_DATA_PACKAGE_V1.json` | `e8155e56dec7a1c05b3f7c289aa9f3320d939ee6160b23b0606af40aef1cd214` |
 | `data/raw/onchain/coinmetrics_btc_capmvrvcur_2020-07-01_2026-06-28_2026-07-13.json` | `88f68a10c52dd822cd6b564f33fb75b5470e1e6fc84783a02ce9a39edf5f8c49` |
 | `data/raw/onchain/coinmetrics_capmvrvcur_catalog_entry_2026-07-13.json` | `32088d26671362024dfe8e721da2891d0f161244542df8ff15b46b7893eaae53` |
-| `scripts/verify_btc_mvrv_data.py` | `fd82034dc9fcc958b647248b01efefbc251f053cbebefca3ba436a5eb37fdd43` |
-| `tests/test_btc_mvrv_data.py` | `dfd5513c6f1151e209baea435d5e9bb0fc64b7a1c779b5dcc03903ac26b8f1ab` |
+| `scripts/verify_btc_mvrv_data.py` | `116bfe1cf250f92f09850248cffd3ad98894c4dab4184c8dac65520a473e8d99` |
+| `tests/test_btc_mvrv_data.py` | `36b829cac5238be1c0be9a0d668b16dbae734cff550f64fea91ecc42db588bed` |
 
 ## Bitcoin MVRV campaign freeze (added v8.67)
 
@@ -307,8 +307,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `research/CFTC_BTC_POSITIONING_DATA_PACKAGE_V1.json` | `06fa27b23a17b0f6900e604b9127a9554e4526da5cf18e9d40ef9eeb9ecc925c` |
 | `data/raw/cftc/cftc_btc_133741_publication_exceptions_v1.json` | `09f698864ae77937da15b62188cf2d291d393117986cac8c10469646e15a0c34` |
-| `scripts/verify_cftc_btc_positioning_data.py` | `52f7a6ea7f98c42639141c7b94aa0b9df0a766b126f5f097e480673899b0f354` |
-| `tests/test_cftc_btc_positioning_data.py` | `a7be0d47cdad6674c73eb3c66046aca77976386701dcfb1e36a847ee2bdd3d0e` |
+| `scripts/verify_cftc_btc_positioning_data.py` | `058260b8e6c653763654d7febb71f00a9a0f0a5e1c08f49f3992df60440bf03c` |
+| `tests/test_cftc_btc_positioning_data.py` | `482a5aa038c3ea629e0aedd9cdc75aa268823f40ae05857b90905abeb7511e65` |
 | `data/raw/cftc/cftc_2019_delayed_release_schedule.html.base64` | `d9d13f63b908121cd3f7ebc6dec6012eb2a23ba4397a8f8bb5447df6e7481b9a` |
 | `data/raw/cftc/cftc_2023_ion_postponement.html.base64` | `72630e62c1d95f492957ea635d098ab88c4819aa1c9fe45145f9f33858c4f267` |
 | `data/raw/cftc/cftc_legacy_futures_only_133741.csv.base64` | `6f4e73af81ba1d244c928d53dddb2593f362715611734c8542596774f6e06ac7` |
@@ -423,8 +423,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | Path | SHA-256 |
 |---|---|
 | `research/BTC_SPOT_TAKER_IMBALANCE_DATA_PACKAGE_V1.json` | `9cc2919a3bcdb977f780d65db1c371ac02b8aa310417472abe02c05f009e1db2` |
-| `scripts/verify_btc_spot_taker_imbalance_data.py` | `4c2a7438c5a155c2d4b0a1785db2f0fb83ce722051b5b7b61e0c1aecc6a86b82` |
-| `tests/test_btc_spot_taker_imbalance_data.py` | `42854d5bce21a922b4a0d2966e160433e277530cf72e101ef20c8ee3ded5a288` |
+| `scripts/verify_btc_spot_taker_imbalance_data.py` | `9fccf3566e17464d42dc63efffc21ff2595f316735aba0014b87f7e696a000e1` |
+| `tests/test_btc_spot_taker_imbalance_data.py` | `438893a2194f8b807725119827cfa94a728bc4ab8def20b3a55cf5bc7a9a14c0` |
 
 ## Spot taker-imbalance campaign freeze (added v8.75)
 
@@ -477,9 +477,9 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `data/normalized/cross_venue_btc_premium_1h_v1.parquet` | `2d99612a2cae83d8ca5c41ff86c0083c6f90180d5f57e6c76a3dd2922ed55958` |
 | `research/CROSS_VENUE_BTC_PREMIUM_DATA_PACKAGE_V1.json` | `7dab4bc7ce33a2fb9cfd0595ba1d6a6406b9e8b8f12f1f12532fc20f15fa18c0` |
 | `scripts/fetch_cross_venue_premium_data.py` | `e1d1abf8e068844b342257d9db965180448f95a1c1ea0e53c60f0865360b7f82` |
-| `scripts/build_cross_venue_premium_data.py` | `0d1c625225e5b2d94a25c5edb272033836d47dafc154805deef9eab64b0b10af` |
+| `scripts/build_cross_venue_premium_data.py` | `56a74e0ad4ad836718adf1beb9fa89fe1b2a5d6b87652ef1eb3bd36697cc370f` |
 | `scripts/verify_cross_venue_premium_data.py` | `4359adf79504aff7d4dfb995dbc534dcebad7cda2c6737b68817e03a4fa27f57` |
-| `tests/test_cross_venue_premium_data.py` | `45788b30a2e8e3ca34184cf3945af6d5eaf853c7c83693698ac6f7ba76c76c6f` |
+| `tests/test_cross_venue_premium_data.py` | `b3ecd61b7284d571fd36a428253f709167bb537661983e4e5905ad7fa18ae481` |
 
 ## Cross-venue premium campaign freeze (added v8.80)
 
@@ -525,7 +525,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `src/tios/strategy/liquidation_stress.py` | `dc9e30b033316d9b5f0ca6886def9929d637292e21c73cfca9b0ca23530dc9b9` |
 | `scripts/run_prospective_liquidation_observer.py` | `b828afe7e614664c80a3f78ffa1c985ff232874064af7646de4c5f9ca47802f4` |
 | `tests/test_liquidation_stress.py` | `3dec588b1d7fe49b2214860fa9917c286fccc8a81a6e8918c49ea56914d42099` |
-| `pyproject.toml` | `7ea85d3bb8c1ae3444967444f8105a5c58eacdd6c8a7cb34b6f751f2dec01c1d` |
+| `pyproject.toml` | `97314bab307db2935d027cd24153c398cecdfbd23a6b460a70d81164feaf462e` |
 | `uv.lock` | `f8a23520debbe0e2c2aa4c2cd6013669f9e46525d8631288c1979d2e4a5ed3b1` |
 
 ## First prospective liquidation-stress session (added v8.84)
@@ -601,7 +601,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 
 | Path | SHA-256 |
 |---|---|
-| `.gitignore` | `5235c86334ea68c3826f9adeb31c5fe81d539a990de70d98581f58328eca25d6` |
+| `.gitignore` | `c8d14577ac813332f589cfc53cedd0da1de5afa9e8b647f9396e5f01acce0803` |
 | `tests/test_gitignore.py` | `f983a18a7ad4db90ed956700ac95d9da1d88f86d177d051cad6c479520e26879` |
 | `artifacts/reports/PROSPECTIVE_BTC_LIQUIDATION_V5_TWO_WINDOW_PROOF_2026_07_13.md` | `278b46bfd7e6294a3d1ab532493f64f6570e952202974cc038655cade8a0100b` |
 | `artifacts/prospective/BTC-LIQUIDATION-STRESS-V1/raw/exchange_info_96b22dc83f1bddc57f4c5325879e792f2766bd0439d51511ad64985f884d07c0.json` | `96b22dc83f1bddc57f4c5325879e792f2766bd0439d51511ad64985f884d07c0` |
@@ -628,9 +628,9 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `src/tios/services/observations/flow.py` | `4bfee7cd3e940658602ac141afb2671715a5e23e289ca238285cac776dea04f7` |
 | `scripts/run_prospective_observation_flow.py` | `049a30eae86bba0abb071016149a3414726a1d47655dcb1b1c19d5e69917f449` |
 | `tests/test_observation_flow.py` | `06bdf250404373a9e3636c5e40e09bde1ff03a0ceb538a7af9dcb95813b70611` |
-| `src/tios/services/dashboard_api/status.py` | `fa74b95cae671e1c03d9b595347ba6ec1fe5316aa36cbb1820572f2d46273e57` |
-| `src/tios/services/dashboard_ui/dashboard.html` | `e5fa268b8c69445a0699aa87dc891c8cdc23ffca90e581c6a3727c0b54d2ba77` |
-| `tests/test_dashboard.py` | `c9b5c20b1de2af8f9a58240590b320100e64805294fe68f9c65f2a7d5f91609c` |
+| `src/tios/services/dashboard_api/status.py` | `12d0107864407f06bc04219b5bbb6d9f322d4ce23e6cb70ec36737604b43e951` |
+| `src/tios/services/dashboard_ui/dashboard.html` | `b67a1ef386769cf93ccdad9e37557b1650c9888d7c90395a5c121feaa5277568` |
+| `tests/test_dashboard.py` | `7215bccce45b2a4866efd7a9b880328391ae534e74c86083810fed3477b46433` |
 
 ## Managed observation adoption (added v8.101)
 
@@ -648,11 +648,11 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `research/PLATFORM_STRATEGY_VALIDATION_AND_SCORE_ELIGIBILITY_V2.md` | `cd574335102d895360ae8a60abe2c74cd2b42366be9cc4d1ad8446f1aedf1f69` |
 | `research/STRATEGY_ELIGIBILITY_CONTRACT_V1.yaml` | `9e5f69aeebcf1c511162e9d123c09af2a17e769b3c4562b0ba27b69d31beaae5` |
-| `src/tios/validation/eligibility.py` | `0a9007638857ebd6d30ffd3e4d30bfa9a50b7392fa015c3bf5142faf8d9057d2` |
+| `src/tios/validation/eligibility.py` | `199f6e8b2728d79455d41bd62a6ec9368911e0ca55478b1caa31c5b66f810cd8` |
 | `src/tios/validation/risk.py` | `00a2261bda219f3868b18b5b799cbc37c25a150ddd3fb7bf5d3287e694454f71` |
 | `src/tios/validation/__init__.py` | `943f52a0a1ff31e4f750c1acffec4b091241cea1fa3db546561a5e9304c0940e` |
 | `src/tios/services/dashboard_api/strategy_eligibility.py` | `5ebc551e285ee92c0ab484655ccbadfdff2fd10d48a0edac2b2cfbdb5d11c011` |
-| `tests/test_strategy_eligibility.py` | `59734ba16237eb078f821e18f5047d68c83705dbd6b907ed47088150cbc314e9` |
+| `tests/test_strategy_eligibility.py` | `9c0619149782254aa8966ea20f3dd72f68b215a45a5ce69850547633b17ccacc` |
 | `tests/test_strategy_eligibility_projection.py` | `733d071bdf7401f16e8cebced4439aca959fc8c6bf26f6eada3aac128a6da980` |
 | `tests/test_risk_preconditions.py` | `15b24b25398ce2ce9238be61ba43f77ecdaa9141d8db438cf2c1d686f684e9ba` |
 
@@ -668,7 +668,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | Path | SHA-256 |
 |---|---|
 | `src/tios/trading_domain/models.py` | `f25d9c87a07029df0c95dd0da97f6f8c41f0587312abf909c879e1659aa4c235` |
-| `src/tios/trading_domain/__init__.py` | `828c37e0ec4298d685e163325bcc33415b86ae9816a3415134b679c547a604dd` |
+| `src/tios/trading_domain/__init__.py` | `78e7b61709a2722cd9feabc4d3f0c86c1e510e6158ac142db171f4c763c0d448` |
 | `src/tios/services/observations/risk_signal.py` | `9ab4c2245e26370dc639b6bba534efbb1e34a9f94a102cf00232fe7e571bc5f1` |
 | `scripts/verify_prospective_risk_signal_flow.py` | `17678afc9bffc15d3c1354d4deb5ec3f375461a3942f40ccaeb54ca23bdb209a` |
 | `tests/test_risk_signal_flow.py` | `72c1600d33c27c8e79e388db7a9b64d6fe1bb7258a64031042edf21dfccc786a` |

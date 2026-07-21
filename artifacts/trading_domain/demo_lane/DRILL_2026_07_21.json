@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "task": "T-015-04 operational drill (measurement mode, demo lane)",
+  "generated_at": "2026-07-20T22:25:13.907040+00:00",
+  "drill": "kill-switch engage -> verify order path blocked -> clear -> verify clean resume",
+  "steps": [
+    {
+      "step": "pre_drill",
+      "at": "2026-07-20T22:25:11.901397+00:00",
+      "status": "RUNNING",
+      "kill_switch": false,
+      "position_base": "0.01341033",
+      "orders_recorded": 1
+    },
+    {
+      "step": "kill_switch_engaged",
+      "at": "2026-07-20T22:25:11.901982+00:00",
+      "status": "STOPPING",
+      "kill_switch": true,
+      "position_base": "0.01341033",
+      "orders_recorded": 1
+    },
+    {
+      "step": "kill_switch_cleared",
+      "at": "2026-07-20T22:25:13.907015+00:00",
+      "status": "RUNNING",
+      "kill_switch": false,
+      "position_base": "0.01341033",
+      "orders_recorded": 1
+    }
+  ],
+  "order_block_evidence": "KILL_SWITCH file present => lane place() refuses before any network call; pinned by tests/test_demo_lane_api.py and the lane's kill_switch_active() checks. Status projection flipped RUNNING->STOPPING->RUNNING as recorded above.",
+  "invariants_held": [
+    "position unchanged",
+    "zero orders during drill",
+    "process survived"
+  ],
+  "scope_note": "Demo measurement lane (D-104). Full paper-lane drills remain DEFERRED-S3.",
+  "execution_authority": "NONE"
+}

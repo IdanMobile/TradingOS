@@ -4,7 +4,9 @@ This ZIP is the continuity and handoff package for the project.
 
 ## Current status
 
-Ready for constrained coding-agent prototype execution.
+See `PROJECT_STATE.md` — the live current-state entry point (2026-07-21: autonomous
+orchestrator running, all 7 searchable strategy families searched with 0 passes, two
+prospective observation lanes collecting evidence).
 
 ## Start here as a human
 
@@ -44,6 +46,6 @@ The package should be updated after every major research, prototype, decision, o
 Before giving this package to a coding agent, keep the ZIP intact. The package includes:
 
 - `PACKAGE_INTEGRITY_MANIFEST.md` — required handoff inputs and expected generated outputs;
-- `handoffs/HANDOFF_SIMULATION_AUDIT_V1.md` — fresh-agent flow simulation and audit findings.
+- `docs/archive/` — finished plans and superseded handoffs (including the flow-simulation audit), retained for history only.
 
 The coding agent must start only from the SSOT path documented above.

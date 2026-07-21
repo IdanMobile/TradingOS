@@ -15,6 +15,8 @@ from typing import Any
 import pyarrow as pa
 import pyarrow.parquet as pq
 
+from tios.dataset.arrow_time import utc_datetimes
+
 ROOT = Path(__file__).resolve().parents[1]
 RAW_BUNDLE = ROOT / "data/raw/coinbase_exchange/cross_venue_premium_v1.json"
 BINANCE_PARQUET = ROOT / "data/normalized/BTCUSDT_1h.parquet"
@@ -186,7 +188,12 @@ def parse_coinbase(
 
 def _logical_hash(table: pa.Table) -> str:
     digest = hashlib.sha256()
-    columns = [table.column(name).to_pylist() for name in table.schema.names]
+    columns = [
+        utc_datetimes(table.column(field.name))
+        if pa.types.is_timestamp(field.type)
+        else table.column(field.name).to_pylist()
+        for field in table.schema
+    ]
     for row in zip(*columns, strict=True):
         digest.update(("|".join(str(value) for value in row) + "\n").encode())
     return digest.hexdigest()
@@ -201,10 +208,17 @@ def derive(
     binance = pq.read_table(binance_path)  # type: ignore[no-untyped-call]
     if set(("timestamp_open_utc", "open", "close")) - set(binance.schema.names):
         raise RuntimeError("Binance normalized schema incomplete")
-    binance_rows = {
-        row["timestamp_open_utc"].astimezone(UTC): (row["open"], row["close"])
-        for row in binance.select(["timestamp_open_utc", "open", "close"]).to_pylist()
-    }
+    binance_rows = dict(
+        zip(
+            utc_datetimes(binance.column("timestamp_open_utc")),
+            zip(
+                binance.column("open").to_pylist(),
+                binance.column("close").to_pylist(),
+                strict=True,
+            ),
+            strict=True,
+        )
+    )
     common = sorted(set(coinbase["BTC-USD"]) & set(coinbase["USDT-USD"]) & set(binance_rows))
     if not common:
         raise RuntimeError("no aligned cross-venue rows")
@@ -231,7 +245,7 @@ def derive(
             }
         )
     table = pa.Table.from_pylist(rows, schema=SCHEMA)
-    opens = table.column("timestamp_open_utc").to_pylist()
+    opens = utc_datetimes(table.column("timestamp_open_utc"))
     aligned_gaps = [
         {
             "left_utc": left.isoformat(),

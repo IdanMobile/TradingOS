@@ -1,5 +1,298 @@
 # Package Changelog
 
+## v8.122 — 2026-07-21 — TODO-page session-prompt copy button
+
+- `src/tios/services/dashboard_ui/dashboard.html`: added a "Copy session prompt" button to the
+  TODO/tasks page (`#todos` title-row), a `SESSION_KICKOFF_PROMPT` constant, and a
+  `copySessionPrompt()` handler (navigator.clipboard.writeText, with a
+  document.execCommand('copy') hidden-textarea fallback) that flips the button text to
+  "Copied ✓" for ~2s. The prompt text is a generic, version-agnostic orchestrator
+  session-kickoff pointing the reader at `PROJECT_STATE.md` as the live authority — no
+  hardcoded version numbers or dates, so it never goes stale. No new dependency, no server
+  restart required (static asset served from the existing dashboard HTML).
+- `tests/test_dashboard.py`: added `test_todos_page_has_copy_session_prompt_button`, asserting
+  the button markup and stable prompt substrings (structural property, not the whole blob).
+- `PACKAGE_INTEGRITY_MANIFEST.md`: rehashed both listed rows for
+  `src/tios/services/dashboard_ui/dashboard.html` and `tests/test_dashboard.py` (each appears
+  twice, in the "Required handoff inputs — operational core" and "Managed observation
+  implementation freeze (added v8.100)" sections) per the D-030 regeneration rule; version
+  line bumped to "v8.122 TODO-page session-prompt copy button (2026-07-21)".
+
+## v8.121 — 2026-07-21 — Documentation consolidation: one current entry point
+
+- `PROJECT_STATE.md` was content-stale (predated D-107..D-112) despite being the repo's
+  declared current-state authority. Rewrote it to the true 2026-07-21 state: 24/7
+  orchestrator running (restarted after D-112 close-out found it stopped), all 7 searchable
+  strategy families searched with 0 passes (4 FAIL, 3 INSUFFICIENT_ACTIVITY), the CFTC
+  PASS-ELIGIBLE retracted under D-112, corrected trade-level scoring in force, two
+  prospective observation lanes (MVRV, CFTC) live and automated, demo lane armed, gate green
+  at 1146 tests. Added a new "OPEN ITEMS — the only live task list" section consolidating
+  every open item (operator decisions, parked SUP-009/SUP-006/D-099 blockers, pending
+  differential-testing work, structurally gated tasks) with one-line status + pointer to its
+  detailed home, replacing the previous scatter across `MISSING_AND_OPEN_ITEMS.md`,
+  the remediation plan, and `parked_items.jsonl`.
+- `MISSING_AND_OPEN_ITEMS.md`: re-verified SUP-009/SUP-006 against `DECISION_LOG.md`
+  D-107..D-112 (both remain genuinely open; no decision in that range closes either — D-108
+  only adds the forward-looking mechanism, it does not recover the historical gaps).
+  Cross-linked both to their `artifacts/driver/parked_items.jsonl` phases. Added a header
+  line pointing back to `PROJECT_STATE.md` as the consolidated entry point.
+- Archived two self-labeled quarantined/historical `docs/program/` documents into
+  `docs/archive/` per the existing convention (git mv + one row each in
+  `docs/archive/README.md`'s table, "File | Was | Superseded by"): `AGENT_NOTES_TO_OPERATOR.md`
+  (2026-07-12 session note, already self-labeled superseded by the 2026-07-13 supervisor
+  correction) and `DEMO_LANE_PLAN.md` (pre-D-046 design note, already self-labeled
+  QUARANTINED). Neither is manifest-listed, so no manifest change from the move itself.
+  Updated `docs/archive/README.md`'s "live authorities" declaration to
+  `DECISION_LOG.md` (through D-112), `PROJECT_STATE.md` (2026-07-21), `TODO.md` + `todos/`,
+  and `AD.md` for architecture; the parallel session's existing archive rows are untouched.
+- The 2026-07-13 `docs/supervisor/` trio (`SUPERVISORY_BASELINE`, `IMPROVEMENT_PLAN`,
+  `FINAL_SUPERVISORY_REPORT`) is manifest-listed and stale but not archived — each now
+  carries a one-line banner: "> SUPERSEDED (2026-07-21): see docs/supervisor/*_2026-07-21.md
+  and PROJECT_STATE.md." Their `PACKAGE_INTEGRITY_MANIFEST.md` rows were rehashed in the
+  same change per the D-030 regeneration rule.
+- `PACKAGE_README.md` (non-manifest-listed): the stale "ready for constrained coding-agent
+  prototype execution" orientation line now points at `PROJECT_STATE.md` as the live
+  current-state entry point.
+- `PACKAGE_INTEGRITY_MANIFEST.md`: rehashed rows for `PROJECT_STATE.md`,
+  `MISSING_AND_OPEN_ITEMS.md`, and the three 07-13 supervisor docs (the only manifest-listed
+  files edited this change); version line bumped to "v8.121 documentation consolidation
+  (2026-07-21). Supersedes v8.120 hashes." Full manifest sweep verified zero other mismatches.
+  The four `docs/supervisor/*_2026-07-21.md` planning-thread documents, `handoffs/
+  SESSION_HANDOFF_2026_07_21.md`, and `artifacts/driver/parked_items.jsonl` were read for
+  content and integrated by reference only — not edited, not manifest-listed.
+
+## v8.120 — 2026-07-21 — Methodology audit: trade-level significance fix; CFTC PASS-ELIGIBLE retracted (D-112)
+
+- An independent Opus red-team audit of the validation scoring core, confirmed by a bit-for-bit
+  verification recompute, found the DSR verdict on `src/tios/validation/campaign.py::run_campaign`
+  was computed on a `sample_count` (total validation bars) inconsistent with the series it scored
+  (in-position bars only). For FAM-CFTC-POSITIONING-V1 the recorded PASS-ELIGIBLE (DSR 0.9996,
+  z 3.3208) rested on 169 in-position bars of 7,630 (2.21%) and exactly one completed validation
+  trade; under the corrected trade-level count it is INSUFFICIENT_ACTIVITY, not a pass. Reproduced
+  train 0.024257871728695 and validation 0.077151674981046 exactly.
+- Fixed `campaign.py`: significance is now built on per-completed-trade returns with
+  `sample_count == len(trade returns)`, enforced by a fail-closed invariant in the new shared
+  `score_trade_significance()` helper (F1/F2); a pre-registered `min_validation_trades` floor
+  (default 10) yields a distinct `INSUFFICIENT_ACTIVITY` outcome rather than a claimed DSR, and
+  `n<2` never attempts a Sharpe (F5); `pbo_max` is removed from the campaign thresholds/schema and
+  the module docstring records that PBO is not computed on this path — a declared-but-unenforced
+  control is worse than an honestly absent one (F3a); `independent_trials` now routes through
+  `implied_independent_trials`, haircutting the still-hierarchy-wide trial count for cross-trial
+  correlation (F3b); the dead nested-fold scoring (`walk_forward_folds`/`fold_scores`, never fed
+  anything) is deleted (F4); and the DSR-path Sharpe uses sample variance ÷n-1, consistent with
+  `sharpe_variance_from_trials` (F6). Evaluators now return a `TrialScore` (score + trade returns
+  + aligned bar returns); a bare-float return remains accepted as a legacy opaque-score path.
+- Updated the six affected evaluators to expose trade returns:
+  `scripts/run_family_campaigns_v3.py` (period-z, hourly-z, funding),
+  `scripts/run_family_campaigns_v2.py` (taker, mvrv), and
+  `scripts/run_first_budgeted_campaign.py` (vol-contraction). Descriptive per-bar Sharpe (used for
+  train selection) is unchanged, so frozen selections reproduce bit-for-bit.
+- Added `scripts/rescore_frozen_campaigns.py`: replays ONLY the seven recorded frozen selections on
+  their original train/validation windows under the corrected scoring — no `preregister`/`record_trial`,
+  no ledger writes, no holdout access, no parameter search. Correction artifacts written to
+  `artifacts/validation/campaigns/corrections/<PREREG-id>_corrected.json`. Result: CFTC
+  PASS-ELIGIBLE → **RETRACTED (INSUFFICIENT_ACTIVITY, 1 trade)**; the six others stand as
+  FAIL/INSUFFICIENT_ACTIVITY (TX FAIL z −2.36, cross-venue FAIL DSR 0.48, taker FAIL z −2.35, MVRV
+  FAIL DSR 0.46, funding INSUFFICIENT 0 trades, vol-contraction INSUFFICIENT 7 trades). No family
+  flips toward a pass. Vol-contraction's `normalized_multi` input has drifted under a parallel
+  session; re-scored on committed (HEAD) data with the non-reproduction recorded transparently, the
+  FAIL (z −14.2) being invariant to the drift.
+- Regression tests added to `tests/test_campaign.py`: the sample-count invariant fails closed when
+  count and series length diverge (the F1 shape); zero/one-trade validation is INSUFFICIENT_ACTIVITY
+  and never claims a DSR; the correlation haircut shrinks the effective trial count below the raw
+  hierarchy count. Structural properties only, no pinned floats/IDs.
+- `D-112` recorded in `DECISION_LOG.md` with the findings, verification numbers, the formal
+  retraction, the corrected methodology, and the note that both prospective lanes continue unchanged
+  (their 2027 first reviews must apply the corrected statistics; the CFTC lane is now
+  hypothesis-generating, not confirmation).
+- `src/tios/validation/multiple_testing.py` needed no change: its `sharpe_variance_from_trials` is
+  already sample variance (÷n-1) and `implied_independent_trials` already existed — the fix was to
+  wire them correctly from the caller.
+- Integrity check: none of this session's changed files (`campaign.py`, the three campaign scripts,
+  the new re-score script, `tests/test_campaign.py`, this changelog, the decision log, the handoff)
+  are listed in `PACKAGE_INTEGRITY_MANIFEST.md` — verified by grep. No rehash required. No
+  trial-ledger writes; holdout unread.
+- Correction: `DECISION_LOG.md` **is** a manifest-listed file (required handoff inputs — operational
+  core). The D-112 entry above was appended to it after that check, so its recorded SHA-256 in
+  `PACKAGE_INTEGRITY_MANIFEST.md` went stale, tripping `make check`'s package-integrity gate. Per the
+  D-030 regeneration rule (logged, changelog-recorded edit → regenerate the manifest in the same
+  change, don't fork the file), `PACKAGE_INTEGRITY_MANIFEST.md` row for `DECISION_LOG.md` was
+  recomputed and the "Package version" line bumped to v8.120; no other manifest-listed file
+  mismatched its recorded hash.
+- Documented both of today's changes in `docs/architecture/AD.md`: a note in §S on why the
+  v8.119 prospective observers run from the orchestrator rather than the network-isolated `jobs`
+  module, two new decision-register rows (AD-16, AD-17), and a new §AM section with a mermaid
+  diagram covering the prospective-observation flow and the corrected trade-level validation
+  path. `docs/architecture/AD.md` **is** a manifest-listed file (planning-system handoff inputs);
+  per the same D-030 regeneration rule, its `PACKAGE_INTEGRITY_MANIFEST.md` row was recomputed
+  in this change. No other manifest-listed file was touched by this edit.
+
+## v8.119 — 2026-07-21 — CFTC prospective observer built; both lanes wired into orchestrator
+
+- Built `scripts/run_prospective_cftc_observer.py`, the CFTC weekly prospective fetcher
+  flagged NOT_YET_BUILT in v8.118 (Socrata dataset `6dca-aqww`, BTC/CME code 133741,
+  keyless). Live-run verified exit 0; first row recorded in
+  `artifacts/prospective/CFTC-POSITIONING-V1/observations.jsonl` (report 2026-07-07,
+  z +1.94, FLAT; `prospective=false` since this report predates the prereg freeze date —
+  the first prospective report, 2026-07-14, becomes available 2026-07-22T00:00Z per the
+  spec's 8-day availability lag). `research/PROSPECTIVE_CFTC_POSITIONING_V1.yaml`
+  `observation_protocol.observer_status` updated NOT_YET_BUILT → BUILT.
+- Wired both prospective lanes (MVRV daily + CFTC weekly) into
+  `src/tios/ops/orchestrator.py` via a new `observe_prospective_observers()` step: runs
+  each observer script via subprocess at most once per UTC day per lane (marker file
+  `artifacts/prospective/<lane>/.last_orchestrated_utc_day`); a failing, timed-out, or
+  missing script produces an ACT observation without halting the cycle. Wired into
+  `observe()`/`run_cycle()` with defaults, so `scripts/run_orchestrator.py --loop` picks
+  it up unchanged. `tests/test_orchestrator.py` gained 6 structural tests (16 pass in that
+  file). Closes open items 1 and 2 from `handoffs/SESSION_HANDOFF_2026_07_21.md`.
+- A jobs-runner route for the CFTC fetch was considered and rejected: the jobs runner is
+  network-isolated by design, and the fetch needs a live outbound call to Socrata.
+- Integrity check: none of this session's changed files (the new observer script, the
+  YAML spec, the orchestrator module, the orchestrator test file, this changelog) are
+  listed in `PACKAGE_INTEGRITY_MANIFEST.md` — verified by grep. No rehash required.
+
+## v8.118 — 2026-07-21 — Campaigns #4–#7 + prospective lanes (D-111)
+
+- Ran the four remaining pre-registered budgeted campaigns (`scripts/run_family_campaigns_v3.py`)
+  on frozen in-repo data, each availability lag enforced at data-join time. TX activity: FAIL
+  (overfit signature). Cross-venue premium: FAIL (negative in-sample). Funding pressure: FAIL
+  (largest in-sample score, zero validation trades — regime-mined artifact). CFTC positioning:
+  first PASS-ELIGIBLE — DSR 0.9996 vs 0.95 after deflating against 216 hierarchy trials
+  (train +0.024, validation +0.077, LOW side 26w/z1.5/168h hold). No authority created.
+- Opened two D-103-style prospective observation lanes with boundaries frozen today:
+  MVRV dislocation (prereg + live observer, first honest row recorded from public
+  CoinMetrics data) and CFTC positioning (prereg; weekly fetcher flagged NOT_YET_BUILT,
+  no evidence lost before the next report's availability date).
+- Hierarchy ledger: 234 trials across 7 admitted families. The in-repo searchable family
+  backlog is exhausted; forward paths are prospective evidence, lawful holdout reads after
+  2027-01-14, or new families backed by new data.
+- Manifest regeneration also picked up hash drift from a parallel session's edits
+  (`scripts/verify_*.py` data verifiers, `src/tios/trading_domain/__init__.py`) that had
+  missed their regeneration step; fixed per the D-030 rule rather than forked.
+
+## v8.117 — 2026-07-21 — Campaigns #2 and #3 (D-110)
+
+- Ran two further pre-registered budgeted campaigns on frozen in-repo data. Taker imbalance:
+  decisive FAIL (best-of-36 negative even in-sample). MVRV dislocation: FAIL at the 0.95 DSR
+  threshold but the first promising negative — validation (+0.055) exceeded training
+  (+0.045), no overfitting signature, DSR 0.76 after deflating against 108 hierarchy-wide
+  trials. Both families closed without rescue per frozen stop rules.
+- MVRV publication lag enforced structurally: hourly rows carry only the daily value already
+  released under the spec's D+3 availability rule.
+- Hierarchy ledger: 108 trials across 3 admitted families; every future campaign deflates
+  against all of them.
+
+## v8.116 — 2026-07-21 — Completable-task closeout
+
+- T-017-05 DONE: AI cost-intelligence view at Operations → Data health (`/api/v1/ai-costs`)
+  — totals and per-model runs/calls/cost from the real ledger, blocked configs surfaced,
+  zero-call rows excluded from spend, no credential read.
+- T-015-03: divergence summary projected into the demo-lane payload and card, with an
+  explicit staleness flag when fills postdate the last report.
+- T-015-04: measurement-mode kill-switch drill executed on the live lane (engage → orders
+  blocked → clear → clean resume; position and order count unchanged). Evidence:
+  `artifacts/trading_domain/demo_lane/DRILL_2026_07_21.json`. Full paper drills stay S3.
+- T-018-04: delta security review of the new surface (real-provider callers, selective .env
+  loading, projections, drill) — no new findings; still honestly non-independent.
+
+## v8.115 — 2026-07-21 — T-011-05 first real AI benchmark runs (Mode A)
+
+- Built the real-provider layer (raw urllib, dependency-free, provider-neutral): Anthropic
+  Messages API + OpenAI Chat Completions, identical frozen prompt and schema instruction per
+  task (Mode A), pinned pricing recorded per record, bounded retry on 429/500/529, and a
+  one-probe quota abort so a dead account fails once instead of 54 times.
+- Ran the frozen 27-fixture corpus, 2 samples per configuration: claude-opus-4-8 (100%
+  schema-valid, 70.4% output stability, $0.27) and claude-haiku-4-5 (100% schema-valid,
+  55.6% stability, $0.049 — 5.5x cheaper, 42% faster, measurably less stable). openai:gpt-4o
+  recorded as honestly BLOCKED: key authenticates, account quota exhausted. Total $0.32.
+- T-011-05 DONE (variance per AD-11; judge evaluators still PENDING_HUMAN_REVIEW). T-017-05
+  cost ledger now LIVE with real rows; the dashboard cost view remains open.
+
+## v8.114 — 2026-07-21 — T-015-03 measurement mode: first divergence evidence
+
+- Built the D-104 step-3 divergence report: each lane fill vs the frozen backtest's
+  next-bar-open expectation, signed adverse-positive, with timing lag and fee drag.
+  Public kline GET only; no credential. First measured fill: -1.45 bps price divergence
+  (favorable), 958s lag after bar close, 10 bps fee — inside the F1/S1 cost envelope.
+- T-015-03 marked MEASUREMENT MODE ACTIVE; full paper-lane divergence stays DEFERRED-S3.
+
+## v8.113 — 2026-07-20 — Demo wallet redesign: time windows and positions
+
+- Rebuilt the demo screen to wallet-app conventions: header (venue logo, account type,
+  wallet value with as-of), a Performance block with 1D/1W/1M/All tabs (net realised P/L
+  in $ and % of spent, positions opened/closed, win rate, volume, fees), and a Positions
+  table (coin, entry/exit, TP steps, SL steps, strategy, timeframe, expected vs actual
+  hold, spent, P/L in $ and %). Order history collapses below as the audit trail.
+- Positions are derived from fills, never stored, so they cannot disagree with the ledger.
+  Window P/L counts realised results only, attributed to the close window — unrealised
+  P/L stays on the open position so window numbers do not drift with price.
+- Expected trade time is measured, not guessed: median 65-bar hold over 259 historical
+  trades of this rule. TP/SL render as step lists (currently none) so laddered strategies
+  fit without restructuring.
+
+## v8.112 — 2026-07-20 — Demo lane money, rules, and account panel
+
+- Demo lane now reports money: per-order spent/received taken from reconciled venue wallet
+  deltas, wallet totals, average cost, position value, and realised/unrealised P&L in USD
+  and percent. An unmarked position reports null rather than zero so open risk is not
+  understated as flat.
+- Lane captures a wallet snapshot and mark price every cycle (not only on fills) and
+  publishes live Donchian/volume rule levels; the dashboard still holds no credential.
+- Reorganised the demo screen into Account (Bybit logo, UNIFIED, DEMO), Position & money,
+  Exit rules & risk, and Activity. Stop loss and take profit are stated as explicitly NONE
+  with the rule-driven exit band shown in their place — the spec sets both to null.
+- Fixed a fragile test fake: FakeVenue balances were a canned call-indexed sequence, so any
+  change in wallet-query count silently zeroed the reconciliation delta. Now modelled as
+  state mutated by fills.
+
+## v8.111 — 2026-07-20 — Open-work view and first budgeted campaign (D-109)
+
+- Added `GET /api/v1/open-work` and an Overview "Open work" card merging the task registry,
+  the parked ledger, and orchestrator escalations, classified by who can act:
+  requires_operator / agent_executable / blocked_external / recurring. The registry alone
+  reported zero open tasks while the live work sat in the parked ledger.
+- Ran the first campaign end to end through the substrate on 48,614 real BTCUSDT 1h bars.
+  `FAM-VOL-CONTRACTION-BREAKOUT-V1` rejected: train Sharpe +0.0411, validation -0.0807,
+  DSR 0.000 against a hierarchy-wide 36-trial noise threshold. Holdout never touched.
+- Marked two parked items resolved; tightened open-work operator classification so a cause
+  that merely mentions the operator no longer routes to them.
+
+## v8.110 — 2026-07-20 — Plan-doc archive and index reconciliation
+
+- Archived finished plans and superseded handoffs to `docs/archive/` (EXECUTION_PLAN.md,
+  three CONTINUE handoffs, HANDOFF_SIMULATION_AUDIT_V1.md) with an index README; live
+  authorities are DECISION_LOG.md and PROJECT_STATE.md.
+- Reconciled TODO.md's execution-order section and RESEARCH_BACKLOG.md's status header to
+  the D-107/D-108 state; `todos/NN_*.md` retained unchanged as the dashboard-parsed task
+  registry. Fixed the two stale pointers in README-dev.md and PACKAGE_README.md.
+- Includes the D-108 changes from this cycle: hierarchy-wide family budget (family
+  admission delegated to the orchestrator) and the split gate (`make check` ~1:30 code-only
+  at schema 3, `make check-full` backs `make required`).
+
+## v8.108 — 2026-07-20 — Autonomous orchestration substrate (D-107)
+
+- Added a global trial budget with mandatory pre-registration; declared trial counts are now
+  verified against a persistent ledger instead of trusted, and unregistered searches cannot be
+  scored. Wired into strategy eligibility as a fail-closed blocker.
+- Added an expiring operator attestation carrying the ten human-only facts, enforced by
+  predicate; it holds no credentials and never escalates a demo scope into live authority.
+- Added self-modification bounds: branch, gate, auto-revert, and an immutable-path guard that
+  runs before the gate. `Makefile` is immutable to the orchestrator because it defines the gate.
+- Wired D-100's evidence-producer map to a driver that walks it, with verifiers allowlisted to
+  project scripts, path-traversal rejected, and declared prohibitions withholding all dispatch.
+- Added the 24/7 orchestrator (`make orchestrator`) and a read-only Operations → Orchestrator
+  dashboard view. It halts on escalation, holds no credential, and places no order.
+- Closed SUP-008 structurally (holdout leakage now impossible, not merely forbidden), SUP-010
+  for coverage (all 20 canonical specs hold immutable version identities), and the achievable
+  half of SUP-007 (artifact staleness detection; all six G10 artifacts verify CURRENT).
+- Fixed two pre-existing gate failures inherited from the previous session's uncommitted work:
+  ruff/mypy errors in the signal pollers, and two stale tests encoding realities that D-104
+  had already changed. The security assertion was replaced with a stronger, mutation-tested one.
+- Regenerated controlled-file hashes for twelve drifted paths; package integrity was already
+  failing on arrival for `skills/README.md` and `todos/15_paper_trading.md`.
+- No credential, venue, order, paper, demo, or live authority is created. The sealed holdout
+  remains sealed.
+
 ## v8.107 — 2026-07-14 — Web-console ETH signal check
 
 - Added a one-click ETH signal verification card to the default web-console Overview page.

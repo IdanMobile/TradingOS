@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "correction_of": "PREREG-a02a77353d87d56814709d13fc3d636e",
+  "family": "FAM-CROSS-VENUE-PREMIUM-V1",
+  "decision_ref": "D-112",
+  "selected_parameters": {
+    "prior_baseline_hours": 24,
+    "z_threshold": 1.5,
+    "pulse_holding_hours": 24,
+    "interpretation": "CONTINUATION_POSITIVE"
+  },
+  "reproduced_frozen_score": true,
+  "reproduced_validation_score": 0.02495697128644804,
+  "original": {
+    "verdict": "FAIL",
+    "validation_score": 0.02495697128644804,
+    "sample_count": 8238,
+    "hierarchy_trials": 180,
+    "dsr": {
+      "expected_maximum_noise_sharpe": 0.061979003007949826,
+      "z_score": -3.3595195056945957,
+      "dsr": 0.00039039069633189927
+    }
+  },
+  "corrected": {
+    "verdict": "FAIL",
+    "status": "OK",
+    "validation_trades": 213,
+    "min_validation_trades": 10,
+    "descriptive_per_bar_sharpe": 0.02495697128644804,
+    "observed_trade_sharpe": 0.125671692959338,
+    "average_correlation": 0.10079952120181271,
+    "effective_trials": 161.95688570487553,
+    "dsr": {
+      "expected_maximum_noise_sharpe": 0.12931032661842826,
+      "z_score": -0.05277135604518429,
+      "dsr": 0.4789570421268013
+    }
+  },
+  "reason": "trade-level DSR on completed trades with sample_count = trade count (was scored on 8238 validation bars as if each were an independent observation)",
+  "notes": "Re-score only: no ledger writes, no new trials, no holdout access, no parameter search. Replays the recorded frozen selection on its original train/validation windows under the D-112 corrected statistics."
+}

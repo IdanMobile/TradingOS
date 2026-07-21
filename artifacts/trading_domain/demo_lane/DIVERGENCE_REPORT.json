@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "task": "T-015-03 execution-measurement mode (D-104 step 3)",
+  "generated_at": "2026-07-20T21:11:17.536591+00:00",
+  "window_days_target": 30,
+  "fills_measured": 1,
+  "mean_divergence_bps": -1.45,
+  "worst_divergence_bps": -1.45,
+  "rows": [
+    {
+      "signal_ref": "SIG-b302f5e0f9aa2093112aaa18",
+      "side": "Buy",
+      "recorded_at": "2026-07-20T14:15:58.537564+00:00",
+      "expected_fill_open_usd": 1862.64,
+      "actual_fill_usd": 1862.37,
+      "divergence_bps_adverse_positive": -1.45,
+      "lag_seconds_after_bar_close": 958,
+      "fee_bps": 10.0
+    }
+  ],
+  "scope_notes": [
+    "Lane fills on Bybit demo; frozen backtest built on Binance data - feed divergence is part of the number.",
+    "Demo liquidity is not production liquidity.",
+    "Execution-measurement evidence only (D-104); cannot validate or promote a strategy."
+  ],
+  "execution_authority": "NONE",
+  "promotion_eligible": false
+}

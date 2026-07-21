@@ -1,5 +1,12 @@
 """Contextual approval model; no runtime order authority."""
 
+from tios.approval.authority_audit import (
+    AuthorityAudit,
+    AuthorityAuditStatus,
+    AuthorityClaim,
+    AuthorityClaimState,
+    audit_repository_authority,
+)
 from tios.approval.history import (
     ApprovalHistory,
     ApprovalTransitionEvent,
@@ -20,6 +27,10 @@ from tios.approval.state import (
 )
 
 __all__ = [
+    "AuthorityAudit",
+    "AuthorityAuditStatus",
+    "AuthorityClaim",
+    "AuthorityClaimState",
     "LIVE_STATES",
     "CURRENT_PHASE_STATES",
     "Approval",
@@ -32,6 +43,7 @@ __all__ = [
     "HumanDecisionOutcome",
     "HumanDecisionRecord",
     "apply_gated_transition",
+    "audit_repository_authority",
     "resolve_stage_gate",
     "transition",
 ]

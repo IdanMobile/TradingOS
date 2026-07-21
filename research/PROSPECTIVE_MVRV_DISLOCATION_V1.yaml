@@ -1,0 +1,49 @@
+schema_version: 1
+prereg_id: PROSPECTIVE-MVRV-DISLOCATION-V1
+status: OBSERVATION_ONLY
+created_utc: "2026-07-21T00:00:00Z"
+authority_note: >
+  Forward observation of the exact variant campaign #3 froze (D-110). This is NOT a
+  rescue of the failed search: the searched context is closed, no parameter may change,
+  and this lane only collects genuinely unseen evidence from the boundary forward.
+  No order, venue, credential, paper, demo, or live authority is created.
+
+frozen_rule:
+  source_campaign: PREREG-ca9c9e0891ca05f357757943eba8c79a
+  decision: D-110
+  strategy_family: FAM-MVRV-DISLOCATION-V1
+  canonical_strategy: STRAT-BTC-MVRV-DISLOCATION-SPOT
+  metric: CoinMetrics CapMVRVCur (btc, daily)
+  transform: natural log
+  prior_window_days: 30
+  z_threshold: 2.0
+  side: LOW            # signal when log-MVRV sits 2 sigma BELOW its 30-day norm
+  pulse_holding_hours: 24
+  z_convention: population mean/std over the prior 30 available days, current day excluded
+  availability: source day D usable from D+3 00:00 UTC (spec availability lag)
+
+boundary:
+  # Only source days strictly after this date count as prospective. Everything on or
+  # before it existed during the search and can never become out-of-sample again.
+  last_in_sample_source_day: "2026-06-28"
+  observation_start_utc: "2026-07-21T00:00:00Z"
+
+observation_protocol:
+  cadence: at most one observation row per source day, appended forward-only
+  record: [observed_at, latest_available_source_day, log_mvrv, z_score, signal_state]
+  signal_states: [WARMING_UP, FLAT, WOULD_ENTER]
+  outcome_reads: PROHIBITED until first-review minima are met; the observer records
+    signal state only and never computes returns, hit rates, or any performance number
+  data_source: CoinMetrics community API (public, keyless GET)
+
+first_review_minima:
+  minimum_prospective_days: 180
+  minimum_signal_events: 5
+  earliest_review_utc: "2027-01-17T00:00:00Z"
+  reviewer: independent of the implementing agent
+  no_rescue: a review may accept or reject the frozen rule; it may not tune it
+
+relationship_to_sealed_holdout: >
+  Independent evidence streams. The sealed 2026-07-14+ campaign holdout permits one
+  lawful read of this same frozen variant after 2027-01-14; this lane accumulates
+  live forward observations. Neither substitutes for the other.

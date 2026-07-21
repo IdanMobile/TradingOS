@@ -58,9 +58,7 @@ def test_fixture_manifest_hashes_match_files() -> None:
     manifest, items = load_corpus(CORPUS_DIR)
     assert len(items) == sum(manifest["counts"].values())
     for rel_path, fixture in items:
-        digest = hashlib.sha256(
-            (CORPUS_DIR / rel_path).read_bytes()
-        ).hexdigest()
+        digest = hashlib.sha256((CORPUS_DIR / rel_path).read_bytes()).hexdigest()
         assert digest == manifest["files"][rel_path]
         # every fixture round-trips through JSON unchanged (frozen corpus, no drift)
         assert json.loads(json.dumps(fixture, sort_keys=True)) == fixture

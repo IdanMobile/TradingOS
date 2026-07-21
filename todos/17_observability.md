@@ -21,7 +21,7 @@ general observability stack remains deferred unless evidence justifies it.
   distributed tracing boundary exists. Re-evaluate before real-provider benchmark or
   multi-process tracing.
 ## T-017-05 AI cost telemetry into cost-intelligence views
-- Status: **DEFERRED-CREDENTIALS 2026-07-11** — operator selected the
+- Status: **DONE 2026-07-21** — cost-intelligence view live at Operations → Data health (`GET /api/v1/ai-costs`): totals and per-model runs/calls/cost from the real ledger, blocked configs surfaced, no credential read. Ledger: — `artifacts/ai_benchmarks/cost_telemetry.jsonl` now accumulates real per-run provider costs from authorized benchmark runs (first rows: $0.27 opus, $0.049 haiku). A dashboard cost-intelligence view remains open. Previously: **DEFERRED-CREDENTIALS 2026-07-11** — operator selected the
   credentials-configured action, but environment recheck found no `OPENAI_API_KEY`,
   `GOOGLE_API_KEY`, or `ANTHROPIC_API_KEY`. Mock/null-provider work has no provider
   spend; retained local evidence cost/reuse is covered by RA cost amortization. Reopen

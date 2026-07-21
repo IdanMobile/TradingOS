@@ -64,13 +64,46 @@ def test_make_check_atomically_replaces_artifact(tmp_path: Path) -> None:
     generated_at = payload.pop("generated_at")
     assert datetime.fromisoformat(generated_at).tzinfo is not None
     assert payload == {
-        "schema_version": 2,
+        "schema_version": 3,
         "gate": "check",
         "command": "make check",
         "status": "PASS",
+        "includes_slow_data_tests": False,
         "includes_dependency_audit": False,
     }
     assert not list(artifact.parent.glob("check.json.tmp.*"))
+
+
+def test_check_full_artifact_records_wider_coverage(tmp_path: Path) -> None:
+    """A `check` PASS must be distinguishable from a `check-full` PASS.
+
+    Both write the same file. Without `includes_slow_data_tests`, a fast-gate artifact
+    would be indistinguishable from one that actually verified data-package integrity —
+    a reader would over-read what the evidence covers.
+    """
+    root, environment = _project(tmp_path)
+    artifact = root / "artifacts/quality/check.json"
+
+    result = subprocess.run(
+        ["make", "check-full"],
+        cwd=root,
+        env=environment,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(artifact.read_text())
+    payload.pop("generated_at")
+    assert payload == {
+        "schema_version": 3,
+        "gate": "check-full",
+        "command": "make check-full",
+        "status": "PASS",
+        "includes_slow_data_tests": True,
+        "includes_dependency_audit": False,
+    }
 
 
 def test_failed_check_removes_old_pass_and_temporary_artifacts(tmp_path: Path) -> None:

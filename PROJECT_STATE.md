@@ -1,8 +1,59 @@
 # Trading Intelligence OS — Project State
 
-Last updated: 2026-07-13 (supervisory baseline; constrained S2 active)
-Package version: v8 (planning system) + S1 evidence + S2 governance entry
-Status: **S2 AUTONOMOUS RESEARCH LAB ACTIVE (CONSTRAINED).** No strategy, venue connection, or real-money trading is approved.
+Last updated: 2026-07-21 (D-107..D-112; orchestrator running; doc consolidation v8.121)
+Package version: v8.121 (planning system) + S1 evidence + S2 governance entry + autonomous orchestration substrate
+Status: **S2 AUTONOMOUS RESEARCH LAB ACTIVE (CONSTRAINED); 24/7 orchestrator RUNNING.** All 7 searchable strategy families have been run once: 0 passes (4 FAIL, 3 INSUFFICIENT_ACTIVITY); the one PASS-ELIGIBLE result (CFTC) was retracted under D-112 for a statistical scoring defect, now fixed. Two prospective observation lanes collect live evidence daily/weekly. No strategy, venue connection, or real-money trading is approved.
+
+## OPEN ITEMS — the only live task list
+
+This is the single consolidated view of everything still open. Each line is one-line
+status + a pointer to its detailed home; nothing here duplicates the detail, it only
+indexes it. For initiative-level task structure see `TODO.md` → `todos/NN_*.md`. For the
+live planning thread behind the 2026-07-21 work see the four `docs/supervisor/*_2026-07-21.md`
+documents and `handoffs/SESSION_HANDOFF_2026_07_21.md`. For the full research-gap/blocker
+ledger see `MISSING_AND_OPEN_ITEMS.md` (which now points back here as the entry point).
+
+**Awaiting operator decision:**
+- New-family scouting from community strategy libraries (hypothesis source only; evidence
+  still only from in-repo pre-registered campaigns) — offered 2026-07-21, no go/no-go yet.
+  Detail: `docs/supervisor/STATISTICAL_REMEDIATION_PLAN_D112_2026-07-21.md` Follow-ups.
+- Demo-lane −15% disaster-stop + venue-resting stop order — offered, never confirmed (MAE
+  analysis: median −2.67%, −15% never hit in 259 trades). Detail: same file;
+  `handoffs/SESSION_HANDOFF_2026_07_21.md` item 3.
+- Operator attestation fill (`ops/OPERATOR_ATTESTATION.example.json`) — the 10 human-only
+  facts in `MISSING_AND_OPEN_ITEMS.md` §"Human-only before live trading" are still unsigned.
+- Security-test diff review — `test_live_unreachable.py`'s assertion was strengthened after
+  the D-104 stage-1 un-quarantine; fix is landed and green, flagged for human sign-off on a
+  security-boundary change. Detail: `artifacts/driver/parked_items.jsonl` (phase
+  "cross-cutting / stale security test").
+- OpenAI billing for the second AI-benchmark provider leg — operator said ignore for now.
+  Detail: `artifacts/driver/parked_items.jsonl` (phase "2 / T-011-05").
+
+**Parked as blocked on data/access the project does not hold** (not actionable without new
+input; see `artifacts/driver/parked_items.jsonl` for full causes):
+- SUP-009 — point-in-time delisting-complete universe for cross-sectional families; no such
+  dataset exists in the project, needs a paid/vendor feed (`RESEARCH_BACKLOG.md` P3).
+- SUP-006 (a) — venue margin/liquidation semantics; venue/account-gated, and intraperiod
+  liquidation modelling needs intra-bar multi-pair data the project doesn't have.
+- SUP-006 (b) / G12 — empirical carry costs and paper-forward divergence; needs accumulated
+  demo-lane fills, which don't exist yet (lane is armed but operator-triggered, untraded).
+- Independent statistical/risk/supervisor/security review (D-099) — structurally blocked:
+  the implementing agent cannot review its own work independently; needs an
+  operator-sourced independent reviewer.
+- Historical REST payload/original run identity and pre-V2 hierarchy-wide trial accounting
+  — bytes were never retained; closed as an honest unrecoverable negative, not open work.
+  (D-108's forward-looking hierarchy accounting covers all campaigns from D-107 onward.)
+
+**Pending, not blocking:**
+- Differential-test the campaign evaluator against an independent implementation (e.g.
+  vectorbt) on synthetic data — audit's residual concern, tracked in the remediation plan.
+
+**Structurally gated (not actionable until their gate opens):** S3-gated paper-lane tasks
+(T-015-01..04), the S4/human-only venue-gate package (T-015-05), and the credential-gated
+`T-017-05` AI cost telemetry. Full list: `MISSING_AND_OPEN_ITEMS.md` §"Current non-recurring
+blocked task inventory". The sealed holdout stays sealed until at least 2027-01-14; both
+prospective lanes (MVRV, CFTC) run automatically and their first reviews are earliest
+2027-01-17 / 2027-01-21 respectively — no action needed before then.
 
 ## Current phase
 
@@ -999,6 +1050,58 @@ the operator on 2026-07-10 (D-036)**. Constrained S2 work now follows
   and an independent promotion `BLOCK`. Frozen historical reproduction yields the same 511 signal
   transitions over 48,154 bars. The new ETH-only boundary begins `2026-07-14T00:00:00Z`; historical
   results remain exposed discovery evidence, not validation.
+- **S3 demo measurement lane built, reviewed, and armed (D-104/D-105, 2026-07-19):** the
+  dashboard's second audited write surface (Wallets → Demo) drives the sole sanctioned order
+  path (`scripts/demo_eth_lane.py`); raw-script POSTs stay quarantined forever. Preflight ran
+  GREEN on the operator's demo key. D-106 made the lane operable from the dashboard
+  (Start/Stop/Run-one-cycle, live status, position, fills, caps). It remains
+  operator-triggered, not agent-triggered; the dashboard holds no credential and places no
+  order itself.
+- **Autonomous orchestration substrate built and gate-green (D-107, 2026-07-20):** global
+  trial budget with pre-registration (unregistered searches cannot be scored), operator
+  attestation, self-modification bounds (branch + full gate + auto-revert, immutable-path
+  guard), the evidence-producer driver, and the 24/7 orchestrator (`make orchestrator`,
+  Operations → Orchestrator). SUP-007's achievable half, SUP-008, and SUP-010 close under
+  D-107; SUP-009/SUP-006 residuals are parked with verified causes.
+- **Family admission delegated under a hierarchy-wide budget; gate split by verification
+  target (D-108, 2026-07-20):** the orchestrator now chooses families itself, deflated
+  against the whole ledger across all admitted families, not just the one in front of it.
+  `make check` excludes the slow data-integrity tests (≈1:30); `make check-full` retains
+  them and backs `make required`.
+- **All 7 data-backed strategy families searched once through the substrate (D-109/D-110/D-111,
+  2026-07-20/21):** FAM-VOL-CONTRACTION-BREAKOUT-V1 (overfit signature), FAM-TAKER-IMBALANCE-V1
+  (negative even in-sample), FAM-MVRV-DISLOCATION-V1 (first promising negative, DSR 0.76),
+  FAM-TX-ACTIVITY-V1 (overfit signature), FAM-CROSS-VENUE-PREMIUM-V1 (negative in-sample), and
+  FAM-FUNDING-PRESSURE-V1 (zero validation trades) all FAIL without rescue. FAM-CFTC-POSITIONING-V1
+  cleared the deflated bar (DSR 0.9996) and was the first PASS-ELIGIBLE result — see the D-112
+  retraction below. The hierarchy ledger holds 234 trials; the in-repo searchable family
+  backlog is now exhausted under the stop rules. Two prospective observation lanes opened,
+  boundaries frozen: MVRV (`research/PROSPECTIVE_MVRV_DISLOCATION_V1.yaml`, live keyless
+  CoinMetrics fetch) and CFTC (`research/PROSPECTIVE_CFTC_POSITIONING_V1.yaml`, weekly
+  fetcher). First reviews are prohibited before 180 prospective days/26 weeks.
+- **Methodology audit retracts the CFTC PASS-ELIGIBLE; scoring corrected to trade-level
+  significance (D-112, 2026-07-21):** an independent Opus red-team audit, confirmed by a
+  bit-for-bit verification recompute, found the recorded DSR fed `sample_count = total
+  validation bars` to a Sharpe computed only over in-position bars (F1), among five other
+  findings (F2-F6: serial correlation, declared-but-unenforced PBO, no correlation haircut,
+  dead nested folds, variance inconsistency). The CFTC result rested on 169 in-position bars
+  out of 7,630 (2.21%) and exactly **one** completed validation trade — under corrected
+  trade-level counting it is **INSUFFICIENT_ACTIVITY, not a pass**, and is formally
+  **retracted**. `src/tios/validation/campaign.py` is fixed so significance is now built on
+  per-completed-trade returns with a fail-closed sample-count identity guard, a
+  `min_validation_trades` floor (default 10), PBO removed from the schema (honest absence
+  over unenforced declaration), a correlation haircut via `implied_independent_trials`, dead
+  code deleted, and consistent sample variance. All seven campaigns were re-scored
+  (`scripts/rescore_frozen_campaigns.py`): the six other FAILs stand *a fortiori* (bias was
+  optimistic); funding-pressure and vol-contraction-breakout correct to
+  INSUFFICIENT_ACTIVITY. **Zero families pass.** Both prospective lanes continue unchanged —
+  their 2027 first reviews must apply the corrected statistics; the CFTC lane is now
+  hypothesis-generating, not confirmation of a prior pass. The three not-yet-verified
+  custom-DSR scripts were traced for the same bug and found clean (dense per-bar returns by
+  construction); damage radius confirmed limited to the sparse v2/v3 evaluators. The 24/7
+  orchestrator loop was found not running during close-out and was restarted
+  2026-07-21 ~14:30 local. Full detail: `docs/supervisor/STATISTICAL_REMEDIATION_PLAN_D112_2026-07-21.md`.
+  Gate green afterward: **1146 tests passed, ruff/format/mypy clean.**
 
 ## Operational SSOT (unchanged)
 
@@ -1057,11 +1160,42 @@ lineage and original data-run identity remain unrecoverable and are explicitly m
 
 ## Exact next action
 
-Let both prospective lanes collect without early outcome reads. Keep D-102 in `WAITING`; begin
-retaining closed ETHUSDT Spot 1h observations for D-103 strictly from its frozen boundary. The
-deterministic candidate signal path may run read-only, but risk remains `BLOCK` until the frozen
-365-day/80-round-trip minimum and independent review. Do not activate a bot, request credentials,
-create orders, or cross any human S3/S4 gate.
+**D-112 (2026-07-21) is the current statistical baseline.** The methodology audit is closed
+out: corrected trade-level scoring is in force in `src/tios/validation/campaign.py`, all
+seven admitted families are re-scored, and the honest research state is **7 families
+searched, 0 passes (4 FAIL, 3 INSUFFICIENT_ACTIVITY)**, with the one PASS-ELIGIBLE result
+(CFTC) formally retracted. The in-repo searchable family backlog is exhausted under the stop
+rules — no further in-sample searching of these seven families is permitted. Forward
+evidence can only come from: (1) the two live prospective lanes (MVRV daily, CFTC weekly;
+first reviews earliest 2027-01-17 / 2027-01-21), (2) a lawful sealed-holdout read after
+2027-01-14, or (3) a genuinely new family backed by new data. See D-112 and
+`docs/supervisor/STATISTICAL_REMEDIATION_PLAN_D112_2026-07-21.md` for the full finding set
+and corrected methodology.
+
+**The 24/7 orchestrator is RUNNING.** It was found stopped during D-112 close-out and was
+restarted 2026-07-21 (~14:30 local, `make orchestrator` detached, PID logged to
+`artifacts/orchestrator/loop_stdout.log`); it now wires both prospective observers into its
+daily loop (`src/tios/ops/orchestrator.py::observe_prospective_observers()`). Watch it at
+Operations → Orchestrator. It halts on escalation, holds no credential, and can place no
+order.
+
+**The S3 demo measurement lane (D-104/D-105/D-106) is BUILT, REVIEWED, and ARMED** at
+Wallets → Demo — Start / Stop / Run one cycle, with live status, position, fills, and caps.
+`scripts/demo_eth_lane.py` is the sole sanctioned order path; the dashboard holds no
+credential and places no order itself; order placement stays operator-triggered. Demo P&L is
+not validation evidence and no candidate becomes promotable from it.
+
+**Everything still open (operator decisions, parked blockers, pending/gated work) is
+consolidated in the "OPEN ITEMS" section above** — that section, not this narrative, is the
+place to look for what's actionable next. Corrective progress under D-107/D-108: SUP-007's
+achievable half, SUP-008, and SUP-010 are closed; SUP-009 and SUP-006 remain genuinely open,
+parked on data/access the project does not hold (verified against DECISION_LOG D-107..D-112
+on 2026-07-21 — no decision since D-107 closes either); see `MISSING_AND_OPEN_ITEMS.md` and
+`artifacts/driver/parked_items.jsonl` for full causes.
+
+Live (S4) gates are untouched: no real credentials, no real-money authority, live states
+remain unreachable in code. `make check` gate at the D-112 close: **1146 tests passed,
+29 deselected, ruff/format/mypy clean.**
 
 ## Exit condition of next phase (unchanged)
 

@@ -1,6 +1,49 @@
 # Trading Intelligence OS — Missing and Open Items
 
-Last updated: 2026-07-13
+Last updated: 2026-07-20 (SUP-009/SUP-006 status re-verified against DECISION_LOG 2026-07-21)
+
+**`PROJECT_STATE.md` "OPEN ITEMS" is the consolidated, single current entry point for open
+work.** This file remains the detailed research-gap/blocker ledger it points back to — the
+authoritative finding register, not a second task list to check independently.
+
+## Orchestration substrate and corrective progress (2026-07-20, D-107)
+
+The autonomous orchestration layer exists and is gate-green. Its authority is asymmetric by
+construction: it may add evidence, never weaken a conclusion. See D-107 for the full record.
+
+Closed since 2026-07-13:
+
+- **SUP-007 (achievable half):** artifact staleness detection re-hashes every module an
+  artifact declares and classifies it CURRENT / STALE / BROKEN. One byte of drift fails.
+  All six shipped G10 campaign artifacts currently verify CURRENT.
+- **SUP-008:** closed structurally rather than by convention. Holdout is unreachable as an
+  attribute, validation is unavailable until selection is frozen, opening the holdout needs a
+  recorded reason, respects the seal date, and may happen exactly once.
+- **SUP-010 (coverage):** all 20 canonical strategy specs hold content-addressed immutable
+  version identities; artifacts citing an unregistered strategy are blocked.
+- **Trial-population self-declaration:** `declared_trial_count` is now verified against a
+  persistent ledger instead of trusted. Unregistered searches cannot be scored.
+
+Still open, re-verified against DECISION_LOG.md D-107 through D-112 on 2026-07-21 — no
+decision in that range closes either: **SUP-009** (family fixtures, point-in-time universes,
+capital/cost accounting; parked cause in `artifacts/driver/parked_items.jsonl`, phase
+"2 / SUP-009" — no delisting/universe dataset exists anywhere in the project), **SUP-006**
+(funding capital/collateral/rehedge/settlement/liquidation lifecycle, nested OOS; parked
+causes in the same ledger, phase "2 / SUP-006" ×2 — venue margin/liquidation semantics are
+account-gated, intraperiod modelling needs intra-bar data the project doesn't hold, and G12
+empirical costs need demo-lane fills that don't exist yet). **SUP-005** (a new pre-registered
+family with complete hierarchical accounting, run through G1-G11) is superseded by D-107/D-108's
+forward-looking hierarchy-wide budget, under which all seven searchable families have now run
+(D-109/D-110/D-111) and been corrected (D-112) — see `PROJECT_STATE.md`. **SUP-011** (oversized
+sdist, deferred until a release is authorized) is unchanged.
+
+Parked as genuinely unrecoverable, with causes recorded in
+`artifacts/driver/parked_items.jsonl`: historical REST payload reconstruction and original
+run identity (bytes were never retained); hierarchy-wide effective trial accounting for the
+pre-V2 search (the upstream hierarchy was not retained). Neither closes by effort; the second
+is superseded by SUP-005's new family rather than recovered.
+
+## Historical record below (last reconciled 2026-07-13)
 
 ## Supervisory corrective items (2026-07-13)
 

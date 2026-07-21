@@ -16,11 +16,16 @@ def test_completion_matrix_reflects_real_stage_state() -> None:
     assert "not product completeness" in matrix["note"]
     rows = {row["id"]: row for row in matrix["rows"]}
 
-    # S3 paper trading (initiative 15) is NOT entered: not done, all tasks gated.
+    # S3 paper trading (initiative 15) is NOT entered. Since D-104 the architecture
+    # decision (T-015-01) is DONE, so "every task gated" no longer holds — but every
+    # task that would actually *deploy* or *run* a paper lane must still be gated.
+    # That is the property this assertion exists to protect.
     paper = rows["15"]
     assert paper["stage"].startswith("S3")
     assert paper["overall"] != "DONE"
-    assert paper["tasks_gated"] == paper["tasks_total"] > 0
+    assert paper["tasks_total"] > 0
+    assert paper["tasks_done"] <= 1, "only the architecture decision may be complete"
+    assert paper["tasks_gated"] == paper["tasks_total"] - paper["tasks_done"] > 0
 
     # An S1 foundation initiative (repository foundation) is genuinely done.
     repo = rows["03"]

@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "correction_of": "PREREG-111ee260c67cd6765c7c0bbe58dc0a48",
+  "family": "FAM-TAKER-IMBALANCE-V1",
+  "decision_ref": "D-112",
+  "selected_parameters": {
+    "prior_baseline_hours": 720,
+    "z_threshold": 2.0,
+    "pulse_holding_hours": 24,
+    "interpretation": "CONTINUATION_HIGH"
+  },
+  "reproduced_frozen_score": true,
+  "reproduced_validation_score": -0.025384754369348308,
+  "original": {
+    "verdict": "FAIL",
+    "validation_score": -0.025384754369348308,
+    "sample_count": 8830,
+    "hierarchy_trials": 72,
+    "dsr": {
+      "expected_maximum_noise_sharpe": 0.04384464523189844,
+      "z_score": -6.50393768456765,
+      "dsr": 3.912214996404373e-11
+    }
+  },
+  "corrected": {
+    "verdict": "FAIL",
+    "status": "OK",
+    "validation_trades": 115,
+    "min_validation_trades": 10,
+    "descriptive_per_bar_sharpe": -0.025384754369348308,
+    "observed_trade_sharpe": -0.12735938470247032,
+    "average_correlation": 0.09622493009984934,
+    "effective_trials": 65.1680299629107,
+    "dsr": {
+      "expected_maximum_noise_sharpe": 0.09375437033201972,
+      "z_score": -2.3513332206935083,
+      "dsr": 0.009353136706328036
+    }
+  },
+  "reason": "trade-level DSR on completed trades with sample_count = trade count (was scored on 8830 validation bars as if each were an independent observation)",
+  "notes": "Re-score only: no ledger writes, no new trials, no holdout access, no parameter search. Replays the recorded frozen selection on its original train/validation windows under the D-112 corrected statistics."
+}

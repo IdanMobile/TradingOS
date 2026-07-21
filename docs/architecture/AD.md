@@ -195,6 +195,8 @@ Append-only event rows live inside the monolith; dashboard, reporting, and memor
 
 The first runner is the allowlisted, offline `ResearchLabBatch` command defined in the type catalog: one content-addressed input set, bounded trial count/resources, deterministic identity, complete failure retention, and `execution_authority=NONE`. It must prove that rerunning identical complete inputs returns the same batch/artifact refs without recomputation before any schedule is enabled. Only then may a SQLite job table and local time trigger run allowlisted research, freshness, validation, and reporting jobs with bounded concurrency and per-engine subprocess isolation. D-096 adds a separate finite public-read-only observation service because a 30-day WebSocket continuity chain cannot fit the offline network sandbox or 24-hour job bound; it has fixed source code/arguments, immutable intent/checkpoints, stale detection, no auto-restart, and no job/dashboard process-control path. No broker, distributed executor, account connection, venue command, paper command, or live command is present. Prefect or another orchestrator is reconsidered only after sustained measured queue saturation or an approved multi-machine requirement.
 
+For the same reason as D-096, the two v8.119 prospective-observer scripts (`scripts/run_prospective_mvrv_observer.py`, `scripts/run_prospective_cftc_observer.py`) are invoked directly by the 24/7 orchestrator's `observe_prospective_observers()` step (`src/tios/ops/orchestrator.py`, ~900s cycle, one subprocess call per lane per UTC day, 120s timeout) rather than through the `jobs` module: `jobs` is deliberately network-isolated (`sandbox-exec`) and these observers require a live outbound call (CoinMetrics, CFTC Socrata). A failing, timed-out, or missing observer script emits an ACT observation and never halts the cycle. See §AM for the full flow and diagram.
+
 ## T. AI model & agent architecture [APPROVED design; execution S1+]
 
 Registries (MDL/AGT/PRM), benchmark suite (frozen V1), controlled/best-config/longitudinal modes, cost intelligence, provenance graph — all per `specs/AI_AGENT_EVALUATION_BLUEPRINT_V1.md` + `docs/ai/AGENT_ROLES.md`. 2026-07-06 adjustments (REG §7): (1) **no provider determinism** → stability scoring is multi-sample by design; (2) provider snapshot pinning policies differ → registry stores per-provider deprecation watch; (3) OpenAI Evals platform is not a dependency; (4) model degradation/outage → fallback route required before any config becomes a task-class default. S1 proved null/mock trace plumbing only. Real-provider runs and the Task Router remain outside S2 until credential authority and real benchmark evidence exist.
@@ -309,6 +311,8 @@ Full project log remains `DECISION_LOG.md` (D-001…D-030). Architecture-specifi
 | AD-13 | Venue connectivity test ranking: Kraken, Binance, OKX ↑, Coinbase ↓ (pending RG-05) | PROVISIONAL | REG §6, CG-05 | package's original ranking | Israel-fit realism; human gate unchanged | none (S1 needs no venue) | before S3 |
 | AD-14 | Databento reclassified: future equities/futures only, not crypto | APPROVED | REG §6 (CG-06) | keep as crypto candidate | corrects stale assumption | none | at Phase-3 planning |
 | AD-15 | backtesting.py, Backtrader, W&B, Kuzu, Memgraph, Skosify, Temporal(MVP), graph-DBs(MVP) rejected | APPROVED | REG §1–§9 | — | narrows candidate space with evidence | none | 90d registry sweep |
+| AD-16 | Prospective observers driven by the orchestrator, not the `jobs` module | APPROVED (v8.119) | §S; `src/tios/ops/orchestrator.py::observe_prospective_observers` | route fetch through `jobs` | `jobs` stays network-isolated; observers get their needed outbound call without weakening that boundary | none | if `jobs` network policy changes |
+| AD-17 | Campaign validation significance computed on trade-level returns, not bar count | APPROVED (v8.120, D-112) | DECISION_LOG D-112; `src/tios/validation/campaign.py::score_trade_significance` | keep per-bar Sharpe with the pre-existing sample_count | corrects an inflated-z defect; retracted FAM-CFTC-POSITIONING-V1's PASS-ELIGIBLE to INSUFFICIENT_ACTIVITY | verification recompute (bit-for-bit) | if evaluator return contract changes again |
 
 ### Custom Build Gate (mandatory template for any Build Custom decision)
 
@@ -325,3 +329,88 @@ indexed in graphify. They are methodology inputs only — every strategy still o
 the G1–G11 + production-G10 (DSR ≥ 0.95) gates; `execution_authority` stays NONE.
 Strategic implication recorded: shift from predictive price alpha (DSR-failing here)
 toward NON-predictive structural yield (delta-neutral funding carry) and ensembles.
+
+## §AM Prospective observation & validation-scoring correction (added 2026-07-21)
+
+**Prospective observation subsystem [APPROVED, v8.119].** Two keyless, idempotent, signal-state-only
+observer scripts extend the D-096 observation pattern to specific research families:
+`scripts/run_prospective_mvrv_observer.py` (CoinMetrics `CapMVRVCur`, daily, D+3 availability) and
+`scripts/run_prospective_cftc_observer.py` (CFTC Socrata dataset `6dca-aqww`, BTC/CME code `133741`,
+weekly, report+8d availability). Both append to `artifacts/prospective/<lane>/observations.jsonl`
+against scope frozen in `research/PROSPECTIVE_*.yaml`; outcome reads are prohibited until each lane's
+2027 first review. The 24/7 orchestrator (`src/tios/ops/orchestrator.py`) runs both via a new
+`observe_prospective_observers()` step on its ~900s cycle: each observer fires at most once per UTC
+day per lane (marker file `.last_orchestrated_utc_day`), as a subprocess with a 120s timeout, and a
+failing/timed-out/missing script emits an ACT observation without halting the loop. The `jobs`
+module (§S, module 15) was deliberately not used — it is network-isolated by design (`sandbox-exec`
+deny-network) and these fetches need a live outbound call.
+
+**Validation-scoring correction [APPROVED, v8.120, D-112].** An independent audit found
+`src/tios/validation/campaign.py::run_campaign` computed its DSR verdict on
+`sample_count=len(split.validation)` (total bars) against a series scored only on in-position bars —
+inflating `z` by `1/sqrt(in-position fraction)`. For FAM-CFTC-POSITIONING-V1 this produced a recorded
+PASS-ELIGIBLE (DSR 0.9996) on exactly one completed validation trade; under the corrected trade-level
+count the verdict is INSUFFICIENT_ACTIVITY, and that PASS-ELIGIBLE is formally retracted (D-112). The
+fix, now in force for every future campaign: significance is computed on per-completed-trade returns
+via `score_trade_significance()` (`sample_count == len(trade returns)`, fail-closed identity guard);
+a pre-registered `min_validation_trades` floor (default 10) yields a distinct INSUFFICIENT_ACTIVITY
+verdict instead of a claimed DSR; `pbo_max` is removed from `thresholds` (PBO was declared but never
+computed on this path); `independent_trials` now routes through `implied_independent_trials` for a
+hierarchy-wide correlation haircut; dead nested-fold scoring is deleted; sample variance (÷n-1) is
+used consistently. Campaign evaluators now return `TrialScore` (descriptive per-bar score, used for
+train-only selection, plus trade returns, used for the validation verdict); a bare-float legacy
+return is still accepted. `scripts/rescore_frozen_campaigns.py` replays only the seven frozen
+selections under the corrected math, writing to `artifacts/validation/campaigns/corrections/` —
+it never touches the trial ledger. Research state after re-scoring: 7 families searched, 0 passes
+(4 FAIL, 3 INSUFFICIENT_ACTIVITY); the in-repo searchable backlog is exhausted.
+
+```mermaid
+flowchart TB
+    subgraph EXT["External APIs (public, keyless)"]
+        CM["CoinMetrics CapMVRVCur"]
+        CFTC["CFTC Socrata 6dca-aqww<br/>BTC/CME 133741"]
+    end
+
+    subgraph ORCH["24/7 orchestrator — src/tios/ops/orchestrator.py (~900s cycle)"]
+        OBSOTHER["observe_statistical_health / evidence_freshness /<br/>strategy_coverage / blockers / execution_envelope /<br/>constraint_integrity / parked_work"]
+        OBSPROS["observe_prospective_observers()<br/>1x per UTC day per lane, 120s timeout, never halts cycle"]
+    end
+
+    MVRVSCRIPT["scripts/run_prospective_mvrv_observer.py<br/>daily, D+3 availability"]
+    CFTCSCRIPT["scripts/run_prospective_cftc_observer.py<br/>weekly, report+8d availability"]
+    PREREG["research/PROSPECTIVE_*.yaml<br/>frozen preregs (2027 first review)"]
+    MVRVJSONL["artifacts/prospective/MVRV-.../observations.jsonl"]
+    CFTCJSONL["artifacts/prospective/CFTC-POSITIONING-V1/observations.jsonl"]
+
+    JOBS["jobs subsystem — src/tios/services/jobs<br/>NETWORK-ISOLATED (sandbox-exec deny-network)<br/>not used for observer fetches"]
+
+    DATA[("data packages<br/>data/normalized_multi/*.parquet")]
+    CAMPAIGN["campaign runner — src/tios/validation/campaign.py<br/>preregister → train-only search → freeze →<br/>single validation read →<br/>score_trade_significance() (trade-level DSR,<br/>hierarchy-deflated via implied_independent_trials)"]
+    LEDGER[("trial-budget ledger<br/>234 trials / 7 families, append-only")]
+    CORRECTIONS["artifacts/validation/campaigns/corrections/<br/>rescore_frozen_campaigns.py — replay only,<br/>never writes the trial ledger"]
+
+    HOLDOUT[["sealed holdout<br/>UNREACHABLE until 2027-01-14 — no code path reads it"]]
+
+    DASH["dashboard + demo lane<br/>existing read/write surfaces<br/>(D-038/D-041/D-044 audited POSTs only)"]
+
+    CM --> MVRVSCRIPT
+    CM --> CFTCSCRIPT
+    CFTC --> CFTCSCRIPT
+    OBSPROS --> MVRVSCRIPT
+    OBSPROS --> CFTCSCRIPT
+    PREREG -. scope frozen for .-> MVRVSCRIPT
+    PREREG -. scope frozen for .-> CFTCSCRIPT
+    MVRVSCRIPT --> MVRVJSONL
+    CFTCSCRIPT --> CFTCJSONL
+    MVRVJSONL --> DASH
+    CFTCJSONL --> DASH
+
+    DATA --> CAMPAIGN
+    CAMPAIGN --> LEDGER
+    CAMPAIGN -. corrected replay only .-> CORRECTIONS
+    LEDGER --> DASH
+
+    ORCH -. deliberately not routed through .-> JOBS
+
+    HOLDOUT ~~~ CAMPAIGN
+```

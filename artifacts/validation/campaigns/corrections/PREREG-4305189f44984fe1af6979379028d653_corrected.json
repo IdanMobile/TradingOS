@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "correction_of": "PREREG-4305189f44984fe1af6979379028d653",
+  "family": "FAM-VOL-CONTRACTION-BREAKOUT-V1",
+  "decision_ref": "D-112",
+  "selected_parameters": {
+    "contraction_window": 24,
+    "breakout_window": 48,
+    "exit_window": 24,
+    "contraction_quantile": 0.3
+  },
+  "reproduced_frozen_score": false,
+  "reproduced_validation_score": -0.06954566519722387,
+  "original": {
+    "verdict": "FAIL",
+    "validation_score": -0.08068414637799834,
+    "sample_count": 9593,
+    "hierarchy_trials": 36,
+    "dsr": {
+      "expected_maximum_noise_sharpe": 0.06417195081046216,
+      "z_score": -14.188336830407314,
+      "dsr": 0.0
+    }
+  },
+  "corrected": {
+    "verdict": "INSUFFICIENT_ACTIVITY",
+    "status": "INSUFFICIENT_ACTIVITY",
+    "validation_trades": 7,
+    "min_validation_trades": 10,
+    "descriptive_per_bar_sharpe": -0.06954566519722387,
+    "observed_trade_sharpe": null,
+    "average_correlation": null,
+    "effective_trials": null,
+    "dsr": null
+  },
+  "reason": "7 completed validation trade(s) < pre-registered floor 10; no DSR is claimed on this little activity",
+  "notes": "Re-score only: no ledger writes, no new trials, no holdout access, no parameter search. Replays the recorded frozen selection on its original train/validation windows under the D-112 corrected statistics."
+}

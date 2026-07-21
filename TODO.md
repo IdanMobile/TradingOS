@@ -36,17 +36,23 @@ Status: S2 architecture lock recorded 2026-07-10 (D-037). This is the task index
 
 ## Execution order
 
-S1 is closed through HG-2. S2 architecture lock (02) is done; bounded S2 delivery now
-uses `{13, 14, 17, 19}` under the S2 plan. Initiative 12 remains deferred. Real
-Research Lab batch evidence and a bounded read-only job/schedule projection now exist;
-strategy promotion, paper/demo connectivity, and S2 exit remain unclaimed and
-gate-controlled.
+S1 is closed through HG-2; S2 architecture lock (02) is done. As of 2026-07-20 the
+autonomous orchestration substrate is built and gate-green (D-107/D-108): trial budget
+with pre-registration, operator attestation, self-modification bounds, the
+evidence-producer driver, and the 24/7 orchestrator (`make orchestrator`, dashboard at
+Operations → Orchestrator). Family admission is delegated to the orchestrator under the
+hierarchy-wide budget; the local gate is split (`make check` ≈ 1:30 for code,
+`make check-full` adds the slow data-integrity tests and backs `make required`).
 
-The 2026-07-13 supervisory corrective plan at
-`docs/supervisor/IMPROVEMENT_PLAN_2026-07-13.md` takes priority over earlier claims
-that agent-executable work is exhausted. Its statistical-validity, provenance,
-strategy-methodology, evidence-claim, and security remediations stay inside the
-authorized historical/local scope and create no demo, paper, venue, or live authority.
+Of the 2026-07-13 supervisory corrective plan: SUP-002/004 corrected earlier; SUP-007's
+achievable half, SUP-008, and SUP-010 closed under D-107. SUP-005/006/009 residuals are
+parked with verified causes in `artifacts/driver/parked_items.jsonl` (data the project
+does not hold, or history never retained). No demo, paper, venue, or live authority was
+created; the sealed holdout stays sealed until at least 2027-01-14.
+
+Finished plans and superseded handoffs live in `docs/archive/`. The live authorities are
+`DECISION_LOG.md` and `PROJECT_STATE.md`; this file remains the task index the dashboard
+completion matrix parses.
 
 ## Anti-vagueness rule
 

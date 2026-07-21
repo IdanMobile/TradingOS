@@ -1,0 +1,91 @@
+{
+  "aggregate": {
+    "breakeven": 0,
+    "cost_flipped_losses": 329,
+    "fees": "2813.09721472",
+    "gross_pnl": "-165.9356942000000000",
+    "net_pnl": "-2979.0329089200000000",
+    "ordinary_losses": 1165,
+    "profitable": 242,
+    "roundtrips": 1407
+  },
+  "counterfactuals": {
+    "loss_avoided_by_rejection": "2979.0329089200000000",
+    "no_trade_net_pnl": "0",
+    "status": "DIAGNOSTIC_ONLY_NOT_A_STRATEGY_RESULT",
+    "zero_fee_net_pnl": "-165.9356942000000000"
+  },
+  "diagnosis": {
+    "classification": "STRATEGY_WEAKNESS",
+    "creates_strategy_version": false,
+    "facts": [
+      "DEVELOPMENT: gross=-125.9354624000000000, fees=871.76173075, net=-997.6971931500000000, losses=313/436, cost_flipped=61",
+      "VALIDATION: gross=3.5683030000000000, fees=993.74701318, net=-990.1787101800000000, losses=435/497, cost_flipped=143",
+      "HOLDOUT: gross=-43.5685348000000000, fees=947.58847079, net=-991.1570055900000000, losses=417/474, cost_flipped=125",
+      "No positive walk-forward windows, no positive neighboring variants, and the benchmark was not outperformed."
+    ],
+    "promotion_eligible": false,
+    "recommendation": "REJECT_WITHOUT_RESCUE"
+  },
+  "execution_authority": "NONE",
+  "learning_ledger": {
+    "idempotent_replay": true,
+    "ledger_sha256": "8bf2d97b922da11b0e2bf9d5b4589d445ef6fd97b830cf4d3b2a20a2c10fa4ed",
+    "path": "artifacts/evidence/B2_HISTORICAL_TRADE_TRACES_2026_07_21.jsonl",
+    "risk_history_reconstructed": false,
+    "signal_history_reconstructed": false,
+    "trace_count": 1407,
+    "unique_trace_digests": 1407
+  },
+  "mode": "OFFLINE_RETAINED_BACKTEST_ATTRIBUTION",
+  "orders_created": 0,
+  "schema_version": 1,
+  "source_status": "INCOMPLETE_NOT_APPROVABLE",
+  "splits": [
+    {
+      "breakeven_count": 0,
+      "cost_flipped_loss_count": 61,
+      "fees": "871.76173075",
+      "fill_count": 872,
+      "gross_pnl": "-125.9354624000000000",
+      "label": "DEVELOPMENT",
+      "net_pnl": "-997.6971931500000000",
+      "ordinary_loss_count": 313,
+      "profitable_count": 123,
+      "roundtrip_count": 436,
+      "source_path": "/Users/user/Downloads/trading_os_project_package/artifacts/validation/B2_F0_S0/runs/development/trades.parquet",
+      "source_sha256": "a763fc210f6e773644bf7447bc03e33fd73d97e79f5b0b08f3a8077d6ed38f80"
+    },
+    {
+      "breakeven_count": 0,
+      "cost_flipped_loss_count": 143,
+      "fees": "993.74701318",
+      "fill_count": 994,
+      "gross_pnl": "3.5683030000000000",
+      "label": "VALIDATION",
+      "net_pnl": "-990.1787101800000000",
+      "ordinary_loss_count": 435,
+      "profitable_count": 62,
+      "roundtrip_count": 497,
+      "source_path": "/Users/user/Downloads/trading_os_project_package/artifacts/validation/B2_F0_S0/runs/validation/trades.parquet",
+      "source_sha256": "e1bec32080e92c03b6dfa7b80715937ce00a1d47ade17de6520eeec8eead91a8"
+    },
+    {
+      "breakeven_count": 0,
+      "cost_flipped_loss_count": 125,
+      "fees": "947.58847079",
+      "fill_count": 948,
+      "gross_pnl": "-43.5685348000000000",
+      "label": "HOLDOUT",
+      "net_pnl": "-991.1570055900000000",
+      "ordinary_loss_count": 417,
+      "profitable_count": 57,
+      "roundtrip_count": 474,
+      "source_path": "/Users/user/Downloads/trading_os_project_package/artifacts/validation/B2_F0_S0/runs/holdout/trades.parquet",
+      "source_sha256": "7255e8dcd31f4c1bfe64fe783fb29ef2306ad6db3f69ead7533227f835c60f91"
+    }
+  ],
+  "strategy": "B2MaCrossover",
+  "strategy_spec_sha256": "d807f4a811312a74d73ddcf955078a7846ad18fab3006b996c2fa45be318f5e0",
+  "strategy_version_ref": "SV-d807f4a811312a74d73ddcf955078a78"
+}

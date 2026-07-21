@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "correction_of": "PREREG-83b7575e59ee7983f56b24a45a58e55d",
+  "family": "FAM-CFTC-POSITIONING-V1",
+  "decision_ref": "D-112",
+  "selected_parameters": {
+    "window": 26,
+    "z_threshold": 1.5,
+    "side": "LOW",
+    "pulse_holding_hours": 168
+  },
+  "reproduced_frozen_score": true,
+  "reproduced_validation_score": 0.07715167498104594,
+  "original": {
+    "verdict": "PASS-ELIGIBLE",
+    "validation_score": 0.07715167498104594,
+    "sample_count": 7630,
+    "hierarchy_trials": 216,
+    "dsr": {
+      "expected_maximum_noise_sharpe": 0.03907500397733418,
+      "z_score": 3.3208362968492318,
+      "dsr": 0.999551259189955
+    }
+  },
+  "corrected": {
+    "verdict": "INSUFFICIENT_ACTIVITY",
+    "status": "INSUFFICIENT_ACTIVITY",
+    "validation_trades": 1,
+    "min_validation_trades": 10,
+    "descriptive_per_bar_sharpe": 0.07715167498104594,
+    "observed_trade_sharpe": null,
+    "average_correlation": null,
+    "effective_trials": null,
+    "dsr": null
+  },
+  "reason": "1 completed validation trade(s) < pre-registered floor 10; no DSR is claimed on this little activity",
+  "notes": "Re-score only: no ledger writes, no new trials, no holdout access, no parameter search. Replays the recorded frozen selection on its original train/validation windows under the D-112 corrected statistics."
+}

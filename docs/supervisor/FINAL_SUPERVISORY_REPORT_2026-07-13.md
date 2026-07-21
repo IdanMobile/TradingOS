@@ -1,3 +1,5 @@
+> SUPERSEDED (2026-07-21): see docs/supervisor/*_2026-07-21.md and PROJECT_STATE.md.
+
 # Trading OS final supervisory report — 2026-07-13
 
 ## Executive conclusion

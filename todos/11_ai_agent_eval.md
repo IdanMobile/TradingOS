@@ -20,7 +20,7 @@ Requirement source: `benchmarks/ai_agent/FROZEN_BENCHMARK_SUITE_V1.md` + `specs/
 
 ## T-011-05 First real runs (≥2 configurations) — credential-gated
 - Purpose: controlled-mode runs on a small subset with repeated trials. Requirement: REQ-046 (EG-6). Precondition: intake-gate credential disposition = configured; T-001-04 pricing verification.
-- Acceptance: BMK records with full provenance + variance estimates; or honest BLOCKED status. Credentials: provider API keys (optional). Complexity: M. Status: **DEFERRED-CREDENTIALS** (no provider key configured; no run fabricated).
+- Acceptance: BMK records with full provenance + variance estimates; or honest BLOCKED status. Credentials: provider API keys (optional). Complexity: M. Status: **DONE 2026-07-21** — first real Mode A runs on the frozen 27-fixture corpus, 2 samples per configuration. claude-opus-4-8: 54 calls, 100% schema-valid, 70.4% output stability, mean 3.5s, $0.27. claude-haiku-4-5: 54 calls, 100% schema-valid, 55.6% stability, mean 2.0s, $0.049. openai:gpt-4o honestly BLOCKED (account quota exceeded — key valid, billing empty; one probe recorded, not hammered). Variance per AD-11; judge evaluators still PENDING_HUMAN_REVIEW so this measures schema/stability/cost/latency only. Evidence: `artifacts/ai_benchmarks/REAL_RUN_MODEA_V1.json`, `benchmarks/ai_agent/runs/real_modea_v1.jsonl`.
 
 ## T-011-06 Seed report
 - Outputs: `artifacts/reports/AI_BENCHMARK_SEED_REPORT.md`. Requirement: REQ-047. Acceptance: scoring views emitted (never a single global score). Complexity: S. Status: **DONE 2026-07-07**.

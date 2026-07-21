@@ -15,6 +15,7 @@ from typing import Any
 import pyarrow as pa
 import pyarrow.parquet as pq
 
+from tios.dataset.arrow_time import utc_datetimes
 from tios.dataset.normalize import (  # type: ignore[import-untyped]
     content_sha256,
     dedup_sorted,
@@ -58,7 +59,7 @@ def _decode(archive: dict[str, Any], root: Path) -> bytes:
 
 
 def _gap_evidence(table: pa.Table) -> tuple[int, str]:
-    opens = table.column("timestamp_open_utc").to_pylist()
+    opens = utc_datetimes(table.column("timestamp_open_utc"))
     gaps = [
         {"left_utc": left.isoformat(), "right_utc": right.isoformat()}
         for left, right in zip(opens, opens[1:], strict=False)
@@ -70,15 +71,12 @@ def _gap_evidence(table: pa.Table) -> tuple[int, str]:
 def _feature_logical_hash(table: pa.Table) -> str:
     digest = hashlib.sha256()
     columns = [
-        table.column(name).to_pylist()
-        for name in (
-            "timestamp_open_utc",
-            "open",
-            "close",
-            "close_timestamp_utc",
-            "quote_volume",
-            "taker_buy_quote_volume",
-        )
+        utc_datetimes(table.column("timestamp_open_utc")),
+        table.column("open").to_pylist(),
+        table.column("close").to_pylist(),
+        utc_datetimes(table.column("close_timestamp_utc")),
+        table.column("quote_volume").to_pylist(),
+        table.column("taker_buy_quote_volume").to_pylist(),
     ]
     for row in zip(*columns, strict=True):
         values = [
@@ -139,8 +137,8 @@ def verify(package_path: Path = PACKAGE, root: Path = ROOT) -> dict[str, object]
     if _feature_logical_hash(combined) != spot["feature_logical_sha256"]:
         raise RuntimeError("Spot taker feature logical content differs from package")
 
-    opens = combined.column("timestamp_open_utc").to_pylist()
-    closes = combined.column("close_timestamp_utc").to_pylist()
+    opens = utc_datetimes(combined.column("timestamp_open_utc"))
+    closes = utc_datetimes(combined.column("close_timestamp_utc"))
     quote = combined.column("quote_volume").to_pylist()
     taker_buy = combined.column("taker_buy_quote_volume").to_pylist()
     invalid: list[str] = []

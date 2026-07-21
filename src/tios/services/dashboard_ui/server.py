@@ -5,20 +5,37 @@ from __future__ import annotations
 import argparse
 import ipaddress
 import json
+import os
 import re
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
+from tios.services.dashboard_api.ai_costs import build_ai_costs
 from tios.services.dashboard_api.cockpit import (
     CockpitActionError,
     build_cockpit,
     perform_cockpit_action,
 )
+from tios.services.dashboard_api.demo_lane import (
+    DemoLaneActionError,
+    build_demo_lane,
+    perform_demo_lane_action,
+)
 from tios.services.dashboard_api.eth_signal import EthSignalCheckError, build_eth_signal_check
 from tios.services.dashboard_api.market import build_market_snapshot
+from tios.services.dashboard_api.open_work import build_open_work
 from tios.services.dashboard_api.operations import build_operations, trigger_data_update
+from tios.services.dashboard_api.orchestrator_view import build_orchestrator_view
 from tios.services.dashboard_api.search import build_search_results
+from tios.services.dashboard_api.signal_pollers import poll_all_sources
+from tios.services.dashboard_api.signal_reliability import build_reliability
+from tios.services.dashboard_api.signals_inbox import (
+    SignalIngestError,
+    build_signals,
+    ingest_signal,
+)
+from tios.services.dashboard_api.skills import build_skills
 from tios.services.dashboard_api.status import (
     build_dashboard_data,
     build_stage_gate_readiness,
@@ -91,6 +108,21 @@ class Handler(BaseHTTPRequestHandler):
                 self._json_error(400, str(error))
                 return
             self._send(200, "application/json", json.dumps(payload).encode())
+        elif path == "/api/v1/signals":
+            self._send(200, "application/json", json.dumps(build_signals(self.root)).encode())
+        elif path == "/api/v1/signals/reliability":
+            self._send(200, "application/json", json.dumps(build_reliability(self.root)).encode())
+        elif path == "/api/v1/skills":
+            self._send(200, "application/json", json.dumps(build_skills(self.root)).encode())
+        elif path == "/api/v1/demo-lane":
+            self._send(200, "application/json", json.dumps(build_demo_lane(self.root)).encode())
+        elif path == "/api/v1/ai-costs":
+            self._send(200, "application/json", json.dumps(build_ai_costs(self.root)).encode())
+        elif path == "/api/v1/open-work":
+            self._send(200, "application/json", json.dumps(build_open_work(self.root)).encode())
+        elif path == "/api/v1/orchestrator":
+            payload = build_orchestrator_view(self.root)
+            self._send(200, "application/json", json.dumps(payload).encode())
         elif path == "/api/v1/eth-signal":
             try:
                 payload = build_eth_signal_check(self.root)
@@ -116,10 +148,39 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:  # noqa: N802
         request = urlparse(self.path)
+        if request.path == "/api/v1/signals/ingest":
+            try:
+                payload = self._read_same_origin_json()
+                record = ingest_signal(self.root, payload)
+            except CockpitActionError as error:
+                self._json_error(error.status_code, str(error))
+                return
+            except SignalIngestError as error:
+                self._json_error(error.status_code, str(error))
+                return
+            except (ValueError, json.JSONDecodeError, UnicodeDecodeError) as error:
+                self._json_error(400, str(error))
+                return
+            self._send(201, "application/json", json.dumps(record).encode())
+            return
+        if request.path == "/api/v1/signals/poll":
+            try:
+                self._read_same_origin_json()
+            except CockpitActionError as error:
+                self._json_error(error.status_code, str(error))
+                return
+            try:
+                result = poll_all_sources(self.root)
+            except SignalIngestError as error:
+                self._json_error(500, f"poller produced an invalid signal: {error}")
+                return
+            self._send(200, "application/json", json.dumps(result).encode())
+            return
         routes = {
             "/api/v1/workspace-actions/data-update",
             "/api/v1/workspace-actions/decision",
             "/api/v1/cockpit-actions",
+            "/api/v1/demo-lane-actions",
         }
         if request.path not in routes:
             self._send(404, "application/json", b'{"schema_version":1,"error":"not found"}')
@@ -139,8 +200,12 @@ class Handler(BaseHTTPRequestHandler):
                 result = perform_cockpit_action(self.root, payload)
                 self._send(201, "application/json", json.dumps(result).encode())
                 return
+            if request.path == "/api/v1/demo-lane-actions":
+                lane_result = perform_demo_lane_action(self.root, payload)
+                self._send(201, "application/json", json.dumps(lane_result).encode())
+                return
             body = json.dumps(record_workspace_decision(self.root, payload)).encode()
-        except CockpitActionError as error:
+        except (CockpitActionError, DemoLaneActionError) as error:
             self._json_error(error.status_code, str(error))
             return
         except (ValueError, json.JSONDecodeError, UnicodeDecodeError) as error:
@@ -211,6 +276,21 @@ class _PostGuardError(CockpitActionError):
         self.status_code = status_code
 
 
+def _load_dotenv(root: Path) -> None:
+    """Load KEY=VALUE lines from a local .env file; real env vars always win."""
+    env_path = root / ".env"
+    if not env_path.is_file():
+        return
+    for line in env_path.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key = key.strip()
+        if key and key not in os.environ:
+            os.environ[key] = value.strip().strip('"').strip("'")
+
+
 def is_loopback_host(host: str) -> bool:
     """Accept only literal loopback addresses and localhost."""
     if host == "localhost":
@@ -228,6 +308,7 @@ def main() -> None:
     args = parser.parse_args()
     if not is_loopback_host(args.host):
         parser.error("non-loopback binding requires a future explicit authenticated mode")
+    _load_dotenv(Path.cwd())
     Handler.root = Path.cwd()
     Handler.html = (Path(__file__).with_name("dashboard.html")).read_text()
     server = ThreadingHTTPServer((args.host, args.port), Handler)

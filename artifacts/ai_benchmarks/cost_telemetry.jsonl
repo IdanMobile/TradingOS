@@ -1,0 +1,4 @@
+{"at": "2026-07-20T21:40:45.678538+00:00", "calls": 53, "cost_usd": 0.263955, "model": "claude-opus-4-8", "provider": "anthropic", "source": "real_modea_v1"}
+{"at": "2026-07-20T21:40:45.678538+00:00", "calls": 0, "cost_usd": 0, "model": null, "provider": "openai", "source": "real_modea_v1"}
+{"at": "2026-07-20T21:47:19.507581+00:00", "calls": 54, "cost_usd": 0.270595, "model": "claude-opus-4-8", "provider": "anthropic:claude-opus-4-8", "source": "real_modea_v1"}
+{"at": "2026-07-20T21:47:19.507581+00:00", "calls": 54, "cost_usd": 0.048826, "model": "claude-haiku-4-5-20251001", "provider": "anthropic:claude-haiku-4-5", "source": "real_modea_v1"}

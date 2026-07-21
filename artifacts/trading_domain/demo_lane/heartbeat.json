@@ -1,0 +1,16 @@
+{
+  "action": null,
+  "at": "2026-07-21T16:01:00.679117+00:00",
+  "candidate": "ETH-VOLUME-BREAKOUT-PROSPECTIVE-V1",
+  "environment": "VENUE_DEMO",
+  "execution_authority_note": "D-104 execution-measurement mode; demo funds only",
+  "fresh_signals": 0,
+  "kill_switch": false,
+  "lane_base": "0.01341033",
+  "latest_closed_bar": "2026-07-21T16:00:00+00:00",
+  "promotion_eligible": false,
+  "real_money": false,
+  "schema_version": 1,
+  "signals_in_window": 1,
+  "validation_state": "UNVALIDATED"
+}

@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "map_id": "PROSPECTIVE-SIGNAL-EVIDENCE-PRODUCER-MAP-V1",
+  "subject_ref": "PROSPECTIVE-BTC-LIQUIDATION-STRESS-V1",
+  "generated_at": "2026-07-21T16:18:36.515767+00:00",
+  "prohibitions": [
+    "warmup_analysis",
+    "sealed_v2_holdout_access"
+  ],
+  "released": [],
+  "blocked": [
+    "WARMUP_SAMPLE_INCOMPLETE",
+    "PLANNED_ROTATION_NOT_PROVEN_IN_PUBLIC_RUN",
+    "CAUSAL_LABEL_SERIES_INCOMPLETE",
+    "FIRST_REVIEW_MINIMA_NOT_MET",
+    "GOVERNED_SIGNAL_IDENTITY_MISSING",
+    "CAMPAIGN_TRIAL_POPULATION_UNDECLARED",
+    "METRIC_CONVENTIONS_AND_RESULTS_MISSING",
+    "BENCHMARK_AND_COST_EVIDENCE_MISSING",
+    "G1_G11_NOT_COMPLETE",
+    "INDEPENDENT_REVIEWS_NOT_COMPLETE",
+    "VALIDATED_ALPHA_STRATEGY_MISSING"
+  ],
+  "statuses": [
+    {
+      "code": "WARMUP_SAMPLE_INCOMPLETE",
+      "state": "PROHIBITED",
+      "detail": "map declares an active prohibition; dispatch withheld",
+      "contributes_to": [
+        "metric_eligibility",
+        "G1",
+        "G2",
+        "operational_and_evidence_completeness"
+      ]
+    },
+    {
+      "code": "PLANNED_ROTATION_NOT_PROVEN_IN_PUBLIC_RUN",
+      "state": "PROHIBITED",
+      "detail": "map declares an active prohibition; dispatch withheld",
+      "contributes_to": [
+        "G1",
+        "G2",
+        "operational_and_evidence_completeness"
+      ]
+    },
+    {
+      "code": "CAUSAL_LABEL_SERIES_INCOMPLETE",
+      "state": "PROHIBITED",
+      "detail": "map declares an active prohibition; dispatch withheld",
+      "contributes_to": [
+        "metric_eligibility",
+        "data_integrity_and_freshness",
+        "G2",
+        "G3"
+      ]
+    },
+    {
+      "code": "FIRST_REVIEW_MINIMA_NOT_MET",
+      "state": "PROHIBITED",
+      "detail": "map declares an active prohibition; dispatch withheld",
+      "contributes_to": [
+        "metric_eligibility",
+        "temporal_walk_forward_stability",
+        "regime_stability"
+      ]
+    },
+    {
+      "code": "GOVERNED_SIGNAL_IDENTITY_MISSING",
+      "state": "PROHIBITED",
+      "detail": "map declares an active prohibition; dispatch withheld",
+      "contributes_to": [
+        "scorecard_eligibility"
+      ]
+    },
+    {
+      "code": "CAMPAIGN_TRIAL_POPULATION_UNDECLARED",
+      "state": "PROHIBITED",
+      "detail": "map declares an active prohibition; dispatch withheld",
+      "contributes_to": [
+        "scorecard_eligibility",
+        "G10"
+      ]
+    },
+    {
+      "code": "METRIC_CONVENTIONS_AND_RESULTS_MISSING",
+      "state": "PROHIBITED",
+      "detail": "map declares an active prohibition; dispatch withheld",
+      "contributes_to": [
+        "metric_eligibility",
+        "economic_performance_after_declared_costs",
+        "drawdown_and_loss_severity"
+      ]
+    },
+    {
+      "code": "BENCHMARK_AND_COST_EVIDENCE_MISSING",
+      "state": "PROHIBITED",
+      "detail": "map declares an active prohibition; dispatch withheld",
+      "contributes_to": [
+        "G5",
+        "G11",
+        "baseline_superiority",
+        "economic_performance_after_declared_costs"
+      ]
+    },
+    {
+      "code": "G1_G11_NOT_COMPLETE",
+      "state": "PROHIBITED",
+      "detail": "map declares an active prohibition; dispatch withheld",
+      "contributes_to": [
+        "promotion_eligibility"
+      ]
+    },
+    {
+      "code": "INDEPENDENT_REVIEWS_NOT_COMPLETE",
+      "state": "PROHIBITED",
+      "detail": "map declares an active prohibition; dispatch withheld",
+      "contributes_to": [
+        "promotion_eligibility"
+      ]
+    },
+    {
+      "code": "VALIDATED_ALPHA_STRATEGY_MISSING",
+      "state": "PROHIBITED",
+      "detail": "map declares an active prohibition; dispatch withheld",
+      "contributes_to": [
+        "paper_readiness",
+        "full_strategy_to_bot_flow"
+      ]
+    }
+  ]
+}

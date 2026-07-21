@@ -26,6 +26,7 @@ A skill exists only if the task (a) recurs, (b) has a checkable output contract,
 | `SKILL_ONTOLOGY_CURATOR.md` | R6 | S2 | concept extraction/curation with venue-context preservation |
 | `SKILL_ARCHITECTURE_GUARDIAN.md` | R9 | S1 (from WS1) | diff/dependency review against AD + module law (incl. boundary audit) |
 | `SKILL_SECURITY_REVIEWER.md` | R9 | S1 (from WS1) | secret handling, dependency risk, ingested-code sandbox policy, prompt-injection surface |
+| `SKILL_REGISTRAR.md` | R7/R9 | S1 (dashboard Skills tab) | keep new/edited skill specs dashboard-format-compliant and `skills/README.md` in sync with what's on disk |
 
 ## Rejected / merged skill candidates (with reasons)
 

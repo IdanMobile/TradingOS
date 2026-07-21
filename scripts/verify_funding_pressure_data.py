@@ -15,6 +15,7 @@ from typing import Any
 
 import pyarrow.parquet as pq
 
+from tios.dataset.arrow_time import utc_datetimes
 from tios.dataset.normalize import content_sha256
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -134,7 +135,7 @@ def _verify_spot(package: dict[str, Any], timestamps: list[int], root: Path) -> 
     table = pq.read_table(parquet).combine_chunks()
     if table.num_rows != spot["rows"] or content_sha256(table) != spot["logical_content_sha256"]:
         raise RuntimeError("Spot normalized content differs from frozen package")
-    opens = table.column("timestamp_open_utc").to_pylist()
+    opens = utc_datetimes(table.column("timestamp_open_utc"))
     if str(opens[0]) != spot["coverage_start_utc"] or str(opens[-1]) != spot["coverage_end_utc"]:
         raise RuntimeError("Spot coverage differs from frozen package")
     open_set = set(opens)

@@ -11,6 +11,7 @@ from typing import Any
 
 import pyarrow.parquet as pq
 
+from tios.dataset.arrow_time import utc_datetimes
 from tios.dataset.normalize import content_sha256
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -115,7 +116,7 @@ def verify(package_path: Path = PACKAGE, root: Path = ROOT) -> dict[str, object]
     table = pq.read_table(parquet).combine_chunks()
     if table.num_rows != spot["rows"] or content_sha256(table) != spot["logical_content_sha256"]:
         raise RuntimeError("Spot normalized content differs from frozen package")
-    opens = set(table.column("timestamp_open_utc").to_pylist())
+    opens = set(utc_datetimes(table.column("timestamp_open_utc")))
     lag = timedelta(days=2, hours=1)
     missing = sum(value + lag not in opens for value in campaign)
     if missing != spot["missing_expected_entry_opens"]:

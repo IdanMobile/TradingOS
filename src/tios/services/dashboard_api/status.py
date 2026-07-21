@@ -260,10 +260,15 @@ def _check_status(root: Path, now: datetime) -> dict[str, Any]:
         generated_at = datetime.fromisoformat(str(payload["generated_at"]).replace("Z", "+00:00"))
     except (KeyError, ValueError):
         generated_at = None
+    # Schema 3 split the gate into `check` (fast, code-only) and `check-full` (adds the
+    # slow data-package integrity tests). Both write this artifact, so the gate name is
+    # read from the payload rather than assumed — reporting a fast-gate PASS as though it
+    # covered data integrity would overstate what was actually verified.
+    gate = str(payload.get("gate", ""))
     passed = (
-        payload.get("schema_version") == 2
-        and payload.get("gate") == "check"
-        and payload.get("command") == "make check"
+        payload.get("schema_version") == 3
+        and gate in {"check", "check-full"}
+        and payload.get("command") == f"make {gate}"
         and payload.get("status") == "PASS"
         and payload.get("includes_dependency_audit") is False
         and generated_at is not None
@@ -271,10 +276,11 @@ def _check_status(root: Path, now: datetime) -> dict[str, Any]:
         and timedelta(0) <= now - generated_at <= CHECK_ARTIFACT_MAX_AGE
     )
     return {
-        "command": "make check",
-        "gate": "check",
+        "command": f"make {gate}" if passed else "make check",
+        "gate": gate if passed else "check",
         "status": "PASS" if passed else "UNKNOWN",
         "known_passing": passed,
+        "includes_slow_data_tests": bool(payload.get("includes_slow_data_tests")) and passed,
         "includes_dependency_audit": False,
         "required_gate": {"command": "make required", "status": "UNKNOWN"},
         "artifact": str(path.relative_to(root)) if path.is_file() else None,

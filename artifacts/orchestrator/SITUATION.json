@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-07-21T16:18:36.517387+00:00",
+  "halted": false,
+  "escalation_count": 0,
+  "action_count": 0,
+  "observations": [
+    {
+      "domain": "integrity",
+      "severity": "INFO",
+      "summary": "all constraint files present",
+      "detail": {}
+    },
+    {
+      "domain": "statistical",
+      "severity": "INFO",
+      "summary": "234 trials recorded across all families",
+      "detail": {
+        "global_trial_count": 234
+      }
+    },
+    {
+      "domain": "evidence",
+      "severity": "INFO",
+      "summary": "6 current, 0 stale, 0 broken artifacts",
+      "detail": {
+        "counts": {
+          "CURRENT": 6,
+          "STALE": 0,
+          "BROKEN": 0
+        }
+      }
+    },
+    {
+      "domain": "strategy",
+      "severity": "INFO",
+      "summary": "20 registered strategy versions from 20 specs",
+      "detail": {
+        "registered": 20,
+        "specs": 20
+      }
+    },
+    {
+      "domain": "blockers",
+      "severity": "INFO",
+      "summary": "PROSPECTIVE-SIGNAL-EVIDENCE-PRODUCER-MAP-V1: 0 released, 11 blocked",
+      "detail": {
+        "map_id": "PROSPECTIVE-SIGNAL-EVIDENCE-PRODUCER-MAP-V1",
+        "released": [],
+        "blocked": [
+          "WARMUP_SAMPLE_INCOMPLETE",
+          "PLANNED_ROTATION_NOT_PROVEN_IN_PUBLIC_RUN",
+          "CAUSAL_LABEL_SERIES_INCOMPLETE",
+          "FIRST_REVIEW_MINIMA_NOT_MET",
+          "GOVERNED_SIGNAL_IDENTITY_MISSING",
+          "CAMPAIGN_TRIAL_POPULATION_UNDECLARED",
+          "METRIC_CONVENTIONS_AND_RESULTS_MISSING",
+          "BENCHMARK_AND_COST_EVIDENCE_MISSING",
+          "G1_G11_NOT_COMPLETE",
+          "INDEPENDENT_REVIEWS_NOT_COMPLETE",
+          "VALIDATED_ALPHA_STRATEGY_MISSING"
+        ],
+        "prohibitions": [
+          "warmup_analysis",
+          "sealed_v2_holdout_access"
+        ]
+      }
+    },
+    {
+      "domain": "execution",
+      "severity": "INFO",
+      "summary": "no operator attestation; offline research only, no capital-bearing stage",
+      "detail": {}
+    },
+    {
+      "domain": "parked",
+      "severity": "INFO",
+      "summary": "10 items parked as genuinely unreachable",
+      "detail": {
+        "items": [
+          "Historical REST payload reconstruction and original run identity",
+          "Hierarchy-wide effective trial accounting for the pre-V2 search",
+          "Point-in-time delisting-complete universe for cross-sectional families",
+          "Venue margin/liquidation semantics and intraperiod liquidation modeling",
+          "Empirical carry costs and G12 paper-forward divergence",
+          "First real AI benchmark runs",
+          "Independent statistical, risk, supervisor, and security reviews (D-099)",
+          "Full test suite runs ~60 minutes, dominated by base64 archive-decode data tests",
+          "test_completion_matrix asserted all initiative-15 tasks gated; D-104 made T-015-01 DONE",
+          "test_live_unreachable asserted demo_preflight.py is network-quarantined; D-104 stage-1 lifted that"
+        ]
+      }
+    }
+  ]
+}

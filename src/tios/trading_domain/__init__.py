@@ -1,5 +1,15 @@
 """Public inert trading-domain contracts."""
 
+from .decision_intelligence import (
+    DEFECT_CLASSIFICATIONS,
+    AttributionBasis,
+    DecisionOutcome,
+    DecisionTrace,
+    DecisionTraceStatus,
+    FailureAttribution,
+    HistoricalTradeTrace,
+    OutcomeClassification,
+)
 from .models import (
     TERMINAL_ORDER_STATES,
     AccountId,
@@ -130,6 +140,7 @@ from .synthetic import (
 )
 
 __all__ = [
+    "AttributionBasis",
     "AccountId",
     "AccountSnapshot",
     "AnnotationId",
@@ -144,6 +155,10 @@ __all__ = [
     "CredentialPermission",
     "CreatorType",
     "DatasetId",
+    "DecisionOutcome",
+    "DecisionTrace",
+    "DecisionTraceStatus",
+    "DEFECT_CLASSIFICATIONS",
     "DivergenceMetric",
     "DivergenceObservation",
     "DivergenceStatus",
@@ -152,6 +167,8 @@ __all__ = [
     "ExecutionAuthority",
     "FillEvent",
     "FillId",
+    "FailureAttribution",
+    "HistoricalTradeTrace",
     "InstrumentId",
     "KillSwitchMode",
     "LedgerDirection",
@@ -177,6 +194,7 @@ __all__ = [
     "OrderState",
     "OrderStatus",
     "OrderType",
+    "OutcomeClassification",
     "OperationalDrillKind",
     "OperationalDrillRecord",
     "OperationalDrillStatus",

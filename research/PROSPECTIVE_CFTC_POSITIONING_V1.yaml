@@ -1,0 +1,53 @@
+schema_version: 1
+prereg_id: PROSPECTIVE-CFTC-POSITIONING-V1
+status: OBSERVATION_ONLY
+created_utc: "2026-07-21T00:00:00Z"
+authority_note: >
+  Forward observation of the exact variant campaign #6 selected and froze (D-111) — the
+  first family to clear the hierarchy-deflated bar (DSR 0.9996 vs 0.95, deflated against
+  216 trials across 7 families). Clearing the statistical bar creates NO promotion,
+  paper, demo, or live authority: G1-G11, independent specialist review, and prospective
+  evidence all still stand between this rule and any capital. This preregistration
+  freezes the boundary now so forward evidence starts accruing immediately.
+
+frozen_rule:
+  source_campaign: PREREG-83b7575e59ee7983f56b24a45a58e55d
+  decision: D-111
+  strategy_family: FAM-CFTC-POSITIONING-V1
+  canonical_strategy: STRAT-BTC-CFTC-POSITIONING-SPOT
+  metric: CFTC weekly noncommercial net position share of open interest
+  formula: (noncomm_positions_long_all - noncomm_positions_short_all) / open_interest_all
+  prior_window_weeks: 26
+  z_threshold: 1.5
+  side: LOW            # signal when net share sits 1.5 sigma BELOW its 26-week norm
+  pulse_holding_hours: 168
+  z_convention: population mean/std over the prior 26 available reports, current excluded
+  availability: report date plus 8 calendar days at 00:00 UTC (package availability rule)
+
+boundary:
+  # Latest report inside the campaign's train+validation windows. Reports on/before this
+  # date existed during the search and can never become out-of-sample again.
+  last_in_sample_report_date: "2026-07-14"
+  observation_start_utc: "2026-07-21T00:00:00Z"
+
+observation_protocol:
+  cadence: at most one observation row per weekly report, appended forward-only
+  record: [observed_at, report_date, net_share, z_score, signal_state]
+  signal_states: [WARMING_UP, FLAT, WOULD_ENTER]
+  outcome_reads: PROHIBITED until first-review minima are met; the observer records
+    signal state only and never computes returns, hit rates, or any performance number
+  data_source: CFTC public reporting (publicreporting.cftc.gov, public, keyless)
+  observer_status: BUILT — scripts/run_prospective_cftc_observer.py, run daily/weekly
+    via orchestrator
+
+first_review_minima:
+  minimum_prospective_weeks: 26
+  minimum_signal_events: 3
+  earliest_review_utc: "2027-01-21T00:00:00Z"
+  reviewer: independent of the implementing agent
+  no_rescue: a review may accept or reject the frozen rule; it may not tune it
+
+relationship_to_sealed_holdout: >
+  Independent evidence streams. The sealed campaign holdout permits one lawful read of
+  this same frozen variant after 2027-01-14; this lane accumulates live forward
+  observations. Neither substitutes for the other.

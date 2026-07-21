@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "measured_at_date": "2026-07-21",
+  "focused_lane": {
+    "command": "uv run python scripts/run_decision_intelligence_checks.py",
+    "passed": true,
+    "pytest_tests_passed": 14,
+    "elapsed_seconds": 4.494034,
+    "includes": ["ruff", "mypy", "pytest"]
+  },
+  "broad_non_slow_lane": {
+    "command": "uv run pytest -m 'not slow' --durations=15",
+    "passed": true,
+    "tests_passed": 1134,
+    "tests_deselected": 29,
+    "elapsed_seconds": 57.09
+  },
+  "slow_data_lane_before": {
+    "command": "uv run pytest -m slow --durations=15",
+    "passed": true,
+    "tests_passed": 29,
+    "tests_deselected": 1132,
+    "elapsed_seconds": 2021.27
+  },
+  "slow_data_lane_after": {
+    "command": "uv run pytest -m slow --durations=15",
+    "passed": true,
+    "tests_passed": 29,
+    "tests_deselected": 1134,
+    "elapsed_seconds": 361.43
+  },
+  "measured_improvement": {
+    "seconds_saved": 1659.84,
+    "runtime_reduction_fraction": 0.821188,
+    "speedup_multiple": 5.592387,
+    "same_slow_test_selection": true,
+    "gates_removed": false
+  },
+  "complete_current_test_count": 1163,
+  "full_lint_passed": true,
+  "strict_mypy_source_files": 124,
+  "strict_mypy_passed": true
+}

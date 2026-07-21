@@ -1,8 +1,27 @@
+> SUPERSEDED (2026-07-21): see docs/supervisor/*_2026-07-21.md and PROJECT_STATE.md.
+
 # Trading OS supervisory improvement plan — 2026-07-13
 
 Status: active, dependency ordered.  
 Baseline: `docs/supervisor/SUPERVISORY_BASELINE_2026-07-13.md`.  
 Rule: no hard fail may be averaged away, and no item is complete until its acceptance criteria pass.
+
+## Progress update — 2026-07-20 (D-107)
+
+| Finding | Change | Evidence |
+|---|---|---|
+| SUP-005 | Trial budget now verifies declared counts against a persistent ledger; campaign runner deflates against the ledger, not the surviving population. Hierarchy-wide accounting for the *pre-V2* search remains unrecoverable and is parked. | `validation/trial_budget.py`, `validation/campaign.py` |
+| SUP-006 | Unchanged. Remaining items verified blocked on data the project does not hold — venue margin/liquidation semantics are account-gated, and intraperiod modelling needs intra-bar data (only single-pair BTCUSDT 1m exists). Parked with causes. | `artifacts/driver/parked_items.jsonl` |
+| SUP-007 | Achievable half **CLOSED**. Artifact staleness re-hashes every declared module; one byte of drift fails. All six shipped G10 artifacts verify CURRENT. Historical REST payload identity parked as unrecoverable. | `evidence/staleness.py`, `artifacts/evidence/ARTIFACT_STALENESS.json` |
+| SUP-008 | **CLOSED structurally.** Holdout unreachable as an attribute, validation gated on frozen selection, one recorded open, seal-date enforced. Leakage is now impossible rather than forbidden. | `validation/splits.py` |
+| SUP-009 | Nested walk-forward folds and family fixtures built. Point-in-time universe parked: no delisting or universe dataset exists anywhere in the project. | `validation/splits.py::walk_forward_folds` |
+| SUP-010 | **CLOSED for coverage.** All 20 canonical specs hold content-addressed immutable version identities; artifacts citing an unregistered strategy are blocked. | `strategy/registry.py` |
+| SUP-011 | Unchanged; sdist still deferred until a release is authorized. | — |
+
+Security: one HIGH finding (driver path traversal) and one MEDIUM (mutable Makefile) were
+found and fixed during self-review. That review explicitly does not satisfy D-099's
+independent SECURITY requirement. Evidence:
+`artifacts/reports/STAGE_EXIT_SECURITY_REVIEW_2026_07_20.md`.
 
 ## Progress snapshot — 2026-07-13
 

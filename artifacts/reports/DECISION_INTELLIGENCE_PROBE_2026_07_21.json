@@ -1,0 +1,71 @@
+{
+  "authority_audit": {
+    "allows_order_path_changes": false,
+    "blockers": [
+      "CONTRADICTORY_DEMO_AUTHORITY_CLAIMS"
+    ],
+    "claims": [
+      {
+        "excerpt": "is validated or promotion-eligible, and no paper/demo/live authority exists.",
+        "line": 13,
+        "precedence": 100,
+        "source": "handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md",
+        "state": "NO_DEMO_AUTHORITY"
+      },
+      {
+        "excerpt": "Status: **Demo order lane ACTIVE in execution-measurement mode under D-104.**",
+        "line": 1675,
+        "precedence": 80,
+        "source": "DECISION_LOG.md",
+        "state": "DEMO_ACTIVE"
+      }
+    ],
+    "status": "CONFLICT"
+  },
+  "decision_report": {
+    "ai_hypothesis_count": 0,
+    "confirmed_defect_count": 0,
+    "currency": "USDT",
+    "fill_event_count": 0,
+    "intent_count": 0,
+    "net_pnl": "0",
+    "no_trade_count": 0,
+    "order_count": 0,
+    "ordinary_loss_count": 0,
+    "profitable_count": 0,
+    "reconciled_count": 0,
+    "risk_blocked_count": 1,
+    "risk_passed_count": 0,
+    "source_trace_digests": [
+      "680bb15c6ea5cdaf62202853f663d8b253a803917cce63feefa740148d7ef54f"
+    ],
+    "trace_count": 1,
+    "unknown_count": 0
+  },
+  "execution_authority": "NONE",
+  "hard_evidence": {
+    "append_only_idempotent_trace": true,
+    "canonical_signal_flow_reused": true,
+    "contradictory_authority_machine_detected": true,
+    "ordinary_loss_separate_from_defect": true,
+    "pnl_cost_reconciliation_enforced": true
+  },
+  "mode": "OFFLINE_HISTORICAL_RESEARCH",
+  "orders_created": 0,
+  "schema_version": 1,
+  "source": {
+    "bars": 48154,
+    "candidate_id": "ETH-VOLUME-BREAKOUT-PROSPECTIVE-V1",
+    "canonical_verifier_ms": 2704.992,
+    "dataset_sha256": "324b3a704560103d9d49453e48d5b24839df6ab2ca67c6fcd5da2d2365d3b1da",
+    "signals_reproduced": 511
+  },
+  "trace": {
+    "ledger_records": 1,
+    "ledger_sha256": "2869151dbb768ae740776baaac7587e4649dfe8db7c44186c5b813b0b87442f6",
+    "projection_ms": 1.646,
+    "trace_id": "TRACE-bd32ed5a8b139873f6e6c30d",
+    "trace_sha256": "680bb15c6ea5cdaf62202853f663d8b253a803917cce63feefa740148d7ef54f"
+  },
+  "venue_connection": "NONE"
+}

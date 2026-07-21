@@ -1,0 +1,2 @@
+{"action": "STOP", "decided_at": "2026-07-19T10:31:51.287853+00:00", "detail": "stop flag set; orders are refused immediately", "environment": "VENUE_DEMO", "idempotency_key": "verify-stop-1", "real_money": false, "schema_version": 1, "source": "local_dashboard_operator"}
+{"action": "START", "decided_at": "2026-07-20T14:15:56.377847+00:00", "detail": "lane started (pid 61256); stop flag cleared", "environment": "VENUE_DEMO", "idempotency_key": "a76396ee-1b36-4dfa-8aea-a4242d3a5dbd", "real_money": false, "schema_version": 1, "source": "local_dashboard_operator"}

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "_comment": "Operator-supplied facts. Replace every UNSET value. This file must never contain API keys, secrets, or account numbers - only assertions about them.",
+  "venue": "UNSET",
+  "account_eligibility_confirmed": "UNSET",
+  "product_availability_confirmed": "UNSET",
+  "api_trading_permissions": "UNSET",
+  "automated_trading_terms_reviewed": "UNSET",
+  "fee_tier": "UNSET",
+  "funding_path_documented": "UNSET",
+  "credential_isolation_process_ref": "UNSET",
+  "max_capital": "UNSET",
+  "max_drawdown_fraction": "UNSET",
+  "tax_workflow_ref": "UNSET",
+  "attested_by": "UNSET",
+  "attested_at": "UNSET",
+  "expires_at": null,
+  "authorizes_live": false,
+  "kill_switch_conditions": []
+}

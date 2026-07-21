@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "correction_of": "PREREG-ca9c9e0891ca05f357757943eba8c79a",
+  "family": "FAM-MVRV-DISLOCATION-V1",
+  "decision_ref": "D-112",
+  "selected_parameters": {
+    "prior_window_days": 30,
+    "z_threshold": 2.0,
+    "side": "LOW",
+    "pulse_holding_hours": 24
+  },
+  "reproduced_frozen_score": true,
+  "reproduced_validation_score": 0.05482056565504804,
+  "original": {
+    "verdict": "FAIL",
+    "validation_score": 0.05482056565504804,
+    "sample_count": 8430,
+    "hierarchy_trials": 108,
+    "dsr": {
+      "expected_maximum_noise_sharpe": 0.04717480696848718,
+      "z_score": 0.7014271353367761,
+      "dsr": 0.7584817537319054
+    }
+  },
+  "corrected": {
+    "verdict": "FAIL",
+    "status": "OK",
+    "validation_trades": 16,
+    "min_validation_trades": 10,
+    "descriptive_per_bar_sharpe": 0.05482056565504804,
+    "observed_trade_sharpe": 0.27552112411030777,
+    "average_correlation": 0.11714780284066374,
+    "effective_trials": 95.46518509604898,
+    "dsr": {
+      "expected_maximum_noise_sharpe": 0.30218272785128003,
+      "z_score": -0.10135436069146007,
+      "dsr": 0.4596345823653524
+    }
+  },
+  "reason": "trade-level DSR on completed trades with sample_count = trade count (was scored on 8430 validation bars as if each were an independent observation)",
+  "notes": "Re-score only: no ledger writes, no new trials, no holdout access, no parameter search. Replays the recorded frozen selection on its original train/validation windows under the D-112 corrected statistics."
+}

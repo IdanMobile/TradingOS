@@ -1,0 +1,712 @@
+"""Read-only projection and bounded operator controls for the D-104/D-105 ETH demo lane.
+
+The dashboard never touches credentials, never signs a request, and never places an order.
+It can observe the lane's own artifacts, and it can start/stop the separate lane process,
+which enforces every safety rail itself (demo-host lock, caps, quantization, kill switch).
+
+Governed by D-106: this is the second audited write surface on the local loopback dashboard,
+allowlisted to three actions with no free-form input reaching the spawned command.
+"""
+
+from __future__ import annotations
+
+import fcntl
+import json
+import os
+import re
+import signal
+import subprocess  # noqa: S404 (fixed argv, no shell, no user input — see _spawn)
+import sys
+from datetime import UTC, datetime, timedelta
+from pathlib import Path
+from typing import Any
+
+from tios.services.dashboard_api.audit import AuditPathError, confined_audit_handle
+
+LANE_DIR = Path("artifacts/trading_domain/demo_lane")
+KILL_SWITCH = LANE_DIR / "KILL_SWITCH"
+ORDERS_LEDGER = LANE_DIR / "orders.jsonl"
+HEARTBEAT = LANE_DIR / "heartbeat.json"
+LANE_STATE = LANE_DIR / "lane_state.json"
+LANE_LOCK = LANE_DIR / "lane.lock"
+LANE_LOG = LANE_DIR / "lane.log"
+LANE_SCRIPT = Path("scripts/demo_eth_lane.py")
+AUDIT_PATH = Path("artifacts/human_decisions/demo_lane_actions.jsonl")
+DIVERGENCE_REPORT = LANE_DIR / "DIVERGENCE_REPORT.json"
+
+BASE_COIN = "ETH"
+QUOTE_COIN = "USDT"
+
+ACTIONS = frozenset({"START", "STOP", "RUN_ONCE"})
+_IDENTIFIER = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,199}$")
+RUN_ONCE_TIMEOUT_SECONDS = 90
+ORDER_HISTORY_LIMIT = 25
+
+
+class DemoLaneActionError(ValueError):
+    """Rejected demo-lane action. `status_code` is the HTTP status the server should send."""
+
+    def __init__(self, message: str, status_code: int = 400) -> None:
+        super().__init__(message)
+        self.status_code = status_code
+
+
+def _read_json(path: Path) -> dict[str, Any]:
+    try:
+        payload = json.loads(path.read_text())
+    except (OSError, ValueError):
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def _running(root: Path) -> tuple[bool, int | None, str | None]:
+    """Is a lane process alive? Uses the lane's own advisory lock, so PID reuse cannot fool it.
+
+    Acquiring the lock means nobody holds it (lane is down); we release immediately.
+    """
+    lock_path = root / LANE_LOCK
+    if not lock_path.is_file():
+        return False, None, None
+    try:
+        handle = lock_path.open("a+", encoding="utf-8")
+    except OSError:
+        return False, None, None
+    try:
+        try:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError:
+            holder = _read_json(lock_path)
+            pid = holder.get("pid")
+            return True, pid if isinstance(pid, int) else None, holder.get("started_at")
+        fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+        return False, None, None
+    finally:
+        handle.close()
+
+
+def _orders(root: Path) -> list[dict[str, Any]]:
+    try:
+        lines = (root / ORDERS_LEDGER).read_text().splitlines()
+    except OSError:
+        return []
+    records: list[dict[str, Any]] = []
+    for line in lines:
+        try:
+            item = json.loads(line)
+        except ValueError:
+            continue
+        if isinstance(item, dict):
+            records.append(item)
+    return records
+
+
+def build_demo_lane(root: Path | None = None) -> dict[str, Any]:
+    """Project current lane liveness, heartbeat, and retained fills. Pure read."""
+    root = (root or Path(__file__).resolve().parents[4]).resolve()
+    running, pid, started_at = _running(root)
+    stopped = (root / KILL_SWITCH).exists()
+    orders = _orders(root)
+    filled = [o for o in orders if o.get("ok") is True]
+    heartbeat = _read_json(root / HEARTBEAT)
+    state = _read_json(root / LANE_STATE)
+    if running:
+        status = "STOPPING" if stopped else "RUNNING"
+    else:
+        status = "STOPPED" if stopped else "IDLE"
+    _mark = _number(heartbeat.get("mark_price"))
+    _annotations = _annotate_orders(filled)
+    return {
+        "schema_version": 1,
+        "generated_at": datetime.now(tz=UTC).isoformat(),
+        "status": status,
+        "running": running,
+        "pid": pid,
+        "started_at": started_at,
+        "kill_switch": stopped,
+        "candidate": "ETH-VOLUME-BREAKOUT-PROSPECTIVE-V1",
+        "symbol": "ETHUSDT",
+        "timeframe": "1h",
+        "environment": "VENUE_DEMO",
+        "real_money": False,
+        "validation_state": "UNVALIDATED",
+        "promotion_eligible": False,
+        "venue": "api-demo.bybit.com",
+        "limits": {
+            "buy_notional_usdt": "50",
+            "sell_notional_usdt": "120",
+            "order_type": "MARKET",
+        },
+        "position_base": state.get("lane_base", "0"),
+        "cursor": state.get("cursor"),
+        "heartbeat": heartbeat or None,
+        "counts": {
+            "orders_recorded": len(orders),
+            "orders_filled": len(filled),
+            "buys": sum(1 for o in filled if o.get("side") == "Buy"),
+            "sells": sum(1 for o in filled if o.get("side") == "Sell"),
+            "refused": sum(1 for o in orders if o.get("ok") is False),
+        },
+        "account": {
+            "venue": "Bybit",
+            "venue_host": "api-demo.bybit.com",
+            "account_type": "UNIFIED",
+            "environment": "DEMO",
+            "real_money": False,
+            "credential_holder": "lane process only; the dashboard holds none",
+        },
+        "divergence": _divergence(root, len(filled)),
+        "wallet": _wallet(heartbeat or {}, filled),
+        "pnl": _pnl(filled, _mark),
+        "rules": _rules(heartbeat or {}, _number(state.get("lane_base")) > 0, _mark),
+        "position": _position(filled, _mark, _rules(heartbeat or {}, True, _mark)),
+        "positions": _round_trips(filled, _mark),
+        "windows": _window_stats(_round_trips(filled, _mark), filled, datetime.now(tz=UTC)),
+        "orders": [
+            {
+                **{
+                    field: order.get(field)
+                    for field in (
+                        "recorded_at",
+                        "side",
+                        "qty",
+                        "unit",
+                        "ok",
+                        "stage",
+                        "avg_price",
+                        "cum_exec_qty",
+                        "fee",
+                        "reason",
+                        "error",
+                        "reconcile",
+                    )
+                },
+                **_order_money(order),
+                **_annotations.get(str(order.get("order_id") or ""), {}),
+            }
+            for order in orders[-ORDER_HISTORY_LIMIT:][::-1]
+        ],
+        "note": (
+            "Demo/fake money on the venue demo host. The candidate is UNVALIDATED and demo "
+            "fills are execution-measurement evidence only — they cannot validate or promote "
+            "a strategy. No live path, credential access, or real-money capability exists here."
+        ),
+    }
+
+
+def _number(value: Any) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def _order_money(order: dict[str, Any]) -> dict[str, Any]:
+    """Cash and base movement for one order, taken from reconciled wallet deltas.
+
+    The venue's own before/after balances are the source of truth rather than
+    `qty * avg_price`: the delta already includes the fee however the venue charged it
+    (quote on sells, base on buys), so a derived notional would disagree with the wallet.
+    """
+    reconcile = order.get("reconcile") or {}
+    quote_delta = _number(reconcile.get(f"{QUOTE_COIN}_delta"))
+    base_delta = _number(reconcile.get(f"{BASE_COIN}_delta"))
+    price = _number(order.get("avg_price"))
+
+    return {
+        "usd_spent": round(-quote_delta, 4) if quote_delta < 0 else 0.0,
+        "usd_received": round(quote_delta, 4) if quote_delta > 0 else 0.0,
+        "usd_notional": round(abs(quote_delta), 4),
+        "base_delta": round(base_delta, 8),
+        # Fee is charged in the base coin on a buy and the quote coin on a sell; express
+        # both in USD so the column means one thing.
+        "fee_usd": round(
+            _number(order.get("fee")) * price
+            if order.get("side") == "Buy"
+            else _number(order.get("fee")),
+            4,
+        ),
+    }
+
+
+def _annotate_orders(filled: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    """Per-order protection and realised P&L, keyed by order id.
+
+    Walks fills chronologically carrying a running average cost, so a sell can be scored
+    against what the position actually cost rather than against the last buy alone.
+
+    `stop_loss` and `take_profit` are recorded per order because that is what they
+    describe: the protection attached to *that* position when it was opened. They are
+    null here because this strategy defines none — but the field belongs on the order, not
+    on the account, so a future strategy that does set them displays without restructuring.
+    """
+    annotations: dict[str, dict[str, Any]] = {}
+    base_held = 0.0
+    cost_basis = 0.0
+
+    for index, order in enumerate(filled):
+        money = _order_money(order)
+        key = str(order.get("order_id") or f"idx-{index}")
+        realised: float | None = None
+
+        if order.get("side") == "Buy":
+            base_held += money["base_delta"]
+            cost_basis += money["usd_spent"]
+        else:
+            sold = -money["base_delta"]
+            average = cost_basis / base_held if base_held > 0 else 0.0
+            realised = money["usd_received"] - sold * average
+            cost_basis -= sold * average
+            base_held -= sold
+
+        annotations[key] = {
+            "stop_loss": None,
+            "take_profit": None,
+            "protection": "none — rule-driven exit",
+            "realised_pnl_usd": round(realised, 4) if realised is not None else None,
+        }
+    return annotations
+
+
+def _position(filled: list[dict[str, Any]], mark: float, rules: dict[str, Any]) -> dict[str, Any]:
+    """The open position, if any — everything scoped to this trade rather than the account.
+
+    Stop loss, take profit, exit trigger, entry, and unrealised P&L all belong here: they
+    describe one position. Wallet balances and order caps do not, and live at account
+    scope instead.
+    """
+    base_held = 0.0
+    cost_basis = 0.0
+    opened_at: str | None = None
+
+    for order in filled:
+        money = _order_money(order)
+        if order.get("side") == "Buy":
+            if base_held <= 0:
+                opened_at = order.get("recorded_at")
+            base_held += money["base_delta"]
+            cost_basis += money["usd_spent"]
+        else:
+            sold = -money["base_delta"]
+            average = cost_basis / base_held if base_held > 0 else 0.0
+            cost_basis -= sold * average
+            base_held -= sold
+            if base_held <= 1e-12:
+                base_held, cost_basis, opened_at = 0.0, 0.0, None
+
+    if base_held <= 1e-12:
+        return {
+            "open": False,
+            "symbol": "ETHUSDT",
+            "side": None,
+            "entry_price_usd": None,
+            "stop_loss": None,
+            "take_profit": None,
+            "would_enter_above": rules.get("donchian_upper"),
+            "note": (
+                "No open position. The lane buys on a 40-bar breakout with volume confirmation."
+            ),
+        }
+
+    entry = cost_basis / base_held
+    value = base_held * mark if mark > 0 else None
+    exit_trigger = _number(rules.get("donchian_lower"))
+
+    return {
+        "open": True,
+        "symbol": "ETHUSDT",
+        "side": "LONG",
+        "size_base": round(base_held, 8),
+        "opened_at": opened_at,
+        "entry_price_usd": round(entry, 2),
+        "cost_usd": round(cost_basis, 4),
+        "mark_price_usd": round(mark, 2) if mark > 0 else None,
+        "value_usd": round(value, 4) if value is not None else None,
+        "unrealised_pnl_usd": round(value - cost_basis, 4) if value is not None else None,
+        "unrealised_pnl_pct": (
+            round((value - cost_basis) / cost_basis * 100, 2)
+            if value is not None and cost_basis > 0
+            else None
+        ),
+        # Position-scoped protection. Null because the spec sets both to null — stated
+        # here rather than at account level, because a stop protects a position.
+        "stop_loss": None,
+        "take_profit": None,
+        "protection": "none — this strategy defines no stop loss or take profit",
+        "exit_trigger_usd": round(exit_trigger, 2) if exit_trigger else None,
+        "exit_rule": "sells when a 1h bar closes below the 40-bar Donchian low",
+        "distance_to_exit_pct": (
+            round((mark - exit_trigger) / mark * 100, 2) if mark > 0 and exit_trigger > 0 else None
+        ),
+        "max_loss_bounded_by": "position size — no leverage, spot only",
+    }
+
+
+# Measured on 259 historical trades of this exact rule (ETHUSDT 1h, 2026-07-20 analysis):
+# median hold 65 bars. Shown as the expected trade time because it is measured, not guessed.
+EXPECTED_HOLD_BARS = 65
+EXPECTED_HOLD_SOURCE = "median of 259 historical trades of this rule"
+STRATEGY_ID = "STRAT-ETH-volume-breakout-prospective-v1"
+
+
+def _round_trips(filled: list[dict[str, Any]], mark: float) -> list[dict[str, Any]]:
+    """Fills folded into positions: each buy→sell round trip is one closed position,
+    a trailing unmatched buy is the open one.
+
+    This is the object the operator actually thinks in. The ledger stores orders because
+    orders are what the venue confirms; positions are derived, never stored, so they can
+    never disagree with the fills underneath them.
+    """
+    positions: list[dict[str, Any]] = []
+    entry: dict[str, Any] | None = None
+
+    for order in filled:
+        money = _order_money(order)
+        if order.get("side") == "Buy":
+            entry = {
+                "coin": "ETH",
+                "symbol": "ETHUSDT",
+                "side": "LONG",
+                "status": "OPEN",
+                "opened_at": order.get("recorded_at"),
+                "size_base": money["base_delta"],
+                "entry_price_usd": (
+                    round(money["usd_spent"] / money["base_delta"], 2)
+                    if money["base_delta"] > 0
+                    else None
+                ),
+                "spent_usd": money["usd_spent"],
+                "strategy": STRATEGY_ID,
+                "timeframe": "1h",
+                # Steps as lists so a future laddered-TP/SL strategy fits unchanged.
+                "tp_steps": [],
+                "sl_steps": [],
+                "protection": "none — rule-driven exit (close < 40-bar Donchian low)",
+                "expected_hold_bars": EXPECTED_HOLD_BARS,
+                "expected_hold_source": EXPECTED_HOLD_SOURCE,
+            }
+        elif entry is not None:
+            received = money["usd_received"]
+            pnl = received - entry["spent_usd"]
+            positions.append(
+                {
+                    **entry,
+                    "status": "CLOSED",
+                    "closed_at": order.get("recorded_at"),
+                    "exit_price_usd": (
+                        round(received / -money["base_delta"], 2)
+                        if money["base_delta"] < 0
+                        else None
+                    ),
+                    "received_usd": received,
+                    "pnl_usd": round(pnl, 4),
+                    "pnl_pct": (
+                        round(pnl / entry["spent_usd"] * 100, 2) if entry["spent_usd"] > 0 else None
+                    ),
+                }
+            )
+            entry = None
+
+    if entry is not None:
+        value = entry["size_base"] * mark if mark > 0 else None
+        pnl = value - entry["spent_usd"] if value is not None else None
+        positions.append(
+            {
+                **entry,
+                "mark_price_usd": round(mark, 2) if mark > 0 else None,
+                "value_usd": round(value, 4) if value is not None else None,
+                "pnl_usd": round(pnl, 4) if pnl is not None else None,
+                "pnl_pct": (
+                    round(pnl / entry["spent_usd"] * 100, 2)
+                    if pnl is not None and entry["spent_usd"] > 0
+                    else None
+                ),
+            }
+        )
+    return positions[::-1]  # newest first
+
+
+def _parse_ts(value: Any) -> datetime | None:
+    try:
+        return datetime.fromisoformat(str(value))
+    except (TypeError, ValueError):
+        return None
+
+
+def _window_stats(
+    positions: list[dict[str, Any]],
+    filled: list[dict[str, Any]],
+    now: datetime,
+) -> dict[str, dict[str, Any]]:
+    """Per-window aggregates: realised P/L, open/closed counts, fees, win rate, volume.
+
+    Realised P/L is attributed to the window the position *closed* in — the moment the
+    result became real. Unrealised P/L is deliberately excluded from window numbers: it
+    belongs to the open position, and mixing it in would make '1 day net' drift with every
+    price tick even when nothing was traded.
+    """
+    windows = {"1d": 1, "1w": 7, "1m": 30, "all": None}
+    out: dict[str, dict[str, Any]] = {}
+
+    for name, days in windows.items():
+        threshold = None if days is None else now - timedelta(days=days)
+
+        def _in(ts: Any, threshold: datetime | None = threshold) -> bool:
+            parsed = _parse_ts(ts)
+            return parsed is not None and (threshold is None or parsed >= threshold)
+
+        closed = [p for p in positions if p["status"] == "CLOSED" and _in(p.get("closed_at"))]
+        opened = [p for p in positions if _in(p.get("opened_at"))]
+        window_fills = [o for o in filled if _in(o.get("recorded_at"))]
+        wins = [p for p in closed if (p.get("pnl_usd") or 0) > 0]
+        realised = sum(p.get("pnl_usd") or 0 for p in closed)
+        spent = sum(p.get("spent_usd") or 0 for p in closed)
+
+        out[name] = {
+            "realised_pnl_usd": round(realised, 4),
+            "realised_pnl_pct": round(realised / spent * 100, 2) if spent > 0 else None,
+            "positions_opened": len(opened),
+            "positions_closed": len(closed),
+            "win_rate_pct": round(len(wins) / len(closed) * 100, 1) if closed else None,
+            "fees_usd": round(sum(_order_money(o)["fee_usd"] for o in window_fills), 4),
+            "volume_usd": round(sum(_order_money(o)["usd_notional"] for o in window_fills), 2),
+        }
+    return out
+
+
+def _pnl(filled: list[dict[str, Any]], mark_price: float) -> dict[str, Any]:
+    """Average-cost P&L for the lane.
+
+    Average cost rather than lot matching: the lane holds one position at a time and
+    never partially exits, so the two agree here, and average cost degrades sensibly if
+    that ever changes.
+
+    `mark_price` of zero means the lane has not yet recorded a snapshot. Unrealised P&L is
+    then unavailable rather than zero — reporting an unmarked position as flat would
+    understate risk, so the field is null and the UI says so.
+    """
+    spent = sum(_order_money(order)["usd_spent"] for order in filled)
+    received = sum(_order_money(order)["usd_received"] for order in filled)
+    base_bought = sum(
+        _order_money(order)["base_delta"] for order in filled if order.get("side") == "Buy"
+    )
+    position = sum(_order_money(order)["base_delta"] for order in filled)
+    net_cash = received - spent
+
+    average_cost = spent / base_bought if base_bought > 0 else 0.0
+    marked = mark_price > 0
+
+    position_value = position * mark_price if marked else None
+    unrealised = position * (mark_price - average_cost) if marked and position > 0 else 0.0
+    total = (net_cash + position_value) if marked and position_value is not None else None
+    realised = (total - unrealised) if total is not None else None
+
+    return {
+        "invested_usd": round(spent, 4),
+        "returned_usd": round(received, 4),
+        "net_cash_usd": round(net_cash, 4),
+        "position_base": round(position, 8),
+        "average_cost_usd": round(average_cost, 4) if base_bought > 0 else None,
+        "mark_price_usd": round(mark_price, 4) if marked else None,
+        "position_value_usd": round(position_value, 4) if position_value is not None else None,
+        "realised_pnl_usd": round(realised, 4) if realised is not None else None,
+        "unrealised_pnl_usd": round(unrealised, 4) if marked else None,
+        "total_pnl_usd": round(total, 4) if total is not None else None,
+        "total_pnl_pct": (
+            round(total / spent * 100, 4) if total is not None and spent > 0 else None
+        ),
+        "marked": marked,
+        "basis": "average_cost",
+        "currency": QUOTE_COIN,
+    }
+
+
+def _wallet(heartbeat: dict[str, Any], filled: list[dict[str, Any]]) -> dict[str, Any]:
+    """Latest wallet snapshot, preferring the per-cycle heartbeat over the last fill.
+
+    The heartbeat is refreshed every cycle; a fill's snapshot is only as recent as the
+    last trade. Whichever is used, `as_of` states when it was taken — a balance shown
+    without its timestamp invites reading a stale number as live.
+    """
+    balances = heartbeat.get("wallet")
+    as_of = heartbeat.get("at")
+    source = "heartbeat"
+
+    if not isinstance(balances, dict) or not balances:
+        source = "last_fill"
+        balances, as_of = {}, None
+        for order in reversed(filled):
+            snapshot = order.get("wallet_after")
+            if isinstance(snapshot, dict) and snapshot:
+                balances, as_of = snapshot, order.get("recorded_at")
+                break
+
+    coins = {coin: _number(amount) for coin, amount in balances.items()}
+    return {
+        "available": bool(coins),
+        "as_of": as_of,
+        "source": source if coins else None,
+        "balances": {coin: round(amount, 8) for coin, amount in coins.items()},
+        "quote_balance_usd": round(coins.get(QUOTE_COIN, 0.0), 4) if coins else None,
+        "base_balance": round(coins.get(BASE_COIN, 0.0), 8) if coins else None,
+    }
+
+
+def _rules(heartbeat: dict[str, Any], holding: bool, mark: float) -> dict[str, Any]:
+    """What actually governs entry and exit, including the absence of a stop.
+
+    The spec sets `stop_loss: null` and `take_profit: null`. Rendering those as blank
+    fields would read as "not loaded yet"; they are stated as explicitly absent, with the
+    rule that does govern the exit shown alongside, so the screen cannot be mistaken for
+    one describing a stop-protected position.
+    """
+    levels = heartbeat.get("rule_levels") or {}
+    warming = bool(levels.get("warming_up")) or not levels
+
+    lower = _number(levels.get("donchian_lower"))
+    upper = _number(levels.get("donchian_upper"))
+    threshold = _number(levels.get("volume_threshold"))
+    volume = _number(levels.get("volume_base"))
+
+    # While long, the exit band is the price that matters; while flat, the entry band is.
+    trigger = lower if holding else upper
+    distance_pct = ((mark - trigger) / mark * 100) if (mark > 0 and trigger > 0) else None
+
+    return {
+        # Stop loss and take profit are NOT here: they describe a position, not the market
+        # state or the account. See `position.stop_loss` / `position.take_profit`.
+        "warming_up": warming,
+        "entry_rule": "close > donchian_upper(40) AND volume > 1.5x average(40)",
+        "exit_rule": "close < donchian_lower(40)",
+        "donchian_upper": round(upper, 2) if upper else None,
+        "donchian_lower": round(lower, 2) if lower else None,
+        "volume_threshold": round(threshold, 4) if threshold else None,
+        "volume_base": round(volume, 4) if volume else None,
+        "active_trigger": "EXIT_BELOW" if holding else "ENTRY_ABOVE",
+        "active_trigger_price": round(trigger, 2) if trigger else None,
+        "distance_to_trigger_pct": round(distance_pct, 2) if distance_pct is not None else None,
+        "bar_close_time": levels.get("bar_close_time"),
+        "evaluated_on": "closed 1h bars only; fills at the next bar open",
+    }
+
+
+def _divergence(root: Path, fills_now: int) -> dict[str, Any]:
+    """Latest divergence report (T-015-03 measurement mode), with staleness stated.
+
+    The report is regenerated by `scripts/run_demo_divergence_report.py`; if fills have
+    landed since it last ran, saying so beats silently showing numbers that omit them.
+    """
+    payload = _read_json(root / DIVERGENCE_REPORT)
+    if not payload:
+        return {
+            "available": False,
+            "note": "no divergence report yet - run scripts/run_demo_divergence_report.py",
+        }
+    measured = int(payload.get("fills_measured") or 0)
+    return {
+        "available": True,
+        "fills_measured": measured,
+        "stale": fills_now > measured,
+        "mean_divergence_bps": payload.get("mean_divergence_bps"),
+        "worst_divergence_bps": payload.get("worst_divergence_bps"),
+        "generated_at": payload.get("generated_at"),
+        "interpretation": "positive bps = worse than the frozen next-open expectation",
+    }
+
+
+def _validated(payload: dict[str, Any]) -> tuple[str, str]:
+    action = str(payload.get("action", "")).strip().upper()
+    if action not in ACTIONS:
+        raise DemoLaneActionError(f"unknown demo lane action: {action or '(missing)'}")
+    key = payload.get("idempotency_key")
+    if not isinstance(key, str) or not _IDENTIFIER.fullmatch(key):
+        raise DemoLaneActionError("idempotency_key must be a bounded identifier")
+    if set(payload) - {"action", "idempotency_key"}:
+        raise DemoLaneActionError("demo lane actions accept only action and idempotency_key")
+    return action, key
+
+
+def _audit(root: Path, record: dict[str, Any]) -> None:
+    try:
+        with confined_audit_handle(root, AUDIT_PATH, create=True) as handle:
+            assert handle is not None
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+            handle.write(json.dumps(record, sort_keys=True) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+    except (OSError, AuditPathError) as error:
+        raise DemoLaneActionError("demo lane audit is unavailable", 503) from error
+
+
+def _spawn(root: Path, mode: str) -> subprocess.Popen[bytes]:
+    """Launch the lane. Fixed argv, no shell, no user input — `mode` is an internal literal."""
+    assert mode in {"--loop", "--once"}
+    (root / LANE_DIR).mkdir(parents=True, exist_ok=True)
+    log = (root / LANE_LOG).open("ab")
+    return subprocess.Popen(  # noqa: S603 (fixed argv, shell=False)
+        [sys.executable, str(root / LANE_SCRIPT), mode],
+        cwd=str(root),
+        stdout=log,
+        stderr=log,
+        stdin=subprocess.DEVNULL,
+        start_new_session=True,
+    )
+
+
+def perform_demo_lane_action(root: Path, payload: dict[str, Any]) -> dict[str, Any]:
+    """Apply one allowlisted lane control and retain an operator audit record."""
+    action, key = _validated(payload)
+    root = root.resolve()
+    if not (root / LANE_SCRIPT).is_file():
+        raise DemoLaneActionError("demo lane script is missing", 503)
+    running, pid, _started = _running(root)
+    kill_switch = root / KILL_SWITCH
+    detail = ""
+
+    if action == "START":
+        if running:
+            raise DemoLaneActionError("the demo lane is already running", 409)
+        kill_switch.unlink(missing_ok=True)  # starting clears a previous stop
+        process = _spawn(root, "--loop")
+        detail = f"lane started (pid {process.pid}); stop flag cleared"
+    elif action == "STOP":
+        kill_switch.parent.mkdir(parents=True, exist_ok=True)
+        kill_switch.write_text(
+            json.dumps({"stopped_at": datetime.now(tz=UTC).isoformat(), "source": "dashboard"})
+        )
+        # The flag alone already blocks every order; also end the process so it stops polling.
+        if running and isinstance(pid, int):
+            try:
+                os.kill(pid, signal.SIGTERM)
+            except (OSError, ProcessLookupError):
+                pass
+        detail = "stop flag set; orders are refused immediately"
+    else:  # RUN_ONCE
+        if running:
+            raise DemoLaneActionError(
+                "the lane is already running; a second cycle would race its state", 409
+            )
+        kill_switch.unlink(missing_ok=True)
+        try:
+            completed = subprocess.run(  # noqa: S603 (fixed argv, shell=False)
+                [sys.executable, str(root / LANE_SCRIPT), "--once"],
+                cwd=str(root),
+                capture_output=True,
+                timeout=RUN_ONCE_TIMEOUT_SECONDS,
+                check=False,
+            )
+        except subprocess.TimeoutExpired as error:
+            raise DemoLaneActionError("the demo lane cycle timed out", 504) from error
+        detail = f"single cycle finished with exit code {completed.returncode}"
+
+    record = {
+        "schema_version": 1,
+        "decided_at": datetime.now(tz=UTC).isoformat(),
+        "source": "local_dashboard_operator",
+        "action": action,
+        "idempotency_key": key,
+        "detail": detail,
+        "environment": "VENUE_DEMO",
+        "real_money": False,
+    }
+    _audit(root, record)
+    return {"schema_version": 1, "recorded": record, "state": build_demo_lane(root)}

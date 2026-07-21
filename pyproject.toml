@@ -52,3 +52,6 @@ disable_error_code = ["attr-defined"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+markers = [
+    "slow: data-package byte-integrity checks (~94% of suite runtime). Run by `make check-full`, excluded from `make check`.",
+]

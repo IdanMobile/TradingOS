@@ -1,26 +1,26 @@
 {
-  "last_run_utc": "2026-07-13T03:10:55.452991+00:00",
+  "last_run_utc": "2026-07-21T03:10:57.397879+00:00",
   "update_code": {
     "module": "src/tios/dataset/daily_update.py",
     "module_sha256": "659cbba2c638332bd63c05f3ab25fcc2caa9f3938417c334c6bd1cf24df42739",
-    "git_commit": "672e2da9209d494a0bbdabd8e55bcd00f6c7fa44"
+    "git_commit": "265f9bc378d3585f74d7cb0a247e37a03956b6e4"
   },
   "files_updated": 69,
-  "bars_added": 175,
+  "bars_added": 451,
   "target": "/Users/user/Downloads/trading_os_project_package/data/normalized_multi",
   "updated": [
     {
       "file": "AAVEUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "04ccc7a7603c4be7550637da5899df9f7241d9e137f16deffcc8c16491916755",
-      "content_sha256": "c58ac970538e4ae8e583c21aa67b184a342ef65bbc58e1ce51c4f1d8b82d4373",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "24ac73e5fd932f01786052c9cfc8bc8383eb46a0294a315df2f2b06937d6e107",
+      "content_sha256": "8904ff599609e5fbc80eb610fc303a885e3ee2c8c213b7e74158644b04135b4b",
       "source_pages": [
         {
-          "path": "rest_klines/AAVEUSDT/1d/86b9149f01bb02f926c53533437ff005c2a1988ece2eef18837def50ea5a60fd.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=AAVEUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "86b9149f01bb02f926c53533437ff005c2a1988ece2eef18837def50ea5a60fd",
+          "path": "rest_klines/AAVEUSDT/1d/d230a420d95dcf6df9be634f15f8a8b687422bea3c6244dc475be975b5f2ad78.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=AAVEUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "d230a420d95dcf6df9be634f15f8a8b687422bea3c6244dc475be975b5f2ad78",
           "rows": 1
         }
       ]
@@ -28,63 +28,63 @@
     {
       "file": "ADAUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "3b2b8bbd12bc528b2ff41f7008330e387c61b3692698b1dce167a82ab948cc57",
-      "content_sha256": "ca4c15f7f2b74fe65d23f0f0aff0083f5b3a5b6de262043613929b881c9dac40",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "928bdb7608bfab9b28a98a09a09bda84900c955c7b2bb920abf1b6b64042b203",
+      "content_sha256": "fbf7198cc3488bb6d79c58460ab2c00748fa827ffb4f6596c610a7b6b7f95425",
       "source_pages": [
         {
-          "path": "rest_klines/ADAUSDT/1d/1e2c7ea7f653dc44a88f686466bbc5d2286d074db9b7a74c7ab2fb6110c2af4d.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=ADAUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "1e2c7ea7f653dc44a88f686466bbc5d2286d074db9b7a74c7ab2fb6110c2af4d",
+          "path": "rest_klines/ADAUSDT/1d/ca5f973f42e7324a058ad60382e434b688db0f3ce82a37fbaa859b0e65ef0108.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=ADAUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "ca5f973f42e7324a058ad60382e434b688db0f3ce82a37fbaa859b0e65ef0108",
           "rows": 1
         }
       ]
     },
     {
       "file": "ADAUSDT_1h.parquet",
-      "added_rows": 8,
-      "rows": 48446,
-      "coverage_end_utc": "2026-07-13 03:00:00+00:00",
-      "parquet_sha256": "a0b076e161193f4d41616d7473567685a2c0222a5455f03e78047c7cb1604b9f",
-      "content_sha256": "4497626fe9cd791dfad500104eacb1cde09be1b689aed016a014dc837daa2696",
+      "added_rows": 24,
+      "rows": 48638,
+      "coverage_end_utc": "2026-07-21 03:00:00+00:00",
+      "parquet_sha256": "7d155296d8ffc64753fcc3891522b6aa8d4e4db19cb2eb9bd395ca956a6a8fe4",
+      "content_sha256": "de23b598631b79e27ee2b3a2a1215be20e5781ddfe6a1e038feca2c3ed01a4dd",
       "source_pages": [
         {
-          "path": "rest_klines/ADAUSDT/1h/a1115ec0f0fef007526ed24c32ed9f34b4b607c94129059de5eaff8e323488b3.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=ADAUSDT&interval=1h&startTime=1783882800001&limit=1000",
-          "sha256": "a1115ec0f0fef007526ed24c32ed9f34b4b607c94129059de5eaff8e323488b3",
-          "rows": 8
+          "path": "rest_klines/ADAUSDT/1h/49865718658c9f7b4ee81e5c9280c9c05a25a7fccbcc7070c6a23d80f27823e6.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=ADAUSDT&interval=1h&startTime=1784516400001&limit=1000",
+          "sha256": "49865718658c9f7b4ee81e5c9280c9c05a25a7fccbcc7070c6a23d80f27823e6",
+          "rows": 24
         }
       ]
     },
     {
       "file": "ADAUSDT_4h.parquet",
-      "added_rows": 2,
-      "rows": 12115,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "e04edbda1db8108221868ef844b449d976c3596cfd8a3988aa12905a81a668b6",
-      "content_sha256": "3a07489db7e0d0cb714b5f73b2e7d82e10072d732730c9758b50882b8f23a878",
+      "added_rows": 6,
+      "rows": 12163,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "000a9ecc54b2e61280773bda7aef55e7ae4a9bcefd265dcead52091e2eac818a",
+      "content_sha256": "5a86fcc69d5b0b3adf5e1d0b5a48ed4e7834945c69cfb33a8f0be0c46c8fc8b7",
       "source_pages": [
         {
-          "path": "rest_klines/ADAUSDT/4h/0671b8cbecaccbda202bd0ad01bd9dae3a0ef5257949c7b1a8db18befb0dbae7.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=ADAUSDT&interval=4h&startTime=1783872000001&limit=1000",
-          "sha256": "0671b8cbecaccbda202bd0ad01bd9dae3a0ef5257949c7b1a8db18befb0dbae7",
-          "rows": 2
+          "path": "rest_klines/ADAUSDT/4h/acc4fb966b2ceb3d48e63d9f359ecc93a964c23f832db5edf2ad5c638e4ba82e.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=ADAUSDT&interval=4h&startTime=1784505600001&limit=1000",
+          "sha256": "acc4fb966b2ceb3d48e63d9f359ecc93a964c23f832db5edf2ad5c638e4ba82e",
+          "rows": 6
         }
       ]
     },
     {
       "file": "ALGOUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "4bf81ac6628a838585d4b8f6bc883d13c1e1b34900cb577893a6ee8973d30e5e",
-      "content_sha256": "8758117799501766d113e2730a281e82fada5dda45607e94e328bf59d0ab4c2a",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "8da0bd4f9abf2242d2f50937a6f61f1cb7a0dcdaec9990b9c8760c537d1acf75",
+      "content_sha256": "e704845889c18ed2e2200809088009aead7b42d87e9ebaa48ec6fdfbaa0f4ec5",
       "source_pages": [
         {
-          "path": "rest_klines/ALGOUSDT/1d/35434b9d1b6497ab84db0620da085b334112c52582cc8bf69aadfce6701109a7.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=ALGOUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "35434b9d1b6497ab84db0620da085b334112c52582cc8bf69aadfce6701109a7",
+          "path": "rest_klines/ALGOUSDT/1d/a0c0c1a0fd81b2cfd80128454192612df407b44578d9f90d48a56f87ea7ac817.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=ALGOUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "a0c0c1a0fd81b2cfd80128454192612df407b44578d9f90d48a56f87ea7ac817",
           "rows": 1
         }
       ]
@@ -92,15 +92,15 @@
     {
       "file": "APTUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 1364,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "1e6a868e529c3ad427bdf88432da8d075cd451f582a126880b31654d4dacfede",
-      "content_sha256": "29270fab286b0ad5ba515ca7814ae6444581add11969d1f75cccf7c35a1d8829",
+      "rows": 1372,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "1f9e332f54d7baba794751f672e25f7a622202fc07598beb8745d9531f1f5a56",
+      "content_sha256": "78107f38a2b11dd892e2fc1e1261042ed7cb6a00f8887145ff9bdaacc4fdaf51",
       "source_pages": [
         {
-          "path": "rest_klines/APTUSDT/1d/a0465f390c142e500315571b8b2777816ad50843333091520438a3e727aee405.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=APTUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "a0465f390c142e500315571b8b2777816ad50843333091520438a3e727aee405",
+          "path": "rest_klines/APTUSDT/1d/9aeb987da59f63125e6119d1a7b9503d5590fcc85234c1d0dd6827e82ca22f98.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=APTUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "9aeb987da59f63125e6119d1a7b9503d5590fcc85234c1d0dd6827e82ca22f98",
           "rows": 1
         }
       ]
@@ -108,15 +108,15 @@
     {
       "file": "ARBUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 1209,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "54b340036e070752d92e85a21bcedb16a7292612985ca1a0b2f7eb781368757b",
-      "content_sha256": "0767fdbdced435cf85af9b25dce624ea329b262578d069da64433c6b0ff4f3f5",
+      "rows": 1217,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "a9c2906e120ddd56b001a267dd5b7f63bb1d840ee45408904e82a591b4a79fc2",
+      "content_sha256": "200cf382f2e7448afd95eef25c81718d0dee4cf4edea7086afbe1c9a07c46982",
       "source_pages": [
         {
-          "path": "rest_klines/ARBUSDT/1d/2b7c0a11635e810951ee59680ecfd4ce47a5e1bf1fa7acdd4a1ccea1774a0b1d.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=ARBUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "2b7c0a11635e810951ee59680ecfd4ce47a5e1bf1fa7acdd4a1ccea1774a0b1d",
+          "path": "rest_klines/ARBUSDT/1d/8c3844e60aca107e21362789b31b2ea98625f7cd6234d85e3091a5ea492d32c6.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=ARBUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "8c3844e60aca107e21362789b31b2ea98625f7cd6234d85e3091a5ea492d32c6",
           "rows": 1
         }
       ]
@@ -124,111 +124,111 @@
     {
       "file": "ATOMUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "65987b92375ce9ca04a8de131fc0f81667ba2c01fa9adc14e779b167eeff7fe3",
-      "content_sha256": "f758bdfe4a611bf2e353462e632981c460e1637536cde8f8a792cb1f86bac660",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "48962ae8bf0ac3528e3e713559f6954340c8a7549e94433d2f724ab78c7ce4c8",
+      "content_sha256": "acee19c33fef75a8b88daf9bfa2e53c8eb534b5b0fccd2aa7b13c11e8af055e9",
       "source_pages": [
         {
-          "path": "rest_klines/ATOMUSDT/1d/1a2cfe471aeedc96d374afd5b237a06bd9d0e51a80da24842a16ef1ded186cfe.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=ATOMUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "1a2cfe471aeedc96d374afd5b237a06bd9d0e51a80da24842a16ef1ded186cfe",
+          "path": "rest_klines/ATOMUSDT/1d/6a54158eece9e875cc87984d37bed64d3c34054aa1ad345b06d35ca139d457ab.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=ATOMUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "6a54158eece9e875cc87984d37bed64d3c34054aa1ad345b06d35ca139d457ab",
           "rows": 1
         }
       ]
     },
     {
       "file": "ATOMUSDT_1h.parquet",
-      "added_rows": 8,
-      "rows": 48446,
-      "coverage_end_utc": "2026-07-13 03:00:00+00:00",
-      "parquet_sha256": "be8331b041ca4a0aa077caceb532fba9fd3ca7866c621fa0442e49cdfcb156e7",
-      "content_sha256": "5ee2d4bb5aca596c5e7e2663dc5759aaac0a66516ff8bc984edf466f6349cf77",
+      "added_rows": 24,
+      "rows": 48638,
+      "coverage_end_utc": "2026-07-21 03:00:00+00:00",
+      "parquet_sha256": "ddacc2add8a026c748fb5fc36945b85382f073160181ec232131bbd0ccfd89b8",
+      "content_sha256": "62d1a689b28bde462a7a6efa6444cc03dd2af04bddb02a0f0f2b2425bd4a7b88",
       "source_pages": [
         {
-          "path": "rest_klines/ATOMUSDT/1h/77b7d1caa06c5495e98f1470aaf8873693377c7c8504829bb4b1652b4ae2ab5e.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=ATOMUSDT&interval=1h&startTime=1783882800001&limit=1000",
-          "sha256": "77b7d1caa06c5495e98f1470aaf8873693377c7c8504829bb4b1652b4ae2ab5e",
-          "rows": 8
+          "path": "rest_klines/ATOMUSDT/1h/62c25bf04cea5e365e661a764cc2f224667cdf7f08843c3122c4510c837b34e0.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=ATOMUSDT&interval=1h&startTime=1784516400001&limit=1000",
+          "sha256": "62c25bf04cea5e365e661a764cc2f224667cdf7f08843c3122c4510c837b34e0",
+          "rows": 24
         }
       ]
     },
     {
       "file": "ATOMUSDT_4h.parquet",
-      "added_rows": 2,
-      "rows": 12115,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "f8510da49fd4f73180564ca03857439c6abbe2677cea76336c3f7818c4489b25",
-      "content_sha256": "91a6dcc15fe3cbce594894bd14f227bea71cc6b9f46d87b9bffec571b1c4fa90",
+      "added_rows": 6,
+      "rows": 12163,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "1f38ea29343a6c272abd8860b24ea693a1b24cd900e235b87f6c1ea326825f86",
+      "content_sha256": "7db667ba076b9b42c7c29c0ffce572ca7619b58c88a70eeac0d1d02a2a148aa5",
       "source_pages": [
         {
-          "path": "rest_klines/ATOMUSDT/4h/55e659c5f7252bb99eeea11cff8a18c991862cf438d2a806dace31ffeaca32f7.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=ATOMUSDT&interval=4h&startTime=1783872000001&limit=1000",
-          "sha256": "55e659c5f7252bb99eeea11cff8a18c991862cf438d2a806dace31ffeaca32f7",
-          "rows": 2
+          "path": "rest_klines/ATOMUSDT/4h/ca573fc4bc97babed2400290e8ecab1d282465360933fe36e37ea78b675dc85a.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=ATOMUSDT&interval=4h&startTime=1784505600001&limit=1000",
+          "sha256": "ca573fc4bc97babed2400290e8ecab1d282465360933fe36e37ea78b675dc85a",
+          "rows": 6
         }
       ]
     },
     {
       "file": "AVAXUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "dc8c1d31cc65f2a095317751fba169d69ed67c36f32e050481c08f8bf986a310",
-      "content_sha256": "c4463ffb2433d1fa37528534c663a850e870c9888a05783829856f3e62591e35",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "c0261f9df09dfc64cfc30850497823bcc89013c997677c1c89721237075ad613",
+      "content_sha256": "f41a57b70b7880c8bd08dc8dfdd502245af6485419a9060327e249fd2d48b2c9",
       "source_pages": [
         {
-          "path": "rest_klines/AVAXUSDT/1d/1b60bc8b32c5709db417283cc3446a5ba6b85487432ad986c18e9deeaf74e132.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=AVAXUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "1b60bc8b32c5709db417283cc3446a5ba6b85487432ad986c18e9deeaf74e132",
+          "path": "rest_klines/AVAXUSDT/1d/7a68bbc918a9b2b5253adb7987f43ac1b08620c3d557f9bf5f3afa9410787466.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=AVAXUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "7a68bbc918a9b2b5253adb7987f43ac1b08620c3d557f9bf5f3afa9410787466",
           "rows": 1
         }
       ]
     },
     {
       "file": "AVAXUSDT_1h.parquet",
-      "added_rows": 8,
-      "rows": 48446,
-      "coverage_end_utc": "2026-07-13 03:00:00+00:00",
-      "parquet_sha256": "a678c9df97c8e60c3a8b227eaf62ad89ba59a231f4f3f636205d48770c2da7bb",
-      "content_sha256": "479b9f5c5c1d5b7886f90b6bf2f83256ab0b72ff44b619519377dbee791d1891",
+      "added_rows": 24,
+      "rows": 48638,
+      "coverage_end_utc": "2026-07-21 03:00:00+00:00",
+      "parquet_sha256": "82bfe730391a986dff26e50575f230e98263a7c21a6d6a1ae16fbae0c640d4d9",
+      "content_sha256": "b275331689b091165d3b67db07359a4cb6b39482976426d6b751cdb46499c50c",
       "source_pages": [
         {
-          "path": "rest_klines/AVAXUSDT/1h/6736b0c974b79d5ebc9789fbefbef2ed24efa96f5c9f2bcdaaf5acd81bc3263e.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=AVAXUSDT&interval=1h&startTime=1783882800001&limit=1000",
-          "sha256": "6736b0c974b79d5ebc9789fbefbef2ed24efa96f5c9f2bcdaaf5acd81bc3263e",
-          "rows": 8
+          "path": "rest_klines/AVAXUSDT/1h/d6e76e3e6e8d56cde5adec2a920b9b877a16fa068cb370c77c132e34d972c714.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=AVAXUSDT&interval=1h&startTime=1784516400001&limit=1000",
+          "sha256": "d6e76e3e6e8d56cde5adec2a920b9b877a16fa068cb370c77c132e34d972c714",
+          "rows": 24
         }
       ]
     },
     {
       "file": "AVAXUSDT_4h.parquet",
-      "added_rows": 2,
-      "rows": 12115,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "a60ae8ce6a115996916488764feb379037b9d299a4e64d7153d301b06bfb5977",
-      "content_sha256": "59743ad0d13e10a42787b8e7cc95c25fc29429fbad6436803e39b51188d6422d",
+      "added_rows": 6,
+      "rows": 12163,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "54c5fae263466b795d326183a6ddf7a3849a8dcc15a7b51d78818a9277666901",
+      "content_sha256": "1d7ab762b9b92706cc5002e925d9bd0d5fad6018a5c8b33e356c720f931caa0c",
       "source_pages": [
         {
-          "path": "rest_klines/AVAXUSDT/4h/dd3f46678605e349b8962864d086e6dad55e16712fc7973be0133c308406f988.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=AVAXUSDT&interval=4h&startTime=1783872000001&limit=1000",
-          "sha256": "dd3f46678605e349b8962864d086e6dad55e16712fc7973be0133c308406f988",
-          "rows": 2
+          "path": "rest_klines/AVAXUSDT/4h/240733f21c5f4fae78f2e97027a9411d1dfa50f037fe0e43f58a959c18fdc0de.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=AVAXUSDT&interval=4h&startTime=1784505600001&limit=1000",
+          "sha256": "240733f21c5f4fae78f2e97027a9411d1dfa50f037fe0e43f58a959c18fdc0de",
+          "rows": 6
         }
       ]
     },
     {
       "file": "AXSUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "8ce1c7fa09afce7e76158cd5f893aaeb7d542658086fa746ee87197aa2dd8a5d",
-      "content_sha256": "d5ecaaf93028015809e93bc4fd1bae1a37ef9a5ace2dc7bcbd84ec7474ebc025",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "dcd57218503264b9cc3cdb9e6839bd4f0acb77c3ea4c5cef10b67db8161dc5b0",
+      "content_sha256": "2001c9e6f65516fe3ff910fb3902f9f421c27fbe106dece9d386c34c79d51603",
       "source_pages": [
         {
-          "path": "rest_klines/AXSUSDT/1d/faafadfd203d8889fc3db035c1c0f67d4176f299b085b0e186ace1921bfc0ce9.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=AXSUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "faafadfd203d8889fc3db035c1c0f67d4176f299b085b0e186ace1921bfc0ce9",
+          "path": "rest_klines/AXSUSDT/1d/df0719094ba33ecab7d73cac841eb80f92c45b0146ba98f63c1e6b5802612dfc.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=AXSUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "df0719094ba33ecab7d73cac841eb80f92c45b0146ba98f63c1e6b5802612dfc",
           "rows": 1
         }
       ]
@@ -236,15 +236,15 @@
     {
       "file": "BCHUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "492478473bfae0c16092fe3f21eb33dd3a714f4f3d6bb136b6caec6459dc5d0e",
-      "content_sha256": "1f83262f8ca6a0ff9fb21d00d815bdd6a51385339bc77bb568d6887243e1d67b",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "6033f91343b16755572498f82dafd57cc5dbb9ec859883eac92b8a7b80b417c8",
+      "content_sha256": "941ccd78ebdf6058c6b791c783084a813291f551f53aa8bb0e827e6261f46cf5",
       "source_pages": [
         {
-          "path": "rest_klines/BCHUSDT/1d/73621fb490309b4b48bc865d509264a6f4d501bb6fb12629448c1052e13f5f24.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=BCHUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "73621fb490309b4b48bc865d509264a6f4d501bb6fb12629448c1052e13f5f24",
+          "path": "rest_klines/BCHUSDT/1d/50e3fa4bba1496ad371e7dbdd535d48de5b51ba69793ff60ab2df59e51fd070a.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=BCHUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "50e3fa4bba1496ad371e7dbdd535d48de5b51ba69793ff60ab2df59e51fd070a",
           "rows": 1
         }
       ]
@@ -252,207 +252,207 @@
     {
       "file": "BNBUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "af05e8ffbcfea8338f0c1b7f62aa5c58351a01f4ccc694341a43a5c9610297ea",
-      "content_sha256": "901955b5a40a1413f774a78b7daa9e3539e5f1bc0659b654d66fae643fb8a817",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "80e8b8f20272e1084067acb0561f05068bb646a8f3d12e20fb8e78bd62de583e",
+      "content_sha256": "b2b2959a034607fe7926717ed5ab3f21294d4e0ac77166d8da9ce18c9e5704a9",
       "source_pages": [
         {
-          "path": "rest_klines/BNBUSDT/1d/2a3362c3c708ed3e69a9a18db48a36cb6ca4e67886c8cddf2fecb93ee091371d.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "2a3362c3c708ed3e69a9a18db48a36cb6ca4e67886c8cddf2fecb93ee091371d",
+          "path": "rest_klines/BNBUSDT/1d/359f3da2be0070ab3a1a53fa7b8247b122f3de5bed07e6155efe69fed4e9585c.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "359f3da2be0070ab3a1a53fa7b8247b122f3de5bed07e6155efe69fed4e9585c",
           "rows": 1
         }
       ]
     },
     {
       "file": "BNBUSDT_1h.parquet",
-      "added_rows": 8,
-      "rows": 48446,
-      "coverage_end_utc": "2026-07-13 03:00:00+00:00",
-      "parquet_sha256": "ad74021a5050dc2452e5f10d9d6af78a42488f424e1477acf295ea1aee7e2cfb",
-      "content_sha256": "82b724a3f1fa0ea694473e93957ba2b9b23834b01d2df0d660e59941e76bf1c2",
+      "added_rows": 24,
+      "rows": 48638,
+      "coverage_end_utc": "2026-07-21 03:00:00+00:00",
+      "parquet_sha256": "1ff9c06997b9ed1d98b1abe9587142261c4c0fc21794644ace2e3af21f190fd8",
+      "content_sha256": "0b909b8a183c114f690a22ad031858603591ef563b35cc5403d855f04ea54d00",
       "source_pages": [
         {
-          "path": "rest_klines/BNBUSDT/1h/defc7f81db3171a36a315599ca012b537a38aa99cec15df45cd51c2cb9df4361.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1h&startTime=1783882800001&limit=1000",
-          "sha256": "defc7f81db3171a36a315599ca012b537a38aa99cec15df45cd51c2cb9df4361",
-          "rows": 8
+          "path": "rest_klines/BNBUSDT/1h/5adcc2ab48ded95d7544313db037e6f837a2d4d182b0573488c4fb73e53c9bd8.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1h&startTime=1784516400001&limit=1000",
+          "sha256": "5adcc2ab48ded95d7544313db037e6f837a2d4d182b0573488c4fb73e53c9bd8",
+          "rows": 24
         }
       ]
     },
     {
       "file": "BNBUSDT_4h.parquet",
-      "added_rows": 2,
-      "rows": 12115,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "d9f36524ae2087000410d483db798922eb1303bf6bf51f2e0617b90349fd703a",
-      "content_sha256": "b3f8d16dafc42823a1f5c41cc2fed7b2a931473bbfacc6148899db40b3e11c2f",
+      "added_rows": 6,
+      "rows": 12163,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "bb83ec7e7dbb1c2942772678fd57f693a20275fe87a159032a9aab1f8c17200d",
+      "content_sha256": "3ab11b5ff1363707b40d5dd9561ec23ed2635fe225a0032437f202310b3bbdcd",
       "source_pages": [
         {
-          "path": "rest_klines/BNBUSDT/4h/507f7f87711ff45a2d33dc0508905ce5485743a20757defd0f755e04e7f7837d.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=4h&startTime=1783872000001&limit=1000",
-          "sha256": "507f7f87711ff45a2d33dc0508905ce5485743a20757defd0f755e04e7f7837d",
-          "rows": 2
+          "path": "rest_klines/BNBUSDT/4h/8d1485845ab33a0bfb99930c323828eb6018ded41250f7029792fb67780a07cf.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=4h&startTime=1784505600001&limit=1000",
+          "sha256": "8d1485845ab33a0bfb99930c323828eb6018ded41250f7029792fb67780a07cf",
+          "rows": 6
         }
       ]
     },
     {
       "file": "BTCUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "a8dc89875e90074eef2428ac05c7d73d39107a02c83bcd9aaeefd80b77dff6cb",
-      "content_sha256": "8e40550470b4e52e0120c4b4e15c0cd1862b6e42e46ea864d2682c73049a44b0",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "e210766b140f7b78dc3f3a4bfba2b50ea080d4b6b8d36ee3b468d0d85626d719",
+      "content_sha256": "2827125f7b12e2aab7ed7f3a92aa4cfacbd1674f3390cb0bd794924f18f96ffe",
       "source_pages": [
         {
-          "path": "rest_klines/BTCUSDT/1d/b810aa3fd0d1512b1c990c9ec0c143f1aaa2a1e77020fc9693f4bc9f23650172.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "b810aa3fd0d1512b1c990c9ec0c143f1aaa2a1e77020fc9693f4bc9f23650172",
+          "path": "rest_klines/BTCUSDT/1d/fd25343153a359a302ade8834dd131127f9277bdb33b5ccc9121254012ca4068.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "fd25343153a359a302ade8834dd131127f9277bdb33b5ccc9121254012ca4068",
           "rows": 1
         }
       ]
     },
     {
       "file": "BTCUSDT_1h.parquet",
-      "added_rows": 8,
-      "rows": 48446,
-      "coverage_end_utc": "2026-07-13 03:00:00+00:00",
-      "parquet_sha256": "cb80ee335b1893e2eac57800beb11b39bc66366c36fc8cc07663a64c4e876fcb",
-      "content_sha256": "d2de3b97e07bef616b2613f276409f3f081529cffc36336f8afadd2c6f9ee6a6",
+      "added_rows": 24,
+      "rows": 48638,
+      "coverage_end_utc": "2026-07-21 03:00:00+00:00",
+      "parquet_sha256": "25ebd403d9c08c5f1a41fd4e5bd6f89aed4baf473a16d8fc1581a12de35d0604",
+      "content_sha256": "919ce35173b72d120457673f0f19dfaf4bb0d856a1df3f0ad45219afaa7e8be2",
       "source_pages": [
         {
-          "path": "rest_klines/BTCUSDT/1h/15c5f69707811f77e790515a15f21ca8acfbb0c68b8a350ad6c7e3fb6debdb0a.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&startTime=1783882800001&limit=1000",
-          "sha256": "15c5f69707811f77e790515a15f21ca8acfbb0c68b8a350ad6c7e3fb6debdb0a",
-          "rows": 8
+          "path": "rest_klines/BTCUSDT/1h/2f997045767e928e7db8237b618feadfb69994b87c60633eba571d401236ddba.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&startTime=1784516400001&limit=1000",
+          "sha256": "2f997045767e928e7db8237b618feadfb69994b87c60633eba571d401236ddba",
+          "rows": 24
         }
       ]
     },
     {
       "file": "BTCUSDT_4h.parquet",
-      "added_rows": 2,
-      "rows": 12115,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "f68c4a86b101ae456e6e364ff802405e3fc333b007ad49c2775575a63ae83019",
-      "content_sha256": "8ceb3940705ae41b73de7f46ed859b689128f5ce5bd692a63eb07959e3c61211",
+      "added_rows": 6,
+      "rows": 12163,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "91c4c658bc70546afc88b960f03e178f4b935f028a297d3a54ce83c80f90c30d",
+      "content_sha256": "adeb4efb7939c2de88ba50b52f2329b6f4156fe8f782f3ea70c167c98639dc22",
       "source_pages": [
         {
-          "path": "rest_klines/BTCUSDT/4h/05010aec57eca054bb10ab0e2abc1dfce65e69621090bd98f55425d8b0d02648.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=4h&startTime=1783872000001&limit=1000",
-          "sha256": "05010aec57eca054bb10ab0e2abc1dfce65e69621090bd98f55425d8b0d02648",
-          "rows": 2
+          "path": "rest_klines/BTCUSDT/4h/f6adf6ae77f95b53b5f4c6e3d3344f22999a3aad44ae6616d7bb0b68f3d65b11.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=4h&startTime=1784505600001&limit=1000",
+          "sha256": "f6adf6ae77f95b53b5f4c6e3d3344f22999a3aad44ae6616d7bb0b68f3d65b11",
+          "rows": 6
         }
       ]
     },
     {
       "file": "DOGEUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "1b11ccbf68d87b12d64a0634c928b3ade33837c8a3f3af3b97730a912d2b6bc2",
-      "content_sha256": "d815c66ad4b659911f5d426e46f42e3cea21133683bc7478f571c44977646daf",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "c7e1a49fa6a6313933ccfc456627f007b86f8fbd9c65b94e4c940623f2b4fa30",
+      "content_sha256": "3105c9d028c415b56a356743e456eeff12c7d13fb691fde6098aab3486129a6c",
       "source_pages": [
         {
-          "path": "rest_klines/DOGEUSDT/1d/ebe6214e0bafda887472f5c5e33401f22f1637c75f9f083ccf95c3d0514923f5.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=DOGEUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "ebe6214e0bafda887472f5c5e33401f22f1637c75f9f083ccf95c3d0514923f5",
+          "path": "rest_klines/DOGEUSDT/1d/a3da67657fa450a4709de3c1fa9b722c14ad8964d255d32ec8a9b6ca5c41cc09.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=DOGEUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "a3da67657fa450a4709de3c1fa9b722c14ad8964d255d32ec8a9b6ca5c41cc09",
           "rows": 1
         }
       ]
     },
     {
       "file": "DOGEUSDT_1h.parquet",
-      "added_rows": 8,
-      "rows": 48446,
-      "coverage_end_utc": "2026-07-13 03:00:00+00:00",
-      "parquet_sha256": "0e562df1b1f0e375388a08a499b0ed189f6dde6ba7d1662bbe6f6e4958c3f05e",
-      "content_sha256": "5f7c66c4ac73b7d301e889e0b677ebe1efbd69426910715a3c9f8d8fdd065dbc",
+      "added_rows": 24,
+      "rows": 48638,
+      "coverage_end_utc": "2026-07-21 03:00:00+00:00",
+      "parquet_sha256": "411bb6c613db25457a27e36bf5cfeeb8bb9342abb0e0a3c7cd358376774da474",
+      "content_sha256": "d6524a4d782b5a0525a8626141085e64178dc51e6f5355acba56a37bce8bab86",
       "source_pages": [
         {
-          "path": "rest_klines/DOGEUSDT/1h/ae5589815160d0fe2ce4334c180e16e9072ea7df1353946a2259d9c72e13d6b5.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=DOGEUSDT&interval=1h&startTime=1783882800001&limit=1000",
-          "sha256": "ae5589815160d0fe2ce4334c180e16e9072ea7df1353946a2259d9c72e13d6b5",
-          "rows": 8
+          "path": "rest_klines/DOGEUSDT/1h/7e667b602741f739bbb33e008d38bb2a19bfe22b4744134070f1eca20ee3515f.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=DOGEUSDT&interval=1h&startTime=1784516400001&limit=1000",
+          "sha256": "7e667b602741f739bbb33e008d38bb2a19bfe22b4744134070f1eca20ee3515f",
+          "rows": 24
         }
       ]
     },
     {
       "file": "DOGEUSDT_4h.parquet",
-      "added_rows": 2,
-      "rows": 12115,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "d27e567d9ae6c9eca8eee832f14849590019e631503a15bacc87399cc5f60b6e",
-      "content_sha256": "5085d6efee18dd58b6771d21f1758ba76662d0b53bfb0ea8de336c895e969e40",
+      "added_rows": 6,
+      "rows": 12163,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "8231836c639e7e43504448cd2d4fad09c9b58cae90d6139f33de26d7de5bb6cb",
+      "content_sha256": "421ead454c6f60418516f24331d488d027487b09ffbd08f5c5d7cf951047e93a",
       "source_pages": [
         {
-          "path": "rest_klines/DOGEUSDT/4h/76e7795eee734114a6ac54c297d118524e89137253530d03bd03c8d62484dbfa.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=DOGEUSDT&interval=4h&startTime=1783872000001&limit=1000",
-          "sha256": "76e7795eee734114a6ac54c297d118524e89137253530d03bd03c8d62484dbfa",
-          "rows": 2
+          "path": "rest_klines/DOGEUSDT/4h/aed5acae521729ef551ddb79be69a9315f560675d60c8274f4b8b2fa96e75558.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=DOGEUSDT&interval=4h&startTime=1784505600001&limit=1000",
+          "sha256": "aed5acae521729ef551ddb79be69a9315f560675d60c8274f4b8b2fa96e75558",
+          "rows": 6
         }
       ]
     },
     {
       "file": "DOTUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "3463cd0da5b08a27ef9b7ba2b190c81f5342e62644259535932abb40cd8291d1",
-      "content_sha256": "41e8761bd2694886f11260828f3345c25ec8b2121f0f37a18d9f5884de3a1ec4",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "3a39824ec91c60953ebadd6d653a6d53fdb7d58fa201610893693d29d92ee208",
+      "content_sha256": "f798ec914db07ff4d16f2ec8d24281668076f3424ad68ff11d22b2e5e5d0eeb0",
       "source_pages": [
         {
-          "path": "rest_klines/DOTUSDT/1d/50b197076bb2c3e10b39c4daf09a3b3e62732f687dcb9ccab0e6c76abf2668ed.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=DOTUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "50b197076bb2c3e10b39c4daf09a3b3e62732f687dcb9ccab0e6c76abf2668ed",
+          "path": "rest_klines/DOTUSDT/1d/d4360762c627ddcd5005aaabadd313b3abaee03438878d439389b306fb3e3401.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=DOTUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "d4360762c627ddcd5005aaabadd313b3abaee03438878d439389b306fb3e3401",
           "rows": 1
         }
       ]
     },
     {
       "file": "DOTUSDT_1h.parquet",
-      "added_rows": 8,
-      "rows": 48446,
-      "coverage_end_utc": "2026-07-13 03:00:00+00:00",
-      "parquet_sha256": "015781de387fcd330bdd22a9d0ed703e0fb7af7ccd25cd19dc3b4ede41a9405b",
-      "content_sha256": "7d827394a03cf283f96082ddcd0cb18cf44f27e0aa32855a1f41d303bc710945",
+      "added_rows": 24,
+      "rows": 48638,
+      "coverage_end_utc": "2026-07-21 03:00:00+00:00",
+      "parquet_sha256": "779ff352725aa5ec5b3c4385fb7aa3d036e47555fe4661d2a9e1980a31bb5652",
+      "content_sha256": "6935c21402f0df55f51eea66eb44857184e82c08257edc67fa579e31a0842602",
       "source_pages": [
         {
-          "path": "rest_klines/DOTUSDT/1h/b785a2b2ed64bbe528f7ae98d8838fb664f94638dc19bd9821a9f1814737c249.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=DOTUSDT&interval=1h&startTime=1783882800001&limit=1000",
-          "sha256": "b785a2b2ed64bbe528f7ae98d8838fb664f94638dc19bd9821a9f1814737c249",
-          "rows": 8
+          "path": "rest_klines/DOTUSDT/1h/de471368a3b57d10ce467049fdffbc529544f52e7b2fa092cf7bf947c563c2a1.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=DOTUSDT&interval=1h&startTime=1784516400001&limit=1000",
+          "sha256": "de471368a3b57d10ce467049fdffbc529544f52e7b2fa092cf7bf947c563c2a1",
+          "rows": 24
         }
       ]
     },
     {
       "file": "DOTUSDT_4h.parquet",
-      "added_rows": 2,
-      "rows": 12115,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "f0e7fb8dd965a2356febd0fa3d3d0341d4cfe1cec4246c5b006c1f6d794aa88e",
-      "content_sha256": "f4ca22c98812489a93e99a2793044dd640920f613d4285ae7df2eebb545db5af",
+      "added_rows": 6,
+      "rows": 12163,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "cff778ced8a651d66ba2adae4e2d2971fd56f035c31b449aeddf5472684efb0d",
+      "content_sha256": "b0a79c742324e4cda1ccfbbf133831e4159005c166da7cafea8f7b623e800f4c",
       "source_pages": [
         {
-          "path": "rest_klines/DOTUSDT/4h/03fce30614e68b079c24007d459aa2bd41610d12bf7fa4c68bbd52afde457793.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=DOTUSDT&interval=4h&startTime=1783872000001&limit=1000",
-          "sha256": "03fce30614e68b079c24007d459aa2bd41610d12bf7fa4c68bbd52afde457793",
-          "rows": 2
+          "path": "rest_klines/DOTUSDT/4h/a721723cc2bf0fdcca5bc3fee0b95d4cd93178665364c44efd0a711ae5e73754.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=DOTUSDT&interval=4h&startTime=1784505600001&limit=1000",
+          "sha256": "a721723cc2bf0fdcca5bc3fee0b95d4cd93178665364c44efd0a711ae5e73754",
+          "rows": 6
         }
       ]
     },
     {
       "file": "EGLDUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "bbf2a94bbe6616460d7250138289a7233f5b37a9dc36ee4f2d944f1af0f50b80",
-      "content_sha256": "a7d9b39c59b85e356d34a9529b37aa28a79c38863ec2ab4b3d9ab7d380cce654",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "0a7592bae5c0a19aa19d536e9ca9a3a86671cc988d894d3f42a32f52dc62ed91",
+      "content_sha256": "79a790c854b580ade5a21f45f4df1eaba547a8d043861e0250d47c2897dcfb6a",
       "source_pages": [
         {
-          "path": "rest_klines/EGLDUSDT/1d/1357151e276b76568a3b3e89a1f65937916c00e569805673db7aa25e9b4c6d72.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=EGLDUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "1357151e276b76568a3b3e89a1f65937916c00e569805673db7aa25e9b4c6d72",
+          "path": "rest_klines/EGLDUSDT/1d/90e342695a07e047331655c81319cf07f7c027f4fb7fb9e942f899a963ef9c96.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=EGLDUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "90e342695a07e047331655c81319cf07f7c027f4fb7fb9e942f899a963ef9c96",
           "rows": 1
         }
       ]
@@ -476,15 +476,15 @@
     {
       "file": "ETCUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "222e51a9f25d32573e39972d66c2d80cd24df0dadc83f03cccc1354c77d1c311",
-      "content_sha256": "879f694366dfb8684176cb9bad7bcd8efa9e42a1d19455ea46bfaf36060667af",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "23c025d380628278ce05088fe1af942b4acb0de082577fcad4cf8fe9dcb5722f",
+      "content_sha256": "9cce3271f8b4aca00ab99046a806f7bb620319e1c60a2829d7f00b56edb0e8f8",
       "source_pages": [
         {
-          "path": "rest_klines/ETCUSDT/1d/d812146e17b1a6ccc26a5cd68d351993b5e96e493ae3271ec3cf47859fcf9f1c.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=ETCUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "d812146e17b1a6ccc26a5cd68d351993b5e96e493ae3271ec3cf47859fcf9f1c",
+          "path": "rest_klines/ETCUSDT/1d/893acf5170daa00c3e7cef4892308135d49ef2a2a370d4b9c1cbce3e611ba302.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=ETCUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "893acf5170daa00c3e7cef4892308135d49ef2a2a370d4b9c1cbce3e611ba302",
           "rows": 1
         }
       ]
@@ -492,63 +492,63 @@
     {
       "file": "ETHUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "2b08de48c8e661fa8ab832722a60b5dbf5c149ef6cc13f5ed28d41b42a9a9b7c",
-      "content_sha256": "934d4b7fc27522db3ab632a0fe50c385fd0fa090b101d6edaed1ce1a0a8bcdcb",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "b24f74c265883f6c524136b5f67a61c72401e6b6c842d6777ca58fe5e30cabc5",
+      "content_sha256": "8d0477e307c6e8c944ad3c5b7533196aa56260d58fe3b7cd0b17bb4422077f5c",
       "source_pages": [
         {
-          "path": "rest_klines/ETHUSDT/1d/49551a00c24c0ac62cc8dd860af40299f75a53e15f96d2c571fef4f7dc4717e9.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "49551a00c24c0ac62cc8dd860af40299f75a53e15f96d2c571fef4f7dc4717e9",
+          "path": "rest_klines/ETHUSDT/1d/2c32e89dfd01b9f714c896b6b273d7fff4ac70d5c343301a0ffc1b41b0e2b61a.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "2c32e89dfd01b9f714c896b6b273d7fff4ac70d5c343301a0ffc1b41b0e2b61a",
           "rows": 1
         }
       ]
     },
     {
       "file": "ETHUSDT_1h.parquet",
-      "added_rows": 8,
-      "rows": 48446,
-      "coverage_end_utc": "2026-07-13 03:00:00+00:00",
-      "parquet_sha256": "9c92d3f148bba2bb45eccc8e2610ed817414b244878c0f3d149eba5145fa5baf",
-      "content_sha256": "e4ee990f8eb359e783f2c39542981c5047bb1db48928ceb7075bb31954d65ba1",
+      "added_rows": 24,
+      "rows": 48638,
+      "coverage_end_utc": "2026-07-21 03:00:00+00:00",
+      "parquet_sha256": "54f53a4c51fe47a56dc4c280237b79d1218c692f45c6dc7890078bf53b921c21",
+      "content_sha256": "f2abcd846719299762696988928ed75c8d6e1c6615ceb6279de071d4992c9875",
       "source_pages": [
         {
-          "path": "rest_klines/ETHUSDT/1h/f03bbba30f523c8554f677fc677cbc89ecc894df26299787f9f663a882c0f6da.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=1h&startTime=1783882800001&limit=1000",
-          "sha256": "f03bbba30f523c8554f677fc677cbc89ecc894df26299787f9f663a882c0f6da",
-          "rows": 8
+          "path": "rest_klines/ETHUSDT/1h/e27ec641f2f88989d21f7e7d8b4d2af218582761a70c123522ed455022cdc289.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=1h&startTime=1784516400001&limit=1000",
+          "sha256": "e27ec641f2f88989d21f7e7d8b4d2af218582761a70c123522ed455022cdc289",
+          "rows": 24
         }
       ]
     },
     {
       "file": "ETHUSDT_4h.parquet",
-      "added_rows": 2,
-      "rows": 12115,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "8d33ef1d2112143e2898757534819df7352a153cbf99fece07595a6ea47bd516",
-      "content_sha256": "677282e71fab898ef5875e73e5455d46ffaa1be0086c41dd24756efa9e4b59ac",
+      "added_rows": 6,
+      "rows": 12163,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "737bfb8d4c58203f5390a5e095b00f77d3bdc1980cef2bd9c486f67c59d4bff9",
+      "content_sha256": "2e1cc9e55113479c7f248f7b5014dcb9385c806e1e778ef57d68c786bc62e7ef",
       "source_pages": [
         {
-          "path": "rest_klines/ETHUSDT/4h/8e11536c3c3b84c1a34a9e01c8ab73039eb377f23f8d0cf9c064c50149f7d388.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=4h&startTime=1783872000001&limit=1000",
-          "sha256": "8e11536c3c3b84c1a34a9e01c8ab73039eb377f23f8d0cf9c064c50149f7d388",
-          "rows": 2
+          "path": "rest_klines/ETHUSDT/4h/6a0ac1b8bd1c3c45ab74658a9072d37d359a4374b66d57e394c8ca010b92f09b.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=4h&startTime=1784505600001&limit=1000",
+          "sha256": "6a0ac1b8bd1c3c45ab74658a9072d37d359a4374b66d57e394c8ca010b92f09b",
+          "rows": 6
         }
       ]
     },
     {
       "file": "FILUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "9b158e4f8ee0ff0538e90e6be87a8c55951bad11ac9b74e9576178c0bde22698",
-      "content_sha256": "a55b16fad619b12eb1cd9016385f9cc00a0e436ed0036f932e424cc81f30edf3",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "c878ba9f1af7f0bf703c507ebe337fc44c3306f7f2fcd638b3bbd4482e4df04e",
+      "content_sha256": "bcc593bf72357989f5d772a875e4bdea183ee8ea6e7239d4833a14b41a27c3d3",
       "source_pages": [
         {
-          "path": "rest_klines/FILUSDT/1d/90705f70018785fbdc6d17d8a80eeb4c5491a7f22a94827713a14948a7dd6645.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=FILUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "90705f70018785fbdc6d17d8a80eeb4c5491a7f22a94827713a14948a7dd6645",
+          "path": "rest_klines/FILUSDT/1d/2c29368660c66cd72e9209e4ec7d81a527819ec49a40d4c86178c3d78186911d.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=FILUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "2c29368660c66cd72e9209e4ec7d81a527819ec49a40d4c86178c3d78186911d",
           "rows": 1
         }
       ]
@@ -556,15 +556,15 @@
     {
       "file": "FLOWUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 1810,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "76e0710fdb152051653af2f9c02b08cb5d6127f72f47d8df6e9a01ee1563a32b",
-      "content_sha256": "649886e87fc4be09caa82ad929f77acfca265cdc080e9d963d5827af6048b2fa",
+      "rows": 1818,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "58ecc26a9d38f71a2a1ee8d527ae6ed7049cdf28b9a123df88f83bc75695de32",
+      "content_sha256": "1fcf7d72d4b4c7e111b14bfedecf4b7c3155650213a7adf804c421f4f8cb1903",
       "source_pages": [
         {
-          "path": "rest_klines/FLOWUSDT/1d/fc9af493057b7ac34b6bb825d04d76acc85e5876ce6075c7ee655a1c9e16a0ab.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=FLOWUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "fc9af493057b7ac34b6bb825d04d76acc85e5876ce6075c7ee655a1c9e16a0ab",
+          "path": "rest_klines/FLOWUSDT/1d/f574d54ef808f29c2babba5e3dad55684caa70589a7bc9329f90cc1aa758387d.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=FLOWUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "f574d54ef808f29c2babba5e3dad55684caa70589a7bc9329f90cc1aa758387d",
           "rows": 1
         }
       ]
@@ -588,15 +588,15 @@
     {
       "file": "GRTUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "bc7e7ba3c190a6aa8308d28e2fa8f74812868d8d7398ae6e86ef666bc9abc6ae",
-      "content_sha256": "9c2e81b1025a258e8037fd433e9a3f6080e2e939bc53a9606079c8863f9be6f8",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "b27e306397f0b405911362f0ea5b5dffd2b5f33cce9d0906985d829155df6960",
+      "content_sha256": "f1b27498980c93ab4182f33f4a4bd0ed0b8bd23abd87ad0db8a1a10590d473e1",
       "source_pages": [
         {
-          "path": "rest_klines/GRTUSDT/1d/1075c199aabdf9ba1ebbb32445374d2ec63e4ce55f776c28b6ac64f5cf24b67b.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=GRTUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "1075c199aabdf9ba1ebbb32445374d2ec63e4ce55f776c28b6ac64f5cf24b67b",
+          "path": "rest_klines/GRTUSDT/1d/e81c3f423ada32437c5b6dd8426b6083340d3e017d2c55fb423f955877e1a44f.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=GRTUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "e81c3f423ada32437c5b6dd8426b6083340d3e017d2c55fb423f955877e1a44f",
           "rows": 1
         }
       ]
@@ -604,15 +604,15 @@
     {
       "file": "INJUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "8c3aff773bec1183a19203103f568c2d3a4c4d9ddef875dc0e877d37b2479a72",
-      "content_sha256": "04481e22042c022ace7c95f541a32bfb7447b8682d82e41801d164b87c42e59c",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "c122211da5995a0e7a8377cdc0ec7e5ca10ad2e19139296c76c5710f54541bd7",
+      "content_sha256": "6c409ccc4c3d64c167b3577dfea1eeaeacc9e470fc62fd0fde2c9f2ff0031460",
       "source_pages": [
         {
-          "path": "rest_klines/INJUSDT/1d/7012c0d511c9cc15f3dce92701c65ef6822580836cf9cc323f270cf4987339f0.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=INJUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "7012c0d511c9cc15f3dce92701c65ef6822580836cf9cc323f270cf4987339f0",
+          "path": "rest_klines/INJUSDT/1d/bfcf8efb6e30f63d458c02a8a4af24b9bf6698861d10d9ec882db22e72f75838.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=INJUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "bfcf8efb6e30f63d458c02a8a4af24b9bf6698861d10d9ec882db22e72f75838",
           "rows": 1
         }
       ]
@@ -620,111 +620,111 @@
     {
       "file": "LINKUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "653b504bac8f0b679720c270786d2b8eb00cb2e1ca41d568b5b600be40edc88a",
-      "content_sha256": "3e44e91ed4e60e9c58b70e1b0cd9e38f672ecceee340bdfc690208dd24daf3c8",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "e6a6abbc873e711a1e2e72b6efc379308ac4157360cfc110f4b9daeefa353a61",
+      "content_sha256": "71cdf889de260254b6316ca7d4482852e6a95d2eb246fa0e86c1ae1c21e3c6c4",
       "source_pages": [
         {
-          "path": "rest_klines/LINKUSDT/1d/3239fa600b61a5403c601838b88b9e246137ec5e2da39407c3ee8e4f6ad35d5d.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=LINKUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "3239fa600b61a5403c601838b88b9e246137ec5e2da39407c3ee8e4f6ad35d5d",
+          "path": "rest_klines/LINKUSDT/1d/7f79500430c30040e59736bed0139b789f160874425f885d64bbbd6da0ed7013.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=LINKUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "7f79500430c30040e59736bed0139b789f160874425f885d64bbbd6da0ed7013",
           "rows": 1
         }
       ]
     },
     {
       "file": "LINKUSDT_1h.parquet",
-      "added_rows": 8,
-      "rows": 48446,
-      "coverage_end_utc": "2026-07-13 03:00:00+00:00",
-      "parquet_sha256": "ac6b306bf81d19a699cb6a971b3b299dccad1beae52a558e864f5000fe106db9",
-      "content_sha256": "be8a58645671ae77b705352480284f43d4f942cb9be5809e9ee4b50f73c42623",
+      "added_rows": 24,
+      "rows": 48638,
+      "coverage_end_utc": "2026-07-21 03:00:00+00:00",
+      "parquet_sha256": "ffa643742f060bd686231dc68f8d146742b27a5436ef494e466c133f4d3b08e6",
+      "content_sha256": "e837a88dff7989d17cccd3ad73ab2224795545b12d571484c30765c041c38ad4",
       "source_pages": [
         {
-          "path": "rest_klines/LINKUSDT/1h/aab5185f3566551d1e90c32ac49a39a902366301d7160f6db971f06021de0b57.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=LINKUSDT&interval=1h&startTime=1783882800001&limit=1000",
-          "sha256": "aab5185f3566551d1e90c32ac49a39a902366301d7160f6db971f06021de0b57",
-          "rows": 8
+          "path": "rest_klines/LINKUSDT/1h/f07af59f9dd12c9500617b1a1f00a2ef92829b302345e85f9bcc79f55af6d26d.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=LINKUSDT&interval=1h&startTime=1784516400001&limit=1000",
+          "sha256": "f07af59f9dd12c9500617b1a1f00a2ef92829b302345e85f9bcc79f55af6d26d",
+          "rows": 24
         }
       ]
     },
     {
       "file": "LINKUSDT_4h.parquet",
-      "added_rows": 2,
-      "rows": 12115,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "0bcc33c418b0343523d7f1d8f8425173d5c68187565634649b87250763a80044",
-      "content_sha256": "734d622f79bee278c900e8def8bd9a3f8797d9218ecf1ae2c1425ffd9ee0f7e0",
+      "added_rows": 6,
+      "rows": 12163,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "b010de9d3e363722a1c536fcc8a5e2952327b7736f5eac1b6fb9b44c6bcc3888",
+      "content_sha256": "ba577bd9a1cfdecdd8749eeca9642e8073fe18c9f99795f2f2f7ea9c0254ece8",
       "source_pages": [
         {
-          "path": "rest_klines/LINKUSDT/4h/597efd568b11b688f2dc7c2372bd23e417b244830878edb56bd20aeb9edc333f.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=LINKUSDT&interval=4h&startTime=1783872000001&limit=1000",
-          "sha256": "597efd568b11b688f2dc7c2372bd23e417b244830878edb56bd20aeb9edc333f",
-          "rows": 2
+          "path": "rest_klines/LINKUSDT/4h/b851d8399903c1555e999e4a15394c28c5ec8160bc5eb028d364e492b3dc57a1.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=LINKUSDT&interval=4h&startTime=1784505600001&limit=1000",
+          "sha256": "b851d8399903c1555e999e4a15394c28c5ec8160bc5eb028d364e492b3dc57a1",
+          "rows": 6
         }
       ]
     },
     {
       "file": "LTCUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "53b199e844cf09e46887833ecc4207cdebce6302dc9d36d5eab6aacdd6fdf4ca",
-      "content_sha256": "df5bc77219b583f6d4654b2d3d7aab0b081bf02175dea5d3f962f15158b3d87e",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "ada9e849cf02cec95add74335eae8bfe0bf10700767afbecc21db529459e16d0",
+      "content_sha256": "7d0de459bf6bb3ed9d1f3236898277adb368f996cadc2784c7e7a62238b96fcd",
       "source_pages": [
         {
-          "path": "rest_klines/LTCUSDT/1d/a0fd007a8de0e9d83559fe8cee92ea9cbb782fe3d71c7b724af1f1a4cb6c4126.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=LTCUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "a0fd007a8de0e9d83559fe8cee92ea9cbb782fe3d71c7b724af1f1a4cb6c4126",
+          "path": "rest_klines/LTCUSDT/1d/d6ce08872c16e16926fd07c1758765e7cba424a3f077e3bd774da7c656fc5724.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=LTCUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "d6ce08872c16e16926fd07c1758765e7cba424a3f077e3bd774da7c656fc5724",
           "rows": 1
         }
       ]
     },
     {
       "file": "LTCUSDT_1h.parquet",
-      "added_rows": 8,
-      "rows": 48446,
-      "coverage_end_utc": "2026-07-13 03:00:00+00:00",
-      "parquet_sha256": "4e2d734d80d4bcd6b0448eb89cc09817a2d6f983bbe5becad82ff7f606c6a858",
-      "content_sha256": "39f7e13ac1f7dd60ecaab339ea86d435adc03bdf70e12337653cff3e009edefe",
+      "added_rows": 24,
+      "rows": 48638,
+      "coverage_end_utc": "2026-07-21 03:00:00+00:00",
+      "parquet_sha256": "21e74a936efdd491c3ce1c82d7433d09a65f48ed63623660cb0f4fcdd8676492",
+      "content_sha256": "7d83b95610408a18665657f0646ba3037419af3c8a0b0401009cb62c0a802287",
       "source_pages": [
         {
-          "path": "rest_klines/LTCUSDT/1h/72f1f6dff0880df25491f31d49a32dc89fce77a75336578ba578ee65d23a1712.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=LTCUSDT&interval=1h&startTime=1783882800001&limit=1000",
-          "sha256": "72f1f6dff0880df25491f31d49a32dc89fce77a75336578ba578ee65d23a1712",
-          "rows": 8
+          "path": "rest_klines/LTCUSDT/1h/3158fa0e63f4167667515437f70b535a6db310bafccf000f99d70abd2923e5cf.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=LTCUSDT&interval=1h&startTime=1784516400001&limit=1000",
+          "sha256": "3158fa0e63f4167667515437f70b535a6db310bafccf000f99d70abd2923e5cf",
+          "rows": 24
         }
       ]
     },
     {
       "file": "LTCUSDT_4h.parquet",
-      "added_rows": 2,
-      "rows": 12115,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "bb6b2d1d6ac104ebc1482cf3ea87dba8c7d13217c727545512ffb448cd965f62",
-      "content_sha256": "8b82ffb92d10bb1524a863783a27f9a16e52363700c1c57b9d848b80524961e9",
+      "added_rows": 6,
+      "rows": 12163,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "c702e6870e16a339ca70755fbcec34f95225eb36f10074bc27acbe3f35643afd",
+      "content_sha256": "cd9d3b6230d36d6719291393a8e03b3d1052d5ba9ef4245ffc3588a81bf9bfc8",
       "source_pages": [
         {
-          "path": "rest_klines/LTCUSDT/4h/2b4a8463f0b208a8d8793dc089b30af74b9321067cf51ff2192f89f87d1d1349.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=LTCUSDT&interval=4h&startTime=1783872000001&limit=1000",
-          "sha256": "2b4a8463f0b208a8d8793dc089b30af74b9321067cf51ff2192f89f87d1d1349",
-          "rows": 2
+          "path": "rest_klines/LTCUSDT/4h/f45d1f18ab117f219c625cfca57deb9362814e6993ca5c6fa9980f69dd65afa4.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=LTCUSDT&interval=4h&startTime=1784505600001&limit=1000",
+          "sha256": "f45d1f18ab117f219c625cfca57deb9362814e6993ca5c6fa9980f69dd65afa4",
+          "rows": 6
         }
       ]
     },
     {
       "file": "MANAUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "36cdbe5287ac7b38c79798100ddb13271f51c4360e09fe0ac677538b936a9b73",
-      "content_sha256": "60cf3c4892a8e45f8f1f4431c34416f92c48eba1078af4835f1be297c2ad52e6",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "aace2da08d9c76066d3176bdafb49d00334e87bea930dc56a80ec0f3e5e5e1d8",
+      "content_sha256": "37e9d876622a042ddc89ab1f02c4b9811ca143a8a2b9bc57dd30919fa5001f58",
       "source_pages": [
         {
-          "path": "rest_klines/MANAUSDT/1d/98c70ebfeb1992fcc400016b0985c0892a0bc31cc168d2567ac05ec918cdfbe2.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=MANAUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "98c70ebfeb1992fcc400016b0985c0892a0bc31cc168d2567ac05ec918cdfbe2",
+          "path": "rest_klines/MANAUSDT/1d/4946c29b93cfa4afffea62922149d248cf4468f9ff023d22fcf038f7d682c140.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=MANAUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "4946c29b93cfa4afffea62922149d248cf4468f9ff023d22fcf038f7d682c140",
           "rows": 1
         }
       ]
@@ -780,15 +780,15 @@
     {
       "file": "NEARUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "388079eaacaa1e63f033aafeb4554f1d56bcabe21e009a1a00ea49680c8d3f77",
-      "content_sha256": "45dd8b02440667be529b0d6d9b7381907d526f39998b8df407c691eff36ce448",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "70371d0f7d205c5759b28a2764bebfba74d329bbf2f10719f443c28c9b8c1c79",
+      "content_sha256": "2763184c11fa46e52565dbfb4dad3e65bd63d022d2fd70988ba5136a8aa5747b",
       "source_pages": [
         {
-          "path": "rest_klines/NEARUSDT/1d/36efd7bcdfd4f05ef2f111033d8c8ecc6dc9839d5bb6d19adb490ac12af76f1c.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=NEARUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "36efd7bcdfd4f05ef2f111033d8c8ecc6dc9839d5bb6d19adb490ac12af76f1c",
+          "path": "rest_klines/NEARUSDT/1d/1b6cb1bc7d17cc2f3e357267b29f80851316dd5bdf7f7e5b4e7bd2c71a5a034f.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=NEARUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "1b6cb1bc7d17cc2f3e357267b29f80851316dd5bdf7f7e5b4e7bd2c71a5a034f",
           "rows": 1
         }
       ]
@@ -796,15 +796,15 @@
     {
       "file": "OPUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 1504,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "cd12736e07184422fe8f42169cd07a0675b3098a0f4f37f95f841af4bbc26b3a",
-      "content_sha256": "5176a154bc8051bcb1c05751ec331c5c8f0e1d9137d94ecbcad9100fbc0fd01c",
+      "rows": 1512,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "2195a03b367dc1fc85403c11a5d89cbb1ae1090e19ab7de93f74580cd73b6e2b",
+      "content_sha256": "95b7b925df6a3664e1623510c0ce06b53cc71aadaaa328bbf45fb8a79fe1a0e8",
       "source_pages": [
         {
-          "path": "rest_klines/OPUSDT/1d/b4b0da98194d5384e155a6b4b6d4be5f26f8264d31a0773b2afc24472d105ec8.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=OPUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "b4b0da98194d5384e155a6b4b6d4be5f26f8264d31a0773b2afc24472d105ec8",
+          "path": "rest_klines/OPUSDT/1d/8378c225af7442e6e5573839f103d28963ff8f159134e8fe98d3b0846cebe00e.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=OPUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "8378c225af7442e6e5573839f103d28963ff8f159134e8fe98d3b0846cebe00e",
           "rows": 1
         }
       ]
@@ -812,15 +812,15 @@
     {
       "file": "RUNEUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "133841b1539574188690e90c53f870e1aa92d85923aed0761470b8ec7d50941d",
-      "content_sha256": "d751ef7416bf8aba5ddd0fe297e5053e008cff3dc2e4404cb6c9a4744c9adc70",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "ebe6ebba98f89d4d6fc951a50169835d31ec34cd70c6f0122ee47f7058f313b0",
+      "content_sha256": "7b06fbe6522305685f6fddb1c3bdd57f9302a2257fb37f29a95d33e34d07f771",
       "source_pages": [
         {
-          "path": "rest_klines/RUNEUSDT/1d/7a6bf7d630816ea88c564bcee1754176e127430a9f6c0ba8521a42c1565cc8a4.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=RUNEUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "7a6bf7d630816ea88c564bcee1754176e127430a9f6c0ba8521a42c1565cc8a4",
+          "path": "rest_klines/RUNEUSDT/1d/1850bd509beccd294310b4674958f88d9326aa49263cb45f0a6a4cebae58760d.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=RUNEUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "1850bd509beccd294310b4674958f88d9326aa49263cb45f0a6a4cebae58760d",
           "rows": 1
         }
       ]
@@ -828,15 +828,15 @@
     {
       "file": "SANDUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "9563e218e5cdac534223f81d535336f5fceecc2538d1ea02d6adfe61d99c7589",
-      "content_sha256": "e7a685f90f6778ad2c744e39d2a42920b8b40862afd793465f53bde57cd5e19b",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "827aaf9b368da57396c77d696fb95e1f3b5dfa5adaad2c80fd51b8308a1b8baf",
+      "content_sha256": "9e4bf31e12b3772d6b3449fd590b8b2f300a97b1fa3a7990523387c73d433551",
       "source_pages": [
         {
-          "path": "rest_klines/SANDUSDT/1d/e9ca056d3a1b1be3625505d77be4efadc396d5b1c0d7afc158d60896bb369661.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=SANDUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "e9ca056d3a1b1be3625505d77be4efadc396d5b1c0d7afc158d60896bb369661",
+          "path": "rest_klines/SANDUSDT/1d/a578b8e18708a9de5b8bc82d5180cb7b1baef747f6daa4085d53ac67343c809a.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=SANDUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "a578b8e18708a9de5b8bc82d5180cb7b1baef747f6daa4085d53ac67343c809a",
           "rows": 1
         }
       ]
@@ -844,15 +844,15 @@
     {
       "file": "SEIUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 1064,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "68057a95496ef336a9b675a464779fefe830e2dfbbf3b76f2443ab14c18c4de4",
-      "content_sha256": "091f4e6be5f6a461601c4b1599bcd6b5f1f3b0e6f00ee88ece362ba456c49db9",
+      "rows": 1072,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "719ed77b5bf493ae6cc6f40381ddb60f25728b5adea18b2bebeae1e273e842b3",
+      "content_sha256": "cb4009c383a6530d0261fad8378c543f0877c1e4711da536959826ba66861cfc",
       "source_pages": [
         {
-          "path": "rest_klines/SEIUSDT/1d/24c2b05508ebcd5783b3f6a5b804f59e4d1151c51ab89b24f4db0480db38ced1.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=SEIUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "24c2b05508ebcd5783b3f6a5b804f59e4d1151c51ab89b24f4db0480db38ced1",
+          "path": "rest_klines/SEIUSDT/1d/7e6d3aecb915b2b6dda427ba2d87ea4cd1be068dbe964d065b4c5db224cbd941.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=SEIUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "7e6d3aecb915b2b6dda427ba2d87ea4cd1be068dbe964d065b4c5db224cbd941",
           "rows": 1
         }
       ]
@@ -860,63 +860,63 @@
     {
       "file": "SOLUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "f836ac6879bbdd3880ec2799fe9891a21b051c91f4bd392aae82fbcd08b437e9",
-      "content_sha256": "b71476e017a8db17c08803fcd887b0e0b91fe0030d40d1750043414f5ddb4c4f",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "762e43bca29b833fdb77adf9e0157a3adf0c312a110774097e62bf8d5836c1d5",
+      "content_sha256": "2eca450212ed0b85af92249eb7e696c4d882a096c819ea793fc0c6dd9db76055",
       "source_pages": [
         {
-          "path": "rest_klines/SOLUSDT/1d/029c7c18469381316991ebdb73f3b41545db3c4279be4301abb9bc70c49524ae.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=SOLUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "029c7c18469381316991ebdb73f3b41545db3c4279be4301abb9bc70c49524ae",
+          "path": "rest_klines/SOLUSDT/1d/e60c53863cd3ed0d55ac1e61d489cfb8d3dc4bc7edabb486c34cdf6aa8e40638.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=SOLUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "e60c53863cd3ed0d55ac1e61d489cfb8d3dc4bc7edabb486c34cdf6aa8e40638",
           "rows": 1
         }
       ]
     },
     {
       "file": "SOLUSDT_1h.parquet",
-      "added_rows": 8,
-      "rows": 48446,
-      "coverage_end_utc": "2026-07-13 03:00:00+00:00",
-      "parquet_sha256": "9d5cafacc605bf7ed3f2b01b7e8a723600f4694c11ec854dbad29eccfd6bb6a7",
-      "content_sha256": "770a6d8f11dd5fe085fbd4076c5e2175513b94f79edea6a55e5eeebde41acfce",
+      "added_rows": 24,
+      "rows": 48638,
+      "coverage_end_utc": "2026-07-21 03:00:00+00:00",
+      "parquet_sha256": "3540fdfd88f563b1b0e21b04edda3ce3c91bb338fe015d8a5817bb5b8cb681d3",
+      "content_sha256": "6c5fb97c9fa29b3cef0241671f04c660507fe7dcd2a39aeb5faa934e13ccc4ab",
       "source_pages": [
         {
-          "path": "rest_klines/SOLUSDT/1h/e0fa0b9533a821646704dc4bb3ce5294026e199658dbfb34635a4ad7fa0b7deb.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=SOLUSDT&interval=1h&startTime=1783882800001&limit=1000",
-          "sha256": "e0fa0b9533a821646704dc4bb3ce5294026e199658dbfb34635a4ad7fa0b7deb",
-          "rows": 8
+          "path": "rest_klines/SOLUSDT/1h/7e996c3ba16035e428677927e51136665c2ef7bc448f94a4abe0c31f8614d572.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=SOLUSDT&interval=1h&startTime=1784516400001&limit=1000",
+          "sha256": "7e996c3ba16035e428677927e51136665c2ef7bc448f94a4abe0c31f8614d572",
+          "rows": 24
         }
       ]
     },
     {
       "file": "SOLUSDT_4h.parquet",
-      "added_rows": 2,
-      "rows": 12115,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "b2172fd7e6da053cbe1b595bc6e569e4f48ded19eb2083dc3d9df9daf5303a35",
-      "content_sha256": "98a354f51a1b9e519b60a08177ece8146da098867f6ed5f7ccc6fd48c7f1b1a2",
+      "added_rows": 6,
+      "rows": 12163,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "65ee37570742c9e8a00c5f6739b386c81e2e90a2b42691bc9d1abafcb92d178b",
+      "content_sha256": "d56e9b1a43be228b0116d6f41122b474c52cb8e3e1a4632e65e2e24dc6d4898a",
       "source_pages": [
         {
-          "path": "rest_klines/SOLUSDT/4h/759312887e3a90f701c0c9e8f44845d67f729a2d351a7b7d21bca1a8fbc004fe.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=SOLUSDT&interval=4h&startTime=1783872000001&limit=1000",
-          "sha256": "759312887e3a90f701c0c9e8f44845d67f729a2d351a7b7d21bca1a8fbc004fe",
-          "rows": 2
+          "path": "rest_klines/SOLUSDT/4h/0646fb9878404c9d7df4d1249322a1eaff440602f4134e360ea2b1239a3e3dcf.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=SOLUSDT&interval=4h&startTime=1784505600001&limit=1000",
+          "sha256": "0646fb9878404c9d7df4d1249322a1eaff440602f4134e360ea2b1239a3e3dcf",
+          "rows": 6
         }
       ]
     },
     {
       "file": "SUIUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 1168,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "0842770248c76e21e346c2088643e54f3b321d6304165990d733f08eb8bd46dd",
-      "content_sha256": "8fe6f752d31dcfe2c4b6ea95aa41e2fb746abfd6f0d60f4a243082ad916a568f",
+      "rows": 1176,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "55cd6961d6ce2541c8c25b2a654a97b3bf1fd3c2c9e8863a7b58aea9b2aba2fd",
+      "content_sha256": "61aa7c49592085fb49623acaf38f7920a86a8f71a35b2f8419a58414ff818179",
       "source_pages": [
         {
-          "path": "rest_klines/SUIUSDT/1d/068b37950358288675a0ad581bf01eb40052319b7d0577a86ffdbd2e05563233.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=SUIUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "068b37950358288675a0ad581bf01eb40052319b7d0577a86ffdbd2e05563233",
+          "path": "rest_klines/SUIUSDT/1d/cad8e92d13a207cefadc1534d72e47d2059205e64c8658cbf5a8bae47e9651df.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=SUIUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "cad8e92d13a207cefadc1534d72e47d2059205e64c8658cbf5a8bae47e9651df",
           "rows": 1
         }
       ]
@@ -924,15 +924,15 @@
     {
       "file": "THETAUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "82cd16f249568bfa3f64bf9892167d27d7adaba935a6ae3650a8f2cc85a0ad78",
-      "content_sha256": "6d2b12a5cddb02aceb1969d7295f7e45c8c949518bbf2eb624f31d01e96e077e",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "202fce77dc7c1cf144b3ba24f6f2d1644a098041fc9d3560925685d1caf26050",
+      "content_sha256": "66f470ac7a0a027209bcb179bd9e6f8771a7f04ecd1b4df20668c8d972e5525e",
       "source_pages": [
         {
-          "path": "rest_klines/THETAUSDT/1d/5c1291a7b2b0a0a53ddddc29aaa63d7475a35f5ca9032d73f926ca261544c02d.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=THETAUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "5c1291a7b2b0a0a53ddddc29aaa63d7475a35f5ca9032d73f926ca261544c02d",
+          "path": "rest_klines/THETAUSDT/1d/5d6761666f1e0ca8c151d803b77ba2eb15b16e55c8f93dd11e519a415da317b9.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=THETAUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "5d6761666f1e0ca8c151d803b77ba2eb15b16e55c8f93dd11e519a415da317b9",
           "rows": 1
         }
       ]
@@ -940,15 +940,15 @@
     {
       "file": "TIAUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 987,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "374915d90e27f7f6c6b4f331b508956055f35a27d09f0ed5e87e9c5da1aaee26",
-      "content_sha256": "0d22e65700e9c968c3e1c482bbaa227387735a059d6a26ab095d53a24fa20cfb",
+      "rows": 995,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "b121566522edfec5caab4bc88f50883d3bb94d1e012d9a0c87a772598ca5d81e",
+      "content_sha256": "41d7f9cc3048a657696d034b4a53e9acc5f1a437888c2acdbdb8bda357497fe1",
       "source_pages": [
         {
-          "path": "rest_klines/TIAUSDT/1d/4b946da07717892470e16b6533f14a73c93ee7fa96115303fd1f15f05524da99.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=TIAUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "4b946da07717892470e16b6533f14a73c93ee7fa96115303fd1f15f05524da99",
+          "path": "rest_klines/TIAUSDT/1d/37667a8dc94f0bc47fcd3d1aed6d3174c96d3965690dc5b9c7c9914c3fe7412a.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=TIAUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "37667a8dc94f0bc47fcd3d1aed6d3174c96d3965690dc5b9c7c9914c3fe7412a",
           "rows": 1
         }
       ]
@@ -956,95 +956,95 @@
     {
       "file": "TRXUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "a8260386224db40d0d0325a2f189c2df8da25b67176813efce7d519352f4e974",
-      "content_sha256": "091751b5ba4079dc1fe15fa4fc334be4b87e9131dc98906bcf457d6c049b1039",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "a3ecad54fad00865efbf6618fdb50e7265172242033f5b15fcb3927964bb8b51",
+      "content_sha256": "c6a856cfceb9b553027bb9405eb7968d86bd94adef0de876aa4d455f0b03cdaa",
       "source_pages": [
         {
-          "path": "rest_klines/TRXUSDT/1d/96bef4a38cacf12b91ddd0846548c1d0241b35ab3fe4d5e7802bdaf5f47485b4.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=TRXUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "96bef4a38cacf12b91ddd0846548c1d0241b35ab3fe4d5e7802bdaf5f47485b4",
+          "path": "rest_klines/TRXUSDT/1d/1894916362b66cee4beb8d99a8d890e7a3d4adbcad924e4288f368aaa38a9936.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=TRXUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "1894916362b66cee4beb8d99a8d890e7a3d4adbcad924e4288f368aaa38a9936",
           "rows": 1
         }
       ]
     },
     {
       "file": "TRXUSDT_1h.parquet",
-      "added_rows": 8,
-      "rows": 48446,
-      "coverage_end_utc": "2026-07-13 03:00:00+00:00",
-      "parquet_sha256": "474211f5b59bfdd3a52149963fb5bb91c296750ffed45a472668fe44dc05f055",
-      "content_sha256": "d68016c818d9bce784901a5a20adf8274e86fa2fd4c38e9b95912a8818345fe3",
+      "added_rows": 24,
+      "rows": 48638,
+      "coverage_end_utc": "2026-07-21 03:00:00+00:00",
+      "parquet_sha256": "e6cf71a5d59a63cc7a1e88520ccd166c1250b4e199f28f5b87c1da5341d144fe",
+      "content_sha256": "05bf747d777e474505dc6a13d5ebabc3a2802680b175bdc54cab354a01b3bb65",
       "source_pages": [
         {
-          "path": "rest_klines/TRXUSDT/1h/c6522f0c0e3742178128af3ec08bdce18a9ce1c3b1eff15500f53fc8dc7e814a.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=TRXUSDT&interval=1h&startTime=1783882800001&limit=1000",
-          "sha256": "c6522f0c0e3742178128af3ec08bdce18a9ce1c3b1eff15500f53fc8dc7e814a",
-          "rows": 8
+          "path": "rest_klines/TRXUSDT/1h/e01dd80087ef53b60558ed10dfd78ca87896356c57d733df4f90d53fa46a4118.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=TRXUSDT&interval=1h&startTime=1784516400001&limit=1000",
+          "sha256": "e01dd80087ef53b60558ed10dfd78ca87896356c57d733df4f90d53fa46a4118",
+          "rows": 24
         }
       ]
     },
     {
       "file": "TRXUSDT_4h.parquet",
-      "added_rows": 2,
-      "rows": 12115,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "f7c99a623923d4e60a2f6df95c10de69c2d2b90c2655c26a54ceb0522f0373cf",
-      "content_sha256": "090757a573d336a0462a38e9ae31d893dbb9e079e266575d04296d7b0ad38c35",
+      "added_rows": 6,
+      "rows": 12163,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "9f6d913bb3a283ab221f268944e241114ed3c827bb96d705c90b221bf6259803",
+      "content_sha256": "fece9cd08f52c52e2f12281439a9173cac0ebf8066e25276c07470b9069d5021",
       "source_pages": [
         {
-          "path": "rest_klines/TRXUSDT/4h/baf0e9c196fd8f1cc77404995c441ae5bc151cd3bebce2b4c9cd0cd5ea13d2bb.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=TRXUSDT&interval=4h&startTime=1783872000001&limit=1000",
-          "sha256": "baf0e9c196fd8f1cc77404995c441ae5bc151cd3bebce2b4c9cd0cd5ea13d2bb",
-          "rows": 2
+          "path": "rest_klines/TRXUSDT/4h/1f7b5d6c7ea99ea8241467c137ed8d226d93f723855a380da47f80f4b313a801.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=TRXUSDT&interval=4h&startTime=1784505600001&limit=1000",
+          "sha256": "1f7b5d6c7ea99ea8241467c137ed8d226d93f723855a380da47f80f4b313a801",
+          "rows": 6
         }
       ]
     },
     {
       "file": "UNIUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "2654bf6b7a976beb34d81a95fb3abbbdead2685a2a800fdeba286fa64edd5864",
-      "content_sha256": "5fd71b9c3199b6126b77d76d100df2cb263691edd1a808a52cfca221cdb3661d",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "6366a443b655f17cbde1b51110bea8520c9e042d1c34ff1b742317693f96760c",
+      "content_sha256": "7e0a8925f84f382b89457718d5cd2df8d6141e6b7e66f6b09f85faa9297a7f3b",
       "source_pages": [
         {
-          "path": "rest_klines/UNIUSDT/1d/0a83e0014764955370514f8c844df873e97675fb7c00f512d3d3a394c44b5d38.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=UNIUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "0a83e0014764955370514f8c844df873e97675fb7c00f512d3d3a394c44b5d38",
+          "path": "rest_klines/UNIUSDT/1d/10b48b9b2b5e41a8dbf782c69c55ee854f0d13ead04edd537f1aad2e309f95d0.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=UNIUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "10b48b9b2b5e41a8dbf782c69c55ee854f0d13ead04edd537f1aad2e309f95d0",
           "rows": 1
         }
       ]
     },
     {
       "file": "UNIUSDT_1h.parquet",
-      "added_rows": 8,
-      "rows": 48446,
-      "coverage_end_utc": "2026-07-13 03:00:00+00:00",
-      "parquet_sha256": "56a9843a6c6267663458e018553e2201ee77908f9225f206f5aab1042be0d37b",
-      "content_sha256": "3172596761582a6a4eb8e516564f08a13f10fa45017919998c863c8ca912a52d",
+      "added_rows": 24,
+      "rows": 48638,
+      "coverage_end_utc": "2026-07-21 03:00:00+00:00",
+      "parquet_sha256": "7f125b84dfd569a808188cffbe342ae3ff9276dd803f0ee5c116c6bea649404c",
+      "content_sha256": "3abf6020c1a8d327ddf55f4bc0a7158e862b6ed655f74f1c01bea45b9c2d0947",
       "source_pages": [
         {
-          "path": "rest_klines/UNIUSDT/1h/474be7655a656fc1a436ea66bef63329ab6187d0dbcdafd9f72d845d0d0b82e8.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=UNIUSDT&interval=1h&startTime=1783882800001&limit=1000",
-          "sha256": "474be7655a656fc1a436ea66bef63329ab6187d0dbcdafd9f72d845d0d0b82e8",
-          "rows": 8
+          "path": "rest_klines/UNIUSDT/1h/4cdbdb22cd30bc858f65c57ab9bae0349e48c2c36b63bc3b31d27c5369b48e77.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=UNIUSDT&interval=1h&startTime=1784516400001&limit=1000",
+          "sha256": "4cdbdb22cd30bc858f65c57ab9bae0349e48c2c36b63bc3b31d27c5369b48e77",
+          "rows": 24
         }
       ]
     },
     {
       "file": "XLMUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "65accff1e4c4c249c86d4acc51678bd070645fa52d977378a86aca876e4c7586",
-      "content_sha256": "cb6e7a8c2d4faf9a0ed65b7ddb5d323c5b2dd2cff5c51fba0b27af89842fe9b9",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "b1c5b758ab8e19734ab48c8546cd05b316366b670a5e36811310642edd3bc27d",
+      "content_sha256": "a555be014b616be4f195661f8c42a171aef8c30176a29aed7c930acb08dcc44e",
       "source_pages": [
         {
-          "path": "rest_klines/XLMUSDT/1d/f037c85e3a7c154917aed395005506f8ca210326c08ad07393eedc4bd0f0c429.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=XLMUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "f037c85e3a7c154917aed395005506f8ca210326c08ad07393eedc4bd0f0c429",
+          "path": "rest_klines/XLMUSDT/1d/43c68126c290b36c89002a8f317aa9597db890d718f54f89ab2d7649069e4031.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=XLMUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "43c68126c290b36c89002a8f317aa9597db890d718f54f89ab2d7649069e4031",
           "rows": 1
         }
       ]
@@ -1052,63 +1052,63 @@
     {
       "file": "XRPUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "4483ea1839e5521247df2d93edebbcb66f259649ab5d1c41e613902714c7d905",
-      "content_sha256": "30af25cdd2d985ef1333bb3529191ca572de450b2e01b697774dac9500d0a8a7",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "3fd14e91a22ac062185390f6b62b9468b6f3bc29c065375b03e22b3708bedfec",
+      "content_sha256": "3e35033ba58def03d9251aefa60f386d59b5b73b3dcfe0dd13519e84af67c79c",
       "source_pages": [
         {
-          "path": "rest_klines/XRPUSDT/1d/b07d8b198ce8fb2db800e841a4937bdb10bcd15b6bd14cb1260fccfd44597caa.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=XRPUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "b07d8b198ce8fb2db800e841a4937bdb10bcd15b6bd14cb1260fccfd44597caa",
+          "path": "rest_klines/XRPUSDT/1d/9409386c54bc51639a63898444f08945070d86400038f05e925b9356459320ae.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=XRPUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "9409386c54bc51639a63898444f08945070d86400038f05e925b9356459320ae",
           "rows": 1
         }
       ]
     },
     {
       "file": "XRPUSDT_1h.parquet",
-      "added_rows": 8,
-      "rows": 48446,
-      "coverage_end_utc": "2026-07-13 03:00:00+00:00",
-      "parquet_sha256": "5cba977ace1ced2741efe8bc003bbc82580961e589728450362bb421eca91db9",
-      "content_sha256": "ee5020f684325a81ddeaa69782b26e4e8c3beee12bd31d2d24875beeed101182",
+      "added_rows": 24,
+      "rows": 48638,
+      "coverage_end_utc": "2026-07-21 03:00:00+00:00",
+      "parquet_sha256": "1b09e37e6d2c561a46ea1b3085e83d70a2788455610960aec4e6f7a945ae90b0",
+      "content_sha256": "80851e4194601e96fe25e26dbfcdf2c01969f4bd041369824f5170f48e6044b5",
       "source_pages": [
         {
-          "path": "rest_klines/XRPUSDT/1h/d7f5e47d8c5f77a813b01a527441035b4b3ad2d689863df5b33c2900dd6382c6.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=XRPUSDT&interval=1h&startTime=1783882800001&limit=1000",
-          "sha256": "d7f5e47d8c5f77a813b01a527441035b4b3ad2d689863df5b33c2900dd6382c6",
-          "rows": 8
+          "path": "rest_klines/XRPUSDT/1h/de6203fbaec0fd975c5755417b3a9afc7ca40f8d14c154ccee296d7d58a3bdad.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=XRPUSDT&interval=1h&startTime=1784516400001&limit=1000",
+          "sha256": "de6203fbaec0fd975c5755417b3a9afc7ca40f8d14c154ccee296d7d58a3bdad",
+          "rows": 24
         }
       ]
     },
     {
       "file": "XRPUSDT_4h.parquet",
-      "added_rows": 2,
-      "rows": 12115,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "987766c818c8c02c7076539e3041a5e633764b4f7ddd045e133ad53567b4ecc9",
-      "content_sha256": "cd3077d01cb04c8e430f981ecbeb4e76196a0665fae548d7d888bcb99b1d08d3",
+      "added_rows": 6,
+      "rows": 12163,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "5c6f0e5963b7e951559f9d969d66f1cc91baf915f361f1ae2f25c8017101cc49",
+      "content_sha256": "5ba1e51b67dcf63b40b3af2a235baa3bfe49cc0343fde9e33fc09a8016b943da",
       "source_pages": [
         {
-          "path": "rest_klines/XRPUSDT/4h/0476b1403607927b2bee090fb71b53d860542f139ee10a96b8abd1133679dbec.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=XRPUSDT&interval=4h&startTime=1783872000001&limit=1000",
-          "sha256": "0476b1403607927b2bee090fb71b53d860542f139ee10a96b8abd1133679dbec",
-          "rows": 2
+          "path": "rest_klines/XRPUSDT/4h/43dc8582bab37d7059842d4315e0df47271c7e3de40228438a9d25c938ba4086.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=XRPUSDT&interval=4h&startTime=1784505600001&limit=1000",
+          "sha256": "43dc8582bab37d7059842d4315e0df47271c7e3de40228438a9d25c938ba4086",
+          "rows": 6
         }
       ]
     },
     {
       "file": "XTZUSDT_1d.parquet",
       "added_rows": 1,
-      "rows": 2020,
-      "coverage_end_utc": "2026-07-13 00:00:00+00:00",
-      "parquet_sha256": "74dd02408c3688ab6bbbec008bf781cb52c6145b06f1ce6ac1814899e405805d",
-      "content_sha256": "7172028d8be8740a0e81b7ed6a65729052e8b48721f524848663b9c770d58b54",
+      "rows": 2028,
+      "coverage_end_utc": "2026-07-21 00:00:00+00:00",
+      "parquet_sha256": "b50def07f8aede3573ae8434ee463296c0ce00ed06e4709cf8ba36272e7ee731",
+      "content_sha256": "ee8b59117469d08763912efa3e70d1ee6be546def41956bcbbff7a39705fb022",
       "source_pages": [
         {
-          "path": "rest_klines/XTZUSDT/1d/13e8a0e1dde5141e6d3b675009184f0e9cde707c54096bf085a3ca25f83c1e33.json",
-          "url": "https://api.binance.com/api/v3/klines?symbol=XTZUSDT&interval=1d&startTime=1783814400001&limit=1000",
-          "sha256": "13e8a0e1dde5141e6d3b675009184f0e9cde707c54096bf085a3ca25f83c1e33",
+          "path": "rest_klines/XTZUSDT/1d/cad253359b97e637a300e301df7e9faeee1bac4ed972278c00fe32a014885f9a.json",
+          "url": "https://api.binance.com/api/v3/klines?symbol=XTZUSDT&interval=1d&startTime=1784505600001&limit=1000",
+          "sha256": "cad253359b97e637a300e301df7e9faeee1bac4ed972278c00fe32a014885f9a",
           "rows": 1
         }
       ]

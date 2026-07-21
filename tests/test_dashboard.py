@@ -123,11 +123,17 @@ def test_dashboard_status_is_read_only_projection() -> None:
     assert all(task["bucket"] == "recurring" for task in status["recurring_tasks"])
     assert any(task["status"].startswith("DEFERRED") for task in status["gated_tasks"])
     assert any(task["status"].startswith("ONGOING") for task in status["recurring_tasks"])
-    ai_run = next(action for action in status["workspace_actions"] if action["id"] == "T-011-05")
-    assert {option["id"] for option in ai_run["options"]} == {
-        "keep_deferred",
-        "credentials_configured",
+    # Structural property, not a task-ID pin: pinning specific IDs went stale twice in
+    # two days as tasks completed. What must always hold: cards exist only for tasks
+    # still awaiting a decision (gated or recurring), never for completed ones, and
+    # every card carries a non-empty option set.
+    open_ids = {t["id"] for t in status["gated_tasks"]} | {
+        t["id"] for t in status["recurring_tasks"]
     }
+    assert status["workspace_actions"], "some gated/recurring work always needs a card"
+    for action in status["workspace_actions"]:
+        assert action["id"] in open_ids, f"{action['id']} has a card but is not open"
+        assert action["options"], f"{action['id']} card has no options"
     assert any(item["file"] == "14_dashboard.md" for item in status["initiatives"])
     assert status["checks"]["status"] in {"PASS", "UNKNOWN"}
     assert status["checks"]["known_passing"] is (status["checks"]["status"] == "PASS")
@@ -788,6 +794,26 @@ def test_dashboard_includes_read_only_tradingview_market_monitor() -> None:
     assert "Research automation cannot control the gate-bound simulator" in html
 
 
+def test_todos_page_has_copy_session_prompt_button() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    todos_section = html[html.index('id="todos"') : html.index('id="todosBody"')]
+    assert 'id="copySessionPrompt"' in todos_section
+    assert 'onclick="copySessionPrompt(this)">Copy session prompt</button>' in todos_section
+    # Structural property, not the whole prompt blob: the button copies a
+    # version-agnostic kickoff prompt pointing at the live SSOT, not a
+    # snapshot of today's specific open items.
+    assert "function copySessionPrompt(button)" in html
+    assert "navigator.clipboard?.writeText" in html
+    assert "document.execCommand('copy')" in html
+    assert "Copied ✓" in html
+    assert "the single live authority for current state" in html
+    assert '"OPEN ITEMS" section is the live task list' in html
+    assert "PROJECT_STATE.md" in html
+    assert "never run two pytest suites concurrently" in html
+
+
 def test_dashboard_activity_maps_one_to_one_to_real_artifacts() -> None:
     root = Path(__file__).resolve().parents[1]
     data = build_dashboard_data(root)
@@ -838,24 +864,33 @@ def test_dashboard_ui_a11y_responsive_and_state_contracts() -> None:
         "historical reproduction only",
     ):
         assert contract in html
-    assert "POLL_MS=5000" not in html
-    assert "MARKET_POLL_MS=15000" not in html
-    assert "Array.from({length:24}" not in html
-    assert "HG-2" not in html
-    assert "S1" not in html
+    # Provider-logo data: URIs are base64 noise and can coincidentally contain
+    # substrings like "S1"; scope the stale-reference checks to real markup/copy.
+    text_html = re.sub(r"base64,[A-Za-z0-9+/=]+", "base64,<omitted>", html)
+    assert "POLL_MS=5000" not in text_html
+    assert "MARKET_POLL_MS=15000" not in text_html
+    assert "Array.from({length:24}" not in text_html
+    assert "HG-2" not in text_html
+    assert "S1" not in text_html
 
 
-def test_humanized_cockpit_has_exactly_five_workspaces_and_overview_is_default() -> None:
+def test_humanized_cockpit_has_eleven_workspaces_and_overview_is_default() -> None:
     html = (
         Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
     ).read_text()
 
     assert re.findall(r'<button[^>]+data-workspace="([^"]+)"', html) == [
+        "wallets",
+        "signals",
         "now",
+        "todos",
         "trading",
+        "testing",
         "research",
         "operations",
         "library",
+        "skills",
+        "settings",
     ]
     assert (
         '<button class="active" data-workspace="now" aria-current="page">Overview</button>' in html
@@ -1034,7 +1069,10 @@ def test_mobile_tables_chart_and_sidebar_have_bounded_layout_contracts() -> None
         "background:#09101b;position:sticky;top:0;height:100vh;display:flex;"
         "flex-direction:column;overflow-y:auto}" in html
     )
-    assert ".sidebar-foot{margin-top:auto;padding:20px 10px 0" in html
+    # Settings sits in its own bottom-pinned nav block above the footer text; that
+    # block carries the sticky-to-bottom margin now, not .sidebar-foot directly.
+    assert ".nav-bottom{margin-top:auto" in html
+    assert ".sidebar-foot{padding:20px 10px 0" in html
     assert ".sidebar-foot{position:absolute" not in html
     assert ".title-row>.action{margin-top:16px}" in html
     assert "}.action{margin-top:16px}" not in html
@@ -1171,7 +1209,13 @@ def test_cockpit_range_refresh_visibility_and_last_good_contracts() -> None:
         "1m",
         "all",
     ]
-    assert re.findall(r'<option value="(off|5000|15000|60000)"', html) == [
+    # Scoped to #refreshRate specifically — the Signals page's #autoPollRate select
+    # also has "off" and (coincidentally, 60000ms = 1m there vs 60s here) "60000"
+    # options, which an unscoped regex would pick up too.
+    refresh_rate_select = html[
+        html.index('id="refreshRate"') : html.index("</select>", html.index('id="refreshRate"'))
+    ]
+    assert re.findall(r'<option value="(off|5000|15000|60000)"', refresh_rate_select) == [
         "off",
         "5000",
         "15000",
@@ -1645,10 +1689,11 @@ def test_dashboard_check_pass_requires_fresh_machine_readable_artifact(
     artifact.write_text(
         json.dumps(
             {
-                "schema_version": 2,
+                "schema_version": 3,
                 "gate": "check",
                 "command": "make check",
                 "status": "PASS",
+                "includes_slow_data_tests": False,
                 "includes_dependency_audit": False,
                 "generated_at": (datetime.now(tz=UTC) - age).isoformat(),
             }
@@ -1658,7 +1703,57 @@ def test_dashboard_check_pass_requires_fresh_machine_readable_artifact(
     assert checks["status"] == "PASS"
     assert checks["known_passing"] is True
     assert checks["includes_dependency_audit"] is False
+    assert checks["includes_slow_data_tests"] is False
     assert checks["required_gate"] == {"command": "make required", "status": "UNKNOWN"}
+
+
+def test_dashboard_distinguishes_full_gate_from_fast_gate(tmp_path: Path) -> None:
+    """Both gates write the same file; the projection must not conflate their coverage."""
+    artifact = tmp_path / "artifacts/quality/check.json"
+    artifact.parent.mkdir(parents=True)
+    artifact.write_text(
+        json.dumps(
+            {
+                "schema_version": 3,
+                "gate": "check-full",
+                "command": "make check-full",
+                "status": "PASS",
+                "includes_slow_data_tests": True,
+                "includes_dependency_audit": False,
+                "generated_at": datetime.now(tz=UTC).isoformat(),
+            }
+        )
+    )
+
+    checks = build_status(tmp_path)["checks"]
+
+    assert checks["status"] == "PASS"
+    assert checks["gate"] == "check-full"
+    assert checks["command"] == "make check-full"
+    assert checks["includes_slow_data_tests"] is True
+
+
+def test_dashboard_rejects_superseded_schema_two_artifact(tmp_path: Path) -> None:
+    """A pre-split artifact cannot vouch for the post-split contract."""
+    artifact = tmp_path / "artifacts/quality/check.json"
+    artifact.parent.mkdir(parents=True)
+    artifact.write_text(
+        json.dumps(
+            {
+                "schema_version": 2,
+                "gate": "check",
+                "command": "make check",
+                "status": "PASS",
+                "includes_dependency_audit": False,
+                "generated_at": datetime.now(tz=UTC).isoformat(),
+            }
+        )
+    )
+
+    checks = build_status(tmp_path)["checks"]
+
+    assert checks["status"] == "UNKNOWN"
+    assert checks["known_passing"] is False
 
 
 @pytest.mark.parametrize(

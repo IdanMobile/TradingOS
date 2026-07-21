@@ -1,3 +1,5 @@
+> SUPERSEDED (2026-07-21): see docs/supervisor/*_2026-07-21.md and PROJECT_STATE.md.
+
 # Trading OS supervisory baseline — 2026-07-13
 
 Status: active full-project baseline under the repository-local Trading OS Supervisor.  

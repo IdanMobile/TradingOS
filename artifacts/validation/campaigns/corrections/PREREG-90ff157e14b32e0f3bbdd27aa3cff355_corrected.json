@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "correction_of": "PREREG-90ff157e14b32e0f3bbdd27aa3cff355",
+  "family": "FAM-FUNDING-PRESSURE-V1",
+  "decision_ref": "D-112",
+  "selected_parameters": {
+    "lookback_observations": 3,
+    "absolute_mean_rate_threshold": 0.0003,
+    "polarity": "CONTRARIAN"
+  },
+  "reproduced_frozen_score": true,
+  "reproduced_validation_score": 0.0,
+  "original": {
+    "verdict": "FAIL",
+    "validation_score": 0.0,
+    "sample_count": 8830,
+    "hierarchy_trials": 234,
+    "dsr": {
+      "expected_maximum_noise_sharpe": 0.17422811889856324,
+      "z_score": -16.3709546739472,
+      "dsr": 0.0
+    }
+  },
+  "corrected": {
+    "verdict": "INSUFFICIENT_ACTIVITY",
+    "status": "INSUFFICIENT_ACTIVITY",
+    "validation_trades": 0,
+    "min_validation_trades": 10,
+    "descriptive_per_bar_sharpe": 0.0,
+    "observed_trade_sharpe": null,
+    "average_correlation": null,
+    "effective_trials": null,
+    "dsr": null
+  },
+  "reason": "0 completed validation trade(s) < pre-registered floor 10; no DSR is claimed on this little activity",
+  "notes": "Re-score only: no ledger writes, no new trials, no holdout access, no parameter search. Replays the recorded frozen selection on its original train/validation windows under the D-112 corrected statistics."
+}

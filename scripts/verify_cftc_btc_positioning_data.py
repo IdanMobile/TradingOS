@@ -17,6 +17,7 @@ from typing import Any
 import pyarrow as pa
 import pyarrow.parquet as pq
 
+from tios.dataset.arrow_time import utc_datetimes
 from tios.dataset.normalize import (  # type: ignore[import-untyped]
     content_sha256,
     dedup_sorted,
@@ -89,7 +90,7 @@ def _availability(report_date: str, exceptions: dict[str, str]) -> datetime:
 
 
 def _gap_evidence(table: pa.Table) -> tuple[int, str]:
-    opens = table.column("timestamp_open_utc").to_pylist()
+    opens = utc_datetimes(table.column("timestamp_open_utc"))
     gaps = [
         {"left_utc": left.isoformat(), "right_utc": right.isoformat()}
         for left, right in zip(opens, opens[1:], strict=False)
@@ -206,7 +207,7 @@ def verify(package_path: Path = PACKAGE, root: Path = ROOT) -> dict[str, object]
     ):
         raise RuntimeError("combined Spot gap evidence differs from package")
 
-    opens = combined.column("timestamp_open_utc").to_pylist()
+    opens = utc_datetimes(combined.column("timestamp_open_utc"))
     mapped = 0
     unmapped: list[str] = []
     for row in rows:

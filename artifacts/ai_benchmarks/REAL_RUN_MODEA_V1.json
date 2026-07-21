@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "task": "T-011-05 first real runs, Mode A (controlled)",
+  "generated_at": "2026-07-20T21:47:19.507581+00:00",
+  "git_commit": "265f9bc378d3585f74d7cb0a247e37a03956b6e4",
+  "corpus_hash": "",
+  "fixtures": 27,
+  "samples_per_config": 2,
+  "configurations": [
+    {
+      "provider": "anthropic",
+      "model": "claude-opus-4-8"
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5"
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-4o"
+    }
+  ],
+  "mode": "A",
+  "prompt_discipline": "identical frozen prompt + identical schema instruction per task",
+  "variance_by_config": {
+    "anthropic:claude-opus-4-8": {
+      "calls": 54,
+      "schema_valid_rate": 1.0,
+      "output_stable_fixtures": 19,
+      "fixtures": 27,
+      "output_stability_rate": 0.7037,
+      "latency_ms_mean": 3523.1,
+      "latency_ms_stdev": 2974.8,
+      "cost_usd_total": 0.270595,
+      "cost_usd_mean": 0.005011
+    },
+    "anthropic:claude-haiku-4-5": {
+      "calls": 54,
+      "schema_valid_rate": 1.0,
+      "output_stable_fixtures": 15,
+      "fixtures": 27,
+      "output_stability_rate": 0.5556,
+      "latency_ms_mean": 2038.4,
+      "latency_ms_stdev": 1684.4,
+      "cost_usd_total": 0.048826,
+      "cost_usd_mean": 0.000904
+    }
+  },
+  "blocked_configs": {
+    "openai:gpt-4o": "openai error: You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors."
+  },
+  "failures": [
+    "openai:gpt-4o/t1_source_verification/T1-01.json: openai error: You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors."
+  ],
+  "total_cost_usd": 0.319421,
+  "judge_calibration_note": "Judge-based evaluators remain PENDING_HUMAN_REVIEW (T-011-04); this run records schema validity, stability, cost, and latency only.",
+  "execution_authority": "NONE",
+  "promotion_eligible": false
+}

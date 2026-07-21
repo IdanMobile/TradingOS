@@ -13,6 +13,11 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import verify_calendar_utc_data as calendar_data  # noqa: E402
 
+# These verify retained data-package byte integrity by decoding large base64
+# archives. They are ~94% of total suite runtime and only change when the DATA
+# changes, not when code does — so they run in `make check-full`, not `make check`.
+pytestmark = pytest.mark.slow
+
 
 def test_tracked_calendar_package_verifies_offline() -> None:
     result = calendar_data.verify()

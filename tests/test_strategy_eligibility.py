@@ -7,6 +7,7 @@ from tios.validation import (
     evaluate_strategy_eligibility,
 )
 from tios.validation.eligibility import REQUIRED_DIMENSIONS, REQUIRED_GATES, REQUIRED_REVIEWS
+from tios.validation.trial_budget import BudgetVerdict
 
 
 def _scorecard(status: str = "PASS") -> ScorecardEvidence:
@@ -43,6 +44,17 @@ def _promotion() -> PromotionEvidence:
     )
 
 
+def _verdict(declared: int = 12, ref: str = "research:campaign") -> BudgetVerdict:
+    """A ledger-verified trial population matching the scorecard's declaration."""
+    return BudgetVerdict(
+        verified=True,
+        registration_ref=ref,
+        declared_trial_count=declared,
+        ledger_trial_count=declared,
+        blockers=(),
+    )
+
+
 def test_complete_evidence_is_scorecard_and_promotion_eligible() -> None:
     result = evaluate_strategy_eligibility(
         (
@@ -51,6 +63,7 @@ def test_complete_evidence_is_scorecard_and_promotion_eligible() -> None:
         ),
         _scorecard(),
         _promotion(),
+        _verdict(),
     )
 
     assert all(metric.eligible for metric in result.metrics)
@@ -77,7 +90,7 @@ def test_warmup_signal_fails_closed_without_inventing_zero_scores() -> None:
         review_statuses={review: "NOT_RUN" for review in REQUIRED_REVIEWS},
     )
     result = evaluate_strategy_eligibility(
-        (MetricEvidence("PBO", False, False, 4, 8640, ()),), scorecard, promotion
+        (MetricEvidence("PBO", False, False, 4, 8640, ()),), scorecard, promotion, _verdict(8640)
     )
 
     assert not result.metrics[0].eligible
@@ -97,8 +110,55 @@ def test_g10_and_all_independent_reviews_are_mandatory() -> None:
         (MetricEvidence("Sharpe", True, True, 100, 30, ("evidence:sharpe",)),),
         _scorecard(),
         replace(promotion, gate_statuses=gates, review_statuses=reviews),
+        _verdict(),
     )
 
     assert not result.promotion_eligible
     assert "MANDATORY_GATES_NOT_ALL_PASS" in result.promotion_blockers
     assert "INDEPENDENT_REVIEWS_NOT_ALL_PASS" in result.promotion_blockers
+
+
+def test_unverified_trial_budget_blocks_otherwise_complete_evidence() -> None:
+    """Omitting the ledger cross-check fails closed rather than defaulting to a pass."""
+    result = evaluate_strategy_eligibility(
+        (MetricEvidence("DSR", True, True, 12, 12, ("evidence:dsr",)),),
+        _scorecard(),
+        _promotion(),
+    )
+
+    assert not result.scorecard_eligible
+    assert not result.promotion_eligible
+    assert "TRIAL_BUDGET_NOT_VERIFIED" in result.scorecard_blockers
+
+
+def test_failed_budget_verification_blocks_promotion() -> None:
+    """A search wider than declared cannot be promoted, however clean the rest looks."""
+    understated = BudgetVerdict(
+        verified=False,
+        registration_ref="research:campaign",
+        declared_trial_count=12,
+        ledger_trial_count=3000,
+        blockers=("DECLARED_TRIAL_COUNT_UNDERSTATES_LEDGER",),
+    )
+    result = evaluate_strategy_eligibility(
+        (MetricEvidence("DSR", True, True, 12, 12, ("evidence:dsr",)),),
+        _scorecard(),
+        _promotion(),
+        understated,
+    )
+
+    assert not result.promotion_eligible
+    assert "TRIAL_BUDGET_VERIFICATION_FAILED" in result.scorecard_blockers
+
+
+def test_verdict_for_a_different_campaign_is_rejected() -> None:
+    """A verdict must belong to the scorecard's own pre-registration."""
+    result = evaluate_strategy_eligibility(
+        (MetricEvidence("DSR", True, True, 12, 12, ("evidence:dsr",)),),
+        _scorecard(),
+        _promotion(),
+        _verdict(ref="research:some-other-campaign"),
+    )
+
+    assert not result.promotion_eligible
+    assert "TRIAL_BUDGET_REGISTRATION_MISMATCH" in result.scorecard_blockers

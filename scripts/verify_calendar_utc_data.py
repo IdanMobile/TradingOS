@@ -11,6 +11,7 @@ from typing import Any
 
 import pyarrow.parquet as pq
 
+from tios.dataset.arrow_time import utc_datetimes
 from tios.dataset.normalize import content_sha256
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -76,7 +77,7 @@ def verify(package_path: Path = PACKAGE, root: Path = ROOT) -> dict[str, object]
     if content_sha256(table) != base["logical_content_sha256"]:
         raise RuntimeError("normalized logical content differs from the frozen calendar package")
 
-    opens = table.column("timestamp_open_utc").to_pylist()
+    opens = utc_datetimes(table.column("timestamp_open_utc"))
     if str(opens[0]) != base["coverage_start_utc"] or str(opens[-1]) != base["coverage_end_utc"]:
         raise RuntimeError("normalized coverage differs from the frozen calendar package")
     if opens[0].weekday() != 4 or (opens[0] + timedelta(hours=1)).weekday() != 4:

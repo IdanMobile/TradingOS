@@ -1,7 +1,11 @@
 # Trading Intelligence OS — Research Backlog
 
-Last updated: 2026-07-06
-Status: Strategic research sufficient for constrained prototype handoff. Remaining research is execution-triggered.
+Last updated: 2026-07-20
+Status: every P0 item is DONE with retained evidence (bake-off, dataset, lineage, validation
+harness, ingestion seed, AI benchmark seed, dashboard, prototype decision — see D-036/D-037
+and `artifacts/reports/`). Remaining bands are execution-triggered; P1 "job orchestration
+choice" is resolved by the D-107 driver/orchestrator. Priority-band view only — live gap
+tracking is `research/RESEARCH_GAP_MATRIX.md` and `artifacts/driver/parked_items.jsonl`.
 Note: detailed gap tracking moved to `research/RESEARCH_GAP_MATRIX.md` (RG-xx rows with owners/triggers); a freshness re-verification pass was completed 2026-07-06 into `research/EXISTING_CAPABILITY_REGISTRY.md`. This backlog keeps the priority-band view only.
 
 ## P0 — Execute now through coding agent
