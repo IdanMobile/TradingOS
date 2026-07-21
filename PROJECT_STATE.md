@@ -25,6 +25,13 @@ ledger see `MISSING_AND_OPEN_ITEMS.md` (which now points back here as the entry 
   — approved and implemented under D-113 (`scripts/demo_eth_lane.py`,
   `tests/test_demo_disaster_stop.py`). Awaits lane-restart verification before it is confirmed
   live in the running loop.
+- **URGENT FIRST ACTION: the demo lane process is STOPPED** (stopped 2026-07-21 evening to
+  load the stop code; the agent permission classifier blocked the relaunch). The lane's open
+  ETH position (~0.01341 ETH, entry ~1862.37) has NO stop protection until restart. Restart:
+  `make demo-lane` (operator terminal, or an agent session whose settings allow it). On start
+  the lane reconstructs entry from `orders.jsonl` and arms both stops. Then verify: a resting
+  stop order appears in the lane artifacts (`orders.jsonl` / `lane_state.json` `resting_stop`)
+  at ~1583 (entry × 0.85).
 
 **Resolved this cycle (D-113, D-114):**
 - Security-test diff review — `test_live_unreachable.py`'s strengthened assertion (post-D-104
