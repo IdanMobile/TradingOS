@@ -95,3 +95,25 @@ signals + execution/risk engineering, not one strategy; (2) multi-timeframe
 confluence and multi-source data fusion are standard; (3) crypto's most robust
 documented edge is NON-predictive funding-rate carry (delta-neutral), which
 sidesteps the price-prediction problem our DSR tests keep failing.
+
+## New-family scouting sources — added 2026-07-21
+
+Hypothesis-sourcing only (`docs/supervisor/NEW_FAMILY_SCOUTING_2026-07-21.md`) — surveys
+community strategy libraries and academic literature for NEW mechanism candidates,
+distinct from the seven closed families. NOT validation evidence; every candidate still
+owes its own pre-registered in-repo campaign under the corrected D-112 statistical core.
+
+| Source | URL | Category | Use | Evidence strength |
+|---|---|---|---|---|
+| A Trend Factor for the Cross-Section of Cryptocurrency Returns | https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4601972 | Academic (SSRN/JFQA) | cross-sectional altcoin momentum | Primary research |
+| Time-Series and Cross-Sectional Momentum in the Cryptocurrency Market | https://acfr.aut.ac.nz/__data/assets/pdf_file/0009/918729/Time_Series_and_Cross_Sectional_Momentum_in_the_Cryptocurrency_Market_with_IA.pdf | Academic | cross-sectional momentum, realistic assumptions | Primary research |
+| Cryptocurrency momentum has (not) its moments | https://link.springer.com/article/10.1007/s11408-025-00474-9 | Academic (Springer) | skeptical momentum replication | Primary research |
+| Constructing cointegrated cryptocurrency portfolios for statistical arbitrage | https://ideas.repec.org/a/eme/sefpps/sef-08-2018-0264.html | Academic (peer-reviewed) | stat-arb pairs, Sharpe 1.58-2.45 | Primary research |
+| BIS Working Papers No 1087 — Crypto carry | https://www.bis.org/publ/work1087.pdf | Institutional research | cross-sectional funding carry, decaying Sharpe | Primary research |
+| Deribit Insights — Bitcoin Options volatility regimes | https://insights.deribit.com/industry/bitcoin-options-finding-edge-in-four-years-of-volatility-regimes/ | Venue-published research | crypto variance risk premium | Secondary (venue-incentivized) |
+| CryptoQuant / ChainExposed / Bitcoin Magazine Pro — SOPR | https://dataguide.cryptoquant.com/utxo-data-indicators/spent-output-profit-ratio-sopr | Vendor/practitioner | on-chain SOPR signal | Secondary, no peer-reviewed validation found |
+| DefiLlama — Stablecoins | https://defillama.com/stablecoins | Data aggregator | stablecoin supply liquidity proxy | Discovery-only |
+| QuantPedia — Google Trends Sentiment for Crypto Returns | https://quantpedia.com/can-google-trends-sentiment-be-useful-as-a-predictor-for-cryptocurrency-returns/ | Research-secondary | attention/sentiment proxy | Secondary, mixed findings |
+
+Discovery-only reminder applies: these are candidate-generation sources, never a
+validation basis on their own.

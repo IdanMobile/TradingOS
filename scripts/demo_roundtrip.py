@@ -70,6 +70,63 @@ def _order_create(
     return decoded if isinstance(decoded, dict) else {}
 
 
+def place_stop(
+    post_transport: PostTransport,
+    api_key: str,
+    secret: str,
+    timestamp: str,
+    base: str,
+    *,
+    symbol: str,
+    trigger_price: str,
+    base_qty: str,
+) -> dict[str, Any]:
+    """Rest a spot Sell stop (Bybit V5 conditional order) via the quarantined create transport.
+
+    orderFilter=StopOrder, triggerDirection=2 (fire when the last price falls to/through
+    triggerPrice), Market exit. The order-create endpoint literal stays confined to this module.
+    """
+    order = {
+        "category": "spot",
+        "symbol": symbol,
+        "side": "Sell",
+        "orderType": "Market",
+        "qty": base_qty,
+        "marketUnit": "baseCoin",
+        "orderFilter": "StopOrder",
+        "triggerPrice": trigger_price,
+        "triggerDirection": "2",
+    }
+    return _order_create(post_transport, api_key, secret, timestamp, base, order)
+
+
+def cancel_order(
+    post_transport: PostTransport,
+    api_key: str,
+    secret: str,
+    timestamp: str,
+    base: str,
+    *,
+    order_id: str,
+    symbol: str,
+    order_filter: str = "StopOrder",
+) -> dict[str, Any]:
+    """Cancel an order by id (Bybit V5 /v5/order/cancel). Demo-host-locked; endpoint kept here."""
+    pf.require_demo_base(base)
+    body = json.dumps(
+        {"category": "spot", "symbol": symbol, "orderId": order_id, "orderFilter": order_filter}
+    )
+    headers = {
+        "X-BAPI-API-KEY": api_key,
+        "X-BAPI-TIMESTAMP": timestamp,
+        "X-BAPI-RECV-WINDOW": pf.RECV_WINDOW,
+        "X-BAPI-SIGN": sign_post(secret, timestamp, api_key, body),
+        "Content-Type": "application/json",
+    }
+    decoded = json.loads(post_transport(f"{base}/v5/order/cancel", headers, body.encode()))
+    return decoded if isinstance(decoded, dict) else {}
+
+
 def place_market_buy(
     post_transport: PostTransport,
     api_key: str,

@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "title": "Campaign evaluator differential test (D-112 residual follow-up)",
+  "decision_ref": "D-112",
+  "generated_at_utc": "2026-07-21T16:41:57.341055+00:00",
+  "purpose": "Reduce single-implementation risk in the D-112-remediated campaign evaluator by comparing it against an independent from-spec implementation on synthetic data with hand-derivable ground truth. Does not change any threshold or verdict.",
+  "evaluator_under_test": {
+    "trade_return_builder": "scripts/run_first_budgeted_campaign.py::evaluate",
+    "significance_scorer": "src/tios/validation/campaign.py::score_trade_significance",
+    "cost_model": {
+      "fee_rate_per_side": 0.001,
+      "slippage_rate_per_side": 0.0001
+    },
+    "parameters": {
+      "contraction_window": 2,
+      "breakout_window": 2,
+      "exit_window": 2,
+      "contraction_quantile": 0.2
+    }
+  },
+  "independent_implementation": {
+    "trade_return_builder": "run_evaluator_differential_test.py::independent_evaluate",
+    "significance_scorer": "run_evaluator_differential_test.py::independent_score_trade_significance",
+    "language": "python stdlib (math, statistics) \u2014 no numpy/vectorbt in the runtime env",
+    "vectorbt_cross_check": "engine-env only; uses Portfolio.from_signals / trades.count() / total_return() as in engines/vectorbt/g10_returns.py; SKIPPED when vectorbt is not importable"
+  },
+  "tolerances": {
+    "per_trade_pnl_abs": 1e-12,
+    "summary_stat_abs": 1e-12,
+    "trade_count": "exact"
+  },
+  "vectorbt_status": [
+    "SKIPPED_NO_VECTORBT"
+  ],
+  "layer_1_trade_return_builder": [
+    {
+      "name": "normal_two_trades",
+      "description": "Two completed trades with distinct returns (one loss, one gain).",
+      "bars": 25,
+      "project": {
+        "trade_returns": [
+          -0.016943430974934226,
+          0.022378831786068476
+        ],
+        "trade_count": 2,
+        "score": 0.05848484945258976
+      },
+      "independent": {
+        "trade_returns": [
+          -0.016943430974934226,
+          0.022378831786068476
+        ],
+        "trade_count": 2,
+        "score": 0.05848484945258976
+      },
+      "ground_truth_trade_returns": [
+        -0.016943430974934226,
+        0.022378831786068476
+      ],
+      "max_abs_diff": {
+        "per_trade_pnl_vs_independent": 0.0,
+        "per_trade_pnl_vs_ground_truth": 0.0,
+        "bar_returns_vs_independent": 0.0,
+        "score_vs_independent": 0.0
+      },
+      "vectorbt": {
+        "status": "SKIPPED_NO_VECTORBT"
+      },
+      "checks": {
+        "trade_count_match": true,
+        "per_trade_pnl_vs_independent_within_tol": true,
+        "per_trade_pnl_vs_ground_truth_within_tol": true,
+        "bar_returns_within_tol": true,
+        "score_within_tol": true
+      },
+      "agree": true
+    },
+    {
+      "name": "zero_trades",
+      "description": "No entry ever arms (calm never closes above prior highs).",
+      "bars": 30,
+      "project": {
+        "trade_returns": [],
+        "trade_count": 0,
+        "score": 0.0
+      },
+      "independent": {
+        "trade_returns": [],
+        "trade_count": 0,
+        "score": 0.0
+      },
+      "ground_truth_trade_returns": [],
+      "max_abs_diff": {
+        "per_trade_pnl_vs_independent": 0.0,
+        "per_trade_pnl_vs_ground_truth": 0.0,
+        "bar_returns_vs_independent": 0.0,
+        "score_vs_independent": 0.0
+      },
+      "vectorbt": {
+        "status": "SKIPPED_NO_VECTORBT"
+      },
+      "checks": {
+        "trade_count_match": true,
+        "per_trade_pnl_vs_independent_within_tol": true,
+        "per_trade_pnl_vs_ground_truth_within_tol": true,
+        "bar_returns_within_tol": true,
+        "score_within_tol": true
+      },
+      "agree": true
+    },
+    {
+      "name": "single_trade",
+      "description": "Exactly one completed trade.",
+      "bars": 19,
+      "project": {
+        "trade_returns": [
+          -0.016943430974934226
+        ],
+        "trade_count": 1,
+        "score": -0.7071067811865476
+      },
+      "independent": {
+        "trade_returns": [
+          -0.016943430974934226
+        ],
+        "trade_count": 1,
+        "score": -0.7071067811865476
+      },
+      "ground_truth_trade_returns": [
+        -0.016943430974934226
+      ],
+      "max_abs_diff": {
+        "per_trade_pnl_vs_independent": 0.0,
+        "per_trade_pnl_vs_ground_truth": 0.0,
+        "bar_returns_vs_independent": 0.0,
+        "score_vs_independent": 0.0
+      },
+      "vectorbt": {
+        "status": "SKIPPED_NO_VECTORBT"
+      },
+      "checks": {
+        "trade_count_match": true,
+        "per_trade_pnl_vs_independent_within_tol": true,
+        "per_trade_pnl_vs_ground_truth_within_tol": true,
+        "bar_returns_within_tol": true,
+        "score_within_tol": true
+      },
+      "agree": true
+    },
+    {
+      "name": "sample_count_inflation_defect",
+      "description": "One completed trade over 120 bars (119 bar-returns): the CFTC-shaped geometry where in-position fraction is tiny. Pre-D-112, feeding the 119-bar count to the DSR instead of the 1-trade count inflated z; the Layer-2 checks below assert the fail-closed guard now rejects that substitution.",
+      "bars": 120,
+      "project": {
+        "trade_returns": [
+          -0.016943430974934226
+        ],
+        "trade_count": 1,
+        "score": -0.7071067811865476
+      },
+      "independent": {
+        "trade_returns": [
+          -0.016943430974934226
+        ],
+        "trade_count": 1,
+        "score": -0.7071067811865476
+      },
+      "ground_truth_trade_returns": [
+        -0.016943430974934226
+      ],
+      "max_abs_diff": {
+        "per_trade_pnl_vs_independent": 0.0,
+        "per_trade_pnl_vs_ground_truth": 0.0,
+        "bar_returns_vs_independent": 0.0,
+        "score_vs_independent": 0.0
+      },
+      "vectorbt": {
+        "status": "SKIPPED_NO_VECTORBT"
+      },
+      "checks": {
+        "trade_count_match": true,
+        "per_trade_pnl_vs_independent_within_tol": true,
+        "per_trade_pnl_vs_ground_truth_within_tol": true,
+        "bar_returns_within_tol": true,
+        "score_within_tol": true
+      },
+      "agree": true
+    }
+  ],
+  "layer_2_significance_scorer": [
+    {
+      "name": "twelve_trades_with_inflation_demo",
+      "description": "12 completed trades; DSR computed; F1 inflation quantified and guarded.",
+      "trades": 12,
+      "project": {
+        "observed_sharpe": 0.4713525029203171,
+        "effective_trials": 27.934872619093248,
+        "z_score": -1.4787783113892061,
+        "dsr": 0.06959978714760212
+      },
+      "independent": {
+        "observed_sharpe": 0.4713525029203171,
+        "effective_trials": 27.934872619093248,
+        "z_score": -1.4787783113892061,
+        "dsr": 0.06959978714760212
+      },
+      "max_abs_diff": {
+        "observed_sharpe": 0.0,
+        "effective_trials": 0.0,
+        "z_score": 0.0,
+        "dsr": 0.0
+      },
+      "f1_inflation_demo": {
+        "honest_sample_count": 12,
+        "inflated_sample_count": 200,
+        "honest_z": -1.4787783113892061,
+        "would_be_inflated_z": -6.289748322416748,
+        "inflation_factor": 4.253340932832576,
+        "guard_rejected_inflated_sample_count": true
+      },
+      "checks": {
+        "observed_sharpe_within_tol": true,
+        "effective_trials_within_tol": true,
+        "z_score_within_tol": true,
+        "dsr_within_tol": true,
+        "f1_guard_rejects_inflated_sample_count": true
+      },
+      "agree": true
+    }
+  ],
+  "verdict": "AGREEMENT"
+}

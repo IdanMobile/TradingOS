@@ -67,6 +67,7 @@ from tios.trading_domain import (  # noqa: E402
 LANE_DIR = pf.ROOT / "artifacts" / "trading_domain" / "demo_lane"
 KILL_SWITCH = LANE_DIR / "KILL_SWITCH"
 ORDERS_LEDGER = LANE_DIR / "orders.jsonl"
+ACTIONS_LEDGER = pf.ROOT / "artifacts" / "human_decisions" / "demo_lane_actions.jsonl"
 LANE_STATE = LANE_DIR / "lane_state.json"
 HEARTBEAT = LANE_DIR / "heartbeat.json"
 LANE_LOCK = LANE_DIR / "lane.lock"
@@ -75,6 +76,13 @@ SYMBOL = "ETHUSDT"
 BUY_QUOTE_USDT = Decimal("25")
 SELL_MAX_NOTIONAL = Decimal("120")  # independent sell cap (stage-1 review item)
 FALLBACK_QTY_STEP = Decimal("0.00001")
+
+# Tail insurance, not an active constraint. Operator approved BOTH a local disaster-stop and a
+# venue-resting stop for the demo lane on 2026-07-21 (D-104 demo-lane scope; no new authority).
+# Evidence: MAE analysis over 259 demo trades showed median adverse excursion -2.67% and the
+# -15% level was NEVER hit (SESSION_HANDOFF_2026_07_21.md item 3;
+# docs/supervisor/STATISTICAL_REMEDIATION_PLAN_D112_2026-07-21.md, [OPERATOR] follow-up).
+DEMO_DISASTER_STOP_PCT = Decimal("0.15")
 SPEC_PATH = (
     pf.ROOT / "strategies/research/eth-volume-breakout-prospective/canonical_strategy_spec.yaml"
 )
@@ -274,6 +282,168 @@ def place(
     return record
 
 
+# --- Disaster-stop logic (pure; unit-tested offline in tests/test_demo_disaster_stop.py) ---
+
+
+def disaster_stop_price(entry: Decimal) -> Decimal:
+    """Price at which an open long is DEMO_DISASTER_STOP_PCT underwater from entry."""
+    return entry * (Decimal("1") - DEMO_DISASTER_STOP_PCT)
+
+
+def disaster_stop_triggered(entry: Decimal, mark: Decimal) -> bool:
+    """True once the mark has fallen to/through the -15%-from-entry level."""
+    return entry > 0 and mark > 0 and mark <= disaster_stop_price(entry)
+
+
+def entry_price_from_ledger(records: list[dict[str, Any]]) -> Decimal | None:
+    """Most recent filled long-entry avg price from ledger records, or None.
+
+    Restart safety: a position opened before this process started has no entry in
+    lane_state; the append-only orders ledger is the authoritative record of what was paid.
+    """
+    for record in reversed(records):
+        if record.get("reason") == "ENTRY_LONG" and record.get("ok") and record.get("avg_price"):
+            return Decimal(str(record["avg_price"]))
+    return None
+
+
+def resolve_entry_price(
+    state: dict[str, Any], ledger_records: list[dict[str, Any]]
+) -> Decimal | None:
+    """Entry price for the open long: from state if present, else reconstructed from the ledger."""
+    stored = state.get("entry_price")
+    if stored not in (None, "", "0"):
+        return Decimal(str(stored))
+    return entry_price_from_ledger(ledger_records)
+
+
+def stop_reconcile_action(
+    lane_base: Decimal, entry: Decimal | None, resting: dict[str, Any] | None
+) -> str:
+    """Idempotent venue-stop bookkeeping decision: 'place' | 'replace' | 'cancel' | 'noop'.
+
+    Flat -> no stop should rest. Open with a known entry -> exactly one stop at the -15% level
+    sized to the position; an already-matching resting stop is a no-op (idempotent), a stale
+    level/qty is a replace. Unknown entry -> noop (the local stop still guards the position).
+    """
+    if lane_base <= 0:
+        return "cancel" if resting else "noop"
+    if entry is None or entry <= 0:
+        return "noop"
+    if resting is None:
+        return "place"
+    same = (
+        Decimal(str(resting.get("trigger_price", "0"))) == disaster_stop_price(entry)
+        and Decimal(str(resting.get("base_qty", "0"))) == lane_base
+    )
+    return "noop" if same else "replace"
+
+
+def _read_ledger_records() -> list[dict[str, Any]]:
+    if not ORDERS_LEDGER.is_file():
+        return []
+    records: list[dict[str, Any]] = []
+    for line in ORDERS_LEDGER.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if line:
+            records.append(json.loads(line))
+    return records
+
+
+def _append_action(record: dict[str, Any]) -> None:
+    ACTIONS_LEDGER.parent.mkdir(parents=True, exist_ok=True)
+    with ACTIONS_LEDGER.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(record, sort_keys=True) + "\n")
+        handle.flush()
+        os.fsync(handle.fileno())
+
+
+# --- Venue-resting stop adapter (thin; same demo-host POST path, no new credential/venue) ---
+
+
+def place_stop_order(
+    base_qty: Decimal,
+    trigger_price: Decimal,
+    api_key: str,
+    secret: str,
+    *,
+    post_transport: rt.PostTransport = _live_post_transport,
+) -> dict[str, Any]:
+    """Rest a demo Sell stop at trigger_price via the quarantined order transport (rt.place_stop).
+
+    The order-endpoint literals stay confined to scripts/demo_roundtrip.py; the lane only binds
+    the symbol/params. Demo host only, no new authority.
+    """
+    return rt.place_stop(
+        post_transport,
+        api_key,
+        secret,
+        rt._now(),
+        pf.DEMO_BASE,
+        symbol=SYMBOL,
+        trigger_price=str(trigger_price),
+        base_qty=str(base_qty),
+    )
+
+
+def cancel_stop_order(
+    order_id: str,
+    api_key: str,
+    secret: str,
+    *,
+    post_transport: rt.PostTransport = _live_post_transport,
+) -> dict[str, Any]:
+    """Cancel a resting demo stop by order id via the quarantined transport (rt.cancel_order)."""
+    return rt.cancel_order(
+        post_transport, api_key, secret, rt._now(), pf.DEMO_BASE, order_id=order_id, symbol=SYMBOL
+    )
+
+
+def apply_stop_decision(
+    decision: str,
+    resting: dict[str, Any] | None,
+    lane_base: Decimal,
+    entry: Decimal | None,
+    api_key: str,
+    secret: str,
+    *,
+    post_transport: rt.PostTransport = _live_post_transport,
+) -> dict[str, Any] | None:
+    """Execute a stop_reconcile_action decision; return the new resting-stop record (or None).
+
+    Best-effort secondary protection: on any venue error the resting record is left unchanged
+    (or cleared) and the NEXT cycle retries — the local disaster-stop remains primary throughout.
+    """
+    if decision == "noop":
+        return resting
+    if decision in {"cancel", "replace"} and resting and resting.get("order_id"):
+        try:
+            cancel_stop_order(
+                str(resting["order_id"]), api_key, secret, post_transport=post_transport
+            )
+        except Exception as error:  # noqa: BLE001 - cancel is best-effort; local stop is primary
+            print(f"venue stop cancel failed: {error}", file=sys.stderr)
+        resting = None
+    if decision in {"place", "replace"} and entry is not None and lane_base > 0:
+        trigger = disaster_stop_price(entry)
+        try:
+            placed = place_stop_order(
+                lane_base, trigger, api_key, secret, post_transport=post_transport
+            )
+        except Exception as error:  # noqa: BLE001 - place is best-effort; local stop is primary
+            print(f"venue stop place failed: {error}", file=sys.stderr)
+            return None
+        if placed.get("retCode") == 0:
+            return {
+                "order_id": str(placed.get("result", {}).get("orderId", "")),
+                "trigger_price": str(trigger),
+                "base_qty": str(lane_base),
+            }
+        print(f"venue stop place rejected: {placed.get('retMsg')}", file=sys.stderr)
+        return None
+    return resting
+
+
 def read_state() -> dict[str, Any]:
     if not LANE_STATE.is_file():
         return {"lane_base": "0", "cursor": None}
@@ -380,6 +550,10 @@ def run_cycle(
     state = read_state()
     cursor = state.get("cursor")
     lane_base = Decimal(str(state.get("lane_base", "0")))
+    # Entry price drives the -15% stop. From state normally; reconstructed from the append-only
+    # ledger for a position opened before this process started (restart safety).
+    entry_price = resolve_entry_price(state, _read_ledger_records())
+    resting_stop = state.get("resting_stop")
     fresh = [s for s in signals if cursor is None or s.observed_at.isoformat() > cursor]
     action: dict[str, Any] | None = None
     if cursor is None:
@@ -397,6 +571,7 @@ def run_cycle(
             )
             if action.get("ok"):
                 lane_base += Decimal(str(action["reconcile"]["ETH_delta"]))
+                entry_price = Decimal(str(action["avg_price"])) if action.get("avg_price") else None
         elif side == "SELL" and lane_base > 0:
             action = place(
                 LaneIntent("Sell", lane_base, "baseCoin", str(signal.signal_id), "EXIT_LONG"),
@@ -408,8 +583,68 @@ def run_cycle(
             )
             if action.get("ok"):
                 lane_base = Decimal("0")
+                entry_price = None
     latest_bar_close = bars[-1].close_time.isoformat() if bars else cursor
-    write_state({"lane_base": str(lane_base), "cursor": latest_bar_close})
+
+    # Disaster-stop guard — runs every cycle independent of strategy signals, so it protects a
+    # position opened before this process started and one no fresh signal would exit. The local
+    # close is the primary tail insurance; the venue-resting stop below is the process-death backup.
+    stop_event: dict[str, Any] | None = None
+    try:
+        mark = last_price(get_transport)
+    except Exception as error:  # noqa: BLE001 - no mark means no basis to trigger; skip this cycle
+        print(f"disaster-stop mark unavailable: {error}", file=sys.stderr)
+        mark = Decimal("0")
+    if lane_base > 0 and entry_price is not None and disaster_stop_triggered(entry_price, mark):
+        closed = place(
+            LaneIntent("Sell", lane_base, "baseCoin", "DISASTER_STOP_LOCAL", "DISASTER_STOP"),
+            api_key,
+            secret,
+            get_transport=get_transport,
+            post_transport=post_transport,
+            sleep=sleep,
+        )
+        if closed.get("ok"):
+            stop_event = {
+                "action": "DISASTER_STOP",
+                "decided_at": datetime.now(UTC).isoformat(),
+                "detail": (
+                    f"local -{DEMO_DISASTER_STOP_PCT * 100:.0f}% disaster-stop fired: entry "
+                    f"{entry_price} mark {mark} stop_price {disaster_stop_price(entry_price)}; "
+                    f"closed via demo sell {closed.get('order_id')}"
+                ),
+                "environment": "VENUE_DEMO",
+                "idempotency_key": str(closed.get("order_id") or latest_bar_close),
+                "real_money": False,
+                "schema_version": 1,
+                "source": "demo_lane_disaster_stop",
+            }
+            _append_action(stop_event)
+            lane_base = Decimal("0")
+            entry_price = None
+        action = action or closed
+
+    # Venue-resting stop bookkeeping: exactly one stop at the -15% level while a position is open,
+    # cancelled when flat. Idempotent — an already-matching resting stop is left untouched.
+    decision = stop_reconcile_action(lane_base, entry_price, resting_stop)
+    resting_stop = apply_stop_decision(
+        decision,
+        resting_stop,
+        lane_base,
+        entry_price,
+        api_key,
+        secret,
+        post_transport=post_transport,
+    )
+
+    write_state(
+        {
+            "lane_base": str(lane_base),
+            "cursor": latest_bar_close,
+            "entry_price": str(entry_price) if entry_price is not None else None,
+            "resting_stop": resting_stop,
+        }
+    )
 
     # Wallet and mark are captured every cycle, not only when an order fills. A lane that
     # trades rarely would otherwise show balances frozen at the last fill, and a stale
@@ -437,6 +672,12 @@ def run_cycle(
         "wallet": wallet_snapshot,
         "mark_price": mark_price,
         "rule_levels": rule_levels(bars),
+        "entry_price": str(entry_price) if entry_price is not None else None,
+        "disaster_stop_price": str(disaster_stop_price(entry_price))
+        if entry_price is not None
+        else None,
+        "disaster_stop_event": stop_event,
+        "resting_stop": resting_stop,
         **LANE_LABEL,
     }
     LANE_DIR.mkdir(parents=True, exist_ok=True)

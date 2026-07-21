@@ -2038,3 +2038,34 @@ Evidence: `src/tios/validation/campaign.py`, `scripts/rescore_frozen_campaigns.p
 (and the six siblings), verification recompute reproduced train/validation bit-for-bit.
 Status: **CFTC PASS-ELIGIBLE retracted (INSUFFICIENT_ACTIVITY); six FAILs stand; corrected scoring in
 force. No promotion, venue, or execution authority anywhere. No trial-ledger writes, holdout unread.**
+
+### D-113 — Operator decisions recorded: security-test sign-off, scouting scope, demo disaster-stop, and v8.119–v8.122 tree; four items stay deferred
+
+Decision: the operator, in an interactive session on 2026-07-21 (evening), made five decisions:
+
+(a) **APPROVED** the strengthened `test_live_unreachable.py` security-boundary assertion flagged
+    for human review under D-104's stage-1 un-quarantine (`artifacts/driver/parked_items.jsonl`,
+    phase "cross-cutting / stale security test"). Human sign-off obtained; the fix (no write verb,
+    no order/position/withdraw/transfer endpoint, mutation-tested) stands as reviewed and accepted.
+(b) **APPROVED** new-family scouting from community strategy libraries as hypothesis-sourcing
+    only — ideas, not evidence; every candidate still requires an in-repo pre-registered campaign
+    before any pass/fail claim. Executed: `docs/supervisor/NEW_FAMILY_SCOUTING_2026-07-21.md`
+    (top-3 shortlist: cointegrated stat-arb baskets, cross-sectional altcoin momentum,
+    cross-sectional funding carry). Pre-registration of any shortlisted family is a separate,
+    not-yet-made decision.
+(c) **APPROVED** the demo-lane −15% disaster-stop plus a Bybit V5 venue-resting stop order
+    (`DEMO_DISASTER_STOP_PCT`). Implemented in `scripts/demo_eth_lane.py`;
+    `tests/test_demo_disaster_stop.py` (new) and `tests/test_demo_eth_lane.py` cover it.
+(d) **APPROVED** committing the v8.119–v8.122 working tree. Done, commit `0b183ea`.
+(e) **DEFERRED**, no action taken this cycle: operator attestation fill
+    (`ops/OPERATOR_ATTESTATION.example.json` — a project-knowledge pre-draft is being prepared),
+    D-099 independent review, SUP-009 paid universe feed, and SUP-006(a) venue account
+    semantics. All four stay parked until demo profitability evidence or further operator action;
+    none is newly blocked or newly unblocked by this decision.
+
+Evidence: operator session directives 2026-07-21 (evening); `artifacts/driver/parked_items.jsonl`
+(item (a), phase "cross-cutting / stale security test", resolved with operator sign-off this
+decision); `docs/supervisor/NEW_FAMILY_SCOUTING_2026-07-21.md`; `scripts/demo_eth_lane.py` +
+`tests/test_demo_disaster_stop.py`; commit `0b183ea`.
+Status: **(a)–(d) approved and executed/recorded; (e) remains deferred/parked, no change to its
+blockers. No promotion, venue, or live-execution authority anywhere.**

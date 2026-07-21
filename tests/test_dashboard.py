@@ -809,6 +809,39 @@ def test_todos_page_has_copy_session_prompt_button() -> None:
     assert "document.execCommand('copy')" in html
     assert "Copied ✓" in html
     assert "the single live authority for current state" in html
+
+
+def test_orchestrator_page_has_status_and_history_markup() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    orch_section = html[
+        html.index('id="orchestrator"') : html.index('id="operations"><div class="title-row">')
+    ]
+    for marker in (
+        'id="orchState"',
+        'id="orchInterpretation"',
+        'id="orchObservedAt"',
+        'id="orchStaleWarning"',
+        'id="orchEscalations"',
+        'id="orchObservations"',
+        'id="orchParked"',
+        'id="orchJournal"',
+        "<th>Parked at</th>",
+        "<th>Observed at</th><th>Halted</th><th>Escalations</th><th>Actions</th>",
+        # Static explainer: the 8 domains, the 15-min cadence, and the kill switch,
+        # so an operator can understand the loop without reading source.
+        "checks 8 domains",
+        "integrity, statistical, evidence, strategy, blockers, execution, parked, "
+        "prospective_observation",
+        "Every 15 minutes",
+        "artifacts/orchestrator/KILL_SWITCH",
+    ):
+        assert marker in orch_section
+    assert "async function loadOrchestrator" in html
+    assert "/api/v1/orchestrator" in html
+    # Collapsible pretty-printed JSON detail per observation domain.
+    assert "JSON.stringify(o.detail,null,2)" in html
     assert '"OPEN ITEMS" section is the live task list' in html
     assert "PROJECT_STATE.md" in html
     assert "never run two pytest suites concurrently" in html

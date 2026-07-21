@@ -1,7 +1,7 @@
 # Trading Intelligence OS — Project State
 
-Last updated: 2026-07-21 (D-107..D-112; orchestrator running; doc consolidation v8.121)
-Package version: v8.121 (planning system) + S1 evidence + S2 governance entry + autonomous orchestration substrate
+Last updated: 2026-07-21 (D-107..D-113; orchestrator running; operator decisions recorded v8.123)
+Package version: v8.123 (planning system) + S1 evidence + S2 governance entry + autonomous orchestration substrate
 Status: **S2 AUTONOMOUS RESEARCH LAB ACTIVE (CONSTRAINED); 24/7 orchestrator RUNNING.** All 7 searchable strategy families have been run once: 0 passes (4 FAIL, 3 INSUFFICIENT_ACTIVITY); the one PASS-ELIGIBLE result (CFTC) was retracted under D-112 for a statistical scoring defect, now fixed. Two prospective observation lanes collect live evidence daily/weekly. No strategy, venue connection, or real-money trading is approved.
 
 ## OPEN ITEMS — the only live task list
@@ -14,20 +14,26 @@ documents and `handoffs/SESSION_HANDOFF_2026_07_21.md`. For the full research-ga
 ledger see `MISSING_AND_OPEN_ITEMS.md` (which now points back here as the entry point).
 
 **Awaiting operator decision:**
-- New-family scouting from community strategy libraries (hypothesis source only; evidence
-  still only from in-repo pre-registered campaigns) — offered 2026-07-21, no go/no-go yet.
-  Detail: `docs/supervisor/STATISTICAL_REMEDIATION_PLAN_D112_2026-07-21.md` Follow-ups.
-- Demo-lane −15% disaster-stop + venue-resting stop order — offered, never confirmed (MAE
-  analysis: median −2.67%, −15% never hit in 259 trades). Detail: same file;
-  `handoffs/SESSION_HANDOFF_2026_07_21.md` item 3.
+- Pre-registration go/no-go for scouted families, see `NEW_FAMILY_SCOUTING_2026-07-21.md`
+  (D-113 approved scouting as hypothesis-sourcing only; the shortlist itself — cointegrated
+  stat-arb baskets, cross-sectional altcoin momentum, cross-sectional funding carry — is not
+  yet pre-registered for any campaign). Detail: `docs/supervisor/NEW_FAMILY_SCOUTING_2026-07-21.md`.
 - Operator attestation fill (`ops/OPERATOR_ATTESTATION.example.json`) — the 10 human-only
   facts in `MISSING_AND_OPEN_ITEMS.md` §"Human-only before live trading" are still unsigned.
-- Security-test diff review — `test_live_unreachable.py`'s assertion was strengthened after
-  the D-104 stage-1 un-quarantine; fix is landed and green, flagged for human sign-off on a
-  security-boundary change. Detail: `artifacts/driver/parked_items.jsonl` (phase
-  "cross-cutting / stale security test").
+  A project-knowledge pre-draft is being prepared (D-113).
 - OpenAI billing for the second AI-benchmark provider leg — operator said ignore for now.
   Detail: `artifacts/driver/parked_items.jsonl` (phase "2 / T-011-05").
+
+**Implemented, awaiting verification:**
+- Demo-lane −15% disaster-stop + Bybit V5 venue-resting stop order (`DEMO_DISASTER_STOP_PCT`)
+  — approved and implemented under D-113 (`scripts/demo_eth_lane.py`,
+  `tests/test_demo_disaster_stop.py`). Awaits lane-restart verification before it is confirmed
+  live in the running loop.
+
+**Resolved this cycle (D-113):**
+- Security-test diff review — `test_live_unreachable.py`'s strengthened assertion (post-D-104
+  stage-1 un-quarantine) received operator sign-off 2026-07-21. Closed:
+  `artifacts/driver/parked_items.jsonl` (phase "cross-cutting / stale security test").
 
 **Parked as blocked on data/access the project does not hold** (not actionable without new
 input; see `artifacts/driver/parked_items.jsonl` for full causes):
@@ -43,10 +49,6 @@ input; see `artifacts/driver/parked_items.jsonl` for full causes):
 - Historical REST payload/original run identity and pre-V2 hierarchy-wide trial accounting
   — bytes were never retained; closed as an honest unrecoverable negative, not open work.
   (D-108's forward-looking hierarchy accounting covers all campaigns from D-107 onward.)
-
-**Pending, not blocking:**
-- Differential-test the campaign evaluator against an independent implementation (e.g.
-  vectorbt) on synthetic data — audit's residual concern, tracked in the remediation plan.
 
 **Structurally gated (not actionable until their gate opens):** S3-gated paper-lane tasks
 (T-015-01..04), the S4/human-only venue-gate package (T-015-05), and the credential-gated

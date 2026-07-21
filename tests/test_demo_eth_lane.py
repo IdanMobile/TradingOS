@@ -89,6 +89,7 @@ def lane_dirs(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     monkeypatch.setattr(lane, "LANE_DIR", tmp_path)
     monkeypatch.setattr(lane, "KILL_SWITCH", tmp_path / "KILL_SWITCH")
     monkeypatch.setattr(lane, "ORDERS_LEDGER", tmp_path / "orders.jsonl")
+    monkeypatch.setattr(lane, "ACTIONS_LEDGER", tmp_path / "demo_lane_actions.jsonl")
     monkeypatch.setattr(lane, "LANE_STATE", tmp_path / "lane_state.json")
     monkeypatch.setattr(lane, "HEARTBEAT", tmp_path / "heartbeat.json")
     return tmp_path
@@ -199,6 +200,11 @@ def test_fresh_breakout_after_cursor_places_one_buy(lane_dirs: Path) -> None:
         "k", "s", get_transport=venue.get, post_transport=venue.post, sleep=lambda _s: None
     )
     assert heartbeat["fresh_signals"] >= 1
-    assert len(venue.orders) == 1 and venue.orders[0]["side"] == "Buy"
+    buys = [o for o in venue.orders if o["side"] == "Buy"]
+    stops = [o for o in venue.orders if o.get("orderFilter") == "StopOrder"]
+    assert len(buys) == 1 and buys[0]["side"] == "Buy"
+    # Entry also places the venue-resting -15% stop (survives local process death).
+    assert len(stops) == 1 and stops[0]["side"] == "Sell"
     state = json.loads((lane_dirs / "lane_state.json").read_text())
     assert Decimal(state["lane_base"]) > 0
+    assert state["resting_stop"]["order_id"] and Decimal(state["entry_price"]) > 0

@@ -1,5 +1,46 @@
 # Package Changelog
 
+## v8.123 — 2026-07-21 — Evaluator differential test, orchestrator dashboard view, demo disaster-stop, scouting doc, operator decisions (D-113)
+
+- `scripts/run_evaluator_differential_test.py` (new), `tests/test_evaluator_differential.py`
+  (new): cross-checks the campaign evaluator (`score_trade_significance` +
+  `run_first_budgeted_campaign.py::evaluate`) against an independent from-spec implementation
+  on synthetic data with hand-derivable ground truth — the D-112 audit's residual
+  single-implementation-risk follow-up. Result recorded at
+  `artifacts/validation/EVALUATOR_DIFFERENTIAL_TEST_2026_07_21.json`: **verdict AGREEMENT**
+  (vectorbt cross-check skipped, not importable in this env). Closes the D-112 remediation
+  plan's "Pending, not blocking" differential-test item; no threshold or verdict changes.
+- `docs/supervisor/NEW_FAMILY_SCOUTING_2026-07-21.md` (new): hypothesis-only survey of
+  community strategy libraries for new strategy families. Top-3 shortlist: cointegrated
+  stat-arb baskets, cross-sectional altcoin momentum, cross-sectional funding carry. Ideas
+  only — no evidence, no pre-registration; `research/SOURCE_REGISTRY.md` gained the
+  corresponding scouting sources.
+- `scripts/demo_eth_lane.py`, `tests/test_demo_disaster_stop.py` (new),
+  `tests/test_demo_eth_lane.py`: demo-lane −15% disaster-stop (`DEMO_DISASTER_STOP_PCT`)
+  backed by a Bybit V5 venue-resting stop order, so the stop survives even if the lane
+  process is down. Approved and implemented under D-113.
+- `src/tios/services/dashboard_api/orchestrator_view.py`: `JOURNAL_TAIL` raised 20 → 100
+  (~25h of 15-min cycles) for a more useful operator history view.
+  `src/tios/services/dashboard_ui/dashboard.html`, `tests/test_dashboard.py`: orchestrator
+  dashboard view enhanced to match, with new/updated test coverage.
+- `DECISION_LOG.md`: D-113 records five operator decisions from the 2026-07-21 (evening)
+  session — security-test sign-off approved, new-family scouting approved as
+  hypothesis-sourcing only, demo-lane disaster-stop approved, v8.119–v8.122 tree commit
+  (`0b183ea`) approved, and four items (operator attestation, D-099 review, SUP-009, SUP-006a)
+  deferred.
+- `artifacts/driver/parked_items.jsonl`: the `test_live_unreachable.py` stale-security-test
+  parked item is closed — operator sign-off obtained 2026-07-21 (D-113).
+- `PROJECT_STATE.md`: OPEN ITEMS updated — security sign-off resolved, scouting's
+  awaiting-decision line replaced with the pre-registration go/no-go, demo-lane stop moved
+  to implemented/awaiting lane-restart verification, differential-test item removed from
+  Pending. Header bumped to v8.123.
+- `docs/supervisor/STATISTICAL_REMEDIATION_PLAN_D112_2026-07-21.md`: the two `[OPERATOR]`
+  follow-ups and the differential-test `[PENDING]` item marked `[DONE]` with their outcomes.
+- `PACKAGE_INTEGRITY_MANIFEST.md`: rehashed listed rows for `dashboard.html` (×2),
+  `test_dashboard.py` (×2), `DECISION_LOG.md`, and `PROJECT_STATE.md`; version line bumped to
+  v8.123. `orchestrator_view.py`, `research/SOURCE_REGISTRY.md`, the D-112 remediation plan
+  doc, and `parked_items.jsonl` are not manifest-listed, so no rehash needed for those.
+
 ## v8.122 — 2026-07-21 — TODO-page session-prompt copy button
 
 - `src/tios/services/dashboard_ui/dashboard.html`: added a "Copy session prompt" button to the

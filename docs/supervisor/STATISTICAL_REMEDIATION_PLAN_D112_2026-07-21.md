@@ -121,15 +121,22 @@ dense-return scripts unaffected.
 
 ## Follow-ups outside this remediation (tracked, not blocking)
 
-- **[OPERATOR]** New-family scouting: survey community strategy libraries as a
+- **[DONE — decision recorded]** New-family scouting: survey community strategy libraries as a
   hypothesis source (ideas only; evidence only ever from in-repo pre-registered
-  campaigns). Offered 2026-07-21, awaiting operator go/no-go.
-- **[OPERATOR]** Demo-lane −15% disaster-stop + venue-resting stop order
-  (MAE analysis: median −2.67%, −15% never hit in 259 trades). Offered earlier,
-  never confirmed.
-- **[PENDING]** Differential-testing backlog item: cross-check the campaign
+  campaigns). Offered 2026-07-21; operator APPROVED as hypothesis-sourcing only (D-113).
+  Executed: `docs/supervisor/NEW_FAMILY_SCOUTING_2026-07-21.md` (top-3 shortlist:
+  cointegrated stat-arb baskets, cross-sectional altcoin momentum, cross-sectional funding
+  carry). Pre-registration of any shortlisted family is a separate, not-yet-made decision.
+- **[DONE — decision recorded]** Demo-lane −15% disaster-stop + venue-resting stop order
+  (MAE analysis: median −2.67%, −15% never hit in 259 trades). Offered earlier; operator
+  APPROVED (D-113). Implemented: `scripts/demo_eth_lane.py` (`DEMO_DISASTER_STOP_PCT`,
+  Bybit V5 venue-resting stop order), `tests/test_demo_disaster_stop.py` (new).
+- **[DONE]** Differential-testing backlog item: cross-check the campaign
   evaluator against an independent implementation (e.g. vectorbt) on synthetic
-  data to reduce single-implementation risk (audit's residual concern).
+  data to reduce single-implementation risk (audit's residual concern). Executed:
+  `scripts/run_evaluator_differential_test.py`, `tests/test_evaluator_differential.py`,
+  verdict **AGREEMENT** recorded at
+  `artifacts/validation/EVALUATOR_DIFFERENTIAL_TEST_2026_07_21.json`.
 
 ## Invariants this plan must not break
 

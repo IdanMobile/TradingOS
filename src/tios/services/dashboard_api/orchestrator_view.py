@@ -17,7 +17,7 @@ from typing import Any
 from tios.ops.driver import parked_items
 from tios.ops.orchestrator import ACT, ESCALATE, JOURNAL_FILENAME, REPORT_DIR, SITUATION_FILENAME
 
-JOURNAL_TAIL = 20
+JOURNAL_TAIL = 100  # ~25h of 15-min cycles; enough for a useful operator history view
 
 
 def build_orchestrator_view(root: Path) -> dict[str, Any]:
