@@ -36,7 +36,7 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from decimal import ROUND_DOWN, Decimal
+from decimal import ROUND_CEILING, ROUND_DOWN, Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
 
@@ -176,12 +176,58 @@ def quantize_down(qty: Decimal, step: Decimal) -> Decimal:
     return (qty / step).to_integral_value(rounding=ROUND_DOWN) * step
 
 
+def quantize_stop_qty_down(qty: Decimal, step: Decimal) -> Decimal:
+    """Return a valid protective-sell quantity without ever exceeding inventory."""
+    if not qty.is_finite() or qty <= 0:
+        raise ValueError("stop quantity must be finite and positive")
+    if not step.is_finite() or step <= 0:
+        raise ValueError("instrument quantity step must be finite and positive")
+    venue_qty = quantize_down(qty, step)
+    if not venue_qty.is_finite() or venue_qty <= 0:
+        raise ValueError("stop quantity is below the instrument quantity step")
+    return venue_qty
+
+
+def quantize_price_up(price: Decimal, tick_size: Decimal) -> Decimal:
+    """Round a long-position stop up to the next valid tick (never loosen the risk boundary)."""
+    if not price.is_finite() or price <= 0:
+        raise ValueError("stop price must be finite and positive")
+    if not tick_size.is_finite() or tick_size <= 0:
+        raise ValueError("instrument price tick must be finite and positive")
+    return (price / tick_size).to_integral_value(rounding=ROUND_CEILING) * tick_size
+
+
 def instrument_qty_step(transport: pf.Transport) -> Decimal:
     url = f"{pf.DEMO_BASE}/v5/market/instruments-info?category=spot&symbol={SYMBOL}"
     payload = json.loads(transport(url, {}))
-    rows = payload.get("result", {}).get("list", [])
-    step = rows[0].get("lotSizeFilter", {}).get("basePrecision") if rows else None
-    return Decimal(str(step)) if step else FALLBACK_QTY_STEP
+    try:
+        raw_step = payload["result"]["list"][0]["lotSizeFilter"]["basePrecision"]
+    except (KeyError, IndexError, TypeError) as error:
+        raise ValueError("instrument quantity step is missing or invalid") from error
+    try:
+        step = Decimal(str(raw_step))
+    except (InvalidOperation, TypeError, ValueError) as error:
+        raise ValueError("instrument quantity step is missing or invalid") from error
+    if not step.is_finite() or step <= 0:
+        raise ValueError("instrument quantity step must be finite and positive")
+    return step
+
+
+def instrument_price_tick(transport: pf.Transport) -> Decimal:
+    """Return the venue-declared price tick, failing closed on missing/invalid metadata."""
+    url = f"{pf.DEMO_BASE}/v5/market/instruments-info?category=spot&symbol={SYMBOL}"
+    payload = json.loads(transport(url, {}))
+    try:
+        raw_tick = payload["result"]["list"][0]["priceFilter"]["tickSize"]
+    except (KeyError, IndexError, TypeError) as error:
+        raise ValueError("instrument price tick is missing or invalid") from error
+    try:
+        tick = Decimal(str(raw_tick))
+    except (InvalidOperation, TypeError, ValueError) as error:
+        raise ValueError("instrument price tick is missing or invalid") from error
+    if not tick.is_finite() or tick <= 0:
+        raise ValueError("instrument price tick must be finite and positive")
+    return tick
 
 
 def last_price(transport: pf.Transport) -> Decimal:
@@ -318,7 +364,11 @@ def resolve_entry_price(
 
 
 def stop_reconcile_action(
-    lane_base: Decimal, entry: Decimal | None, resting: dict[str, Any] | None
+    lane_base: Decimal,
+    entry: Decimal | None,
+    resting: dict[str, Any] | None,
+    price_tick: Decimal | None = None,
+    qty_step: Decimal | None = None,
 ) -> str:
     """Idempotent venue-stop bookkeeping decision: 'place' | 'replace' | 'cancel' | 'noop'.
 
@@ -326,15 +376,27 @@ def stop_reconcile_action(
     sized to the position; an already-matching resting stop is a no-op (idempotent), a stale
     level/qty is a replace. Unknown entry -> noop (the local stop still guards the position).
     """
+    if resting and resting.get("state") == "AMBIGUOUS":
+        return "reconcile"
+    if resting and resting.get("state") == "BLOCKED_UNKNOWN_ORDER_ID":
+        return "noop"
+    if resting and resting.get("state") == "FILLED_PENDING_RECONCILIATION":
+        return "noop"
     if lane_base <= 0:
         return "cancel" if resting else "noop"
     if entry is None or entry <= 0:
         return "noop"
     if resting is None:
         return "place"
+    expected_trigger = disaster_stop_price(entry)
+    if price_tick is not None:
+        expected_trigger = quantize_price_up(expected_trigger, price_tick)
+    expected_qty = lane_base
+    if qty_step is not None:
+        expected_qty = quantize_stop_qty_down(lane_base, qty_step)
     same = (
-        Decimal(str(resting.get("trigger_price", "0"))) == disaster_stop_price(entry)
-        and Decimal(str(resting.get("base_qty", "0"))) == lane_base
+        Decimal(str(resting.get("trigger_price", "0"))) == expected_trigger
+        and Decimal(str(resting.get("base_qty", "0"))) == expected_qty
     )
     return "noop" if same else "replace"
 
@@ -364,6 +426,8 @@ def _append_action(record: dict[str, Any]) -> None:
 def place_stop_order(
     base_qty: Decimal,
     trigger_price: Decimal,
+    price_tick: Decimal,
+    qty_step: Decimal,
     api_key: str,
     secret: str,
     *,
@@ -374,6 +438,8 @@ def place_stop_order(
     The order-endpoint literals stay confined to scripts/demo_roundtrip.py; the lane only binds
     the symbol/params. Demo host only, no new authority.
     """
+    venue_trigger = quantize_price_up(trigger_price, price_tick)
+    venue_qty = quantize_stop_qty_down(base_qty, qty_step)
     return rt.place_stop(
         post_transport,
         api_key,
@@ -381,8 +447,8 @@ def place_stop_order(
         rt._now(),
         pf.DEMO_BASE,
         symbol=SYMBOL,
-        trigger_price=str(trigger_price),
-        base_qty=str(base_qty),
+        trigger_price=str(venue_trigger),
+        base_qty=str(venue_qty),
     )
 
 
@@ -399,6 +465,178 @@ def cancel_stop_order(
     )
 
 
+_ACTIVE_STOP_STATUSES = {"New", "Untriggered"}
+_CLEARED_STOP_STATUSES = {"Cancelled", "Deactivated", "Rejected"}
+
+
+def stop_order_status(
+    order_id: str, api_key: str, secret: str, transport: pf.Transport
+) -> dict[str, Any]:
+    """Fetch one stop through the existing authenticated realtime-order path."""
+    response = pf._signed_get(
+        transport,
+        pf.DEMO_BASE,
+        "/v5/order/realtime",
+        {
+            "category": "spot",
+            "symbol": SYMBOL,
+            "orderId": order_id,
+            "orderFilter": "StopOrder",
+        },
+        api_key,
+        secret,
+        rt._now(),
+    )
+    rows = response.get("result", {}).get("list", [])
+    return rows[0] if rows else {}
+
+
+def _confirmed_stop_state(order_id: str, api_key: str, secret: str, transport: pf.Transport) -> str:
+    """Return active/cleared/unknown; empty realtime responses are never assumed cancelled."""
+    try:
+        status = str(stop_order_status(order_id, api_key, secret, transport).get("orderStatus", ""))
+    except Exception as error:  # noqa: BLE001 - uncertainty must be represented, not guessed
+        print(f"venue stop status unavailable for {order_id}: {error}", file=sys.stderr)
+        return "unknown"
+    if status in _ACTIVE_STOP_STATUSES:
+        return "active"
+    if status == "Filled":
+        return "filled"
+    if status in _CLEARED_STOP_STATUSES:
+        return "cleared"
+    return "unknown"
+
+
+def _active_stop_record(
+    order_id: str,
+    trigger: Decimal,
+    risk_boundary: Decimal,
+    base_qty: Decimal,
+    position_base_qty: Decimal,
+) -> dict[str, Any]:
+    return {
+        "state": "ACTIVE",
+        "order_id": order_id,
+        "trigger_price": str(trigger),
+        "risk_boundary_price": str(risk_boundary),
+        "base_qty": str(base_qty),
+        "position_base_qty": str(position_base_qty),
+    }
+
+
+def _filled_stop_record(
+    resting: dict[str, Any], order_id: str, status: str = "Filled"
+) -> dict[str, Any]:
+    """Latch a filled tracked stop until a separate reconciliation workflow resolves it."""
+    record = dict(resting)
+    record.update(
+        {
+            "state": "FILLED_PENDING_RECONCILIATION",
+            "filled_order_id": order_id,
+            "filled_order_status": status,
+        }
+    )
+    return record
+
+
+def preflight_tracked_stop(
+    resting: dict[str, Any] | None,
+    api_key: str,
+    secret: str,
+    transport: pf.Transport,
+) -> tuple[dict[str, Any] | None, bool]:
+    """Resolve tracked stop status and report whether any order-producing path is safe."""
+    if not resting:
+        return None, True
+    state = resting.get("state")
+    if state in {"BLOCKED_UNKNOWN_ORDER_ID", "FILLED_PENDING_RECONCILIATION"}:
+        return resting, False
+    if state == "AMBIGUOUS":
+        order_ids = [str(value) for value in resting.get("order_ids", []) if value]
+    elif state in {None, "ACTIVE"} and resting.get("order_id"):
+        order_ids = [str(resting["order_id"])]
+    else:
+        return resting, True
+    states = {
+        order_id: _confirmed_stop_state(order_id, api_key, secret, transport)
+        for order_id in order_ids
+    }
+    filled = [order_id for order_id, status in states.items() if status == "filled"]
+    if filled:
+        return _filled_stop_record(resting, filled[0]), False
+    active = [order_id for order_id, status in states.items() if status == "active"]
+    unknown = [order_id for order_id, status in states.items() if status == "unknown"]
+    if state != "AMBIGUOUS":
+        if active:
+            return resting, True
+        if unknown:
+            return resting, False
+        return None, True
+    if len(active) == 1 and not unknown:
+        resolved = dict(resting.get("order_records", {}).get(active[0], resting))
+        resolved.pop("order_ids", None)
+        resolved.pop("order_records", None)
+        resolved.pop("ambiguity_reason", None)
+        resolved.update({"state": "ACTIVE", "order_id": active[0]})
+        return resolved, True
+    if not active and not unknown:
+        return None, True
+    return resting, False
+
+
+def _ambiguous_stop_record(
+    order_ids: list[str],
+    template: dict[str, Any] | None,
+    reason: str,
+    order_records: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    record = dict(template or {})
+    records = dict(record.get("order_records", {}))
+    if record.get("order_id"):
+        records[str(record["order_id"])] = dict(record)
+    records.update(order_records or {})
+    record.pop("order_id", None)
+    record.update(
+        {
+            "state": "AMBIGUOUS" if order_ids else "BLOCKED_UNKNOWN_ORDER_ID",
+            "order_ids": list(dict.fromkeys(order_id for order_id in order_ids if order_id)),
+            "order_records": records,
+            "ambiguity_reason": reason,
+        }
+    )
+    return record
+
+
+def _reconcile_ambiguous_stop(
+    resting: dict[str, Any], api_key: str, secret: str, transport: pf.Transport
+) -> dict[str, Any] | None:
+    ids = [str(value) for value in resting.get("order_ids", []) if value]
+    if not ids:
+        return resting
+    states = {
+        order_id: _confirmed_stop_state(order_id, api_key, secret, transport) for order_id in ids
+    }
+    filled = [order_id for order_id, state in states.items() if state == "filled"]
+    if filled:
+        return _filled_stop_record(resting, filled[0])
+    active = [order_id for order_id, state in states.items() if state == "active"]
+    unknown = [order_id for order_id, state in states.items() if state == "unknown"]
+    if len(active) == 1 and not unknown:
+        resolved = dict(resting.get("order_records", {}).get(active[0], resting))
+        resolved.pop("order_ids", None)
+        resolved.pop("order_records", None)
+        resolved.pop("ambiguity_reason", None)
+        resolved.update({"state": "ACTIVE", "order_id": active[0]})
+        return resolved
+    if not active and not unknown:
+        return None
+    return _ambiguous_stop_record(
+        active + unknown,
+        resting,
+        "multiple or unconfirmed stop orders remain after status reconciliation",
+    )
+
+
 def apply_stop_decision(
     decision: str,
     resting: dict[str, Any] | None,
@@ -407,41 +645,165 @@ def apply_stop_decision(
     api_key: str,
     secret: str,
     *,
+    get_transport: pf.Transport = pf._urllib_transport,
+    price_tick: Decimal | None = None,
+    qty_step: Decimal | None = None,
     post_transport: rt.PostTransport = _live_post_transport,
 ) -> dict[str, Any] | None:
     """Execute a stop_reconcile_action decision; return the new resting-stop record (or None).
 
-    Best-effort secondary protection: on any venue error the resting record is left unchanged
-    (or cleared) and the NEXT cycle retries — the local disaster-stop remains primary throughout.
+    Best-effort secondary protection: metadata and replacement are validated before any existing
+    stop is touched. Replacement places the new protection first, then cancels the old stop.
     """
+    if decision == "reconcile" and resting:
+        return _reconcile_ambiguous_stop(resting, api_key, secret, get_transport)
     if decision == "noop":
         return resting
-    if decision in {"cancel", "replace"} and resting and resting.get("order_id"):
+    if decision == "cancel":
+        if not resting or not resting.get("order_id"):
+            return None
         try:
-            cancel_stop_order(
+            cancelled = cancel_stop_order(
                 str(resting["order_id"]), api_key, secret, post_transport=post_transport
             )
-        except Exception as error:  # noqa: BLE001 - cancel is best-effort; local stop is primary
+        except Exception as error:  # noqa: BLE001 - preserve state for retry
             print(f"venue stop cancel failed: {error}", file=sys.stderr)
-        resting = None
-    if decision in {"place", "replace"} and entry is not None and lane_base > 0:
-        trigger = disaster_stop_price(entry)
-        try:
-            placed = place_stop_order(
-                lane_base, trigger, api_key, secret, post_transport=post_transport
-            )
-        except Exception as error:  # noqa: BLE001 - place is best-effort; local stop is primary
-            print(f"venue stop place failed: {error}", file=sys.stderr)
+            return resting
+        if cancelled.get("retCode") != 0:
+            print(f"venue stop cancel rejected: {cancelled.get('retMsg')}", file=sys.stderr)
+            return resting
+        state = _confirmed_stop_state(str(resting["order_id"]), api_key, secret, get_transport)
+        if state == "cleared":
             return None
-        if placed.get("retCode") == 0:
-            return {
-                "order_id": str(placed.get("result", {}).get("orderId", "")),
-                "trigger_price": str(trigger),
-                "base_qty": str(lane_base),
-            }
+        if state == "filled":
+            return _filled_stop_record(resting, str(resting["order_id"]))
+        if state == "active":
+            return resting
+        return _ambiguous_stop_record(
+            [str(resting["order_id"])], resting, "cancel acknowledged but not confirmed cleared"
+        )
+
+    if decision not in {"place", "replace"} or entry is None or lane_base <= 0:
+        return resting
+
+    risk_boundary = disaster_stop_price(entry)
+    try:
+        resolved_tick = (
+            price_tick if price_tick is not None else instrument_price_tick(get_transport)
+        )
+        resolved_qty_step = qty_step if qty_step is not None else instrument_qty_step(get_transport)
+        venue_trigger = quantize_price_up(risk_boundary, resolved_tick)
+        venue_qty = quantize_stop_qty_down(lane_base, resolved_qty_step)
+    except Exception as error:  # noqa: BLE001 - metadata failure must never mutate venue state
+        print(f"venue stop metadata invalid: {error}", file=sys.stderr)
+        return resting
+
+    try:
+        placed = place_stop_order(
+            lane_base,
+            risk_boundary,
+            resolved_tick,
+            resolved_qty_step,
+            api_key,
+            secret,
+            post_transport=post_transport,
+        )
+    except Exception as error:  # noqa: BLE001 - preserve existing stop on place failure
+        print(f"venue stop place failed: {error}", file=sys.stderr)
+        return resting
+    if placed.get("retCode") != 0:
         print(f"venue stop place rejected: {placed.get('retMsg')}", file=sys.stderr)
-        return None
-    return resting
+        return resting
+
+    new_order_id = str(placed.get("result", {}).get("orderId", "")).strip()
+    if not new_order_id:
+        blocked_template = {
+            "trigger_price": str(venue_trigger),
+            "risk_boundary_price": str(risk_boundary),
+            "base_qty": str(venue_qty),
+            "position_base_qty": str(lane_base),
+        }
+        blocked = _ambiguous_stop_record(
+            [str(resting["order_id"])] if resting and resting.get("order_id") else [],
+            resting or blocked_template,
+            "create acknowledged without an orderId; automated placement blocked",
+        )
+        blocked["state"] = "BLOCKED_UNKNOWN_ORDER_ID"
+        return blocked
+
+    new_resting = _active_stop_record(
+        new_order_id, venue_trigger, risk_boundary, venue_qty, lane_base
+    )
+    new_state = _confirmed_stop_state(new_order_id, api_key, secret, get_transport)
+    old_order_id = str(resting.get("order_id", "")) if resting else ""
+    if new_state == "cleared":
+        return resting
+    if new_state == "filled":
+        return _filled_stop_record(new_resting, new_order_id)
+    if new_state == "unknown":
+        known_ids = ([old_order_id] if old_order_id else []) + [new_order_id]
+        return _ambiguous_stop_record(
+            known_ids,
+            resting or new_resting,
+            "create acknowledged but active stop not confirmed",
+            {new_order_id: new_resting},
+        )
+    if decision == "place" or not old_order_id:
+        return new_resting
+
+    old_state = "unknown"
+    try:
+        cancelled = cancel_stop_order(old_order_id, api_key, secret, post_transport=post_transport)
+        if cancelled.get("retCode") == 0:
+            old_state = _confirmed_stop_state(old_order_id, api_key, secret, get_transport)
+        else:
+            print(f"venue old-stop cancel rejected: {cancelled.get('retMsg')}", file=sys.stderr)
+    except Exception as error:  # noqa: BLE001 - rollback new stop and preserve known IDs
+        print(f"venue old-stop cancel failed: {error}", file=sys.stderr)
+
+    if old_state == "cleared":
+        return new_resting
+    if old_state == "filled":
+        replacement_set = _ambiguous_stop_record(
+            [old_order_id, new_order_id],
+            resting,
+            "tracked old stop filled during replacement",
+            {new_order_id: new_resting},
+        )
+        return _filled_stop_record(replacement_set, old_order_id)
+
+    rollback_state = "unknown"
+    try:
+        rollback = cancel_stop_order(new_order_id, api_key, secret, post_transport=post_transport)
+        if rollback.get("retCode") == 0:
+            rollback_state = _confirmed_stop_state(new_order_id, api_key, secret, get_transport)
+        else:
+            print(
+                f"venue replacement rollback rejected: {rollback.get('retMsg')}",
+                file=sys.stderr,
+            )
+    except Exception as rollback_error:  # noqa: BLE001 - both IDs remain explicitly ambiguous
+        print(f"venue replacement rollback failed: {rollback_error}", file=sys.stderr)
+
+    if rollback_state == "cleared" and old_state == "active":
+        return resting
+    if rollback_state == "filled":
+        replacement_set = _ambiguous_stop_record(
+            [old_order_id, new_order_id],
+            resting,
+            "replacement stop filled during rollback",
+            {new_order_id: new_resting},
+        )
+        return _filled_stop_record(replacement_set, new_order_id)
+    remaining_ids = [old_order_id]
+    if rollback_state != "cleared":
+        remaining_ids.append(new_order_id)
+    return _ambiguous_stop_record(
+        remaining_ids,
+        resting,
+        "replacement cancellation/rollback not fully confirmed",
+        {new_order_id: new_resting},
+    )
 
 
 def read_state() -> dict[str, Any]:
@@ -545,20 +907,28 @@ def run_cycle(
     sleep: Any = time.sleep,
 ) -> dict[str, Any]:
     """One evaluation cycle: fresh signals newer than the cursor drive at most one action."""
-    bars = fetch_closed_bars(get_transport)
-    signals = canonical_signals(bars)
     state = read_state()
     cursor = state.get("cursor")
     lane_base = Decimal(str(state.get("lane_base", "0")))
     # Entry price drives the -15% stop. From state normally; reconstructed from the append-only
     # ledger for a position opened before this process started (restart safety).
     entry_price = resolve_entry_price(state, _read_ledger_records())
-    resting_stop = state.get("resting_stop")
+    stored_resting_stop = state.get("resting_stop")
+    resting_stop, post_paths_safe = preflight_tracked_stop(
+        stored_resting_stop, api_key, secret, get_transport
+    )
+    if resting_stop is not stored_resting_stop and (
+        resting_stop and resting_stop.get("state") == "FILLED_PENDING_RECONCILIATION"
+    ):
+        # Persist before any later read can fail, so a restart cannot forget the filled-stop latch.
+        write_state({**state, "resting_stop": resting_stop})
+    bars = fetch_closed_bars(get_transport)
+    signals = canonical_signals(bars)
     fresh = [s for s in signals if cursor is None or s.observed_at.isoformat() > cursor]
     action: dict[str, Any] | None = None
     if cursor is None:
         fresh = []  # first start: arm the cursor, trade only future transitions
-    for signal in fresh:
+    for signal in fresh if post_paths_safe else ():
         side = signal.side.value  # BUY | SELL
         if side == "BUY" and lane_base == 0:
             action = place(
@@ -595,7 +965,12 @@ def run_cycle(
     except Exception as error:  # noqa: BLE001 - no mark means no basis to trigger; skip this cycle
         print(f"disaster-stop mark unavailable: {error}", file=sys.stderr)
         mark = Decimal("0")
-    if lane_base > 0 and entry_price is not None and disaster_stop_triggered(entry_price, mark):
+    if (
+        post_paths_safe
+        and lane_base > 0
+        and entry_price is not None
+        and disaster_stop_triggered(entry_price, mark)
+    ):
         closed = place(
             LaneIntent("Sell", lane_base, "baseCoin", "DISASTER_STOP_LOCAL", "DISASTER_STOP"),
             api_key,
@@ -625,8 +1000,25 @@ def run_cycle(
         action = action or closed
 
     # Venue-resting stop bookkeeping: exactly one stop at the -15% level while a position is open,
-    # cancelled when flat. Idempotent — an already-matching resting stop is left untouched.
-    decision = stop_reconcile_action(lane_base, entry_price, resting_stop)
+    # cancelled when flat. Idempotent — compare the actual venue-quantized trigger and quantity.
+    price_tick: Decimal | None = None
+    qty_step: Decimal | None = None
+    if not post_paths_safe:
+        decision = (
+            "reconcile" if resting_stop and resting_stop.get("state") == "AMBIGUOUS" else "noop"
+        )
+    elif lane_base > 0 and entry_price is not None:
+        try:
+            price_tick = instrument_price_tick(get_transport)
+            qty_step = instrument_qty_step(get_transport)
+            decision = stop_reconcile_action(
+                lane_base, entry_price, resting_stop, price_tick, qty_step
+            )
+        except Exception as error:  # noqa: BLE001 - keep loop alive and venue state untouched
+            print(f"venue stop metadata invalid: {error}", file=sys.stderr)
+            decision = "noop"  # fail closed: do not create, cancel, or replace any venue stop
+    else:
+        decision = stop_reconcile_action(lane_base, entry_price, resting_stop)
     resting_stop = apply_stop_decision(
         decision,
         resting_stop,
@@ -634,6 +1026,9 @@ def run_cycle(
         entry_price,
         api_key,
         secret,
+        get_transport=get_transport,
+        price_tick=price_tick,
+        qty_step=qty_step,
         post_transport=post_transport,
     )
 
