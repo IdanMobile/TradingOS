@@ -99,22 +99,25 @@ Goal: make non-order services survive terminal closure and expose honest local h
   deployment decision is explicit.
 - Do not auto-restart the demo lane.
 
-## Phase 2 — Research candidate admission ledger
+## Phase 2 — Research candidate intake ledger
 
-Goal: create one fail-closed, append-only boundary between ideas and experiments.
+Goal: retain ideas at a fail-closed boundary without granting experiment or admission authority.
 
 ### Implementation
 
-1. Add `ResearchCandidateRecord` using the strict parsing/digest patterns in
+1. Add an immutable candidate dossier using the strict parsing/digest patterns in
    `research_assets/registry.py` and `hypotheses.py`.
 2. Retain source IDs/digests, hypothesis ID/digest, family identity, dataset/package refs and
    hashes, spec hash, lawful-reopen evidence class, closed-family comparison, lifecycle state,
-   authority `NONE`, and an explicit admission verdict.
-3. Add an append-only candidate admission registry with deterministic record identity,
+   authority `NONE`, and an explicit intake verdict.
+3. Add an append-only candidate intake registry with deterministic record identity,
    idempotent duplicate handling, and conflict rejection.
 4. Fail closed when evidence is missing, the family matches a closed context without lawful new
    evidence, or the request implies a rescue/version reset.
 5. Produce review requests for data/access/operator gaps; never synthesize an admission.
+6. Limit current states to `REVIEW_REQUIRED` and terminal `REJECT`. Phase 2 implements no
+   `ADMIT` transition because this repository does not yet bind a trusted independent reviewer
+   identity.
 
 ### Verification
 
@@ -122,13 +125,48 @@ Goal: create one fail-closed, append-only boundary between ideas and experiments
 - Same ID with conflicting content fails.
 - Closed-family rescue attempts fail.
 - Official/licensed/operator-supplied/prospective evidence classes are explicit and tested.
-- Every admitted record has `execution_authority=NONE` and no performance result.
+- Every retained record has `execution_authority=NONE` and no performance result.
+- No Phase-2 API or stored value can represent `ADMIT`.
 
 ### Guards
 
 - Do not read strategy outcomes while deciding admission.
 - Do not expand the current B2–B4 hypothesis registry by weakening its validation; add the new
   boundary alongside it and migrate only after compatibility evidence.
+- The intake ledger's unkeyed hash chain detects ordinary tampering but not tail truncation or a
+  complete rewrite without an external checkpoint; it is not an approval boundary.
+
+## Phase 2b — Typed independent intake-admission gate
+
+Goal: add the first authority that may convert a reviewed intake dossier into an admitted
+research candidate, before any StrategyVersion, campaign contract, trial, or execution job exists.
+
+### Implementation
+
+1. Extend the existing typed approval-history approach with an intake-specific decision record;
+   generic workspace decisions and free-form files are not admissible evidence.
+2. Bind the decision to the exact dossier digest, catalog digest, assessment digest, reviewer
+   identity, reviewer role, decision time, and predecessor state.
+3. Design an externally or cryptographically trusted reviewer identity/attestation mechanism.
+   A repository-writing agent cannot mint, impersonate, or self-attest that identity.
+4. Require the typed decision to resolve every DATA/ACCESS/OPERATOR request and retain explicit
+   rejection reasons. Rescue/version-reset dossiers remain terminally rejected.
+5. Expose a read-only `ADMITTED` status only after identity, signature/attestation, predecessor,
+   and evidence integrity all verify.
+
+### Verification
+
+- The implementing agent and an unsigned repository file cannot admit a dossier.
+- Replay, duplicate, stale-predecessor, wrong-dossier, wrong-role, revoked identity, and tampered
+  attestation cases fail closed.
+- Every admitted status resolves to one exact typed independent decision and retains authority
+  `NONE`.
+
+### Guards
+
+- Phase 2b must be implemented and independently reviewed before Phase 3 or Phase 4 can execute.
+- Phase 5 remains strategy-validation and promotion review; it cannot serve as the first
+  candidate-intake authority.
 
 ## Phase 3 — Unified campaign contract and StrategyVersion bridge
 
@@ -137,7 +175,8 @@ and trial budget before evaluation.
 
 ### Implementation
 
-1. Define a strict `CampaignContract` parser with exact fields and canonical digest.
+1. Require a verified Phase-2b `ADMITTED` status, then define a strict `CampaignContract` parser
+   with exact fields and canonical digest.
 2. Bridge the existing parameter-resolved `create_version()` identity to the persistent
    `strategy.registry` identity without creating a third identity system.
 3. Include parent/family lineage, rationale, falsification test, and family budget reference for
@@ -164,8 +203,9 @@ Goal: run admitted candidates through one reusable, retained, hierarchy-accounte
 
 ### Implementation
 
-1. Copy the mature preflight/selection/atomic-publish pattern from the funding-pressure and
-   transaction-activity runners.
+1. Reject any candidate without a verified Phase-2b `ADMITTED` status, then copy the mature
+   preflight/selection/atomic-publish pattern from the funding-pressure and transaction-activity
+   runners.
 2. Call `trial_budget.preregister()` before evaluation and `record_trial()` immediately after
    every development trial.
 3. Require `TrialScore` with completed-trade and aligned-bar returns.
@@ -189,6 +229,9 @@ Goal: run admitted candidates through one reusable, retained, hierarchy-accounte
 ## Phase 5 — Generic validation and promotion package
 
 Goal: turn retained campaign evidence into an honest eligibility decision and review request.
+
+This phase reviews a strategy after research execution. It does not create or substitute for the
+Phase-2b independent decision that first authorized the candidate to enter research.
 
 ### Implementation
 
@@ -218,7 +261,7 @@ Goal: operate the research factory continuously without granting arbitrary execu
 
 ### Implementation
 
-1. Add fixed allowlisted job types for admission verification, campaign preflight, campaign
+1. Add fixed allowlisted job types for intake/admission verification, campaign preflight, campaign
    execution, validation-package build, and report refresh.
 2. Payloads contain only retained contract IDs/hashes.
 3. Add orchestrator dispatch policy for admitted `READY` candidates, one campaign at a time.
@@ -275,7 +318,8 @@ new human decision. AI cannot approve or activate it.
 The OS is operating as intended when:
 
 1. dashboard, orchestrator, and offline jobs are supervised and honestly observable;
-2. every new hypothesis enters through the admission ledger;
+2. every new hypothesis enters through the Phase-2 intake ledger and cannot reach a campaign
+   without a verified Phase-2b typed independent admission;
 3. every trial is preregistered, retained, and hierarchy-counted;
 4. every candidate exits as rejected, insufficient, blocked, or independently reviewable;
 5. eligible candidates progress through shadow/demo only by typed evidence and human gates;
