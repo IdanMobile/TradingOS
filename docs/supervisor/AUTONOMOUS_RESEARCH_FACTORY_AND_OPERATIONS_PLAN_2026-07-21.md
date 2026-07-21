@@ -136,47 +136,71 @@ Goal: retain ideas at a fail-closed boundary without granting experiment or admi
 - The intake ledger's unkeyed hash chain detects ordinary tampering but not tail truncation or a
   complete rewrite without an external checkpoint; it is not an approval boundary.
 
-## Phase 2b — Typed independent intake-admission gate
+## Phase 2b — Typed intake-decision scaffold and external activation gate
 
-Goal: add the first authority that may convert a reviewed intake dossier into an admitted
-research candidate, before any StrategyVersion, campaign contract, trial, or execution job exists.
+Goal: define and semantically assess a typed independent-review statement without representing
+or granting admission. The repository currently has no intake-admitted state.
 
-### Implementation
+### Scaffold implemented in this repository
 
-1. Extend the existing typed approval-history approach with an intake-specific decision record;
-   generic workspace decisions and free-form files are not admissible evidence.
-2. Bind the decision to the exact dossier digest, catalog digest, assessment digest, reviewer
-   identity, reviewer role, decision time, and predecessor state.
-3. Design an externally or cryptographically trusted reviewer identity/attestation mechanism.
-   A repository-writing agent cannot mint, impersonate, or self-attest that identity.
-4. Require the typed decision to resolve every DATA/ACCESS/OPERATOR request and retain explicit
-   rejection reasons. Rescue/version-reset dossiers remain terminally rejected.
-5. Expose a read-only `ADMITTED` status only after identity, signature/attestation, predecessor,
-   and evidence integrity all verify.
+1. The typed statement binds the exact dossier, catalog and assessment digests, predecessor,
+   claimed reviewer identity/role/credential, declared trust snapshot, decision/expiry times,
+   every pending DATA/ACCESS/OPERATOR domain, and authority `NONE`.
+2. Canonical signing bytes and detached-attestation types exist, but there is no signer, key,
+   cryptographic verifier adapter, key generation, or production verifier composition here.
+3. A caller-supplied verifier can only support a historical semantic assessment. A semantically
+   valid ADMIT statement stops at `VERIFIED_PENDING_EXTERNAL_ACTIVATION`; a semantically valid
+   external REJECT stops at `VERIFIED_REJECTION_PENDING_EXTERNAL_ACTIVATION`. Both retain the
+   same explicit external blockers and authority `NONE`. Neither can admit, close, or permanently
+   reject a candidate or strategy family.
+4. Evidence digests inside review resolutions remain untrusted reviewer claims. This module does
+   not resolve those digests to independently verified typed review evidence.
+5. Duplicate, competing, stale, malformed, revoked, expired, and binding-mismatched inputs fail
+   closed. This does not prove that a caller supplied the complete external decision sequence.
+
+### Operator-gated external activation substep — NOT IMPLEMENTED
+
+Admission remains unavailable until an operator-approved change supplies all of the following:
+
+- a fixed production external verifier composition that repository-writing agents cannot replace;
+- authoritative append-only decision history plus an externally retained monotonic checkpoint;
+- a typed resolver that independently verifies every review-evidence digest and domain outcome;
+- trusted current time and current credential/revocation/trust-snapshot evidence;
+- a genuinely independent reviewer identity and credential lifecycle outside this repository;
+- frozen interfaces, integrity-manifest rows, changelog evidence, and independent security review.
+
+Only that separately reviewed substep may introduce an admitted state, terminal external rejection,
+or an API consumable by a campaign contract. Generic workspace decisions, free-form files,
+repository fakes, caller-selected verifiers, and omitted history can never do so. The authoritative
+Phase-2 intake ledger's policy `REJECT` remains terminal because it is local fail-closed policy, not
+a caller-supplied external decision.
 
 ### Verification
 
-- The implementing agent and an unsigned repository file cannot admit a dossier.
-- Replay, duplicate, stale-predecessor, wrong-dossier, wrong-role, revoked identity, and tampered
-  attestation cases fail closed.
-- Every admitted status resolves to one exact typed independent decision and retains authority
-  `NONE`.
+- No `ADMITTED` state/value or admission resolver is exposed by the scaffold.
+- Fake-verifier semantic tests can reach only blocked admission-pending or rejection-pending
+  assessment states with authority `NONE`.
+- Direct status fabrication, duplicate JSON keys, non-canonical artifacts, sentinel algorithms,
+  malformed verifiers, replay/competing decisions, rollback, and stale trust fail closed.
 
 ### Guards
 
-- Phase 2b must be implemented and independently reviewed before Phase 3 or Phase 4 can execute.
-- Phase 5 remains strategy-validation and promotion review; it cannot serve as the first
-  candidate-intake authority.
+- Phase 3 and Phase 4 remain blocked until the operator-gated external activation substep is
+  implemented, frozen, and independently reviewed.
+- Phase 5 strategy validation/promotion review cannot substitute for candidate-intake authority.
 
 ## Phase 3 — Unified campaign contract and StrategyVersion bridge
 
 Goal: bind candidate, immutable strategy identity, data, implementation, engines, costs, splits,
 and trial budget before evaluation.
 
+Status: BLOCKED on the operator-gated external activation substep in Phase 2b.
+
 ### Implementation
 
-1. Require a verified Phase-2b `ADMITTED` status, then define a strict `CampaignContract` parser
-   with exact fields and canonical digest.
+1. After the external activation substep introduces a frozen, independently reviewed admission
+   contract, require that future contract; the current Phase-2b pending status is not consumable.
+   Then define a strict `CampaignContract` parser with exact fields and canonical digest.
 2. Bridge the existing parameter-resolved `create_version()` identity to the persistent
    `strategy.registry` identity without creating a third identity system.
 3. Include parent/family lineage, rationale, falsification test, and family budget reference for
@@ -201,11 +225,13 @@ and trial budget before evaluation.
 
 Goal: run admitted candidates through one reusable, retained, hierarchy-accounted path.
 
+Status: BLOCKED on Phase 3 and the operator-gated external activation substep in Phase 2b.
+
 ### Implementation
 
-1. Reject any candidate without a verified Phase-2b `ADMITTED` status, then copy the mature
-   preflight/selection/atomic-publish pattern from the funding-pressure and transaction-activity
-   runners.
+1. Reject every candidate until the future frozen external admission contract exists and verifies;
+   `VERIFIED_PENDING_EXTERNAL_ACTIVATION` is always rejected. Then copy the mature preflight,
+   selection, and atomic-publish pattern from the funding-pressure and transaction-activity runners.
 2. Call `trial_budget.preregister()` before evaluation and `record_trial()` immediately after
    every development trial.
 3. Require `TrialScore` with completed-trade and aligned-bar returns.
@@ -264,7 +290,8 @@ Goal: operate the research factory continuously without granting arbitrary execu
 1. Add fixed allowlisted job types for intake/admission verification, campaign preflight, campaign
    execution, validation-package build, and report refresh.
 2. Payloads contain only retained contract IDs/hashes.
-3. Add orchestrator dispatch policy for admitted `READY` candidates, one campaign at a time.
+3. Add orchestrator dispatch policy only for future externally admitted `READY` candidates, one
+   campaign at a time; the current pending-activation scaffold is never dispatchable.
 4. Halt/escalate on integrity failure, unexpected promotion eligibility, or authority drift.
 5. Park data, credentials, independent review, and future-date gates with exact release criteria.
 
@@ -318,8 +345,11 @@ new human decision. AI cannot approve or activate it.
 The OS is operating as intended when:
 
 1. dashboard, orchestrator, and offline jobs are supervised and honestly observable;
-2. every new hypothesis enters through the Phase-2 intake ledger and cannot reach a campaign
-   without a verified Phase-2b typed independent admission;
+2. every new hypothesis enters through the Phase-2 intake ledger and cannot reach Phase 3,
+   Phase 4, or any campaign without the future operator-approved, frozen external admission
+   contract; current `REVIEW_REQUIRED`, `VERIFIED_PENDING_EXTERNAL_ACTIVATION`, and
+   `VERIFIED_REJECTION_PENDING_EXTERNAL_ACTIVATION` states confer no admission or campaign
+   authority;
 3. every trial is preregistered, retained, and hierarchy-counted;
 4. every candidate exits as rejected, insufficient, blocked, or independently reviewable;
 5. eligible candidates progress through shadow/demo only by typed evidence and human gates;
