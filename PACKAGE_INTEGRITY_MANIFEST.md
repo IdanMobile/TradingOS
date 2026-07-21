@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.123 evaluator differential test, dashboard journal-tail, demo disaster-stop, D-113 (2026-07-21). Supersedes v8.122 hashes.
+Package version: v8.124 new-family pre-registration go/no-go resolved NO-GO, D-114 (2026-07-21). Supersedes v8.123 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `d9932e2c5fa5020b192c56af67f818073e1b229fa1ae17659cdb31d07037f341` |
-| `DECISION_LOG.md` | `446ce4f6acbca3edc7e27545acf4d028a12b0517cefe8dd4b6dc68dfff78d9b7` |
+| `PROJECT_STATE.md` | `6f76c6e44e3317be13786b0ee4537ef8a50da793788e00a31fab5afe330ad194` |
+| `DECISION_LOG.md` | `816adc769421da701c3e83dd1309b14bc6f1862d835eaf6537a5bab387ee52ba` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |

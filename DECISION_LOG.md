@@ -2069,3 +2069,58 @@ decision); `docs/supervisor/NEW_FAMILY_SCOUTING_2026-07-21.md`; `scripts/demo_et
 `tests/test_demo_disaster_stop.py`; commit `0b183ea`.
 Status: **(a)–(d) approved and executed/recorded; (e) remains deferred/parked, no change to its
 blockers. No promotion, venue, or live-execution authority anywhere.**
+
+### D-114 — New-family pre-registration go/no-go: delegated to project evidence, resolved NO-GO, no search slot spent
+
+Decision: the operator delegated the go/no-go on pre-registering any of the
+`NEW_FAMILY_SCOUTING_2026-07-21.md` shortlist (left open by D-113) to whatever the project's own
+evidence showed, rather than deciding blind. A review turned up in-repo evidence the scouting doc
+had missed for its top two candidates, so the delegated outcome is **no new family
+pre-registration at this time; no search slot spent.**
+
+Candidate 1, cointegrated stat-arb baskets (the scouting doc's #1-ranked, highest-priority pick),
+is **refuted** by an existing in-repo campaign the scouting pass did not surface:
+`scripts/run_stat_arb_pro.py` → `artifacts/validation/stat_arb_pro/STAT_ARB_PRO.json`
+(2026-07-12) already ran an Engle-Granger-gated, hedge-ratio, OOS-split stat-arb campaign on 1h
+data. 5 of 10 tested pairs were cointegrated in-sample, including ETH/BTC and BNB/BTC — the exact
+mechanism and asset class the scouting doc proposed searching. Every top OOS configuration came
+back negative (best annualized −11.2%), DSR 0.0039 against the 0.95 threshold. The recorded root
+cause, cointegration decay (the in-sample relationship does not survive out-of-sample), is a
+property of the pairwise/basket cointegration mechanism itself and is invariant to basket
+cardinality — it does not become less true for a 3-asset or N-asset Johansen basket than it was
+for a pair. The scouting doc's distinctness argument (this is a different mechanism from the
+closed `CROSS-VENUE-BTC-PREMIUM` family) is correct, but distinctness from a *closed* family is
+not the same as being *untested*: this mechanism has already been run and has already failed.
+
+Candidate 2, cross-sectional altcoin momentum, is **partly refuted**, not cleanly open: per
+`PROJECT_STATE.md` (§Strategy research arc, 2026-07-12), cross-sectional momentum long-only with
+a dual-momentum cash filter and vol targeting already reached DSR 0.9456 at 28 pairs — the closest
+any tested implementation came to the 0.95 screen — but degrades to 0.9091 at 34 pairs, i.e. the
+result is fragile to universe size rather than a stable pass. Combined with the SUP-009
+survivorship/delisting-complete-universe gap the scouting doc itself flagged as an open risk for
+this candidate, a fresh pre-registration slot would be spent re-treading ground already shown to
+be fragile, not opening new territory.
+
+Candidate 3 (cross-sectional funding carry) was already ranked third/MEDIUM priority by the
+scouting doc on independent grounds (BIS-documented edge decay to negative by 2025) and is not
+separately re-litigated here.
+
+Outcome: **no new family is pre-registered; no search/trial-budget slot is spent this cycle.**
+This is a resolution of the delegated question, not a new prohibition — nothing here forecloses a
+better-evidenced future candidate. The operator retains a standing **governance override**: a
+multivariate/Johansen-basket variant of stat-arb (rather than pairwise Engle-Granger) could still
+be pre-registered on the operator's own authority notwithstanding this evidence review, since
+cardinality was the one dimension the STAT_ARB_PRO.json campaign did not itself test — but this
+is recorded here as an override option for the operator to invoke, not a recommendation; the
+evidence-based recommendation from this review is **against** spending a slot on it, since the
+recorded failure mechanism (cointegration decay) is not expected to depend on basket size.
+
+Evidence: `docs/supervisor/NEW_FAMILY_SCOUTING_2026-07-21.md` (candidates 1–3 and their addendum);
+`scripts/run_stat_arb_pro.py`, `artifacts/validation/stat_arb_pro/STAT_ARB_PRO.json`
+(2026-07-12); `PROJECT_STATE.md` §Strategy research arc, 2026-07-12 (DSR 0.9456 at 28 pairs,
+0.9091 at 34 pairs); D-113 (delegated the open question this decision resolves).
+Status: **NO-GO on all three shortlisted candidates this cycle; no pre-registration; no
+search/trial-budget slot spent. Operator governance override for a Johansen multivariate basket
+remains available but is recommended against. No promotion, venue, or execution authority
+anywhere.**
+blockers. No promotion, venue, or live-execution authority anywhere.**

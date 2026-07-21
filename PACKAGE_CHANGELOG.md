@@ -1,5 +1,28 @@
 # Package Changelog
 
+## v8.124 — 2026-07-21 — New-family pre-registration go/no-go resolved NO-GO (D-114)
+
+- `DECISION_LOG.md`: D-114 records the delegated pre-registration go/no-go for
+  `docs/supervisor/NEW_FAMILY_SCOUTING_2026-07-21.md`'s shortlist. An evidence review found the
+  scouting doc's top candidate (cointegrated stat-arb baskets) already refuted by
+  `artifacts/validation/stat_arb_pro/STAT_ARB_PRO.json` (2026-07-12: Engle-Granger-gated
+  stat-arb, 5/10 pairs cointegrated in-sample incl. ETH/BTC and BNB/BTC, all top OOS configs
+  negative, DSR 0.0039 vs 0.95, root cause "cointegration decay" — invariant to basket
+  cardinality) and its second candidate (cross-sectional altcoin momentum) weakened by the
+  project's own recorded result (DSR 0.9456 at 28 pairs degrading to 0.9091 at 34) plus the
+  SUP-009 survivorship gap. Outcome: **no new family pre-registration this cycle; no
+  search/trial-budget slot spent.** The operator retains a governance override to pre-register a
+  multivariate Johansen-basket variant notwithstanding this evidence, though it is recorded as
+  recommended against.
+- `docs/supervisor/NEW_FAMILY_SCOUTING_2026-07-21.md`: dated ADDENDUM appended (original content
+  unchanged) noting the missed refutation/weakening above and pointing to D-114 for the
+  authoritative outcome.
+- `PROJECT_STATE.md`: OPEN ITEMS — the awaiting-decision line for pre-registration go/no-go
+  replaced with the D-114 resolved outcome under "Resolved this cycle".
+- `PACKAGE_INTEGRITY_MANIFEST.md`: rehashed listed rows for `DECISION_LOG.md` and
+  `PROJECT_STATE.md`; version line bumped to v8.124. The scouting doc and changelog are not
+  manifest-listed.
+
 ## v8.123 — 2026-07-21 — Evaluator differential test, orchestrator dashboard view, demo disaster-stop, scouting doc, operator decisions (D-113)
 
 - `scripts/run_evaluator_differential_test.py` (new), `tests/test_evaluator_differential.py`

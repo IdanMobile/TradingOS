@@ -14,10 +14,6 @@ documents and `handoffs/SESSION_HANDOFF_2026_07_21.md`. For the full research-ga
 ledger see `MISSING_AND_OPEN_ITEMS.md` (which now points back here as the entry point).
 
 **Awaiting operator decision:**
-- Pre-registration go/no-go for scouted families, see `NEW_FAMILY_SCOUTING_2026-07-21.md`
-  (D-113 approved scouting as hypothesis-sourcing only; the shortlist itself — cointegrated
-  stat-arb baskets, cross-sectional altcoin momentum, cross-sectional funding carry — is not
-  yet pre-registered for any campaign). Detail: `docs/supervisor/NEW_FAMILY_SCOUTING_2026-07-21.md`.
 - Operator attestation fill (`ops/OPERATOR_ATTESTATION.example.json`) — the 10 human-only
   facts in `MISSING_AND_OPEN_ITEMS.md` §"Human-only before live trading" are still unsigned.
   A project-knowledge pre-draft is being prepared (D-113).
@@ -30,10 +26,18 @@ ledger see `MISSING_AND_OPEN_ITEMS.md` (which now points back here as the entry 
   `tests/test_demo_disaster_stop.py`). Awaits lane-restart verification before it is confirmed
   live in the running loop.
 
-**Resolved this cycle (D-113):**
+**Resolved this cycle (D-113, D-114):**
 - Security-test diff review — `test_live_unreachable.py`'s strengthened assertion (post-D-104
   stage-1 un-quarantine) received operator sign-off 2026-07-21. Closed:
   `artifacts/driver/parked_items.jsonl` (phase "cross-cutting / stale security test").
+- Pre-registration go/no-go for scouted families (D-114): delegated to project evidence;
+  resolved **NO-GO, no search/trial-budget slot spent**. Candidate 1 (cointegrated stat-arb
+  baskets) refuted by `artifacts/validation/stat_arb_pro/STAT_ARB_PRO.json` (2026-07-12,
+  cointegration decay, DSR 0.0039); candidate 2 (cross-sectional altcoin momentum) weakened by
+  its own recorded fragility (DSR 0.9456 at 28 pairs → 0.9091 at 34) plus the SUP-009
+  survivorship gap. Operator retains a governance override to pre-register a multivariate
+  Johansen-basket variant notwithstanding this evidence, though it is recommended against.
+  Detail: `docs/supervisor/NEW_FAMILY_SCOUTING_2026-07-21.md` (addendum); `DECISION_LOG.md` D-114.
 
 **Parked as blocked on data/access the project does not hold** (not actionable without new
 input; see `artifacts/driver/parked_items.jsonl` for full causes):

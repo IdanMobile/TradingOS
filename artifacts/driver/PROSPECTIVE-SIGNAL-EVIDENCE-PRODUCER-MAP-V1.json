@@ -2,7 +2,7 @@
   "schema_version": 1,
   "map_id": "PROSPECTIVE-SIGNAL-EVIDENCE-PRODUCER-MAP-V1",
   "subject_ref": "PROSPECTIVE-BTC-LIQUIDATION-STRESS-V1",
-  "generated_at": "2026-07-21T16:48:38.006964+00:00",
+  "generated_at": "2026-07-21T17:03:38.796727+00:00",
   "prohibitions": [
     "warmup_analysis",
     "sealed_v2_holdout_access"

@@ -337,3 +337,40 @@ changes, reopens, or weakens that record.
 | QuantPedia — Can Google Trends Sentiment Be Useful as a Predictor for Cryptocurrency Returns? | https://quantpedia.com/can-google-trends-sentiment-be-useful-as-a-predictor-for-cryptocurrency-returns/ | Research-secondary | 2026-07-21 |
 | Predictive role of online investor sentiment for cryptocurrency market | https://www.sciencedirect.com/science/article/abs/pii/S1059056021000083 | Academic (ScienceDirect) | 2026-07-21 |
 | freqtrade/freqtrade-strategies (GitHub) | https://github.com/freqtrade/freqtrade-strategies | Community code repository | 2026-07-21 |
+
+---
+
+## ADDENDUM (2026-07-21) — candidates 1 and 2 refuted/weakened by in-repo evidence this pass missed
+
+**Status: this scouting pass's top-ranked candidate is refuted; do not pre-register it as
+currently framed.** A subsequent evidence review (see `DECISION_LOG.md` D-114) found that this
+document, in surveying external community strategy libraries, missed evidence already sitting in
+this repo:
+
+- **Candidate 1 (cointegrated multi-asset stat-arb pairs), ranked #1/HIGH above, is refuted.**
+  `scripts/run_stat_arb_pro.py` → `artifacts/validation/stat_arb_pro/STAT_ARB_PRO.json`
+  (2026-07-12) already ran an Engle-Granger-gated, hedge-ratio, OOS-split stat-arb campaign on 1h
+  data covering this exact mechanism and asset class: 5 of 10 tested pairs cointegrated in-sample
+  (including ETH/BTC and BNB/BTC), every top OOS configuration negative (best annualized −11.2%),
+  DSR 0.0039 against the 0.95 threshold. The recorded root cause — cointegration decay — is a
+  property of the mechanism, not of pair-vs-basket cardinality, so it does not become less true
+  for a Johansen-style N-asset basket. This document's distinctness argument (different mechanism
+  from the closed `CROSS-VENUE-BTC-PREMIUM` family) still holds, but distinct-from-closed is not
+  the same as untested: this mechanism has already been run in this project and has already
+  failed.
+- **Candidate 2 (cross-sectional altcoin momentum), ranked #2/HIGH above, is partly refuted.**
+  `PROJECT_STATE.md` (§Strategy research arc, 2026-07-12) already recorded cross-sectional
+  momentum long-only with a dual-momentum cash filter and vol targeting reaching DSR 0.9456 at 28
+  pairs — the closest of any tested implementation to the 0.95 screen — but degrading to 0.9091
+  at 34 pairs, i.e. fragile to universe size. Combined with the SUP-009 survivorship gap this
+  document itself flagged as an open risk for this candidate, it is a weaker opportunity than
+  presented above, not a clean untested opening.
+- **Candidate 3 (cross-sectional funding carry)** is unaffected by this addendum; its own
+  MEDIUM ranking and stated risk (BIS-documented decay to negative by 2025) stand as written
+  above.
+
+**Recorded outcome:** no new family pre-registration this cycle; no search/trial-budget slot
+spent. Full reasoning and the operator's retained governance override (a Johansen multivariate
+basket may still be pre-registered on the operator's own authority, notwithstanding the evidence
+above, though the evidence-based recommendation is against it) are recorded in `DECISION_LOG.md`
+D-114 — that entry, not this addendum, is the authoritative record of the outcome.
