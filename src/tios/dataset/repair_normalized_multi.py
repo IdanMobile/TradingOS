@@ -403,17 +403,21 @@ def write_plan(*, dataset: Path = DATASET) -> Path:
 
 
 def _load_bound_plan(path: Path, *, dataset: Path = DATASET) -> tuple[dict[str, Any], str]:
+    if ".." in path.parts:
+        raise RepairError("plan path traversal is forbidden")
+    dataset = Path(os.path.abspath(dataset))
+    candidate = path if path.is_absolute() else Path(os.path.abspath(path))
     plan_root = dataset / "repair_plans"
     try:
-        relative = path.relative_to(dataset)
+        relative = candidate.relative_to(dataset)
     except ValueError:
         relative = Path("__ESCAPED__")
     expected = _safe_path(dataset, relative)
-    if expected != path or path.parent != plan_root:
+    if expected != candidate or candidate.parent != plan_root:
         raise RepairError("plan is outside the fixed plan directory")
-    value = _read_bound(path)
+    value = _read_bound(candidate)
     digest = _sha256_bytes(value)
-    if path.name != f"repair_plan_{digest}.json":
+    if candidate.name != f"repair_plan_{digest}.json":
         raise RepairError("plan filename/content digest mismatch")
     payload = _load_json_bytes(value, "repair plan")
     if _canonical(payload) != value:

@@ -1,5 +1,19 @@
 # Package Changelog
 
+## v8.135 — 2026-07-23 — Repair-plan CLI path normalization
+
+- Fixed the one-time repair CLI boundary to accept both the repository-relative plan path emitted
+  for operator use and its equivalent absolute path inside the fixed
+  `data/normalized_multi/repair_plans` directory. Relative paths are converted lexically from the
+  current repository working directory without resolving through symlinks, then pass through the
+  same fixed-directory, real-parent, single-link regular-file, canonical-content, and
+  content-addressed filename checks as absolute paths.
+- Added regression coverage for the real relative and absolute loading forms plus traversal,
+  final-component symlink, wrong-directory, symlink-parent, and wrong-digest filename refusal.
+  The prior failed production apply stopped before lock, network, journal, staging, or data
+  mutation. This source/test repair performs no plan generation, apply, recovery, network access,
+  normalized-data mutation, research action, or execution-authority change.
+
 ## v8.134 — 2026-07-23 — Read-only TradingView navigation and bounded integrity reconciliation
 
 - `src/tios/services/dashboard_ui/dashboard.html`: added a read-only link to TradingView's full

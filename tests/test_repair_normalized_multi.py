@@ -163,8 +163,10 @@ def test_full_column_timestamp_materialization_is_forbidden_in_repair_hot_paths(
         assert ".to_pylist(" not in inspect.getsource(function)
 
 
-def test_plan_path_is_confined_and_content_addressed(tmp_path: Path) -> None:
-    dataset = tmp_path / "normalized_multi"
+def test_plan_path_is_confined_and_content_addressed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    dataset = tmp_path / "data" / "normalized_multi"
     plans = dataset / "repair_plans"
     plans.mkdir(parents=True)
     value = repair._canonical({"schema_version": 1})
@@ -172,6 +174,10 @@ def test_plan_path_is_confined_and_content_addressed(tmp_path: Path) -> None:
     valid = plans / f"repair_plan_{digest}.json"
     valid.write_bytes(value)
     assert repair._load_bound_plan(valid, dataset=dataset)[1] == digest
+    monkeypatch.chdir(tmp_path)
+    planner_returned = valid.relative_to(tmp_path)
+    assert planner_returned == Path("data/normalized_multi/repair_plans") / valid.name
+    assert repair._load_bound_plan(planner_returned, dataset=dataset)[1] == digest
     escaped = tmp_path / valid.name
     escaped.write_bytes(value)
     with pytest.raises(repair.RepairError, match="outside"):
@@ -179,6 +185,44 @@ def test_plan_path_is_confined_and_content_addressed(tmp_path: Path) -> None:
     valid.rename(plans / "repair_plan_wrong.json")
     with pytest.raises(repair.RepairError, match="filename/content"):
         repair._load_bound_plan(plans / "repair_plan_wrong.json", dataset=dataset)
+
+
+def test_plan_path_rejects_traversal_symlinks_and_wrong_directory(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    dataset = tmp_path / "data" / "normalized_multi"
+    plans = dataset / "repair_plans"
+    plans.mkdir(parents=True)
+    value = repair._canonical({"schema_version": 1})
+    digest = hashlib.sha256(value).hexdigest()
+    name = f"repair_plan_{digest}.json"
+    valid = plans / name
+    valid.write_bytes(value)
+    monkeypatch.chdir(tmp_path)
+    with pytest.raises(repair.RepairError, match="traversal"):
+        repair._load_bound_plan(
+            Path("data/normalized_multi/other/../repair_plans") / name,
+            dataset=dataset,
+        )
+    wrong = dataset / name
+    wrong.write_bytes(value)
+    with pytest.raises(repair.RepairError, match="outside"):
+        repair._load_bound_plan(wrong, dataset=dataset)
+    linked_file = plans / f"repair_plan_{'a' * 64}.json"
+    linked_file.symlink_to(valid)
+    with pytest.raises(repair.RepairError, match="single-link regular"):
+        repair._load_bound_plan(linked_file, dataset=dataset)
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / name).write_bytes(value)
+    linked_dataset = tmp_path / "linked_data" / "normalized_multi"
+    linked_dataset.mkdir(parents=True)
+    (linked_dataset / "repair_plans").symlink_to(outside, target_is_directory=True)
+    with pytest.raises(repair.RepairError, match="not a real directory"):
+        repair._load_bound_plan(
+            linked_dataset / "repair_plans" / name,
+            dataset=linked_dataset,
+        )
 
 
 def _synthetic_apply(
