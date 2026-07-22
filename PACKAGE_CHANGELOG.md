@@ -1,5 +1,29 @@
 # Package Changelog
 
+## v8.128 — 2026-07-22 — External intake trust setup source only
+
+- Added strict, immutable, exact-key external trust contracts for reviewer public credentials,
+  trust snapshots, typed evidence envelopes, append-only history bindings, monotonic checkpoints,
+  and assessment receipts. Canonical UTF-8 JSON and distinct signing domains reject duplicate
+  keys, unknown fields, floats/non-finite numbers, control characters, and substitutions. The
+  receipt vocabulary stops at `VERIFIED_PENDING_EXTERNAL_ACTIVATION` or explicit failure/block
+  states and always retains `execution_authority=NONE`.
+- Added an auditable native Swift signature-verifier source and deterministic content-addressed
+  directory-bundle builder. The staged root-owned installer compiles only re-hashed staged source
+  with fixed `/usr/bin/swiftc` and atomically publishes a complete fixed helper directory under
+  `/Library/PrivilegedHelperTools`. The helper has only read-only status and cryptographic
+  decision-signature verification via fixed `/usr/bin/ssh-keygen`; success is explicitly
+  `SIGNATURE_VERIFIED_SEMANTICS_UNVERIFIED`, not a semantic assessment or activation state.
+- Added public-only reviewer enrollment guidance/example plus focused contract, Python/Swift
+  canonical-vector, compiler, source-surface, bundle determinism, staging-digest, drift, and
+  refusal tests. Production/enrollment code generates, prints, and stores no private key.
+  Behavioral verification creates only ephemeral unencrypted test keys inside a temporary test
+  directory; they are never retained or used outside the isolated test.
+- This release adds setup source only. Nothing was installed, initialized, enrolled, signed,
+  activated, or granted intake, strategy, campaign, venue, order, live, or real-money authority.
+  All new implementation/test paths and this changelog are nonmanifest; no immutable or
+  manifest-listed file was changed.
+
 ## v8.127 — 2026-07-22 — Operator-authorized integrity and current-state reconciliation
 
 - `DECISION_LOG.md`: added unique D-115, recording the one-time manifest-edit exception and its
