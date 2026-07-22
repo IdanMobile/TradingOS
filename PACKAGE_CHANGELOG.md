@@ -1,5 +1,84 @@
 # Package Changelog
 
+## v8.134 — 2026-07-23 — Read-only TradingView navigation and bounded integrity reconciliation
+
+- `src/tios/services/dashboard_ui/dashboard.html`: added a read-only link to TradingView's full
+  BTCUSDT chart plus governed buttons from the embedded-chart context to the existing OS metrics
+  and OS strategies views. The UI explicitly explains that the embedded selector is
+  indicator-only and continues to classify TradingView as external visual context, not OS
+  evidence. No account, credential, signal ingestion, strategy import, or order surface was added.
+- `tests/test_dashboard.py`: pinned the external chart URL, embedded-selector limitation, governed
+  internal-view hooks, and their navigation wiring. The focused dashboard tests and final
+  `make check` release gate passed.
+- Included the existing nonmanifest
+  `docs/supervisor/TRADINGVIEW_STRATEGY_INDICATOR_PATTERN_CATALOG_PLAN_2026-07-23.md` as an optional
+  proposed roadmap artifact. It authorizes no implementation or research run, preserves closed
+  family and multiplicity rules, and retains execution authority `NONE`.
+- `DECISION_LOG.md`: added D-116, recording the operator's exact one-time exception. Under that
+  exception, `PACKAGE_INTEGRITY_MANIFEST.md` advances to v8.134 and changes only its package-version
+  line, both existing duplicate dashboard rows, both existing duplicate dashboard-test rows, and
+  the existing decision-log row. No row was added or removed; the exception is exhausted by this
+  reconciliation. No immutable policy, threshold, prospective/holdout/sealed evidence, runtime,
+  data, intake, strategy, campaign, venue, order, live, or real-money authority changed.
+
+## v8.133 — 2026-07-23 — Fail-closed full-demo readiness inspection
+
+- Added one deterministic, read-only full-demo readiness command that authenticates the
+  dashboard, orchestrator, jobs worker, and demo lane using the resolved executable, complete
+  allowlisted argv, and exact resolved repository working directory. Process-table, CWD, and
+  future root-owned authority probes use concurrent, deadline-aware bounded stdout/stderr
+  collection; timeout, overflow, ambiguous metadata, unknown CWD, executable mismatch, argv-tail
+  spoofing, and unapproved dashboard arguments fail closed, with process groups killed and reaped.
+- Operational JSON and JSONL evidence is read through descriptor-anchored, no-follow traversal of
+  every fixed path component with regular-file/link-count and byte limits. Dashboard liveness uses
+  only the static shell and a bounded fixed negative API-schema probe whose handlers perform no
+  project projection reads; demo safety is reconstructed locally from bounded heartbeat, state,
+  and retained demo-order reconciliation evidence. No default dashboard walkthrough is approved
+  until its prospective/holdout read audit closes.
+- The report distinguishes `READY`, operational `AUTHORITY_GATED`, and unsafe or incomplete
+  `DEGRADED`. `AUTHORITY_GATED` exits zero only when every operational check passes and external
+  intake activation is safely incomplete; it never implies decision admission, strategy
+  promotion, execution authority, or real-money readiness. The runbook permits retained
+  historical/operational evidence while explicitly excluding preregistered prospective and sealed
+  holdout outcomes, and forbids `START`, `STOP`, `RUN_ONCE`, campaigns, or repair during the demo.
+- Added 29 focused tests covering normal, oversized, timed-out, and descendant-held subprocess
+  pipes; executable/argv spoofing and wrong-CWD rejection for all services; exact safe dashboard
+  argv; descriptor and ancestor symlink refusal; dashboard route confinement; authority gating;
+  quality/evidence degradation; demo safety; and read-only behavior. No authority was created or
+  granted, no order was placed/cancelled/modified, and no preregistered prospective or sealed
+  outcome was read. The checker does read the bounded retained demo order ledger solely to
+  corroborate current fake-money exposure and disaster-stop coverage.
+
+## v8.132 — 2026-07-22 — One-time normalized refresh repair capability
+
+- Added an offline, deterministic repair planner for the pre-v8.131 daily-refresh open-candle
+  defect. It verifies the exact ten content-addressed archived manifests, their schema and table
+  population, retained REST filename/content hashes, all 69 current parquet hashes and sizes,
+  current manifest/status bytes, and updater/repair source identities. It derives exactly 640
+  affected coordinates across 64 refreshable tables (370 daily, 140 hourly, 130 four-hour), with
+  576 retained-REST and 64 explicitly manifest-only evidence classifications; the five stale
+  tables are excluded. Plans are canonical, content-addressed, fixed-directory artifacts and
+  planning performs no network access or dataset mutation.
+- Added a plan-bound, fixed-Binance-endpoint apply/recovery implementation. It refuses code,
+  state, archive, or raw-evidence drift before network access; accepts only one exact bounded,
+  nonredirected row per coordinate; retains response bytes before semantic use; fetches and
+  validates all 640 rows before publication; stages only the 64 affected parquets; preserves
+  exact row counts, schemas, coverage coordinates, and non-target logical fingerprints; and audits
+  all 69 tables. The production CLI exposes no URL or dataset-path override.
+- Added journaled before-byte backups, exact before/after hash classification, rollback on every
+  pre-receipt failure, unknown-third-hash refusal, deterministic recovery, a receipt-last commit
+  marker, and zero-network success idempotency. Committed-state verification resolves the exact
+  69-entry audit population and refuses current parquet, manifest, status, receipt, or audit drift.
+  Recovery holds the same external lock as refresh/apply and authenticates the exact 64-file
+  journal envelope, paths, plan-bound before hashes, after hashes, and backup locations before any
+  rollback. Focused tests cover exact derivation/evidence counts, corrupt evidence, offline
+  planning, strict files/paths, query responses, all-fetch-before-publish ordering, exact
+  replacement, lock sharing, injected publication failure and rollback, committed-state drift,
+  missing/extra/duplicate audit and journal entries, complete repeatable recovery, receipt
+  idempotency, unknown recovery state, and CLI confinement. No plan, network fetch, live dataset
+  repair, prospective/holdout outcome read, research action, or execution authority was performed
+  by this source/test release.
+
 ## v8.131 — 2026-07-22 — Closed-bar daily refresh correctness
 
 - Changed the refresh boundary to one run-wide UTC cutoff, removes any pre-existing row whose

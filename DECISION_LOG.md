@@ -2160,3 +2160,37 @@ Evidence: explicit operator authorization for this one-time reconciliation on 20
 Status: **Integrity exception bounded to v8.127 reconciliation; external trust ownership selected,
 activation and independent reviewer evidence still pending. No candidate admission, strategy
 promotion, production venue, live order, or real-money authority granted.**
+
+### D-116 — One-time v8.134 integrity reconciliation authorized for reviewed dashboard navigation
+
+Decision: the operator authorizes exactly one controlled integrity reconciliation for v8.134 to
+integrate the current reviewed diffs in `src/tios/services/dashboard_ui/dashboard.html` and
+`tests/test_dashboard.py`. For this reconciliation only, `PACKAGE_INTEGRITY_MANIFEST.md` may be
+edited solely to update its package-version line, both existing duplicate hash rows for
+`src/tios/services/dashboard_ui/dashboard.html`, both existing duplicate hash rows for
+`tests/test_dashboard.py`, and the existing hash row for `DECISION_LOG.md`. No manifest row may be
+added or removed. The changelog must record the same bounded change. This exception is exhausted
+when that reconciliation is complete and grants no continuing manifest-edit authority.
+
+The dashboard change adds a read-only link to the full external TradingView chart and governed
+navigation from the embedded-chart context to the OS metrics and OS strategies views. The UI
+states that the embedded selector is indicator-only, retains TradingView as external visual
+context rather than OS evidence, and creates no order surface. The focused test change pins those
+labels, links, navigation hooks, and boundaries. The existing optional
+`docs/supervisor/TRADINGVIEW_STRATEGY_INDICATOR_PATTERN_CATALOG_PLAN_2026-07-23.md` remains a
+proposed research/catalog plan with execution authority `NONE`; its presence does not authorize
+implementation, research trials, strategy admission, promotion, venue connection, paper/live
+trading, or real-money activity.
+
+`PACKAGE_INTEGRITY_MANIFEST.md` remains in `IMMUTABLE_PATHS`. This exception does not authorize any
+edit to `src/tios/ops/self_modification.py`, `Makefile`, thresholds, prospective, holdout, sealed,
+runtime, data, or any other immutable or manifest-listed path. It changes no research protocol,
+outcome evidence, approval criterion, or authority boundary.
+
+Evidence: explicit operator authorization on 2026-07-23; reviewed diffs for
+`src/tios/services/dashboard_ui/dashboard.html` and `tests/test_dashboard.py`;
+`docs/supervisor/TRADINGVIEW_STRATEGY_INDICATOR_PATTERN_CATALOG_PLAN_2026-07-23.md`;
+`PACKAGE_INTEGRITY_MANIFEST.md`; `src/tios/ops/self_modification.py`.
+Status: **One-time exception limited to the v8.134 package-version line and five existing hash-row
+occurrences: dashboard HTML ×2, dashboard test ×2, and decision log ×1. Authority remains `NONE`;
+no admission, promotion, venue, order, live, or real-money authority is granted.**

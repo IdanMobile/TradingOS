@@ -746,6 +746,11 @@ def test_dashboard_includes_read_only_tradingview_market_monitor() -> None:
     assert "external-embedding/embed-widget-advanced-chart.js" in html
     assert "NO ORDERS" in html
     assert "tradingview-widget-copyright" in html
+    assert "https://www.tradingview.com/chart/?symbol=BINANCE%3ABTCUSDT" in html
+    assert "The embedded chart's selector is indicator-only" in html
+    assert 'data-market-research-view="comparisons"' in html
+    assert 'data-market-research-view="strategies"' in html
+    assert "showWorkspace('research');showView(button.dataset.marketResearchView" in html
     for label in (
         "Research Lab",
         "Autonomous evidence cycle",
