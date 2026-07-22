@@ -158,16 +158,50 @@ or granting admission. The repository currently has no intake-admitted state.
 5. Duplicate, competing, stale, malformed, revoked, expired, and binding-mismatched inputs fail
    closed. This does not prove that a caller supplied the complete external decision sequence.
 
-### Operator-gated external activation substep — NOT IMPLEMENTED
+### External trust and activation source slices — IMPLEMENTED, NOT ACTIVATED
+
+Two independently reviewed, fail-closed source/setup slices now exist:
+
+1. Commit `30884dc` (package v8.128) adds strict external trust contracts, the native Swift
+   signature-verifier source, deterministic source-bundle construction, and a fixed-path staged
+   installer. A reviewed setup bundle is prepared at
+   `/tmp/tios-intake-reviewed-bundles/39c4521585ff689d05d10a8c80206c7d9706095f9f3112918bb7f486bf4b41c0.bundle`;
+   its bundle SHA-256 is
+   `39c4521585ff689d05d10a8c80206c7d9706095f9f3112918bb7f486bf4b41c0` and its installer
+   SHA-256 is `ee2ef47742b7417e61dc3da426526f9e10ce272807034c360e9bbc8a52c6b410`.
+2. Commit `c320ec2` (package v8.129 implementation track) adds pending-only activation-authority
+   contracts, a deterministic activation source bundle, policy, syntax validation, and
+   planning/status surfaces. It intentionally provides no activation, initialization, root-state
+   publication, signing, history mutation, admission, or campaign-consumable authority.
+
+The prepared bundle is evidence of reviewed source bytes only. As of 2026-07-22, the production
+helper is not installed, `/private/var/db/tios-intake` does not exist, no independent reviewer is
+enrolled, and no authoritative history, monotonic checkpoint, trusted-time observation, or
+activation receipt exists. Every implemented record and status therefore retains authority
+`NONE`.
+
+### Operator-gated external activation substep — NOT COMPLETE
 
 Admission remains unavailable until an operator-approved change supplies all of the following:
 
+- operator installation and verification of the reviewed helper at the fixed root-owned path,
+  using the recorded bundle and installer digests;
 - a fixed production external verifier composition that repository-writing agents cannot replace;
 - authoritative append-only decision history plus an externally retained monotonic checkpoint;
 - a typed resolver that independently verifies every review-evidence digest and domain outcome;
 - trusted current time and current credential/revocation/trust-snapshot evidence;
 - a genuinely independent reviewer identity and credential lifecycle outside this repository;
 - frozen interfaces, integrity-manifest rows, changelog evidence, and independent security review.
+
+The remaining sequence is fail-closed and ordered: install and verify the reviewed helper; enroll
+the genuinely independent reviewer's public credential; separately review and publish the fixed
+root-owned trust, policy, genesis, authoritative history, monotonic checkpoint, and trusted-time
+state; produce a canonical activation status receipt and validate the exact
+`ACTIVE_NO_DECISIONS` snapshot; obtain and retain an independently signed review record binding
+the installed hashes, state, and receipt; implement and independently review the fixed-path typed
+evidence resolver/current-receipt consumer; then perform the operator-authorized integrity freeze.
+Only after that complete boundary passes independent security review may Phase 3 begin, followed
+by Phase 4 after Phase 3 passes its own gate.
 
 Only that separately reviewed substep may introduce an admitted state, terminal external rejection,
 or an API consumable by a campaign contract. Generic workspace decisions, free-form files,
@@ -186,7 +220,8 @@ a caller-supplied external decision.
 ### Guards
 
 - Phase 3 and Phase 4 remain blocked until the operator-gated external activation substep is
-  implemented, frozen, and independently reviewed.
+  installed, initialized with genuine independent-review evidence, frozen, and independently
+  reviewed. Source/setup implementation alone does not satisfy this gate.
 - Phase 5 strategy validation/promotion review cannot substitute for candidate-intake authority.
 
 ## Phase 3 — Unified campaign contract and StrategyVersion bridge

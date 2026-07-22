@@ -1,5 +1,26 @@
 # Package Changelog
 
+## v8.130 — 2026-07-22 — Operating-plan and handoff reconciliation
+
+- Reconciled the autonomous operations plan with commits `30884dc` and `c320ec2`: external-trust
+  setup and pending activation-authority source contracts are implemented and independently
+  reviewed, while external activation remains incomplete and every represented authority remains
+  `NONE`.
+- Updated the session handoff to the v8.129 implementation track with `c320ec2` as its
+  pre-documentation-reconciliation baseline, retained the protected v8.127 / D-115 SSOT boundary,
+  recorded the **1,525 passed / 29 deselected** release gate and live service observations, and
+  preserved the reviewed bundle/installer digests.
+- Recorded the exact remaining sequence: operator root installation, read-only verification,
+  genuine independent-reviewer enrollment, separately reviewed trust/policy/genesis/history/
+  checkpoint/time publication, canonical activation receipt production and
+  `ACTIVE_NO_DECISIONS` snapshot validation, retention of an independently signed review record
+  binding installed hashes/state/receipt, fixed-path typed evidence resolution/current-receipt
+  consumption, operator-authorized integrity freeze, and only then Phase 3 followed by Phase 4.
+  Source preparation does not satisfy or bypass any gate.
+- This is a documentation-only reconciliation. It edits no immutable, protected, or
+  manifest-listed file, changes no research protocol or outcome evidence, and grants no intake,
+  strategy, campaign, venue, order, live, or real-money authority.
+
 ## v8.129 — 2026-07-22 — Pending-only activation-authority source contracts
 
 - Added strict canonical `AuthorityGenesis`, domain-separated access/data/operator evidence,
