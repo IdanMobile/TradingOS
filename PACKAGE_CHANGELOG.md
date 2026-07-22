@@ -1,5 +1,39 @@
 # Package Changelog
 
+## v8.131 — 2026-07-22 — Closed-bar daily refresh correctness
+
+- Changed the refresh boundary to one run-wide UTC cutoff, removes any pre-existing row whose
+  canonical close is later than that cutoff, and admits only REST rows whose Binance close time is
+  at or before it. Exact decoded REST pages are retained before filtering, so excluded in-progress
+  rows remain auditable without entering normalized data.
+- Refetches the final retained open timestamp on every file and explicitly prefers the fresh,
+  closed REST row over its existing duplicate. Status now separates genuinely added rows from
+  actually changed overlap rows; identical overlaps neither increment revisions nor rewrite the
+  parquet. Forward pagination must advance and is bounded.
+- Added a dataset-keyed nonblocking process lock outside the repository plus same-directory atomic
+  publication for each changed parquet, current status, immutable status archive, current manifest,
+  and content-addressed manifest archive. Replace is the in-process commit boundary; post-replace
+  directory-fsync failure is reported as degraded crash durability and never as a false rollback.
+  Artifacts are individually atomic; the multi-file run is not represented as one transaction.
+- New manifests bind immutable content-addressed status bytes and carry added, changed-revision,
+  and excluded-open counts, so later status replacement does not invalidate that lineage binding.
+- Made normalized snapshot coverage explicitly `null` for an empty table, allowing an all-open
+  input file to publish zero rows and a truthful current manifest instead of failing after status.
+  Versioned open-time cursor and cutoff metadata are embedded in the same atomic parquet
+  publication, so a status failure or later-file failure cannot strand an empty artifact. Status
+  retains a redundant cursor: conflicts fail closed for empty recovery, while a nonempty parquet
+  authenticates its cursor against its last committed row and safely supersedes stale status from
+  a partial multi-file run. Operational schema metadata is stripped from logical candle-content
+  hashing to preserve prior hash semantics. Embedded cursors must be canonical milliseconds no
+  later than their embedded cutoff; equality is accepted and sub-milliseconds are floored exactly.
+- Added focused tests for open-current exclusion with raw retention, exact cutoff inclusion,
+  finalized and identical overlap behavior, explicit counts, advancing pagination,
+  nonadvancing/fetch failure data preservation, replace/fsync/snapshot/archive/current-manifest
+  failure states, external singleton locking, empty-table snapshotting/recovery across status and
+  later-file crashes, corrupted/missing/conflicting embedded cursor refusal, and immutable status
+  lineage. This source/test edit ran no live refresh or one-time data repair and did not alter
+  existing generated dataset dirt.
+
 ## v8.130 — 2026-07-22 — Operating-plan and handoff reconciliation
 
 - Reconciled the autonomous operations plan with commits `30884dc` and `c320ec2`: external-trust

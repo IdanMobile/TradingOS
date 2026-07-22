@@ -86,3 +86,37 @@ def test_existing_snapshot_records_output_range_hashes_and_source_refs(
 
     source.write_bytes(b"drift")
     assert nm.verify_manifest() == [f"sha256 mismatch: {source}"]
+
+
+def test_existing_snapshot_is_empty_parquet_safe(tmp_path, monkeypatch) -> None:
+    norm, raw = tmp_path / "normalized", tmp_path / "raw"
+    norm.mkdir()
+    parquet = norm / "BTCUSDT_1h.parquet"
+    pyarrow.parquet.write_table(pa.Table.from_batches([], schema=CANONICAL_SCHEMA), parquet)
+    monkeypatch.setattr(nm, "NORM_ROOT", norm)
+    monkeypatch.setattr(nm, "NORM_MANIFEST", norm / "normalized_multi_manifest.json")
+    monkeypatch.setattr(nm, "RAW_ROOT", raw)
+
+    snapshot = nm.snapshot_existing()
+    info = snapshot["tables"]["BTCUSDT_1h"]
+
+    assert info["rows"] == 0
+    assert info["coverage_start_utc"] is None
+    assert info["coverage_end_utc"] is None
+
+
+def test_snapshot_logical_hash_ignores_refresh_schema_metadata(tmp_path, monkeypatch) -> None:
+    norm, raw = tmp_path / "normalized", tmp_path / "raw"
+    norm.mkdir()
+    table = pa.Table.from_batches([], schema=CANONICAL_SCHEMA)
+    parquet = norm / "BTCUSDT_1h.parquet"
+    pyarrow.parquet.write_table(
+        table.replace_schema_metadata({b"tios.daily_update.resume_open_ms": b"1"}), parquet
+    )
+    monkeypatch.setattr(nm, "NORM_ROOT", norm)
+    monkeypatch.setattr(nm, "NORM_MANIFEST", norm / "normalized_multi_manifest.json")
+    monkeypatch.setattr(nm, "RAW_ROOT", raw)
+
+    snapshot = nm.snapshot_existing()
+
+    assert snapshot["tables"]["BTCUSDT_1h"]["content_sha256"] == nm.content_sha256(table)

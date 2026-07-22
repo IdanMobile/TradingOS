@@ -149,13 +149,14 @@ def snapshot_existing() -> dict[str, object]:
         info = {
             "parquet": path.name,
             "rows": table.num_rows,
-            "coverage_start_utc": str(opens[0]),
-            "coverage_end_utc": str(opens[-1]),
+            "coverage_start_utc": str(opens[0]) if table.num_rows else None,
+            "coverage_end_utc": str(opens[-1]) if table.num_rows else None,
             "missing_months": missing,
             "source_files": source_files,
             "source_input_set_sha256": _input_set_sha256(source_files),
             "parquet_sha256": _sha256(path),
-            "content_sha256": content_sha256(table),
+            # Daily-refresh recovery metadata is operational, not logical candle content.
+            "content_sha256": content_sha256(table.replace_schema_metadata(None)),
         }
         if update := updates.get(path.name):
             pages = update.get("source_pages", [])
