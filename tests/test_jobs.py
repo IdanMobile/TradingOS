@@ -518,8 +518,72 @@ def test_migration_is_atomic_and_restartable(
     with sqlite3.connect(path) as connection:
         columns = {row[1] for row in connection.execute("PRAGMA table_info(jobs)")}
         assert "cancel_requested" in columns
+        assert connection.execute("PRAGMA user_version").fetchone() == (4,)
+        assert connection.execute("SELECT version FROM schema_version").fetchone() == (4,)
+        assert {
+            row[1]
+            for row in connection.execute(
+                "PRAGMA table_info(legacy_research_lab_v0_quarantine_audit_outbox)"
+            )
+        } == {
+            "operation_key",
+            "audit_sha256",
+            "plan_sha256",
+            "artifact_name",
+            "temporary_name",
+            "payload",
+            "applied_at",
+            "published_at",
+        }
+
+
+def test_v4_outbox_migration_is_atomic_from_v3(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = tmp_path / "repo"
+    path = root / "artifacts/jobs/jobs.sqlite3"
+    path.parent.mkdir(parents=True)
+    original = store_module._apply_migration  # noqa: SLF001
+    with sqlite3.connect(path, isolation_level=None) as connection:
+        connection.execute("BEGIN IMMEDIATE")
+        for version in range(1, 4):
+            original(
+                connection,
+                store_module._MIGRATIONS[version - 1],  # noqa: SLF001
+                version,
+            )
+        connection.commit()
+
+    def interrupted(
+        connection: sqlite3.Connection, statements: tuple[str, ...], version: int
+    ) -> None:
+        connection.execute(statements[0])
+        raise RuntimeError(f"interrupted migration {version}")
+
+    monkeypatch.setattr(store_module, "_apply_migration", interrupted)
+    store = JobStore(path, root=root)
+    with pytest.raises(RuntimeError, match="interrupted migration 4"):
+        store.initialize()
+    with sqlite3.connect(path) as connection:
         assert connection.execute("PRAGMA user_version").fetchone() == (3,)
         assert connection.execute("SELECT version FROM schema_version").fetchone() == (3,)
+        assert (
+            connection.execute(
+                """SELECT 1 FROM sqlite_master WHERE type = 'table'
+                       AND name = 'legacy_research_lab_v0_quarantine_audit_outbox'"""
+            ).fetchone()
+            is None
+        )
+
+    monkeypatch.setattr(store_module, "_apply_migration", original)
+    store.initialize()
+    with sqlite3.connect(path) as connection:
+        assert connection.execute("PRAGMA user_version").fetchone() == (4,)
+        assert connection.execute("SELECT version FROM schema_version").fetchone() == (4,)
+        assert connection.execute(
+            """SELECT 1 FROM sqlite_master WHERE type = 'table'
+                       AND name = 'legacy_research_lab_v0_quarantine_audit_outbox'"""
+        ).fetchone() == (1,)
 
 
 def test_concurrent_initialization_is_safe_across_threads_and_processes(
@@ -545,7 +609,7 @@ def test_concurrent_initialization_is_safe_across_threads_and_processes(
         assert process.exitcode == 0
     with sqlite3.connect(path) as connection:
         assert connection.execute("PRAGMA integrity_check").fetchone() == ("ok",)
-        assert connection.execute("PRAGMA user_version").fetchone() == (3,)
+        assert connection.execute("PRAGMA user_version").fetchone() == (4,)
 
 
 def test_write_entry_lock_path_replacement_does_not_split_serialization(tmp_path: Path) -> None:
