@@ -114,7 +114,7 @@ def _validated_connection(connection: sqlite3.Connection, image_bytes: int) -> i
     version = int(connection.execute("PRAGMA user_version").fetchone()[0])
     recorded = int(connection.execute("SELECT version FROM schema_version").fetchone()[0])
     integrity = str(connection.execute("PRAGMA integrity_check").fetchone()[0])
-    supported = {SCHEMA_VERSION - 1, SCHEMA_VERSION}
+    supported = {2, 3, SCHEMA_VERSION}
     if version != recorded or version not in supported or integrity != "ok":
         raise RuntimeError("jobs database schema or integrity check failed")
     if image_bytes > MAX_DB_IMAGE_BYTES:

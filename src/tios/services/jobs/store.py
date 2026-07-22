@@ -17,12 +17,29 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from enum import StrEnum
+from functools import cache
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 MAX_LIST_LIMIT = 1000
 MAX_DB_IMAGE_BYTES = 64 * 1024 * 1024
+LEGACY_RESEARCH_LAB_V0_SCHEDULE_ID = "s2-production-offline-research-lab-v0-every-6h-v1"
+LEGACY_RESEARCH_LAB_V0_QUARANTINE_REASON = (
+    "quarantined: legacy RESEARCH_LAB_V0 queue disabled before autonomous research rollout"
+)
+LEGACY_RESEARCH_LAB_V0_AUDIT_OUTBOX = "legacy_research_lab_v0_quarantine_audit_outbox"
+LEGACY_RESEARCH_LAB_V0_AUDIT_PREFIX = "legacy_research_lab_v0_quarantine_"
+LEGACY_RESEARCH_LAB_V0_OUTBOX_SQL = """CREATE TABLE legacy_research_lab_v0_quarantine_audit_outbox (
+           operation_key INTEGER PRIMARY KEY CHECK (operation_key = 1),
+           audit_sha256 TEXT NOT NULL UNIQUE CHECK (length(audit_sha256) = 64),
+           plan_sha256 TEXT NOT NULL CHECK (length(plan_sha256) = 64),
+           artifact_name TEXT NOT NULL UNIQUE,
+           temporary_name TEXT NOT NULL UNIQUE,
+           payload BLOB NOT NULL,
+           applied_at TEXT NOT NULL,
+           published_at TEXT
+       )"""
 
 
 class JobType(StrEnum):
@@ -96,6 +113,89 @@ class Schedule:
     enabled: bool
 
 
+@dataclass(frozen=True)
+class LegacyResearchLabV0QuarantinePlan:
+    db_schema_before: int
+    schedule: dict[str, Any] | None
+    queued_job_ids: tuple[str, ...]
+    queued_count: int
+    new_count: int
+    retry_count: int
+    preserved_terminal_counts: dict[str, int]
+    research_job_fingerprints: tuple[dict[str, str], ...]
+    research_schedule_fingerprints: tuple[dict[str, str], ...]
+    terminal_evidence: tuple[dict[str, Any], ...]
+    non_target_job_count: int
+    non_target_jobs_sha256: str
+    non_target_schedule_count: int
+    non_target_schedules_sha256: str
+    blockers: tuple[str, ...]
+    plan_sha256: str
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "db_schema_before": self.db_schema_before,
+            "schedule": self.schedule,
+            "queued_job_ids": list(self.queued_job_ids),
+            "queued_count": self.queued_count,
+            "new_count": self.new_count,
+            "retry_count": self.retry_count,
+            "preserved_terminal_counts": self.preserved_terminal_counts,
+            "research_job_fingerprints": list(self.research_job_fingerprints),
+            "research_schedule_fingerprints": list(self.research_schedule_fingerprints),
+            "terminal_evidence": list(self.terminal_evidence),
+            "non_target_job_count": self.non_target_job_count,
+            "non_target_jobs_sha256": self.non_target_jobs_sha256,
+            "non_target_schedule_count": self.non_target_schedule_count,
+            "non_target_schedules_sha256": self.non_target_schedules_sha256,
+            "blockers": list(self.blockers),
+            "plan_sha256": self.plan_sha256,
+        }
+
+
+@dataclass(frozen=True)
+class LegacyResearchLabV0QuarantineResult:
+    status: str
+    plan: LegacyResearchLabV0QuarantinePlan
+    cancelled_job_ids: tuple[str, ...]
+    applied_at: datetime | None
+    audit_artifact_ref: str | None
+    audit_sha256: str | None
+    audit_publication_state: str
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "status": self.status,
+            "plan": self.plan.as_dict(),
+            "cancelled_job_ids": list(self.cancelled_job_ids),
+            "applied_at": None if self.applied_at is None else _stamp(self.applied_at),
+            "audit_artifact_ref": self.audit_artifact_ref,
+            "audit_sha256": self.audit_sha256,
+            "audit_publication_state": self.audit_publication_state,
+        }
+
+
+class LegacyResearchLabV0QuarantineRefusal(RuntimeError):
+    """The fixed quarantine preconditions were not met; no database write occurred."""
+
+
+class LegacyResearchLabV0AuditPublicationError(RuntimeError):
+    """The database committed, but its immutable audit artifact was not published."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        result: LegacyResearchLabV0QuarantineResult,
+        audit_payload: bytes,
+        audit_artifact_ref: str,
+    ) -> None:
+        super().__init__(message)
+        self.result = result
+        self.audit_payload = audit_payload
+        self.audit_artifact_ref = audit_artifact_ref
+
+
 _MIGRATIONS: tuple[tuple[str, ...], ...] = (
     (
         "CREATE TABLE schema_version (version INTEGER NOT NULL)",
@@ -150,6 +250,7 @@ _MIGRATIONS: tuple[tuple[str, ...], ...] = (
         """ALTER TABLE schedules ADD COLUMN enabled INTEGER NOT NULL DEFAULT 1
         CHECK (enabled IN (0, 1))""",
     ),
+    (LEGACY_RESEARCH_LAB_V0_OUTBOX_SQL,),
 )
 
 
@@ -221,6 +322,454 @@ def _apply_migration(
         connection.execute(statement)
     connection.execute("UPDATE schema_version SET version = ?", (version,))
     connection.execute(f"PRAGMA user_version = {version}")
+
+
+def _canonical_json(payload: dict[str, Any]) -> bytes:
+    return json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+
+
+def _canonical_sqlite_value(value: object) -> dict[str, Any]:
+    if value is None:
+        return {"sqlite_type": "NULL", "value": None}
+    if isinstance(value, int):
+        return {"sqlite_type": "INTEGER", "value": value}
+    if isinstance(value, float):
+        return {"sqlite_type": "REAL", "value": value.hex()}
+    if isinstance(value, str):
+        return {"sqlite_type": "TEXT", "value": value}
+    if isinstance(value, bytes):
+        return {"sqlite_type": "BLOB", "value_hex": value.hex()}
+    raise LegacyResearchLabV0QuarantineRefusal(
+        f"unsupported SQLite value type in quarantine plan: {type(value).__name__}"
+    )
+
+
+def _canonical_row(row: sqlite3.Row) -> dict[str, Any]:
+    material: dict[str, Any] = {}
+    for key in sorted(row.keys()):
+        material[key] = _canonical_sqlite_value(row[key])
+    return material
+
+
+def _row_fingerprint(row: sqlite3.Row) -> str:
+    return hashlib.sha256(_canonical_json(_canonical_row(row))).hexdigest()
+
+
+def _rows_digest(rows: list[sqlite3.Row]) -> str:
+    material = [_canonical_row(row) for row in rows]
+    return hashlib.sha256(_canonical_json({"rows": material})).hexdigest()
+
+
+def _quarantine_plan(
+    connection: sqlite3.Connection,
+) -> LegacyResearchLabV0QuarantinePlan:
+    try:
+        user_version = int(connection.execute("PRAGMA user_version").fetchone()[0])
+        version_rows = connection.execute("SELECT version FROM schema_version").fetchall()
+        if len(version_rows) != 1:
+            raise LegacyResearchLabV0QuarantineRefusal(
+                "malformed jobs schema: schema_version must contain exactly one row"
+            )
+        recorded_version = int(version_rows[0][0])
+        if user_version != recorded_version:
+            raise LegacyResearchLabV0QuarantineRefusal(
+                "malformed jobs schema: PRAGMA user_version and schema_version disagree"
+            )
+        if user_version not in {2, 3, 4}:
+            raise LegacyResearchLabV0QuarantineRefusal(
+                f"unsupported jobs schema version {user_version}; expected 2, 3, or 4"
+            )
+        _validate_quarantine_audit_outbox_schema(connection, required=user_version == 4)
+        schedule_columns = {
+            str(row[1]) for row in connection.execute("PRAGMA table_info(schedules)").fetchall()
+        }
+        job_columns = {
+            str(row[1]) for row in connection.execute("PRAGMA table_info(jobs)").fetchall()
+        }
+        expected_columns = {
+            "schedule_id",
+            "job_type",
+            "payload_json",
+            "interval_seconds",
+            "next_due",
+            "max_attempts",
+            "timeout_seconds",
+        }
+        if not expected_columns.issubset(schedule_columns):
+            raise LegacyResearchLabV0QuarantineRefusal(
+                "malformed jobs schema: schedules columns are incomplete"
+            )
+        expected_job_columns = {
+            "job_id",
+            "job_type",
+            "state",
+            "payload_json",
+            "attempt_count",
+            "cancel_requested",
+        }
+        if not expected_job_columns.issubset(job_columns):
+            raise LegacyResearchLabV0QuarantineRefusal(
+                "malformed jobs schema: jobs columns are incomplete"
+            )
+        if user_version == 2 and "enabled" in schedule_columns:
+            raise LegacyResearchLabV0QuarantineRefusal(
+                "malformed jobs schema: v2 unexpectedly contains schedules.enabled"
+            )
+        if user_version in {3, 4} and "enabled" not in schedule_columns:
+            raise LegacyResearchLabV0QuarantineRefusal(
+                "malformed jobs schema: v3/v4 is missing schedules.enabled"
+            )
+        schedules = connection.execute("SELECT * FROM schedules ORDER BY schedule_id").fetchall()
+        jobs = connection.execute("SELECT * FROM jobs ORDER BY job_id").fetchall()
+        valid_job_types = {member.value for member in JobType}
+        valid_job_states = {member.value for member in JobState}
+        for row in schedules:
+            if row["job_type"] not in valid_job_types:
+                raise LegacyResearchLabV0QuarantineRefusal(
+                    f"malformed schedule job_type: {row['schedule_id']}"
+                )
+            json.loads(row["payload_json"])
+        for row in jobs:
+            if row["job_type"] not in valid_job_types or row["state"] not in valid_job_states:
+                raise LegacyResearchLabV0QuarantineRefusal(
+                    f"malformed job type or state: {row['job_id']}"
+                )
+            json.loads(row["payload_json"])
+    except LegacyResearchLabV0QuarantineRefusal:
+        raise
+    except (sqlite3.Error, TypeError, ValueError, IndexError) as error:
+        raise LegacyResearchLabV0QuarantineRefusal(f"malformed jobs database: {error}") from error
+
+    blockers: list[str] = []
+    target = next(
+        (row for row in schedules if row["schedule_id"] == LEGACY_RESEARCH_LAB_V0_SCHEDULE_ID),
+        None,
+    )
+    research_schedules = [row for row in schedules if row["job_type"] == JobType.RESEARCH_LAB_V0]
+    extras = sorted(
+        row["schedule_id"]
+        for row in research_schedules
+        if row["schedule_id"] != LEGACY_RESEARCH_LAB_V0_SCHEDULE_ID
+    )
+    if extras:
+        blockers.append(f"unexpected RESEARCH_LAB_V0 schedules: {', '.join(extras)}")
+
+    schedule: dict[str, Any] | None = None
+    if target is None:
+        blockers.append(f"required schedule is missing: {LEGACY_RESEARCH_LAB_V0_SCHEDULE_ID}")
+    else:
+        try:
+            payload = json.loads(target["payload_json"])
+            interval_seconds = int(target["interval_seconds"])
+            max_attempts = int(target["max_attempts"])
+            timeout_seconds = int(target["timeout_seconds"])
+        except (json.JSONDecodeError, TypeError, ValueError) as error:
+            payload = None
+            interval_seconds = -1
+            max_attempts = -1
+            timeout_seconds = -1
+            blockers.append(f"target schedule payload is malformed: {error}")
+        enabled = True if user_version == 2 else bool(target["enabled"])
+        schedule = {
+            "schedule_id": target["schedule_id"],
+            "job_type": target["job_type"],
+            "payload": payload,
+            "interval_seconds": interval_seconds,
+            "next_due": target["next_due"],
+            "max_attempts": max_attempts,
+            "timeout_seconds": timeout_seconds,
+            "enabled": enabled,
+            "enabled_source": "implicit_v2" if user_version == 2 else "explicit_v3_v4",
+        }
+        if target["job_type"] != JobType.RESEARCH_LAB_V0:
+            blockers.append("target schedule job_type is not RESEARCH_LAB_V0")
+        if payload != {}:
+            blockers.append("target schedule payload is not the fixed empty object")
+        if interval_seconds != 21_600:
+            blockers.append("target schedule interval_seconds is not 21600")
+        if max_attempts != 1:
+            blockers.append("target schedule max_attempts is not 1")
+        if timeout_seconds != 3_600:
+            blockers.append("target schedule timeout_seconds is not 3600")
+
+    research_jobs = [row for row in jobs if row["job_type"] == JobType.RESEARCH_LAB_V0]
+    running_ids = sorted(row["job_id"] for row in research_jobs if row["state"] == JobState.RUNNING)
+    if running_ids:
+        blockers.append(f"RUNNING RESEARCH_LAB_V0 jobs exist: {', '.join(running_ids)}")
+    queued = sorted(
+        (row for row in research_jobs if row["state"] == JobState.QUEUED),
+        key=lambda row: row["job_id"],
+    )
+    terminal_counts = {
+        state.value: sum(row["state"] == state for row in research_jobs)
+        for state in (JobState.SUCCEEDED, JobState.FAILED, JobState.CANCELLED)
+    }
+    research_job_fingerprints = tuple(
+        {"job_id": str(row["job_id"]), "row_sha256": _row_fingerprint(row)}
+        for row in sorted(research_jobs, key=lambda item: item["job_id"])
+    )
+    research_schedule_fingerprints = tuple(
+        {"schedule_id": str(row["schedule_id"]), "row_sha256": _row_fingerprint(row)}
+        for row in sorted(research_schedules, key=lambda item: item["schedule_id"])
+    )
+    terminal_evidence = tuple(
+        {
+            "job_id": str(row["job_id"]),
+            "state": str(row["state"]),
+            "result_artifact_ref": row["result_artifact_ref"],
+            "result_digest": row["result_digest"],
+            "row_sha256": _row_fingerprint(row),
+        }
+        for row in sorted(research_jobs, key=lambda item: item["job_id"])
+        if row["state"] in {JobState.SUCCEEDED, JobState.FAILED, JobState.CANCELLED}
+    )
+    non_target_jobs = [row for row in jobs if row["job_type"] != JobType.RESEARCH_LAB_V0]
+    non_target_schedules = [
+        row for row in schedules if row["schedule_id"] != LEGACY_RESEARCH_LAB_V0_SCHEDULE_ID
+    ]
+    body: dict[str, Any] = {
+        "db_schema_before": user_version,
+        "schedule": schedule,
+        "queued_job_ids": [row["job_id"] for row in queued],
+        "queued_count": len(queued),
+        "new_count": sum(int(row["attempt_count"]) == 0 for row in queued),
+        "retry_count": sum(int(row["attempt_count"]) > 0 for row in queued),
+        "preserved_terminal_counts": terminal_counts,
+        "research_job_fingerprints": list(research_job_fingerprints),
+        "research_schedule_fingerprints": list(research_schedule_fingerprints),
+        "terminal_evidence": list(terminal_evidence),
+        "non_target_job_count": len(non_target_jobs),
+        "non_target_jobs_sha256": _rows_digest(non_target_jobs),
+        "non_target_schedule_count": len(non_target_schedules),
+        "non_target_schedules_sha256": _rows_digest(non_target_schedules),
+        "blockers": sorted(set(blockers)),
+    }
+    plan_sha256 = hashlib.sha256(_canonical_json(body)).hexdigest()
+    return LegacyResearchLabV0QuarantinePlan(
+        db_schema_before=user_version,
+        schedule=schedule,
+        queued_job_ids=tuple(body["queued_job_ids"]),
+        queued_count=body["queued_count"],
+        new_count=body["new_count"],
+        retry_count=body["retry_count"],
+        preserved_terminal_counts=terminal_counts,
+        research_job_fingerprints=research_job_fingerprints,
+        research_schedule_fingerprints=research_schedule_fingerprints,
+        terminal_evidence=terminal_evidence,
+        non_target_job_count=body["non_target_job_count"],
+        non_target_jobs_sha256=body["non_target_jobs_sha256"],
+        non_target_schedule_count=body["non_target_schedule_count"],
+        non_target_schedules_sha256=body["non_target_schedules_sha256"],
+        blockers=tuple(body["blockers"]),
+        plan_sha256=plan_sha256,
+    )
+
+
+def _validate_quarantine_audit_outbox_schema(
+    connection: sqlite3.Connection, *, required: bool
+) -> None:
+    row = connection.execute(
+        """SELECT sql FROM sqlite_master
+               WHERE type = 'table'
+                   AND name = 'legacy_research_lab_v0_quarantine_audit_outbox'"""
+    ).fetchone()
+    if row is None:
+        if required:
+            raise LegacyResearchLabV0QuarantineRefusal(
+                "jobs schema v4 is missing the quarantine audit outbox"
+            )
+        return
+    if not required:
+        raise LegacyResearchLabV0QuarantineRefusal(
+            "pre-v4 jobs schema unexpectedly contains the quarantine audit outbox"
+        )
+    actual = " ".join(str(row["sql"]).split())
+    expected = " ".join(LEGACY_RESEARCH_LAB_V0_OUTBOX_SQL.split())
+    if actual != expected:
+        raise LegacyResearchLabV0QuarantineRefusal(
+            "jobs schema v4 quarantine audit outbox definition is not exact"
+        )
+    _validate_v4_master_schema(connection)
+
+
+def _master_object_signature(
+    connection: sqlite3.Connection,
+) -> tuple[tuple[str, str, str, str | None], ...]:
+    rows = connection.execute(
+        "SELECT type, name, tbl_name, sql FROM sqlite_master ORDER BY type, name"
+    ).fetchall()
+    return tuple(
+        (
+            str(row["type"]),
+            str(row["name"]),
+            str(row["tbl_name"]),
+            None if row["sql"] is None else " ".join(str(row["sql"]).split()),
+        )
+        for row in rows
+    )
+
+
+@cache
+def _expected_v4_master_object_signature() -> tuple[tuple[str, str, str, str | None], ...]:
+    connection = sqlite3.connect(":memory:", isolation_level=None)
+    connection.row_factory = sqlite3.Row
+    try:
+        for migration in _MIGRATIONS:
+            for statement in migration:
+                connection.execute(statement)
+        return _master_object_signature(connection)
+    finally:
+        connection.close()
+
+
+def _validate_v4_master_schema(connection: sqlite3.Connection) -> None:
+    actual = _master_object_signature(connection)
+    expected = _expected_v4_master_object_signature()
+    if actual != expected:
+        raise LegacyResearchLabV0QuarantineRefusal(
+            "jobs schema v4 contains unexpected or modified sqlite_master objects"
+        )
+
+
+def _assert_apply_time_quarantine_state(
+    connection: sqlite3.Connection,
+    *,
+    expected_jobs_sha256: str,
+    expected_schedules_sha256: str,
+) -> None:
+    _validate_quarantine_audit_outbox_schema(connection, required=True)
+    active = int(
+        connection.execute(
+            """SELECT COUNT(*) FROM jobs WHERE job_type = 'RESEARCH_LAB_V0'
+                   AND state IN ('QUEUED', 'RUNNING')"""
+        ).fetchone()[0]
+    )
+    target = connection.execute(
+        "SELECT enabled FROM schedules WHERE schedule_id = ?",
+        (LEGACY_RESEARCH_LAB_V0_SCHEDULE_ID,),
+    ).fetchone()
+    jobs = connection.execute("SELECT * FROM jobs ORDER BY job_id").fetchall()
+    schedules = connection.execute("SELECT * FROM schedules ORDER BY schedule_id").fetchall()
+    if (
+        active != 0
+        or target is None
+        or bool(target["enabled"])
+        or _rows_digest(jobs) != expected_jobs_sha256
+        or _rows_digest(schedules) != expected_schedules_sha256
+    ):
+        raise LegacyResearchLabV0QuarantineRefusal(
+            "quarantine operational postconditions no longer match retained audit state"
+        )
+
+
+def _assert_persistent_quarantine_state(
+    connection: sqlite3.Connection,
+    *,
+    expected_research_job_fingerprints: list[dict[str, str]],
+    expected_target_schedule_sha256: str,
+) -> None:
+    _validate_quarantine_audit_outbox_schema(connection, required=True)
+    active = int(
+        connection.execute(
+            """SELECT COUNT(*) FROM jobs WHERE job_type = 'RESEARCH_LAB_V0'
+                   AND state IN ('QUEUED', 'RUNNING')"""
+        ).fetchone()[0]
+    )
+    research_jobs = connection.execute(
+        "SELECT * FROM jobs WHERE job_type = 'RESEARCH_LAB_V0' ORDER BY job_id"
+    ).fetchall()
+    research_schedules = connection.execute(
+        "SELECT * FROM schedules WHERE job_type = 'RESEARCH_LAB_V0' ORDER BY schedule_id"
+    ).fetchall()
+    target = next(
+        (
+            row
+            for row in research_schedules
+            if row["schedule_id"] == LEGACY_RESEARCH_LAB_V0_SCHEDULE_ID
+        ),
+        None,
+    )
+    actual_fingerprints = [
+        {"job_id": str(row["job_id"]), "row_sha256": _row_fingerprint(row)} for row in research_jobs
+    ]
+    if (
+        active != 0
+        or len(research_schedules) != 1
+        or target is None
+        or bool(target["enabled"])
+        or _row_fingerprint(target) != expected_target_schedule_sha256
+        or actual_fingerprints != expected_research_job_fingerprints
+    ):
+        raise LegacyResearchLabV0QuarantineRefusal(
+            "persistent research quarantine state no longer matches retained audit evidence"
+        )
+
+
+def _quarantine_audit_outbox_row(
+    connection: sqlite3.Connection,
+) -> sqlite3.Row | None:
+    exists = connection.execute(
+        """SELECT 1 FROM sqlite_master
+               WHERE type = 'table'
+                   AND name = 'legacy_research_lab_v0_quarantine_audit_outbox'"""
+    ).fetchone()
+    if exists is None:
+        return None
+    rows = connection.execute(
+        "SELECT * FROM legacy_research_lab_v0_quarantine_audit_outbox"
+    ).fetchall()
+    if len(rows) > 1:
+        raise LegacyResearchLabV0QuarantineRefusal(
+            "malformed quarantine audit outbox: multiple operation rows"
+        )
+    if not rows:
+        return None
+    row = rows[0]
+    payload = bytes(row["payload"])
+    digest = hashlib.sha256(payload).hexdigest()
+    expected_name = f"{LEGACY_RESEARCH_LAB_V0_AUDIT_PREFIX}{digest}.json"
+    expected_temporary = f".{expected_name}.pending"
+    if (
+        row["operation_key"] != 1
+        or row["audit_sha256"] != digest
+        or row["artifact_name"] != expected_name
+        or row["temporary_name"] != expected_temporary
+    ):
+        raise LegacyResearchLabV0QuarantineRefusal(
+            "malformed quarantine audit outbox: digest or artifact mismatch"
+        )
+    try:
+        decoded = json.loads(payload)
+    except (json.JSONDecodeError, UnicodeDecodeError) as error:
+        raise LegacyResearchLabV0QuarantineRefusal(
+            "malformed quarantine audit outbox payload"
+        ) from error
+    if decoded.get("plan", {}).get("plan_sha256") != row["plan_sha256"]:
+        raise LegacyResearchLabV0QuarantineRefusal(
+            "malformed quarantine audit outbox: plan digest mismatch"
+        )
+    return cast(sqlite3.Row, row)
+
+
+def _quarantine_plan_from_dict(payload: dict[str, Any]) -> LegacyResearchLabV0QuarantinePlan:
+    return LegacyResearchLabV0QuarantinePlan(
+        db_schema_before=int(payload["db_schema_before"]),
+        schedule=payload["schedule"],
+        queued_job_ids=tuple(payload["queued_job_ids"]),
+        queued_count=int(payload["queued_count"]),
+        new_count=int(payload["new_count"]),
+        retry_count=int(payload["retry_count"]),
+        preserved_terminal_counts=dict(payload["preserved_terminal_counts"]),
+        research_job_fingerprints=tuple(payload["research_job_fingerprints"]),
+        research_schedule_fingerprints=tuple(payload["research_schedule_fingerprints"]),
+        terminal_evidence=tuple(payload["terminal_evidence"]),
+        non_target_job_count=int(payload["non_target_job_count"]),
+        non_target_jobs_sha256=str(payload["non_target_jobs_sha256"]),
+        non_target_schedule_count=int(payload["non_target_schedule_count"]),
+        non_target_schedules_sha256=str(payload["non_target_schedules_sha256"]),
+        blockers=tuple(payload["blockers"]),
+        plan_sha256=str(payload["plan_sha256"]),
+    )
 
 
 class JobStore:
@@ -461,6 +1010,677 @@ class JobStore:
             recorded = connection.execute("SELECT version FROM schema_version").fetchone()[0]
             if recorded != SCHEMA_VERSION:
                 raise RuntimeError("jobs schema version mismatch")
+
+    def plan_legacy_research_lab_v0_quarantine(
+        self,
+    ) -> LegacyResearchLabV0QuarantinePlan:
+        """Plan the one supported legacy quarantine without changing database bytes."""
+        with self._connect(write=False) as connection:
+            return _quarantine_plan(connection)
+
+    def apply_legacy_research_lab_v0_quarantine(
+        self,
+        *,
+        expected_plan_sha256: str,
+        expected_job_ids: tuple[str, ...],
+    ) -> LegacyResearchLabV0QuarantineResult:
+        """Atomically disable and cancel the exact reviewed legacy research workload."""
+        if len(expected_plan_sha256) != 64 or any(
+            character not in "0123456789abcdef" for character in expected_plan_sha256
+        ):
+            raise LegacyResearchLabV0QuarantineRefusal(
+                "expected_plan_sha256 must be one lowercase SHA-256 digest"
+            )
+        if expected_job_ids != tuple(sorted(set(expected_job_ids))):
+            raise LegacyResearchLabV0QuarantineRefusal(
+                "expected_job_ids must be unique and sorted exactly as the plan"
+            )
+
+        preliminary = self.plan_legacy_research_lab_v0_quarantine()
+        if preliminary.blockers:
+            raise LegacyResearchLabV0QuarantineRefusal(
+                "quarantine plan has blockers: " + "; ".join(preliminary.blockers)
+            )
+        if preliminary.plan_sha256 != expected_plan_sha256:
+            raise LegacyResearchLabV0QuarantineRefusal(
+                "plan digest changed; refusing stale quarantine apply"
+            )
+        if preliminary.queued_job_ids != expected_job_ids:
+            raise LegacyResearchLabV0QuarantineRefusal(
+                "queued job IDs changed; refusing stale quarantine apply"
+            )
+        if (
+            preliminary.schedule is not None
+            and not preliminary.schedule["enabled"]
+            and not preliminary.queued_job_ids
+        ):
+            outbox = self._read_quarantine_audit_outbox()
+            if outbox is not None:
+                repaired = self.repair_legacy_research_lab_v0_quarantine_audit(
+                    expected_audit_sha256=str(outbox["audit_sha256"]),
+                    expected_plan_sha256=str(outbox["plan_sha256"]),
+                )
+                return LegacyResearchLabV0QuarantineResult(
+                    status="ALREADY_QUARANTINED",
+                    plan=repaired.plan,
+                    cancelled_job_ids=repaired.cancelled_job_ids,
+                    applied_at=repaired.applied_at,
+                    audit_artifact_ref=repaired.audit_artifact_ref,
+                    audit_sha256=repaired.audit_sha256,
+                    audit_publication_state="PUBLISHED",
+                )
+            return LegacyResearchLabV0QuarantineResult(
+                status="ALREADY_QUARANTINED",
+                plan=preliminary,
+                cancelled_job_ids=(),
+                applied_at=None,
+                audit_artifact_ref=None,
+                audit_sha256=None,
+                audit_publication_state="NOT_APPLICABLE",
+            )
+
+        applied_at = utc_now()
+        with self._connect() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            plan = _quarantine_plan(connection)
+            if plan.blockers:
+                connection.rollback()
+                raise LegacyResearchLabV0QuarantineRefusal(
+                    "quarantine plan has blockers: " + "; ".join(plan.blockers)
+                )
+            if plan.plan_sha256 != expected_plan_sha256:
+                connection.rollback()
+                raise LegacyResearchLabV0QuarantineRefusal(
+                    "plan digest changed; refusing stale quarantine apply"
+                )
+            if plan.queued_job_ids != expected_job_ids:
+                connection.rollback()
+                raise LegacyResearchLabV0QuarantineRefusal(
+                    "queued job IDs changed; refusing stale quarantine apply"
+                )
+            if plan.schedule is None:
+                connection.rollback()
+                raise LegacyResearchLabV0QuarantineRefusal("fixed schedule was not found")
+            if not plan.schedule["enabled"] and not plan.queued_job_ids:
+                connection.rollback()
+                raise LegacyResearchLabV0QuarantineRefusal(
+                    "quarantine state changed after planning; re-plan before retrying"
+                )
+
+            job_columns = tuple(
+                row[1] for row in connection.execute("PRAGMA table_info(jobs)").fetchall()
+            )
+            schedule_columns_before = tuple(
+                row[1] for row in connection.execute("PRAGMA table_info(schedules)").fetchall()
+            )
+            jobs_before = {
+                row["job_id"]: tuple(row[column] for column in job_columns)
+                for row in connection.execute("SELECT * FROM jobs").fetchall()
+            }
+            schedules_before = {
+                row["schedule_id"]: tuple(row[column] for column in schedule_columns_before)
+                for row in connection.execute("SELECT * FROM schedules").fetchall()
+            }
+            for migration_index in range(plan.db_schema_before, SCHEMA_VERSION):
+                _apply_migration(
+                    connection,
+                    _MIGRATIONS[migration_index],
+                    migration_index + 1,
+                )
+            _validate_quarantine_audit_outbox_schema(connection, required=True)
+
+            connection.execute(
+                "UPDATE schedules SET enabled = 0 WHERE schedule_id = ?",
+                (LEGACY_RESEARCH_LAB_V0_SCHEDULE_ID,),
+            )
+            if plan.queued_job_ids:
+                placeholders = ",".join("?" for _ in plan.queued_job_ids)
+                cursor = connection.execute(
+                    f"""UPDATE jobs SET state = 'CANCELLED', cancel_requested = 1,
+                               finished_at = ?, lease_owner = NULL, lease_expires_at = NULL,
+                               error = CASE
+                                   WHEN attempt_count > 0 AND error IS NOT NULL AND error != ''
+                                   THEN error || '\n' || ? ELSE ? END
+                           WHERE job_type = 'RESEARCH_LAB_V0' AND state = 'QUEUED'
+                               AND job_id IN ({placeholders})""",
+                    (
+                        _stamp(applied_at),
+                        LEGACY_RESEARCH_LAB_V0_QUARANTINE_REASON,
+                        LEGACY_RESEARCH_LAB_V0_QUARANTINE_REASON,
+                        *plan.queued_job_ids,
+                    ),
+                )
+                if cursor.rowcount != len(plan.queued_job_ids):
+                    connection.rollback()
+                    raise LegacyResearchLabV0QuarantineRefusal(
+                        "cancelled row count did not match the approved plan"
+                    )
+
+            active = connection.execute(
+                """SELECT COUNT(*) FROM jobs WHERE job_type = 'RESEARCH_LAB_V0'
+                       AND state IN ('QUEUED', 'RUNNING')"""
+            ).fetchone()[0]
+            target_enabled = connection.execute(
+                "SELECT enabled FROM schedules WHERE schedule_id = ?",
+                (LEGACY_RESEARCH_LAB_V0_SCHEDULE_ID,),
+            ).fetchone()
+            if active != 0 or target_enabled is None or bool(target_enabled[0]):
+                connection.rollback()
+                raise LegacyResearchLabV0QuarantineRefusal(
+                    "quarantine postconditions were not satisfied"
+                )
+
+            jobs_after_rows = connection.execute("SELECT * FROM jobs ORDER BY job_id").fetchall()
+            jobs_after = {
+                row["job_id"]: tuple(row[column] for column in job_columns)
+                for row in jobs_after_rows
+            }
+            if jobs_before.keys() != jobs_after.keys():
+                connection.rollback()
+                raise LegacyResearchLabV0QuarantineRefusal(
+                    "job identity set changed during quarantine"
+                )
+            cancelled_ids = set(plan.queued_job_ids)
+            for job_id, before in jobs_before.items():
+                if job_id not in cancelled_ids and jobs_after[job_id] != before:
+                    connection.rollback()
+                    raise LegacyResearchLabV0QuarantineRefusal(
+                        f"unapproved job row changed during quarantine: {job_id}"
+                    )
+            for row in jobs_after_rows:
+                if row["job_id"] not in cancelled_ids:
+                    continue
+                before_row = dict(zip(job_columns, jobs_before[row["job_id"]], strict=True))
+                allowed = {
+                    "state",
+                    "cancel_requested",
+                    "finished_at",
+                    "lease_owner",
+                    "lease_expires_at",
+                    "error",
+                }
+                for column in job_columns:
+                    if column not in allowed and row[column] != before_row[column]:
+                        connection.rollback()
+                        raise LegacyResearchLabV0QuarantineRefusal(
+                            f"quarantine changed protected job field {column}"
+                        )
+                if (
+                    row["state"] != JobState.CANCELLED
+                    or not bool(row["cancel_requested"])
+                    or row["finished_at"] != _stamp(applied_at)
+                    or row["lease_owner"] is not None
+                    or row["lease_expires_at"] is not None
+                ):
+                    connection.rollback()
+                    raise LegacyResearchLabV0QuarantineRefusal(
+                        f"cancelled job postcondition failed: {row['job_id']}"
+                    )
+                old_error = before_row["error"]
+                expected_error = (
+                    f"{old_error}\n{LEGACY_RESEARCH_LAB_V0_QUARANTINE_REASON}"
+                    if int(before_row["attempt_count"]) > 0 and old_error
+                    else LEGACY_RESEARCH_LAB_V0_QUARANTINE_REASON
+                )
+                if row["error"] != expected_error:
+                    connection.rollback()
+                    raise LegacyResearchLabV0QuarantineRefusal(
+                        f"cancelled job reason postcondition failed: {row['job_id']}"
+                    )
+
+            schedule_columns_after = tuple(
+                row[1] for row in connection.execute("PRAGMA table_info(schedules)").fetchall()
+            )
+            schedules_after_rows = connection.execute(
+                "SELECT * FROM schedules ORDER BY schedule_id"
+            ).fetchall()
+            schedules_after = {row["schedule_id"]: dict(row) for row in schedules_after_rows}
+            if schedules_before.keys() != schedules_after.keys():
+                connection.rollback()
+                raise LegacyResearchLabV0QuarantineRefusal(
+                    "schedule identity set changed during quarantine"
+                )
+            for schedule_id, before_values in schedules_before.items():
+                before_schedule = dict(zip(schedule_columns_before, before_values, strict=True))
+                after = schedules_after[schedule_id]
+                for column in schedule_columns_before:
+                    if schedule_id == LEGACY_RESEARCH_LAB_V0_SCHEDULE_ID and column == "enabled":
+                        continue
+                    if after[column] != before_schedule[column]:
+                        connection.rollback()
+                        raise LegacyResearchLabV0QuarantineRefusal(
+                            f"unapproved schedule field changed: {schedule_id}.{column}"
+                        )
+                if schedule_id != LEGACY_RESEARCH_LAB_V0_SCHEDULE_ID:
+                    expected_enabled = before_schedule.get("enabled", 1)
+                    if after["enabled"] != expected_enabled:
+                        connection.rollback()
+                        raise LegacyResearchLabV0QuarantineRefusal(
+                            f"unapproved schedule changed during quarantine: {schedule_id}"
+                        )
+            if "enabled" not in schedule_columns_after:
+                connection.rollback()
+                raise LegacyResearchLabV0QuarantineRefusal("v3 migration postcondition failed")
+            post_jobs_sha256 = _rows_digest(jobs_after_rows)
+            post_schedules_sha256 = _rows_digest(schedules_after_rows)
+            post_research_job_fingerprints = [
+                {"job_id": str(row["job_id"]), "row_sha256": _row_fingerprint(row)}
+                for row in jobs_after_rows
+                if row["job_type"] == JobType.RESEARCH_LAB_V0
+            ]
+            post_target_schedule = next(
+                row
+                for row in schedules_after_rows
+                if row["schedule_id"] == LEGACY_RESEARCH_LAB_V0_SCHEDULE_ID
+            )
+            audit_body: dict[str, Any] = {
+                "schema_version": 2,
+                "operation": "LEGACY_RESEARCH_LAB_V0_QUARANTINE",
+                "status": "APPLIED",
+                "database_ref": str(self.path.relative_to(self.root)),
+                "applied_at": _stamp(applied_at),
+                "db_schema_after": SCHEMA_VERSION,
+                "plan": plan.as_dict(),
+                "cancelled_job_ids": list(plan.queued_job_ids),
+                "post_quarantine_jobs_sha256": post_jobs_sha256,
+                "post_quarantine_schedules_sha256": post_schedules_sha256,
+                "post_quarantine_research_job_fingerprints": (post_research_job_fingerprints),
+                "post_quarantine_target_schedule_sha256": _row_fingerprint(post_target_schedule),
+            }
+            audit_payload = _canonical_json(audit_body) + b"\n"
+            audit_sha256 = hashlib.sha256(audit_payload).hexdigest()
+            artifact_name = f"{LEGACY_RESEARCH_LAB_V0_AUDIT_PREFIX}{audit_sha256}.json"
+            temporary_name = f".{artifact_name}.pending"
+            if _quarantine_audit_outbox_row(connection) is not None:
+                connection.rollback()
+                raise LegacyResearchLabV0QuarantineRefusal(
+                    "quarantine audit outbox already exists before first apply"
+                )
+            connection.execute(
+                """INSERT INTO legacy_research_lab_v0_quarantine_audit_outbox (
+                       operation_key, audit_sha256, plan_sha256, artifact_name,
+                       temporary_name, payload, applied_at, published_at
+                   ) VALUES (1, ?, ?, ?, ?, ?, ?, NULL)""",
+                (
+                    audit_sha256,
+                    plan.plan_sha256,
+                    artifact_name,
+                    temporary_name,
+                    audit_payload,
+                    _stamp(applied_at),
+                ),
+            )
+            retained = _quarantine_audit_outbox_row(connection)
+            if retained is None or bytes(retained["payload"]) != audit_payload:
+                connection.rollback()
+                raise LegacyResearchLabV0QuarantineRefusal(
+                    "quarantine audit outbox retention postcondition failed"
+                )
+            _assert_apply_time_quarantine_state(
+                connection,
+                expected_jobs_sha256=post_jobs_sha256,
+                expected_schedules_sha256=post_schedules_sha256,
+            )
+            connection.commit()
+
+        pending_result = LegacyResearchLabV0QuarantineResult(
+            status="APPLIED",
+            plan=plan,
+            cancelled_job_ids=plan.queued_job_ids,
+            applied_at=applied_at,
+            audit_artifact_ref=f"artifacts/jobs/quarantine/{artifact_name}",
+            audit_sha256=audit_sha256,
+            audit_publication_state="PENDING",
+        )
+        try:
+            published = self.repair_legacy_research_lab_v0_quarantine_audit(
+                expected_audit_sha256=audit_sha256,
+                expected_plan_sha256=plan.plan_sha256,
+            )
+        except Exception as error:
+            raise LegacyResearchLabV0AuditPublicationError(
+                "database commit succeeded and retained the quarantine audit outbox, but "
+                "artifact publication failed; run the fixed repair-audit command",
+                result=pending_result,
+                audit_payload=audit_payload,
+                audit_artifact_ref=pending_result.audit_artifact_ref or "",
+            ) from error
+        return LegacyResearchLabV0QuarantineResult(
+            status="APPLIED",
+            plan=published.plan,
+            cancelled_job_ids=published.cancelled_job_ids,
+            applied_at=published.applied_at,
+            audit_artifact_ref=published.audit_artifact_ref,
+            audit_sha256=published.audit_sha256,
+            audit_publication_state="PUBLISHED",
+        )
+
+    def _read_quarantine_audit_outbox(self) -> dict[str, Any] | None:
+        with self._connect(write=False) as connection:
+            user_version = int(connection.execute("PRAGMA user_version").fetchone()[0])
+            recorded = int(connection.execute("SELECT version FROM schema_version").fetchone()[0])
+            if user_version != recorded or user_version not in {2, 3, 4}:
+                raise LegacyResearchLabV0QuarantineRefusal(
+                    "jobs schema version is not valid for quarantine audit repair"
+                )
+            _validate_quarantine_audit_outbox_schema(connection, required=user_version == 4)
+            row = _quarantine_audit_outbox_row(connection)
+            if row is None:
+                return None
+            result = dict(row)
+            result["payload"] = bytes(result["payload"])
+            return result
+
+    def repair_legacy_research_lab_v0_quarantine_audit(
+        self,
+        *,
+        expected_audit_sha256: str,
+        expected_plan_sha256: str,
+    ) -> LegacyResearchLabV0QuarantineResult:
+        """Publish one exact durable outbox row and mark it published."""
+        for label, digest in (
+            ("expected_audit_sha256", expected_audit_sha256),
+            ("expected_plan_sha256", expected_plan_sha256),
+        ):
+            if len(digest) != 64 or any(
+                character not in "0123456789abcdef" for character in digest
+            ):
+                raise LegacyResearchLabV0QuarantineRefusal(
+                    f"{label} must be one lowercase SHA-256 digest"
+                )
+        outbox = self._read_quarantine_audit_outbox()
+        if outbox is None:
+            raise LegacyResearchLabV0QuarantineRefusal("no durable quarantine audit outbox exists")
+        if outbox["audit_sha256"] != expected_audit_sha256:
+            raise LegacyResearchLabV0QuarantineRefusal(
+                "audit digest changed; refusing stale audit repair"
+            )
+        if outbox["plan_sha256"] != expected_plan_sha256:
+            raise LegacyResearchLabV0QuarantineRefusal(
+                "audit plan digest changed; refusing stale audit repair"
+            )
+        payload = bytes(outbox["payload"])
+        decoded = json.loads(payload)
+        plan = _quarantine_plan_from_dict(decoded["plan"])
+        artifact_name = str(outbox["artifact_name"])
+        temporary_name = str(outbox["temporary_name"])
+        self._publish_legacy_quarantine_audit(artifact_name, temporary_name, payload)
+        was_pending = outbox["published_at"] is None
+        expected_research_fingerprints = list(decoded["post_quarantine_research_job_fingerprints"])
+        expected_target_schedule_sha256 = str(decoded["post_quarantine_target_schedule_sha256"])
+        if was_pending:
+            with self._connect() as connection:
+                connection.execute("BEGIN IMMEDIATE")
+                _assert_persistent_quarantine_state(
+                    connection,
+                    expected_research_job_fingerprints=expected_research_fingerprints,
+                    expected_target_schedule_sha256=expected_target_schedule_sha256,
+                )
+                current_jobs_sha256 = _rows_digest(
+                    connection.execute("SELECT * FROM jobs ORDER BY job_id").fetchall()
+                )
+                current_schedules_sha256 = _rows_digest(
+                    connection.execute("SELECT * FROM schedules ORDER BY schedule_id").fetchall()
+                )
+                retained = _quarantine_audit_outbox_row(connection)
+                if (
+                    retained is None
+                    or retained["audit_sha256"] != expected_audit_sha256
+                    or retained["plan_sha256"] != expected_plan_sha256
+                    or bytes(retained["payload"]) != payload
+                ):
+                    connection.rollback()
+                    raise LegacyResearchLabV0QuarantineRefusal(
+                        "audit outbox changed before publication acknowledgement"
+                    )
+                connection.execute(
+                    """UPDATE legacy_research_lab_v0_quarantine_audit_outbox
+                           SET published_at = COALESCE(published_at, ?)
+                           WHERE operation_key = 1""",
+                    (_stamp(utc_now()),),
+                )
+                current_jobs_after_sha256 = _rows_digest(
+                    connection.execute("SELECT * FROM jobs ORDER BY job_id").fetchall()
+                )
+                current_schedules_after_sha256 = _rows_digest(
+                    connection.execute("SELECT * FROM schedules ORDER BY schedule_id").fetchall()
+                )
+                if (
+                    current_jobs_after_sha256 != current_jobs_sha256
+                    or current_schedules_after_sha256 != current_schedules_sha256
+                ):
+                    connection.rollback()
+                    raise LegacyResearchLabV0QuarantineRefusal(
+                        "publication acknowledgement caused an operational table mutation"
+                    )
+                _assert_persistent_quarantine_state(
+                    connection,
+                    expected_research_job_fingerprints=expected_research_fingerprints,
+                    expected_target_schedule_sha256=expected_target_schedule_sha256,
+                )
+                acknowledged = _quarantine_audit_outbox_row(connection)
+                if (
+                    acknowledged is None
+                    or bytes(acknowledged["payload"]) != payload
+                    or acknowledged["published_at"] is None
+                ):
+                    connection.rollback()
+                    raise LegacyResearchLabV0QuarantineRefusal(
+                        "audit publication acknowledgement postcondition failed"
+                    )
+                connection.commit()
+        with self._connect(write=False) as connection:
+            _assert_persistent_quarantine_state(
+                connection,
+                expected_research_job_fingerprints=expected_research_fingerprints,
+                expected_target_schedule_sha256=expected_target_schedule_sha256,
+            )
+        return LegacyResearchLabV0QuarantineResult(
+            status="AUDIT_REPAIRED" if was_pending else "AUDIT_VERIFIED",
+            plan=plan,
+            cancelled_job_ids=tuple(decoded["cancelled_job_ids"]),
+            applied_at=datetime.fromisoformat(str(outbox["applied_at"])),
+            audit_artifact_ref=f"artifacts/jobs/quarantine/{artifact_name}",
+            audit_sha256=expected_audit_sha256,
+            audit_publication_state="PUBLISHED",
+        )
+
+    def _open_quarantine_audit_chain(self) -> tuple[tuple[int, ...], tuple[str, ...]]:
+        descriptors = [os.dup(self._root_fd)]
+        names = ("artifacts", "jobs", "quarantine")
+        try:
+            for name in names:
+                descriptors.append(_open_directory(descriptors[-1], name, create=True))
+            self._verify_quarantine_audit_chain(tuple(descriptors), names)
+            return tuple(descriptors), names
+        except BaseException:
+            for descriptor in reversed(descriptors):
+                os.close(descriptor)
+            raise
+
+    def _verify_quarantine_audit_chain(
+        self, descriptors: tuple[int, ...], names: tuple[str, ...]
+    ) -> None:
+        root_opened = os.fstat(descriptors[0])
+        root_linked = os.stat(self.root, follow_symlinks=False)
+        if not stat.S_ISDIR(root_linked.st_mode) or (
+            root_opened.st_dev,
+            root_opened.st_ino,
+        ) != (root_linked.st_dev, root_linked.st_ino):
+            raise RuntimeError("repository root identity changed during audit publication")
+        for parent_fd, child_fd, name in zip(descriptors[:-1], descriptors[1:], names, strict=True):
+            opened = os.fstat(child_fd)
+            linked = os.stat(name, dir_fd=parent_fd, follow_symlinks=False)
+            if not stat.S_ISDIR(linked.st_mode) or (opened.st_dev, opened.st_ino) != (
+                linked.st_dev,
+                linked.st_ino,
+            ):
+                raise RuntimeError(f"audit directory identity changed during publication: {name}")
+
+    @staticmethod
+    def _verify_existing_quarantine_audit(
+        directory_fd: int,
+        name: str,
+        payload: bytes,
+        *,
+        expected_nlink: int,
+    ) -> os.stat_result:
+        linked = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
+        if not stat.S_ISREG(linked.st_mode) or linked.st_nlink != expected_nlink:
+            raise RuntimeError("existing quarantine audit is a symlink or hardlink")
+        if linked.st_size != len(payload):
+            raise RuntimeError("quarantine audit content-address collision")
+        descriptor = os.open(
+            name,
+            os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW,
+            dir_fd=directory_fd,
+        )
+        try:
+            opened = os.fstat(descriptor)
+            if (opened.st_dev, opened.st_ino) != (linked.st_dev, linked.st_ino):
+                raise RuntimeError("quarantine audit identity changed while opening")
+            chunks: list[bytes] = []
+            while chunk := os.read(descriptor, 1024 * 1024):
+                chunks.append(chunk)
+            if b"".join(chunks) != payload:
+                raise RuntimeError("quarantine audit content-address collision")
+            linked_after = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
+            if (linked_after.st_dev, linked_after.st_ino, linked_after.st_nlink) != (
+                opened.st_dev,
+                opened.st_ino,
+                expected_nlink,
+            ):
+                raise RuntimeError("quarantine audit identity changed while reading")
+        finally:
+            os.close(descriptor)
+        return linked
+
+    def _recover_quarantine_audit_link_state(
+        self,
+        directory_fd: int,
+        artifact_name: str,
+        temporary_name: str,
+        payload: bytes,
+    ) -> bool:
+        try:
+            os.stat(artifact_name, dir_fd=directory_fd, follow_symlinks=False)
+            final_exists = True
+        except FileNotFoundError:
+            final_exists = False
+        try:
+            os.stat(temporary_name, dir_fd=directory_fd, follow_symlinks=False)
+            temporary_exists = True
+        except FileNotFoundError:
+            temporary_exists = False
+        if final_exists and temporary_exists:
+            final = self._verify_existing_quarantine_audit(
+                directory_fd, artifact_name, payload, expected_nlink=2
+            )
+            temporary = self._verify_existing_quarantine_audit(
+                directory_fd, temporary_name, payload, expected_nlink=2
+            )
+            if (final.st_dev, final.st_ino) != (temporary.st_dev, temporary.st_ino):
+                raise RuntimeError("quarantine audit final and retained temp identities differ")
+            os.unlink(temporary_name, dir_fd=directory_fd)
+            os.fsync(directory_fd)
+            self._verify_existing_quarantine_audit(
+                directory_fd, artifact_name, payload, expected_nlink=1
+            )
+            return True
+        if final_exists:
+            self._verify_existing_quarantine_audit(
+                directory_fd, artifact_name, payload, expected_nlink=1
+            )
+            return True
+        if temporary_exists:
+            self._verify_existing_quarantine_audit(
+                directory_fd, temporary_name, payload, expected_nlink=1
+            )
+        return False
+
+    def _publish_legacy_quarantine_audit(
+        self, artifact_name: str, temporary_name: str, payload: bytes
+    ) -> None:
+        digest = hashlib.sha256(payload).hexdigest()
+        if artifact_name != f"{LEGACY_RESEARCH_LAB_V0_AUDIT_PREFIX}{digest}.json":
+            raise ValueError("quarantine audit name is not canonical")
+        if temporary_name != f".{artifact_name}.pending":
+            raise ValueError("quarantine audit temporary name is not canonical")
+        descriptors, names = self._open_quarantine_audit_chain()
+        directory_fd = descriptors[-1]
+        created_temporary = False
+        created_inode: tuple[int, int] | None = None
+        linked_by_call = False
+        try:
+            self._verify_quarantine_audit_chain(descriptors, names)
+            if self._recover_quarantine_audit_link_state(
+                directory_fd, artifact_name, temporary_name, payload
+            ):
+                self._verify_quarantine_audit_chain(descriptors, names)
+                return
+            try:
+                os.stat(temporary_name, dir_fd=directory_fd, follow_symlinks=False)
+            except FileNotFoundError:
+                descriptor = os.open(
+                    temporary_name,
+                    os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                    0o600,
+                    dir_fd=directory_fd,
+                )
+                created_temporary = True
+                try:
+                    view = memoryview(payload)
+                    while view:
+                        written = os.write(descriptor, view)
+                        if written <= 0:
+                            raise RuntimeError("quarantine audit write made no progress")
+                        view = view[written:]
+                    os.fsync(descriptor)
+                    temporary_stat = os.fstat(descriptor)
+                    if not stat.S_ISREG(temporary_stat.st_mode) or temporary_stat.st_nlink != 1:
+                        raise RuntimeError("quarantine audit temporary file is unsafe")
+                    created_inode = (temporary_stat.st_dev, temporary_stat.st_ino)
+                finally:
+                    os.close(descriptor)
+                os.fsync(directory_fd)
+            self._verify_quarantine_audit_chain(descriptors, names)
+            os.link(
+                temporary_name,
+                artifact_name,
+                src_dir_fd=directory_fd,
+                dst_dir_fd=directory_fd,
+                follow_symlinks=False,
+            )
+            linked_by_call = True
+            if not self._recover_quarantine_audit_link_state(
+                directory_fd, artifact_name, temporary_name, payload
+            ):
+                raise RuntimeError("quarantine audit link-window recovery failed")
+            self._verify_quarantine_audit_chain(descriptors, names)
+        except BaseException:
+            if created_temporary:
+                try:
+                    linked = os.stat(temporary_name, dir_fd=directory_fd, follow_symlinks=False)
+                    if linked.st_nlink == 1:
+                        os.unlink(temporary_name, dir_fd=directory_fd)
+                except FileNotFoundError:
+                    pass
+            if linked_by_call and created_inode is not None:
+                try:
+                    linked = os.stat(artifact_name, dir_fd=directory_fd, follow_symlinks=False)
+                    if (
+                        linked.st_dev,
+                        linked.st_ino,
+                        linked.st_nlink,
+                    ) == (*created_inode, 1):
+                        os.unlink(artifact_name, dir_fd=directory_fd)
+                except FileNotFoundError:
+                    pass
+            os.fsync(directory_fd)
+            raise
+        finally:
+            for descriptor in reversed(descriptors):
+                os.close(descriptor)
 
     def enqueue(
         self,

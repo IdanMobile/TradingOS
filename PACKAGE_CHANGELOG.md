@@ -1,5 +1,54 @@
 # Package Changelog
 
+## v8.125 — 2026-07-22 — Fixed-purpose legacy research-jobs quarantine capability
+
+- `src/tios/services/jobs/store.py`: added a byte-read-only, content-hashed plan and an atomic
+  apply API for quarantining only the reviewed
+  `s2-production-offline-research-lab-v0-every-6h-v1` schedule and its exact queued
+  `RESEARCH_LAB_V0` job IDs. The operation validates v2/v3 schema agreement and fixed schedule
+  metadata, refuses drift, extra research schedules, running jobs, or stale plan/ID approvals,
+  migrates v2 and disables the schedule in one transaction, preserves terminal evidence and
+  unrelated work, and migrates the jobs database to schema v4, whose numbered migration creates
+  the exact durable single-row audit-outbox schema. The exact canonical audit bytes and a
+  digest-derived temporary filename are stored in that outbox in the same transaction. Normal
+  initialization upgrades v2/v3 to v4 transactionally; the read-only projection continues to
+  support the explicit reviewed set v2/v3/v4. The plan SHA binds SQLite-type-tagged full-row
+  fingerprints for every research
+  job and schedule, explicit terminal evidence, and full aggregate digests for all non-target
+  jobs and schedules, so same-ID or non-target material changes invalidate stale approval. Audit
+  publication uses descriptor-anchored, no-symlink directory traversal, a unique fsynced temporary
+  file, atomic no-replace publication, inode/link/content verification, and directory fsync. A
+  post-commit crash leaves the outbox repairable after restart. Repair recovers both deterministic
+  link windows (exact temp before link, or exact final+temp hardlinks before temp unlink) while
+  refusing corrupted or mismatched orphans. Publication acknowledgement is retained in the
+  database, and `ALREADY_QUARANTINED` verifies or repairs pending publication instead of masking
+  it. Existing v4 databases are accepted only when their complete persistent `sqlite_master`
+  object signature matches the numbered migrations (including expected autoindexes and the exact
+  jobs-identity trigger); unexpected triggers, views, indexes, or modified definitions fail
+  closed. The durable audit retains historical post-quarantine full-table digests as apply
+  evidence and checks them immediately after outbox insertion. It separately retains immutable
+  post-quarantine research-job fingerprints and the disabled target-schedule fingerprint for
+  restart repair and later verification. Publication acknowledgement compares the current full
+  jobs/schedules digests immediately before and after its local update, catching trigger side
+  effects without incorrectly freezing unrelated jobs or schedules that legitimately evolve
+  between apply and repair.
+- `scripts/quarantine_legacy_research_lab_v0.py` (new): fixed `plan`/`apply` operator interface;
+  plus a fixed `repair-audit` action requiring the exact audit and plan digests. It intentionally
+  exposes no database path, job type, schedule, payload, SQL, command, or artifact-path selector.
+  This release adds the capability only; it does **not** apply it to the live jobs database.
+- `tests/test_legacy_jobs_quarantine.py` (new): temp-database coverage for v2/v3, migration
+  rollback, read-only planning, exact fresh/retry cancellation, evidence preservation, refusal
+  cases, full-state plan invalidation, races, idempotency, durable crash/restart audit repair,
+  partial-file collisions, deterministic pre-link and post-link crash recovery, corrupted orphan
+  collisions, parent swaps/symlinks, final symlinks/hardlinks, SQLite TEXT/BLOB distinction, and
+  malicious outbox INSERT/UPDATE triggers plus unexpected views/indexes, and the constrained CLI
+  surface. Liveness regressions verify that pending/published audits tolerate legitimate
+  non-research job and schedule evolution while quarantined research or target-schedule mutations
+  still refuse repair. `tests/test_jobs.py` also verifies migration/concurrent-init v4;
+  `src/tios/services/jobs/projection.py` preserves explicit v2/v3/v4 read-only compatibility.
+- None of the five implementation/test paths is listed in `PACKAGE_INTEGRITY_MANIFEST.md`, so no
+  manifest row was changed.
+
 ## v8.124 — 2026-07-21 — New-family pre-registration go/no-go resolved NO-GO (D-114)
 
 - `DECISION_LOG.md`: D-114 records the delegated pre-registration go/no-go for
