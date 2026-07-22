@@ -28,6 +28,7 @@ import argparse
 import fcntl
 import json
 import os
+import re
 import sys
 import time
 import urllib.parse
@@ -76,6 +77,7 @@ SYMBOL = "ETHUSDT"
 BUY_QUOTE_USDT = Decimal("25")
 SELL_MAX_NOTIONAL = Decimal("120")  # independent sell cap (stage-1 review item)
 FALLBACK_QTY_STEP = Decimal("0.00001")
+_ORDER_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,199}$")
 
 # Tail insurance, not an active constraint. Operator approved BOTH a local disaster-stop and a
 # venue-resting stop for the demo lane on 2026-07-21 (D-104 demo-lane scope; no new authority).
@@ -488,23 +490,126 @@ def stop_order_status(
         rt._now(),
     )
     rows = response.get("result", {}).get("list", [])
-    return rows[0] if rows else {}
+    return next(
+        (row for row in rows if isinstance(row, dict) and str(row.get("orderId", "")) == order_id),
+        {},
+    )
 
 
 def _confirmed_stop_state(order_id: str, api_key: str, secret: str, transport: pf.Transport) -> str:
     """Return active/cleared/unknown; empty realtime responses are never assumed cancelled."""
+    return _confirmed_stop_snapshot(order_id, api_key, secret, transport)[0]
+
+
+def _confirmed_stop_snapshot(
+    order_id: str,
+    api_key: str,
+    secret: str,
+    transport: pf.Transport,
+    *,
+    expected_trigger: Any = None,
+    expected_qty: Any = None,
+) -> tuple[str, dict[str, Any]]:
+    """Return normalized state plus the exact venue row used for that conclusion."""
     try:
-        status = str(stop_order_status(order_id, api_key, secret, transport).get("orderStatus", ""))
+        row = stop_order_status(order_id, api_key, secret, transport)
+        if str(row.get("orderId", "")) != order_id:
+            return "unknown", row
+        status = str(row.get("orderStatus", ""))
     except Exception as error:  # noqa: BLE001 - uncertainty must be represented, not guessed
         print(f"venue stop status unavailable for {order_id}: {error}", file=sys.stderr)
-        return "unknown"
+        return "unknown", {}
     if status in _ACTIVE_STOP_STATUSES:
-        return "active"
+        if _protective_venue_row_identity(
+            row,
+            order_id,
+            expected_trigger=expected_trigger,
+            expected_qty=expected_qty,
+        ):
+            return "active", row
+        return "unknown", row
     if status == "Filled":
-        return "filled"
+        return "filled", row
     if status in _CLEARED_STOP_STATUSES:
-        return "cleared"
-    return "unknown"
+        return "cleared", row
+    return "unknown", row
+
+
+def _protective_venue_row_identity(
+    row: dict[str, Any],
+    requested_order_id: str | None,
+    *,
+    expected_trigger: Any = None,
+    expected_qty: Any = None,
+) -> bool:
+    """Strict identity for a venue row that may support an ACTIVE protection claim."""
+    trigger_direction = row.get("triggerDirection")
+    if (
+        (requested_order_id is not None and str(row.get("orderId", "")) != requested_order_id)
+        or row.get("symbol") != SYMBOL
+        or row.get("side") != "Sell"
+        or row.get("orderType") != "Market"
+        or row.get("orderFilter") != "StopOrder"
+        or not isinstance(trigger_direction, int)
+        or isinstance(trigger_direction, bool)
+        or trigger_direction != 2
+        or ("marketUnit" in row and row.get("marketUnit") != "baseCoin")
+    ):
+        return False
+    try:
+        venue_trigger = Decimal(str(row["triggerPrice"]))
+        venue_qty = Decimal(str(row["qty"]))
+        bound_trigger = Decimal(str(expected_trigger)) if expected_trigger is not None else None
+        bound_qty = Decimal(str(expected_qty)) if expected_qty is not None else None
+    except (KeyError, ArithmeticError, ValueError):
+        return False
+    if not all(value.is_finite() and value > 0 for value in (venue_trigger, venue_qty)):
+        return False
+    return (bound_trigger is None or venue_trigger == bound_trigger) and (
+        bound_qty is None or venue_qty == bound_qty
+    )
+
+
+def _strict_positive_decimal(value: Any) -> Decimal | None:
+    """Parse bound venue evidence without accepting bools, NaN, infinity, or zero."""
+    if isinstance(value, bool):
+        return None
+    try:
+        parsed = Decimal(str(value))
+    except (ArithmeticError, ValueError):
+        return None
+    return parsed if parsed.is_finite() and parsed > 0 else None
+
+
+def _canonical_order_id(value: Any) -> str | None:
+    if not isinstance(value, str) or not value or value != value.strip():
+        return None
+    return value if _ORDER_ID.fullmatch(value) else None
+
+
+def _ambiguous_expected_records(
+    resting: dict[str, Any],
+) -> dict[str, tuple[Decimal, Decimal]] | None:
+    raw_ids = resting.get("order_ids")
+    records = resting.get("order_records")
+    if not isinstance(raw_ids, list) or not raw_ids or not isinstance(records, dict):
+        return None
+    if any(_canonical_order_id(value) is None for value in raw_ids):
+        return None
+    order_ids = [str(value) for value in raw_ids]
+    if len(set(order_ids)) != len(order_ids):
+        return None
+    expected: dict[str, tuple[Decimal, Decimal]] = {}
+    for order_id in order_ids:
+        record = records.get(order_id)
+        if not isinstance(record, dict):
+            return None
+        trigger = _strict_positive_decimal(record.get("trigger_price"))
+        qty = _strict_positive_decimal(record.get("base_qty"))
+        if trigger is None or qty is None:
+            return None
+        expected[order_id] = (trigger, qty)
+    return expected
 
 
 def _active_stop_record(
@@ -513,6 +618,8 @@ def _active_stop_record(
     risk_boundary: Decimal,
     base_qty: Decimal,
     position_base_qty: Decimal,
+    risk_fraction: Decimal,
+    price_tick: Decimal,
 ) -> dict[str, Any]:
     return {
         "state": "ACTIVE",
@@ -521,6 +628,10 @@ def _active_stop_record(
         "risk_boundary_price": str(risk_boundary),
         "base_qty": str(base_qty),
         "position_base_qty": str(position_base_qty),
+        # Bind projection/audit semantics to the exact policy and venue metadata used
+        # for this order. Consumers must never infer either value from current defaults.
+        "risk_fraction": str(risk_fraction),
+        "price_tick": str(price_tick),
     }
 
 
@@ -544,44 +655,120 @@ def preflight_tracked_stop(
     api_key: str,
     secret: str,
     transport: pf.Transport,
-) -> tuple[dict[str, Any] | None, bool]:
-    """Resolve tracked stop status and report whether any order-producing path is safe."""
+) -> tuple[dict[str, Any] | None, bool, dict[str, Any] | None]:
+    """Resolve status, POST safety, and a non-ambiguous active venue confirmation row."""
+    if resting is None:
+        return None, True, None
+    if not isinstance(resting, dict):
+        return None, False, None
     if not resting:
-        return None, True
+        return resting, False, None
     state = resting.get("state")
     if state in {"BLOCKED_UNKNOWN_ORDER_ID", "FILLED_PENDING_RECONCILIATION"}:
-        return resting, False
+        return resting, False, None
     if state == "AMBIGUOUS":
-        order_ids = [str(value) for value in resting.get("order_ids", []) if value]
-    elif state in {None, "ACTIVE"} and resting.get("order_id"):
-        order_ids = [str(resting["order_id"])]
+        expected_by_order = _ambiguous_expected_records(resting)
+        if expected_by_order is None:
+            return resting, False, None
+    elif state in {None, "ACTIVE"}:
+        order_id = _canonical_order_id(resting.get("order_id"))
+        if order_id is None:
+            return resting, False, None
+        expected_trigger = _strict_positive_decimal(resting.get("trigger_price"))
+        expected_qty = _strict_positive_decimal(resting.get("base_qty"))
+        if expected_trigger is None or expected_qty is None:
+            return resting, False, None
+        expected_by_order = {order_id: (expected_trigger, expected_qty)}
     else:
-        return resting, True
-    states = {
-        order_id: _confirmed_stop_state(order_id, api_key, secret, transport)
-        for order_id in order_ids
-    }
+        return resting, False, None
+
+    snapshots: dict[str, tuple[str, dict[str, Any]]] = {}
+    for order_id, (expected_trigger, expected_qty) in expected_by_order.items():
+        snapshots[order_id] = _confirmed_stop_snapshot(
+            order_id,
+            api_key,
+            secret,
+            transport,
+            expected_trigger=expected_trigger,
+            expected_qty=expected_qty,
+        )
+    states = {order_id: snapshot[0] for order_id, snapshot in snapshots.items()}
     filled = [order_id for order_id, status in states.items() if status == "filled"]
     if filled:
-        return _filled_stop_record(resting, filled[0]), False
+        return _filled_stop_record(resting, filled[0]), False, None
     active = [order_id for order_id, status in states.items() if status == "active"]
     unknown = [order_id for order_id, status in states.items() if status == "unknown"]
     if state != "AMBIGUOUS":
         if active:
-            return resting, True
+            return resting, True, snapshots[active[0]][1]
         if unknown:
-            return resting, False
-        return None, True
+            return resting, False, None
+        return None, True, None
     if len(active) == 1 and not unknown:
         resolved = dict(resting.get("order_records", {}).get(active[0], resting))
         resolved.pop("order_ids", None)
         resolved.pop("order_records", None)
         resolved.pop("ambiguity_reason", None)
         resolved.update({"state": "ACTIVE", "order_id": active[0]})
-        return resolved, True
+        return resolved, True, None
     if not active and not unknown:
-        return None, True
-    return resting, False
+        return None, True, None
+    return resting, False, None
+
+
+def _backfill_confirmed_stop_metadata(
+    resting: dict[str, Any] | None,
+    venue_confirmation: dict[str, Any] | None,
+    lane_base: Decimal,
+    entry: Decimal,
+    price_tick: Decimal,
+    qty_step: Decimal,
+) -> dict[str, Any] | None:
+    """Enrich a legacy record only when the venue row confirms this exact active stop."""
+    if not resting or (
+        resting.get("risk_fraction") is not None and resting.get("price_tick") is not None
+    ):
+        return resting
+    if resting.get("state") not in {None, "ACTIVE"} or not venue_confirmation:
+        return resting
+    order_id = str(resting.get("order_id", "")).strip()
+    if (
+        not order_id
+        or str(venue_confirmation.get("orderStatus", "")) not in _ACTIVE_STOP_STATUSES
+        or not _protective_venue_row_identity(
+            venue_confirmation,
+            order_id,
+            expected_trigger=resting.get("trigger_price"),
+            expected_qty=resting.get("base_qty"),
+        )
+    ):
+        return resting
+    try:
+        boundary = disaster_stop_price(entry)
+        expected_trigger = quantize_price_up(boundary, price_tick)
+        expected_qty = quantize_stop_qty_down(lane_base, qty_step)
+        venue_trigger = Decimal(str(venue_confirmation["triggerPrice"]))
+        venue_qty = Decimal(str(venue_confirmation["qty"]))
+        retained_trigger = Decimal(str(resting["trigger_price"]))
+        retained_qty = Decimal(str(resting["base_qty"]))
+    except (KeyError, ArithmeticError, ValueError):
+        return resting
+    if not all(value.is_finite() and value > 0 for value in (venue_trigger, venue_qty)):
+        return resting
+    if (
+        venue_trigger != expected_trigger
+        or retained_trigger != expected_trigger
+        or venue_qty != expected_qty
+        or retained_qty != expected_qty
+    ):
+        return resting
+    return {
+        **resting,
+        "risk_boundary_price": str(boundary),
+        "position_base_qty": str(lane_base),
+        "risk_fraction": str(DEMO_DISASTER_STOP_PCT),
+        "price_tick": str(price_tick),
+    }
 
 
 def _ambiguous_stop_record(
@@ -610,12 +797,21 @@ def _ambiguous_stop_record(
 def _reconcile_ambiguous_stop(
     resting: dict[str, Any], api_key: str, secret: str, transport: pf.Transport
 ) -> dict[str, Any] | None:
-    ids = [str(value) for value in resting.get("order_ids", []) if value]
-    if not ids:
+    expected_by_order = _ambiguous_expected_records(resting)
+    if expected_by_order is None:
         return resting
-    states = {
-        order_id: _confirmed_stop_state(order_id, api_key, secret, transport) for order_id in ids
+    snapshots = {
+        order_id: _confirmed_stop_snapshot(
+            order_id,
+            api_key,
+            secret,
+            transport,
+            expected_trigger=trigger,
+            expected_qty=qty,
+        )
+        for order_id, (trigger, qty) in expected_by_order.items()
     }
+    states = {order_id: snapshot[0] for order_id, snapshot in snapshots.items()}
     filled = [order_id for order_id, state in states.items() if state == "filled"]
     if filled:
         return _filled_stop_record(resting, filled[0])
@@ -722,6 +918,8 @@ def apply_stop_decision(
             "risk_boundary_price": str(risk_boundary),
             "base_qty": str(venue_qty),
             "position_base_qty": str(lane_base),
+            "risk_fraction": str(DEMO_DISASTER_STOP_PCT),
+            "price_tick": str(resolved_tick),
         }
         blocked = _ambiguous_stop_record(
             [str(resting["order_id"])] if resting and resting.get("order_id") else [],
@@ -732,9 +930,22 @@ def apply_stop_decision(
         return blocked
 
     new_resting = _active_stop_record(
-        new_order_id, venue_trigger, risk_boundary, venue_qty, lane_base
+        new_order_id,
+        venue_trigger,
+        risk_boundary,
+        venue_qty,
+        lane_base,
+        DEMO_DISASTER_STOP_PCT,
+        resolved_tick,
     )
-    new_state = _confirmed_stop_state(new_order_id, api_key, secret, get_transport)
+    new_state, _new_snapshot = _confirmed_stop_snapshot(
+        new_order_id,
+        api_key,
+        secret,
+        get_transport,
+        expected_trigger=venue_trigger,
+        expected_qty=venue_qty,
+    )
     old_order_id = str(resting.get("order_id", "")) if resting else ""
     if new_state == "cleared":
         return resting
@@ -914,7 +1125,7 @@ def run_cycle(
     # ledger for a position opened before this process started (restart safety).
     entry_price = resolve_entry_price(state, _read_ledger_records())
     stored_resting_stop = state.get("resting_stop")
-    resting_stop, post_paths_safe = preflight_tracked_stop(
+    resting_stop, post_paths_safe, venue_stop_confirmation = preflight_tracked_stop(
         stored_resting_stop, api_key, secret, get_transport
     )
     if resting_stop is not stored_resting_stop and (
@@ -1004,9 +1215,9 @@ def run_cycle(
     price_tick: Decimal | None = None
     qty_step: Decimal | None = None
     if not post_paths_safe:
-        decision = (
-            "reconcile" if resting_stop and resting_stop.get("state") == "AMBIGUOUS" else "noop"
-        )
+        # Preflight already performed one fully bound reconciliation read. Never issue a
+        # second read that could promote a different snapshot in the same cycle.
+        decision = "noop"
     elif lane_base > 0 and entry_price is not None:
         try:
             price_tick = instrument_price_tick(get_transport)
@@ -1019,6 +1230,20 @@ def run_cycle(
             decision = "noop"  # fail closed: do not create, cancel, or replace any venue stop
     else:
         decision = stop_reconcile_action(lane_base, entry_price, resting_stop)
+    if (
+        decision == "noop"
+        and entry_price is not None
+        and price_tick is not None
+        and qty_step is not None
+    ):
+        resting_stop = _backfill_confirmed_stop_metadata(
+            resting_stop,
+            venue_stop_confirmation,
+            lane_base,
+            entry_price,
+            price_tick,
+            qty_step,
+        )
     resting_stop = apply_stop_decision(
         decision,
         resting_stop,

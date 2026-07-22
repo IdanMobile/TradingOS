@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import fcntl
 import json
+import math
 import os
 import re
 import signal
@@ -41,6 +42,13 @@ ACTIONS = frozenset({"START", "STOP", "RUN_ONCE"})
 _IDENTIFIER = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,199}$")
 RUN_ONCE_TIMEOUT_SECONDS = 90
 ORDER_HISTORY_LIMIT = 25
+# The lane's documented loop is hourly. A small grace covers scheduling/network delay;
+# older evidence is retained but cannot be presented as current protection.
+HEARTBEAT_FRESHNESS_MAX_AGE = timedelta(minutes=75)
+BOUNDARY_ABS_TOLERANCE_USD = 0.000001
+EXPOSURE_REL_TOLERANCE = 0.000001
+EXPOSURE_ABS_TOLERANCE = 0.00000001
+MIN_STOP_QTY_COVERAGE = 0.999
 
 
 class DemoLaneActionError(ValueError):
@@ -109,15 +117,23 @@ def build_demo_lane(root: Path | None = None) -> dict[str, Any]:
     filled = [o for o in orders if o.get("ok") is True]
     heartbeat = _read_json(root / HEARTBEAT)
     state = _read_json(root / LANE_STATE)
+    lane_base = _number(state.get("lane_base", heartbeat.get("lane_base")))
+    now = datetime.now(tz=UTC)
+    ledger_base = sum(_order_money(order)["base_delta"] for order in filled)
+    operational_stop = _operational_disaster_stop(
+        state, heartbeat, running=running, ledger_base=ledger_base, now=now
+    )
     if running:
         status = "STOPPING" if stopped else "RUNNING"
     else:
         status = "STOPPED" if stopped else "IDLE"
     _mark = _number(heartbeat.get("mark_price"))
     _annotations = _annotate_orders(filled)
+    rules = _rules(heartbeat or {}, lane_base > 0, _mark)
+    positions = _attach_operational_stop(_round_trips(filled, _mark), operational_stop)
     return {
         "schema_version": 1,
-        "generated_at": datetime.now(tz=UTC).isoformat(),
+        "generated_at": now.isoformat(),
         "status": status,
         "running": running,
         "pid": pid,
@@ -136,7 +152,7 @@ def build_demo_lane(root: Path | None = None) -> dict[str, Any]:
             "sell_notional_usdt": "120",
             "order_type": "MARKET",
         },
-        "position_base": state.get("lane_base", "0"),
+        "position_base": state.get("lane_base", heartbeat.get("lane_base", "0")),
         "cursor": state.get("cursor"),
         "heartbeat": heartbeat or None,
         "counts": {
@@ -155,12 +171,13 @@ def build_demo_lane(root: Path | None = None) -> dict[str, Any]:
             "credential_holder": "lane process only; the dashboard holds none",
         },
         "divergence": _divergence(root, len(filled)),
+        "operational_disaster_stop": operational_stop,
         "wallet": _wallet(heartbeat or {}, filled),
         "pnl": _pnl(filled, _mark),
-        "rules": _rules(heartbeat or {}, _number(state.get("lane_base")) > 0, _mark),
-        "position": _position(filled, _mark, _rules(heartbeat or {}, True, _mark)),
-        "positions": _round_trips(filled, _mark),
-        "windows": _window_stats(_round_trips(filled, _mark), filled, datetime.now(tz=UTC)),
+        "rules": rules,
+        "position": _position(filled, _mark, rules, operational_stop),
+        "positions": positions,
+        "windows": _window_stats(positions, filled, now),
         "orders": [
             {
                 **{
@@ -194,10 +211,244 @@ def build_demo_lane(root: Path | None = None) -> dict[str, Any]:
 
 
 def _number(value: Any) -> float:
-    try:
-        return float(value)
-    except (TypeError, ValueError):
+    if isinstance(value, bool):
         return 0.0
+    try:
+        number = float(value)
+    except (OverflowError, TypeError, ValueError):
+        return 0.0
+    return number if math.isfinite(number) else 0.0
+
+
+def _positive_number(value: Any) -> float | None:
+    """Normalize a required positive numeric field without turning bad data into zero."""
+    if isinstance(value, bool):
+        return None
+    try:
+        number = float(value)
+    except (OverflowError, TypeError, ValueError):
+        return None
+    return number if math.isfinite(number) and number > 0 else None
+
+
+def _stop_fields(raw: Any) -> dict[str, Any]:
+    stop = raw if isinstance(raw, dict) else {}
+    stop_state = stop.get("state") if isinstance(stop.get("state"), str) else None
+    order_id = stop.get("order_id")
+    order_id = order_id.strip() if isinstance(order_id, str) and order_id.strip() else None
+    risk_fraction = _positive_number(stop.get("risk_fraction"))
+    if risk_fraction is not None and risk_fraction >= 1:
+        risk_fraction = None
+    return {
+        "state": stop_state,
+        "order_id": order_id,
+        "local_boundary_price_usd": _positive_number(stop.get("risk_boundary_price")),
+        "venue_trigger_price_usd": _positive_number(stop.get("trigger_price")),
+        "base_qty": _positive_number(stop.get("base_qty")),
+        "position_base_qty": _positive_number(stop.get("position_base_qty")),
+        "risk_fraction": risk_fraction,
+        "price_tick_usd": _positive_number(stop.get("price_tick")),
+    }
+
+
+def _heartbeat_freshness(heartbeat: dict[str, Any], now: datetime) -> dict[str, Any]:
+    reported_at = heartbeat.get("at")
+    try:
+        parsed = datetime.fromisoformat(str(reported_at))
+        if parsed.tzinfo is None:
+            raise ValueError("heartbeat timestamp has no timezone")
+        age = (now - parsed.astimezone(UTC)).total_seconds()
+    except (OverflowError, TypeError, ValueError):
+        return {
+            "heartbeat_at": reported_at if isinstance(reported_at, str) else None,
+            "age_seconds": None,
+            "max_age_seconds": int(HEARTBEAT_FRESHNESS_MAX_AGE.total_seconds()),
+            "fresh": False,
+        }
+    return {
+        "heartbeat_at": parsed.astimezone(UTC).isoformat(),
+        "age_seconds": round(age, 3),
+        "max_age_seconds": int(HEARTBEAT_FRESHNESS_MAX_AGE.total_seconds()),
+        "fresh": 0 <= age <= HEARTBEAT_FRESHNESS_MAX_AGE.total_seconds(),
+    }
+
+
+def _same_exposure(left: float | None, right: float | None) -> bool:
+    return (
+        left is not None
+        and right is not None
+        and math.isfinite(left)
+        and math.isfinite(right)
+        and left > 0
+        and right > 0
+        and math.isclose(
+            left,
+            right,
+            rel_tol=EXPOSURE_REL_TOLERANCE,
+            abs_tol=EXPOSURE_ABS_TOLERANCE,
+        )
+    )
+
+
+def _stops_agree(left: dict[str, Any], right: dict[str, Any]) -> bool:
+    left_boundary = left["local_boundary_price_usd"]
+    right_boundary = right["local_boundary_price_usd"]
+    left_trigger = left["venue_trigger_price_usd"]
+    right_trigger = right["venue_trigger_price_usd"]
+    return (
+        left["state"] == right["state"]
+        and left["order_id"] == right["order_id"]
+        and left_boundary is not None
+        and right_boundary is not None
+        and math.isclose(
+            left_boundary,
+            right_boundary,
+            rel_tol=0.0,
+            abs_tol=BOUNDARY_ABS_TOLERANCE_USD,
+        )
+        and left_trigger is not None
+        and right_trigger is not None
+        and math.isclose(
+            left_trigger,
+            right_trigger,
+            rel_tol=0.0,
+            abs_tol=BOUNDARY_ABS_TOLERANCE_USD,
+        )
+        and _same_exposure(left["base_qty"], right["base_qty"])
+        and _same_exposure(left["position_base_qty"], right["position_base_qty"])
+        and _same_exposure(left["risk_fraction"], right["risk_fraction"])
+        and _same_exposure(left["price_tick_usd"], right["price_tick_usd"])
+    )
+
+
+def _operational_disaster_stop(
+    state: dict[str, Any],
+    heartbeat: dict[str, Any],
+    *,
+    running: bool,
+    ledger_base: float,
+    now: datetime,
+) -> dict[str, Any]:
+    """Separate last-reported stop evidence from currently corroborated protection.
+
+    State is the preferred report, but `active` requires a running lane and a fresh
+    heartbeat to agree with state, ledger exposure, sizing, entry boundary, tick, and
+    mark. This does not claim venue truth; it is fresh lane reconciliation evidence.
+    """
+    state_has_stop = "resting_stop" in state
+    if state_has_stop:
+        selected = _stop_fields(state.get("resting_stop"))
+        source = "lane_state"
+    else:
+        selected = _stop_fields(heartbeat.get("resting_stop"))
+        source = "heartbeat"
+    state_stop = _stop_fields(state.get("resting_stop"))
+    heartbeat_stop = _stop_fields(heartbeat.get("resting_stop"))
+    freshness = _heartbeat_freshness(heartbeat, now)
+    state_base = _positive_number(state.get("lane_base"))
+    heartbeat_base = _positive_number(heartbeat.get("lane_base"))
+    entry_price = _positive_number(state.get("entry_price"))
+    mark_present = "mark_price" in heartbeat
+    mark = _positive_number(heartbeat.get("mark_price")) if mark_present else None
+    reasons: list[str] = []
+
+    if selected["state"] != "ACTIVE":
+        reasons.append("LAST_REPORT_NOT_ACTIVE")
+    if not running:
+        reasons.append("LANE_NOT_RUNNING")
+    if not freshness["fresh"]:
+        if freshness["age_seconds"] is None:
+            reasons.append("HEARTBEAT_TIMESTAMP_INVALID")
+        elif freshness["age_seconds"] < 0:
+            reasons.append("HEARTBEAT_TIME_IN_FUTURE")
+        else:
+            reasons.append("HEARTBEAT_STALE")
+    if not state_has_stop:
+        reasons.append("LANE_STATE_STOP_MISSING")
+    if state_stop["state"] != "ACTIVE" or heartbeat_stop["state"] != "ACTIVE":
+        reasons.append("STOP_NOT_ACTIVE_IN_BOTH_SNAPSHOTS")
+    elif not _stops_agree(state_stop, heartbeat_stop):
+        reasons.append("STATE_HEARTBEAT_STOP_MISMATCH")
+
+    required = (
+        selected["order_id"],
+        selected["local_boundary_price_usd"],
+        selected["venue_trigger_price_usd"],
+        selected["base_qty"],
+        selected["position_base_qty"],
+    )
+    if any(value is None for value in required):
+        reasons.append("STOP_FIELDS_INVALID_OR_MISSING")
+    risk_fraction = selected["risk_fraction"]
+    price_tick = selected["price_tick_usd"]
+    if risk_fraction is None or price_tick is None:
+        reasons.append("BOUND_STOP_METADATA_MISSING_OR_INVALID")
+    if not math.isfinite(ledger_base) or ledger_base <= EXPOSURE_ABS_TOLERANCE:
+        reasons.append("LEDGER_POSITION_NOT_OPEN")
+    if not _same_exposure(state_base, ledger_base):
+        reasons.append("STATE_LEDGER_EXPOSURE_MISMATCH")
+    if not _same_exposure(heartbeat_base, ledger_base):
+        reasons.append("HEARTBEAT_LEDGER_EXPOSURE_MISMATCH")
+    if not _same_exposure(selected["position_base_qty"], ledger_base):
+        reasons.append("STOP_POSITION_EXPOSURE_MISMATCH")
+
+    stop_qty = selected["base_qty"]
+    if stop_qty is not None and ledger_base > 0:
+        if stop_qty > ledger_base:
+            reasons.append("STOP_QTY_EXCEEDS_POSITION")
+        elif stop_qty / ledger_base < MIN_STOP_QTY_COVERAGE:
+            reasons.append("STOP_QTY_COVERAGE_TOO_LOW")
+
+    boundary = selected["local_boundary_price_usd"]
+    trigger = selected["venue_trigger_price_usd"]
+    if entry_price is None:
+        reasons.append("ENTRY_PRICE_INVALID_OR_MISSING")
+    elif risk_fraction is None:
+        pass
+    elif boundary is None or not math.isclose(
+        boundary,
+        entry_price * (1 - risk_fraction),
+        rel_tol=0.0,
+        abs_tol=BOUNDARY_ABS_TOLERANCE_USD,
+    ):
+        reasons.append("LOCAL_BOUNDARY_MISMATCH")
+    if (
+        boundary is not None
+        and trigger is not None
+        and price_tick is not None
+        and not (boundary <= trigger <= boundary + price_tick + BOUNDARY_ABS_TOLERANCE_USD)
+    ):
+        reasons.append("VENUE_TRIGGER_OUTSIDE_TICK_TOLERANCE")
+    if not mark_present or mark is None:
+        reasons.append("MARK_INVALID_OR_MISSING")
+    elif mark is not None and trigger is not None and mark <= trigger:
+        reasons.append("MARK_AT_OR_BELOW_TRIGGER")
+
+    reasons = list(dict.fromkeys(reasons))
+    active = not reasons
+    # A dead process or an old heartbeat can still truthfully identify when the stop was
+    # last structurally confirmed. Any data/risk mismatch means it was not confirmation.
+    corroborated_report = freshness["heartbeat_at"] is not None and not any(
+        reason not in {"LANE_NOT_RUNNING", "HEARTBEAT_STALE"} for reason in reasons
+    )
+    return {
+        "state": selected["state"],
+        "last_reported_active": selected["state"] == "ACTIVE",
+        "active": active,
+        "currently_confirmed": active,
+        "source": source,
+        "order_id": selected["order_id"],
+        "local_boundary_price_usd": selected["local_boundary_price_usd"],
+        "venue_trigger_price_usd": selected["venue_trigger_price_usd"],
+        "base_qty": selected["base_qty"],
+        "position_base_qty": selected["position_base_qty"],
+        "risk_fraction": selected["risk_fraction"],
+        "price_tick_usd": selected["price_tick_usd"],
+        "last_confirmed_at": freshness["heartbeat_at"] if corroborated_report else None,
+        "freshness": freshness,
+        "reason": reasons[0] if reasons else "CURRENTLY_CONFIRMED_BY_FRESH_LANE_RECONCILIATION",
+        "reasons": reasons,
+    }
 
 
 def _order_money(order: dict[str, Any]) -> dict[str, Any]:
@@ -267,7 +518,12 @@ def _annotate_orders(filled: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     return annotations
 
 
-def _position(filled: list[dict[str, Any]], mark: float, rules: dict[str, Any]) -> dict[str, Any]:
+def _position(
+    filled: list[dict[str, Any]],
+    mark: float,
+    rules: dict[str, Any],
+    operational_stop: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """The open position, if any — everything scoped to this trade rather than the account.
 
     Stop loss, take profit, exit trigger, entry, and unrealised P&L all belong here: they
@@ -311,7 +567,7 @@ def _position(filled: list[dict[str, Any]], mark: float, rules: dict[str, Any]) 
     value = base_held * mark if mark > 0 else None
     exit_trigger = _number(rules.get("donchian_lower"))
 
-    return {
+    position = {
         "open": True,
         "symbol": "ETHUSDT",
         "side": "LONG",
@@ -339,6 +595,11 @@ def _position(filled: list[dict[str, Any]], mark: float, rules: dict[str, Any]) 
         ),
         "max_loss_bounded_by": "position size — no leverage, spot only",
     }
+    if operational_stop is not None:
+        position["operational_disaster_stop"] = dict(operational_stop)
+        if operational_stop.get("active") is True:
+            position["protection"] = _operational_protection_text(operational_stop)
+    return position
 
 
 # Measured on 259 historical trades of this exact rule (ETHUSDT 1h, 2026-07-20 analysis):
@@ -423,6 +684,33 @@ def _round_trips(filled: list[dict[str, Any]], mark: float) -> list[dict[str, An
             }
         )
     return positions[::-1]  # newest first
+
+
+def _attach_operational_stop(
+    positions: list[dict[str, Any]], operational_stop: dict[str, Any]
+) -> list[dict[str, Any]]:
+    """Attach operational protection only to the one current open position."""
+    attached = False
+    projected: list[dict[str, Any]] = []
+    for original in positions:
+        position = dict(original)
+        if not attached and position.get("status") == "OPEN":
+            attached = True
+            position["operational_disaster_stop"] = dict(operational_stop)
+            if operational_stop.get("active") is True:
+                position["sl_steps"] = [operational_stop["venue_trigger_price_usd"]]
+                position["protection"] = _operational_protection_text(operational_stop)
+        projected.append(position)
+    return projected
+
+
+def _operational_protection_text(operational_stop: dict[str, Any]) -> str:
+    risk_pct = _number(operational_stop.get("risk_fraction")) * 100
+    return (
+        "currently confirmed by fresh lane reconciliation: last reported operational "
+        f"-{risk_pct:g}% disaster stop at the venue trigger, plus the strategy's "
+        "rule-driven exit on a close below the 40-bar Donchian low"
+    )
 
 
 def _parse_ts(value: Any) -> datetime | None:

@@ -11,6 +11,8 @@ import json
 from decimal import Decimal
 from urllib.parse import parse_qs, urlsplit
 
+import pytest
+
 import scripts.demo_eth_lane as lane
 
 
@@ -38,6 +40,10 @@ class FakeStopVenue:
         self.creates: list[dict] = []
         self.cancels: list[dict] = []
         self.events: list[tuple[str, str]] = []
+        self.realtime_omit: set[str] = set()
+        self.realtime_overrides: dict[str, object] = {}
+        self.realtime_prefix_rows: list[dict[str, object]] = []
+        self.realtime_reads = 0
 
     def post(self, url: str, headers: dict[str, str], body: bytes) -> bytes:
         payload = json.loads(body)
@@ -77,9 +83,26 @@ class FakeStopVenue:
         if "/v5/market/instruments-info" in url:
             return instrument_info(self.tick_size, self.qty_step)(url, _headers)
         if "/v5/order/realtime" in url:
+            self.realtime_reads += 1
             order_id = parse_qs(urlsplit(url).query).get("orderId", [""])[0]
             status = self.statuses.get(order_id, "")
-            rows = [{"orderId": order_id, "orderStatus": status}] if status else []
+            placed = self.creates[-1] if self.creates else {}
+            row = {
+                "orderId": order_id,
+                "orderStatus": status,
+                "symbol": "ETHUSDT",
+                "side": "Sell",
+                "orderType": "Market",
+                "orderFilter": "StopOrder",
+                "triggerDirection": 2,
+                "marketUnit": "baseCoin",
+                "triggerPrice": placed.get("triggerPrice"),
+                "qty": placed.get("qty"),
+            }
+            row.update(self.realtime_overrides)
+            for field in self.realtime_omit:
+                row.pop(field, None)
+            rows = [*self.realtime_prefix_rows, row] if status else list(self.realtime_prefix_rows)
             return json.dumps({"retCode": 0, "result": {"list": rows}}).encode()
         raise AssertionError(f"unexpected GET {url}")
 
@@ -286,6 +309,8 @@ def test_apply_place_records_new_resting_stop() -> None:
         "risk_boundary_price": str(lane.disaster_stop_price(entry)),
         "base_qty": "0.0134",
         "position_base_qty": "0.0134",
+        "risk_fraction": "0.15",
+        "price_tick": "0.01",
     }
     assert len(venue.creates) == 1 and venue.cancels == []
 
@@ -326,6 +351,31 @@ def test_apply_place_persists_submitted_qty_and_exact_inventory() -> None:
     assert resting is not None
     assert resting["base_qty"] == "0.01341"
     assert resting["position_base_qty"] == "0.01341033"
+    assert resting["risk_fraction"] == "0.15"
+    assert resting["price_tick"] == "0.01"
+
+
+def test_apply_place_persists_the_actual_non_default_price_tick() -> None:
+    venue = FakeStopVenue(order_id="STOP-TICK")
+
+    resting = lane.apply_stop_decision(
+        "place",
+        None,
+        Decimal("0.0134"),
+        Decimal("1862.37"),
+        "k",
+        "s",
+        get_transport=venue.get,
+        price_tick=Decimal("0.1"),
+        qty_step=Decimal("0.00001"),
+        post_transport=venue.post,
+    )
+
+    assert resting is not None
+    assert resting["trigger_price"] == "1583.1"
+    assert resting["price_tick"] == "0.1"
+    assert resting["risk_fraction"] == str(lane.DEMO_DISASTER_STOP_PCT)
+    assert resting["order_id"] == "STOP-TICK"
 
 
 def test_reconcile_is_idempotent_against_quantized_submitted_qty() -> None:
@@ -369,12 +419,13 @@ def test_apply_place_fails_closed_when_stop_qty_is_below_step() -> None:
 def test_ambiguous_set_with_any_filled_stop_latches_entire_set() -> None:
     venue = FakeStopVenue()
     venue.statuses.update({"OLD": "Untriggered", "NEW": "Filled"})
+    venue.realtime_overrides.update({"triggerPrice": "1583.02", "qty": "0.0134"})
     ambiguous = {
         "state": "AMBIGUOUS",
         "order_ids": ["OLD", "NEW"],
         "order_records": {
-            "OLD": {"order_id": "OLD"},
-            "NEW": {"order_id": "NEW"},
+            "OLD": {"order_id": "OLD", "trigger_price": "1583.02", "base_qty": "0.0134"},
+            "NEW": {"order_id": "NEW", "trigger_price": "1583.02", "base_qty": "0.0134"},
         },
         "ambiguity_reason": "test fixture",
     }
@@ -442,6 +493,422 @@ def test_apply_noop_leaves_state_and_venue_untouched() -> None:
     )
     assert resting == existing
     assert venue.creates == [] and venue.cancels == []
+
+
+def test_legacy_metadata_backfill_refuses_retained_only_and_ambiguous_evidence() -> None:
+    legacy = {
+        "state": "ACTIVE",
+        "order_id": "OLD",
+        "trigger_price": "1583.02",
+        "base_qty": "0.0134",
+    }
+    confirmed = {
+        "orderId": "OLD",
+        "orderStatus": "Untriggered",
+        "triggerPrice": "1583.02",
+        "qty": "0.0134",
+        "symbol": "ETHUSDT",
+        "side": "Sell",
+        "orderType": "Market",
+        "orderFilter": "StopOrder",
+        "triggerDirection": 2,
+    }
+    args = (
+        Decimal("0.0134"),
+        Decimal("1862.37"),
+        Decimal("0.01"),
+        Decimal("0.00001"),
+    )
+
+    assert lane._backfill_confirmed_stop_metadata(legacy, None, *args) is legacy
+    ambiguous = {**legacy, "state": "AMBIGUOUS"}
+    assert lane._backfill_confirmed_stop_metadata(ambiguous, confirmed, *args) is ambiguous
+    assert "risk_fraction" not in legacy and "risk_fraction" not in ambiguous
+
+
+def _valid_legacy_confirmation() -> dict:
+    return {
+        "orderId": "OLD",
+        "orderStatus": "Untriggered",
+        "triggerPrice": "1583.02",
+        "qty": "0.0134",
+        "symbol": "ETHUSDT",
+        "side": "Sell",
+        "orderType": "Market",
+        "orderFilter": "StopOrder",
+        "triggerDirection": 2,
+    }
+
+
+def _legacy_record() -> dict:
+    return {
+        "state": "ACTIVE",
+        "order_id": "OLD",
+        "trigger_price": "1583.02",
+        "base_qty": "0.0134",
+    }
+
+
+def _try_legacy_backfill(confirmation: dict) -> dict:
+    resting = _legacy_record()
+    migrated = lane._backfill_confirmed_stop_metadata(
+        resting,
+        confirmation,
+        Decimal("0.0134"),
+        Decimal("1862.37"),
+        Decimal("0.01"),
+        Decimal("0.00001"),
+    )
+    assert migrated is not None
+    return migrated
+
+
+def test_legacy_metadata_backfill_accepts_exact_protective_semantics() -> None:
+    migrated = _try_legacy_backfill(_valid_legacy_confirmation())
+
+    assert migrated["risk_fraction"] == "0.15"
+    assert migrated["price_tick"] == "0.01"
+    assert migrated["order_id"] == "OLD"
+
+
+def test_legacy_metadata_backfill_accepts_absent_optional_market_unit() -> None:
+    confirmation = _valid_legacy_confirmation()
+    confirmation.pop("marketUnit", None)
+
+    assert _try_legacy_backfill(confirmation)["risk_fraction"] == "0.15"
+
+
+def test_legacy_metadata_backfill_rejects_wrong_optional_market_unit() -> None:
+    confirmation = {**_valid_legacy_confirmation(), "marketUnit": "quoteCoin"}
+
+    assert _try_legacy_backfill(confirmation) == _legacy_record()
+
+
+@pytest.mark.parametrize(
+    "field",
+    ["symbol", "side", "orderType", "orderFilter", "triggerDirection"],
+)
+def test_legacy_metadata_backfill_rejects_missing_protective_semantics(field: str) -> None:
+    confirmation = _valid_legacy_confirmation()
+    confirmation.pop(field)
+
+    assert _try_legacy_backfill(confirmation) == _legacy_record()
+
+
+@pytest.mark.parametrize(
+    ("field", "wrong"),
+    [
+        ("symbol", "BTCUSDT"),
+        ("side", "Buy"),
+        ("orderType", "Limit"),
+        ("orderFilter", "Order"),
+        ("triggerDirection", 1),
+        ("triggerDirection", True),
+        ("triggerDirection", "2"),
+    ],
+)
+def test_legacy_metadata_backfill_rejects_wrong_protective_semantics(
+    field: str, wrong: object
+) -> None:
+    confirmation = {**_valid_legacy_confirmation(), field: wrong}
+
+    assert _try_legacy_backfill(confirmation) == _legacy_record()
+
+
+_REQUIRED_ACTIVE_ROW_FIELDS = (
+    "orderId",
+    "symbol",
+    "side",
+    "orderType",
+    "orderFilter",
+    "triggerDirection",
+    "triggerPrice",
+    "qty",
+)
+_WRONG_ACTIVE_ROW_VALUES = (
+    ("orderId", "OTHER"),
+    ("symbol", "BTCUSDT"),
+    ("side", "Buy"),
+    ("orderType", "Limit"),
+    ("orderFilter", "Order"),
+    ("triggerDirection", True),
+    ("triggerPrice", "0"),
+    ("qty", "0"),
+    ("marketUnit", "quoteCoin"),
+)
+
+
+def _enriched_tracked_stop() -> dict:
+    return {
+        **_legacy_record(),
+        "risk_boundary_price": "1583.0145",
+        "position_base_qty": "0.0134",
+        "risk_fraction": "0.15",
+        "price_tick": "0.01",
+    }
+
+
+def _tracked_venue() -> FakeStopVenue:
+    venue = FakeStopVenue()
+    venue.statuses["OLD"] = "Untriggered"
+    venue.realtime_overrides.update({"triggerPrice": "1583.02", "qty": "0.0134"})
+    return venue
+
+
+def test_enriched_tracked_stop_valid_row_is_confirmed_safe() -> None:
+    venue = _tracked_venue()
+
+    resting, safe, confirmation = lane.preflight_tracked_stop(
+        _enriched_tracked_stop(), "k", "s", venue.get
+    )
+
+    assert resting == _enriched_tracked_stop()
+    assert safe is True
+    assert confirmation is not None and confirmation["orderId"] == "OLD"
+
+
+def test_none_is_the_only_fresh_no_stop_state_and_remains_safe() -> None:
+    venue = _tracked_venue()
+
+    resting, safe, confirmation = lane.preflight_tracked_stop(None, "k", "s", venue.get)
+
+    assert resting is None and safe is True and confirmation is None
+    assert venue.realtime_reads == 0
+
+
+@pytest.mark.parametrize(
+    "unsupported",
+    [
+        {},
+        {"state": "UNKNOWN", "order_id": "OLD", "trigger_price": "1", "base_qty": "1"},
+        {"state": "ACTIVE", "trigger_price": "1", "base_qty": "1"},
+        {"state": None, "order_id": "", "trigger_price": "1", "base_qty": "1"},
+    ],
+)
+def test_preflight_rejects_empty_unknown_or_incomplete_states(unsupported: dict) -> None:
+    venue = _tracked_venue()
+
+    resting, safe, confirmation = lane.preflight_tracked_stop(unsupported, "k", "s", venue.get)
+
+    assert resting == unsupported
+    assert safe is False and confirmation is None
+    assert venue.realtime_reads == 0
+
+
+@pytest.mark.parametrize(
+    "order_ids",
+    [[], (), ["OLD", "OLD"], [""], [" OLD"], [1], "OLD"],
+)
+def test_preflight_rejects_malformed_ambiguous_ids(order_ids: object) -> None:
+    venue = _tracked_venue()
+    resting = {
+        "state": "AMBIGUOUS",
+        "order_ids": order_ids,
+        "order_records": {"OLD": {"trigger_price": "1583.02", "base_qty": "0.0134"}},
+    }
+
+    retained, safe, confirmation = lane.preflight_tracked_stop(resting, "k", "s", venue.get)
+
+    assert retained == resting
+    assert safe is False and confirmation is None
+    assert venue.realtime_reads == 0
+
+
+def test_mismatched_cancelled_first_row_cannot_clear_exact_active_tracked_stop() -> None:
+    venue = _tracked_venue()
+    venue.realtime_prefix_rows = [{"orderId": "OTHER", "orderStatus": "Cancelled"}]
+
+    resting, safe, confirmation = lane.preflight_tracked_stop(
+        _enriched_tracked_stop(), "k", "s", venue.get
+    )
+
+    assert resting == _enriched_tracked_stop()
+    assert safe is True
+    assert confirmation is not None and confirmation["orderId"] == "OLD"
+    assert venue.creates == [] and venue.cancels == []
+
+
+def test_only_mismatched_cancelled_row_is_unknown_not_cleared() -> None:
+    venue = _tracked_venue()
+    venue.realtime_prefix_rows = [{"orderId": "OTHER", "orderStatus": "Cancelled"}]
+    venue.realtime_omit.add("orderId")
+
+    resting, safe, confirmation = lane.preflight_tracked_stop(
+        _enriched_tracked_stop(), "k", "s", venue.get
+    )
+
+    assert resting == _enriched_tracked_stop()
+    assert safe is False and confirmation is None
+
+
+def test_ambiguous_wrong_bound_trigger_stays_ambiguous_and_unsafe() -> None:
+    venue = _tracked_venue()
+    resting = {
+        "state": "AMBIGUOUS",
+        "order_ids": ["OLD"],
+        "order_records": {
+            "OLD": {"order_id": "OLD", "trigger_price": "1500", "base_qty": "0.0134"}
+        },
+        "ambiguity_reason": "fixture",
+    }
+
+    retained, safe, confirmation = lane.preflight_tracked_stop(resting, "k", "s", venue.get)
+
+    assert retained == resting
+    assert safe is False and confirmation is None
+    reconciled = lane.apply_stop_decision(
+        "reconcile",
+        resting,
+        Decimal("0.0134"),
+        Decimal("1862.37"),
+        "k",
+        "s",
+        get_transport=venue.get,
+    )
+    assert reconciled is not None and reconciled["state"] == "AMBIGUOUS"
+    assert venue.creates == [] and venue.cancels == []
+
+
+def test_exact_single_ambiguous_record_resolves_active_safely() -> None:
+    venue = _tracked_venue()
+    resting = {
+        "state": "AMBIGUOUS",
+        "order_ids": ["OLD"],
+        "order_records": {
+            "OLD": {"order_id": "OLD", "trigger_price": "1583.02", "base_qty": "0.0134"}
+        },
+        "ambiguity_reason": "fixture",
+    }
+
+    resolved, safe, confirmation = lane.preflight_tracked_stop(resting, "k", "s", venue.get)
+
+    assert resolved is not None and resolved["state"] == "ACTIVE"
+    assert resolved["order_id"] == "OLD"
+    assert safe is True and confirmation is None
+
+
+@pytest.mark.parametrize("missing", ["trigger_price", "base_qty"])
+def test_preflight_rejects_missing_retained_bounds_before_venue_query(missing: str) -> None:
+    venue = _tracked_venue()
+    resting = _enriched_tracked_stop()
+    resting.pop(missing)
+
+    retained, safe, confirmation = lane.preflight_tracked_stop(resting, "k", "s", venue.get)
+
+    assert retained == resting
+    assert safe is False and confirmation is None
+    assert venue.realtime_reads == 0
+
+
+@pytest.mark.parametrize("field", ["trigger_price", "base_qty"])
+@pytest.mark.parametrize("bad", [True, "NaN", "Infinity", "-Infinity"])
+def test_preflight_rejects_malformed_retained_bounds_before_venue_query(
+    field: str, bad: object
+) -> None:
+    venue = _tracked_venue()
+    resting = {**_enriched_tracked_stop(), field: bad}
+
+    retained, safe, confirmation = lane.preflight_tracked_stop(resting, "k", "s", venue.get)
+
+    assert retained == resting
+    assert safe is False and confirmation is None
+    assert venue.realtime_reads == 0
+
+
+@pytest.mark.parametrize("current", [[], "ACTIVE", 42, True])
+def test_preflight_rejects_non_dict_current_record_without_exception(current: object) -> None:
+    venue = _tracked_venue()
+
+    retained, safe, confirmation = lane.preflight_tracked_stop(  # type: ignore[arg-type]
+        current, "k", "s", venue.get
+    )
+
+    assert retained is None
+    assert safe is False and confirmation is None
+    assert venue.realtime_reads == 0
+
+
+@pytest.mark.parametrize("records", [None, [], "bad", {"OLD": []}, {"OLD": "bad"}])
+def test_preflight_rejects_malformed_ambiguous_order_records(records: object) -> None:
+    venue = _tracked_venue()
+    resting = {
+        "state": "AMBIGUOUS",
+        "order_ids": ["OLD"],
+        "order_records": records,
+    }
+
+    retained, safe, confirmation = lane.preflight_tracked_stop(resting, "k", "s", venue.get)
+
+    assert retained == resting
+    assert safe is False and confirmation is None
+    assert venue.realtime_reads == 0
+
+
+@pytest.mark.parametrize("missing", _REQUIRED_ACTIVE_ROW_FIELDS)
+def test_enriched_tracked_stop_missing_identity_is_unknown_and_unsafe(missing: str) -> None:
+    venue = _tracked_venue()
+    venue.realtime_omit.add(missing)
+
+    resting, safe, confirmation = lane.preflight_tracked_stop(
+        _enriched_tracked_stop(), "k", "s", venue.get
+    )
+
+    assert resting == _enriched_tracked_stop()
+    assert safe is False
+    assert confirmation is None
+
+
+@pytest.mark.parametrize(("field", "wrong"), _WRONG_ACTIVE_ROW_VALUES)
+def test_enriched_tracked_stop_wrong_identity_is_unknown_and_unsafe(
+    field: str, wrong: object
+) -> None:
+    venue = _tracked_venue()
+    venue.realtime_overrides[field] = wrong
+
+    resting, safe, confirmation = lane.preflight_tracked_stop(
+        _enriched_tracked_stop(), "k", "s", venue.get
+    )
+
+    assert resting == _enriched_tracked_stop()
+    assert safe is False
+    assert confirmation is None
+
+
+def _place_with_corrupt_active_row(*, missing: str | None = None, field: str = "", wrong=None):
+    venue = FakeStopVenue(order_id="NEW")
+    if missing is not None:
+        venue.realtime_omit.add(missing)
+    if field:
+        venue.realtime_overrides[field] = wrong
+    resting = lane.apply_stop_decision(
+        "place",
+        None,
+        Decimal("0.0134"),
+        Decimal("1862.37"),
+        "k",
+        "s",
+        get_transport=venue.get,
+        post_transport=venue.post,
+    )
+    return venue, resting
+
+
+@pytest.mark.parametrize("missing", _REQUIRED_ACTIVE_ROW_FIELDS)
+def test_newly_created_stop_missing_identity_never_publishes_active(missing: str) -> None:
+    venue, resting = _place_with_corrupt_active_row(missing=missing)
+
+    assert resting is not None and resting["state"] == "AMBIGUOUS"
+    assert len(venue.creates) == 1 and venue.cancels == []
+
+
+@pytest.mark.parametrize(("field", "wrong"), _WRONG_ACTIVE_ROW_VALUES)
+def test_newly_created_stop_wrong_identity_never_publishes_active(
+    field: str, wrong: object
+) -> None:
+    venue, resting = _place_with_corrupt_active_row(field=field, wrong=wrong)
+
+    assert resting is not None and resting["state"] == "AMBIGUOUS"
+    assert len(venue.creates) == 1 and venue.cancels == []
 
 
 def test_apply_place_rejected_by_venue_returns_none() -> None:
