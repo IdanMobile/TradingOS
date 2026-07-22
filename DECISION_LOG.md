@@ -2123,4 +2123,40 @@ Status: **NO-GO on all three shortlisted candidates this cycle; no pre-registrat
 search/trial-budget slot spent. Operator governance override for a Johansen multivariate basket
 remains available but is recommended against. No promotion, venue, or execution authority
 anywhere.**
-blockers. No promotion, venue, or live-execution authority anywhere.**
+
+### D-115 — One-time integrity reconciliation authorized; root-owned external trust boundary selected
+
+Decision: the operator authorizes exactly one controlled integrity reconciliation for v8.127.
+For this reconciliation only, `PACKAGE_INTEGRITY_MANIFEST.md` may be edited solely to update its
+package-version line and the existing hash rows for intentionally changed manifest-listed
+governance files. The manifest remains in `IMMUTABLE_PATHS`; this exception neither changes that
+policy nor authorizes edits to `src/tios/ops/self_modification.py`, `Makefile`, thresholds,
+sealed/holdout/prospective paths, or any other immutable path. No manifest row or immutable path
+may be added or removed. The changelog and the full local gate are required in the same change.
+The operator subsequently extended this same one-time reconciliation solely to remove one
+pre-existing extra trailing `f` from the malformed manifest digest for the unchanged
+`src/tios/services/observations/__init__.py`, and to add a non-manifest regression test that
+prevents broad Path/SHA rows from being silently skipped by the strict verifier. No other
+manifest row or source file is covered by that extension.
+
+The operator also selects the Phase-2b external trust ownership boundary. Repository source and
+setup code plus public metadata may remain in the repository. The installed production
+verifier/helper, all private signing keys and credential/revocation material, the authoritative
+append-only intake-decision history, and its monotonic checkpoint must be root-owned outside the
+repository and unavailable to repository-writing agents. This is a composition/ownership
+selection, not proof that the external components exist, are installed, or are trustworthy.
+
+Independent reviewer setup and credential lifecycle remain pending, as do the typed independent
+evidence resolver, trusted-time and current trust/revocation evidence, frozen activation
+interfaces and integrity evidence, and independent security review. Until those artifacts are
+actually supplied, verified, frozen, and independently reviewed, the Phase-2b scaffold remains
+limited to external-activation-pending states with authority `NONE`; Phases 3 and 4 remain
+blocked. Phase 5 cannot substitute for admission authority.
+
+Evidence: explicit operator authorization for this one-time reconciliation on 2026-07-22;
+`docs/supervisor/AUTONOMOUS_RESEARCH_FACTORY_AND_OPERATIONS_PLAN_2026-07-21.md` Phase 2b;
+`src/tios/approval/intake_admission.py`; `src/tios/research_assets/admission.py`;
+`PACKAGE_INTEGRITY_MANIFEST.md`; `src/tios/ops/self_modification.py`.
+Status: **Integrity exception bounded to v8.127 reconciliation; external trust ownership selected,
+activation and independent reviewer evidence still pending. No candidate admission, strategy
+promotion, production venue, live order, or real-money authority granted.**

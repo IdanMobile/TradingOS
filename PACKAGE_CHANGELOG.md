@@ -1,5 +1,37 @@
 # Package Changelog
 
+## v8.127 — 2026-07-22 — Operator-authorized integrity and current-state reconciliation
+
+- `DECISION_LOG.md`: added unique D-115, recording the one-time manifest-edit exception and its
+  strict scope, while retaining `PACKAGE_INTEGRITY_MANIFEST.md` in `IMMUTABLE_PATHS`. D-115 also
+  selects a root-owned-outside-repository trust boundary for the installed external verifier/
+  helper, private keys and trust credentials, authoritative append-only decision history, and
+  monotonic checkpoint. Repository source/setup and public metadata remain permissible in-repo.
+  Independent reviewer setup and the remaining activation evidence are still pending; no
+  admission, promotion, production venue, live-order, or real-money authority is created.
+- `PROJECT_STATE.md`: reconciled the package/date/current status and OPEN ITEMS. The dashboard,
+  orchestrator, protected `real_money=false` demo lane, and jobs worker are alive; legacy
+  closed-family research jobs are quarantined and their execution surface is retired. Phases 1,
+  2, 2b, and 5 are implemented within their fail-closed scopes; Phases 3 and 4 remain blocked on
+  actual external activation evidence and independent review. Removed the stale urgent
+  demo-stopped/unprotected wording.
+- `handoffs/SESSION_HANDOFF_2026_07_22.md`: reconciled the durable handoff to v8.127/D-115,
+  current service and phase state, the root-owned trust selection, and the remaining blockers.
+- `PACKAGE_INTEGRITY_MANIFEST.md`: under the explicit D-115 one-time exception and its narrow
+  operator-authorized extension, changed only the package-version line, the existing
+  `PROJECT_STATE.md` and `DECISION_LOG.md` hash rows, and the malformed existing
+  `src/tios/services/observations/__init__.py` row. That source file was unchanged; its stored
+  digest had one extra trailing `f`, causing the former strict regex verifier to silently skip the
+  row. No rows or immutable paths were added or removed; all **453 table rows / 438 unique paths**
+  were reverified, including duplicate path occurrences.
+- `tests/test_package_integrity_manifest_shape.py` (new, not manifest-listed): broadly parses every
+  Markdown Path/SHA row, requires every digest to be exactly 64 lowercase hexadecimal characters,
+  proves the strict verifier sees the same total row count, and verifies every referenced file
+  hash without deduplicating rows. This closes the malformed-row silent-skip gap.
+- Verification: focused decision-ID and package-integrity checks passed; the final `make check`
+  post-repair invocation passed with **1,468 passed / 29 deselected**, plus ruff, format, mypy-strict, secret
+  scan, and package integrity.
+
 ## v8.126 — 2026-07-22 — Closed-family legacy execution guard
 
 - `src/tios/services/jobs/runner.py` and `scripts/run_research_lab_v0.py`: enforce one fixed

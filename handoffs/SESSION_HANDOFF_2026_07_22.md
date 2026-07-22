@@ -4,7 +4,8 @@ Scope: durable operational handoff only. This record grants no live or real-mone
 
 ## Verified facts
 
-- Package version: **v8.126**. Current `HEAD`: **`4e95478`**.
+- Package version: **v8.127**. Current `HEAD`: **`4edf4cc`**. D-115 records the operator-authorized
+  one-time integrity reconciliation and the selected root-owned external trust boundary.
 - This session's completed slices, in dependency order:
   - demo stop hardening: `460bce6`, `b997237`;
   - fail-closed promotion package: `8877554`;
@@ -12,7 +13,12 @@ Scope: durable operational handoff only. This record grants no live or real-mone
   - atomic job-quarantine capability and schema-v4 migration coverage: `f4e06dd`, `377e3f6`;
   - live legacy-job quarantine: `5f62763`;
   - closed-family research-execution retirement: `4e95478`.
-- Final local gate: `make check` passed with **1,467 passed / 29 deselected**.
+- Final post-repair local gate: `make check` passed with **1,468 passed / 29 deselected**.
+- Integrity manifest verification covers exactly **453 table rows / 438 unique paths**, including
+  duplicate rows. The pre-existing `src/tios/services/observations/__init__.py` digest had one
+  extra trailing `f`; D-115's narrow extension removed it without changing the source file. The
+  new non-manifest shape regression test prevents malformed Path/SHA rows from being silently
+  skipped by the strict verifier.
 - Live local services at handoff:
   - dashboard: screen `42597.tios-dashboard`, PID `42631`, read-only HTTP on `8765`;
   - orchestrator: PID `29803`;
@@ -29,8 +35,20 @@ Scope: durable operational handoff only. This record grants no live or real-mone
 
 ## Operator decisions and blockers
 
-1. **Phase 2b external activation is operator-controlled.** Phases 3–4 remain blocked until an operator-approved change provides a fixed external verifier outside repository-writer control, authoritative append-only decision history with an externally retained monotonic checkpoint, a typed independent evidence resolver, trusted time plus credential/revocation/trust evidence, a genuinely independent reviewer and credential lifecycle, frozen interfaces/integrity rows/changelog evidence, and independent security review.
-2. **`PROJECT_STATE.md` is materially stale** on the demo process/stop state and package version. It is manifest-listed, and correct regeneration would also edit `PACKAGE_INTEGRITY_MANIFEST.md`; that manifest is currently in `IMMUTABLE_PATHS`. An operator-controlled integrity update or explicit policy change is therefore required. Do not hand-edit either file or evade the integrity workflow.
+1. **Phase 2b external trust ownership is selected, but activation is not complete.** Repository
+   source/setup and public metadata may be in-repo. The installed production verifier/helper,
+   private keys and credential/revocation material, authoritative append-only decision history,
+   and monotonic checkpoint must be root-owned outside the repository and unavailable to
+   repository-writing agents. Independent reviewer setup and credential lifecycle remain pending,
+   along with the typed evidence resolver, trusted-time/current-trust evidence, frozen activation
+   interfaces/integrity evidence, and independent security review. Phases 3–4 remain blocked until
+   actual evidence for the complete activation is frozen and independently reviewed.
+2. **The v8.127 integrity reconciliation is complete under D-115's one-time exception.**
+   `PACKAGE_INTEGRITY_MANIFEST.md` remains in `IMMUTABLE_PATHS`; the exception made no policy,
+   threshold, sealed/holdout/prospective, or other immutable-path change and grants no future
+   manifest-edit authority. Its narrow extension repaired only the malformed existing
+   `src/tios/services/observations/__init__.py` digest and added regression coverage; the source
+   file and every other manifest row were unchanged by that repair.
 3. The operator must decide whether to retain the current screen-based services or move the repository out of the macOS TCC-protected Downloads location and explicitly approve/install the rendered LaunchAgents.
 4. The operator owns disposition of the verified normalized-data update. Do not mix it with source changes or silently stage it.
 
@@ -40,7 +58,10 @@ Scope: durable operational handoff only. This record grants no live or real-mone
 2. Keep legacy/closed-family research jobs quarantined and retired. Do not enqueue replacements or use caller-selected verifiers, repository fakes, generic workspace decisions, or missing history to cross the intake boundary.
 3. Keep Phases 3–4 parked until every Phase 2b external-activation requirement above has operator approval and independently reviewed evidence. Phase 5 may only evaluate already-lawful retained evidence; it cannot unblock intake.
 4. Continue bounded maintenance that does not cross an authority gate: service health observation, scheduled public-data refreshes, integrity-preserving diagnostics, and tests. Keep generated runtime/data changes unstaged unless the operator selects their disposition.
-5. After operator authority is supplied, the first lawful governance action is the controlled integrity regeneration/update for `PROJECT_STATE.md` and `PACKAGE_INTEGRITY_MANIFEST.md`; separately, the first lawful Phase 2b action is to specify and independently review the external verifier/history/checkpoint/resolver/reviewer composition. Only after that activation is frozen may Phase 3 begin.
+5. The next lawful Phase-2b action is to provision and independently review evidence for the
+   selected root-owned verifier/helper, history/checkpoint, trust inputs, resolver, and reviewer
+   composition. Do not treat D-115's ownership selection as activation. Only after the complete
+   activation is frozen and independently reviewed may Phase 3 begin.
 
 ## Future date gates
 
@@ -49,4 +70,5 @@ Scope: durable operational handoff only. This record grants no live or real-mone
 - **2027-01-17:** earliest scheduled MVRV prospective review. Review only under the retained protocol; do not inspect outcomes early.
 - **2027-01-21:** earliest scheduled CFTC prospective review. Review only under the retained protocol; do not inspect outcomes early.
 
-No changelog edit or version bump belongs to this handoff.
+The v8.127 changelog/version reconciliation belongs only to D-115's one-time integrity exception;
+it creates no continuing permission to edit the integrity manifest.

@@ -1,8 +1,8 @@
 # Trading Intelligence OS — Project State
 
-Last updated: 2026-07-21 (D-107..D-113; orchestrator running; operator decisions recorded v8.123)
-Package version: v8.123 (planning system) + S1 evidence + S2 governance entry + autonomous orchestration substrate
-Status: **S2 AUTONOMOUS RESEARCH LAB ACTIVE (CONSTRAINED); 24/7 orchestrator RUNNING.** All 7 searchable strategy families have been run once: 0 passes (4 FAIL, 3 INSUFFICIENT_ACTIVITY); the one PASS-ELIGIBLE result (CFTC) was retracted under D-112 for a statistical scoring defect, now fixed. Two prospective observation lanes collect live evidence daily/weekly. No strategy, venue connection, or real-money trading is approved.
+Last updated: 2026-07-22 (through D-115; operational and integrity state reconciled at v8.127)
+Package version: v8.127 (planning system) + S1 evidence + S2 governance entry + autonomous orchestration substrate
+Status: **CONSTRAINED RESEARCH/DEMO OPERATIONS ACTIVE; NO ADMISSION OR LIVE AUTHORITY.** Dashboard, 24/7 orchestrator, protected demo lane, and jobs worker are running; the demo lane reports `real_money=false` and an active venue-resting disaster stop. Legacy closed-family research jobs are quarantined and their execution surface is retired. Phases 1, 2, 2b, and 5 are implemented within their fail-closed scopes; Phases 3 and 4 remain blocked pending actual external activation evidence and independent review. All 7 searchable strategy families have been run once: 0 passes (4 FAIL, 3 INSUFFICIENT_ACTIVITY). Two prospective observation lanes collect live evidence daily/weekly. No candidate admission, strategy promotion, production venue connection, or real-money trading is approved.
 
 ## OPEN ITEMS — the only live task list
 
@@ -19,19 +19,34 @@ ledger see `MISSING_AND_OPEN_ITEMS.md` (which now points back here as the entry 
   A project-knowledge pre-draft is being prepared (D-113).
 - OpenAI billing for the second AI-benchmark provider leg — operator said ignore for now.
   Detail: `artifacts/driver/parked_items.jsonl` (phase "2 / T-011-05").
+- Independent Phase-2b reviewer setup and credential lifecycle remain pending. D-115 selects
+  the trust boundary: repository source/setup and public metadata may remain in-repo, while the
+  installed verifier/helper, private keys, authoritative decision history, and monotonic
+  checkpoint must be root-owned outside the repository. Selection is not activation evidence.
+- Decide whether to retain the current supervised screen services or move the repository out of
+  the macOS TCC-protected Downloads location and explicitly approve/install LaunchAgents.
+- Select disposition for the verified normalized-data update; keep its runtime/data dirt distinct
+  from source/governance changes and do not silently stage it.
 
-**Implemented, awaiting verification:**
-- Demo-lane −15% disaster-stop + Bybit V5 venue-resting stop order (`DEMO_DISASTER_STOP_PCT`)
-  — approved and implemented under D-113 (`scripts/demo_eth_lane.py`,
-  `tests/test_demo_disaster_stop.py`). Awaits lane-restart verification before it is confirmed
-  live in the running loop.
-- **URGENT FIRST ACTION: the demo lane process is STOPPED** (stopped 2026-07-21 evening to
-  load the stop code; the agent permission classifier blocked the relaunch). The lane's open
-  ETH position (~0.01341 ETH, entry ~1862.37) has NO stop protection until restart. Restart:
-  `make demo-lane` (operator terminal, or an agent session whose settings allow it). On start
-  the lane reconstructs entry from `orders.jsonl` and arms both stops. Then verify: a resting
-  stop order appears in the lane artifacts (`orders.jsonl` / `lane_state.json` `resting_stop`)
-  at ~1583 (entry × 0.85).
+**Current operations and implementation status (verified 2026-07-22):**
+- Dashboard, orchestrator, demo lane, and jobs worker are alive. The demo lane reports
+  `real_money=false`, `promotion_eligible=false`, and an `ACTIVE` venue-resting −15% disaster
+  stop. Do not restart it automatically, create orders, or infer live authority from demo state.
+- The legacy research schedule and queued job are quarantined; closed-family
+  `RESEARCH_LAB_V0` execution is retired while retained historical evidence remains readable.
+- **Phase 1 implemented:** local operating substrate is running under supervised screen
+  processes; no LaunchAgent installation has been approved.
+- **Phase 2 implemented:** the candidate-intake ledger is fail-closed and cannot represent
+  `ADMIT`.
+- **Phase 2b scaffold implemented:** typed semantic assessments can reach only externally
+  blocked pending states with authority `NONE`. D-115 selects a root-owned external trust
+  boundary, but the verifier/helper, history/checkpoint, resolver/trust inputs, independent
+  reviewer lifecycle, activation freeze, and independent security review are not yet evidenced.
+- **Phases 3 and 4 blocked:** do not build or run them until actual Phase-2b external activation
+  evidence is frozen and independently reviewed.
+- **Phase 5 implemented:** the generic validation/promotion evidence package fails closed on
+  incomplete evidence and cannot substitute for Phase-2b admission authority or independent
+  review.
 
 **Resolved this cycle (D-113, D-114):**
 - Security-test diff review — `test_live_unreachable.py`'s strengthened assertion (post-D-104

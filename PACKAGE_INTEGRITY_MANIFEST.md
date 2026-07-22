@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.124 new-family pre-registration go/no-go resolved NO-GO, D-114 (2026-07-21). Supersedes v8.123 hashes.
+Package version: v8.127 operator-authorized integrity and current-state reconciliation, D-115 (2026-07-22). Supersedes v8.124 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `0ebb693b509366d9cd770634fd6e8fc4040bacd2ada6b6cda211b8840bd7c6c5` |
-| `DECISION_LOG.md` | `816adc769421da701c3e83dd1309b14bc6f1862d835eaf6537a5bab387ee52ba` |
+| `PROJECT_STATE.md` | `4bf656694cd5d6ef0fae125541132147fc4a69251458f006140df56cabe3e2de` |
+| `DECISION_LOG.md` | `f8f4106240aa8f3acd2990fe8361fd77f8d0388e57f1412d5ae3b3f0987851f7` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -624,7 +624,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | Path | SHA-256 |
 |---|---|
 | `research/PROSPECTIVE_OBSERVATION_MANAGED_FLOW_IMPLEMENTATION_V1.yaml` | `08257ce577c480c3cb305143966300dafd7f92e0b75c1bbaa2f9d440784b6bed` |
-| `src/tios/services/observations/__init__.py` | `546dd5f813051ab74ecc045d2506519cf567ccfc1c34ff2b15f82fbbdd7b20e5f` |
+| `src/tios/services/observations/__init__.py` | `546dd5f813051ab74ecc045d2506519cf567ccfc1c34ff2b15f82fbbdd7b20e5` |
 | `src/tios/services/observations/flow.py` | `4bfee7cd3e940658602ac141afb2671715a5e23e289ca238285cac776dea04f7` |
 | `scripts/run_prospective_observation_flow.py` | `049a30eae86bba0abb071016149a3414726a1d47655dcb1b1c19d5e69917f449` |
 | `tests/test_observation_flow.py` | `06bdf250404373a9e3636c5e40e09bde1ff03a0ceb538a7af9dcb95813b70611` |
