@@ -339,52 +339,30 @@ def test_preflight_rejects_hypothesis_strategy_and_spec_drift(tmp_path: Path) ->
         lab.preflight(*arguments)
 
 
-def test_preflight_failures_and_path_escapes_do_not_invoke_sweep(
+def test_run_lab_is_retired_before_hashing_output_or_evaluation(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root, dataset, research = _repo(tmp_path, "FAIL")
-    called = False
+    output = tmp_path / "must-not-exist"
+    called: list[str] = []
 
-    def forbidden(*_: Any, **__: Any) -> subprocess.CompletedProcess[str]:
-        nonlocal called
-        called = True
-        raise AssertionError("sweep must not run")
+    def forbidden(*_: Any, **__: Any) -> Any:
+        called.append("called")
+        raise AssertionError("hashing or evaluation must not occur")
 
-    with pytest.raises(RuntimeError, match="overall must be PASS"):
-        _run(root, dataset, research, forbidden)
-    assert not called
-
-    monkeypatch.setenv("TIOS_AI_MODE", "real")
-    with pytest.raises(RuntimeError, match="absent or mock"):
-        _run(root, dataset, research, forbidden)
-    monkeypatch.delenv("TIOS_AI_MODE")
-    outside = tmp_path / "outside"
-    with pytest.raises(ValueError, match="research output"):
-        lab.run_lab(dataset, outside, forbidden, repo_root=root, research_root=research)
-    with pytest.raises(ValueError, match="source"):
-        register_trials(outside, outside / "ledger", outside / "summary", repo_root=root)
-    broad_output = root / "broad-output"
-    with pytest.raises(ValueError, match="research_root"):
+    monkeypatch.setattr(lab, "preflight", forbidden)
+    monkeypatch.setattr(lab, "_resolve_lineage", forbidden)
+    monkeypatch.setattr(lab, "sha256", forbidden)
+    with pytest.raises(RuntimeError) as error:
         lab.run_lab(
-            dataset,
-            broad_output,
+            tmp_path / "missing.parquet",
+            output,
             forbidden,
-            repo_root=root,
-            research_root=root,
+            repo_root=tmp_path,
+            research_root=output,
         )
-    broad_source = root / "broad-source"
-    with pytest.raises(ValueError, match="allowed_root"):
-        register_trials(
-            broad_source,
-            broad_source / "ledger",
-            broad_source / "summary",
-            repo_root=root,
-            allowed_root=root,
-        )
-    assert not outside.exists()
-    assert not broad_output.exists()
-    assert not broad_source.exists()
+    assert str(error.value) == lab.LEGACY_RESEARCH_LAB_V0_CLOSURE_REASON
     assert not called
+    assert not output.exists()
 
 
 def test_registration_is_order_independent_normalized_and_idempotent(tmp_path: Path) -> None:
@@ -484,52 +462,8 @@ def test_failed_trial_is_retained_and_other_trials_complete(tmp_path: Path) -> N
     assert failed[0]["failure_reason"] == "RuntimeError: isolated trial"
 
 
-def test_batch_completes_while_retaining_an_isolated_trial_failure(tmp_path: Path) -> None:
-    root, dataset, research = _repo(tmp_path)
-    failed_key = lab.EXPECTED_TRIAL_CONFIG["b4"][2]
-
-    def partial_sweep(command: list[str], **_: Any) -> subprocess.CompletedProcess[str]:
-        _write_trials(Path(command[command.index("--out") + 1]), failed=("b4", failed_key))
-        return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
-
-    result = _run(root, dataset, research, partial_sweep)
-    assert result["status"] == "COMPLETED"
-    assert result["counts"]["failed_trials"] == 1
-    assert result["counts"]["completed_trials"] == 65
-    ledger = research / str(result["lab_id"]) / "trial_ledger.jsonl"
-    failed = [
-        json.loads(line)["record"]
-        for line in ledger.read_text().splitlines()
-        if '"status":"FAILED"' in line
-    ]
-    assert [(run["trial_key"], run["failure_reason"]) for run in failed] == [
-        (failed_key, "RuntimeError: isolated trial")
-    ]
-    batch_dir = ledger.parent
-    evidence = [
-        json.loads(line) for line in (batch_dir / "trading_evidence.jsonl").read_text().splitlines()
-    ]
-    provenance = json.loads((batch_dir / "provenance.json").read_text())
-    assert len(evidence) == len(provenance["links"]) == 66
-    assert failed[0]["run_id"] in {row["run_ref"] for row in evidence}
-    assert [link for link in provenance["links"] if link["run_id"] == failed[0]["run_id"]][0][
-        "run_status"
-    ] == "FAILED"
-
-
-def test_registration_failure_and_partial_output_are_retained(tmp_path: Path) -> None:
-    root, dataset, research = _repo(tmp_path)
-
-    def duplicate_sweep(command: list[str], **_: Any) -> subprocess.CompletedProcess[str]:
-        _write_trials(Path(command[command.index("--out") + 1]), duplicate=True)
-        return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
-
-    with pytest.raises(RuntimeError, match="duplicate b2 trial keys"):
-        _run(root, dataset, research, duplicate_sweep)
-    batch_dir = next(research.iterdir())
-    assert (batch_dir / "b2_sweep_all_trials.parquet").exists()
-    assert json.loads((batch_dir / "lab_run.json").read_text())["status"] == "FAILED"
-
+def test_partial_registration_output_is_retained(tmp_path: Path) -> None:
+    root, _, research = _repo(tmp_path)
     source = research / "partial"
     _write_trials(source)
     ledger, summary = source / "ledger.jsonl", source / "summary.json"
@@ -537,169 +471,6 @@ def test_registration_failure_and_partial_output_are_retained(tmp_path: Path) ->
     with pytest.raises(FileExistsError, match="partial"):
         register_trials(source, ledger, summary, repo_root=root, allowed_root=research)
     assert ledger.read_text() == "retained\n"
-
-
-def test_completed_batch_is_safe_reused_and_tamper_detected(tmp_path: Path) -> None:
-    root, dataset, research = _repo(tmp_path)
-    first = _run(root, dataset, research)
-    result_path = research / str(first["lab_id"]) / "lab_run.json"
-    retained_before_reuse = result_path.read_bytes()
-    second = _run(root, dataset, research)
-    batch_dir = research / str(first["lab_id"])
-
-    assert first["status"] == "COMPLETED"
-    assert first["counts"] == {
-        "experiments": 3,
-        "trials": 66,
-        "completed_trials": 66,
-        "failed_trials": 0,
-        "evidence_records": 66,
-    }
-    assert second["reused"] is True
-    assert result_path.read_bytes() == retained_before_reuse
-    assert json.loads(retained_before_reuse)["reused"] is False
-    assert (
-        first["content_sha256"]
-        == second["content_sha256"]
-        == lab._canonical_hash(  # noqa: SLF001
-            lab._persisted_result_content(second)  # noqa: SLF001
-        )
-    )
-    assert {key: first[key] for key in lab.SAFETY} == lab.SAFETY
-    assert first["started_at_utc"] != RAN_START
-    assert first["started_at_utc"] <= first["finished_at_utc"]
-    (batch_dir / "b4_sweep_meta.json").write_text("tampered\n", encoding="utf-8")
-    with pytest.raises(RuntimeError, match="artifact digest mismatch"):
-        _run(root, dataset, research)
-
-
-def test_completed_lineage_uses_real_hypotheses_versions_and_all_run_ids(
-    tmp_path: Path,
-) -> None:
-    root, dataset, research = _repo(tmp_path)
-    result = _run(root, dataset, research)
-    batch_dir = research / str(result["lab_id"])
-    records = [
-        json.loads(line) for line in (batch_dir / "trial_ledger.jsonl").read_text().splitlines()
-    ]
-    experiments = [row["record"] for row in records if row["kind"] == "experiment"]
-    runs = [row["record"] for row in records if row["kind"] == "run"]
-    evidence = [
-        json.loads(line) for line in (batch_dir / "trading_evidence.jsonl").read_text().splitlines()
-    ]
-    provenance = json.loads((batch_dir / "provenance.json").read_text())
-    scorecards = json.loads((batch_dir / "scorecards.json").read_text())
-
-    assert len(runs) == len(evidence) == len(provenance["links"]) == 66
-    assert {row["run_ref"] for row in evidence} == {run["run_id"] for run in runs}
-    assert all(row["run_ref"].startswith("RUN-") for row in evidence)
-    assert all(experiment["hypothesis_ref"].startswith("HYP-") for experiment in experiments)
-    assert all(experiment["strategy_version_ref"].startswith("SV-") for experiment in experiments)
-    assert not any(
-        "PARAMETER-SENSITIVITY" in experiment["hypothesis_ref"]
-        or "BASELINE-V1" in experiment["strategy_version_ref"]
-        for experiment in experiments
-    )
-    assert {link["run_status"] for link in provenance["links"]} == {"COMPLETED"}
-    assert all(link["source_refs"] for link in provenance["links"])
-    assert scorecards["validation_state"] == "UNVALIDATED"
-    assert scorecards["approval_state"] == "NOT_ELIGIBLE"
-    assert all(card["approval_state"] == "NOT_ELIGIBLE" for card in scorecards["candidates"])
-    assert not any("approval_score" in card for card in scorecards["candidates"])
-
-
-@pytest.mark.parametrize("artifact", ["provenance.json", "scorecards.json"])
-def test_lineage_artifact_tampering_is_detected(tmp_path: Path, artifact: str) -> None:
-    root, dataset, research = _repo(tmp_path)
-    result = _run(root, dataset, research)
-    path = research / str(result["lab_id"]) / artifact
-    path.write_text("{}\n", encoding="utf-8")
-    with pytest.raises(RuntimeError, match="artifact digest mismatch"):
-        _run(root, dataset, research)
-
-
-def test_alternate_repo_root_derives_interpreter_probe_and_cwd(tmp_path: Path) -> None:
-    root, dataset, research = _repo(tmp_path)
-    observed: dict[str, object] = {}
-
-    def sweep(command: list[str], **kwargs: Any) -> subprocess.CompletedProcess[str]:
-        observed["command"] = command
-        observed["cwd"] = kwargs["cwd"]
-        _write_trials(Path(command[command.index("--out") + 1]))
-        return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
-
-    _run(root, dataset, research, sweep)
-    command = observed["command"]
-    assert isinstance(command, list)
-    assert command[:2] == [
-        str(root / "engines/vectorbt/.venv/bin/python"),
-        str(root / "engines/vectorbt/probe_sweep.py"),
-    ]
-    assert observed["cwd"] == root
-
-
-@pytest.mark.parametrize(
-    ("field", "replacement"),
-    [
-        (
-            "counts",
-            {
-                "experiments": 3,
-                "trials": 66,
-                "completed_trials": 65,
-                "failed_trials": 1,
-                "evidence_records": 3,
-            },
-        ),
-        ("blockers", []),
-        ("score_states", {"data_integrity_and_freshness": "PASS"}),
-        ("commands", [["python", "unsafe.py"]]),
-        ("mode", "PAPER"),
-    ],
-)
-def test_reuse_rejects_resealed_semantic_field_tampering(
-    tmp_path: Path, field: str, replacement: object
-) -> None:
-    root, dataset, research = _repo(tmp_path)
-    result = _run(root, dataset, research)
-    result_path = research / str(result["lab_id"]) / "lab_run.json"
-    stored = json.loads(result_path.read_text())
-    stored[field] = replacement
-    _reseal_result(result_path, stored)
-    with pytest.raises(RuntimeError):
-        _run(root, dataset, research)
-
-
-def test_reuse_rejects_resealed_evidence_and_inventory_tampering(tmp_path: Path) -> None:
-    root, dataset, research = _repo(tmp_path)
-    result = _run(root, dataset, research)
-    batch_dir = research / str(result["lab_id"])
-    evidence_path = batch_dir / "trading_evidence.jsonl"
-    rows = [json.loads(line) for line in evidence_path.read_text().splitlines()]
-    rows[0]["run_ref"] = "EXP-VECTORBT-B4-F1"
-    evidence_path.write_text(
-        "".join(json.dumps(row, sort_keys=True, separators=(",", ":")) + "\n" for row in rows),
-        encoding="utf-8",
-    )
-    manifest_path = batch_dir / "manifest.json"
-    manifest = json.loads(manifest_path.read_text())
-    manifest["artifacts"]["trading_evidence.jsonl"] = _sha256(evidence_path)
-    manifest_path.write_text(
-        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
-    result_path = batch_dir / "lab_run.json"
-    stored = json.loads(result_path.read_text())
-    stored["artifact_manifest_sha256"] = _sha256(manifest_path)
-    _reseal_result(result_path, stored)
-    with pytest.raises(RuntimeError, match="evidence semantics"):
-        _run(root, dataset, research)
-
-    # A fresh batch proves unrecorded filesystem additions are also rejected.
-    root2, dataset2, research2 = _repo(tmp_path / "inventory")
-    result2 = _run(root2, dataset2, research2)
-    (research2 / str(result2["lab_id"]) / "unexpected.txt").write_text("tamper")
-    with pytest.raises(RuntimeError, match="filesystem inventory"):
-        _run(root2, dataset2, research2)
 
 
 def test_actual_bisection_and_all_signal_failures_are_retained() -> None:

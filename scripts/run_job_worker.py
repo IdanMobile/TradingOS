@@ -11,7 +11,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-from tios.services.jobs import Job, JobStore, JobType, Worker, default_database
+from tios.services.jobs import Job, JobStore, Worker, default_database
 from tios.services.jobs.runner import repository_root, run_loop_until_interrupted
 from tios.services.jobs.store import MAX_LIST_LIMIT
 
@@ -48,16 +48,6 @@ def parser() -> argparse.ArgumentParser:
     subcommands = result.add_subparsers(dest="command", required=True)
     subcommands.add_parser("init", help="initialize or migrate the database")
 
-    enqueue = subcommands.add_parser("enqueue", help="enqueue an allowlisted job")
-    enqueue_commands = enqueue.add_subparsers(dest="job", required=True)
-    lab = enqueue_commands.add_parser("research-lab", help="enqueue offline Research Lab v0")
-    lab.add_argument("--key", required=True, help="immutable idempotency key")
-    lab.add_argument("--due", type=_datetime)
-    lab.add_argument("--max-attempts", type=int, default=1)
-    lab.add_argument("--timeout", type=int, default=3600)
-    lab.add_argument("--interval", type=int, help="recurrence interval in seconds")
-    lab.add_argument("--next-due", type=_datetime)
-
     listing = subcommands.add_parser("list", help="list retained jobs")
     listing.add_argument("--limit", type=_list_limit, default=100)
     status = subcommands.add_parser("status", help="show one retained job")
@@ -81,27 +71,6 @@ def main() -> None:
         store.initialize()
         if args.command == "init":
             print(store.path)
-        elif args.command == "enqueue":
-            if args.interval is not None:
-                schedule = store.add_schedule(
-                    args.key,
-                    JobType.RESEARCH_LAB_V0,
-                    args.interval,
-                    args.next_due or args.due or datetime.now(tz=UTC),
-                    max_attempts=args.max_attempts,
-                    timeout_seconds=args.timeout,
-                )
-                print(json.dumps(asdict(schedule), default=_json_default, indent=2))
-            else:
-                _show(
-                    store.enqueue(
-                        JobType.RESEARCH_LAB_V0,
-                        args.key,
-                        due_at=args.due,
-                        max_attempts=args.max_attempts,
-                        timeout_seconds=args.timeout,
-                    )
-                )
         elif args.command == "list":
             jobs = [asdict(job) for job in store.list(limit=args.limit)]
             print(json.dumps(jobs, default=_json_default))

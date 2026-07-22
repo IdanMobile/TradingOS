@@ -1,5 +1,19 @@
 # Package Changelog
 
+## v8.126 — 2026-07-22 — Closed-family legacy execution guard
+
+- `src/tios/services/jobs/runner.py` and `scripts/run_research_lab_v0.py`: enforce one fixed
+  D-079/D-112 closure reason before the legacy `RESEARCH_LAB_V0` worker handler, command
+  construction, subprocess creation, hashing, evaluation, or output creation. Injected retained
+  queue rows terminate as `CANCELLED` without retry; historical artifact verification remains
+  readable.
+- `scripts/run_job_worker.py`: remove the retired enqueue surface while preserving queue history,
+  status, cancellation, and worker commands.
+- `tests/test_jobs.py` and `tests/test_research_lab_v0.py`: cover the terminal worker guard,
+  independent direct-entry guard, absent CLI launch surface, and retained historical artifact
+  compatibility. These source and test paths are not manifest-listed, so no manifest rehash is
+  required.
+
 ## v8.125 — 2026-07-22 — Fixed-purpose legacy research-jobs quarantine capability
 
 - `src/tios/services/jobs/store.py`: added a byte-read-only, content-hashed plan and an atomic

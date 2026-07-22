@@ -21,6 +21,7 @@ from register_vectorbt_trials import register_trials
 
 from tios.evidence import EvidenceRecord, EvidenceRegistry
 from tios.research_assets import HypothesisRegistry, ResearchSourceRegistry
+from tios.services.jobs.runner import LEGACY_RESEARCH_LAB_V0_CLOSURE_REASON
 from tios.strategy.spec import CanonicalStrategySpec, parse_spec
 from tios.strategy.validator import validate_yaml
 from tios.strategy.version import StrategyVersion, create_version
@@ -761,6 +762,10 @@ def run_lab(
     repo_root: Path = ROOT,
     research_root: Path = OUTPUT_ROOT,
 ) -> dict[str, Any]:
+    raise RuntimeError(LEGACY_RESEARCH_LAB_V0_CLOSURE_REASON)
+
+    # Historical implementation retained for reading and verifying existing
+    # artifacts only. The closed family cannot be executed or re-evaluated.
     repo_root, research_root = repo_root.resolve(), research_root.resolve()
     approved_research_root = (repo_root / "artifacts/research_lab/v0").resolve()
     if not research_root.is_relative_to(approved_research_root):

@@ -22,6 +22,9 @@ from tios.services.jobs.store import Job, JobState, JobStore, JobType
 
 SANDBOX_EXEC = Path("/usr/bin/sandbox-exec")
 SANDBOX_PROFILE = "(version 1)(allow default)(deny network*)"
+LEGACY_RESEARCH_LAB_V0_CLOSURE_REASON = (
+    "retired by D-079/D-112 closed-family governance: RESEARCH_LAB_V0 execution is prohibited"
+)
 
 
 class Process(Protocol):
@@ -263,6 +266,10 @@ def run_research_lab(
     heartbeat: Callable[[], None] = lambda: None,
     poll_seconds: float = 0.1,
 ) -> JobResult:
+    raise JobCancelled(LEGACY_RESEARCH_LAB_V0_CLOSURE_REASON)
+
+    # Retained below for historical artifact-verification compatibility. This
+    # execution path is unreachable while D-079/D-112 remain authoritative.
     root = root.resolve()
     if job.payload:
         raise ValueError("RESEARCH_LAB_V0 does not accept path or command overrides")
@@ -366,13 +373,7 @@ class Worker:
 
     def _execute(self, job: Job, heartbeat: Callable[[], None]) -> JobResult:
         if job.job_type is JobType.RESEARCH_LAB_V0:
-            return run_research_lab(
-                self.root,
-                job,
-                popen=self.popen,
-                cancelled=lambda: self.store.is_cancel_requested(job.job_id, self.owner),
-                heartbeat=heartbeat,
-            )
+            raise JobCancelled(LEGACY_RESEARCH_LAB_V0_CLOSURE_REASON)
         raise RuntimeError(f"no safe handler is configured for {job.job_type.value}")
 
     def _heartbeat(self, job: Job) -> Callable[[], None]:

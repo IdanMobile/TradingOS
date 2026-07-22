@@ -797,150 +797,77 @@ def test_cli_rejects_unbounded_list_limits(limit: str) -> None:
         jobs_cli.parser().parse_args(["list", "--limit", limit])
 
 
-def test_fixed_command_safe_environment_and_verified_artifact(
+def test_legacy_worker_is_terminally_cancelled_before_helper_or_popen(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     root = tmp_path / "repo"
-    sandbox = _sandbox(root, monkeypatch)
-    response, result_path = _lab_artifacts(root)
-    calls: list[tuple[list[str], dict[str, Any]]] = []
-    monkeypatch.setenv("SHOULD_NOT_LEAK", "secret")
-
-    def popen(command: list[str], **kwargs: Any) -> FakeProcess:
-        calls.append((command, kwargs))
-        return FakeProcess(json.dumps(response))
-
     store = _store(root)
-    queued = store.enqueue(JobType.RESEARCH_LAB_V0, "lab")
-    finished = Worker(store, root=root, owner="test", popen=popen).run_once()
-    assert finished is not None and finished.state is JobState.SUCCEEDED
-    assert finished.result_digest == hashlib.sha256(result_path.read_bytes()).hexdigest()
-    assert finished.result_reused is True
-    command, kwargs = calls[0]
-    assert command[:3] == [str(sandbox), "-p", runner.SANDBOX_PROFILE]
-    assert command[-1] == str(root / "scripts/run_research_lab_v0.py")
-    assert kwargs["start_new_session"] is True and "shell" not in kwargs
-    assert kwargs["env"]["TIOS_AI_MODE"] == "mock"
-    assert "SHOULD_NOT_LEAK" not in kwargs["env"]
-    assert set(kwargs["env"]) == {
-        "HOME",
-        "LANG",
-        "PATH",
-        "PYTHONDONTWRITEBYTECODE",
-        "PYTHONHASHSEED",
-        "PYTHONNOUSERSITE",
-        "TIOS_AI_MODE",
-        "TMPDIR",
-        "TZ",
-    }
-    assert store.get(queued.job_id) == finished
-    assert {member.value for member in JobType} == {
-        "RESEARCH_LAB_V0",
-        "DATA_QUALITY",
-        "REPORT_REFRESH",
-    }
-
-
-@pytest.mark.parametrize("system", ["Linux", "Windows", "FreeBSD"])
-def test_execution_fails_closed_without_network_isolation(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, system: str
-) -> None:
-    root = tmp_path / "repo"
-    (root / "scripts").mkdir(parents=True)
-    (root / "scripts/run_research_lab_v0.py").write_text("# fake\n", encoding="utf-8")
-    monkeypatch.setattr(runner.platform, "system", lambda: system)
+    queued = store.enqueue(JobType.RESEARCH_LAB_V0, "injected-legacy", max_attempts=3)
     called = False
 
-    def popen(*_: Any, **__: Any) -> FakeProcess:
+    def forbidden(*_: Any, **__: Any) -> FakeProcess:
         nonlocal called
         called = True
-        return FakeProcess()
+        raise AssertionError("legacy execution boundary must not be reached")
 
-    store = _store(root)
-    store.enqueue(JobType.RESEARCH_LAB_V0, "isolated")
-    failed = Worker(store, root=root, popen=popen).run_once()
-    assert failed is not None and failed.state is JobState.FAILED
-    assert "network isolation is unavailable" in (failed.error or "")
+    monkeypatch.setattr(runner, "run_research_lab", forbidden)
+    retained = Worker(store, root=root, owner="guard", popen=forbidden).run_once()
+    assert retained is not None and retained.state is JobState.CANCELLED
+    assert retained.attempt_count == 1 and retained.max_attempts == 3
+    assert retained.error == runner.LEGACY_RESEARCH_LAB_V0_CLOSURE_REASON
+    assert retained.result_artifact_ref is None and retained.result_digest is None
+    assert retained.cancel_requested is True
+    assert store.get(queued.job_id) == retained
     assert not called
 
 
-def test_queued_and_running_cancellation_terminate_process_group(
+def test_direct_research_lab_rejects_before_command_or_popen(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     root = tmp_path / "repo"
-    _sandbox(root, monkeypatch)
-    store = _store(root)
-    queued = store.enqueue(JobType.RESEARCH_LAB_V0, "queued")
-    cancelled = store.cancel(queued.job_id)
-    assert cancelled.state is JobState.CANCELLED and cancelled.cancel_requested
+    job = _store(root).enqueue(JobType.RESEARCH_LAB_V0, "direct-legacy")
+    called = False
 
-    running = store.enqueue(JobType.RESEARCH_LAB_V0, "running")
-    process = FakeProcess(running=True)
-    signals: list[int] = []
+    def forbidden(*_: Any, **__: Any) -> FakeProcess:
+        nonlocal called
+        called = True
+        raise AssertionError("command construction or Popen must not occur")
 
-    def popen(*_: Any, **__: Any) -> FakeProcess:
-        store.cancel(running.job_id)
-        return process
-
-    def kill_group(pid: int, signum: int) -> None:
-        assert pid == process.pid
-        signals.append(signum)
-        process.returncode = -signum
-
-    monkeypatch.setattr(runner.os, "killpg", kill_group)
-    result = Worker(store, root=root, owner="worker", popen=popen).run_once()
-    assert result is not None and result.state is JobState.CANCELLED
-    assert result.cancel_requested and result.result_artifact_ref is None
-    assert signals == [signal.SIGTERM]
+    monkeypatch.setattr(runner, "research_lab_command", forbidden)
+    with pytest.raises(runner.JobCancelled) as error:
+        runner.run_research_lab(root, job, popen=forbidden)
+    assert str(error.value) == runner.LEGACY_RESEARCH_LAB_V0_CLOSURE_REASON
+    assert not called
 
 
-def test_completion_cancellation_race_records_cancelled(
+def test_cli_has_no_legacy_enqueue_surface() -> None:
+    for command in (["enqueue", "research-lab", "--key", "legacy"], ["enqueue"]):
+        with pytest.raises(SystemExit):
+            jobs_cli.parser().parse_args(command)
+    commands = (
+        ["init"],
+        ["list"],
+        ["status", "JOB-x"],
+        ["cancel", "JOB-x"],
+        ["run-once"],
+        ["run-loop"],
+    )
+    for command in commands:
+        assert jobs_cli.parser().parse_args(command).command == command[0]
+
+
+def test_retained_artifact_verification_remains_available(tmp_path: Path) -> None:
+    root = tmp_path / "repo"
+    response, result_path = _lab_artifacts(root)
+    verified = runner._verify_artifacts(root, response)  # noqa: SLF001
+    assert verified.digest == hashlib.sha256(result_path.read_bytes()).hexdigest()
+    assert verified.reused is True
+
+
+def test_retained_artifact_mutation_and_unconfined_identity_are_rejected(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     root = tmp_path / "repo"
-    _sandbox(root, monkeypatch)
-    response, _ = _lab_artifacts(root)
-    store = _store(root)
-    queued = store.enqueue(JobType.RESEARCH_LAB_V0, "race")
-
-    def popen(*_: Any, **__: Any) -> FakeProcess:
-        store.cancel(queued.job_id)
-        return FakeProcess(json.dumps(response))
-
-    result = Worker(store, root=root, owner="worker", popen=popen).run_once()
-    assert result is not None and result.state is JobState.CANCELLED
-    assert result.result_digest is None and result.error == "cancelled by operator"
-
-
-def test_timeout_kills_process_group_and_retains_failure(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    root = tmp_path / "repo"
-    _sandbox(root, monkeypatch)
-    store = _store(root)
-    store.enqueue(JobType.RESEARCH_LAB_V0, "timeout", timeout_seconds=1)
-    process = FakeProcess(running=True)
-    signals: list[int] = []
-    ticks = iter((0.0, 0.0, 2.0))
-    monkeypatch.setattr(runner.time, "monotonic", lambda: next(ticks))
-    monkeypatch.setattr(runner.time, "sleep", lambda _: None)
-
-    def kill_group(_: int, signum: int) -> None:
-        signals.append(signum)
-        process.returncode = -signum
-
-    monkeypatch.setattr(runner.os, "killpg", kill_group)
-    result = Worker(store, root=root, popen=lambda *_args, **_kwargs: process).run_once()
-    assert result is not None and result.state is JobState.FAILED
-    assert "JobTimedOut" in (result.error or "")
-    assert signals == [signal.SIGTERM] and process.poll() is not None
-
-
-def test_artifact_mutation_and_unconfined_identity_are_rejected(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    root = tmp_path / "repo"
-    _sandbox(root, monkeypatch)
     response, result_path = _lab_artifacts(root)
     original = runner._read_descriptor  # noqa: SLF001
     reads = 0
@@ -954,69 +881,17 @@ def test_artifact_mutation_and_unconfined_identity_are_rejected(
         return data
 
     monkeypatch.setattr(runner, "_read_descriptor", mutating)
-    store = _store(root)
-    store.enqueue(JobType.RESEARCH_LAB_V0, "mutation")
-    failed = Worker(
-        store,
-        root=root,
-        popen=lambda *_args, **_kwargs: FakeProcess(json.dumps(response)),
-    ).run_once()
-    assert failed is not None and failed.state is JobState.FAILED
-    assert "changed while being verified" in (failed.error or "")
-
+    with pytest.raises(RuntimeError, match="changed while being verified"):
+        runner._verify_artifacts(root, response)  # noqa: SLF001
     monkeypatch.setattr(runner, "_read_descriptor", original)
-    store.enqueue(JobType.RESEARCH_LAB_V0, "escape")
-    escaped = Worker(
-        store,
-        root=root,
-        popen=lambda *_args, **_kwargs: FakeProcess(
-            json.dumps({"status": "COMPLETED", "lab_id": "../escape"})
-        ),
-    ).run_once()
-    assert escaped is not None and escaped.state is JobState.FAILED
-    assert "invalid artifact identity" in (escaped.error or "")
+    with pytest.raises(RuntimeError, match="invalid artifact identity"):
+        runner._verify_artifacts(root, {"status": "COMPLETED", "lab_id": "../escape"})  # noqa: SLF001
 
 
-def test_artifact_directory_swap_never_reads_outside(
+def test_retained_artifact_file_swap_never_follows_symlink(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     root = tmp_path / "repo"
-    _sandbox(root, monkeypatch)
-    response, _ = _lab_artifacts(root)
-    outside = tmp_path / "outside"
-    outside.mkdir()
-    (outside / "lab_run.json").write_text(json.dumps(response), encoding="utf-8")
-    (outside / "manifest.json").write_text("{}", encoding="utf-8")
-    original = runner._open_artifact_directory  # noqa: SLF001
-    swapped = False
-
-    def swap_after_open(repo: Path, *components: str) -> int:
-        nonlocal swapped
-        descriptor = original(repo, *components)
-        if not swapped and components[-1] == "LAB-TEST":
-            batch = root / "artifacts/research_lab/v0/LAB-TEST"
-            batch.rename(root / "artifacts/research_lab/v0/LAB-HELD")
-            batch.symlink_to(outside, target_is_directory=True)
-            swapped = True
-        return descriptor
-
-    monkeypatch.setattr(runner, "_open_artifact_directory", swap_after_open)
-    store = _store(root)
-    store.enqueue(JobType.RESEARCH_LAB_V0, "swap")
-    failed = Worker(
-        store,
-        root=root,
-        popen=lambda *_args, **_kwargs: FakeProcess(json.dumps(response)),
-    ).run_once()
-    assert failed is not None and failed.state is JobState.FAILED
-    assert failed.result_artifact_ref is None
-
-
-def test_artifact_file_swap_never_follows_symlink(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    root = tmp_path / "repo"
-    _sandbox(root, monkeypatch)
     response, _ = _lab_artifacts(root)
     outside = tmp_path / "outside-result.json"
     outside.write_text(json.dumps(response), encoding="utf-8")
@@ -1032,93 +907,90 @@ def test_artifact_file_swap_never_follows_symlink(
         return original(parent_fd, name, heartbeat)
 
     monkeypatch.setattr(runner, "_stable_bytes_at", swap_file)
-    store = _store(root)
-    store.enqueue(JobType.RESEARCH_LAB_V0, "file-swap")
-    failed = Worker(
-        store,
-        root=root,
-        popen=lambda *_args, **_kwargs: FakeProcess(json.dumps(response)),
-    ).run_once()
-    assert failed is not None and failed.state is JobState.FAILED
+    with pytest.raises(OSError):
+        runner._verify_artifacts(root, response)  # noqa: SLF001
     assert outside.read_text(encoding="utf-8") == json.dumps(response)
 
 
-def test_lease_renews_during_slow_artifact_verification(
+def test_retained_artifact_directory_replacement_never_reads_outside(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     root = tmp_path / "repo"
-    _sandbox(root, monkeypatch)
     response, _ = _lab_artifacts(root)
-    store = _store(root)
-    clock = [NOW]
-    ticks = iter(float(index) for index in range(100))
-    monkeypatch.setattr(store_module, "utc_now", lambda: clock[0])
-    monkeypatch.setattr(runner.time, "monotonic", lambda: next(ticks))
-    queued = store.enqueue(JobType.RESEARCH_LAB_V0, "slow", timeout_seconds=20)
-    original = runner._read_descriptor  # noqa: SLF001
-    reclaim_attempts: list[object] = []
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "lab_run.json").write_text(json.dumps(response), encoding="utf-8")
+    (outside / "manifest.json").write_text("{}", encoding="utf-8")
+    (outside / "retained.txt").write_text("outside-secret", encoding="utf-8")
+    original = runner._open_artifact_directory  # noqa: SLF001
+    swapped = False
 
-    def slow_read(descriptor: int, heartbeat: Any) -> bytes:
-        clock[0] = NOW + timedelta(seconds=4)
-        payload = original(descriptor, heartbeat)
-        reclaim_attempts.append(
-            store.claim("contender", now=NOW + timedelta(seconds=6), lease_seconds=1)
-        )
-        return payload
+    def swap_after_open(repo: Path, *components: str) -> int:
+        nonlocal swapped
+        descriptor = original(repo, *components)
+        if not swapped and components[-1] == "LAB-TEST":
+            batch = root / "artifacts/research_lab/v0/LAB-TEST"
+            batch.rename(root / "artifacts/research_lab/v0/LAB-HELD")
+            batch.symlink_to(outside, target_is_directory=True)
+            swapped = True
+        return descriptor
 
-    monkeypatch.setattr(runner, "_read_descriptor", slow_read)
-    finished = Worker(
-        store,
-        root=root,
-        owner="worker",
-        popen=lambda *_args, **_kwargs: FakeProcess(json.dumps(response)),
-        lease_seconds=1,
-    ).run_once()
-    assert finished is not None and finished.state is JobState.SUCCEEDED
-    assert reclaim_attempts and all(attempt is None for attempt in reclaim_attempts)
-    assert store.get(queued.job_id) == finished
+    monkeypatch.setattr(runner, "_open_artifact_directory", swap_after_open)
+    with pytest.raises(OSError):
+        runner._verify_artifacts(root, response)  # noqa: SLF001
+    assert (outside / "retained.txt").read_text(encoding="utf-8") == "outside-secret"
 
 
-def test_lease_renews_while_subprocess_is_running(
+def test_process_group_stop_helper_still_terminates_running_children(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    process = FakeProcess(running=True)
+    signals: list[int] = []
+
+    def kill_group(pid: int, signum: int) -> None:
+        assert pid == process.pid
+        signals.append(signum)
+        process.returncode = -signum
+
+    monkeypatch.setattr(runner.os, "killpg", kill_group)
+    runner._stop_process_group(process)  # noqa: SLF001
+    assert signals == [signal.SIGTERM]
+    assert process.poll() is not None
+
+
+def test_process_group_stop_helper_escalates_for_unresponsive_child(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    process = FakeProcess(running=True)
+    signals: list[int] = []
+
+    def kill_group(pid: int, signum: int) -> None:
+        assert pid == process.pid
+        signals.append(signum)
+        if signum == signal.SIGKILL:
+            process.returncode = -signum
+
+    monkeypatch.setattr(runner.os, "killpg", kill_group)
+    runner._stop_process_group(process, grace_seconds=0)  # noqa: SLF001
+    assert signals == [signal.SIGTERM, signal.SIGKILL]
+    assert process.poll() == -signal.SIGKILL
+
+
+def test_lease_heartbeat_failure_propagates_before_result_recording(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = tmp_path / "repo"
-    _sandbox(root, monkeypatch)
-    response, _ = _lab_artifacts(root)
-    store = _store(root)
-    clock = [NOW]
-    ticks = iter(float(index) for index in range(100))
-    monkeypatch.setattr(store_module, "utc_now", lambda: clock[0])
-    monkeypatch.setattr(runner.time, "monotonic", lambda: next(ticks))
-    queued = store.enqueue(JobType.RESEARCH_LAB_V0, "waiting", timeout_seconds=20)
-    process = FakeProcess(json.dumps(response), running=True)
-    polls = 0
-    reclaim_attempts: list[object] = []
+    store = _store(tmp_path)
+    store.enqueue(JobType.RESEARCH_LAB_V0, "heartbeat-failure")
+    claimed = store.claim("worker", lease_seconds=1)
+    assert claimed is not None
 
-    def poll() -> int | None:
-        nonlocal polls
-        polls += 1
-        if polls == 4:
-            process.returncode = 0
-        return process.returncode
+    def reject_renewal(*_: Any, **__: Any) -> None:
+        raise RuntimeError("lease heartbeat rejected")
 
-    def advance(_: float) -> None:
-        clock[0] += timedelta(seconds=2)
-        if clock[0] == NOW + timedelta(seconds=6):
-            reclaim_attempts.append(store.claim("contender", now=clock[0], lease_seconds=1))
-
-    monkeypatch.setattr(process, "poll", poll)
-    monkeypatch.setattr(runner.time, "sleep", advance)
-    finished = Worker(
-        store,
-        root=root,
-        owner="worker",
-        popen=lambda *_args, **_kwargs: process,
-        lease_seconds=1,
-    ).run_once()
-    assert finished is not None and finished.state is JobState.SUCCEEDED
-    assert reclaim_attempts == [None]
-    assert store.get(queued.job_id) == finished
+    monkeypatch.setattr(store, "renew_lease", reject_renewal)
+    heartbeat = Worker(store, owner="worker", lease_seconds=1)._heartbeat(claimed)  # noqa: SLF001
+    with pytest.raises(RuntimeError, match="lease heartbeat rejected"):
+        heartbeat()
 
 
 def test_expired_cancelled_lease_is_recovered_as_cancelled(tmp_path: Path) -> None:
