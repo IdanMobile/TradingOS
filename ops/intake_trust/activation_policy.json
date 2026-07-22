@@ -1,0 +1,1 @@
+{"domain_separator":"TIOS/INTAKE-ACTIVATION-POLICY/v1","execution_authority":"NONE","maximum_evidence_age_seconds":86400,"maximum_forward_jump_seconds":300,"maximum_receipt_lifetime_seconds":3600,"persisted_time_path":"/private/var/db/tios-intake/authority/time/last_observed_utc","require_non_decreasing_time":true,"schema_version":1,"time_source":"ROOT_OWNED_OS_WALL_CLOCK"}

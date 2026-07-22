@@ -1,5 +1,32 @@
 # Package Changelog
 
+## v8.129 — 2026-07-22 — Pending-only activation-authority source contracts
+
+- Added strict canonical `AuthorityGenesis`, domain-separated access/data/operator evidence,
+  generic monotonic-head, and activation-status contracts. Receipts are closed to
+  `ACTIVE_NO_DECISIONS` or explicit `BLOCKED`, bind exact genesis/head/policy/trust digests, and
+  retain `execution_authority=NONE`. Cross-record validation accepts only an active receipt,
+  requires the exact `INTAKE-ACTIVATION-AUTHORITY` genesis stream, exact supplied bindings, the
+  ordered genesis/head/receipt/observation time chain, and an unexpired receipt; it performs no
+  persistence or admission.
+- Added a deterministic content-addressed activation **source** bundle, canonical policy, and a
+  bounded native Swift syntax validator. The reserved `activate.sh` surface is planning/status
+  only; activate/init/install commands are absent and fail closed. No source here uses `sudo`,
+  creates root state, signs evidence, mutates history, admits a decision, or reaches a strategy,
+  campaign, venue, order, live, or real-money path.
+- Documented the future trusted-time model: root-owned OS wall clock plus a persisted
+  nondecreasing last observation, with refusal on rollback, excessive unexplained forward jumps,
+  expiry, unsafe state, or ambiguity. A malicious root/operator is explicitly outside this local
+  threat model and requires separate external transparency or hardware-backed assurance.
+- Added negative contract, domain-substitution, monotonicity, binding, expiry, command-surface,
+  blocked-receipt, stream/time inversion, deterministic-bundle, symlink/hardlink, private-output,
+  metacharacter-path JSON, bounded-input, differential token grammar, canonical Swift/Python, and
+  status/blocker tests. The builder revalidates source/copy bytes and types around copying and
+  verifies no-clobber publication in caller-owned `0700` output, while explicitly excluding root
+  and malicious same-user races from its guarantees. This release installs, initializes,
+  activates, and authorizes nothing. All new implementation and test paths plus this changelog are
+  nonmanifest; no immutable or manifest-listed file changed.
+
 ## v8.128 — 2026-07-22 — External intake trust setup source only
 
 - Added strict, immutable, exact-key external trust contracts for reviewer public credentials,
