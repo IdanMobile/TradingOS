@@ -474,7 +474,11 @@ _CLEARED_STOP_STATUSES = {"Cancelled", "Deactivated", "Rejected"}
 def stop_order_status(
     order_id: str, api_key: str, secret: str, transport: pf.Transport
 ) -> dict[str, Any]:
-    """Fetch one stop through the existing authenticated realtime-order path."""
+    """Fetch one stop through a fixed, non-overridable spot StopOrder query.
+
+    The response does not always echo `orderFilter`; this request provenance is therefore
+    part of conditional-order identity together with the strict response checks below.
+    """
     response = pf._signed_get(
         transport,
         pf.DEMO_BASE,
@@ -542,17 +546,23 @@ def _protective_venue_row_identity(
     expected_trigger: Any = None,
     expected_qty: Any = None,
 ) -> bool:
-    """Strict identity for a venue row that may support an ACTIVE protection claim."""
+    """Strict spot identity for a row returned by the fixed StopOrder query above."""
     trigger_direction = row.get("triggerDirection")
     if (
         (requested_order_id is not None and str(row.get("orderId", "")) != requested_order_id)
         or row.get("symbol") != SYMBOL
         or row.get("side") != "Sell"
         or row.get("orderType") != "Market"
-        or row.get("orderFilter") != "StopOrder"
+        or ("orderFilter" in row and row.get("orderFilter") != "StopOrder")
+        or row.get("stopOrderType") != "Stop"
         or not isinstance(trigger_direction, int)
         or isinstance(trigger_direction, bool)
-        or trigger_direction != 2
+        # Spot reports 0 (venue-default/unspecified); 2 is also accepted for a falling
+        # trigger. Conditional identity comes from the fixed filtered query,
+        # stopOrderType=Stop, and the exact retained trigger bound—not direction alone.
+        or trigger_direction not in {0, 2}
+        # Observed spot rows include marketUnit, but some responses may omit it. When
+        # present, it must prove the quantity is denominated in the base coin.
         or ("marketUnit" in row and row.get("marketUnit") != "baseCoin")
     ):
         return False

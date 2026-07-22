@@ -101,10 +101,10 @@ class FakeVenue:
                 "symbol": str(order.get("symbol")),
                 "side": str(order.get("side")),
                 "orderType": str(order.get("orderType")),
-                "orderFilter": str(order.get("orderFilter")),
-                # The request encoder uses a string; Bybit's realtime row reports this
-                # enum as an integer, which is the strict confirmation contract.
-                "triggerDirection": int(order["triggerDirection"]),
+                "stopOrderType": "Stop",
+                # Observed spot realtime rows use 0 (venue-default/unspecified).
+                "triggerDirection": 0,
+                "marketUnit": "baseCoin",
                 "triggerPrice": str(order.get("triggerPrice")),
                 "qty": str(order.get("qty")),
             }
@@ -373,8 +373,8 @@ def test_ambiguous_wrong_bound_row_stays_unsafe_in_heartbeat(lane_dirs: Path) ->
         "symbol": "ETHUSDT",
         "side": "Sell",
         "orderType": "Market",
-        "orderFilter": "StopOrder",
-        "triggerDirection": 2,
+        "stopOrderType": "Stop",
+        "triggerDirection": 0,
         "triggerPrice": "85",
         "qty": "0.01",
     }
@@ -419,8 +419,8 @@ def test_confirmed_legacy_stop_is_locally_enriched_without_any_venue_mutation(
             "symbol": "ETHUSDT",
             "side": "Sell",
             "orderType": "Market",
-            "orderFilter": "StopOrder",
-            "triggerDirection": 2,
+            "stopOrderType": "Stop",
+            "triggerDirection": 0,
             "marketUnit": "baseCoin",
         }
     )

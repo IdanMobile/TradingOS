@@ -93,8 +93,8 @@ class FakeStopVenue:
                 "symbol": "ETHUSDT",
                 "side": "Sell",
                 "orderType": "Market",
-                "orderFilter": "StopOrder",
-                "triggerDirection": 2,
+                "stopOrderType": "Stop",
+                "triggerDirection": 0,
                 "marketUnit": "baseCoin",
                 "triggerPrice": placed.get("triggerPrice"),
                 "qty": placed.get("qty"),
@@ -287,6 +287,25 @@ def test_place_stop_order_quantizes_trigger_up_in_venue_payload() -> None:
     # 1583.0145 was rejected by Bybit for excess precision; a long stop rounds up so
     # venue protection is never looser than the exact local -15% risk boundary.
     assert order["triggerPrice"] == "1583.02" and order["qty"] == "0.01341"
+
+
+def test_stop_status_query_provenance_is_fixed_to_exact_spot_stop_order() -> None:
+    seen: dict[str, object] = {}
+
+    def transport(url: str, headers: dict[str, str]) -> bytes:
+        seen.update({"url": url, "headers": headers})
+        return json.dumps(
+            {"result": {"list": [{"orderId": "TRACKED", "orderStatus": "Cancelled"}]}}
+        ).encode()
+
+    row = lane.stop_order_status("TRACKED", "k", "s", transport)
+    query = parse_qs(urlsplit(str(seen["url"])).query)
+
+    assert row["orderId"] == "TRACKED"
+    assert query["category"] == ["spot"]
+    assert query["symbol"] == [lane.SYMBOL]
+    assert query["orderId"] == ["TRACKED"]
+    assert query["orderFilter"] == ["StopOrder"]
 
 
 def test_apply_place_records_new_resting_stop() -> None:
@@ -510,8 +529,9 @@ def test_legacy_metadata_backfill_refuses_retained_only_and_ambiguous_evidence()
         "symbol": "ETHUSDT",
         "side": "Sell",
         "orderType": "Market",
-        "orderFilter": "StopOrder",
-        "triggerDirection": 2,
+        "stopOrderType": "Stop",
+        "triggerDirection": 0,
+        "marketUnit": "baseCoin",
     }
     args = (
         Decimal("0.0134"),
@@ -535,8 +555,9 @@ def _valid_legacy_confirmation() -> dict:
         "symbol": "ETHUSDT",
         "side": "Sell",
         "orderType": "Market",
-        "orderFilter": "StopOrder",
-        "triggerDirection": 2,
+        "stopOrderType": "Stop",
+        "triggerDirection": 0,
+        "marketUnit": "baseCoin",
     }
 
 
@@ -571,6 +592,19 @@ def test_legacy_metadata_backfill_accepts_exact_protective_semantics() -> None:
     assert migrated["order_id"] == "OLD"
 
 
+@pytest.mark.parametrize("direction", [0, 2])
+def test_spot_stop_directions_zero_and_two_are_accepted(direction: int) -> None:
+    confirmation = {**_valid_legacy_confirmation(), "triggerDirection": direction}
+
+    assert _try_legacy_backfill(confirmation)["risk_fraction"] == "0.15"
+
+
+def test_present_exact_response_order_filter_is_accepted() -> None:
+    confirmation = {**_valid_legacy_confirmation(), "orderFilter": "StopOrder"}
+
+    assert _try_legacy_backfill(confirmation)["risk_fraction"] == "0.15"
+
+
 def test_legacy_metadata_backfill_accepts_absent_optional_market_unit() -> None:
     confirmation = _valid_legacy_confirmation()
     confirmation.pop("marketUnit", None)
@@ -586,7 +620,7 @@ def test_legacy_metadata_backfill_rejects_wrong_optional_market_unit() -> None:
 
 @pytest.mark.parametrize(
     "field",
-    ["symbol", "side", "orderType", "orderFilter", "triggerDirection"],
+    ["symbol", "side", "orderType", "stopOrderType", "triggerDirection"],
 )
 def test_legacy_metadata_backfill_rejects_missing_protective_semantics(field: str) -> None:
     confirmation = _valid_legacy_confirmation()
@@ -601,6 +635,7 @@ def test_legacy_metadata_backfill_rejects_missing_protective_semantics(field: st
         ("symbol", "BTCUSDT"),
         ("side", "Buy"),
         ("orderType", "Limit"),
+        ("stopOrderType", "UNKNOWN"),
         ("orderFilter", "Order"),
         ("triggerDirection", 1),
         ("triggerDirection", True),
@@ -620,7 +655,7 @@ _REQUIRED_ACTIVE_ROW_FIELDS = (
     "symbol",
     "side",
     "orderType",
-    "orderFilter",
+    "stopOrderType",
     "triggerDirection",
     "triggerPrice",
     "qty",
@@ -630,7 +665,9 @@ _WRONG_ACTIVE_ROW_VALUES = (
     ("symbol", "BTCUSDT"),
     ("side", "Buy"),
     ("orderType", "Limit"),
+    ("stopOrderType", "UNKNOWN"),
     ("orderFilter", "Order"),
+    ("triggerDirection", 1),
     ("triggerDirection", True),
     ("triggerPrice", "0"),
     ("qty", "0"),
