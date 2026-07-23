@@ -1,0 +1,567 @@
+{
+  "content_address": {
+    "algorithm": "sha256",
+    "canonicalization": "TIOS-JSON-NFC-CANONICAL-V1 over inventory_content",
+    "digest": "3d3b7ba1dd3472844d1d313315f95ca4651ba75880b6550b537327b21b2ee18e"
+  },
+  "inventory_content": {
+    "approval_eligible": false,
+    "blockers": [
+      {
+        "blocker_id": "TV-BLOCKER-MOVINGAVG-CLASSIFICATION",
+        "reason": "The two official MovingAvg pages describe strategy behavior but use the Built-in Indicators breadcrumb and are absent from the official Built-in Strategies folder.",
+        "resolution": "Reconcile both items against a dated, operator-approved live UI capture before asserting exact live Strategies-tab membership.",
+        "status": "OPEN"
+      }
+    ],
+    "bound_artifacts": [
+      {
+        "path": "artifacts/source_intake/tradingview_catalog/COMMUNITY_DISCOVERY_POLICY_2026-07-23.md",
+        "sha256": "6d113fb59eb2ce44ba9c4c7c6a22751ef4425d38a7139c773bfcc0d2bf871caf"
+      },
+      {
+        "path": "artifacts/source_intake/tradingview_catalog/TERMS_LICENSE_SOURCE_BOUNDARY_2026-07-23.md",
+        "sha256": "1aa601357c1e4867301bf32fc7effc74ef70b41046e2b8fac1ae241e31323261"
+      }
+    ],
+    "canonical_identity": {
+      "array_order_rules": {
+        "inventory_content.blockers": "ascending NFC-normalized blocker_id",
+        "inventory_content.bound_artifacts": "ascending NFC-normalized path",
+        "inventory_content.catalog_items": "ascending NFC-normalized item_id",
+        "inventory_content.catalog_items[*].blocker_refs": "ascending NFC-normalized scalar value",
+        "inventory_content.catalog_items[*].gap_refs": "ascending NFC-normalized scalar value",
+        "inventory_content.prohibited_actions": "ascending NFC-normalized scalar value",
+        "inventory_content.source_documents": "ascending NFC-normalized source_url",
+        "inventory_content.surface_status": "fixed controlled order STRATEGIES, INDICATORS, PROFILES, PATTERNS",
+        "inventory_content.surface_status[*].documented_subset": "ascending NFC-normalized scalar value"
+      },
+      "encoding": "UTF-8",
+      "ensure_ascii": false,
+      "identity_scope": "inventory_content after recursive string/key normalization and the declared semantic array ordering",
+      "object_key_order": "ascending lexicographic order of NFC-normalized Unicode object keys",
+      "separators": {
+        "item_separator": ",",
+        "key_separator": ":"
+      },
+      "spec_id": "TIOS-JSON-NFC-CANONICAL-V1",
+      "unicode_normalization": "NFC recursively for every JSON string value and object key before key or array ordering",
+      "unlisted_array_rule": "array order is semantic and preserved; adding an unlisted array requires a new canonicalization spec version"
+    },
+    "capture_method": "MANUAL_PUBLIC_OFFICIAL_DOCUMENTATION_OBSERVATION",
+    "catalog_items": [
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-BARUPDN",
+        "item_name": "BarUpDn Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000599823-barupdn-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-BOLLINGER-BANDS",
+        "item_name": "Bollinger Bands Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000589104-bollinger-bands-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-BOLLINGER-BANDS-DIRECTED",
+        "item_name": "Bollinger Bands Strategy Directed",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000599826-bollinger-bands-strategy-directed/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-CHANNEL-BREAKOUT",
+        "item_name": "Channel BreakOut Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000599828-channel-breakout-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-CONSECUTIVE-UP-DOWN",
+        "item_name": "Consecutive Up/Down Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000599836-consecutive-up-down-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-GREEDY",
+        "item_name": "Greedy Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000599876-greedy-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-INSIDE-BAR",
+        "item_name": "InSide Bar Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000591665-inside-bar-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-KELTNER-CHANNELS",
+        "item_name": "Keltner Channels Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000644929-keltner-channels-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-MACD",
+        "item_name": "MACD Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000644943-macd-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-MOMENTUM",
+        "item_name": "Momentum Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000599883-momentum-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED_OUTSIDE_STRATEGIES_FOLDER",
+        "folder_index_membership": "ABSENT_INDICATORS_BREADCRUMB",
+        "blocker_refs": [
+          "TV-BLOCKER-MOVINGAVG-CLASSIFICATION"
+        ],
+        "classification_gap_ref": "TV-BLOCKER-MOVINGAVG-CLASSIFICATION",
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-MOVINGAVG-CROSS",
+        "item_name": "MovingAvg Cross",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000599885-movingavg-cross/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED_OUTSIDE_STRATEGIES_FOLDER",
+        "folder_index_membership": "ABSENT_INDICATORS_BREADCRUMB",
+        "blocker_refs": [
+          "TV-BLOCKER-MOVINGAVG-CLASSIFICATION"
+        ],
+        "classification_gap_ref": "TV-BLOCKER-MOVINGAVG-CLASSIFICATION",
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-MOVINGAVG2LINE-CROSS",
+        "item_name": "MovingAvg2Line Cross",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000599886-movingavg2line-cross/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-OUTSIDE-BAR",
+        "item_name": "OutSide Bar Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000599887-outside-bar-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-PARABOLIC-SAR",
+        "item_name": "Parabolic SAR Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000645065-parabolic-sar-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-PIVOT-EXTENSION",
+        "item_name": "Pivot Extension Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000599888-pivot-extension-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-PIVOT-REVERSAL",
+        "item_name": "Pivot Reversal Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000594526-pivot-reversal-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-PRICE-CHANNEL",
+        "item_name": "Price Channel Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000601862-price-channel-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-RSI",
+        "item_name": "RSI Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000645066-rsi-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-STOCHASTIC-SLOW",
+        "item_name": "Stochastic Slow Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000592285-stochastic-slow-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-SUPERTREND",
+        "item_name": "Supertrend Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000645068-supertrend-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-TECHNICAL-RATINGS",
+        "item_name": "Technical Ratings Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000628415-technical-ratings-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      },
+      {
+        "documentation_source_availability": "OFFICIAL_HELP_PAGE_OBSERVED",
+        "folder_index_membership": "PRESENT",
+        "blocker_refs": [],
+        "gap_refs": [
+          "TV-GAP-STRATEGIES-LIVE-UI"
+        ],
+        "item_id": "TV-BUILTIN-STRATEGY-VOLTY-EXPAN-CLOSE",
+        "item_name": "Volty Expan Close Strategy",
+        "item_type": "BUILT_IN_STRATEGY",
+        "license_reuse_status": "NOT_CLEARED_METADATA_ONLY",
+        "lifecycle_state": "CATALOGED",
+        "observed_access_class": "PUBLIC_NO_AUTH_OFFICIAL_HELP",
+        "observed_at_utc": "2026-07-23T12:33:25Z",
+        "official_url": "https://www.tradingview.com/support/solutions/43000599890-volty-expan-close-strategy/",
+        "source_class": "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP",
+        "source_code_visibility": "UNKNOWN_NOT_CAPTURED_PHASE0_METADATA_ONLY"
+      }
+    ],
+    "completeness_claim": "DATED_PUBLIC_DOCUMENTATION_SNAPSHOT_ONLY_NOT_LIVE_UI_COMPLETE",
+    "controlled_vocabulary": {
+      "source_class": {
+        "OFFICIAL_TRADINGVIEW_BUILT_IN_HELP": "A public, no-auth page on TradingView's official Help Center documenting a built-in item; this class does not imply source-code visibility, reuse permission, implementation, validation, or approval."
+      }
+    },
+    "execution_authority": "NONE",
+    "intake_plan_ref": "INTAKE-TRADINGVIEW-PUBLIC-STRATEGIES",
+    "intended_use": "UNKNOWN_PENDING_OPERATOR_CONFIRMATION",
+    "paper_demo_live": "DISABLED",
+    "prohibited_actions": [
+      "account_connection",
+      "automated_bulk_collection",
+      "credential_or_cookie_use",
+      "market_data_or_alert_ingestion",
+      "order_routing",
+      "paper_demo_or_live_activation",
+      "profit_claim_inheritance",
+      "protected_invite_only_or_private_source_capture",
+      "strategy_code_capture",
+      "strategy_trial_or_research_execution"
+    ],
+    "schema": "tios-tradingview-phase0-inventory-v1",
+    "schema_version": 1,
+    "source_documents": [
+      {
+        "publication_or_update_time": "NOT_STATED",
+        "retrieved_at_utc": "2026-07-23T12:33:25Z",
+        "source_authority": "TradingView official Help Center",
+        "source_url": "https://www.tradingview.com/support/folders/43000587406-built-in-strategies/"
+      },
+      {
+        "publication_or_update_time": "NOT_STATED",
+        "retrieved_at_utc": "2026-07-23T12:33:25Z",
+        "source_authority": "TradingView official Help Center",
+        "source_url": "https://www.tradingview.com/support/solutions/43000599885-movingavg-cross/"
+      },
+      {
+        "publication_or_update_time": "NOT_STATED",
+        "retrieved_at_utc": "2026-07-23T12:33:25Z",
+        "source_authority": "TradingView official Help Center",
+        "source_url": "https://www.tradingview.com/support/solutions/43000599886-movingavg2line-cross/"
+      },
+      {
+        "publication_or_update_time": "NOT_STATED",
+        "retrieved_at_utc": "2026-07-23T12:33:25Z",
+        "source_authority": "TradingView official Help Center",
+        "source_url": "https://www.tradingview.com/support/solutions/43000690464-auto-chart-patterns-on-tradingview/"
+      },
+      {
+        "publication_or_update_time": "NOT_STATED",
+        "retrieved_at_utc": "2026-07-23T12:33:25Z",
+        "source_authority": "TradingView official Help Center",
+        "source_url": "https://www.tradingview.com/support/solutions/43000706927-all-chart-patterns/"
+      }
+    ],
+    "source_ref": "SRC-TRADINGVIEW-PUBLIC-STRATEGIES",
+    "surface_status": [
+      {
+        "documented_item_count": 22,
+        "gap_id": "TV-GAP-STRATEGIES-LIVE-UI",
+        "gap_reason": "The public Strategies folder lists 20 items. Two additional official MovingAvg pages describe strategy behavior but use the Built-in Indicators breadcrumb. No credential-free official export proving the exact current live UI Strategies tab was identified or used.",
+        "named_gap": true,
+        "status": "PARTIAL_DOCUMENTATION_CAPTURE_LIVE_UI_RECONCILIATION_REQUIRED",
+        "surface": "STRATEGIES"
+      },
+      {
+        "documented_item_count": null,
+        "gap_id": "TV-GAP-INDICATORS-COMPLETE-INVENTORY",
+        "gap_reason": "No complete, dated, credential-free official export of the live Indicators tab was identified. Individual official help pages do not prove complete tab membership.",
+        "named_gap": true,
+        "status": "CAPTURE_GAP_NO_COMPLETE_OFFICIAL_EXPORT",
+        "surface": "INDICATORS"
+      },
+      {
+        "documented_item_count": null,
+        "gap_id": "TV-GAP-PROFILES-COMPLETE-INVENTORY",
+        "gap_reason": "No complete, dated, credential-free official export or stable public documentation index for the live Profiles tab was identified.",
+        "named_gap": true,
+        "status": "CAPTURE_GAP_NO_COMPLETE_OFFICIAL_EXPORT",
+        "surface": "PROFILES"
+      },
+      {
+        "documented_item_count": 16,
+        "documented_subset": [
+          "Bearish Flag",
+          "Bearish Pennant",
+          "Bullish Flag",
+          "Bullish Pennant",
+          "Cup and Handle",
+          "Double Bottom",
+          "Double Top",
+          "Falling Wedge",
+          "Head And Shoulders",
+          "Inverse Head And Shoulders",
+          "Inverted Cup and Handle",
+          "Rectangle",
+          "Rising Wedge",
+          "Triangle",
+          "Triple Bottom",
+          "Triple Top"
+        ],
+        "gap_id": "TV-GAP-PATTERNS-COMPLETE-INVENTORY",
+        "gap_reason": "The official All Chart Patterns page names 16 patterns searched by that one indicator, while official documentation also points to other pattern indicators. This subset does not prove complete live Patterns-tab membership.",
+        "named_gap": true,
+        "status": "PARTIAL_OFFICIAL_SUBSET_CAPTURE_COMPLETE_TAB_UNKNOWN",
+        "surface": "PATTERNS"
+      }
+    ]
+  },
+  "snapshot_id": "TV-PHASE0-SHA256-3d3b7ba1dd3472844d1d313315f95ca4651ba75880b6550b537327b21b2ee18e"
+}
