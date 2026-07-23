@@ -61,6 +61,252 @@ CODE_SURFACE = (
     "src/tios/trading_domain/models.py",
 )
 INTERVAL_US = {frame.value: frame.seconds * 1_000_000 for frame in Timeframe}
+CLOSE_TIME_SEMANTIC_LABEL = (
+    "source_close_preserved_within_open_interval_exact_early_close_inventory_v1"
+)
+EarlyClosePin = tuple[str, str, str, str, str, str]
+EARLY_CLOSE_INVENTORY: tuple[EarlyClosePin, ...] = (
+    (
+        "BTCUSDT",
+        "1m",
+        "2021-02-11T03:40:00.000000Z",
+        "2021-02-11T03:40:54.773000Z",
+        "klines/BTCUSDT/1m/BTCUSDT-1m-2021-02.zip",
+        "21723e4951ba30037cb8417278b7cf4a38d47c625b1cb5ac97864d539ae6d407",
+    ),
+    (
+        "BTCUSDT",
+        "1m",
+        "2021-04-25T04:00:00.000000Z",
+        "2021-04-25T04:00:58.146000Z",
+        "klines/BTCUSDT/1m/BTCUSDT-1m-2021-04.zip",
+        "016ea34ee7e52c4783c1e03ec65c710361c1ccf228d3a4c0b44a4d0baa859641",
+    ),
+    (
+        "BTCUSDT",
+        "1m",
+        "2021-08-13T01:59:00.000000Z",
+        "2021-08-13T01:59:59.000000Z",
+        "klines/BTCUSDT/1m/BTCUSDT-1m-2021-08.zip",
+        "8e886c3aeb7eb625493e875bfaf181eeb5a316dad424c86d042ad2c73cad563b",
+    ),
+    (
+        "BTCUSDT",
+        "1m",
+        "2021-12-24T04:59:00.000000Z",
+        "2021-12-24T04:59:54.362000Z",
+        "klines/BTCUSDT/1m/BTCUSDT-1m-2021-12.zip",
+        "2b6c79547da2d87e6735d29fcb2d75f0e15c9cbfcec6396c8d8f20b3632d8e0b",
+    ),
+    (
+        "BTCUSDT",
+        "1m",
+        "2023-03-24T12:39:00.000000Z",
+        "2023-03-24T12:39:41.646000Z",
+        "klines/BTCUSDT/1m/BTCUSDT-1m-2023-03.zip",
+        "5591171a15f210af647a2fb68ab8cbad45a3a595cfe9a0eec9d06e5e84928bec",
+    ),
+    (
+        "BTCUSDT",
+        "5m",
+        "2021-02-11T03:40:00.000000Z",
+        "2021-02-11T03:40:54.773000Z",
+        "klines/BTCUSDT/5m/BTCUSDT-5m-2021-02.zip",
+        "64cacfee55b7e73d6728a6e7cf32b03be2f205c06ad27a99889f002d0c853769",
+    ),
+    (
+        "BTCUSDT",
+        "5m",
+        "2021-04-25T04:00:00.000000Z",
+        "2021-04-25T04:00:58.146000Z",
+        "klines/BTCUSDT/5m/BTCUSDT-5m-2021-04.zip",
+        "e365a42f9b3cd6262110977b37d341f90e339ef5b617de2d90c945c53a930854",
+    ),
+    (
+        "BTCUSDT",
+        "5m",
+        "2021-08-13T01:55:00.000000Z",
+        "2021-08-13T01:59:59.000000Z",
+        "klines/BTCUSDT/5m/BTCUSDT-5m-2021-08.zip",
+        "ad8168331b2f0c83e7d4dea149b09881d5f4ecb0e6c7049f8637f2ef5a6dbf78",
+    ),
+    (
+        "BTCUSDT",
+        "5m",
+        "2021-12-24T04:55:00.000000Z",
+        "2021-12-24T04:59:54.362000Z",
+        "klines/BTCUSDT/5m/BTCUSDT-5m-2021-12.zip",
+        "17c2731a870d09d0ea1345b9af40234fae47c947ff373499799169cdfda3b41c",
+    ),
+    (
+        "BTCUSDT",
+        "5m",
+        "2023-03-24T12:35:00.000000Z",
+        "2023-03-24T12:39:41.646000Z",
+        "klines/BTCUSDT/5m/BTCUSDT-5m-2023-03.zip",
+        "840da3f1dba73d44c483b2c600528ee845366a8f2dec3db1d0be9e128741ec19",
+    ),
+    (
+        "BTCUSDT",
+        "15m",
+        "2021-02-11T03:30:00.000000Z",
+        "2021-02-11T03:40:54.773000Z",
+        "klines/BTCUSDT/15m/BTCUSDT-15m-2021-02.zip",
+        "2b2658c43308a1a0ec6684f7d938879d3a6e4cc8828f0875e342e0ddf8f5f4f0",
+    ),
+    (
+        "BTCUSDT",
+        "15m",
+        "2021-04-25T04:00:00.000000Z",
+        "2021-04-25T04:00:58.146000Z",
+        "klines/BTCUSDT/15m/BTCUSDT-15m-2021-04.zip",
+        "726f7165f3703ec852194e6fbd54157ecf54760d670db399adec8de23026a947",
+    ),
+    (
+        "BTCUSDT",
+        "15m",
+        "2021-08-13T01:45:00.000000Z",
+        "2021-08-13T01:59:59.000000Z",
+        "klines/BTCUSDT/15m/BTCUSDT-15m-2021-08.zip",
+        "e4d20bbe576a94c7474f951b4e44adb1a0d6149e6b9eed0be2ad69504ca775e0",
+    ),
+    (
+        "BTCUSDT",
+        "15m",
+        "2021-12-24T04:45:00.000000Z",
+        "2021-12-24T04:59:54.362000Z",
+        "klines/BTCUSDT/15m/BTCUSDT-15m-2021-12.zip",
+        "5e87f4e0e328a170291c91001dd48e124533108af2c6d17315821399b43a0dd7",
+    ),
+    (
+        "BTCUSDT",
+        "15m",
+        "2023-03-24T12:30:00.000000Z",
+        "2023-03-24T12:39:41.646000Z",
+        "klines/BTCUSDT/15m/BTCUSDT-15m-2023-03.zip",
+        "c9871c6908687def566067cbadd1e0bab4740956f4d842992b7da52828ccae96",
+    ),
+    (
+        "ETHUSDT",
+        "1m",
+        "2021-02-11T03:40:00.000000Z",
+        "2021-02-11T03:40:55.829000Z",
+        "klines/ETHUSDT/1m/ETHUSDT-1m-2021-02.zip",
+        "964070408500f1e189daf68832abc14d53ee03c53e9971d23aef180f5730543e",
+    ),
+    (
+        "ETHUSDT",
+        "1m",
+        "2021-04-25T04:00:00.000000Z",
+        "2021-04-25T04:00:59.271000Z",
+        "klines/ETHUSDT/1m/ETHUSDT-1m-2021-04.zip",
+        "7a9c6f70708570a7a786afe7451c8fc8cab20e5efb6fcb11aa242521bd19edc9",
+    ),
+    (
+        "ETHUSDT",
+        "1m",
+        "2021-08-13T01:59:00.000000Z",
+        "2021-08-13T01:59:59.000000Z",
+        "klines/ETHUSDT/1m/ETHUSDT-1m-2021-08.zip",
+        "e6d65e00e8eb757c748c61469268d921f679968e40b9329b04d66ed5392c0073",
+    ),
+    (
+        "ETHUSDT",
+        "1m",
+        "2021-12-24T04:59:00.000000Z",
+        "2021-12-24T04:59:56.158000Z",
+        "klines/ETHUSDT/1m/ETHUSDT-1m-2021-12.zip",
+        "4afcb0943a7a7e474904bc2f40983abc5155c6c88cd0775f5b5b2977cb69a69f",
+    ),
+    (
+        "ETHUSDT",
+        "1m",
+        "2023-03-24T12:39:00.000000Z",
+        "2023-03-24T12:39:43.061000Z",
+        "klines/ETHUSDT/1m/ETHUSDT-1m-2023-03.zip",
+        "e2552c2298f4b67027bfa1f7da364b0d398e96a76dae8fa2085dddf357f60a69",
+    ),
+    (
+        "ETHUSDT",
+        "5m",
+        "2021-02-11T03:40:00.000000Z",
+        "2021-02-11T03:40:55.829000Z",
+        "klines/ETHUSDT/5m/ETHUSDT-5m-2021-02.zip",
+        "fa4d766b72174fc35d443700f5101d8b48c17f1665187947066bd7d426f05da3",
+    ),
+    (
+        "ETHUSDT",
+        "5m",
+        "2021-04-25T04:00:00.000000Z",
+        "2021-04-25T04:00:59.271000Z",
+        "klines/ETHUSDT/5m/ETHUSDT-5m-2021-04.zip",
+        "463e140802908fdea8cfda06baa26096c4f66f25add9bfaeca849fbd342cb194",
+    ),
+    (
+        "ETHUSDT",
+        "5m",
+        "2021-08-13T01:55:00.000000Z",
+        "2021-08-13T01:59:59.000000Z",
+        "klines/ETHUSDT/5m/ETHUSDT-5m-2021-08.zip",
+        "1f30d155249567e4e9b491ec12ad5daffff7539786ec02df69531efdec594614",
+    ),
+    (
+        "ETHUSDT",
+        "5m",
+        "2021-12-24T04:55:00.000000Z",
+        "2021-12-24T04:59:56.158000Z",
+        "klines/ETHUSDT/5m/ETHUSDT-5m-2021-12.zip",
+        "db0dd70c525f0eb5a2d644ae82a06a106fee0d917e29465c79138ef6488fda00",
+    ),
+    (
+        "ETHUSDT",
+        "5m",
+        "2023-03-24T12:35:00.000000Z",
+        "2023-03-24T12:39:43.061000Z",
+        "klines/ETHUSDT/5m/ETHUSDT-5m-2023-03.zip",
+        "048244294ce3d656c9d29a376cfd244df6f6c604bfe0d070888fa87a528ff0d4",
+    ),
+    (
+        "ETHUSDT",
+        "15m",
+        "2021-02-11T03:30:00.000000Z",
+        "2021-02-11T03:40:55.829000Z",
+        "klines/ETHUSDT/15m/ETHUSDT-15m-2021-02.zip",
+        "a89838e59572696d8524402600cb7cc6ded07eb8a4cc69d13d22514d0f088518",
+    ),
+    (
+        "ETHUSDT",
+        "15m",
+        "2021-04-25T04:00:00.000000Z",
+        "2021-04-25T04:00:59.271000Z",
+        "klines/ETHUSDT/15m/ETHUSDT-15m-2021-04.zip",
+        "0044bc8e84a9f16285dc5f1bc1706234f61543839a8e6619b5ed069681c3d61f",
+    ),
+    (
+        "ETHUSDT",
+        "15m",
+        "2021-08-13T01:45:00.000000Z",
+        "2021-08-13T01:59:59.000000Z",
+        "klines/ETHUSDT/15m/ETHUSDT-15m-2021-08.zip",
+        "f5fa5199358586df77da71ffaa6c40eccf6e53e1fc5224bac5814eec70597211",
+    ),
+    (
+        "ETHUSDT",
+        "15m",
+        "2021-12-24T04:45:00.000000Z",
+        "2021-12-24T04:59:56.158000Z",
+        "klines/ETHUSDT/15m/ETHUSDT-15m-2021-12.zip",
+        "5f67b5cfc6122db50b2546db64fb1c135fe8ec96aa40990ecc8242ab941549db",
+    ),
+    (
+        "ETHUSDT",
+        "15m",
+        "2023-03-24T12:30:00.000000Z",
+        "2023-03-24T12:39:43.061000Z",
+        "klines/ETHUSDT/15m/ETHUSDT-15m-2023-03.zip",
+        "63f591e35691c501c232b06a980641f87aded1f9497281ad279999babaca1e71",
+    ),
+)
 
 
 @dataclass(frozen=True)
@@ -466,6 +712,161 @@ def _code_identity(paths: FreezePaths) -> dict[str, Any]:
     }
 
 
+def _utc_text(value: datetime) -> str:
+    if value.tzinfo is None:
+        value = value.replace(tzinfo=UTC)
+    return value.astimezone(UTC).isoformat(timespec="microseconds").replace("+00:00", "Z")
+
+
+def _early_close_record(pin: EarlyClosePin) -> dict[str, str]:
+    symbol, interval, opened, closed, source_path, source_sha256 = pin
+    return {
+        "instrument": symbol,
+        "interval": interval,
+        "timestamp_open_utc": opened,
+        "close_timestamp_utc": closed,
+        "source_path": source_path,
+        "source_sha256": source_sha256,
+    }
+
+
+def _close_time_quality(
+    table: pa.Table,
+    symbol: str,
+    interval: str,
+    source_files: list[dict[str, Any]],
+    *,
+    expected_inventory: tuple[EarlyClosePin, ...] | None,
+) -> dict[str, Any]:
+    """Validate preserved source close times without inventing nominal closes."""
+    step = INTERVAL_US[interval]
+    source_by_path = {
+        str(item.get("path")): item for item in source_files if isinstance(item, dict)
+    }
+    connection = duckdb.connect()
+    try:
+        connection.execute("SET TimeZone='UTC'")
+        connection.register("bars", table)
+        candidates = connection.execute(
+            """
+            SELECT
+              epoch_us(timestamp_open_utc) AS opened_us,
+              epoch_us(close_timestamp_utc) AS closed_us,
+              epoch_us(close_timestamp_utc) - epoch_us(timestamp_open_utc) AS duration_us
+            FROM bars
+            WHERE epoch_us(close_timestamp_utc) - epoch_us(timestamp_open_utc)
+                  NOT IN (?, ?)
+            ORDER BY timestamp_open_utc
+            """,
+            [step - 1000, step - 1],
+        ).fetchall()
+    finally:
+        connection.close()
+
+    anomalies: list[dict[str, Any]] = []
+    invalid_rows: list[dict[str, Any]] = []
+    epoch = datetime(1970, 1, 1, tzinfo=UTC)
+    for opened_us, closed_us, duration_us in candidates:
+        opened_text = _utc_text(epoch + timedelta(microseconds=int(opened_us)))
+        closed_text = _utc_text(epoch + timedelta(microseconds=int(closed_us)))
+        duration = int(duration_us)
+        row = {
+            "instrument": symbol,
+            "interval": interval,
+            "timestamp_open_utc": opened_text,
+            "close_timestamp_utc": closed_text,
+            "duration_us": duration,
+        }
+        if duration < 0:
+            invalid_rows.append({**row, "violation": "close_before_open"})
+            continue
+        if duration >= step:
+            invalid_rows.append({**row, "violation": "close_at_or_after_next_open"})
+            continue
+        month = opened_text[:7]
+        source_path = _expected_rel(symbol, interval, month)
+        source = source_by_path.get(source_path)
+        source_sha256 = source.get("sha256") if source is not None else None
+        anomalies.append(
+            {
+                **row,
+                "source_path": source_path,
+                "source_sha256": source_sha256,
+            }
+        )
+
+    source_mapping_failures = [
+        item
+        for item in anomalies
+        if not isinstance(item["source_sha256"], str)
+        or re.fullmatch(r"[0-9a-f]{64}", item["source_sha256"]) is None
+    ]
+    actual_records = [
+        {
+            key: item[key]
+            for key in (
+                "instrument",
+                "interval",
+                "timestamp_open_utc",
+                "close_timestamp_utc",
+                "source_path",
+                "source_sha256",
+            )
+        }
+        for item in anomalies
+    ]
+    expected_records = (
+        [_early_close_record(pin) for pin in expected_inventory]
+        if expected_inventory is not None
+        else []
+    )
+    actual_by_key = {
+        (item["instrument"], item["interval"], item["timestamp_open_utc"]): item
+        for item in actual_records
+    }
+    expected_by_key = {
+        (item["instrument"], item["interval"], item["timestamp_open_utc"]): item
+        for item in expected_records
+    }
+    missing = [
+        expected_by_key[key] for key in sorted(expected_by_key.keys() - actual_by_key.keys())
+    ]
+    unexpected = [
+        actual_by_key[key] for key in sorted(actual_by_key.keys() - expected_by_key.keys())
+    ]
+    changed = [
+        {"expected": expected_by_key[key], "actual": actual_by_key[key]}
+        for key in sorted(expected_by_key.keys() & actual_by_key.keys())
+        if expected_by_key[key] != actual_by_key[key]
+    ]
+    inventory_enforced = expected_inventory is not None
+    inventory_pass = not inventory_enforced or not (missing or unexpected or changed)
+    passed = not invalid_rows and not source_mapping_failures and inventory_pass
+    return {
+        "semantic_label": CLOSE_TIME_SEMANTIC_LABEL,
+        "status": "PASS" if passed else "FAIL",
+        "bounds": "timestamp_open_utc <= close_timestamp_utc < next_interval_boundary",
+        "normal_terminal_forms_us": [step - 1000, step - 1],
+        "anomaly_count": len(anomalies),
+        "anomalies": anomalies,
+        "invalid_count": len(invalid_rows),
+        "invalid_rows": invalid_rows,
+        "source_mapping_failure_count": len(source_mapping_failures),
+        "inventory": {
+            "status": (
+                "NOT_ENFORCED" if not inventory_enforced else ("PASS" if inventory_pass else "FAIL")
+            ),
+            "expected_count": len(expected_records) if inventory_enforced else None,
+            "missing_count": len(missing),
+            "unexpected_count": len(unexpected),
+            "changed_count": len(changed),
+            "missing": missing,
+            "unexpected": unexpected,
+            "changed": changed,
+        },
+    }
+
+
 def _table_quality(
     path: Path,
     symbol: str,
@@ -476,6 +877,7 @@ def _table_quality(
     normalization_info: dict[str, Any],
     *,
     require_publication_fsync: bool,
+    expected_early_closes: tuple[EarlyClosePin, ...] | None,
 ) -> dict[str, Any]:
     table = pyarrow.parquet.read_table(path)
     failures: list[str] = []
@@ -505,12 +907,10 @@ def _table_quality(
                                       OR taker_buy_base_volume < 0
                                       OR taker_buy_quote_volume < 0) AS bad_volume,
               count(*) FILTER (WHERE epoch_us(timestamp_open_utc) % ? != 0) AS bad_alignment,
-              count(*) FILTER (WHERE epoch_us(close_timestamp_utc) - epoch_us(timestamp_open_utc)
-                                      NOT IN (?, ?)) AS bad_duration,
               count(*) FILTER (WHERE close_timestamp_utc > ?) AS open_candles
             FROM bars
             """,
-            [symbol, interval, SOURCE_TAG, step, step - 1000, step - 1, cutoff],
+            [symbol, interval, SOURCE_TAG, step, cutoff],
         ).fetchone()
     finally:
         connection.close()
@@ -524,7 +924,6 @@ def _table_quality(
         "ohlc_invariants",
         "nonnegative_volumes",
         "interval_alignment",
-        "close_time_duration",
         "closed_by_cutoff",
     )
     failures.extend(label for label, count in zip(labels, basic, strict=True) if int(count))
@@ -567,6 +966,15 @@ def _table_quality(
         failures.append("exact_coverage_end")
     detections = normalization_info.get("file_unit_detections", [])
     source_files = normalization_info.get("source_files", [])
+    close_time = _close_time_quality(
+        table,
+        symbol,
+        interval,
+        source_files,
+        expected_inventory=expected_early_closes,
+    )
+    if close_time["status"] != "PASS":
+        failures.append("close_time_semantics")
     expected_months = [
         month
         for month in months(
@@ -624,6 +1032,7 @@ def _table_quality(
         "null_values": nulls,
         "parquet_sha256": actual_bytes,
         "content_sha256": actual_logical,
+        "close_time_semantics": close_time,
         "row_counts_by_month": {str(month): int(rows) for month, rows in month_rows},
         "dropped_duplicate_open_timestamps": normalization_info.get(
             "dropped_duplicate_open_timestamps"
@@ -649,10 +1058,18 @@ def validate_run(
     canonical_tables = _verify_canonical_authority(paths=paths, scope=scope)["tables"]
     results: dict[str, Any] = {}
     schemas: set[str] = set()
+    enforce_production_inventory = scope == FIXED_SCOPE
     for symbol in scope.symbols:
         for interval in scope.timeframes:
             key = f"{symbol}_{interval}"
             table_path = _confined_regular(stage, Path(f"{key}.parquet"), label=f"table {key}")
+            expected_early_closes = (
+                tuple(
+                    pin for pin in EARLY_CLOSE_INVENTORY if pin[0] == symbol and pin[1] == interval
+                )
+                if enforce_production_inventory
+                else None
+            )
             result = _table_quality(
                 table_path,
                 symbol,
@@ -662,6 +1079,7 @@ def validate_run(
                 scope.cutoff_utc - timedelta(seconds=Timeframe(interval).seconds),
                 normalized[key],
                 require_publication_fsync=require_publication_fsync,
+                expected_early_closes=expected_early_closes,
             )
             if len(normalized[key].get("source_files", [])) != len(scope.month_values):
                 result["failures"].append("source_month_coverage")
@@ -687,7 +1105,29 @@ def validate_run(
         "gaps_are_informational_and_not_filled": True,
     }
     if not overall:
-        raise ValueError(f"short-frame quality gate failed: {report}")
+        failed_tables = {
+            key: {
+                "failures": value["failures"],
+                "close_time_semantics": {
+                    "anomaly_count": value["close_time_semantics"]["anomaly_count"],
+                    "invalid_count": value["close_time_semantics"]["invalid_count"],
+                    "inventory": {
+                        count: value["close_time_semantics"]["inventory"][count]
+                        for count in ("missing_count", "unexpected_count", "changed_count")
+                    },
+                },
+            }
+            for key, value in results.items()
+            if value["status"] != "PASS"
+        }
+        summary = {
+            "schema_identical": report["schema_identical"],
+            "failed_tables": failed_tables,
+        }
+        raise ValueError(
+            f"short-frame quality gate failed: "
+            f"{json.dumps(summary, sort_keys=True, separators=(',', ':'))}"
+        )
     return report
 
 

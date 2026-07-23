@@ -208,6 +208,257 @@ def test_production_scope_is_exact_six_table_grid() -> None:
     assert sf.OUTPUT_ROOT.as_posix().endswith("data/normalized/DS-CRYPTO-SPOT-SHORTFRAMES-V1")
 
 
+def _timestamp(value: str) -> datetime:
+    return datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+
+def _close_table(rows: list[tuple[datetime, datetime]]) -> pa.Table:
+    return pa.table(
+        {
+            "timestamp_open_utc": pa.array([row[0] for row in rows], type=TS),
+            "close_timestamp_utc": pa.array([row[1] for row in rows], type=TS),
+        }
+    )
+
+
+def _source_for_pin(pin: sf.EarlyClosePin) -> list[dict[str, str]]:
+    return [{"path": pin[4], "sha256": pin[5]}]
+
+
+def test_early_close_inventory_is_exact_and_source_pinned() -> None:
+    assert len(sf.EARLY_CLOSE_INVENTORY) == 30
+    assert len({(pin[0], pin[1], pin[2]) for pin in sf.EARLY_CLOSE_INVENTORY}) == 30
+    assert {pin[0] for pin in sf.EARLY_CLOSE_INVENTORY} == {"BTCUSDT", "ETHUSDT"}
+    assert {pin[1] for pin in sf.EARLY_CLOSE_INVENTORY} == {"1m", "5m", "15m"}
+    assert all(pin[4].startswith(f"klines/{pin[0]}/{pin[1]}/") for pin in sf.EARLY_CLOSE_INVENTORY)
+    assert all(len(pin[5]) == 64 for pin in sf.EARLY_CLOSE_INVENTORY)
+
+
+@pytest.mark.parametrize("interval", ["1m", "5m", "15m"])
+def test_authentic_2021_12_early_close_passes_without_creating_a_gap(interval: str) -> None:
+    pin = next(
+        item
+        for item in sf.EARLY_CLOSE_INVENTORY
+        if item[0] == "BTCUSDT" and item[1] == interval and item[2].startswith("2021-12")
+    )
+    step = timedelta(microseconds=sf.INTERVAL_US[interval])
+    opened = _timestamp(pin[2])
+    rows = [
+        (opened - step, opened - timedelta(milliseconds=1)),
+        (opened, _timestamp(pin[3])),
+        (opened + step, opened + 2 * step - timedelta(microseconds=1)),
+    ]
+    quality = sf._close_time_quality(
+        _close_table(rows),
+        "BTCUSDT",
+        interval,
+        _source_for_pin(pin),
+        expected_inventory=(pin,),
+    )
+
+    assert [right[0] - left[0] for left, right in zip(rows[:-1], rows[1:], strict=True)] == [
+        step,
+        step,
+    ]
+    assert quality["status"] == "PASS"
+    assert quality["anomaly_count"] == 1
+    assert quality["anomalies"][0]["close_timestamp_utc"] == pin[3]
+    assert quality["inventory"]["status"] == "PASS"
+
+
+@pytest.mark.parametrize("interval", ["1m", "5m", "15m"])
+def test_normal_ms_and_us_terminal_closes_are_not_anomalies(interval: str) -> None:
+    opened = datetime(2025, 1, 1, tzinfo=UTC)
+    step = timedelta(microseconds=sf.INTERVAL_US[interval])
+    quality = sf._close_time_quality(
+        _close_table(
+            [
+                (opened, opened + step - timedelta(milliseconds=1)),
+                (opened + step, opened + 2 * step - timedelta(microseconds=1)),
+            ]
+        ),
+        "BTCUSDT",
+        interval,
+        [],
+        expected_inventory=(),
+    )
+
+    assert quality["status"] == "PASS"
+    assert quality["anomaly_count"] == 0
+    assert quality["normal_terminal_forms_us"] == [
+        sf.INTERVAL_US[interval] - 1000,
+        sf.INTERVAL_US[interval] - 1,
+    ]
+
+
+def test_normalization_preserves_ms_and_us_source_close_precision(tmp_path: Path) -> None:
+    raw_root = tmp_path / "raw"
+    rows = (
+        ("2024-12", int(datetime(2024, 12, 1, tzinfo=UTC).timestamp() * 1_000), 60_000),
+        ("2025-01", int(datetime(2025, 1, 1, tzinfo=UTC).timestamp() * 1_000_000), 60_000_000),
+    )
+    for month, opened, step in rows:
+        path = raw_root / "klines" / "BTCUSDT" / "1m" / f"BTCUSDT-1m-{month}.zip"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        encoded = f"{opened},1,2,0.5,1.5,3,{opened + step - 1},4,5,1,2,0\n".encode()
+        with zipfile.ZipFile(path, "w") as archive:
+            archive.writestr(path.with_suffix(".csv").name, encoded)
+    info = normalize_multi.normalize_pair(
+        "BTCUSDT",
+        "1m",
+        output_root=tmp_path / "normalized",
+        raw_root=raw_root,
+        selected_months=["2024-12", "2025-01"],
+    )
+    assert info is not None
+    table = pyarrow.parquet.read_table(tmp_path / "normalized" / "BTCUSDT_1m.parquet")
+    opens = table["timestamp_open_utc"].cast(pa.int64()).to_pylist()
+    closes = table["close_timestamp_utc"].cast(pa.int64()).to_pylist()
+
+    assert [closed - opened for opened, closed in zip(opens, closes, strict=True)] == [
+        sf.INTERVAL_US["1m"] - 1000,
+        sf.INTERVAL_US["1m"] - 1,
+    ]
+    quality = sf._close_time_quality(
+        table,
+        "BTCUSDT",
+        "1m",
+        info["source_files"],
+        expected_inventory=(),
+    )
+    assert quality["status"] == "PASS"
+    assert quality["anomaly_count"] == 0
+
+
+@pytest.mark.parametrize(
+    ("case", "expected_failure"),
+    [
+        ("missing", "missing_count"),
+        ("additional", "unexpected_count"),
+        ("changed", "changed_count"),
+    ],
+)
+def test_early_close_inventory_missing_additional_and_changed_fail(
+    case: str, expected_failure: str
+) -> None:
+    pin = next(
+        item
+        for item in sf.EARLY_CLOSE_INVENTORY
+        if item[0] == "BTCUSDT" and item[1] == "1m" and item[2].startswith("2021-12")
+    )
+    opened = _timestamp(pin[2])
+    closed = _timestamp(pin[3])
+    expected: tuple[sf.EarlyClosePin, ...] = (pin,)
+    if case == "missing":
+        closed = opened + timedelta(minutes=1) - timedelta(milliseconds=1)
+    elif case == "additional":
+        expected = ()
+    else:
+        closed += timedelta(microseconds=1)
+
+    quality = sf._close_time_quality(
+        _close_table([(opened, closed)]),
+        "BTCUSDT",
+        "1m",
+        _source_for_pin(pin),
+        expected_inventory=expected,
+    )
+
+    assert quality["status"] == "FAIL"
+    assert quality["inventory"]["status"] == "FAIL"
+    assert quality["inventory"][expected_failure] == 1
+
+
+@pytest.mark.parametrize(
+    ("close_offset", "violation"),
+    [
+        (timedelta(microseconds=-1), "close_before_open"),
+        (timedelta(minutes=1), "close_at_or_after_next_open"),
+    ],
+)
+def test_close_before_open_and_at_next_boundary_fail(
+    close_offset: timedelta, violation: str
+) -> None:
+    opened = datetime(2021, 1, 1, tzinfo=UTC)
+    quality = sf._close_time_quality(
+        _close_table([(opened, opened + close_offset)]),
+        "BTCUSDT",
+        "1m",
+        [],
+        expected_inventory=(),
+    )
+
+    assert quality["status"] == "FAIL"
+    assert quality["invalid_count"] == 1
+    assert quality["invalid_rows"][0]["violation"] == violation
+
+
+def test_close_equal_to_open_is_valid_inclusive_lower_boundary() -> None:
+    opened = datetime(2022, 1, 1, tzinfo=UTC)
+    source = {
+        "path": "klines/BTCUSDT/1m/BTCUSDT-1m-2022-01.zip",
+        "sha256": "a" * 64,
+    }
+    quality = sf._close_time_quality(
+        _close_table([(opened, opened)]),
+        "BTCUSDT",
+        "1m",
+        [source],
+        expected_inventory=None,
+    )
+
+    assert quality["status"] == "PASS"
+    assert quality["invalid_count"] == 0
+    assert quality["anomaly_count"] == 1
+    assert quality["anomalies"][0]["duration_us"] == 0
+    assert quality["inventory"]["status"] == "NOT_ENFORCED"
+
+
+def test_early_close_uses_exact_month_from_realistic_66_source_mapping() -> None:
+    pin = next(
+        item
+        for item in sf.EARLY_CLOSE_INVENTORY
+        if item[0] == "BTCUSDT" and item[1] == "1m" and item[2].startswith("2021-12")
+    )
+    sources = [
+        {
+            "path": f"klines/BTCUSDT/1m/BTCUSDT-1m-{month}.zip",
+            "sha256": "a" * 64,
+        }
+        for month in sf.FIXED_SCOPE.month_values
+    ]
+    assert len(sources) == 66
+    target = next(item for item in sources if "2021-12.zip" in item["path"])
+    adjacent = next(item for item in sources if "2021-11.zip" in item["path"])
+    target["sha256"] = pin[5]
+    adjacent["sha256"] = "b" * 64
+    table = _close_table([(_timestamp(pin[2]), _timestamp(pin[3]))])
+
+    accepted = sf._close_time_quality(
+        table,
+        "BTCUSDT",
+        "1m",
+        sources,
+        expected_inventory=(pin,),
+    )
+    assert accepted["status"] == "PASS"
+    assert accepted["anomalies"][0]["source_path"] == target["path"]
+    assert accepted["anomalies"][0]["source_sha256"] == pin[5]
+
+    target["sha256"] = "b" * 64
+    adjacent["sha256"] = pin[5]
+    refused = sf._close_time_quality(
+        table,
+        "BTCUSDT",
+        "1m",
+        sources,
+        expected_inventory=(pin,),
+    )
+    assert refused["status"] == "FAIL"
+    assert refused["inventory"]["changed_count"] == 1
+    assert refused["anomalies"][0]["source_sha256"] == "b" * 64
+
+
 def test_raw_proof_binds_official_1m_and_canonical_authority_chain(tiny) -> None:
     paths, scope, manifest = tiny
     proof = sf.verify_raw_proof(manifest, paths=paths, scope=scope)
@@ -415,6 +666,128 @@ def test_quality_refuses_incomplete_open_duplicate_and_detection_coverage(tiny, 
         sf.validate_run(stage, normalized, paths=paths, scope=scope)
 
 
+def test_quality_close_failure_is_compact_and_does_not_dump_lineage(tiny, tmp_path) -> None:
+    paths, scope, _manifest = tiny
+    stage = tmp_path / "stage"
+    normalized = sf._regenerate(stage, paths=paths, scope=scope)
+    path = stage / "BTCUSDT_1m.parquet"
+    table = pyarrow.parquet.read_table(path)
+    opens = table["timestamp_open_utc"].to_pylist()
+    closes = table["close_timestamp_utc"].to_pylist()
+    closes[0] = opens[0] - timedelta(microseconds=1)
+    table = table.set_column(
+        table.schema.get_field_index("close_timestamp_utc"),
+        "close_timestamp_utc",
+        pa.array(closes, type=TS),
+    )
+    pyarrow.parquet.write_table(table, path)
+    normalized["BTCUSDT_1m"]["parquet_sha256"] = _sha(path)
+    normalized["BTCUSDT_1m"]["content_sha256"] = sf._parquet_logical_content_sha256(table)
+
+    with pytest.raises(ValueError) as captured:
+        sf.validate_run(stage, normalized, paths=paths, scope=scope)
+
+    message = str(captured.value)
+    assert "close_time_semantics" in message
+    assert len(message) < 1000
+    assert "source_files" not in message
+    assert "file_unit_detections" not in message
+
+
+def test_custom_scope_does_not_enforce_inventory_and_public_entry_uses_fixed_scope(
+    tiny, tmp_path, monkeypatch
+) -> None:
+    paths, scope, manifest = tiny
+    stage = tmp_path / "stage"
+    normalized = sf._regenerate(stage, paths=paths, scope=scope)
+    report = sf.validate_run(stage, normalized, paths=paths, scope=scope)
+
+    assert {
+        table["close_time_semantics"]["inventory"]["status"] for table in report["tables"].values()
+    } == {"NOT_ENFORCED"}
+
+    called: dict[str, object] = {}
+    fixed_scope = sf.FIXED_SCOPE
+
+    def capture_freeze(
+        one_minute_manifest: Path,
+        *,
+        paths: sf.FreezePaths,
+        scope: sf.FreezeScope,
+        require_committed_code: bool = True,
+    ) -> dict[str, object]:
+        called.update(
+            {
+                "manifest": one_minute_manifest,
+                "paths": paths,
+                "scope": scope,
+                "require_committed_code": require_committed_code,
+            }
+        )
+        return {"status": "CAPTURED"}
+
+    monkeypatch.setattr(sf, "_freeze", capture_freeze)
+    assert sf.freeze_shortframes(manifest, paths=paths) == {"status": "CAPTURED"}
+    assert called["scope"] is fixed_scope
+    assert called["require_committed_code"] is True
+
+
+@pytest.mark.parametrize(
+    ("case", "expected_count"),
+    [
+        ("missing", "missing_count"),
+        ("additional", "unexpected_count"),
+        ("changed", "changed_count"),
+    ],
+)
+def test_production_inventory_reconciliation_is_integrated_in_validate_run(
+    tiny, tmp_path, monkeypatch, case: str, expected_count: str
+) -> None:
+    paths, scope, _manifest = tiny
+    stage = tmp_path / "stage"
+    normalized = sf._regenerate(stage, paths=paths, scope=scope)
+    path = stage / "BTCUSDT_1m.parquet"
+    table = pyarrow.parquet.read_table(path)
+    opened = table["timestamp_open_utc"][0].as_py()
+    actual_close = opened + timedelta(seconds=20)
+    source = normalized["BTCUSDT_1m"]["source_files"][0]
+
+    def pin(closed: datetime) -> sf.EarlyClosePin:
+        return (
+            "BTCUSDT",
+            "1m",
+            opened.isoformat(timespec="microseconds").replace("+00:00", "Z"),
+            closed.isoformat(timespec="microseconds").replace("+00:00", "Z"),
+            source["path"],
+            source["sha256"],
+        )
+
+    if case == "missing":
+        inventory = (pin(opened + timedelta(seconds=30)),)
+    else:
+        closes = table["close_timestamp_utc"].to_pylist()
+        closes[0] = actual_close
+        table = table.set_column(
+            table.schema.get_field_index("close_timestamp_utc"),
+            "close_timestamp_utc",
+            pa.array(closes, type=TS),
+        )
+        pyarrow.parquet.write_table(table, path)
+        normalized["BTCUSDT_1m"]["parquet_sha256"] = _sha(path)
+        normalized["BTCUSDT_1m"]["content_sha256"] = sf._parquet_logical_content_sha256(table)
+        inventory = () if case == "additional" else (pin(opened + timedelta(seconds=30)),)
+
+    monkeypatch.setattr(sf, "FIXED_SCOPE", scope)
+    monkeypatch.setattr(sf, "EARLY_CLOSE_INVENTORY", inventory)
+    with pytest.raises(ValueError) as captured:
+        sf.validate_run(stage, normalized, paths=paths, scope=scope)
+    compact = json.loads(str(captured.value).split("short-frame quality gate failed: ", 1)[1])
+    counts = compact["failed_tables"]["BTCUSDT_1m"]["close_time_semantics"]["inventory"]
+
+    assert counts[expected_count] == 1
+    assert sum(counts.values()) == 1
+
+
 def test_nondeterminism_is_refused() -> None:
     run1 = {"tables": {"BTCUSDT_1m": {"content_sha256": "a"}}}
     run2 = {"tables": {"BTCUSDT_1m": {"content_sha256": "b"}}}
@@ -439,6 +812,100 @@ def test_tiny_double_regeneration_is_idempotently_verified(tiny) -> None:
     assert dataset["lineage_status"] == "recorded_at_normalization"
     assert dataset["execution_authority"] == "NONE"
     assert "not evidence of strategy validity" in dataset["limitation"]
+
+
+def test_published_quality_current_and_archive_retain_close_reconciliation_details(tiny) -> None:
+    paths, scope, manifest = tiny
+    manifest_value = json.loads(manifest.read_text())
+    file_record = manifest_value["files"][0]
+    raw_path = paths.multi_raw_root / file_record["rel"]
+    with zipfile.ZipFile(raw_path) as archive:
+        member = archive.namelist()[0]
+        lines = archive.read(member).decode().splitlines()
+    first = lines[0].split(",")
+    first[6] = str(int(first[0]) + 10_000)
+    lines[0] = ",".join(first)
+    with zipfile.ZipFile(raw_path, "w") as archive:
+        archive.writestr(member, ("\n".join(lines) + "\n").encode())
+    file_record["size"] = raw_path.stat().st_size
+    file_record["sha256"] = _sha(raw_path)
+    file_record["official_sha256"] = file_record["sha256"]
+    updated_manifest = _write_content_addressed(paths.one_minute_manifest_root, manifest_value)
+
+    result = sf._freeze(
+        updated_manifest,
+        paths=paths,
+        scope=scope,
+        require_committed_code=False,
+    )
+    current_path = Path(result["quality_report"])
+    archive_path = Path(result["quality_report_archive"])
+    assert current_path.read_bytes() == archive_path.read_bytes()
+    quality = json.loads(current_path.read_text())
+    manifest_report = json.loads(Path(result["manifest"]).read_text())
+
+    for run in ("quality_run1", "quality_run2"):
+        close_time = quality[run]["tables"]["BTCUSDT_1m"]["close_time_semantics"]
+        assert close_time["status"] == "PASS"
+        assert close_time["anomaly_count"] == 1
+        assert close_time["invalid_count"] == 0
+        assert set(close_time["anomalies"][0]) == {
+            "instrument",
+            "interval",
+            "timestamp_open_utc",
+            "close_timestamp_utc",
+            "duration_us",
+            "source_path",
+            "source_sha256",
+        }
+        assert close_time["anomalies"][0]["source_sha256"] == file_record["sha256"]
+        inventory = close_time["inventory"]
+        assert {
+            key: inventory[key]
+            for key in (
+                "status",
+                "expected_count",
+                "missing_count",
+                "unexpected_count",
+                "changed_count",
+                "missing",
+                "changed",
+            )
+        } == {
+            "status": "NOT_ENFORCED",
+            "expected_count": None,
+            "missing_count": 0,
+            "unexpected_count": 1,
+            "changed_count": 0,
+            "missing": [],
+            "changed": [],
+        }
+        assert inventory["unexpected"] == [
+            {
+                key: close_time["anomalies"][0][key]
+                for key in (
+                    "instrument",
+                    "interval",
+                    "timestamp_open_utc",
+                    "close_timestamp_utc",
+                    "source_path",
+                    "source_sha256",
+                )
+            }
+        ]
+    assert (
+        manifest_report["tables"]["BTCUSDT_1m"]["close_time_semantics"]
+        == quality["quality_run2"]["tables"]["BTCUSDT_1m"]["close_time_semantics"]
+    )
+
+    verified = sf._freeze(
+        updated_manifest,
+        paths=paths,
+        scope=scope,
+        require_committed_code=False,
+    )
+    assert verified["status"] == "VERIFIED_EXISTING"
+    assert Path(verified["quality_report_archive"]).read_bytes() == archive_path.read_bytes()
 
 
 def test_stranded_output_is_recovered_without_replacing_data(tiny, monkeypatch) -> None:

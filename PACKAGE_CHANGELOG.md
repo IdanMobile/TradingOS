@@ -1,5 +1,22 @@
 # Package Changelog
 
+## v8.140 — 2026-07-23 — Audited source-close semantics
+
+- Recorded that the second production short-frame attempt failed closed during staged quality
+  validation, before dataset or artifact publication, because the validator incorrectly required
+  every source close to be a nominal interval terminal.
+- Authenticated all 30 non-nominal early closes directly against the retained official-source
+  archives and pinned their exact symbol, timeframe, open UTC, close UTC, source path, and archive
+  SHA-256. They are five source events represented across both symbols and all three frames.
+- Replaced the nominal-duration assumption with the bounded source contract
+  `open <= close < open + timeframe`, while retaining normal millisecond and microsecond terminal
+  precision, preserving source closes unchanged, and requiring exact production inventory
+  reconciliation. Missing, additional, changed, before-open, and next-boundary rows fail closed;
+  quality artifacts report the semantic label and anomaly details, while thrown errors stay
+  compact.
+- This is a bounded validation correction only. No production short-frame freeze has completed,
+  no strategy validity or profitability is established, and execution authority remains `NONE`.
+
 ## v8.139 — 2026-07-23 — Row-group-invariant short-frame logical hashes
 
 - Corrected the short-frame freeze's three Parquet reread boundaries—canonical bake-off authority
