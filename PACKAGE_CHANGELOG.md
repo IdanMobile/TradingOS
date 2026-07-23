@@ -1,5 +1,31 @@
 # Package Changelog
 
+## v8.142 — 2026-07-23 — Preregistered short-frame timing conformance
+
+- Added the fixed, non-performance
+  `SHORTFRAME-BAR-HIERARCHY-AND-FILL-AVAILABILITY-V1` protocol for the frozen
+  `DS-CRYPTO-SPOT-SHORTFRAMES-V1` dataset. It preregisters all six BTCUSDT/ETHUSDT
+  1m→5m, 1m→15m, and 5m→15m relation coordinates, native higher-frame source truth,
+  exact stored-value comparison with no tolerance, and the
+  `EXACT_CONFORMANT`/`SOURCE_DIVERGENCE`/`INCOMPLETE_CHILDREN`/`PARENT_MISSING`
+  classifications.
+- Pinned independent design-review inventories by exact count and canonical array SHA-256:
+  128 expected source-divergence records, 14 expected incomplete-child records, 42 expected
+  unavailable-gap boundary records, and six expected outside-window boundary records. Any
+  additional, missing, reordered, or changed record fails closed; expected source divergence
+  remains evidence and never replaces a native candle.
+- Added a fixed-path offline verifier that requires committed source/protocol bytes; stable and
+  content-addressed dataset evidence; exact six-table byte, logical, schema, and PASS bindings;
+  bounded DuckDB scans; two deterministic fresh-read analyses; nominal-boundary availability
+  mapped only to an exact one-minute open; authenticated early-close non-acceleration; and
+  crash-safe publication with create-only content-addressed archives and an atomically advancing,
+  directory-synced `CURRENT.json` pointer. Relaxed fixture analysis is explicitly non-production
+  and cannot enter the publication path.
+- This release adds capability, preregistration, and tiny-fixture tests only. It does not report
+  a production conformance run, strategy, signal, trade, return, PnL, Sharpe ratio, drawdown,
+  win rate, ranking, selection, campaign, trial-budget effect, promotion, or authority.
+  Execution authority remains `NONE`.
+
 ## v8.141 — 2026-07-23 — Production short-frame dataset freeze
 
 - Completed the production `DS-CRYPTO-SPOT-SHORTFRAMES-V1` freeze at committed code identity

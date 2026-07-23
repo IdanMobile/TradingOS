@@ -1,0 +1,124 @@
+schema: tios-shortframe-bar-hierarchy-and-fill-availability-v1
+protocol_id: SHORTFRAME-BAR-HIERARCHY-AND-FILL-AVAILABILITY-V1
+mode: NON_PERFORMANCE_TIMING_CONFORMANCE
+objective: >-
+  Verify that frozen lower-frame bars reproduce their aligned native
+  higher-frame parents, and that an observation is never available before its
+  nominal aligned interval boundary.
+dataset:
+  dataset_id: DS-CRYPTO-SPOT-SHORTFRAMES-V1
+  stable_manifest_path: artifacts/datasets/DS-CRYPTO-SPOT-SHORTFRAMES-V1.manifest.json
+  manifest_sha256: 05ccd69008c54f14f3b3299226e27c313d60fa224bf9b701e11ecc92beec7ce4
+  content_addressed_manifest_path: artifacts/datasets/DS-CRYPTO-SPOT-SHORTFRAMES-V1.manifest_05ccd69008c54f14f3b3299226e27c313d60fa224bf9b701e11ecc92beec7ce4.json
+  stable_quality_path: artifacts/datasets/DS-CRYPTO-SPOT-SHORTFRAMES-V1.QUALITY_REPORT.json
+  quality_sha256: cd281975e187f8e1cf43fd62fe03585891cf8c02cd44baf319575e42837f1186
+  content_addressed_quality_path: artifacts/datasets/DS-CRYPTO-SPOT-SHORTFRAMES-V1.QUALITY_REPORT_cd281975e187f8e1cf43fd62fe03585891cf8c02cd44baf319575e42837f1186.json
+  normalized_root: data/normalized/DS-CRYPTO-SPOT-SHORTFRAMES-V1
+scope:
+  instruments:
+    - BTCUSDT
+    - ETHUSDT
+  mappings:
+    - child_interval: 1m
+      parent_interval: 5m
+      expected_children: 5
+    - child_interval: 1m
+      parent_interval: 15m
+      expected_children: 15
+    - child_interval: 5m
+      parent_interval: 15m
+      expected_children: 3
+  start_month: 2021-01
+  end_month: 2026-06
+  cutoff_utc: "2026-07-01T00:00:00+00:00"
+aggregation:
+  complete_window: >-
+    Every exact aligned child-interval open from the parent open through the
+    parent boundary minus one child interval is present. Missing children are
+    never imputed.
+  exact_fields:
+    open: first
+    high: maximum
+    low: minimum
+    close: last
+    close_timestamp_utc: last
+    trade_count: sum
+  additive_decimal_fields:
+    - volume_base
+    - quote_volume
+    - taker_buy_base_volume
+    - taker_buy_quote_volume
+  decimal_tolerance:
+    unit: "0.00000001"
+    maximum_absolute_difference: "0"
+    rationale: >-
+      No tolerance. Both sides use frozen decimal128(38,8) values, and native
+      higher-frame bars remain source truth when exact stored values diverge.
+  classification:
+    - EXACT_CONFORMANT
+    - SOURCE_DIVERGENCE
+    - INCOMPLETE_CHILDREN
+    - PARENT_MISSING
+  source_truth: native_higher_frame_bar
+availability:
+  rule: aligned_parent_open_plus_parent_interval
+  raw_close_timestamp_may_advance_availability: false
+  exact_one_minute_open_required: true
+  absent_open_action: BLOCK
+  gap_action: BLOCK
+  at_or_after_cutoff_action: BLOCK
+  hypothetical_only: true
+  execution_price_computed: false
+authenticated_early_close_check:
+  evidence: dataset quality report close_time_semantics inventories
+  requirement: early source closes must not advance the aligned availability boundary
+expected_inventory:
+  canonical_encoding: UTF-8 JSON, recursively sorted object keys, compact separators, no trailing newline
+  arrays:
+    source_divergence_records:
+      count: 128
+      sha256: f2bd636818eca622bf2eef0bde9caecfc63eb86bcc0f17bec85f711ef9884c86
+    incomplete_child_records:
+      count: 14
+      sha256: 903ba077846d3ceef579d858322d04e4ffcfc010443cd1f43b07ce32aa52336b
+    unavailable_gap_fill_records:
+      count: 42
+      sha256: c832af4617df0a4495b639ae73629d34ddb4f7cf03dc998c0a526486d25e87b8
+    outside_window_fill_records:
+      count: 6
+      sha256: e001fb8ec98c610637b03da01dd20b58e3a130e5a6042e277f6c7cbe094e9457
+output:
+  schema_version: 1
+  bounded_detail_limit: 50
+  deterministic_fresh_reads: 2
+  publish_root: artifacts/datasets/shortframe_execution_conformance
+  current_name: CURRENT.json
+  content_addressed_prefix: shortframe_execution_conformance_
+  prohibited_fields:
+    - signals
+    - trades
+    - returns
+    - pnl
+    - sharpe
+    - drawdown
+    - win_rate
+    - ranking
+    - selection
+    - campaign
+    - trial_budget
+limitations:
+  - One-minute bars cannot resolve intraminute path.
+  - One-minute bars cannot resolve spread.
+  - One-minute bars cannot resolve market impact.
+  - One-minute bars cannot resolve latency.
+  - One-minute bars cannot resolve queue priority.
+  - One-minute bars cannot resolve partial fill.
+governance:
+  family_id: NONE
+  trial_budget_effect: NONE
+  execution_authority: NONE
+  strategy_authority: NONE
+committed_surface:
+  - research/SHORTFRAME_BAR_HIERARCHY_AND_FILL_AVAILABILITY_V1.yaml
+  - src/tios/dataset/shortframe_execution_conformance.py
+  - scripts/verify_shortframe_execution_conformance.py
