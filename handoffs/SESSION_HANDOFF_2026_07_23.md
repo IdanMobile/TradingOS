@@ -6,10 +6,11 @@ not authorize reading preregistered prospective outcomes or sealed holdout artif
 
 ## Verified current state
 
-- The current implementation line includes `270088c` (repair and full-demo readiness gates) and
-  `f54f7fc` (repair-plan CLI path confinement). Nothing from this session was pushed.
+- The current implementation line includes `270088c` (repair and full-demo readiness gates),
+  `f54f7fc` (repair-plan CLI path confinement), and v8.136 commit `1de3116` (corrected external
+  trust bundle and pending activation-source preparation). Nothing from this session was pushed.
 - Observed session output from the sole release gate, `make check`, was
-  **1,611 passed / 29 deselected**. The retained quality artifact proves only the gate's `PASS`
+  **1,613 passed / 29 deselected**. The retained quality artifact proves only the gate's `PASS`
   status; it does not independently attest those test counts.
 - The read-only full-demo readiness result is **`AUTHORITY_GATED`** with
   **`operational=true`**. This means the implemented operational checks pass while the external
@@ -17,7 +18,32 @@ not authorize reading preregistered prospective outcomes or sealed holdout artif
   state.
 - Exactly one authenticated instance of each fixed local service is running: dashboard,
   orchestrator, bounded jobs worker, and protected demo lane. The demo lane remains fake-money
-  only. The orchestrator observes and prioritizes; it cannot place orders.
+  only. The orchestrator observes and prioritizes; it cannot place orders. Only the dashboard was
+  restarted after the reviewed UI/source update; final readiness remained `AUTHORITY_GATED` with
+  `operational=true`.
+- The corrected v2 bundle at
+  `/tmp/tios-intake-reviewed-bundles/74b6c436b8d66d0cfef587e04934ffa9fdfb92989197a5ba485b95c7086cce1d.bundle`
+  was only the unprivileged ceremony input. The exact root-owned executed installer source was
+  `/private/var/db/tios-intake-staging/74b6c436b8d66d0cfef587e04934ffa9fdfb92989197a5ba485b95c7086cce1d.bundle`,
+  which remains `root:wheel 0555`. Its bundle/manifest SHA-256 is
+  `74b6c436b8d66d0cfef587e04934ffa9fdfb92989197a5ba485b95c7086cce1d`; its installer SHA-256
+  is `8a24f20f373fb26fa1b14cfde70f9a2d50a9557fa36ba4ab8d5b959fd26150f9`.
+- The installed helper directory
+  `/Library/PrivilegedHelperTools/com.tios.intake-verifier.d` is `root:wheel 0555`. Its
+  `tios-intake-verifier` binary is `root:wheel 0555`, SHA-256
+  `2b5021a0eade8f4de3c3ca03b589e452c84fa608d27fac7ea6fa16405c2e3640`; installed
+  `MANIFEST.sha256` is `root:wheel 0444`, SHA-256
+  `74b6c436b8d66d0cfef587e04934ffa9fdfb92989197a5ba485b95c7086cce1d`; installed `VERSION`
+  is `2`.
+- `/private/var/db/tios-intake` remains absent. No trust, reviewer, history, checkpoint,
+  trusted-time, genesis, or receipt state was initialized, so authority remains `NONE`. The old
+  v1 root-stage at the distinct digest
+  `39c4521585ff689d05d10a8c80206c7d9706095f9f3112918bb7f486bf4b41c0` remains present only as
+  obsolete, digest-separated staging evidence; it is not the installed helper source.
+- The pending activation-source bundle is prepared at
+  `/tmp/tios-intake-activation-source-1de3116/72ab6bcac50764f1861708673fd858381c549dc9184e75f29020d79073133ba6.activation-source.bundle`.
+  Its digest is `72ab6bcac50764f1861708673fd858381c549dc9184e75f29020d79073133ba6`;
+  it initializes or authorizes nothing and retains authority `NONE`.
 - The controlled normalized-data repair and reconciliation completed. The daily updater's
   `com.tios.dailyupdate` LaunchAgent was restored to its **06:10 local-time** schedule.
 - Retained repair evidence:
@@ -54,30 +80,23 @@ not authorize reading preregistered prospective outcomes or sealed holdout artif
 
 Complete these steps in order without skipping or substituting repository-generated evidence:
 
-1. The operator/user runs the reviewed root trust-helper ceremony exactly as documented in
-   `ops/intake_trust/README.md`, using the prepared bundle at
-   `/tmp/tios-intake-reviewed-bundles/39c4521585ff689d05d10a8c80206c7d9706095f9f3112918bb7f486bf4b41c0.bundle`.
-   The reviewed bundle SHA-256 is
-   `39c4521585ff689d05d10a8c80206c7d9706095f9f3112918bb7f486bf4b41c0`; the installer SHA-256
-   is `ee2ef47742b7417e61dc3da426526f9e10ce272807034c360e9bbc8a52c6b410`. Do not improvise
-   paths, digests, keys, or installation steps.
-2. Complete genuine independent-reviewer enrollment. The reviewer retains the private key
-   outside the repository and operator host; only reviewed public enrollment material crosses
-   the boundary.
-3. Separately review and publish the fixed-path trust, policy, genesis, authoritative history,
+1. The next hard gate is operator-sourced, genuinely independent-reviewer enrollment on a
+   separate reviewer-controlled machine. The reviewer retains the private key outside the
+   repository and operator host; only reviewed public enrollment material crosses the boundary.
+2. Separately review and publish the fixed-path trust, policy, genesis, authoritative history,
    monotonic checkpoint, and trusted-time state.
-4. Produce a canonical activation status receipt and validate the exact
+3. Produce a canonical activation status receipt and validate the exact
    `ACTIVE_NO_DECISIONS` snapshot against that root-owned state.
-5. Obtain and retain an independently signed review record binding the installed hashes, state,
+4. Obtain and retain an independently signed review record binding the installed hashes, state,
    and activation receipt.
-6. Implement and independently review the fixed-path typed evidence resolver and current-receipt
+5. Implement and independently review the fixed-path typed evidence resolver and current-receipt
    consumer.
-7. Obtain explicit operator authorization for the required integrity freeze and changelog. Any
+6. Obtain explicit operator authorization for the required integrity freeze and changelog. Any
    reconciliation of `PROJECT_STATE.md` and its manifest hash requires a new, explicit, narrowly
    scoped exception; earlier one-time exceptions grant no continuing authority to edit
    `PACKAGE_INTEGRITY_MANIFEST.md`.
-8. Complete independent security review of the frozen activation boundary.
-9. Only after every preceding step passes may Phase 3 begin; Phase 4 remains blocked until Phase 3
+7. Complete independent security review of the frozen activation boundary.
+8. Only after every preceding step passes may Phase 3 begin; Phase 4 remains blocked until Phase 3
    passes its own contract, identity, and `make check` gates.
 
 Separately, complete and retain the operator attestation for the reviewed operational/readiness
