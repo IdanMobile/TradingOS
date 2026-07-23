@@ -1,5 +1,39 @@
 # Package Changelog
 
+## v8.144 — 2026-07-23 — Demo decision evidence bridge Stage A capability
+
+- Added a read-only, capability-free Stage A bridge for explicit operator-copied
+  demo lane state, heartbeat, and order-ledger files. It has no active-lane
+  default, network or order transport, credential access, or execution authority,
+  and refuses source or output paths under the active demo-lane root.
+- Added deterministic `tios.demo_decision_evidence.v1` event/projection
+  envelopes, stable content-derived IDs, exact decimal source-text retention with
+  explicit fidelity labels, conservative future-event state reduction, durable
+  append/replay handling, deterministic conflict and source-history incidents,
+  and canonical JSONL exports. Each commit is an immutable cumulative generation
+  selected only by a directory-synced atomic `CURRENT.json` pointer; a durable
+  atomic create-only source baseline inside each generation makes a pre-commit
+  crash recoverable without replacing the last committed generation.
+- The current legacy projection is intentionally limited to one incomplete open
+  episode with `BEST_EFFORT_MULTI_FILE` and
+  `LEGACY_NO_CLIENT_IDEMPOTENCY` limitations. It records zero realised outcomes,
+  never treats rounded legacy deltas as exact PnL, hashes venue order IDs, and
+  excludes exact wallet balances and authentication material.
+- Private outputs are confined below an explicit `artifacts/evidence` directory
+  with single-link regular-file, no-symlink, `0700` directory, and `0600`
+  file/lock controls. Generation manifests bind copied-source bytes, every
+  retained file, and a fixed expected SQLite schema contract, version, ordered
+  all-column row inventory, last sequence, and exact ledger parity. Generation
+  directories enforce exact phase/final file inventories before publication;
+  validated atomic-write temporaries in an uncommitted generation are removed
+  under the bridge lock and directory-synced so an interrupted write can retry,
+  while arbitrary extras still halt. A single unreferenced final generation is
+  adopted only after its predecessor, source baseline, manifest, complete file
+  inventory, and exact store parity are reverified; `CURRENT.json` remains the
+  final commit point. This release adds capability and offline tests only; it
+  creates no production evidence, changes no demo behavior or orders, has no
+  trial-budget effect, and leaves execution authority `NONE`.
+
 ## v8.143 — 2026-07-23 — Production short-frame execution conformance
 
 - Published the production `SHORTFRAME-BAR-HIERARCHY-AND-FILL-AVAILABILITY-V1`
