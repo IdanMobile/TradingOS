@@ -19,7 +19,7 @@ for source in install.sh verifier/main.swift; do
   /bin/mkdir -p "$WORK/bundle/$(/usr/bin/dirname "$source")"
   /bin/cp "$ROOT/$source" "$WORK/bundle/$source"
 done
-/usr/bin/printf '1\n' > "$WORK/bundle/VERSION"
+/usr/bin/printf '2\n' > "$WORK/bundle/VERSION"
 (cd "$WORK/bundle" && {
   /usr/bin/shasum -a 256 VERSION
   /usr/bin/shasum -a 256 install.sh

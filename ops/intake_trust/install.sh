@@ -26,7 +26,7 @@ STAGED="$STAGING_ROOT/$EXPECTED.bundle"
 
 check_dir() { /bin/test -d "$1" && /bin/test ! -L "$1" && /bin/test "$(/usr/bin/stat -f '%u:%g:%Lp' "$1")" = "0:0:$2" || refuse "unsafe directory: $1"; }
 check_file() { /bin/test -f "$1" && /bin/test ! -L "$1" && /bin/test "$(/usr/bin/stat -f '%u:%g:%Lp:%l' "$1")" = "0:0:$2:1" || refuse "unsafe file: $1"; }
-check_ancestor() { /bin/test -d "$1" && /bin/test ! -L "$1" && /bin/test "$(/usr/bin/stat -f '%u:%g:%OLp' "$1")" = "0:0:drwxr-xr-x" || refuse "unsafe ancestor: $1"; }
+check_ancestor() { /bin/test -d "$1" && /bin/test ! -L "$1" && /bin/test "$(/usr/bin/stat -f '%u:%g:%Lp' "$1")" = "0:0:755" || refuse "unsafe ancestor: $1"; }
 check_ancestor /Library
 check_ancestor /Library/PrivilegedHelperTools
 check_ancestor /private

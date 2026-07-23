@@ -190,6 +190,25 @@ def test_installer_fixed_staging_type_digest_race_and_atomic_guards() -> None:
     assert "--source" not in text and "--destination" not in text
 
 
+def test_installer_ancestor_stat_uses_bsd_numeric_mode_contract() -> None:
+    installer = (OPS / "install.sh").read_text(encoding="utf-8")
+    ancestor_check = next(
+        line for line in installer.splitlines() if line.startswith("check_ancestor()")
+    )
+    assert "/bin/test -d" in ancestor_check
+    assert "/bin/test ! -L" in ancestor_check
+    assert "stat -f '%u:%g:%Lp'" in ancestor_check
+    assert '= "0:0:755"' in ancestor_check
+    assert "%OLp" not in ancestor_check
+    assert "drwxr-xr-x" not in ancestor_check
+
+
+def test_bundle_version_requires_portable_installer_v2() -> None:
+    builder = (OPS / "build_bundle.sh").read_text(encoding="utf-8")
+    assert "/usr/bin/printf '2\\n' > \"$WORK/bundle/VERSION\"" in builder
+    assert "/usr/bin/printf '1\\n' > \"$WORK/bundle/VERSION\"" not in builder
+
+
 def test_installer_public_status_and_documentation_are_hygienic() -> None:
     result = subprocess.run(
         [str(OPS / "install.sh"), "status", "--json"], check=True, capture_output=True, text=True

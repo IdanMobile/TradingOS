@@ -1,5 +1,21 @@
 # Package Changelog
 
+## v8.136 — 2026-07-23 — Portable root-installer ancestor mode check
+
+- Corrected the external intake helper installer's fail-closed ancestor validation for macOS BSD
+  `stat`: `%u:%g:%Lp` is now compared with the exact numeric `0:0:755` contract. The previous
+  `%u:%g:%OLp` output was numeric (`0:0:755`) but was incorrectly compared with the symbolic
+  string `0:0:drwxr-xr-x`, so the reviewed ceremony safely stopped at `/Library` even when that
+  ancestor was a valid root-owned, wheel-group, non-symlink directory with mode `0755`.
+- The stopped ceremony published no helper directory and created no trust, history, checkpoint,
+  or other state. Symlink and directory checks remain mandatory and unchanged; this repair does
+  not loosen the fixed path, ownership, confinement, digest, or atomic-publication guards.
+- Advanced the deterministic intake setup bundle `VERSION` from 1 to 2 so any future operator
+  ceremony must use a newly reviewed bundle and installer digest containing this portability
+  repair. Added static regression coverage for the BSD numeric format and exact expected value,
+  rejection of the former symbolic mismatch, and the v2 bundle requirement. No production bundle
+  was built and no privileged path, helper, or state was touched by this source-only change.
+
 ## v8.135 — 2026-07-23 — Repair-plan CLI path normalization
 
 - Fixed the one-time repair CLI boundary to accept both the repository-relative plan path emitted
