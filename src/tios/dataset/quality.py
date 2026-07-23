@@ -20,9 +20,10 @@ import pyarrow.parquet
 
 from tios.dataset.download import INSTRUMENTS, INTERVALS, MANIFEST_PATH, RAW_ROOT
 from tios.dataset.normalize import NORM_MANIFEST, NORM_ROOT
+from tios.trading_domain import Timeframe
 
 REPORT_DIR = Path(__file__).resolve().parents[3] / "artifacts" / "datasets"
-INTERVAL_US = {"5m": 300_000_000, "15m": 900_000_000, "1h": 3_600_000_000}
+INTERVAL_US = {timeframe.value: timeframe.seconds * 1_000_000 for timeframe in Timeframe}
 
 Check = dict[str, Any]  # {"name", "status": "PASS"|"FAIL", "details": {...}}
 

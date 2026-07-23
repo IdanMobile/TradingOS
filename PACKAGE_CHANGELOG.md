@@ -1,5 +1,19 @@
 # Package Changelog
 
+## v8.137 — 2026-07-23 — Canonical timeframe contract verification
+
+- Made dataset spacing and missing-interval helpers derive durations from the canonical
+  `Timeframe` contract and added synthetic coverage for all six supported values: 1m, 5m, 15m,
+  1h, 4h, and 1d. The frozen bake-off dataset population remains unchanged.
+- Added fixture-backed evaluator checks that retime the existing micro price paths across all six
+  frames and verify transition ordinal/side invariance, emitted timeframe identity, close-time
+  causality, and the one-hour-only calendar boundary. Added bounded synthetic paper checks for
+  closed-bar evaluation and fail-closed kline-gap behavior on every canonical frame.
+- Added a pure causal lower-to-higher close-time alignment helper with representative 1m→5m,
+  5m→1h, 15m→4h, and 1h→1d coverage plus invalid-pair and unclosed-higher-bar refusal checks.
+  These are implementation-contract tests only: retiming one price path is not evidence of
+  strategy edge, statistical validity, promotion readiness, or live-trading authority.
+
 ## v8.136 — 2026-07-23 — Portable root-installer ancestor mode check
 
 - Corrected the external intake helper installer's fail-closed ancestor validation for macOS BSD
