@@ -217,6 +217,45 @@ def test_raw_proof_binds_official_1m_and_canonical_authority_chain(tiny) -> None
     assert len(proof["files"]) == 3
 
 
+def test_parquet_reread_hashes_ignore_row_group_chunking(tiny, tmp_path) -> None:
+    paths, scope, manifest = tiny
+    canonical_path = paths.bakeoff_norm_root / "BTCUSDT_5m.parquet"
+    canonical_table = pyarrow.parquet.read_table(canonical_path).combine_chunks()
+    canonical_logical = sf._parquet_logical_content_sha256(canonical_table)
+    pyarrow.parquet.write_table(canonical_table, canonical_path, row_group_size=1)
+    reread = pyarrow.parquet.read_table(canonical_path)
+    assert content_sha256(reread) != canonical_logical
+    assert sf._parquet_logical_content_sha256(reread) == canonical_logical
+
+    authority = json.loads(paths.bakeoff_dataset_manifest.read_text())
+    authority["tables"]["BTCUSDT_5m"]["parquet_sha256"] = _sha(canonical_path)
+    assert authority["tables"]["BTCUSDT_5m"]["content_sha256"] == canonical_logical
+    paths.bakeoff_dataset_manifest.write_text(json.dumps(authority))
+    subprocess.run(
+        ["git", "add", "artifacts/datasets/DS-CRYPTO-SPOT-BAKEOFF-V1.manifest.json"],
+        cwd=paths.authority_git_root,
+        check=True,
+    )
+    subprocess.run(
+        ["git", "commit", "-q", "-m", "re-encode canonical parquet"],
+        cwd=paths.authority_git_root,
+        check=True,
+    )
+    sf.verify_raw_proof(manifest, paths=paths, scope=scope)
+
+    stage = tmp_path / "row-group-stage"
+    normalized = sf._regenerate(stage, paths=paths, scope=scope)
+    staged_path = stage / "BTCUSDT_1m.parquet"
+    staged_table = pyarrow.parquet.read_table(staged_path).combine_chunks()
+    staged_logical = sf._parquet_logical_content_sha256(staged_table)
+    pyarrow.parquet.write_table(staged_table, staged_path, row_group_size=1)
+    staged_reread = pyarrow.parquet.read_table(staged_path)
+    assert content_sha256(staged_reread) != staged_logical
+    normalized["BTCUSDT_1m"]["parquet_sha256"] = _sha(staged_path)
+    assert normalized["BTCUSDT_1m"]["content_sha256"] == staged_logical
+    assert sf.validate_run(stage, normalized, paths=paths, scope=scope)["overall"] == "PASS"
+
+
 @pytest.mark.parametrize("broken_link", ["raw", "quality", "regeneration", "table"])
 def test_canonical_authority_link_corruption_is_refused(tiny, broken_link: str) -> None:
     paths, scope, manifest = tiny
@@ -414,14 +453,18 @@ def test_stranded_output_is_recovered_without_replacing_data(tiny, monkeypatch) 
         sf._freeze(manifest, paths=paths, scope=scope, require_committed_code=False)
     target = paths.output_root / "BTCUSDT_1m.parquet"
     original_physical = _sha(target)
-    logical = content_sha256(pyarrow.parquet.read_table(target))
+    logical = sf._parquet_logical_content_sha256(pyarrow.parquet.read_table(target))
     differently_encoded = target.with_suffix(".alternate.parquet")
     pyarrow.parquet.write_table(
-        pyarrow.parquet.read_table(target), differently_encoded, compression=None
+        pyarrow.parquet.read_table(target).combine_chunks(),
+        differently_encoded,
+        compression=None,
+        row_group_size=1,
     )
     differently_encoded.replace(target)
     assert _sha(target) != original_physical
-    assert content_sha256(pyarrow.parquet.read_table(target)) == logical
+    assert content_sha256(pyarrow.parquet.read_table(target)) != logical
+    assert sf._parquet_logical_content_sha256(pyarrow.parquet.read_table(target)) == logical
     before = {path.name: _sha(path) for path in paths.output_root.glob("*.parquet")}
     monkeypatch.setattr(sf, "_publish_json", original_publish)
 

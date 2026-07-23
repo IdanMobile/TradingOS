@@ -111,6 +111,11 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _parquet_logical_content_sha256(table: pa.Table) -> str:
+    """Hash logical rows independent of Parquet row-group/Arrow chunk boundaries."""
+    return content_sha256(table.combine_chunks())
+
+
 def _canonical_json(payload: dict[str, Any]) -> bytes:
     return (json.dumps(payload, indent=2, sort_keys=True) + "\n").encode()
 
@@ -280,7 +285,7 @@ def _verify_canonical_authority(*, paths: FreezePaths, scope: FreezeScope) -> di
                 paths.bakeoff_norm_root, Path(record["parquet"]), label=f"canonical table {key}"
             )
             table = pyarrow.parquet.read_table(table_path)
-            logical = content_sha256(table)
+            logical = _parquet_logical_content_sha256(table)
             if (
                 _sha256(table_path) != record.get("parquet_sha256")
                 or logical != record.get("content_sha256")
@@ -532,7 +537,7 @@ def _table_quality(
     if not timezone_ok:
         failures.append("utc_timestamps")
     actual_bytes = _sha256(path)
-    actual_logical = content_sha256(table)
+    actual_logical = _parquet_logical_content_sha256(table)
     if normalization_info.get("rows") != table.num_rows:
         failures.append("reported_rows")
     if normalization_info.get("parquet_sha256") != actual_bytes:
@@ -726,7 +731,7 @@ def _existing_output_info(
         info = dict(fresh_info)
         info["rows"] = table.num_rows
         info["parquet_sha256"] = _sha256(path)
-        info["content_sha256"] = content_sha256(table)
+        info["content_sha256"] = _parquet_logical_content_sha256(table)
         described[key] = info
     return described
 

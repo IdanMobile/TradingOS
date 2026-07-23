@@ -1,5 +1,19 @@
 # Package Changelog
 
+## v8.139 — 2026-07-23 — Row-group-invariant short-frame logical hashes
+
+- Corrected the short-frame freeze's three Parquet reread boundaries—canonical bake-off authority
+  verification, staged-table quality, and existing-output recovery—to combine Arrow chunks before
+  calculating logical content hashes. This keeps logical identity invariant when identical rows
+  are encoded with different Parquet row-group boundaries without changing the legacy global
+  `content_sha256` contract used by already-retained evidence.
+- The first production dry run failed closed during canonical authority verification, before
+  staging publication or quality/manifest artifact creation. The canonical Parquet byte hashes
+  were exact; only the reread table's Arrow chunk layout differed from the original normalization
+  table used for its retained logical digest.
+- This is a capability correction only. No production short-frame dataset freeze has completed,
+  no strategy validity or profitability is established, and execution authority remains `NONE`.
+
 ## v8.138 — 2026-07-23 — Bounded short-frame dataset certification capability
 
 - Added validated, klines-only acquisition selectors for symbols, timeframes, and inclusive month
