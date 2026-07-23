@@ -13,8 +13,11 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import subprocess
+import tempfile
 from dataclasses import asdict
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pyarrow as pa
@@ -31,16 +34,25 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _raw_inputs(instrument: str, interval: str) -> tuple[list[dict[str, object]], list[str]]:
+def _raw_inputs(
+    instrument: str,
+    interval: str,
+    *,
+    raw_root: Path | None = None,
+    selected_months: list[str] | None = None,
+) -> tuple[list[dict[str, object]], list[str]]:
+    source_root = raw_root or RAW_ROOT
     files, missing = [], []
-    for month in months():
-        path = RAW_ROOT / "klines" / instrument / interval / f"{instrument}-{interval}-{month}.zip"
+    for month in selected_months if selected_months is not None else months():
+        path = (
+            source_root / "klines" / instrument / interval / f"{instrument}-{interval}-{month}.zip"
+        )
         if not path.exists():
             missing.append(month)
             continue
         files.append(
             {
-                "path": path.relative_to(RAW_ROOT).as_posix(),
+                "path": path.relative_to(source_root).as_posix(),
                 "url": (
                     "https://data.binance.vision/data/spot/monthly/klines/"
                     f"{instrument}/{interval}/{path.name}"
@@ -57,6 +69,21 @@ def _input_set_sha256(files: list[dict[str, object]]) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
+def _validate_raw_archive_order_and_month(
+    table: pa.Table, *, detected_unit: str, month: str, path: Path
+) -> None:
+    opens: list[int] = table.column("open_time").to_pylist()
+    if any(right <= left for left, right in zip(opens[:-1], opens[1:], strict=True)):
+        raise ValueError(f"{path.name}: raw open timestamps are not strictly increasing")
+    divisor = 1_000 if detected_unit == "ms" else 1_000_000
+    first_month = datetime.fromtimestamp(opens[0] / divisor, tz=UTC).strftime("%Y-%m")
+    last_month = datetime.fromtimestamp(opens[-1] / divisor, tz=UTC).strftime("%Y-%m")
+    if first_month != month or last_month != month:
+        raise ValueError(
+            f"{path.name}: raw timestamps belong to {first_month}..{last_month}, expected {month}"
+        )
+
+
 def _code_identity() -> dict[str, str]:
     root = Path(__file__).resolve().parents[3]
     result = subprocess.run(["git", "rev-parse", "HEAD"], cwd=root, capture_output=True, text=True)
@@ -71,16 +98,59 @@ def _code_identity() -> dict[str, str]:
     }
 
 
-def normalize_pair(instrument: str, interval: str) -> dict[str, object] | None:
+def _fsync_directory(path: Path) -> bool:
+    try:
+        descriptor = os.open(path, os.O_RDONLY)
+        try:
+            os.fsync(descriptor)
+        finally:
+            os.close(descriptor)
+    except OSError:
+        return False
+    return True
+
+
+def _atomic_write_parquet(path: Path, table: pa.Table) -> bool:
+    """Publish one complete Parquet with file fsync and atomic replace."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+    os.close(descriptor)
+    temporary = Path(temporary_name)
+    try:
+        pyarrow.parquet.write_table(table, temporary, compression="zstd")
+        with temporary.open("rb") as retained:
+            os.fsync(retained.fileno())
+        os.chmod(temporary, path.stat().st_mode & 0o777 if path.exists() else 0o644)
+        os.replace(temporary, path)
+        return _fsync_directory(path.parent)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def normalize_pair(
+    instrument: str,
+    interval: str,
+    *,
+    output_root: Path | None = None,
+    raw_root: Path | None = None,
+    selected_months: list[str] | None = None,
+) -> dict[str, object] | None:
     """Normalize every present monthly kline zip for one pair/interval, or None if absent."""
+    source_root = raw_root or RAW_ROOT
+    target_root = output_root or NORM_ROOT
+    selected = selected_months if selected_months is not None else months()
     tables, detections = [], []
-    source_files, missing = _raw_inputs(instrument, interval)
-    for month in months():
-        zp = RAW_ROOT / "klines" / instrument / interval / f"{instrument}-{interval}-{month}.zip"
+    source_files, missing = _raw_inputs(
+        instrument, interval, raw_root=source_root, selected_months=selected
+    )
+    for month in selected:
+        zp = source_root / "klines" / instrument / interval / f"{instrument}-{interval}-{month}.zip"
         if not zp.exists():
-            missing.append(month)
             continue
         raw, det = parse_zip(zp, month)
+        _validate_raw_archive_order_and_month(
+            raw, detected_unit=det.detected_unit, month=month, path=zp
+        )
         detections.append(det)
         tables.append(to_canonical(raw, det.detected_unit, instrument, interval))
     if not tables:
@@ -88,9 +158,9 @@ def normalize_pair(instrument: str, interval: str) -> dict[str, object] | None:
     merged = pa.concat_tables(tables).sort_by("timestamp_open_utc")
     merged, dropped = dedup_sorted(merged)
 
-    NORM_ROOT.mkdir(parents=True, exist_ok=True)
-    out = NORM_ROOT / f"{instrument}_{interval}.parquet"
-    pyarrow.parquet.write_table(merged, out, compression="zstd")
+    target_root.mkdir(parents=True, exist_ok=True)
+    out = target_root / f"{instrument}_{interval}.parquet"
+    directory_synced = _atomic_write_parquet(out, merged)
     opens = merged.column("timestamp_open_utc")
     return {
         "parquet": out.name,
@@ -104,6 +174,7 @@ def normalize_pair(instrument: str, interval: str) -> dict[str, object] | None:
         "source_input_set_sha256": _input_set_sha256(source_files),
         "parquet_sha256": hashlib.sha256(out.read_bytes()).hexdigest(),
         "content_sha256": content_sha256(merged),
+        "parquet_directory_fsync": "CONFIRMED" if directory_synced else "BEST_EFFORT_FAILED",
     }
 
 
@@ -121,7 +192,7 @@ def normalize_all(pairs: tuple[str, ...] = TOP_PAIRS) -> dict[str, object]:
         "lineage_status": "recorded_at_normalization",
         "normalization_code": _code_identity(),
         "tables": tables,
-        "pair_count": len(pairs),
+        "pair_count": len({key.rsplit("_", 1)[0] for key in tables}),
     }
 
 

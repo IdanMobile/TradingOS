@@ -1,5 +1,34 @@
 # Package Changelog
 
+## v8.138 — 2026-07-23 — Bounded short-frame dataset certification capability
+
+- Added validated, klines-only acquisition selectors for symbols, timeframes, and inclusive month
+  bounds. Filtered manifests bind the exact requested scope, while an optional fail-closed mode
+  refuses publication unless every retained archive has an official checksum. Existing downloads
+  remain never-overwrite and resumable; no network acquisition was run by this change.
+- Hardened multi-dataset normalization by recording missing months once, supporting an explicit
+  output root, reporting only pairs actually produced, and publishing each Parquet through a
+  flushed, file-synced atomic replace with post-replace directory sync status.
+- Added a dedicated offline freeze boundary for `DS-CRYPTO-SPOT-SHORTFRAMES-V1`, fixed to
+  BTCUSDT/ETHUSDT × 1m/5m/15m × 2021-01..2026-06. It requires exact official-checksum proof for
+  all 132 one-minute archives and byte-identical correspondence with the existing official
+  bake-off proof for all 5m/15m archives before normalization. The one-minute proof must be a
+  content-addressed, single-link regular manifest in the fixed retained-acquisition directory;
+  this records the HTTPS acquisition evidence and is not third-party cryptographic attestation.
+- The freeze takes a same-dataset interprocess lock, checks conservative disk headroom,
+  regenerates the six tables twice in fresh staging directories, runs the full per-table quality
+  contract on both runs, rejects logical nondeterminism, and requires 5m/15m logical equality with
+  the immutable bake-off dataset authority. Only a passing run publishes all six Parquets in one
+  atomic directory rename, followed by separately atomic content-addressed and stable
+  quality/manifest JSON writes. A rerun verifies a stranded published directory against a fresh
+  double regeneration and can complete missing artifacts without replacing mismatching data.
+  The artifacts include
+  raw-proof hashes, actual byte/logical hashes, complete code-surface hashes, and Git identity.
+  Gap counts remain explicit and informational; candles are never filled.
+- This release adds capability and offline tiny-fixture coverage only. It does not claim that the
+  production short-frame dataset has been frozen, does not establish strategy validity or
+  profitability, and grants execution authority `NONE`.
+
 ## v8.137 — 2026-07-23 — Canonical timeframe contract verification
 
 - Made dataset spacing and missing-interval helpers derive durations from the canonical

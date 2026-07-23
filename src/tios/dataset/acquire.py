@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
@@ -76,9 +77,17 @@ class Acquired:
     status: str  # downloaded | reused | missing
 
 
-def months() -> list[str]:
-    out, (y, m) = [], START_MONTH
-    while (y, m) <= END_MONTH:
+def _month(value: str) -> tuple[int, int]:
+    if not re.fullmatch(r"\d{4}-(0[1-9]|1[0-2])", value):
+        raise ValueError(f"invalid month: {value!r}; expected YYYY-MM")
+    return int(value[:4]), int(value[5:])
+
+
+def months(start: tuple[int, int] = START_MONTH, end: tuple[int, int] = END_MONTH) -> list[str]:
+    if start > end:
+        raise ValueError("start month must not be after end month")
+    out, (y, m) = [], start
+    while (y, m) <= end:
         out.append(f"{y:04d}-{m:02d}")
         m += 1
         if m == 13:
@@ -120,10 +129,66 @@ def _basis_spec(market: str, local_kind: str, symbol: str, month: str) -> FileSp
     )  # fmt: skip
 
 
-def planned_files(kinds: tuple[str, ...]) -> list[FileSpec]:
+def validate_scope(
+    kinds: tuple[str, ...],
+    *,
+    symbols: tuple[str, ...] | None = None,
+    timeframes: tuple[str, ...] | None = None,
+    start_month: str | None = None,
+    end_month: str | None = None,
+) -> tuple[tuple[str, ...], tuple[str, ...], tuple[int, int], tuple[int, int]]:
+    """Validate optional kline-only selectors and return their canonical scope."""
+    allowed_kinds = {"klines", "aggTrades", "fundingRate", "basis"}
+    if not kinds or len(set(kinds)) != len(kinds) or not set(kinds) <= allowed_kinds:
+        raise ValueError(f"invalid acquisition kinds: {kinds!r}")
+    filtered = any(v is not None for v in (symbols, timeframes, start_month, end_month))
+    if filtered and kinds != ("klines",):
+        raise ValueError("symbols/timeframes/month filters are supported only for --kinds klines")
+    selected_symbols = symbols if symbols is not None else TOP_PAIRS
+    selected_timeframes = timeframes if timeframes is not None else TIMEFRAMES
+    if not selected_symbols or len(set(selected_symbols)) != len(selected_symbols):
+        raise ValueError("symbols must be a non-empty unique list")
+    if not selected_timeframes or len(set(selected_timeframes)) != len(selected_timeframes):
+        raise ValueError("timeframes must be a non-empty unique list")
+    unknown_symbols = sorted(set(selected_symbols) - set(TOP_PAIRS))
+    unknown_timeframes = sorted(set(selected_timeframes) - set(TIMEFRAMES))
+    if unknown_symbols:
+        raise ValueError(f"unsupported symbols: {unknown_symbols}")
+    if unknown_timeframes:
+        raise ValueError(f"unsupported timeframes: {unknown_timeframes}")
+    start = _month(start_month) if start_month is not None else START_MONTH
+    end = _month(end_month) if end_month is not None else END_MONTH
+    if start < START_MONTH or end > END_MONTH:
+        raise ValueError("month selectors must stay within 2021-01..2026-06")
+    if start > end:
+        raise ValueError("start month must not be after end month")
+    return selected_symbols, selected_timeframes, start, end
+
+
+def planned_files(
+    kinds: tuple[str, ...],
+    *,
+    symbols: tuple[str, ...] | None = None,
+    timeframes: tuple[str, ...] | None = None,
+    start_month: str | None = None,
+    end_month: str | None = None,
+) -> list[FileSpec]:
+    selected_symbols, selected_timeframes, start, end = validate_scope(
+        kinds,
+        symbols=symbols,
+        timeframes=timeframes,
+        start_month=start_month,
+        end_month=end_month,
+    )
+    selected_months = months(start, end)
     specs: list[FileSpec] = []
     if "klines" in kinds:
-        specs += [_kline_spec(s, iv, mo) for s in TOP_PAIRS for iv in TIMEFRAMES for mo in months()]
+        specs += [
+            _kline_spec(s, iv, mo)
+            for s in selected_symbols
+            for iv in selected_timeframes
+            for mo in selected_months
+        ]
     if "aggTrades" in kinds:
         specs += [_simple_spec("spot", "aggTrades", s, mo) for s in TICK_PAIRS for mo in months()]
     if "fundingRate" in kinds:
@@ -183,17 +248,64 @@ def download_one(spec: FileSpec) -> Acquired:
     return Acquired(spec.rel, len(data), digest, official is not None, official, status)
 
 
-def write_manifest(kinds: tuple[str, ...], results: list[Acquired]) -> Path:
+def write_manifest(
+    kinds: tuple[str, ...],
+    results: list[Acquired],
+    *,
+    symbols: tuple[str, ...] | None = None,
+    timeframes: tuple[str, ...] | None = None,
+    start_month: str | None = None,
+    end_month: str | None = None,
+    require_official_checksums: bool = False,
+) -> Path:
     """Retain a content-addressed manifest; acquisition kinds never overwrite each other."""
     generated = datetime.now(tz=UTC).isoformat()
+    selected_symbols, selected_timeframes, start, end = validate_scope(
+        kinds,
+        symbols=symbols,
+        timeframes=timeframes,
+        start_month=start_month,
+        end_month=end_month,
+    )
+    planned = planned_files(
+        kinds,
+        symbols=symbols,
+        timeframes=timeframes,
+        start_month=start_month,
+        end_month=end_month,
+    )
+    planned_rels = [item.rel for item in planned]
+    result_rels = [item.rel for item in results]
+    if len(result_rels) != len(set(result_rels)):
+        raise ValueError("acquisition results contain duplicate paths")
+    if set(result_rels) != set(planned_rels) or len(result_rels) != len(planned_rels):
+        missing = sorted(set(planned_rels) - set(result_rels))
+        extra = sorted(set(result_rels) - set(planned_rels))
+        raise ValueError(
+            f"acquisition results do not match planned scope: missing={missing} extra={extra}"
+        )
+    retained = [r for r in results if r.status != "missing"]
+    if require_official_checksums and any(
+        not item.checksum_verified or item.official_sha256 != item.sha256 for item in retained
+    ):
+        raise ValueError("manifest requires exact official checksum proof for every retained file")
     payload = {
-        "schema_version": 2,
+        "schema_version": 3,
         "dataset_id": "DS-CRYPTO-MULTI-V1",
         "source": "Binance public data (data.binance.vision)",
         "generated_utc": generated,
-        "window": {"start": "2021-01", "end": "2026-06"},
+        "window": {
+            "start": f"{start[0]:04d}-{start[1]:02d}",
+            "end": f"{end[0]:04d}-{end[1]:02d}",
+        },
         "kinds": list(kinds),
-        "files": [asdict(r) for r in results if r.status != "missing"],
+        "scope": {
+            "symbols": list(selected_symbols),
+            "timeframes": list(selected_timeframes),
+            "planned_file_count": len(planned),
+            "require_official_checksums": require_official_checksums,
+        },
+        "files": [asdict(r) for r in retained],
     }
     encoded = (json.dumps(payload, indent=2) + "\n").encode()
     kind_key = "-".join(sorted(kinds))
@@ -205,8 +317,22 @@ def write_manifest(kinds: tuple[str, ...], results: list[Acquired]) -> Path:
     return path
 
 
-def plan(kinds: tuple[str, ...], workers: int) -> None:
-    specs = planned_files(kinds)
+def plan(
+    kinds: tuple[str, ...],
+    workers: int,
+    *,
+    symbols: tuple[str, ...] | None = None,
+    timeframes: tuple[str, ...] | None = None,
+    start_month: str | None = None,
+    end_month: str | None = None,
+) -> None:
+    specs = planned_files(
+        kinds,
+        symbols=symbols,
+        timeframes=timeframes,
+        start_month=start_month,
+        end_month=end_month,
+    )
     print(f"planning {len(specs)} files across {kinds} (HEAD only, no download)...")
     with ThreadPoolExecutor(max_workers=workers) as ex:
         sizes = list(ex.map(lambda s: (s.kind, head_size(s.url)), specs))
@@ -223,8 +349,23 @@ def plan(kinds: tuple[str, ...], workers: int) -> None:
     print(f"  {'TOTAL':<14} {'':>5}                {grand / 1e9:8.2f} GB (compressed download)")
 
 
-def fetch(kinds: tuple[str, ...], workers: int) -> None:
-    specs = planned_files(kinds)
+def fetch(
+    kinds: tuple[str, ...],
+    workers: int,
+    *,
+    symbols: tuple[str, ...] | None = None,
+    timeframes: tuple[str, ...] | None = None,
+    start_month: str | None = None,
+    end_month: str | None = None,
+    require_official_checksums: bool = False,
+) -> None:
+    specs = planned_files(
+        kinds,
+        symbols=symbols,
+        timeframes=timeframes,
+        start_month=start_month,
+        end_month=end_month,
+    )
     RAW_ROOT.mkdir(parents=True, exist_ok=True)
     print(f"fetching {len(specs)} files across {kinds} (resumable, checksum-verified)...")
     with ThreadPoolExecutor(max_workers=workers) as ex:
@@ -235,7 +376,19 @@ def fetch(kinds: tuple[str, ...], workers: int) -> None:
         by_status[r.status] = by_status.get(r.status, 0) + 1
         nbytes += r.size
     unverified = [r.rel for r in results if r.status != "missing" and not r.checksum_verified]
-    manifest = write_manifest(kinds, results)
+    if require_official_checksums and unverified:
+        raise RuntimeError(
+            f"official checksum required but unavailable for {len(unverified)} retained files"
+        )
+    manifest = write_manifest(
+        kinds,
+        results,
+        symbols=symbols,
+        timeframes=timeframes,
+        start_month=start_month,
+        end_month=end_month,
+        require_official_checksums=require_official_checksums,
+    )
     print(f"  status: {by_status}   bytes: {nbytes / 1e9:.2f} GB")
     print(f"  checksum-unverified files: {len(unverified)}")
     print(f"  manifest: {manifest}")
@@ -250,12 +403,45 @@ def main() -> None:
         help="comma list: klines,aggTrades,fundingRate",
     )
     parser.add_argument("--workers", type=int, default=8)
+    parser.add_argument("--symbols", help="comma list; valid only for a klines-only run")
+    parser.add_argument("--timeframes", help="comma list; valid only for a klines-only run")
+    parser.add_argument("--start-month", help="inclusive YYYY-MM; valid only for klines")
+    parser.add_argument("--end-month", help="inclusive YYYY-MM; valid only for klines")
+    parser.add_argument(
+        "--require-official-checksums",
+        action="store_true",
+        help="fail without publishing a manifest unless every retained file is officially verified",
+    )
     args = parser.parse_args()
     kinds = tuple(k.strip() for k in args.kinds.split(",") if k.strip())
+
+    def selector(value: str | None, name: str) -> tuple[str, ...] | None:
+        if value is None:
+            return None
+        selected = tuple(item.strip() for item in value.split(",") if item.strip())
+        if not selected:
+            parser.error(f"--{name} must contain at least one value")
+        return selected
+
+    symbols = selector(args.symbols, "symbols")
+    timeframes = selector(args.timeframes, "timeframes")
+    kwargs = {
+        "symbols": symbols,
+        "timeframes": timeframes,
+        "start_month": args.start_month,
+        "end_month": args.end_month,
+    }
     if args.mode == "plan":
-        plan(kinds, args.workers)
+        if args.require_official_checksums:
+            parser.error("--require-official-checksums is valid only in fetch mode")
+        plan(kinds, args.workers, **kwargs)
     else:
-        fetch(kinds, args.workers)
+        fetch(
+            kinds,
+            args.workers,
+            **kwargs,
+            require_official_checksums=args.require_official_checksums,
+        )
 
 
 if __name__ == "__main__":

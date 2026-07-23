@@ -9,10 +9,12 @@ from __future__ import annotations
 
 import hashlib
 import json
+import zipfile
 from datetime import UTC, datetime
 
 import pyarrow as pa
 import pyarrow.parquet
+import pytest
 
 from tios.dataset import normalize_multi as nm
 from tios.dataset.normalize import CANONICAL_SCHEMA
@@ -120,3 +122,77 @@ def test_snapshot_logical_hash_ignores_refresh_schema_metadata(tmp_path, monkeyp
     snapshot = nm.snapshot_existing()
 
     assert snapshot["tables"]["BTCUSDT_1h"]["content_sha256"] == nm.content_sha256(table)
+
+
+def _write_month_zip_rows(path, open_values: list[int], interval_ms: int = 3_600_000) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    rows = "".join(
+        f"{open_ms},1,2,0.5,1.5,3,{open_ms + interval_ms - 1},4,5,1,2,0\n"
+        for open_ms in open_values
+    ).encode()
+    with zipfile.ZipFile(path, "w") as archive:
+        archive.writestr(path.with_suffix(".csv").name, rows)
+
+
+def _write_month_zip(path, open_ms: int, interval_ms: int = 3_600_000) -> None:
+    _write_month_zip_rows(path, [open_ms], interval_ms)
+
+
+def test_normalize_pair_records_each_missing_month_once_and_publishes_atomically(tmp_path) -> None:
+    raw = tmp_path / "raw"
+    output = tmp_path / "output"
+    _write_month_zip(
+        raw / "klines" / "BTCUSDT" / "1h" / "BTCUSDT-1h-2021-01.zip",
+        1_609_459_200_000,
+    )
+
+    info = nm.normalize_pair(
+        "BTCUSDT",
+        "1h",
+        raw_root=raw,
+        output_root=output,
+        selected_months=["2021-01", "2021-02"],
+    )
+
+    assert info is not None
+    assert info["missing_months"] == ["2021-02"]
+    assert info["rows"] == 1
+    assert info["parquet_directory_fsync"] in {"CONFIRMED", "BEST_EFFORT_FAILED"}
+    assert (output / "BTCUSDT_1h.parquet").is_file()
+    assert not list(output.glob(".BTCUSDT_1h.parquet.*"))
+
+
+def test_normalize_all_reports_only_actually_produced_pairs(monkeypatch) -> None:
+    def fake(symbol: str, interval: str):
+        if symbol == "ETHUSDT" and interval == "1m":
+            return {"rows": 1, "missing_months": []}
+        return None
+
+    monkeypatch.setattr(nm, "normalize_pair", fake)
+    result = nm.normalize_all(("BTCUSDT", "ETHUSDT"))
+    assert result["pair_count"] == 1
+    assert set(result["tables"]) == {"ETHUSDT_1m"}
+
+
+def test_normalize_pair_refuses_raw_archive_order_and_month_defects(tmp_path) -> None:
+    raw = tmp_path / "raw"
+    archive = raw / "klines" / "BTCUSDT" / "1h" / "BTCUSDT-1h-2021-01.zip"
+    _write_month_zip_rows(archive, [1_609_462_800_000, 1_609_459_200_000])
+    with pytest.raises(ValueError, match="not strictly increasing"):
+        nm.normalize_pair(
+            "BTCUSDT",
+            "1h",
+            raw_root=raw,
+            output_root=tmp_path / "out1",
+            selected_months=["2021-01"],
+        )
+
+    _write_month_zip(archive, 1_612_137_600_000)
+    with pytest.raises(ValueError, match="expected 2021-01"):
+        nm.normalize_pair(
+            "BTCUSDT",
+            "1h",
+            raw_root=raw,
+            output_root=tmp_path / "out2",
+            selected_months=["2021-01"],
+        )
