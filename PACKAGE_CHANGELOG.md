@@ -1,5 +1,42 @@
 # Package Changelog
 
+## v8.145 — 2026-07-23 — Read-only active demo snapshot adapter
+
+- Added a capability-free adapter that reads only the three fixed active demo-lane
+  observation files through anchored, no-follow descriptors. It requires the exact
+  state/heartbeat/orders/state/heartbeat/orders/state/heartbeat bracket, two stable
+  reads per descriptor, linked-entry and metadata corroboration, and at most three
+  whole attempts. Byte-identical inode replacement is unstable; capture time must
+  not predate retained observations. It never acquires the lane lock, imports the
+  demo runtime, reads credentials, uses a network, or gains order authority.
+- Added strict UTF-8/JSON/JSONL parsing, demo-only semantic corroboration, conservative
+  field allowlists, exact numeric-token preservation, domain-separated opaque venue
+  order references, and removal of wallets, action/disaster free text, transport
+  material, raw identifiers, and unknown fields. The sanitized in-memory result must
+  pass the existing Stage A legacy projection contract before publication. Valid
+  kill-switch, price-unavailable, below-step, and placement-failure rows retain an
+  explicit null venue reference; successful or created venue orders require exactly
+  one raw or opaque identity.
+- Snapshots publish deterministically below
+  `artifacts/evidence/private_demo/snapshots/SNAP-<digest>` with `0700` directories,
+  `0600` files, a fixed five-file inventory, a manifest written last, immutable
+  create-only/idempotent conflict handling, data-first recovery of known external
+  temporaries with the manifest recovered last, and explicit current-long stop
+  corroboration that permits profitable trailing stops below the current mark.
+  Coverage remains partial legacy evidence with zero realised outcomes, no PnL or
+  strategy claims, and execution authority `NONE`.
+  Stage A now defaults to `artifacts/evidence/private_demo/stage_a` and accepts either
+  one raw order ID or one already-opaque venue order reference without double hashing.
+- Stage A now hashes large ordered store/parity inventories incrementally while
+  preserving the prior canonical-array digest bytes and the existing per-row JSON,
+  ledger-row, and private-file bounds. Offline coverage includes a durable 513-order
+  capture, Stage A commit, and byte-identical replay.
+- A tracked nested `artifacts/evidence/.gitignore` excludes the complete
+  `private_demo/` runtime subtree in fresh clones; generated private evidence must
+  not be committed. This release adds capture and offline fixture tests only; it
+  does not capture production values, change demo behavior, create orders, establish
+  performance, or alter promotion eligibility.
+
 ## v8.144 — 2026-07-23 — Demo decision evidence bridge Stage A capability
 
 - Added a read-only, capability-free Stage A bridge for explicit operator-copied

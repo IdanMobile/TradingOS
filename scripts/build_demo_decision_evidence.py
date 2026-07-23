@@ -8,7 +8,12 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
-from tios.evidence.demo_decision_bridge import DemoDecisionBridgeError, canonical_json, run_bridge
+from tios.evidence.demo_decision_bridge import (
+    DEFAULT_STAGE_A_OUTPUT,
+    DemoDecisionBridgeError,
+    canonical_json,
+    run_bridge,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -18,7 +23,7 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--lane-state", type=Path, required=True)
     result.add_argument("--heartbeat", type=Path, required=True)
     result.add_argument("--orders", type=Path, required=True)
-    result.add_argument("--output-dir", type=Path, required=True)
+    result.add_argument("--output-dir", type=Path, default=DEFAULT_STAGE_A_OUTPUT)
     result.add_argument("--source-label", required=True)
     result.add_argument("--captured-at", required=True)
     return result

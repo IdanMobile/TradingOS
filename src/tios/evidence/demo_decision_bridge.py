@@ -28,12 +28,14 @@ from tios.trading_domain import Stage
 
 SCHEMA = "tios.demo_decision_evidence.v1"
 ACTIVE_DEMO_LANE = Path("artifacts/trading_domain/demo_lane")
-PRIVATE_EVIDENCE_ROOT = Path("artifacts/evidence")
+PRIVATE_EVIDENCE_ROOT = Path("artifacts/evidence/private_demo")
+DEFAULT_STAGE_A_OUTPUT = PRIVATE_EVIDENCE_ROOT / "stage_a"
 RECORD_TYPE = "DemoDecisionEvidenceEvent"
 MAX_SNAPSHOT_BYTES = 2 * 1024 * 1024
 MAX_ORDERS_BYTES = 64 * 1024 * 1024
 MAX_JSON_DEPTH = 16
 MAX_JSON_NODES = 2_000
+MAX_PROJECTION_JSON_NODES = 4_000_000
 MAX_STRING_LENGTH = 4_096
 MAX_JSONL_ROWS = 100_000
 MAX_DECIMAL_TEXT = 128
@@ -254,6 +256,7 @@ class StoreSnapshot:
 _LABEL = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,63}")
 _ID = re.compile(r"[A-Z]{3,8}-[A-Za-z0-9_.:-]{1,96}")
 _SHA256 = re.compile(r"[a-f0-9]{64}")
+_VENUE_ORDER_REF = re.compile(r"VOH-[a-f0-9]{32}")
 _CANONICAL_DECIMAL = re.compile(r"-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?")
 _FORBIDDEN_KEYS = (
     "apikey",
@@ -332,7 +335,12 @@ def _jsonable(value: object) -> object:
 def canonical_json(value: object) -> str:
     """Return one stable JSON representation; NaN and Infinity are forbidden."""
 
-    _validate_structure_bounds(value)
+    node_limit = (
+        MAX_PROJECTION_JSON_NODES
+        if isinstance(value, Mapping) and value.get("kind") == "PROJECTION"
+        else MAX_JSON_NODES
+    )
+    _validate_structure_bounds(value, node_limit=node_limit)
     try:
         return json.dumps(
             _jsonable(value),
@@ -522,11 +530,12 @@ def _validate_structure_bounds(
     path: str = "$",
     depth: int = 0,
     counter: list[int] | None = None,
+    node_limit: int = MAX_JSON_NODES,
 ) -> None:
     if counter is None:
         counter = [0]
     counter[0] += 1
-    if counter[0] > MAX_JSON_NODES:
+    if counter[0] > node_limit:
         raise DemoDecisionBridgeError("JSON node limit exceeded")
     if depth > MAX_JSON_DEPTH:
         raise DemoDecisionBridgeError("JSON depth limit exceeded")
@@ -539,10 +548,11 @@ def _validate_structure_bounds(
                 path=f"{path}.{key}",
                 depth=depth + 1,
                 counter=counter,
+                node_limit=node_limit,
             )
         return
     if isinstance(value, (tuple, list)):
-        if len(value) > MAX_JSON_NODES:
+        if len(value) > node_limit:
             raise DemoDecisionBridgeError(f"JSON array is too large at {path}")
         for index, item in enumerate(value):
             _validate_structure_bounds(
@@ -550,6 +560,7 @@ def _validate_structure_bounds(
                 path=f"{path}[{index}]",
                 depth=depth + 1,
                 counter=counter,
+                node_limit=node_limit,
             )
         return
     if isinstance(value, str) and len(value) > MAX_STRING_LENGTH:
@@ -666,6 +677,62 @@ def opaque_venue_order_id(value: object) -> str | None:
         return None
     digest = hashlib.sha256(f"venue-order:{text}".encode()).hexdigest()
     return f"VOH-{digest[:32]}"
+
+
+_NO_VENUE_ORDER_STAGES = frozenset({"kill_switch", "price_unavailable", "qty_below_step", "place"})
+
+
+def _venue_order_identity_required(source: Mapping[str, object]) -> bool:
+    return not (
+        source.get("ok") is False
+        and isinstance(source.get("stage"), str)
+        and source["stage"] in _NO_VENUE_ORDER_STAGES
+    )
+
+
+def _retained_venue_order_ref(
+    source: Mapping[str, object],
+    *,
+    required: bool,
+) -> str | None:
+    has_raw = "order_id" in source and source.get("order_id") is not None
+    has_ref = "venue_order_ref" in source and source.get("venue_order_ref") is not None
+    if has_raw and has_ref:
+        raise DemoDecisionBridgeError(
+            "observed order identity cannot contain both order_id and venue_order_ref"
+        )
+    if not has_raw and not has_ref:
+        if required:
+            raise DemoDecisionBridgeError(
+                "successful or created venue order requires order_id or venue_order_ref"
+            )
+        return None
+    if has_ref:
+        retained = source["venue_order_ref"]
+        if not isinstance(retained, str) or not _VENUE_ORDER_REF.fullmatch(retained):
+            raise DemoDecisionBridgeError("venue_order_ref is not a valid opaque order reference")
+        return retained
+    hashed = opaque_venue_order_id(source["order_id"])
+    if hashed is None:
+        raise DemoDecisionBridgeError("order_id must be non-empty")
+    return hashed
+
+
+def _retained_signal_ref_sha256(source: Mapping[str, object]) -> str | None:
+    has_raw = "signal_ref" in source and source.get("signal_ref") is not None
+    has_hash = "signal_ref_sha256" in source and source.get("signal_ref_sha256") is not None
+    if has_raw and has_hash:
+        raise DemoDecisionBridgeError(
+            "observed signal identity cannot contain both signal_ref and signal_ref_sha256"
+        )
+    if has_hash:
+        retained = source["signal_ref_sha256"]
+        if not isinstance(retained, str) or not _SHA256.fullmatch(retained):
+            raise DemoDecisionBridgeError("signal_ref_sha256 is not a valid opaque hash")
+        return retained
+    if has_raw:
+        return hashlib.sha256(str(source["signal_ref"]).encode()).hexdigest()
+    return None
 
 
 def make_event(
@@ -1039,7 +1106,7 @@ def validate_projection(projection: Mapping[str, object]) -> None:
     if projection["limitations"] != list(LEGACY_LIMITATIONS):
         raise DemoDecisionBridgeError("Stage A limitation inventory is invalid")
     validate_no_secrets(projection)
-    _validate_structure_bounds(projection)
+    _validate_structure_bounds(projection, node_limit=MAX_PROJECTION_JSON_NODES)
 
 
 def _validate_legacy_episode(value: object) -> None:
@@ -1147,7 +1214,7 @@ def _sanitize_stop(value: object) -> dict[str, object] | None:
     if not isinstance(state, str) or not re.fullmatch(r"[A-Z_]{1,64}", state):
         raise DemoDecisionBridgeError("present resting_stop has an invalid state")
     result: dict[str, object] = {"state": state}
-    result["venue_order_ref"] = opaque_venue_order_id(value.get("order_id"))
+    result["venue_order_ref"] = _retained_venue_order_ref(value, required=True)
     for key in (
         "risk_boundary_price",
         "trigger_price",
@@ -1174,10 +1241,7 @@ def _sanitize_order(
     recorded_at = cast(str | None, recorded_raw)
     recorded = timestamp_evidence(recorded_at)
     side = str(order.get("side") or "UNKNOWN").upper()
-    signal_ref = order.get("signal_ref")
-    signal_hash = (
-        hashlib.sha256(str(signal_ref).encode()).hexdigest() if signal_ref is not None else None
-    )
+    signal_hash = _retained_signal_ref_sha256(order)
     order_canonical = canonical_json(order)
     order_source_ref = {
         "kind": "order-record",
@@ -1193,9 +1257,13 @@ def _sanitize_order(
         "signal_ref_sha256": signal_hash,
     }
     decision_id = stable_id("DEC", decision_seed)
+    venue_order_ref = _retained_venue_order_ref(
+        order,
+        required=_venue_order_identity_required(order),
+    )
     attempt_seed = {
         "decision_id": decision_id,
-        "venue_order_ref": opaque_venue_order_id(order.get("order_id")),
+        "venue_order_ref": venue_order_ref,
         "side": side,
         "source_time": recorded,
     }
@@ -1848,7 +1916,7 @@ def prepare_private_output_dir(path: Path, *, repo_root: Path) -> Path:
     if raw_allowed.exists():
         if not raw_allowed.is_dir() or stat.S_IMODE(raw_allowed.stat().st_mode) != 0o700:
             raise DemoDecisionBridgeError(
-                "private artifacts/evidence root must be a real 0700 directory"
+                "private artifacts/evidence/private_demo root must be a real 0700 directory"
             )
     else:
         artifacts_parent = raw_allowed.parent
@@ -1856,6 +1924,9 @@ def prepare_private_output_dir(path: Path, *, repo_root: Path) -> Path:
             artifacts_parent.mkdir(parents=True)
             _fsync_directory(artifacts_parent.parent)
         raw_allowed.mkdir(mode=0o700)
+        os.chmod(raw_allowed, 0o700)
+        if stat.S_IMODE(raw_allowed.stat(follow_symlinks=False).st_mode) != 0o700:
+            raise DemoDecisionBridgeError("new private evidence root is not exactly 0700")
         _fsync_directory(raw_allowed.parent)
     allowed = raw_allowed.resolve()
     if not allowed.is_relative_to(root):
@@ -1864,7 +1935,9 @@ def prepare_private_output_dir(path: Path, *, repo_root: Path) -> Path:
     _reject_symlink_ancestors(candidate, label="private output path")
     resolved = candidate.resolve(strict=False)
     if resolved == allowed or not resolved.is_relative_to(allowed):
-        raise DemoDecisionBridgeError("private output must be below artifacts/evidence")
+        raise DemoDecisionBridgeError(
+            "private output must be below artifacts/evidence/private_demo"
+        )
     if candidate.exists() and candidate.is_symlink():
         raise DemoDecisionBridgeError("private output cannot be a symlink")
     relative = resolved.relative_to(allowed)
@@ -1878,6 +1951,9 @@ def prepare_private_output_dir(path: Path, *, repo_root: Path) -> Path:
                 raise DemoDecisionBridgeError("existing private output directories must be 0700")
         else:
             current.mkdir(mode=0o700)
+            os.chmod(current, 0o700)
+            if stat.S_IMODE(current.stat(follow_symlinks=False).st_mode) != 0o700:
+                raise DemoDecisionBridgeError("new private output directory is not exactly 0700")
             _fsync_directory(current.parent)
     return resolved
 
@@ -2268,7 +2344,22 @@ def _load_store_snapshot(store: SyntheticEvidenceStore) -> StoreSnapshot | None:
 
 
 def _store_inventory_sha256(rows: Sequence[Mapping[str, object]]) -> str:
-    return canonical_digest(list(rows))
+    return _bounded_ordered_array_sha256(rows)
+
+
+def _bounded_ordered_array_sha256(rows: Sequence[Mapping[str, object]]) -> str:
+    """Digest a bounded ordered object array without weakening per-object JSON limits."""
+
+    if len(rows) > MAX_JSONL_ROWS:
+        raise DemoDecisionBridgeError("ordered digest inventory exceeds the row limit")
+    digest = hashlib.sha256()
+    digest.update(b"[")
+    for index, row in enumerate(rows):
+        if index:
+            digest.update(b",")
+        digest.update(canonical_json(row).encode())
+    digest.update(b"]")
+    return digest.hexdigest()
 
 
 def _fixed_store_schema_sha256() -> str:
@@ -2504,7 +2595,7 @@ def _ledger_parity_sha256(
                 "event_sha256": event_digest,
             }
         )
-    return canonical_digest(parity)
+    return _bounded_ordered_array_sha256(parity)
 
 
 def _verify_generation_manifest(

@@ -87,7 +87,7 @@ def _run(repo: Path, *, before_checkpoint=None):  # type: ignore[no-untyped-def]
         lane_state_path=lane_state,
         heartbeat_path=heartbeat,
         orders_path=orders,
-        output_dir=repo / "artifacts/evidence/demo-decision-stage-a",
+        output_dir=repo / "artifacts/evidence/private_demo/stage_a",
         source_label="operator-copy-20260723",
         captured_at=CAPTURED_AT,
         repo_root=repo,
@@ -230,6 +230,11 @@ def test_canonical_decimal_timestamp_json_digest_and_numeric_lexeme() -> None:
         canonical_json({"not_exact": 1.25})
 
 
+def test_bounded_ordered_array_digest_preserves_existing_canonical_list_bytes() -> None:
+    rows = [{"sequence": 1, "value": "a"}, {"sequence": 2, "value": "b"}]
+    assert bridge._bounded_ordered_array_sha256(rows) == canonical_digest(rows)
+
+
 def test_sanitized_current_fixture_projects_one_incomplete_open_episode_and_no_outcome(
     tmp_path: Path,
 ) -> None:
@@ -278,6 +283,7 @@ def test_legacy_rounded_deltas_are_never_exact_pnl() -> None:
         {
             "recorded_at": ORDER_AT,
             "side": "Buy",
+            "order_id": "legacy-rounded-order",
             "reconcile": {
                 "ETH_delta": NumericLexeme("0.12345678"),
                 "USDT_delta": NumericLexeme("-25.0000"),
@@ -301,6 +307,50 @@ def test_legacy_rounded_deltas_are_never_exact_pnl() -> None:
     assert deltas["USDT_delta"]["fidelity"] == "LEGACY_ROUNDED_4DP"
     assert attempt["pnl_eligibility"] == "INELIGIBLE_ROUNDED_LEGACY_DELTAS"
     assert projection["realized_outcomes"] == []
+
+
+@pytest.mark.parametrize(
+    "stage",
+    ["kill_switch", "price_unavailable", "qty_below_step", "place"],
+)
+def test_legacy_refusal_without_venue_order_identity_is_retained(stage: str) -> None:
+    projection, _ = build_legacy_projection(
+        {"lane_base": "0.1", "entry_price": "2"},
+        {"mark_price": "3"},
+        [
+            {
+                "recorded_at": ORDER_AT,
+                "side": "Buy",
+                "signal_ref_sha256": "d" * 64,
+                "ok": False,
+                "stage": stage,
+            }
+        ],
+        source_refs=[
+            {**SOURCE_REF, "kind": "lane_state"},
+            {**SOURCE_REF, "kind": "heartbeat"},
+            {**SOURCE_REF, "kind": "orders"},
+        ],
+        captured_at=CAPTURED_AT,
+    )
+    attempt = projection["episodes"][0]["attempts"][0]
+    assert attempt["venue_order_ref"] is None
+    assert attempt["signal_ref_sha256"] == "d" * 64
+
+
+def test_legacy_success_without_venue_order_identity_fails_closed() -> None:
+    with pytest.raises(DemoDecisionBridgeError, match="requires order_id or venue_order_ref"):
+        build_legacy_projection(
+            {"lane_base": "0.1"},
+            {},
+            [{"recorded_at": ORDER_AT, "side": "Buy", "ok": True, "stage": "done"}],
+            source_refs=[
+                {**SOURCE_REF, "kind": "lane_state"},
+                {**SOURCE_REF, "kind": "heartbeat"},
+                {**SOURCE_REF, "kind": "orders"},
+            ],
+            captured_at=CAPTURED_AT,
+        )
 
 
 @pytest.mark.parametrize("disposition", BAR_DISPOSITIONS)
@@ -562,7 +612,7 @@ def test_replay_is_idempotent_and_export_is_canonical(tmp_path: Path) -> None:
         lane_state_path=paths[0],
         heartbeat_path=paths[1],
         orders_path=paths[2],
-        output_dir=tmp_path / "artifacts/evidence/demo-decision-stage-a",
+        output_dir=tmp_path / "artifacts/evidence/private_demo/stage_a",
         source_label="operator-copy-20260723",
         captured_at=CAPTURED_AT,
         repo_root=tmp_path,
@@ -586,7 +636,7 @@ def test_source_label_change_cannot_reset_private_history(tmp_path: Path) -> Non
             lane_state_path=paths[0],
             heartbeat_path=paths[1],
             orders_path=paths[2],
-            output_dir=tmp_path / "artifacts/evidence/demo-decision-stage-a",
+            output_dir=tmp_path / "artifacts/evidence/private_demo/stage_a",
             source_label="changed-label",
             captured_at=CAPTURED_AT,
             repo_root=tmp_path,
@@ -631,7 +681,7 @@ def test_same_capture_source_mutation_and_orders_truncation_halt_projection(
             lane_state_path=paths[0],
             heartbeat_path=paths[1],
             orders_path=paths[2],
-            output_dir=tmp_path / "artifacts/evidence/demo-decision-stage-a",
+            output_dir=tmp_path / "artifacts/evidence/private_demo/stage_a",
             source_label="operator-copy-20260723",
             captured_at=CAPTURED_AT,
             repo_root=tmp_path,
@@ -644,7 +694,7 @@ def test_same_capture_source_mutation_and_orders_truncation_halt_projection(
             lane_state_path=other_paths[0],
             heartbeat_path=other_paths[1],
             orders_path=other_paths[2],
-            output_dir=other / "artifacts/evidence/demo-decision-stage-a",
+            output_dir=other / "artifacts/evidence/private_demo/stage_a",
             source_label="operator-copy-20260723",
             captured_at=CAPTURED_AT,
             repo_root=other,
@@ -657,7 +707,7 @@ def test_crash_after_durable_append_before_checkpoint_replays_safely(tmp_path: P
 
     with pytest.raises(RuntimeError, match="injected"):
         _run(tmp_path, before_checkpoint=crash)
-    output = tmp_path / "artifacts/evidence/demo-decision-stage-a"
+    output = tmp_path / "artifacts/evidence/private_demo/stage_a"
     pending = list((output / "generations").iterdir())
     assert len(pending) == 1
     assert (pending[0] / "events.jsonl").is_file()
@@ -703,7 +753,7 @@ def test_crash_baseline_detects_mutated_and_truncated_retry_sources(
             lane_state_path=mutated_paths[0],
             heartbeat_path=mutated_paths[1],
             orders_path=mutated_paths[2],
-            output_dir=mutated / "artifacts/evidence/demo-decision-stage-a",
+            output_dir=mutated / "artifacts/evidence/private_demo/stage_a",
             source_label="operator-copy-20260723",
             captured_at=CAPTURED_AT,
             repo_root=mutated,
@@ -725,7 +775,7 @@ def test_crash_baseline_detects_mutated_and_truncated_retry_sources(
             lane_state_path=truncated_paths[0],
             heartbeat_path=truncated_paths[1],
             orders_path=truncated_paths[2],
-            output_dir=truncated / "artifacts/evidence/demo-decision-stage-a",
+            output_dir=truncated / "artifacts/evidence/private_demo/stage_a",
             source_label="operator-copy-20260723",
             captured_at=CAPTURED_AT,
             repo_root=truncated,
@@ -1030,7 +1080,7 @@ def test_initial_and_mid_prefix_sqlite_interruptions_recover_exactly(
 ) -> None:
     initial = tmp_path / "initial"
     initial_paths = _write_copied_fixture(initial)
-    initial_output = initial / "artifacts/evidence/demo-decision-stage-a"
+    initial_output = initial / "artifacts/evidence/private_demo/stage_a"
     real_append = bridge._append_store
     initial_calls = 0
 
@@ -1167,7 +1217,7 @@ def test_security_rejects_active_symlink_hardlink_and_output_escape(tmp_path: Pa
             lane_state_path=active_state,
             heartbeat_path=heartbeat,
             orders_path=orders,
-            output_dir=tmp_path / "artifacts/evidence/active-reject",
+            output_dir=tmp_path / "artifacts/evidence/private_demo/active-reject",
             source_label="copy",
             captured_at=CAPTURED_AT,
             repo_root=tmp_path,
@@ -1179,7 +1229,7 @@ def test_security_rejects_active_symlink_hardlink_and_output_escape(tmp_path: Pa
             lane_state_path=symlink,
             heartbeat_path=heartbeat,
             orders_path=orders,
-            output_dir=tmp_path / "artifacts/evidence/symlink-reject",
+            output_dir=tmp_path / "artifacts/evidence/private_demo/symlink-reject",
             source_label="copy",
             captured_at=CAPTURED_AT,
             repo_root=tmp_path,
@@ -1191,14 +1241,14 @@ def test_security_rejects_active_symlink_hardlink_and_output_escape(tmp_path: Pa
             lane_state_path=hardlink,
             heartbeat_path=heartbeat,
             orders_path=orders,
-            output_dir=tmp_path / "artifacts/evidence/hardlink-reject",
+            output_dir=tmp_path / "artifacts/evidence/private_demo/hardlink-reject",
             source_label="copy",
             captured_at=CAPTURED_AT,
             repo_root=tmp_path,
         )
     hardlink.unlink()
     assert lane_state.stat().st_nlink == 1
-    with pytest.raises(DemoDecisionBridgeError, match="artifacts/evidence"):
+    with pytest.raises(DemoDecisionBridgeError, match="artifacts/evidence/private_demo"):
         run_bridge(
             lane_state_path=lane_state,
             heartbeat_path=heartbeat,
@@ -1220,7 +1270,7 @@ def test_security_rejects_symlinked_source_and_output_ancestors(tmp_path: Path) 
             lane_state_path=source_alias / lane_state.name,
             heartbeat_path=heartbeat,
             orders_path=orders,
-            output_dir=tmp_path / "artifacts/evidence/source-ancestor",
+            output_dir=tmp_path / "artifacts/evidence/private_demo/source-ancestor",
             source_label="copy",
             captured_at=CAPTURED_AT,
             repo_root=tmp_path,
@@ -1252,7 +1302,7 @@ def test_malformed_optional_decimal_excessive_exponent_and_structure_fail_closed
         build_legacy_projection(
             {"lane_base": "1"},
             {},
-            [{"side": "Buy", "avg_price": "not-a-number"}],
+            [{"side": "Buy", "order_id": "malformed-price", "avg_price": "not-a-number"}],
             source_refs=refs,
             captured_at=CAPTURED_AT,
         )
@@ -1279,7 +1329,7 @@ def test_malformed_optional_decimal_excessive_exponent_and_structure_fail_closed
         (
             {"lane_base": "1"},
             {},
-            [{"side": "Buy", "reconcile": "not-an-object"}],
+            [{"side": "Buy", "order_id": "malformed-reconcile", "reconcile": "not-an-object"}],
             "reconcile",
         ),
         (
@@ -1315,7 +1365,7 @@ def test_cross_field_event_and_projection_identities_are_recomputed() -> None:
     projection, events = build_legacy_projection(
         {"lane_base": "1"},
         {},
-        [{"recorded_at": ORDER_AT, "side": "Buy"}],
+        [{"recorded_at": ORDER_AT, "side": "Buy", "order_id": "cross-field-order"}],
         source_refs=[
             {**SOURCE_REF, "kind": "lane_state"},
             {**SOURCE_REF, "kind": "heartbeat"},
@@ -1401,7 +1451,7 @@ def test_private_evidence_root_and_store_reject_unsafe_modes_and_links(
 ) -> None:
     unsafe_root = tmp_path / "unsafe-root"
     paths = _write_copied_fixture(unsafe_root)
-    evidence_root = unsafe_root / "artifacts/evidence"
+    evidence_root = unsafe_root / "artifacts/evidence/private_demo"
     evidence_root.mkdir(parents=True, mode=0o755)
     os.chmod(evidence_root, 0o755)
     with pytest.raises(DemoDecisionBridgeError, match="0700"):
@@ -1621,7 +1671,7 @@ def test_cli_requires_every_path_and_rejects_active_demo_input(
             "--orders",
             str(active / "orders.jsonl"),
             "--output-dir",
-            str(tmp_path / "artifacts/evidence/cli"),
+            str(tmp_path / "artifacts/evidence/private_demo/cli"),
             "--source-label",
             "copy",
             "--captured-at",
@@ -1631,3 +1681,21 @@ def test_cli_requires_every_path_and_rejects_active_demo_input(
     )
     assert status == 2
     assert "active demo-lane paths are forbidden" in capsys.readouterr().err
+
+
+def test_cli_defaults_stage_a_output_to_private_demo_root() -> None:
+    arguments = cli.parser().parse_args(
+        [
+            "--lane-state",
+            "lane_state.json",
+            "--heartbeat",
+            "heartbeat.json",
+            "--orders",
+            "orders.jsonl",
+            "--source-label",
+            "copy",
+            "--captured-at",
+            CAPTURED_AT,
+        ]
+    )
+    assert arguments.output_dir == Path("artifacts/evidence/private_demo/stage_a")
