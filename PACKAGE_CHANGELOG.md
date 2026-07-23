@@ -1,5 +1,24 @@
 # Package Changelog
 
+## v8.141 — 2026-07-23 — Production short-frame dataset freeze
+
+- Completed the production `DS-CRYPTO-SPOT-SHORTFRAMES-V1` freeze at committed code identity
+  `977791f3ef458cc317137a0f663adba5500395d5`: six BTCUSDT/ETHUSDT 1m/5m/15m tables,
+  7,318,824 rows, and 393,818,589 published Parquet bytes for 2021-01 through 2026-06.
+- Bound the output to the officially checksum-verified one-minute proof
+  `2d8fb43921fd2c0537f439e1b8b30ef54ae44d4e7fb7b2192fabc43c55ef4834`,
+  dataset manifest `05ccd69008c54f14f3b3299226e27c313d60fa224bf9b701e11ecc92beec7ce4`,
+  and quality report `cd281975e187f8e1cf43fd62fe03585891cf8c02cd44baf319575e42837f1186`.
+- Both complete regenerations produced identical per-table logical hashes; every table passed the
+  exact schema, coverage, lineage, source-unit, close-bound, and inventory gates. The retained
+  5m/15m logical content also matched canonical bake-off authority.
+- Reconciled exactly 30 pinned, official-source early closes with no missing, additional, changed,
+  invalid, or unmapped entries. Forty-two observed gap boundaries representing 2,712 missing bars
+  remain explicit and unfilled.
+- This freeze certifies bounded dataset identity and quality only. It does not establish a
+  strategy, edge, profitability, promotion, venue, order, or trading authority; execution
+  authority remains `NONE`.
+
 ## v8.140 — 2026-07-23 — Audited source-close semantics
 
 - Recorded that the second production short-frame attempt failed closed during staged quality
