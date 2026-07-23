@@ -1,5 +1,29 @@
 # Package Changelog
 
+## v8.143 — 2026-07-23 — Production short-frame execution conformance
+
+- Published the production `SHORTFRAME-BAR-HIERARCHY-AND-FILL-AVAILABILITY-V1`
+  result for frozen dataset `DS-CRYPTO-SPOT-SHORTFRAMES-V1`. The stable artifact
+  and byte-identical content-addressed archive have SHA-256
+  `564f6f5481cf7811df173be7958ebbd5232d446d0ef246a1077a655114350ff2`;
+  two fresh reads produced the same canonical analysis SHA-256
+  `ca475af65191eac72b18e6c780d666e3af779f67d9e38fbe1a653cca4f074d1a`.
+- All six BTCUSDT/ETHUSDT 1m→5m, 1m→15m, and 5m→15m relations passed their
+  pinned classification contract: 1,926,014 parent rows, 1,926,000 complete
+  windows, 14 incomplete windows, 1,925,872 exact-conformant windows, 128
+  expected source-divergence windows, and zero parent-missing windows. Native
+  parent candles remain source truth; expected divergences remain evidence and
+  are not repaired.
+- Exact nominal-boundary mapping produced 7,318,776 available rows, 42
+  fail-closed gap blocks, and six cutoff blocks. All 30 authenticated early-close
+  rows passed the non-acceleration rule. `make check` passed with 1,732 tests and
+  29 deselected; independent code review and the independent production-artifact
+  audit passed with no findings.
+- This result establishes bounded hierarchy and signal-to-fill timing
+  conformance only. It does not establish execution realism, a strategy, edge,
+  return, PnL, Sharpe ratio, drawdown, win rate, promotion, or profitability; it
+  has no trial-budget effect and execution authority remains `NONE`.
+
 ## v8.142 — 2026-07-23 — Preregistered short-frame timing conformance
 
 - Added the fixed, non-performance
