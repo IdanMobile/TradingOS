@@ -6,8 +6,9 @@ authority. It makes no PnL or profitability claim.
 
 ## Verified continuation state
 
-- Current HEAD is `b4aceee`; the immediately preceding commits are `d7ee744`
-  and `25b3dac`.
+- The baseline HEAD before this handoff was `b4aceee`; the immediately preceding
+  commits were `d7ee744` and `25b3dac`. This handoff was first committed as
+  `7d4dcec`.
 - The immediately prior session reported `make check` as **1,901 passed / 29
   deselected**. That gate was not rerun while producing this handoff.
 - Point-in-time full-demo readiness is `operational=true` with status
