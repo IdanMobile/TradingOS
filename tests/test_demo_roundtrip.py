@@ -237,3 +237,293 @@ def test_session_runs_multiple_cycles_and_logs() -> None:
     assert report["ok"] is True
     assert report["cycles_filled"] == 2
     assert sum(line.startswith("cycle ") for line in lines) == 2  # one log line per cycle
+
+
+# --- Stage B (default-disabled) Bybit V5 client-key + reconciliation adapter tests -------------
+
+DEMO = pf.DEMO_BASE
+
+
+def test_validate_client_key_accepts_len_1_and_36_rejects_0_37_and_bad_chars() -> None:
+    assert rt.validate_client_key("a") == "a"
+    assert rt.validate_client_key("A9_-" * 9) == "A9_-" * 9  # exactly 36 chars
+    for bad in ("", "x" * 37, "has space", "has/slash", "emoji\U0001f600", 123, None):
+        with pytest.raises(ValueError, match="orderLinkId"):
+            rt.validate_client_key(bad)
+
+
+def test_order_create_validates_and_forwards_orderlinkid_persisted_key_equals_posted() -> None:
+    captured: dict[str, str] = {}
+
+    def post(url: str, headers: dict[str, str], body: bytes) -> bytes:
+        captured["body"] = body.decode()
+        return json.dumps({"retCode": 0, "result": {"orderId": "OID-1"}}).encode()
+
+    key = "tios2_r_" + "0" * 28  # 36 chars, exactly what the lane persists before POST
+    order = {"category": "spot", "symbol": "ETHUSDT", "side": "Sell", "orderLinkId": key}
+    rt._order_create(post, KEY, SECRET, TS, DEMO, order)
+    assert json.loads(captured["body"])["orderLinkId"] == key  # posted == persisted
+
+
+def test_order_create_rejects_bad_orderlinkid_before_any_post() -> None:
+    def post(url: str, headers: dict[str, str], body: bytes) -> bytes:
+        raise AssertionError("a malformed client key must never reach the venue")
+
+    order = {"category": "spot", "symbol": "ETHUSDT", "orderLinkId": "x" * 37}
+    with pytest.raises(ValueError, match="orderLinkId"):
+        rt._order_create(post, KEY, SECRET, TS, DEMO, order)
+
+
+def test_create_retcode_zero_is_acknowledged_pending_not_filled() -> None:
+    assert (
+        rt.classify_create_ack({"retCode": 0, "result": {"orderId": "OID"}})
+        == "ACKNOWLEDGED_PENDING"
+    )
+    assert rt.classify_create_ack({"retCode": 10001, "retMsg": "err"}) == "VENUE_REJECTED"
+
+
+def _exec_row(exec_id: str, exec_time: str, qty: str = "0.01", **extra: object) -> dict:
+    row = {
+        "execId": exec_id,
+        "execTime": exec_time,
+        "execQty": qty,
+        "orderId": "O",
+        "leavesQty": "0",
+    }
+    row.update(extra)
+    return row
+
+
+def test_dedupe_executions_drops_identical_and_orders_deterministically() -> None:
+    rows = [
+        _exec_row("b", "100"),
+        _exec_row("a", "100"),
+        _exec_row("a", "100"),  # identical duplicate -> dropped
+    ]
+    out = rt.dedupe_executions(rows)
+    assert [r["execId"] for r in out] == ["a", "b"]  # same execTime -> tie-break by execId
+
+
+def test_dedupe_executions_conflicting_execid_fails_closed() -> None:
+    with pytest.raises(rt.ExecutionConflict, match="conflicting duplicate execId"):
+        rt.dedupe_executions([_exec_row("a", "100", qty="0.01"), _exec_row("a", "100", qty="0.02")])
+
+
+def _key_get(pages: dict[str, list[dict]]) -> object:
+    """Signed-GET fake keyed by endpoint path; serves single-page results by default."""
+
+    def get(url: str, headers: dict[str, str]) -> bytes:
+        for path, rows in pages.items():
+            if path in url:
+                return json.dumps(
+                    {"retCode": 0, "result": {"list": rows, "nextPageCursor": ""}}
+                ).encode()
+        raise AssertionError(f"unexpected GET {url}")
+
+    return get
+
+
+def test_reconcile_realtime_hit_collects_executions() -> None:
+    key = "tios2_" + "a" * 20
+    get = _key_get(
+        {
+            "/v5/order/realtime": [{"orderLinkId": key, "orderStatus": "Filled"}],
+            "/v5/order/history": [],
+            "/v5/execution/list": [
+                _exec_row("e1", "100", execValue="20", execFee="0.01", feeCurrency="USDT")
+            ],
+        }
+    )
+    out = rt.reconcile_by_client_key(get, KEY, SECRET, DEMO, key, "ETHUSDT")
+    assert out["status"] == "Filled" and out["source"] == "REALTIME"
+    assert len(out["executions"]) == 1
+
+
+def test_reconcile_realtime_miss_falls_back_to_history() -> None:
+    key = "tios2_" + "b" * 20
+    get = _key_get(
+        {
+            "/v5/order/realtime": [],  # miss is NOT "no order"
+            "/v5/order/history": [{"orderLinkId": key, "orderStatus": "PartiallyFilledCanceled"}],
+            "/v5/execution/list": [
+                _exec_row("e1", "100", execValue="10", execFee="0", feeCurrency="USDT")
+            ],
+        }
+    )
+    out = rt.reconcile_by_client_key(get, KEY, SECRET, DEMO, key, "ETHUSDT")
+    assert out["status"] == "PartiallyFilledCanceled" and out["source"] == "HISTORY"
+
+
+def test_pagination_walks_cursor_pages() -> None:
+    key = "tios2_" + "c" * 20
+    seq = iter(
+        [
+            {"list": [_exec_row("e1", "1")], "nextPageCursor": "p2"},
+            {"list": [_exec_row("e2", "2")], "nextPageCursor": ""},
+        ]
+    )
+
+    def get(url: str, headers: dict[str, str]) -> bytes:
+        return json.dumps({"retCode": 0, "result": next(seq)}).encode()
+
+    rows = rt.executions_by_client_key(get, KEY, SECRET, DEMO, key, "ETHUSDT")
+    assert [r["execId"] for r in rows] == ["e1", "e2"]
+
+
+def test_pagination_cursor_loop_is_unresolved_not_empty() -> None:
+    key = "tios2_" + "d" * 20
+
+    def get(url: str, headers: dict[str, str]) -> bytes:
+        return json.dumps({"retCode": 0, "result": {"list": [], "nextPageCursor": "same"}}).encode()
+
+    with pytest.raises(rt.ReconciliationUnresolved, match="cursor loop"):
+        rt.orders_by_client_key(get, KEY, SECRET, DEMO, key, "ETHUSDT")
+
+
+def test_pagination_oversized_page_is_unresolved() -> None:
+    key = "tios2_" + "e" * 20
+
+    def get(url: str, headers: dict[str, str]) -> bytes:
+        rows = [_exec_row(f"e{i}", "1") for i in range(51)]  # over the internal 50-row cap
+        return json.dumps({"retCode": 0, "result": {"list": rows, "nextPageCursor": ""}}).encode()
+
+    with pytest.raises(rt.ReconciliationUnresolved, match="50-row cap"):
+        rt.executions_by_client_key(get, KEY, SECRET, DEMO, key, "ETHUSDT")
+
+
+def test_unknown_create_reconciles_by_key_and_never_reposts_create() -> None:
+    # Reconciliation is a pure query flow — it takes only a GET transport, so it structurally
+    # cannot replay a create POST for an unknown/ambiguous submission result.
+    key = "tios2_" + "f" * 20
+    get = _key_get(
+        {
+            "/v5/order/realtime": [{"orderLinkId": key, "orderStatus": "New"}],
+            "/v5/order/history": [],
+            "/v5/execution/list": [],
+        }
+    )
+    out = rt.reconcile_by_client_key(get, KEY, SECRET, DEMO, key, "ETHUSDT")
+    assert out["status"] == "New" and out["all_pages_complete"] is True
+
+
+# --- P1-B: protective-stop / cancel client-key + async-ack + query-confirm adapters ------------
+
+
+def test_place_stop_validates_and_forwards_orderlinkid() -> None:
+    key = "tios2_r_" + "0" * 28  # the deterministic stop-create key the lane persists before POST
+    captured: dict[str, str] = {}
+
+    def post(url: str, headers: dict[str, str], body: bytes) -> bytes:
+        captured["body"] = body.decode()
+        return json.dumps({"retCode": 0, "result": {"orderId": "S1"}}).encode()
+
+    rt.place_stop(
+        post, KEY, SECRET, TS, DEMO,
+        symbol="ETHUSDT", trigger_price="85", base_qty="0.01", client_key=key,
+    )  # fmt: skip
+    body = json.loads(captured["body"])
+    assert body["orderLinkId"] == key and body["orderFilter"] == "StopOrder"
+
+
+def test_place_stop_rejects_bad_orderlinkid_before_any_post() -> None:
+    def post(url: str, headers: dict[str, str], body: bytes) -> bytes:
+        raise AssertionError("a malformed stop client key must never reach the venue")
+
+    with pytest.raises(ValueError, match="orderLinkId"):
+        rt.place_stop(
+            post, KEY, SECRET, TS, DEMO,
+            symbol="ETHUSDT", trigger_price="85", base_qty="0.01", client_key="x" * 37,
+        )  # fmt: skip
+
+
+def test_place_stop_without_key_stays_byte_identical() -> None:
+    captured: dict[str, str] = {}
+
+    def post(url: str, headers: dict[str, str], body: bytes) -> bytes:
+        captured["body"] = body.decode()
+        return json.dumps({"retCode": 0, "result": {"orderId": "S1"}}).encode()
+
+    rt.place_stop(
+        post, KEY, SECRET, TS, DEMO, symbol="ETHUSDT", trigger_price="85", base_qty="0.01"
+    )
+    assert "orderLinkId" not in json.loads(captured["body"])  # legacy compensating stop unchanged
+
+
+def test_cancel_order_targets_original_orderlinkid_correlation() -> None:
+    key = "tios2_" + "a" * 20
+    captured: dict[str, str] = {}
+
+    def post(url: str, headers: dict[str, str], body: bytes) -> bytes:
+        captured["body"] = body.decode()
+        return json.dumps({"retCode": 0, "result": {}}).encode()
+
+    rt.cancel_order(post, KEY, SECRET, TS, DEMO, symbol="ETHUSDT", order_link_id=key)
+    body = json.loads(captured["body"])
+    assert body["orderLinkId"] == key and "orderId" not in body  # original correlation only
+
+
+def test_cancel_order_by_id_stays_byte_identical() -> None:
+    captured: dict[str, str] = {}
+
+    def post(url: str, headers: dict[str, str], body: bytes) -> bytes:
+        captured["body"] = body.decode()
+        return json.dumps({"retCode": 0, "result": {}}).encode()
+
+    rt.cancel_order(post, KEY, SECRET, TS, DEMO, order_id="OID-7", symbol="ETHUSDT")
+    # Assert on the RAW serialized bytes: json.loads dict equality is key-order-insensitive and
+    # would pass even if orderId moved after orderFilter. The legacy body must be byte-for-byte
+    # unchanged from pre-Wave-2 — category, symbol, orderId, then orderFilter.
+    assert captured["body"] == (
+        '{"category": "spot", "symbol": "ETHUSDT", "orderId": "OID-7", "orderFilter": "StopOrder"}'
+    )
+
+
+def test_cancel_order_requires_exactly_one_correlation() -> None:
+    def post(url: str, headers: dict[str, str], body: bytes) -> bytes:
+        raise AssertionError("cancel must not post with an ambiguous/absent correlation")
+
+    with pytest.raises(ValueError, match="exactly one"):  # neither
+        rt.cancel_order(post, KEY, SECRET, TS, DEMO, symbol="ETHUSDT")
+    with pytest.raises(ValueError, match="exactly one"):  # both
+        rt.cancel_order(
+            post, KEY, SECRET, TS, DEMO,
+            symbol="ETHUSDT", order_id="OID-7", order_link_id="tios2_" + "a" * 20,
+        )  # fmt: skip
+
+
+def test_stop_and_cancel_acks_are_async_pending_not_confirmed() -> None:
+    # A create/cancel retCode=0 means ACCEPTED/PENDING; the caller must confirm by query, never
+    # clear state on the ack alone.
+    assert rt.classify_create_ack({"retCode": 0, "result": {}}) == "ACKNOWLEDGED_PENDING"
+    assert rt.classify_create_ack({"retCode": 10001, "retMsg": "no"}) == "VENUE_REJECTED"
+
+
+def test_order_status_legacy_empty_order_id_polls_silently() -> None:
+    # CLEANUP: the legacy positional call (no client_key) with an empty orderId — e.g. a create ack
+    # that returned no orderId — stays byte-identical to pre-Wave-2: it queries by "" and returns {}
+    # rather than raising. Exactly-one enforcement applies ONLY to the new client_key usage.
+    def get(url: str, headers: dict[str, str]) -> bytes:
+        return json.dumps({"retCode": 0, "result": {"list": []}}).encode()
+
+    assert rt.order_status(get, KEY, SECRET, TS, "", base=DEMO, symbol="ETHUSDT") == {}
+    # ...but passing BOTH a client_key and an orderId is still rejected (the new keyed usage).
+    with pytest.raises(ValueError, match="exactly one"):
+        rt.order_status(
+            get, KEY, SECRET, TS, "OID-1",
+            base=DEMO, symbol="ETHUSDT", client_key="tios2_" + "a" * 20,
+        )  # fmt: skip
+
+
+def test_order_status_reconciles_a_resting_stop_by_client_key() -> None:
+    key = "tios2_r_" + "1" * 28
+    captured: dict[str, str] = {}
+
+    def get(url: str, headers: dict[str, str]) -> bytes:
+        captured["url"] = url
+        return json.dumps(
+            {"retCode": 0, "result": {"list": [{"orderLinkId": key, "orderStatus": "Untriggered"}]}}
+        ).encode()
+
+    row = rt.order_status(get, KEY, SECRET, TS, base=DEMO, symbol="ETHUSDT", client_key=key)
+    assert row["orderStatus"] == "Untriggered"  # a resting stop, confirmed by its original key
+    assert f"orderLinkId={key}" in captured["url"] and "orderId=" not in captured["url"]

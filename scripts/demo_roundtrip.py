@@ -25,6 +25,7 @@ import hashlib
 import hmac
 import json
 import math
+import re
 import sys
 import time
 from collections.abc import Callable
@@ -42,6 +43,178 @@ BASE_STEP_DECIMALS = 6  # BTCUSDT base precision (1e-6); lookup instrument-info 
 
 PostTransport = Callable[[str, dict[str, str], bytes], bytes]
 
+# --- Stage B (default-disabled) Bybit V5 client-key + reconciliation adapter --------------------
+# The venue-supported client correlation field is `orderLinkId` (Spot: optional at the API, but
+# Stage B makes it mandatory and validates it). Bybit does NOT document exactly-once delivery, so
+# the key is correlation only: persist before POST (owned by the lane), reuse for the same logical
+# attempt, never blindly resubmit, and reconcile. Acknowledgements are asynchronous. These helpers
+# are pure request/response adapters — they carry no persistence and no order-creation authority.
+
+_CLIENT_KEY_RE = re.compile(r"^[A-Za-z0-9_-]{1,36}$")
+# Stage B applies the stricter internal cap of 50 rows/page to ALL three endpoints and at most 100
+# pages per endpoint (official maxima are 50 for realtime/history and 100 for execution). A cursor
+# loop, oversized page, or remaining cursor at the bound is UNRESOLVED, never an empty result.
+_INTERNAL_ROWS_PER_PAGE = 50
+_MAX_PAGES_PER_ENDPOINT = 100
+CREATE_ACK_ACCEPTED = "ACKNOWLEDGED_PENDING"
+CREATE_ACK_REJECTED = "VENUE_REJECTED"
+
+
+class ReconciliationUnresolved(RuntimeError):
+    """Pagination could not be safely exhausted (cursor loop, oversized page, page/row overflow)."""
+
+
+class ExecutionConflict(RuntimeError):
+    """A duplicate execId carried conflicting economics — a fail-closed reconciliation incident."""
+
+
+def validate_client_key(value: object) -> str:
+    """Enforce the Bybit `orderLinkId` contract: ^[A-Za-z0-9_-]{1,36}$ (length 1..36)."""
+    if not isinstance(value, str) or not _CLIENT_KEY_RE.fullmatch(value):
+        raise ValueError(f"orderLinkId must match ^[A-Za-z0-9_-]{{1,36}}$: {value!r}")
+    return value
+
+
+def classify_create_ack(response: dict[str, Any]) -> str:
+    """A create/cancel ack means ACCEPTED/PENDING, never FILLED/terminal. retCode==0 => pending."""
+    return CREATE_ACK_ACCEPTED if response.get("retCode") == 0 else CREATE_ACK_REJECTED
+
+
+def dedupe_executions(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Deduplicate execution rows by `execId` and return them in deterministic order.
+
+    An identical duplicate row is dropped; a duplicate `execId` with conflicting content is a
+    fail-closed incident. Equal `execTime` rows are ordered by the documented
+    `execId`+`orderId`+`leavesQty` guidance before raw IDs are ever sanitized.
+    """
+    by_id: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        exec_id = row.get("execId")
+        if not isinstance(exec_id, str) or not exec_id:
+            raise ReconciliationUnresolved("execution row missing execId")
+        prior = by_id.get(exec_id)
+        if prior is None:
+            by_id[exec_id] = row
+        elif prior != row:
+            raise ExecutionConflict(f"conflicting duplicate execId {exec_id}")
+    return sorted(
+        by_id.values(),
+        key=lambda r: (
+            str(r.get("execTime", "")),
+            str(r.get("execId", "")),
+            str(r.get("orderId", "")),
+            str(r.get("leavesQty", "")),
+        ),
+    )
+
+
+def _paged_by_client_key(
+    transport: pf.Transport,
+    api_key: str,
+    secret: str,
+    base: str,
+    path: str,
+    client_key: str,
+    symbol: str,
+) -> list[dict[str, Any]]:
+    """Exhaust one endpoint filtered by `orderLinkId`, honoring the internal page/row caps.
+
+    Returns every row across pages; raises ReconciliationUnresolved on a cursor loop, an oversized
+    page, or an unfinished cursor at the page bound (never a silent empty result).
+    """
+    validate_client_key(client_key)
+    rows: list[dict[str, Any]] = []
+    cursor = ""
+    seen_cursors: set[str] = set()
+    for _page in range(_MAX_PAGES_PER_ENDPOINT):
+        params = {
+            "category": "spot",
+            "symbol": symbol,
+            "orderLinkId": client_key,
+            "limit": str(_INTERNAL_ROWS_PER_PAGE),
+        }
+        if cursor:
+            params["cursor"] = cursor
+        resp = pf._signed_get(transport, base, path, params, api_key, secret, _now())
+        result = resp.get("result") or {}
+        page_rows = result.get("list") or []
+        if len(page_rows) > _INTERNAL_ROWS_PER_PAGE:
+            raise ReconciliationUnresolved(f"{path} page exceeded the internal 50-row cap")
+        rows.extend(page_rows)
+        cursor = str(result.get("nextPageCursor") or "")
+        if not cursor:
+            return rows
+        if cursor in seen_cursors:
+            raise ReconciliationUnresolved(f"{path} pagination cursor loop")
+        seen_cursors.add(cursor)
+    raise ReconciliationUnresolved(f"{path} pagination exceeded the internal 100-page cap")
+
+
+def orders_by_client_key(
+    transport: pf.Transport, api_key: str, secret: str, base: str, client_key: str, symbol: str
+) -> list[dict[str, Any]]:
+    """Open/closed orders from /v5/order/realtime for one client key."""
+    return _paged_by_client_key(
+        transport, api_key, secret, base, "/v5/order/realtime", client_key, symbol
+    )
+
+
+def order_history_by_client_key(
+    transport: pf.Transport, api_key: str, secret: str, base: str, client_key: str, symbol: str
+) -> list[dict[str, Any]]:
+    """Durable closed history from /v5/order/history for one client key (realtime-miss fallback)."""
+    return _paged_by_client_key(
+        transport, api_key, secret, base, "/v5/order/history", client_key, symbol
+    )
+
+
+def executions_by_client_key(
+    transport: pf.Transport, api_key: str, secret: str, base: str, client_key: str, symbol: str
+) -> list[dict[str, Any]]:
+    """Economic execution rows from /v5/execution/list for one client key (deduplicated)."""
+    rows = _paged_by_client_key(
+        transport, api_key, secret, base, "/v5/execution/list", client_key, symbol
+    )
+    return dedupe_executions(rows)
+
+
+def _match_by_client_key(rows: list[dict[str, Any]], client_key: str) -> dict[str, Any] | None:
+    for row in rows:
+        if str(row.get("orderLinkId", "")) == client_key:
+            return row
+    return None
+
+
+def reconcile_by_client_key(
+    transport: pf.Transport,
+    api_key: str,
+    secret: str,
+    base: str,
+    client_key: str,
+    symbol: str,
+) -> dict[str, Any]:
+    """Reconcile one logical submission by its client key: realtime, then history, then executions.
+
+    A realtime miss is not "no order" — history and executions are always consulted. The create is
+    NEVER replayed here. Returns status/source/order/executions; pagination that cannot be
+    exhausted raises ReconciliationUnresolved rather than returning an empty (falsely terminal) set.
+    """
+    realtime = orders_by_client_key(transport, api_key, secret, base, client_key, symbol)
+    order_row = _match_by_client_key(realtime, client_key)
+    source = "REALTIME"
+    if order_row is None:
+        history = order_history_by_client_key(transport, api_key, secret, base, client_key, symbol)
+        order_row = _match_by_client_key(history, client_key)
+        source = "HISTORY"
+    executions = executions_by_client_key(transport, api_key, secret, base, client_key, symbol)
+    return {
+        "status": order_row.get("orderStatus") if order_row else None,
+        "source": source if order_row else None,
+        "order": order_row,
+        "executions": executions,
+        "all_pages_complete": True,
+    }
+
 
 def sign_post(secret: str, timestamp: str, api_key: str, body: str) -> str:
     """Bybit V5 POST signature: HMAC-SHA256 over timestamp + apiKey + recvWindow + rawBody."""
@@ -58,6 +231,10 @@ def _order_create(
     order: dict[str, str],
 ) -> dict[str, Any]:
     pf.require_demo_base(base)
+    if "orderLinkId" in order:
+        # Stage B (or any caller) may bind a persisted client key; it is validated before it is
+        # ever sent so a malformed key can never reach the venue. The key is persisted upstream.
+        validate_client_key(order["orderLinkId"])
     body = json.dumps(order)
     headers = {
         "X-BAPI-API-KEY": api_key,
@@ -80,11 +257,17 @@ def place_stop(
     symbol: str,
     trigger_price: str,
     base_qty: str,
+    client_key: str | None = None,
 ) -> dict[str, Any]:
     """Rest a spot Sell stop (Bybit V5 conditional order) via the quarantined create transport.
 
     orderFilter=StopOrder, triggerDirection=2 (fire when the last price falls to/through
     triggerPrice), Market exit. The order-create endpoint literal stays confined to this module.
+
+    `client_key` (Stage B only): a persisted `orderLinkId` bound to this logical stop create; it is
+    validated inside `_order_create` before it can reach the venue. The retCode=0 acknowledgement is
+    ASYNC (accepted/pending, never resting-confirmed) — the caller confirms by query. When None the
+    order body is byte-identical to the legacy compensating stop.
     """
     order = {
         "category": "spot",
@@ -97,6 +280,8 @@ def place_stop(
         "triggerPrice": trigger_price,
         "triggerDirection": "2",
     }
+    if client_key is not None:
+        order["orderLinkId"] = client_key  # validated in _order_create before it reaches venue
     return _order_create(post_transport, api_key, secret, timestamp, base, order)
 
 
@@ -107,15 +292,26 @@ def cancel_order(
     timestamp: str,
     base: str,
     *,
-    order_id: str,
+    order_id: str = "",
     symbol: str,
     order_filter: str = "StopOrder",
+    order_link_id: str | None = None,
 ) -> dict[str, Any]:
-    """Cancel an order by id (Bybit V5 /v5/order/cancel). Demo-host-locked; endpoint kept here."""
+    """Cancel an order by its ORIGINAL correlation (Bybit V5 /v5/order/cancel). Demo-host-locked.
+
+    Targets exactly one of the venue `orderId` or the original `orderLinkId` (client key) — the
+    cancel NEVER derives a new correlation. The retCode=0 acknowledgement is ASYNC; the caller must
+    confirm the terminal/cleared state by query and never clears state on the ack alone.
+    """
     pf.require_demo_base(base)
-    body = json.dumps(
-        {"category": "spot", "symbol": symbol, "orderId": order_id, "orderFilter": order_filter}
-    )
+    if order_link_id is not None:
+        validate_client_key(order_link_id)
+    if bool(order_id) == bool(order_link_id):
+        raise ValueError("cancel_order needs exactly one of order_id / order_link_id")
+    target = {"orderId": order_id} if order_id else {"orderLinkId": str(order_link_id)}
+    # Key order matters: the legacy by-orderId body must stay byte-identical to pre-Wave-2
+    # (category, symbol, orderId, orderFilter). The new orderLinkId path slots in the same slot.
+    body = json.dumps({"category": "spot", "symbol": symbol, **target, "orderFilter": order_filter})
     headers = {
         "X-BAPI-API-KEY": api_key,
         "X-BAPI-TIMESTAMP": timestamp,
@@ -178,17 +374,33 @@ def order_status(
     api_key: str,
     secret: str,
     timestamp: str,
-    order_id: str,
+    order_id: str = "",
     *,
     base: str = pf.DEMO_BASE,
     symbol: str = DEFAULT_SYMBOL,
+    client_key: str | None = None,
 ) -> dict[str, Any]:
-    """Fetch one order's live status (signed GET /v5/order/realtime)."""
+    """Fetch one order's live status (signed GET /v5/order/realtime).
+
+    `client_key` (Stage B only): query by the persisted `orderLinkId` instead of the venue orderId,
+    so a create whose orderId was never observed is still reconcilable by its original correlation.
+    Exactly one of order_id / client_key is used.
+    """
+    if client_key is not None:
+        if order_id:
+            raise ValueError("order_status needs exactly one of order_id / client_key")
+        validate_client_key(client_key)
+        selector = {"orderLinkId": client_key}
+    else:
+        # Legacy positional call (no client_key): stay byte-identical to pre-Wave-2. An empty
+        # orderId (e.g. a create ack that returned no orderId) queries by "" and returns {} silently
+        # rather than raising; exactly-one enforcement applies ONLY to the new client_key usage.
+        selector = {"orderId": order_id}
     resp = pf._signed_get(
         transport,
         base,
         "/v5/order/realtime",
-        {"category": "spot", "symbol": symbol, "orderId": order_id},
+        {"category": "spot", "symbol": symbol, **selector},
         api_key,
         secret,
         timestamp,
@@ -229,11 +441,15 @@ def _poll_filled(
     order_id: str,
     symbol: str,
     sleep: Callable[[float], None],
+    *,
+    client_key: str | None = None,
 ) -> dict[str, Any]:
     status: dict[str, Any] = {}
     for _ in range(12):
         sleep(0.5)
-        status = order_status(transport, api_key, secret, _now(), order_id, symbol=symbol)
+        status = order_status(
+            transport, api_key, secret, _now(), order_id, symbol=symbol, client_key=client_key
+        )
         if status.get("orderStatus") in _TERMINAL:
             break
     return status
