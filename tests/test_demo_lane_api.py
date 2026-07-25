@@ -28,7 +28,23 @@ _BODY_KEYS = {
     "auto_tune",
     "coins",
     "portfolio",
+    "activity",
+    "activity_summary",
     "stage_b",
+}
+_ACTIVITY_KEYS = {
+    "symbol",
+    "base_coin",
+    "data_available",
+    "kill_switch",
+    "confidence_score",
+    "decision",
+    "bullish",
+    "bearish",
+    "position",
+    "protection",
+    "heartbeat_age_seconds",
+    "heartbeat_fresh",
 }
 _COIN_KEYS = {
     "symbol",
@@ -584,3 +600,129 @@ def test_start_and_run_once_cannot_clear_a_stage_b_latch(
         # The latch is unchanged and the action never touched the private runtime root.
         assert demo_lane.build_demo_lane(root)["stage_b"]["status"] == "ENTRY_BLOCK"
         assert not private_root.exists()
+
+
+# --- confluence activity view (per-coin confidence) ----------------------------------
+
+
+def _activity_heartbeat(
+    root: Path,
+    symbol: str,
+    *,
+    confidence: str,
+    decision: str,
+    bullish: list[dict[str, str]] | None = None,
+    bearish: list[dict[str, str]] | None = None,
+    long: bool = False,
+) -> None:
+    """Write a heartbeat_<SYMBOL>_activity.json shaped like run_activity_cycle's heartbeat_extra."""
+    hb: dict[str, Any] = {
+        "at": "2099-01-01T00:00:00+00:00",
+        "symbol": symbol,
+        "strategy": demo_lane.ACTIVITY_STRATEGY,
+        "lane_base": "2" if long else "0",
+        "mark_price": "110" if long else "0",
+        "entry_price": "100" if long else None,
+        "disaster_stop_price": "85" if long else None,
+        "confluence": {
+            "confidence": confidence,
+            "bullish": bullish or [],
+            "bearish": bearish or [],
+            "entry_threshold": "0.25",
+            "exit_threshold": "0.05",
+            "timeframes": ["15m", "1h", "4h"],
+            "reference_timeframe": "15m",
+            "decision": decision,
+        },
+    }
+    path = root / demo_lane.LANE_DIR / f"heartbeat_{symbol}_activity.json"
+    path.write_text(json.dumps(hb))
+
+
+def test_activity_covers_universe_sorted_by_confidence_desc(root: Path) -> None:
+    _activity_heartbeat(root, "SOLUSDT", confidence="0.8", decision="BUY", long=True)
+    _activity_heartbeat(root, "BTCUSDT", confidence="0.3", decision="HOLD")
+    _activity_heartbeat(root, "ADAUSDT", confidence="-0.5", decision="SELL")
+    lane = demo_lane.build_demo_lane(root)
+    activity = lane["activity"]
+    # Every activity-universe coin is present, exactly once, with the fixed field set.
+    assert {r["symbol"] for r in activity} == set(demo_lane.ACTIVITY_COINS)
+    assert len(activity) == len(demo_lane.ACTIVITY_COINS)
+    assert all(set(r) == _ACTIVITY_KEYS for r in activity)
+    # Strongest confidence first; every scored coin precedes every no-data (None) coin.
+    scored = [r["confidence_score"] for r in activity if r["confidence_score"] is not None]
+    assert scored == sorted(scored, reverse=True)
+    assert scored[:3] == [0.8, 0.3, -0.5]
+    none_index = next(i for i, r in enumerate(activity) if r["confidence_score"] is None)
+    assert all(activity[i]["confidence_score"] is None for i in range(none_index, len(activity)))
+    # No coin selector: build_demo_lane still takes only root.
+    import inspect
+
+    assert list(inspect.signature(demo_lane.build_demo_lane).parameters) == ["root"]
+
+
+def test_activity_coin_projects_confidence_contributors_and_position(root: Path) -> None:
+    bullish = [
+        {"strategy": "EXT-KELTNER-BREAKOUT", "timeframe": "1h", "weight": "2"},
+        {"strategy": "EXT-BB-BREAKOUT", "timeframe": "4h", "weight": "3"},
+    ]
+    bearish = [{"strategy": "SIG-VOLUME-BREAKOUT", "timeframe": "15m", "weight": "1"}]
+    _activity_heartbeat(
+        root,
+        "SOLUSDT",
+        confidence="0.75",
+        decision="BUY",
+        bullish=bullish,
+        bearish=bearish,
+        long=True,
+    )
+    sol = next(r for r in demo_lane.build_demo_lane(root)["activity"] if r["symbol"] == "SOLUSDT")
+    assert sol["confidence_score"] == 0.75
+    assert sol["decision"] == "BUY"
+    # Contributors reduce to (strategy, timeframe) string pairs, order preserved.
+    assert sol["bullish"] == [
+        {"strategy": "EXT-KELTNER-BREAKOUT", "timeframe": "1h"},
+        {"strategy": "EXT-BB-BREAKOUT", "timeframe": "4h"},
+    ]
+    assert sol["bearish"] == [{"strategy": "SIG-VOLUME-BREAKOUT", "timeframe": "15m"}]
+    # Position reuses the same helpers as _coin_projection: 2 @ (110-100) = +20, +10%.
+    assert sol["position"]["side"] == "LONG"
+    assert sol["position"]["unrealised_pnl_usd"] == 20.0
+    assert sol["position"]["unrealised_pnl_pct"] == 10.0
+    assert sol["protection"]["disaster_stop_price_usd"] == 85.0
+
+
+def test_activity_missing_or_malformed_heartbeat_degrades_gracefully(root: Path) -> None:
+    # One malformed heartbeat (confluence not a dict, bad lane_base) plus the rest missing.
+    bad = root / demo_lane.LANE_DIR / "heartbeat_ETHUSDT_activity.json"
+    bad.write_text(json.dumps({"lane_base": "not-a-number", "confluence": ["not", "a", "dict"]}))
+    activity = demo_lane.build_demo_lane(root)["activity"]
+    assert {r["symbol"] for r in activity} == set(
+        demo_lane.ACTIVITY_COINS
+    )  # no crash, full universe
+    eth = next(r for r in activity if r["symbol"] == "ETHUSDT")
+    assert eth["confidence_score"] is None  # malformed confluence -> no score
+    assert eth["decision"] is None
+    assert eth["position"]["side"] == "FLAT"  # bad lane_base -> 0 -> flat
+    btc = next(r for r in activity if r["symbol"] == "BTCUSDT")
+    assert btc["data_available"] is False  # no file at all
+    assert btc["confidence_score"] is None
+    assert btc["position"]["side"] == "FLAT"
+
+
+def test_activity_summary_sums_and_stage_b_stays_aggregate_only(root: Path) -> None:
+    _activity_heartbeat(root, "SOLUSDT", confidence="0.8", decision="BUY", long=True)
+    _activity_heartbeat(root, "BTCUSDT", confidence="0.4", decision="BUY", long=True)
+    _activity_heartbeat(root, "ADAUSDT", confidence="-0.2", decision="SELL")
+    lane = demo_lane.build_demo_lane(root)
+    summary = lane["activity_summary"]
+    assert summary["coins_scored"] == 3
+    assert summary["coins_long"] == 2
+    assert summary["highest_confidence"] == 0.8
+    assert summary["average_confidence"] == round((0.8 + 0.4 - 0.2) / 3, 4)
+    # Adding the activity view must NOT touch the aggregate-only, redacted stage_b field.
+    assert set(lane["stage_b"]) == _STAGE_B_KEYS
+    assert lane["stage_b"] == {"status": "NOT_ACTIVATED", "cohort_size": 30, "series": []}
+    stage_b_body = json.dumps(lane["stage_b"]).lower()
+    for token in _FORBIDDEN_TOKENS:
+        assert token not in stage_b_body, f"forbidden token leaked into stage_b: {token}"

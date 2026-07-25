@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.147 operator-directed multi-coin lane + rich live dashboard regeneration (2026-07-26). Supersedes v8.146 hashes.
+Package version: v8.148 confluence activity lane self-loop + dashboard confluence-confidence view (2026-07-26). Supersedes v8.147 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -70,8 +70,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `src/tios/services/dashboard_api/eth_signal.py` | `8b1a35780a5ef492d304cee65e4af33ea08e84a245a58290e99889e8fcb8a027` |
 | `src/tios/services/dashboard_ui/server.py` | `1c85a7b9f71c32538c4fc6128a582f205d9391f076535b81af7e46be686afe3c` |
-| `src/tios/services/dashboard_ui/dashboard.html` | `a8b9192368081ab2310ef1eb4ad32cedd2da6ffa36be1c503918345f4c321ee4` |
-| `tests/test_dashboard.py` | `d6852a767c26412eb1da64c0d65301e43f124dc2033d756171ee621af6dbe431` |
+| `src/tios/services/dashboard_ui/dashboard.html` | `458844d3c659c592c9a717d8140159fa84f81a73a1aba87f1a29c2f691e7f843` |
+| `tests/test_dashboard.py` | `40caa16edd2f10c5850e1f9593a281754063c034db6e17702e8d5fcb75820805` |
 
 ## Required handoff inputs — planning system (added v8)
 
@@ -629,8 +629,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `scripts/run_prospective_observation_flow.py` | `049a30eae86bba0abb071016149a3414726a1d47655dcb1b1c19d5e69917f449` |
 | `tests/test_observation_flow.py` | `06bdf250404373a9e3636c5e40e09bde1ff03a0ceb538a7af9dcb95813b70611` |
 | `src/tios/services/dashboard_api/status.py` | `12d0107864407f06bc04219b5bbb6d9f322d4ce23e6cb70ec36737604b43e951` |
-| `src/tios/services/dashboard_ui/dashboard.html` | `a8b9192368081ab2310ef1eb4ad32cedd2da6ffa36be1c503918345f4c321ee4` |
-| `tests/test_dashboard.py` | `d6852a767c26412eb1da64c0d65301e43f124dc2033d756171ee621af6dbe431` |
+| `src/tios/services/dashboard_ui/dashboard.html` | `458844d3c659c592c9a717d8140159fa84f81a73a1aba87f1a29c2f691e7f843` |
+| `tests/test_dashboard.py` | `40caa16edd2f10c5850e1f9593a281754063c034db6e17702e8d5fcb75820805` |
 
 ## Managed observation adoption (added v8.101)
 

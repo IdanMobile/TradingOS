@@ -2161,6 +2161,35 @@ def test_demo_lane_card_renders_rich_multi_coin_operator_view() -> None:
         assert label in source, label
 
 
+def test_demo_lane_card_renders_confluence_activity_confidence_and_signals() -> None:
+    source = _demo_lane_render_source()
+    # A read-only confluence section reads the new arrays and maps each coin through actHtml.
+    assert "lane.activity" in source
+    assert "lane.activity_summary" in source
+    assert "activity.map(actHtml)" in source
+    assert "Confluence activity" in source
+    # Per-coin confidence score (number + bar) and the agreeing strategies/timeframes.
+    for token in (
+        "a.confidence_score",
+        "a.decision",
+        "a.bullish",
+        "a.bearish",
+        "confidence",
+        "bullish:",
+        "bearish:",
+    ):
+        assert token in source, token
+    # Strategy@timeframe rendering of the contributor pairs, all escaped.
+    assert "s.strategy" in source and "s.timeframe" in source
+    assert "esc(String(s.strategy))" in source
+    # activity_summary is surfaced (coins scored / long / confidence).
+    for token in ("asum.coins_long", "asum.coins_scored", "asum.highest_confidence"):
+        assert token in source, token
+    # Fake-money / authority / validation labels stay pinned on the confluence section too.
+    for label in ("DIAGNOSTIC ONLY", "authority NONE", "UNVALIDATED", "Fake money"):
+        assert label in source, label
+
+
 def test_demo_lane_route_is_the_only_stage_b_surface_and_authority_is_none(
     tmp_path: Path,
 ) -> None:
@@ -2182,6 +2211,8 @@ def test_demo_lane_route_is_the_only_stage_b_surface_and_authority_is_none(
         "auto_tune",
         "coins",
         "portfolio",
+        "activity",
+        "activity_summary",
         "stage_b",
     }
     assert payload["schema_version"] == 1

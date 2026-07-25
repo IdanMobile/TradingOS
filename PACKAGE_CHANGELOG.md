@@ -1,5 +1,31 @@
 # Package Changelog
 
+## v8.148 — 2026-07-26 — Confluence lane self-loop + dashboard confluence-confidence view
+
+Operator-directed follow-on. Fake-money demo only; execution authority NONE; nothing validated
+or promoted. Two additive changes, no new order logic.
+
+- Confluence activity lane self-loop: `--loop` is now an orthogonal cadence modifier (pulled out
+  of the mutually-exclusive mode group) so `--activity --loop` repeats the confluence cycle until
+  killed, sleeping one bar-interval between cycles (`LOOP_MIN_SLEEP_SECONDS = 60` floor), stopping
+  cleanly on the kill switch or KeyboardInterrupt. Bare `--loop` (dashboard START → ETH hourly)
+  and bare `--once` (RUN_ONCE → one ETH cycle) still resolve to the ETH lane, so the dashboard
+  spawn contract is unchanged; per-cycle order logic is untouched. Side effects of the non-required
+  group: a no-arg invocation now runs one ETH cycle instead of erroring, and `--multi --loop`
+  silently ignores `--loop` (multi is single-cycle) — both harmless, fake-money.
+- Dashboard confluence-confidence view: `build_demo_lane` gains two read-only top-level keys,
+  `activity` (per activity-universe coin: confidence score, decision, bullish/bearish
+  strategy@timeframe contributors, position, protection, heartbeat freshness — sorted
+  confidence-descending, missing/malformed heartbeats degrade to idle) and `activity_summary`
+  (coins scored/long, highest/average confidence), read from `heartbeat_<SYMBOL>_activity.json`.
+  `dashboard.html` renders a read-only "Confluence activity" section (confidence bar + agreeing
+  signals, all escaped, fake-money/UNVALIDATED/authority-NONE labels pinned). The `coins`,
+  `portfolio`, and aggregate-only `stage_b` projections are unchanged; `stage_b` stays redacted
+  (pinned by a new test); schema_version stays 1; no new order or mutation surface.
+
+Manifest-tracked files rehashed: `dashboard.html`, `tests/test_dashboard.py`. Gates green:
+ruff + mypy (139 files) clean, 215 tests pass across the four affected suites.
+
 ## v8.147 — 2026-07-26 — Multi-coin demo lane, rich live dashboard, deterministic reports
 
 Operator-directed follow-on to Stage B. Fake-money demo only; execution authority NONE;

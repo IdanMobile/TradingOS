@@ -125,6 +125,11 @@ _TF_MINUTES: dict[str, int] = {"5m": 5, "15m": 15, "1h": 60, "4h": 240}
 ENTRY_THRESHOLD = Decimal("0.25")
 EXIT_THRESHOLD = Decimal("0.05")
 
+# --loop cadence: one cycle per fastest-timeframe bar (interval minutes -> seconds), floored so a
+# fast interval can never hot-spin the roster fetch. ponytail: fixed floor, tune if the venue rate-
+# limits kline fetches at this cadence.
+LOOP_MIN_SLEEP_SECONDS = 60.0
+
 
 def candles_from_bars(bars: tuple[MarketBar, ...]) -> ext.Candles:
     """MarketBar tuple -> the research builders' aligned Decimal-column `Candles` dict."""
@@ -336,18 +341,38 @@ def run_activity_cycle(
     }
 
 
-def run_activity_lane(api_key: str, secret: str, *, interval: str = "15m") -> int:
-    """Preflight once, then run a single confluence cycle across the universe."""
+def run_activity_lane(
+    api_key: str, secret: str, *, interval: str = "15m", loop: bool = False
+) -> int:
+    """Preflight once, then run confluence cycles across the universe.
+
+    `loop=False` (default) runs exactly one cycle then exits — byte-identical to the original
+    one-shot `--activity` behavior. `loop=True` re-runs `run_activity_cycle` every fastest-timeframe
+    bar (sleep floored by LOOP_MIN_SLEEP_SECONDS) until the kill switch is set or the process is
+    interrupted; the per-cycle logic and the held single-lane lock are unchanged.
+    """
     pre = pf.preflight(pf._urllib_transport, api_key, secret)
     if not pre.get("ok"):
         print(json.dumps({"ok": False, "stage": "preflight", "preflight": pre}, indent=2))
         return 1
     timeframes = _timeframes_for(interval)
+    sleep_seconds = max(LOOP_MIN_SLEEP_SECONDS, _TF_MINUTES[interval] * 60)
     print(
         f"preflight GREEN on {pre['host']} — confluence activity lane "
         f"({len(ACTIVITY_UNIVERSE)} coins, timeframes {list(timeframes)}, "
-        f"shared cap {lane.TOTAL_DEMO_CAPITAL_USDT} USDT)"
+        f"shared cap {lane.TOTAL_DEMO_CAPITAL_USDT} USDT, "
+        f"{'loop ~' + str(int(sleep_seconds)) + 's' if loop else 'once'})"
     )
-    report = run_activity_cycle(api_key, secret, timeframes=timeframes)
-    print(json.dumps(report, indent=2, sort_keys=True))
-    return 0
+    try:
+        while True:
+            report = run_activity_cycle(api_key, secret, timeframes=timeframes)
+            print(json.dumps(report, indent=2, sort_keys=True))
+            if not loop:
+                return 0
+            if lane.kill_switch_active():
+                print("KILL_SWITCH present — confluence activity lane stopped.")
+                return 0
+            time.sleep(sleep_seconds)
+    except KeyboardInterrupt:
+        print("interrupted — confluence activity lane stopped.")
+        return 0

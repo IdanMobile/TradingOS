@@ -58,6 +58,20 @@ DEMO_COINS = (
 )
 DEMO_DISASTER_STOP_PCT = 15.0  # fixed -15% hard stop from entry (measurement-mode tail insurance)
 
+# The confluence activity lane scores this ~40-coin universe (mirrors scripts/demo_activity_lane.py
+# ACTIVITY_UNIVERSE — keep in sync) into one confidence per coin, writing
+# heartbeat_<SYMBOL>_activity.json / lane_state_<SYMBOL>_activity.json and tagging its orders
+# ACTIVITY_STRATEGY so a shared symbol (BTCUSDT/ETHUSDT are in both universes) never
+# cross-contaminates the breakout `coins` view.
+ACTIVITY_STRATEGY = "ACTIVITY-CONFLUENCE"
+ACTIVITY_COINS = (
+    "AAVEUSDT", "ADAUSDT", "ALGOUSDT", "APTUSDT", "ARBUSDT", "ATOMUSDT", "AVAXUSDT", "AXSUSDT",
+    "BCHUSDT", "BNBUSDT", "BTCUSDT", "DOGEUSDT", "DOTUSDT", "EGLDUSDT", "EOSUSDT", "ETCUSDT",
+    "ETHUSDT", "FILUSDT", "FLOWUSDT", "FTMUSDT", "GRTUSDT", "INJUSDT", "LINKUSDT", "LTCUSDT",
+    "MANAUSDT", "MATICUSDT", "NEARUSDT", "OPUSDT", "RUNEUSDT", "SANDUSDT", "SEIUSDT", "SOLUSDT",
+    "SUIUSDT", "THETAUSDT", "TIAUSDT", "TRXUSDT", "UNIUSDT", "XLMUSDT", "XRPUSDT", "XTZUSDT",
+)  # fmt: skip
+
 ACTIONS = frozenset({"START", "STOP", "RUN_ONCE"})
 _IDENTIFIER = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,199}$")
 RUN_ONCE_TIMEOUT_SECONDS = 90
@@ -237,6 +251,73 @@ def _coin_trades(
     return closed_pnls, round(fees, 4), entry
 
 
+def _position_projection(
+    lane_base: float,
+    mark: float,
+    entry: float,
+    is_long: bool,
+    open_entry: dict[str, Any] | None,
+    now: datetime,
+) -> dict[str, Any]:
+    """Entry-based live position + P&L, shared by the breakout `coins` and confluence `activity`
+    views. Both are fed a run_cycle heartbeat/state, so the position math is identical."""
+    cost = lane_base * entry if (is_long and entry > 0) else None
+    value = lane_base * mark if (is_long and mark > 0) else None
+    unrealised = value - cost if (value is not None and cost is not None) else None
+    spent_usd = (
+        open_entry["spent_usd"]
+        if open_entry is not None
+        else (round(cost, 4) if cost is not None else None)
+    )
+    opened_at = open_entry["opened_at"] if open_entry is not None else None
+    opened = _parse_ts(opened_at)
+    time_in_trade_seconds = (
+        round((now - opened.astimezone(UTC)).total_seconds(), 1)
+        if opened is not None and opened.tzinfo is not None
+        else None
+    )
+    return {
+        "side": "LONG" if is_long else "FLAT",
+        "base_qty": round(lane_base, 8) if is_long else 0.0,
+        "entry_price_usd": round(entry, 2) if (is_long and entry > 0) else None,
+        "mark_price_usd": round(mark, 2) if mark > 0 else None,
+        "spent_usd": spent_usd,
+        "value_usd": round(value, 4) if value is not None else None,
+        "unrealised_pnl_usd": round(unrealised, 4) if unrealised is not None else None,
+        "unrealised_pnl_pct": (
+            round(unrealised / cost * 100, 2) if unrealised is not None and cost else None
+        ),
+        "opened_at": opened_at,
+        "time_in_trade_seconds": time_in_trade_seconds,
+    }
+
+
+def _protection_projection(
+    heartbeat: dict[str, Any], state: dict[str, Any], is_long: bool, entry: float, mark: float
+) -> dict[str, Any]:
+    """-15% disaster floor + any venue-resting/trailing stop. Shared by the coins/activity views."""
+    resting = state.get("resting_stop") or heartbeat.get("resting_stop")
+    resting = resting if isinstance(resting, dict) else {}
+    resting_trigger = _number(
+        resting.get("trigger_price") or resting.get("venue_trigger_price_usd")
+    )
+    disaster = _number(heartbeat.get("disaster_stop_price"))
+    if disaster <= 0 and is_long and entry > 0:
+        disaster = entry * (1 - DEMO_DISASTER_STOP_PCT / 100)
+    stop_level = resting_trigger if resting_trigger > 0 else disaster
+    return {
+        "disaster_stop_price_usd": round(disaster, 2) if disaster > 0 else None,
+        "disaster_stop_pct": DEMO_DISASTER_STOP_PCT,
+        "venue_resting_stop_trigger_usd": round(resting_trigger, 2)
+        if resting_trigger > 0
+        else None,
+        "venue_resting_stop_state": resting.get("state") if resting else None,
+        "distance_to_stop_pct": (
+            round((mark - stop_level) / mark * 100, 2) if mark > 0 and stop_level > 0 else None
+        ),
+    }
+
+
 def _coin_projection(
     root: Path, symbol: str, orders: list[dict[str, Any]], kill_switch: bool, now: datetime
 ) -> dict[str, Any]:
@@ -259,58 +340,8 @@ def _coin_projection(
 
     closed_pnls, fees, open_entry = _coin_trades(orders_for_coin, base_coin)
 
-    # --- position (entry-based live P&L, matching report_demo_status) ---
-    cost = lane_base * entry if (is_long and entry > 0) else None
-    value = lane_base * mark if (is_long and mark > 0) else None
-    unrealised = value - cost if (value is not None and cost is not None) else None
-    spent_usd = (
-        open_entry["spent_usd"]
-        if open_entry is not None
-        else (round(cost, 4) if cost is not None else None)
-    )
-    opened_at = open_entry["opened_at"] if open_entry is not None else None
-    opened = _parse_ts(opened_at)
-    time_in_trade_seconds = (
-        round((now - opened.astimezone(UTC)).total_seconds(), 1)
-        if opened is not None and opened.tzinfo is not None
-        else None
-    )
-    position = {
-        "side": "LONG" if is_long else "FLAT",
-        "base_qty": round(lane_base, 8) if is_long else 0.0,
-        "entry_price_usd": round(entry, 2) if (is_long and entry > 0) else None,
-        "mark_price_usd": round(mark, 2) if mark > 0 else None,
-        "spent_usd": spent_usd,
-        "value_usd": round(value, 4) if value is not None else None,
-        "unrealised_pnl_usd": round(unrealised, 4) if unrealised is not None else None,
-        "unrealised_pnl_pct": (
-            round(unrealised / cost * 100, 2) if unrealised is not None and cost else None
-        ),
-        "opened_at": opened_at,
-        "time_in_trade_seconds": time_in_trade_seconds,
-    }
-
-    # --- protection: -15% disaster floor + any venue-resting/trailing stop ---
-    resting = state.get("resting_stop") or heartbeat.get("resting_stop")
-    resting = resting if isinstance(resting, dict) else {}
-    resting_trigger = _number(
-        resting.get("trigger_price") or resting.get("venue_trigger_price_usd")
-    )
-    disaster = _number(heartbeat.get("disaster_stop_price"))
-    if disaster <= 0 and is_long and entry > 0:
-        disaster = entry * (1 - DEMO_DISASTER_STOP_PCT / 100)
-    stop_level = resting_trigger if resting_trigger > 0 else disaster
-    protection = {
-        "disaster_stop_price_usd": round(disaster, 2) if disaster > 0 else None,
-        "disaster_stop_pct": DEMO_DISASTER_STOP_PCT,
-        "venue_resting_stop_trigger_usd": round(resting_trigger, 2)
-        if resting_trigger > 0
-        else None,
-        "venue_resting_stop_state": resting.get("state") if resting else None,
-        "distance_to_stop_pct": (
-            round((mark - stop_level) / mark * 100, 2) if mark > 0 and stop_level > 0 else None
-        ),
-    }
+    position = _position_projection(lane_base, mark, entry, is_long, open_entry, now)
+    protection = _protection_projection(heartbeat, state, is_long, entry, mark)
 
     # --- what it's watching / how close to acting ---
     raw_levels = heartbeat.get("rule_levels")
@@ -406,14 +437,96 @@ def _portfolio_rollup(coins: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def _confidence_value(raw: Any) -> float | None:
+    """Confluence confidence in [-1, +1] as a float, or None if missing/malformed. Unlike `_number`
+    this keeps None distinct from a real 0.0 score so no-data coins sink to the bottom of the
+    sort."""
+    if isinstance(raw, bool) or raw is None:
+        return None
+    try:
+        number = float(raw)
+    except (TypeError, ValueError):
+        return None
+    return number if math.isfinite(number) else None
+
+
+def _contributors(raw: Any) -> list[dict[str, str]]:
+    """Project a bullish/bearish contributor list to just (strategy, timeframe) string pairs."""
+    if not isinstance(raw, list):
+        return []
+    out: list[dict[str, str]] = []
+    for item in raw:
+        if isinstance(item, dict) and "strategy" in item and "timeframe" in item:
+            out.append({"strategy": str(item["strategy"]), "timeframe": str(item["timeframe"])})
+    return out
+
+
+def _activity_projection(
+    root: Path, symbol: str, orders: list[dict[str, Any]], kill_switch: bool, now: datetime
+) -> dict[str, Any]:
+    """Per-coin confluence projection: the confidence score, the agreeing strategies/timeframes,
+    and the same position/protection blocks as `_coin_projection`. Reads
+    heartbeat_<SYMBOL>_activity.json / lane_state_<SYMBOL>_activity.json; missing/malformed files
+    degrade to idle no-data, never crash (build_demo_lane still wraps each call in a per-coin
+    try/except). Orders are filtered to the ACTIVITY_STRATEGY tag so a symbol shared with the
+    breakout `coins` lane never bleeds in."""
+    base_coin = symbol.removesuffix(QUOTE_COIN)
+    heartbeat = _read_json(root / LANE_DIR / f"heartbeat_{symbol}_activity.json")
+    state = _read_json(root / LANE_DIR / f"lane_state_{symbol}_activity.json")
+    orders_for_coin = [
+        o for o in orders if o.get("symbol") == symbol and o.get("strategy") == ACTIVITY_STRATEGY
+    ]
+    data_available = bool(heartbeat) or bool(state) or bool(orders_for_coin)
+
+    confluence = heartbeat.get("confluence")
+    confluence = confluence if isinstance(confluence, dict) else {}
+    decision = confluence.get("decision")
+
+    lane_base = _number(state.get("lane_base", heartbeat.get("lane_base", "0")))
+    mark = _number(heartbeat.get("mark_price"))
+    entry = _number(heartbeat.get("entry_price") or state.get("entry_price"))
+    is_long = lane_base > 0
+    _closed, _fees, open_entry = _coin_trades(orders_for_coin, base_coin)
+    freshness = _heartbeat_freshness(heartbeat, now)
+    return {
+        "symbol": symbol,
+        "base_coin": base_coin,
+        "data_available": data_available,
+        "kill_switch": kill_switch,
+        "confidence_score": _confidence_value(confluence.get("confidence")),
+        "decision": decision if isinstance(decision, str) else None,
+        "bullish": _contributors(confluence.get("bullish")),
+        "bearish": _contributors(confluence.get("bearish")),
+        "position": _position_projection(lane_base, mark, entry, is_long, open_entry, now),
+        "protection": _protection_projection(heartbeat, state, is_long, entry, mark),
+        "heartbeat_age_seconds": freshness["age_seconds"],
+        "heartbeat_fresh": freshness["fresh"],
+    }
+
+
+def _activity_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Roll-up over the scored confluence coins: how many scored, how many long, and the top/mean
+    confidence (None until at least one coin reports a score)."""
+    scores = [r["confidence_score"] for r in rows if r["confidence_score"] is not None]
+    longs = sum(1 for r in rows if r["position"]["side"] == "LONG")
+    return {
+        "coins_scored": len(scores),
+        "coins_long": longs,
+        "highest_confidence": max(scores) if scores else None,
+        "average_confidence": round(sum(scores) / len(scores), 4) if scores else None,
+    }
+
+
 def build_demo_lane(root: Path | None = None) -> dict[str, Any]:
     """Rich, live, multi-coin operator projection plus the fixed aggregate-only Stage B field.
 
     The top-level safety envelope (authority NONE, real_money False, UNVALIDATED, no promotion,
     no auto-tune) and the `stage_b` field stay exactly as the aggregate-only projection they were:
-    `stage_b` is redacted and never carries per-episode rows. The operator view lives in `coins`
-    (one rich section per DEMO_COINS entry, in order) and a `portfolio` roll-up. Read-only; a
-    missing or malformed per-coin file degrades that coin to idle, never fails the response.
+    `stage_b` is redacted and never carries per-episode rows. The breakout operator view lives in
+    `coins` (one rich section per DEMO_COINS entry, in order) with a `portfolio` roll-up; the
+    confluence activity lane's per-coin confidence lives in `activity` (ACTIVITY_COINS, sorted
+    strongest-first) with an `activity_summary`. Read-only; a missing or malformed per-coin file
+    degrades that coin to idle, never fails the response.
     """
     root = (root or Path(__file__).resolve().parents[4]).resolve()
     operational_status, kill_switch = _operational_snapshot(root)
@@ -476,6 +589,39 @@ def build_demo_lane(root: Path | None = None) -> dict[str, Any]:
                     },
                 }
             )
+
+    # Confluence activity view: parallel to `coins`, read-only, strongest confidence first. One bad
+    # coin degrades to idle no-data (helpers already return safe defaults on empty inputs) and never
+    # fails the response.
+    activity: list[dict[str, Any]] = []
+    for symbol in ACTIVITY_COINS:
+        try:
+            activity.append(_activity_projection(root, symbol, orders, kill_switch, now))
+        except Exception:  # noqa: BLE001 — one bad coin never fails the whole activity view
+            activity.append(
+                {
+                    "symbol": symbol,
+                    "base_coin": symbol.removesuffix(QUOTE_COIN),
+                    "data_available": False,
+                    "kill_switch": kill_switch,
+                    "confidence_score": None,
+                    "decision": None,
+                    "bullish": [],
+                    "bearish": [],
+                    "position": _position_projection(0.0, 0.0, 0.0, False, None, now),
+                    "protection": _protection_projection({}, {}, False, 0.0, 0.0),
+                    "heartbeat_age_seconds": None,
+                    "heartbeat_fresh": False,
+                }
+            )
+    # Strongest setups on top; no-data coins (confidence None) sink to the bottom.
+    activity.sort(
+        key=lambda row: (
+            row["confidence_score"] if row["confidence_score"] is not None else float("-inf")
+        ),
+        reverse=True,
+    )
+
     return {
         # schema_version 1 to match every other GET endpoint and the client's fetchJson gate
         # (which rejects anything != 1); the demo-lane action POST body keeps its own version.
@@ -490,6 +636,8 @@ def build_demo_lane(root: Path | None = None) -> dict[str, Any]:
         "auto_tune": False,
         "coins": coins,
         "portfolio": _portfolio_rollup(coins),
+        "activity": activity,
+        "activity_summary": _activity_summary(activity),
         "stage_b": _project_stage_b(root),
     }
 

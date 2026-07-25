@@ -2983,9 +2983,11 @@ def run_multi_cycle(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="D-104 demo measurement lane (ETH or multi-coin).")
-    mode = parser.add_mutually_exclusive_group(required=True)
+    # --once / --multi / --activity select the lane; --loop is an orthogonal cadence modifier so it
+    # can combine with --activity. Bare `--loop` (dashboard START) and bare `--once` (RUN_ONCE) both
+    # still resolve to the ETH lane, so the dashboard spawn contract is unchanged.
+    mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--once", action="store_true", help="run one ETH evaluation cycle")
-    mode.add_argument("--loop", action="store_true", help="run the ETH lane hourly until killed")
     mode.add_argument(
         "--multi",
         action="store_true",
@@ -2994,8 +2996,14 @@ def main() -> int:
     mode.add_argument(
         "--activity",
         action="store_true",
-        help="run one multi-timeframe confluence cycle across the ~40-coin universe (one scored "
-        "long per coin; shared cap + kill switch)",
+        help="run a multi-timeframe confluence cycle across the ~40-coin universe (one scored "
+        "long per coin; shared cap + kill switch). Add --loop to keep scoring until killed",
+    )
+    parser.add_argument(
+        "--loop",
+        action="store_true",
+        help="repeat cycles until killed — the ETH lane hourly, or the confluence lane per bar "
+        "when combined with --activity",
     )
     parser.add_argument(
         "--interval",
@@ -3019,7 +3027,9 @@ def main() -> int:
             if not acquired:
                 print("another demo lane is already running — refusing to start a second one.")
                 return 3
-            return activity.run_activity_lane(api_key, secret, interval=args.interval)
+            return activity.run_activity_lane(
+                api_key, secret, interval=args.interval, loop=args.loop
+            )
     if args.multi:
         # Multi-coin is execution-measurement, always NOT_ACTIVATED (per-coin Stage B is out of
         # scope). It shares the single lane.lock with the ETH lane so the two can never run at once
