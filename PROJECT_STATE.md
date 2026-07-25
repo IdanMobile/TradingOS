@@ -1,7 +1,7 @@
 # Trading Intelligence OS — Project State
 
-Last updated: 2026-07-22 (through D-115; operational and integrity state reconciled at v8.127)
-Package version: v8.127 (planning system) + S1 evidence + S2 governance entry + autonomous orchestration substrate
+Last updated: 2026-07-24 (through D-117; operational and integrity state reconciled at v8.146)
+Package version: v8.146 (planning system) + S1 evidence + S2 governance entry + autonomous orchestration substrate + Stage B demo-evidence v2 (implemented, default-disabled)
 Status: **CONSTRAINED RESEARCH/DEMO OPERATIONS ACTIVE; NO ADMISSION OR LIVE AUTHORITY.** Dashboard, 24/7 orchestrator, protected demo lane, and jobs worker are running; the demo lane reports `real_money=false` and an active venue-resting disaster stop. Legacy closed-family research jobs are quarantined and their execution surface is retired. Phases 1, 2, 2b, and 5 are implemented within their fail-closed scopes; Phases 3 and 4 remain blocked pending actual external activation evidence and independent review. All 7 searchable strategy families have been run once: 0 passes (4 FAIL, 3 INSUFFICIENT_ACTIVITY). Two prospective observation lanes collect live evidence daily/weekly. No candidate admission, strategy promotion, production venue connection, or real-money trading is approved.
 
 ## OPEN ITEMS — the only live task list
@@ -47,6 +47,20 @@ ledger see `MISSING_AND_OPEN_ITEMS.md` (which now points back here as the entry 
 - **Phase 5 implemented:** the generic validation/promotion evidence package fails closed on
   incomplete evidence and cannot substitute for Phase-2b admission authority or independent
   review.
+- **Stage B demo-evidence v2 IMPLEMENTED, default-disabled, `NOT_ACTIVATED` (D-117, 2026-07-24):**
+  a new append-only decision-evidence chain (schema `tios.demo_decision_evidence.v2`) written by a
+  fixed sanitized sink under the exclusive lane lock in the fake-money venue-demo lane only.
+  Implemented across Waves 1–3 (`cbd2196`, `06a6185`, `56e9e1a`); the runtime root
+  `artifacts/evidence/private_demo/stage_b_v2/` is absent, so behavior is `NOT_ACTIVATED`. It is
+  evidence-first (risk-increasing submission blocked until pre-submission evidence is durably
+  committed; risk-reducing exit/stop/cancel/kill-switch/reconciliation never blocked by evidence
+  failure; aggregate-only disclosure in complete 30-episode cohorts; fail-closed `ENTRY_BLOCK` on
+  evidence degradation). Execution authority `NONE`, `real_money=false`; it cannot approve, size,
+  route, or originate an order, or validate/promote/auto-tune a strategy. Activation is separately
+  gated (Rollout 5: verified-flat lane, controlled restart, `0700`/`0600` hardening, receipt and
+  alias material, rollback identity, independent security review, and the operator's separate exact
+  activation statement) and is not authorized. A documented, test-pinned pre-send parse-error debt
+  on the active exit path must be resolved before activation.
 
 **Resolved this cycle (D-113, D-114):**
 - Security-test diff review — `test_live_unreachable.py`'s strengthened assertion (post-D-104

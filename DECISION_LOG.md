@@ -2194,3 +2194,75 @@ Evidence: explicit operator authorization on 2026-07-23; reviewed diffs for
 Status: **One-time exception limited to the v8.134 package-version line and five existing hash-row
 occurrences: dashboard HTML ×2, dashboard test ×2, and decision log ×1. Authority remains `NONE`;
 no admission, promotion, venue, order, live, or real-money authority is granted.**
+
+### D-117 — Stage B demo-evidence v2 implemented (default-disabled, activation-gated); one-time v8.146 integrity/decision-log exception
+
+Decision: the operator authorizes Option A of the 2026-07-23 Stage B demo-evidence security
+decision packet — full evidence-first Stage B — for implementation and testing only, plus the
+separate one-time `STAGE-B-DEMO-EVIDENCE-ONLY` integrity/decision-log exception for v8.146. This
+records that the capability is now implemented, default-disabled, and `NOT_ACTIVATED`.
+
+Exact scope: a new append-only decision-evidence chain with schema
+`tios.demo_decision_evidence.v2`, written by one fixed, non-pluggable, sanitized sink invoked only
+under the existing exclusive lane lock in the fake-money Bybit venue-demo lane. It is offline and
+default-disabled: the complete runtime root `artifacts/evidence/private_demo/stage_b_v2/` is absent
+during implementation and tests, and absence means `NOT_ACTIVATED` — it never silently falls back
+to enabled behavior. The v2 chain is separate from and does not upgrade, append, or reuse the
+unchanged Stage A v1 evidence.
+
+Implemented across Waves 1–3: commit `cbd2196` (Wave 1) the offline v2 event/state-machine
+contract, content-addressed manifest-last storage, sanitizer, 513-frame scale, and 30-episode
+cohort projection; commit `06a6185` (Wave 2) default-disabled venue-demo integration with
+validated `orderLinkId` client-key correlation, persist-before-POST durability, execution
+reconciliation, exact-execution `lane_base`, and the entry-block/risk-reducing-bypass protocol;
+commit `56e9e1a` (Wave 3, current HEAD) the aggregate-only redacted dashboard projection over the
+unchanged `/api/v1/demo-lane` route. Wave 4 is this governance and manifest reconciliation.
+
+Evidence behavior: generations are append-only and content-addressed with the manifest written
+last as the sole commit point; a risk-increasing submission is blocked until its pre-submission
+evidence (including the reserved client idempotency key) is durably committed and `fsync`-verified;
+a risk-reducing exit, protective-stop create/replace/cleanup, cancel, kill-switch, or
+reconciliation is never blocked by an evidence-store failure; disclosure is aggregate-only in
+fixed, non-overlapping 30-episode cohorts, with the aggregate `null` until a cohort is complete;
+evidence degradation fails closed to `EVIDENCE_DEGRADED` + `ENTRY_BLOCK` (exit-only) and does not
+auto-clear on restart or the next successful write.
+
+Non-authority: `execution_authority=NONE` and `real_money=false` throughout. Stage B cannot
+create, size, route, retry, cancel, or approve an order; cannot validate, promote, admit, or
+auto-tune a strategy; cannot connect a production venue or authorize live/real-money activity; and
+adds no dashboard mutation surface.
+
+Activation is separately gated (Rollout 5) and is **not** authorized by this decision. It
+additionally requires a verified-flat lane with no unresolved submission/order, a controlled
+Makefile-target restart, `0700`/`0600` raw-lane and private-evidence mode hardening, activation
+receipt and private alias material creation, recorded rollback identity, independent security
+review binding the exact commit/diff/hashes/schema/tests, and the operator's separate exact
+activation statement from the packet.
+
+Explicit pre-activation debt: a deterministic pre-send metadata/parse error on the active exit
+path freezes the lane into a `POST_UNKNOWN` fail-safe (query/recovery-only, no automatic create
+replay); this is documented and test-pinned and must be resolved before any activation.
+
+For this reconciliation only, `PACKAGE_INTEGRITY_MANIFEST.md` may be edited solely to update its
+package-version line to v8.146 and the SHA-256 value in these existing rows: `PROJECT_STATE.md`
+(one), `DECISION_LOG.md` (one), `docs/architecture/AD.md` (one),
+`src/tios/services/dashboard_ui/dashboard.html` (two duplicate rows), and
+`tests/test_dashboard.py` (two duplicate rows). No manifest row may be added, removed, reordered,
+or otherwise changed. `PACKAGE_CHANGELOG.md` records the same bounded change. This exception is
+exhausted when the v8.146 reconciliation is complete and grants no continuing manifest-edit
+authority. It authorizes no other `IMMUTABLE_PATHS`, threshold, research protocol, prospective,
+holdout, or sealed change. D-115 and D-116 are exhausted and confer no Stage B authority.
+
+Evidence: operator authorization for Option A implementation/testing and the separate
+`STAGE-B-DEMO-EVIDENCE-ONLY` v8.146 integrity/decision-log exception, granted per the 2026-07-23
+security decision packet and stated by the operator in the 2026-07-24 implementation session
+(which also confirmed this reconciliation);
+`docs/supervisor/STAGE_B_DEMO_EVIDENCE_SECURITY_DECISION_PACKET_2026-07-23.md`;
+`docs/supervisor/STAGE_B_IMPLEMENTATION_SCOPE_AND_INTEGRITY_EXCEPTION_2026-07-23.md`; the three
+Wave commits `cbd2196`, `06a6185`, and `56e9e1a`; `PACKAGE_INTEGRITY_MANIFEST.md`;
+`PACKAGE_CHANGELOG.md`; `src/tios/ops/self_modification.py`.
+Status: **Stage B demo-evidence v2 IMPLEMENTED, default-disabled, `NOT_ACTIVATED`; activation
+separately gated. One-time exception limited to the v8.146 package-version line and six existing
+hash-row occurrences: project state ×1, decision log ×1, architecture doc ×1, dashboard HTML ×2,
+and dashboard test ×2. Authority remains `NONE`; no admission, promotion, venue, order, live, or
+real-money authority is granted.**

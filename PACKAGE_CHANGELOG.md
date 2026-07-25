@@ -1,5 +1,40 @@
 # Package Changelog
 
+## v8.146 — 2026-07-24 — Stage B demo-evidence v2 (default-disabled)
+
+- Implemented Option A of the 2026-07-23 Stage B demo-evidence security decision packet: a new
+  append-only decision-evidence chain, schema `tios.demo_decision_evidence.v2`, written by one
+  fixed, non-pluggable, sanitized sink invoked only under the existing exclusive demo-lane lock in
+  the fake-money Bybit venue-demo lane. It is offline and default-disabled — the runtime root
+  `artifacts/evidence/private_demo/stage_b_v2/` is absent, so behavior is `NOT_ACTIVATED` and never
+  silently falls back to enabled. The v2 chain is separate from and does not upgrade or reuse the
+  unchanged Stage A v1 evidence.
+- Wave 1 (`cbd2196`): the offline v2 event/state-machine contract, content-addressed manifest-last
+  storage with the manifest rename as the sole commit point, strict deny-by-default sanitizer,
+  513-frame scale handling, and the fixed 30-episode aggregate projection.
+- Wave 2 (`06a6185`): default-disabled venue-demo integration with validated `orderLinkId`
+  client-key correlation, persist-and-`fsync` before any risk-increasing POST, realtime/history/
+  execution reconciliation with `execId` dedupe, exact-execution `lane_base`, `ENTRY_BLOCK`/
+  exit-only latching on evidence failure, and an always-available risk-reducing bypass
+  (exit/stop/cancel/kill-switch/reconciliation) that no evidence-store failure can obstruct.
+- Wave 3 (`56e9e1a`): the aggregate-only, redacted dashboard projection over the unchanged
+  `/api/v1/demo-lane` route under a global allowlist; `aggregate=null` until a cohort of 30
+  eligible closed episodes completes; legacy per-trade, identifier, timestamp, wallet, position,
+  signal, and free-text fields removed.
+- Wave 4 (this change): governance and package reconciliation — PROJECT_STATE.md, DECISION_LOG.md
+  (D-117), docs/architecture/AD.md, and this changelog record the implemented, default-disabled,
+  `NOT_ACTIVATED`, activation-gated state with execution authority `NONE`.
+- One-time `STAGE-B-DEMO-EVIDENCE-ONLY` integrity/decision-log exception (D-117): for this
+  reconciliation only, `PACKAGE_INTEGRITY_MANIFEST.md` changes solely its package-version line to
+  v8.146 and the SHA-256 value in the existing rows for `PROJECT_STATE.md` (one),
+  `DECISION_LOG.md` (one), `docs/architecture/AD.md` (one),
+  `src/tios/services/dashboard_ui/dashboard.html` (two duplicate rows), and
+  `tests/test_dashboard.py` (two duplicate rows). No manifest row is added, removed, or reordered;
+  no other IMMUTABLE_PATHS, threshold, research, prospective, holdout, or sealed path is touched.
+  The exception expires after this reconciliation. This release does not activate the capability,
+  restart a service, create runtime/activation material, submit an order, validate or promote a
+  strategy, connect a venue, or grant live or real-money authority.
+
 ## v8.145 — 2026-07-23 — Read-only active demo snapshot adapter
 
 - Added a capability-free adapter that reads only the three fixed active demo-lane

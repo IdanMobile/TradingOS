@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.134 operator-authorized dashboard navigation integrity reconciliation, D-116 (2026-07-23). Supersedes v8.127 hashes.
+Package version: v8.146 operator-authorized Stage B demo-evidence integrity reconciliation, D-117 (2026-07-24). Supersedes v8.134 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -10,8 +10,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
-| `PROJECT_STATE.md` | `4bf656694cd5d6ef0fae125541132147fc4a69251458f006140df56cabe3e2de` |
-| `DECISION_LOG.md` | `d0227ba062ef9dea4f2782e0be68c34fb2cc922d3d79ed66f4f50e80fe9d9f03` |
+| `PROJECT_STATE.md` | `335b16c6c7480a7dcc02b37b2bcba40e49600c2c0d914f2b41011ccc22d68eaf` |
+| `DECISION_LOG.md` | `fc1b9ebc0c8a2ee07120bade1471376a5971eb19fbee2d808034e356098cf321` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -70,14 +70,14 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `src/tios/services/dashboard_api/eth_signal.py` | `8b1a35780a5ef492d304cee65e4af33ea08e84a245a58290e99889e8fcb8a027` |
 | `src/tios/services/dashboard_ui/server.py` | `1c85a7b9f71c32538c4fc6128a582f205d9391f076535b81af7e46be686afe3c` |
-| `src/tios/services/dashboard_ui/dashboard.html` | `9d58e2cd8762d8beda2f9768d682cd3fd20826518904bee775ca1b71ebe5ad1a` |
-| `tests/test_dashboard.py` | `be3910aa54c5ca893d45223b691c814a2f9c88758194e66988248713d8abd7be` |
+| `src/tios/services/dashboard_ui/dashboard.html` | `569ad752fef7b8a5557e214ee6b250b936b86ea8d53d5695c3decae979a517bf` |
+| `tests/test_dashboard.py` | `8c90bac56542df4627e16e0c3fca645763ebd83b39bda42c820041096d75a5ed` |
 
 ## Required handoff inputs — planning system (added v8)
 
 | Path | SHA-256 |
 |---|---|
-| `docs/architecture/AD.md` | `62ae0e8dc3b181eed9faa302e66b5c59d280a288cbaf9f7a5898f0a5be48856e` |
+| `docs/architecture/AD.md` | `71a42a63518f208d605b8ee860cbcaa1209f5555b9eca0e7a4bd4acf8f5bbfbd` |
 | `docs/architecture/MODULE_CATALOG.md` | `6cadf37032da66afbff75a0e7de0bcbeffe440b33cf80a3ce565f0e704feef19` |
 | `docs/architecture/TYPE_AND_CONTRACT_CATALOG.md` | `4abea649d619535bd7c8dfc5846307e52fcdb0feea7ede52a2123503a92ef5f1` |
 | `docs/program/PROGRAM_PLAN.md` | `b491591bc5376a4bf3b93f7c42f68c25200f7e4420c05445a925bca7bd60f298` |
@@ -629,8 +629,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `scripts/run_prospective_observation_flow.py` | `049a30eae86bba0abb071016149a3414726a1d47655dcb1b1c19d5e69917f449` |
 | `tests/test_observation_flow.py` | `06bdf250404373a9e3636c5e40e09bde1ff03a0ceb538a7af9dcb95813b70611` |
 | `src/tios/services/dashboard_api/status.py` | `12d0107864407f06bc04219b5bbb6d9f322d4ce23e6cb70ec36737604b43e951` |
-| `src/tios/services/dashboard_ui/dashboard.html` | `9d58e2cd8762d8beda2f9768d682cd3fd20826518904bee775ca1b71ebe5ad1a` |
-| `tests/test_dashboard.py` | `be3910aa54c5ca893d45223b691c814a2f9c88758194e66988248713d8abd7be` |
+| `src/tios/services/dashboard_ui/dashboard.html` | `569ad752fef7b8a5557e214ee6b250b936b86ea8d53d5695c3decae979a517bf` |
+| `tests/test_dashboard.py` | `8c90bac56542df4627e16e0c3fca645763ebd83b39bda42c820041096d75a5ed` |
 
 ## Managed observation adoption (added v8.101)
 
