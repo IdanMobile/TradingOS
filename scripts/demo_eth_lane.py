@@ -300,6 +300,7 @@ def place(
     sleep: Any = time.sleep,
     client_key: str | None = None,
     symbol: str = SYMBOL,
+    strategy: str | None = None,
 ) -> dict[str, Any]:
     """Kill-switch -> caps -> quantize -> order -> poll -> reconcile -> ledger.
 
@@ -310,6 +311,10 @@ def place(
     `symbol` defaults to the ETH lane's SYMBOL, so the single-symbol path is byte-identical; the
     multi-coin lane passes a per-coin symbol that drives the instrument/ticker/order symbol, the
     base-coin reconciliation key, and the ledger record's `symbol`.
+
+    `strategy` (confluence lane only): tags every ledger record so activity orders are attributable
+    to the scored engine and separable from the untagged ETH/multi records. None keeps the record
+    byte-identical to today.
     """
     stamp = datetime.now(UTC).isoformat()
     base_record: dict[str, Any] = {
@@ -322,6 +327,8 @@ def place(
         "reason": intent.reason,
         **LANE_LABEL,
     }
+    if strategy is not None:
+        base_record["strategy"] = strategy
     if kill_switch_active():
         record = {**base_record, "ok": False, "stage": "kill_switch", "qty": str(intent.qty)}
         _append_ledger(record)
@@ -410,7 +417,7 @@ def disaster_stop_triggered(entry: Decimal, mark: Decimal) -> bool:
 
 
 def entry_price_from_ledger(
-    records: list[dict[str, Any]], symbol: str | None = None
+    records: list[dict[str, Any]], symbol: str | None = None, strategy: str | None = None
 ) -> Decimal | None:
     """Most recent filled long-entry avg price from ledger records, or None.
 
@@ -419,10 +426,16 @@ def entry_price_from_ledger(
 
     `symbol` filters to that coin's entries. The single append-only ledger is shared across the
     multi-coin lane, so each coin must reconstruct its OWN entry price. None (the default) keeps the
-    legacy no-filter behavior for existing callers.
+    legacy no-filter behavior for the symbol dimension. `strategy` is ALWAYS compared so each lane
+    reconstructs only its OWN entries: untagged ETH/multi records read as None, so the default
+    strategy=None still matches them exactly as before, while a legacy (strategy=None) call now
+    correctly ignores a newer confluence-tagged record for the same coin, and vice versa — a restart
+    never reconstructs one lane's entry (and therefore its protective-stop pricing) from another's.
     """
     for record in reversed(records):
         if symbol is not None and record.get("symbol") != symbol:
+            continue
+        if record.get("strategy") != strategy:
             continue
         if record.get("reason") == "ENTRY_LONG" and record.get("ok") and record.get("avg_price"):
             return Decimal(str(record["avg_price"]))
@@ -430,13 +443,16 @@ def entry_price_from_ledger(
 
 
 def resolve_entry_price(
-    state: dict[str, Any], ledger_records: list[dict[str, Any]], symbol: str | None = None
+    state: dict[str, Any],
+    ledger_records: list[dict[str, Any]],
+    symbol: str | None = None,
+    strategy: str | None = None,
 ) -> Decimal | None:
     """Entry price for the open long: from state if present, else reconstructed from the ledger."""
     stored = state.get("entry_price")
     if stored not in (None, "", "0"):
         return Decimal(str(stored))
-    return entry_price_from_ledger(ledger_records, symbol)
+    return entry_price_from_ledger(ledger_records, symbol, strategy)
 
 
 def stop_reconcile_action(
@@ -2336,23 +2352,43 @@ def active_stop_decision(
     return new_resting, state
 
 
+# Bybit kline interval code -> (bar minutes, Timeframe, dataset-id label). The default "60" (1h)
+# reproduces the original single-timeframe behavior EXACTLY (Timeframe.H1, +1h close, -1H- dataset
+# id). The confluence activity lane also fetches 5m/15m/4h; every other path is byte-identical.
+_INTERVAL_META: dict[str, tuple[int, Timeframe, str]] = {
+    "5": (5, Timeframe.M5, "5M"),
+    "15": (15, Timeframe.M15, "15M"),
+    "60": (60, Timeframe.H1, "1H"),
+    "240": (240, Timeframe.H4, "4H"),
+}
+
+
 def fetch_closed_bars(
-    transport: pf.Transport, limit: int = KLINE_LIMIT, symbol: str = SYMBOL
+    transport: pf.Transport, limit: int = KLINE_LIMIT, symbol: str = SYMBOL, interval: str = "60"
 ) -> tuple[MarketBar, ...]:
-    """Public demo-venue 1h klines -> chronological closed MarketBars (forming bar dropped).
+    """Public demo-venue klines -> chronological closed MarketBars (forming bar dropped).
 
     `symbol` defaults to SYMBOL (byte-identical ETH path); the multi-coin lane passes each coin, so
     the kline request and the MarketBar instrument/dataset identity are that coin's own.
+    `interval` is the Bybit kline code; it defaults to "60" (1h) so the ETH/multi paths are
+    byte-identical. The confluence lane passes 5m/15m/4h to evaluate a coin across timeframes.
     """
-    url = f"{pf.DEMO_BASE}/v5/market/kline?category=spot&symbol={symbol}&interval=60&limit={limit}"
+    try:
+        minutes, timeframe, label = _INTERVAL_META[interval]
+    except KeyError as error:
+        raise ValueError(f"unsupported kline interval: {interval}") from error
+    url = (
+        f"{pf.DEMO_BASE}/v5/market/kline?category=spot&symbol={symbol}"
+        f"&interval={interval}&limit={limit}"
+    )
     rows = list(reversed(json.loads(transport(url, {}))["result"]["list"]))[:-1]
     base_coin = symbol.removesuffix("USDT")
     market = Market(
         MarketName("CRYPTO_SPOT"),
         VenueFamily("BYBIT_DEMO_SPOT"),
         InstrumentId(f"{base_coin}-USDT.BYBIT_DEMO_SPOT"),
-        Timeframe.H1,
-        DatasetId(f"DS-BYBIT-DEMO-{symbol}-1H-LIVE"),
+        timeframe,
+        DatasetId(f"DS-BYBIT-DEMO-{symbol}-{label}-LIVE"),
     )
     provenance = Provenance((DomainRef("EV-BYBIT-DEMO-KLINE-LIVE"),))
     now = datetime.now(UTC)
@@ -2360,7 +2396,7 @@ def fetch_closed_bars(
         MarketBar(
             market=market,
             open_time=(open_time := datetime.fromtimestamp(int(row[0]) / 1000, tz=UTC)),
-            close_time=open_time + timedelta(hours=1),
+            close_time=open_time + timedelta(minutes=minutes),
             open=Decimal(row[1]),
             high=Decimal(row[2]),
             low=Decimal(row[3]),
@@ -2475,6 +2511,12 @@ def run_cycle(
     capability: stage_b.LaneLockCapability | None = None,
     symbol: str = SYMBOL,
     entry_notional_budget: Decimal | None = None,
+    interval: str = "60",
+    signals_fn: Any = None,
+    state_key: str | None = None,
+    strategy: str | None = None,
+    prefetched_bars: tuple[MarketBar, ...] | None = None,
+    heartbeat_extra: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """One evaluation cycle: fresh signals newer than the cursor drive at most one action.
 
@@ -2489,15 +2531,30 @@ def run_cycle(
     means unlimited (legacy single lane); when set, a fresh entry whose BUY_QUOTE_USDT would exceed
     it is skipped (logged, never an error) while risk-reducing exits/stops on an already-open
     position still run.
+
+    Confluence-lane hooks (ALL default to the byte-identical legacy behavior; the confluence lane is
+    the only caller that sets them, and it always runs the NOT_ACTIVATED path):
+      * `interval` — Bybit kline code fetched for the reference bar (default "60"=1h).
+      * `signals_fn(bars) -> list` — replaces `canonical_signals` when set, so the caller injects a
+        pre-computed decision instead of the ETH volume-breakout evaluation.
+      * `state_key` — the per-coin state/heartbeat file key; defaults to `symbol`. The confluence
+        lane passes `<SYMBOL>_activity` so its position is independent of the ETH/multi state.
+      * `strategy` — tags order/ledger records and isolates this lane's ledger entry-price
+        reconstruction from the untagged ETH/multi records.
+      * `prefetched_bars` — reference bars already fetched by the caller (per-coin fetch cache), so
+        N confluence evaluations reuse one reference fetch instead of re-requesting.
+      * `heartbeat_extra` — merged into the heartbeat (the confluence score + contributing signals).
     """
     base_coin = symbol.removesuffix("USDT")
-    state = read_state(symbol)
+    key = state_key if state_key is not None else symbol
+    state = read_state(key)
     cursor = state.get("cursor")
     lane_base = Decimal(str(state.get("lane_base", "0")))
     # Entry price drives the -15% stop. From state normally; reconstructed from the append-only
     # ledger for a position opened before this process started (restart safety). The ledger is
-    # shared across coins, so it is filtered to THIS coin's own entries.
-    entry_price = resolve_entry_price(state, _read_ledger_records(), symbol)
+    # shared across coins, so it is filtered to THIS coin's (and, for the confluence lane, this
+    # strategy's) own entries.
+    entry_price = resolve_entry_price(state, _read_ledger_records(), symbol, strategy)
     stored_resting_stop = state.get("resting_stop")
     resting_stop, post_paths_safe, venue_stop_confirmation = preflight_tracked_stop(
         stored_resting_stop, api_key, secret, get_transport, symbol
@@ -2506,9 +2563,13 @@ def run_cycle(
         resting_stop and resting_stop.get("state") == "FILLED_PENDING_RECONCILIATION"
     ):
         # Persist before any later read can fail, so a restart cannot forget the filled-stop latch.
-        write_state({**state, "resting_stop": resting_stop}, symbol)
-    bars = fetch_closed_bars(get_transport, symbol=symbol)
-    signals = canonical_signals(bars)
+        write_state({**state, "resting_stop": resting_stop}, key)
+    bars = (
+        prefetched_bars
+        if prefetched_bars is not None
+        else fetch_closed_bars(get_transport, symbol=symbol, interval=interval)
+    )
+    signals = signals_fn(bars) if signals_fn is not None else canonical_signals(bars)
     fresh = [s for s in signals if cursor is None or s.observed_at.isoformat() > cursor]
     action: dict[str, Any] | None = None
     if cursor is None:
@@ -2519,7 +2580,9 @@ def run_cycle(
     # NOT_ACTIVATED this is always False, so the legacy flow is unchanged. Stage B is bound to the
     # single ETH lane only: the multi-coin path (any non-default symbol) always runs NOT_ACTIVATED,
     # so a non-ETH signal can never route through the ETH-hardcoded Stage B evidence chain.
-    stage_b_on = stage_b_active() and symbol == SYMBOL
+    # The confluence lane (state_key/strategy set) ALWAYS runs NOT_ACTIVATED, so its injected
+    # signals can never route through the ETH-hardcoded Stage B evidence chain.
+    stage_b_on = stage_b_active() and symbol == SYMBOL and state_key is None and strategy is None
     # ACTIVE without a threaded lock cannot durably persist an entry key -> block new entries.
     new_entries_blocked = stage_b_on and (entry_blocked(state) or capability is None)
     if stage_b_on:
@@ -2573,6 +2636,7 @@ def run_cycle(
                     post_transport=post_transport,
                     sleep=sleep,
                     symbol=symbol,
+                    strategy=strategy,
                 )
                 if action.get("ok"):
                     lane_base += Decimal(str(action["reconcile"][f"{base_coin}_delta"]))
@@ -2602,6 +2666,7 @@ def run_cycle(
                     post_transport=post_transport,
                     sleep=sleep,
                     symbol=symbol,
+                    strategy=strategy,
                 )
             if action is not None and action.get("ok"):
                 lane_base = Decimal("0")
@@ -2650,6 +2715,7 @@ def run_cycle(
                 post_transport=post_transport,
                 sleep=sleep,
                 symbol=symbol,
+                strategy=strategy,
             )
         if closed.get("ok"):
             stop_event = {
@@ -2756,7 +2822,7 @@ def run_cycle(
         final_state["stage_b_v2"] = stage_b_state
         write_state_durable(final_state)
     else:
-        write_state(final_state, symbol)
+        write_state(final_state, key)
 
     # Wallet and mark are captured every cycle, not only when an order fills. A lane that
     # trades rarely would otherwise show balances frozen at the last fill, and a stale
@@ -2774,7 +2840,9 @@ def run_cycle(
     heartbeat = {
         "schema_version": 2,
         "at": datetime.now(UTC).isoformat(),
-        "candidate": "ETH-VOLUME-BREAKOUT-PROSPECTIVE-V1",
+        # Default single/multi lane: the ETH volume-breakout candidate. The confluence lane names
+        # its scored engine instead so the heartbeat is honestly attributed.
+        "candidate": strategy if strategy is not None else "ETH-VOLUME-BREAKOUT-PROSPECTIVE-V1",
         # The coin this heartbeat is for (ETHUSDT on the default single lane). The SAME already-
         # screened strategy runs on every coin; this is execution measurement ACROSS coins, NOT
         # validated per-coin edge.
@@ -2788,7 +2856,9 @@ def run_cycle(
         "action": action,
         "wallet": wallet_snapshot,
         "mark_price": mark_price,
-        "rule_levels": rule_levels(bars),
+        # rule_levels evaluates the ETH volume-breakout band; it is meaningless for the confluence
+        # roster, whose contributing signals are surfaced via heartbeat_extra instead.
+        "rule_levels": rule_levels(bars) if strategy is None else {},
         "entry_price": str(entry_price) if entry_price is not None else None,
         "disaster_stop_price": str(disaster_stop_price(entry_price))
         if entry_price is not None
@@ -2815,8 +2885,14 @@ def run_cycle(
             if isinstance(pending_rr, dict)
             else None,
         }
+    if strategy is not None:
+        heartbeat["strategy"] = strategy
+    if heartbeat_extra is not None:
+        # Confluence score + contributing bullish/bearish signals, so the dashboard/report can show
+        # WHY the coin is (or is not) in a position this cycle.
+        heartbeat.update(heartbeat_extra)
     LANE_DIR.mkdir(parents=True, exist_ok=True)
-    heartbeat_path = _heartbeat_path(symbol)
+    heartbeat_path = _heartbeat_path(key)
     tmp = heartbeat_path.with_suffix(".tmp")
     tmp.write_text(json.dumps(heartbeat, sort_keys=True, indent=2))
     tmp.replace(heartbeat_path)
@@ -2915,6 +2991,18 @@ def main() -> int:
         action="store_true",
         help="run one multi-coin cycle across the demo coin universe (shared cap + kill switch)",
     )
+    mode.add_argument(
+        "--activity",
+        action="store_true",
+        help="run one multi-timeframe confluence cycle across the ~40-coin universe (one scored "
+        "long per coin; shared cap + kill switch)",
+    )
+    parser.add_argument(
+        "--interval",
+        default="15m",
+        choices=("5m", "15m", "1h", "4h"),
+        help="confluence reference/fastest timeframe (default 15m); 1h and 4h are always added",
+    )
     args = parser.parse_args()
 
     pf.load_dotenv(pf.ROOT / ".env")
@@ -2922,6 +3010,16 @@ def main() -> int:
     if not api_key or not secret:
         print("No demo key in .env. See docs/program/DEMO_LANE_PLAN.md.")
         return 2
+    if args.activity:
+        # The confluence activity lane is execution-measurement, always NOT_ACTIVATED. It shares
+        # the single lane.lock so it can never run alongside the ETH/multi lanes and double-trade.
+        import scripts.demo_activity_lane as activity  # local import avoids an import cycle
+
+        with exclusive_lane_lock() as acquired:
+            if not acquired:
+                print("another demo lane is already running — refusing to start a second one.")
+                return 3
+            return activity.run_activity_lane(api_key, secret, interval=args.interval)
     if args.multi:
         # Multi-coin is execution-measurement, always NOT_ACTIVATED (per-coin Stage B is out of
         # scope). It shares the single lane.lock with the ETH lane so the two can never run at once

@@ -1,0 +1,344 @@
+"""Offline tests for the multi-timeframe confluence activity lane. No network, no keys.
+
+Proves the FOUNDATION (interval-parameterized bar fetch, the roster's deterministic latest-bar
+signals) and the CONFLUENCE decision layer (weighted score, hysteresis) and that the scored engine
+composes exactly the demo lane's safety machinery: SHARED kill switch (halts all), SHARED total
+cap (gates only new entries, never risk reduction), per-coin disaster stop priced off that coin's
+own entry, one coin's failure never aborting the others, and every order attributed to the engine.
+Demo/fake money, execution-measurement only.
+"""
+
+from __future__ import annotations
+
+import json
+import sys
+from datetime import UTC, datetime, timedelta
+from decimal import Decimal
+from pathlib import Path
+from typing import Any
+from urllib.parse import parse_qs, urlsplit
+
+import pytest
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+import scripts.demo_activity_lane as act  # noqa: E402
+import scripts.demo_eth_lane as lane  # noqa: E402
+from tios.trading_domain import Timeframe  # noqa: E402
+
+START = datetime(2026, 7, 1, tzinfo=UTC)
+OLD_CURSOR = "2020-01-01T00:00:00+00:00"  # older than any bar -> a fresh signal fires
+FUTURE_CURSOR = "2999-01-01T00:00:00+00:00"  # newer than any bar -> no fresh signal fires
+
+# A rising trend that ends on a new high with a volume surge: donchian/MA-cross/volume-breakout all
+# fire BUY, so the confluence score clears the ENTRY threshold on every timeframe.
+BULL: list[tuple[str, str]] = [(str(100 + i), "10") for i in range(59)] + [("159", "1000")]
+FLAT: list[tuple[str, str]] = [("100", "10")] * 60
+
+
+def _kline_rows(closes: list[tuple[str, str]]) -> list[list[str]]:
+    """(close, volume) pairs -> Bybit kline rows oldest-first, plus a forming dummy bar."""
+    rows = []
+    for index, (close, volume) in enumerate(closes):
+        open_ms = int((START + timedelta(hours=index)).timestamp() * 1000)
+        rows.append([str(open_ms), "100", close, "90", close, volume, "0"])
+    forming_ms = int((START + timedelta(hours=len(closes))).timestamp() * 1000)
+    rows.append([str(forming_ms), "100", "100", "90", "100", "1", "0"])
+    return rows
+
+
+class ActivityVenue:
+    """URL-dispatching GET/POST stand-in serving per-symbol klines (same series each interval)."""
+
+    def __init__(
+        self,
+        closes: dict[str, list[tuple[str, str]]] | None = None,
+        marks: dict[str, str] | None = None,
+        fail_kline: str | None = None,
+    ) -> None:
+        self.closes = closes or {}
+        self.marks = marks or {}
+        self.fail_kline = fail_kline
+        self.orders: list[dict[str, Any]] = []
+        self.kline_urls: list[str] = []
+        self.balances: dict[str, Decimal] = {"USDT": Decimal("100000")}
+        self.stop_ids: set[str] = set()
+
+    @staticmethod
+    def _symbol(url: str) -> str:
+        return parse_qs(urlsplit(url).query).get("symbol", [""])[0]
+
+    def get(self, url: str, headers: dict[str, str]) -> bytes:
+        symbol = self._symbol(url)
+        if "/v5/market/kline" in url:
+            self.kline_urls.append(url)
+            if symbol == self.fail_kline:
+                raise RuntimeError(f"kline unavailable for {symbol}")
+            rows = list(reversed(_kline_rows(self.closes.get(symbol, FLAT))))
+            return json.dumps({"result": {"list": rows}}).encode()
+        if "/v5/market/tickers" in url:
+            return json.dumps(
+                {"result": {"list": [{"lastPrice": self.marks.get(symbol, "100")}]}}
+            ).encode()
+        if "/v5/market/instruments-info" in url:
+            return json.dumps(
+                {
+                    "result": {
+                        "list": [
+                            {
+                                "lotSizeFilter": {"basePrecision": "0.00001"},
+                                "priceFilter": {"tickSize": "0.01"},
+                            }
+                        ]
+                    }
+                }
+            ).encode()
+        if "/v5/account/wallet-balance" in url:
+            coins = [{"coin": k, "walletBalance": str(v)} for k, v in self.balances.items()]
+            return json.dumps({"retCode": 0, "result": {"list": [{"coin": coins}]}}).encode()
+        if "/v5/order/realtime" in url:
+            order_id = parse_qs(urlsplit(url).query).get("orderId", [""])[0]
+            status = "Untriggered" if order_id in self.stop_ids else "Filled"
+            return json.dumps(
+                {
+                    "result": {
+                        "list": [
+                            {
+                                "orderId": order_id,
+                                "orderStatus": status,
+                                "avgPrice": "100",
+                                "cumExecQty": "0.01",
+                                "cumExecFee": "0.001",
+                            }
+                        ]
+                    }
+                }
+            ).encode()
+        raise AssertionError(f"unexpected GET {url}")
+
+    def post(self, url: str, headers: dict[str, str], body: bytes) -> bytes:
+        assert "/v5/order/create" in url
+        order = json.loads(body)
+        self.orders.append(order)
+        order_id = f"OID-{len(self.orders)}"
+        base = str(order["symbol"]).removesuffix("USDT")
+        self.balances.setdefault(base, Decimal("0"))
+        if order.get("orderFilter") == "StopOrder":
+            self.stop_ids.add(order_id)
+        elif order["side"] == "Buy":
+            self.balances["USDT"] -= Decimal("25")
+            self.balances[base] += Decimal("0.01")
+        else:
+            self.balances[base] -= Decimal("0.01")
+            self.balances["USDT"] += Decimal("1")
+        return json.dumps({"retCode": 0, "result": {"orderId": order_id}}).encode()
+
+
+@pytest.fixture()
+def lane_dirs(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    monkeypatch.setattr(lane, "LANE_DIR", tmp_path)
+    monkeypatch.setattr(lane, "KILL_SWITCH", tmp_path / "KILL_SWITCH")
+    monkeypatch.setattr(lane, "ORDERS_LEDGER", tmp_path / "orders.jsonl")
+    monkeypatch.setattr(lane, "ACTIONS_LEDGER", tmp_path / "demo_lane_actions.jsonl")
+    monkeypatch.setattr(lane, "LANE_STATE", tmp_path / "lane_state.json")
+    monkeypatch.setattr(lane, "HEARTBEAT", tmp_path / "heartbeat.json")
+    return tmp_path
+
+
+def _cycle(venue: ActivityVenue, symbols: list[str], **kw: Any) -> dict[str, Any]:
+    return act.run_activity_cycle(
+        "k",
+        "s",
+        symbols=symbols,
+        get_transport=venue.get,
+        post_transport=venue.post,
+        sleep=lambda _s: None,
+        **kw,
+    )
+
+
+# --- FOUNDATION: interval-parameterized bar fetch ------------------------------------------------
+def test_interval_defaults_to_1h_byte_identical() -> None:
+    venue = ActivityVenue(closes={"ETHUSDT": FLAT})
+    bars = lane.fetch_closed_bars(venue.get, symbol="ETHUSDT")  # no interval -> today's behavior
+    assert "interval=60" in venue.kline_urls[-1]
+    assert bars[-1].close_time - bars[-1].open_time == timedelta(hours=1)
+    assert bars[-1].market.timeframe is Timeframe.H1
+    assert "-1H-LIVE" in str(bars[-1].market.dataset_ref)
+
+
+@pytest.mark.parametrize(
+    ("interval", "minutes", "timeframe", "label"),
+    [
+        ("5", 5, Timeframe.M5, "-5M-LIVE"),
+        ("15", 15, Timeframe.M15, "-15M-LIVE"),
+        ("240", 240, Timeframe.H4, "-4H-LIVE"),
+    ],
+)
+def test_nondefault_interval_routes_the_right_kline_request(
+    interval: str, minutes: int, timeframe: Timeframe, label: str
+) -> None:
+    venue = ActivityVenue(closes={"BTCUSDT": FLAT})
+    bars = lane.fetch_closed_bars(venue.get, symbol="BTCUSDT", interval=interval)
+    assert f"interval={interval}" in venue.kline_urls[-1]
+    assert bars[-1].close_time - bars[-1].open_time == timedelta(minutes=minutes)
+    assert bars[-1].market.timeframe is timeframe
+    assert label in str(bars[-1].market.dataset_ref)
+
+
+def test_unsupported_interval_fails_closed() -> None:
+    venue = ActivityVenue()
+    with pytest.raises(ValueError, match="unsupported kline interval"):
+        lane.fetch_closed_bars(venue.get, symbol="BTCUSDT", interval="7")
+
+
+# --- FOUNDATION: each roster strategy's latest-bar signal is deterministic ------------------------
+def test_signal_on_latest_known_answers() -> None:
+    roster = dict(act.ROSTER)
+    bull = act.candles_from_bars(lane.fetch_closed_bars(ActivityVenue({"X": BULL}).get, symbol="X"))
+    # breakout, MA cross, and volume-breakout all fire BUY on the rising/surging series.
+    assert act.signal_on_latest(roster["EXT-DONCHIAN-40"], bull) == "BUY"
+    assert act.signal_on_latest(roster["EXT-SMA-10-30"], bull) == "BUY"
+    assert act.signal_on_latest(roster["EXT-EMA-12-26"], bull) == "BUY"
+    assert act.signal_on_latest(roster["SIG-VOLUME-BREAKOUT"], bull) == "BUY"
+
+    falling = [(str(200 - i), "10") for i in range(60)]
+    bear = act.candles_from_bars(
+        lane.fetch_closed_bars(ActivityVenue({"X": falling}).get, symbol="X")
+    )
+    assert act.signal_on_latest(roster["EXT-SMA-10-30"], bear) == "SELL"
+    assert act.signal_on_latest(roster["EXT-EMA-12-26"], bear) == "SELL"
+
+
+# --- CONFLUENCE: weighted score and hysteresis ---------------------------------------------------
+def test_confluence_score_normalizes_and_weights_higher_timeframes() -> None:
+    weights = {"15m": Decimal("1"), "1h": Decimal("2"), "4h": Decimal("3")}
+    unanimous = {"15m": [("S", "BUY")], "1h": [("S", "BUY")], "4h": [("S", "BUY")]}
+    score, ctx = act.confluence_score(unanimous, weights)
+    assert score == Decimal("1")  # all bullish -> +1
+    assert len(ctx["bullish"]) == 3 and ctx["bearish"] == []
+
+    # A single 4h BUY outweighs a single 15m SELL -> net positive (higher timeframe dominates).
+    hi_bull = {"15m": [("S", "SELL")], "4h": [("S", "BUY")]}
+    assert act.confluence_score(hi_bull, weights)[0] == Decimal("0.5")
+    hi_bear = {"15m": [("S", "BUY")], "4h": [("S", "SELL")]}
+    assert act.confluence_score(hi_bear, weights)[0] == Decimal("-0.5")
+
+
+def test_confluence_decision_uses_entry_exit_hysteresis() -> None:
+    assert act.confluence_decision(act.ENTRY_THRESHOLD) == "BUY"  # at/above ENTRY enters
+    assert act.confluence_decision(act.ENTRY_THRESHOLD - Decimal("0.01")) is None  # band -> hold
+    assert act.confluence_decision((act.ENTRY_THRESHOLD + act.EXIT_THRESHOLD) / 2) is None
+    assert act.confluence_decision(act.EXIT_THRESHOLD) == "SELL"  # at/below EXIT exits
+    assert act.confluence_decision(Decimal("-0.4")) == "SELL"
+
+
+# --- INTEGRATION: run_activity_cycle drives the demo machinery ------------------------------------
+def test_bullish_confluence_enters_one_long_attributed_to_the_engine(lane_dirs: Path) -> None:
+    venue = ActivityVenue(closes={"BTCUSDT": BULL})
+    lane.write_state(
+        {"lane_base": "0", "cursor": OLD_CURSOR, "entry_price": None, "resting_stop": None},
+        "BTCUSDT_activity",
+    )
+    report = _cycle(venue, ["BTCUSDT"])
+
+    buys = [o for o in venue.orders if o["side"] == "Buy"]
+    assert len(buys) == 1 and buys[0]["symbol"] == "BTCUSDT"
+    assert Decimal(report["coins"]["BTCUSDT"]["confidence"]) >= act.ENTRY_THRESHOLD
+    assert report["coins"]["BTCUSDT"]["decision"] == "BUY"
+    # ONE position per coin: its own state + heartbeat file, keyed by the activity discriminator.
+    assert (lane_dirs / "lane_state_BTCUSDT_activity.json").is_file()
+    assert (lane_dirs / "heartbeat_BTCUSDT_activity.json").is_file()
+    assert not (lane_dirs / "lane_state.json").is_file()  # ETH single-lane state untouched
+    # Every order carries symbol + strategy + the confidence score (via signal_ref).
+    records = [json.loads(x) for x in (lane_dirs / "orders.jsonl").read_text().splitlines()]
+    entry = next(r for r in records if r.get("reason") == "ENTRY_LONG")
+    assert entry["symbol"] == "BTCUSDT"
+    assert entry["strategy"] == act.ACTIVITY_STRATEGY
+    assert entry["signal_ref"].startswith("ACT-CONF:")
+    assert entry["real_money"] is False and entry["promotion_eligible"] is False
+
+
+def test_shared_kill_switch_halts_all_coins(lane_dirs: Path) -> None:
+    (lane_dirs / "KILL_SWITCH").write_text("stop")
+    venue = ActivityVenue(closes={"BTCUSDT": BULL, "SOLUSDT": BULL})
+    report = _cycle(venue, ["BTCUSDT", "SOLUSDT", "XRPUSDT"])
+    assert report["kill_switch"] is True
+    assert venue.orders == [] and venue.kline_urls == []  # nothing fetched or traded
+    assert all(c["stage"] == "kill_switch" for c in report["coins"].values())
+
+
+def test_shared_cap_blocks_new_entry_while_open_coin_exit_still_runs(lane_dirs: Path) -> None:
+    # BTC already open (consuming the whole 25 USDT cap) and underwater -> its disaster-stop exit
+    # runs; SOL has bullish confluence but must be skipped because no budget remains.
+    venue = ActivityVenue(closes={"SOLUSDT": BULL}, marks={"BTCUSDT": "80"})
+    lane.write_state(
+        {"lane_base": "0.01", "cursor": FUTURE_CURSOR, "entry_price": "100", "resting_stop": None},
+        "BTCUSDT_activity",
+    )
+    lane.write_state(
+        {"lane_base": "0", "cursor": OLD_CURSOR, "entry_price": None, "resting_stop": None},
+        "SOLUSDT_activity",
+    )
+    report = _cycle(venue, ["BTCUSDT", "SOLUSDT"], total_cap=Decimal("25"))
+
+    assert [o for o in venue.orders if o["side"] == "Buy" and o["symbol"] == "SOLUSDT"] == []
+    btc_sells = [
+        o
+        for o in venue.orders
+        if o["side"] == "Sell" and o["symbol"] == "BTCUSDT" and o.get("orderFilter") != "StopOrder"
+    ]
+    assert len(btc_sells) == 1  # risk-reducing exit on the already-open coin is never cap-gated
+    assert report["coins"]["SOLUSDT"]["lane_base"] == "0"  # SOL never entered
+
+
+def test_per_coin_disaster_stop_uses_that_coins_own_entry(lane_dirs: Path) -> None:
+    venue = ActivityVenue(marks={"SOLUSDT": "80"})  # entry 100, mark 80 < the -15% (85) level
+    lane.write_state(
+        {"lane_base": "0.01", "cursor": FUTURE_CURSOR, "entry_price": "100", "resting_stop": None},
+        "SOLUSDT_activity",
+    )
+    report = _cycle(venue, ["SOLUSDT"])
+    sells = [o for o in venue.orders if o["side"] == "Sell" and o.get("orderFilter") != "StopOrder"]
+    assert len(sells) == 1 and sells[0]["symbol"] == "SOLUSDT"
+    assert report["coins"]["SOLUSDT"]["lane_base"] == "0"
+
+
+def test_one_coin_failure_does_not_abort_the_cycle(lane_dirs: Path) -> None:
+    venue = ActivityVenue(closes={"BTCUSDT": BULL}, fail_kline="XRPUSDT")
+    lane.write_state(
+        {"lane_base": "0", "cursor": OLD_CURSOR, "entry_price": None, "resting_stop": None},
+        "BTCUSDT_activity",
+    )
+    report = _cycle(venue, ["BTCUSDT", "XRPUSDT", "SOLUSDT"])
+    assert "error" in report["coins"]["XRPUSDT"]
+    assert "error" not in report["coins"]["BTCUSDT"]
+    assert "error" not in report["coins"]["SOLUSDT"]
+    assert [o for o in venue.orders if o["side"] == "Buy" and o["symbol"] == "BTCUSDT"]  # healthy
+
+
+def test_universe_and_roster_constants() -> None:
+    assert len(act.ACTIVITY_UNIVERSE) >= 39 and "ETHUSDT" in act.ACTIVITY_UNIVERSE
+    assert 6 <= len(act.ROSTER) <= 10
+    assert act.ENTRY_THRESHOLD > act.EXIT_THRESHOLD  # hysteresis band
+    assert act.TIMEFRAME_WEIGHTS["4h"] > act.TIMEFRAME_WEIGHTS["15m"]  # higher tf weighted more
+
+
+def test_ledger_recovery_isolates_lanes_by_strategy_tag() -> None:
+    # Cross-lane isolation on the shared ledger: a legacy (strategy=None) restart recovery must NOT
+    # read the confluence lane's entry for the same coin (it would misprice the protective stop),
+    # and vice versa. `strategy` is always compared; untagged legacy records read as None.
+    records = [
+        {"symbol": "BTCUSDT", "reason": "ENTRY_LONG", "ok": True, "avg_price": "100"},
+        {
+            "symbol": "BTCUSDT",
+            "reason": "ENTRY_LONG",
+            "ok": True,
+            "avg_price": "200",
+            "strategy": "ACTIVITY-CONFLUENCE",
+        },
+    ]
+    # legacy/multi restart (strategy=None) recovers its OWN untagged 100, not the newer activity 200
+    assert lane.entry_price_from_ledger(records, "BTCUSDT", None) == Decimal("100")
+    # activity restart recovers its OWN tagged 200, not the legacy 100
+    assert lane.entry_price_from_ledger(records, "BTCUSDT", "ACTIVITY-CONFLUENCE") == Decimal("200")
