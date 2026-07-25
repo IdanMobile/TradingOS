@@ -2043,7 +2043,7 @@ def test_active_risk_reduction_dust_and_price_unavailable_not_frozen(
     assert venue.create_posts == 0 and action is not None and action["stage"] == "qty_below_step"
     assert state["stage_b_v2"]["pending_risk_reduction"] is None
     # An unavailable mark -> place() stage 'price_unavailable' (pre-send local reject).
-    monkeypatch.setattr(lane, "last_price", lambda _t: Decimal("0"))
+    monkeypatch.setattr(lane, "last_price", lambda _t, _s=lane.SYMBOL: Decimal("0"))
     sell = lane.LaneIntent("Sell", Decimal("0.25"), "baseCoin", "EXIT", "EXIT_LONG")
     action2, state2 = _rr_exit(_seed_open_episode(repo, "0.25"), sell, venue, repo)
     assert venue.create_posts == 0 and action2 is not None

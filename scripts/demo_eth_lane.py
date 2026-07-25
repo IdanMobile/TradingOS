@@ -86,6 +86,27 @@ SYMBOL = "ETHUSDT"
 BUY_QUOTE_USDT = Decimal("25")
 SELL_MAX_NOTIONAL = Decimal("120")  # independent sell cap (stage-1 review item)
 FALLBACK_QTY_STEP = Decimal("0.00001")
+
+# Bounded set of liquid demo coins for the multi-coin execution-measurement lane. Each trades the
+# SAME already-screened volume-confirmed Donchian breakout, independently, under the SHARED kill
+# switch and the SHARED total-capital cap below. Edit this list to change the universe. ETHUSDT is
+# the default single-symbol lane; every coin uses the same BUY_QUOTE_USDT (25) per entry.
+DEMO_COINS = [
+    "BTCUSDT",
+    "ETHUSDT",
+    "SOLUSDT",
+    "BNBUSDT",
+    "XRPUSDT",
+    "DOGEUSDT",
+    "ADAUSDT",
+    "AVAXUSDT",
+    "LINKUSDT",
+    "LTCUSDT",
+]
+# Shared cap on the sum of per-coin buy notional across the whole multi-coin lane. A new entry that
+# would push total open buy notional past this is skipped (logged, never an error); risk-reducing
+# exits/stops on already-open coins are NEVER gated by it. Demo/fake money only.
+TOTAL_DEMO_CAPITAL_USDT = Decimal("300")
 _ORDER_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,199}$")
 
 
@@ -229,8 +250,8 @@ def quantize_price_up(price: Decimal, tick_size: Decimal) -> Decimal:
     return (price / tick_size).to_integral_value(rounding=ROUND_CEILING) * tick_size
 
 
-def instrument_qty_step(transport: pf.Transport) -> Decimal:
-    url = f"{pf.DEMO_BASE}/v5/market/instruments-info?category=spot&symbol={SYMBOL}"
+def instrument_qty_step(transport: pf.Transport, symbol: str = SYMBOL) -> Decimal:
+    url = f"{pf.DEMO_BASE}/v5/market/instruments-info?category=spot&symbol={symbol}"
     payload = json.loads(transport(url, {}))
     try:
         raw_step = payload["result"]["list"][0]["lotSizeFilter"]["basePrecision"]
@@ -245,9 +266,9 @@ def instrument_qty_step(transport: pf.Transport) -> Decimal:
     return step
 
 
-def instrument_price_tick(transport: pf.Transport) -> Decimal:
+def instrument_price_tick(transport: pf.Transport, symbol: str = SYMBOL) -> Decimal:
     """Return the venue-declared price tick, failing closed on missing/invalid metadata."""
-    url = f"{pf.DEMO_BASE}/v5/market/instruments-info?category=spot&symbol={SYMBOL}"
+    url = f"{pf.DEMO_BASE}/v5/market/instruments-info?category=spot&symbol={symbol}"
     payload = json.loads(transport(url, {}))
     try:
         raw_tick = payload["result"]["list"][0]["priceFilter"]["tickSize"]
@@ -262,8 +283,8 @@ def instrument_price_tick(transport: pf.Transport) -> Decimal:
     return tick
 
 
-def last_price(transport: pf.Transport) -> Decimal:
-    url = f"{pf.DEMO_BASE}/v5/market/tickers?category=spot&symbol={SYMBOL}"
+def last_price(transport: pf.Transport, symbol: str = SYMBOL) -> Decimal:
+    url = f"{pf.DEMO_BASE}/v5/market/tickers?category=spot&symbol={symbol}"
     payload = json.loads(transport(url, {}))
     rows = payload.get("result", {}).get("list", [])
     return Decimal(str(rows[0]["lastPrice"])) if rows else Decimal("0")
@@ -278,18 +299,23 @@ def place(
     post_transport: rt.PostTransport = _live_post_transport,
     sleep: Any = time.sleep,
     client_key: str | None = None,
+    symbol: str = SYMBOL,
 ) -> dict[str, Any]:
     """Kill-switch -> caps -> quantize -> order -> poll -> reconcile -> ledger.
 
     `client_key` (Stage B only): a persisted Bybit `orderLinkId` bound to this logical submission.
     It is reserved and fsynced by the caller BEFORE this POST, and validated inside `_order_create`.
     When None (the NOT_ACTIVATED path) the order body is byte-identical to today.
+
+    `symbol` defaults to the ETH lane's SYMBOL, so the single-symbol path is byte-identical; the
+    multi-coin lane passes a per-coin symbol that drives the instrument/ticker/order symbol, the
+    base-coin reconciliation key, and the ledger record's `symbol`.
     """
     stamp = datetime.now(UTC).isoformat()
     base_record: dict[str, Any] = {
         "schema_version": 1,
         "recorded_at": stamp,
-        "symbol": SYMBOL,
+        "symbol": symbol,
         "side": intent.side,
         "unit": intent.unit,
         "signal_ref": intent.signal_ref,
@@ -305,7 +331,7 @@ def place(
         if qty > Decimal(str(rt.MAX_NOTIONAL)):
             raise ValueError(f"buy notional {qty} exceeds the {rt.MAX_NOTIONAL} USDT cap")
     else:
-        price = last_price(get_transport)
+        price = last_price(get_transport, symbol)
         if price <= 0:
             record = {**base_record, "ok": False, "stage": "price_unavailable"}
             _append_ledger(record)
@@ -316,7 +342,7 @@ def place(
             raise LocalRejection(
                 f"sell notional {qty * price:.2f} exceeds the {SELL_MAX_NOTIONAL} USDT cap"
             )
-        qty = quantize_down(qty, instrument_qty_step(get_transport))
+        qty = quantize_down(qty, instrument_qty_step(get_transport, symbol))
         if qty <= 0:
             record = {**base_record, "ok": False, "stage": "qty_below_step"}
             _append_ledger(record)
@@ -324,7 +350,7 @@ def place(
     before = rt.wallet(get_transport, api_key, secret, rt._now())
     order = {
         "category": "spot",
-        "symbol": SYMBOL,
+        "symbol": symbol,
         "side": intent.side,
         "orderType": "Market",
         "qty": str(qty),
@@ -344,9 +370,9 @@ def place(
         _append_ledger(record)
         return record
     order_id = str(placed.get("result", {}).get("orderId", ""))
-    status = rt._poll_filled(get_transport, api_key, secret, order_id, SYMBOL, sleep)
+    status = rt._poll_filled(get_transport, api_key, secret, order_id, symbol, sleep)
     after = rt.wallet(get_transport, api_key, secret, rt._now())
-    base_coin = SYMBOL.removesuffix("USDT")
+    base_coin = symbol.removesuffix("USDT")
     record = {
         **base_record,
         "ok": status.get("orderStatus") == "Filled",
@@ -383,26 +409,34 @@ def disaster_stop_triggered(entry: Decimal, mark: Decimal) -> bool:
     return entry > 0 and mark > 0 and mark <= disaster_stop_price(entry)
 
 
-def entry_price_from_ledger(records: list[dict[str, Any]]) -> Decimal | None:
+def entry_price_from_ledger(
+    records: list[dict[str, Any]], symbol: str | None = None
+) -> Decimal | None:
     """Most recent filled long-entry avg price from ledger records, or None.
 
     Restart safety: a position opened before this process started has no entry in
     lane_state; the append-only orders ledger is the authoritative record of what was paid.
+
+    `symbol` filters to that coin's entries. The single append-only ledger is shared across the
+    multi-coin lane, so each coin must reconstruct its OWN entry price. None (the default) keeps the
+    legacy no-filter behavior for existing callers.
     """
     for record in reversed(records):
+        if symbol is not None and record.get("symbol") != symbol:
+            continue
         if record.get("reason") == "ENTRY_LONG" and record.get("ok") and record.get("avg_price"):
             return Decimal(str(record["avg_price"]))
     return None
 
 
 def resolve_entry_price(
-    state: dict[str, Any], ledger_records: list[dict[str, Any]]
+    state: dict[str, Any], ledger_records: list[dict[str, Any]], symbol: str | None = None
 ) -> Decimal | None:
     """Entry price for the open long: from state if present, else reconstructed from the ledger."""
     stored = state.get("entry_price")
     if stored not in (None, "", "0"):
         return Decimal(str(stored))
-    return entry_price_from_ledger(ledger_records)
+    return entry_price_from_ledger(ledger_records, symbol)
 
 
 def stop_reconcile_action(
@@ -475,6 +509,7 @@ def place_stop_order(
     *,
     post_transport: rt.PostTransport = _live_post_transport,
     client_key: str | None = None,
+    symbol: str = SYMBOL,
 ) -> dict[str, Any]:
     """Rest a demo Sell stop at trigger_price via the quarantined order transport (rt.place_stop).
 
@@ -484,6 +519,8 @@ def place_stop_order(
     `client_key` (Stage B only): the deterministic `orderLinkId` reserved+persisted before this one
     create POST, so a crash mid-create is reconcilable by key without a duplicate stop. None on the
     NOT_ACTIVATED compensating path keeps the order body byte-identical.
+
+    `symbol` defaults to SYMBOL (byte-identical ETH path); the multi-coin lane binds each coin.
     """
     venue_trigger = quantize_price_up(trigger_price, price_tick)
     venue_qty = quantize_stop_qty_down(base_qty, qty_step)
@@ -493,7 +530,7 @@ def place_stop_order(
         secret,
         rt._now(),
         pf.DEMO_BASE,
-        symbol=SYMBOL,
+        symbol=symbol,
         trigger_price=str(venue_trigger),
         base_qty=str(venue_qty),
         client_key=client_key,
@@ -506,10 +543,11 @@ def cancel_stop_order(
     secret: str,
     *,
     post_transport: rt.PostTransport = _live_post_transport,
+    symbol: str = SYMBOL,
 ) -> dict[str, Any]:
     """Cancel a resting demo stop by order id via the quarantined transport (rt.cancel_order)."""
     return rt.cancel_order(
-        post_transport, api_key, secret, rt._now(), pf.DEMO_BASE, order_id=order_id, symbol=SYMBOL
+        post_transport, api_key, secret, rt._now(), pf.DEMO_BASE, order_id=order_id, symbol=symbol
     )
 
 
@@ -518,7 +556,7 @@ _CLEARED_STOP_STATUSES = {"Cancelled", "Deactivated", "Rejected"}
 
 
 def stop_order_status(
-    order_id: str, api_key: str, secret: str, transport: pf.Transport
+    order_id: str, api_key: str, secret: str, transport: pf.Transport, symbol: str = SYMBOL
 ) -> dict[str, Any]:
     """Fetch one stop through a fixed, non-overridable spot StopOrder query.
 
@@ -531,7 +569,7 @@ def stop_order_status(
         "/v5/order/realtime",
         {
             "category": "spot",
-            "symbol": SYMBOL,
+            "symbol": symbol,
             "orderId": order_id,
             "orderFilter": "StopOrder",
         },
@@ -546,9 +584,11 @@ def stop_order_status(
     )
 
 
-def _confirmed_stop_state(order_id: str, api_key: str, secret: str, transport: pf.Transport) -> str:
+def _confirmed_stop_state(
+    order_id: str, api_key: str, secret: str, transport: pf.Transport, symbol: str = SYMBOL
+) -> str:
     """Return active/cleared/unknown; empty realtime responses are never assumed cancelled."""
-    return _confirmed_stop_snapshot(order_id, api_key, secret, transport)[0]
+    return _confirmed_stop_snapshot(order_id, api_key, secret, transport, symbol=symbol)[0]
 
 
 def _confirmed_stop_snapshot(
@@ -559,10 +599,11 @@ def _confirmed_stop_snapshot(
     *,
     expected_trigger: Any = None,
     expected_qty: Any = None,
+    symbol: str = SYMBOL,
 ) -> tuple[str, dict[str, Any]]:
     """Return normalized state plus the exact venue row used for that conclusion."""
     try:
-        row = stop_order_status(order_id, api_key, secret, transport)
+        row = stop_order_status(order_id, api_key, secret, transport, symbol)
         if str(row.get("orderId", "")) != order_id:
             return "unknown", row
         status = str(row.get("orderStatus", ""))
@@ -575,6 +616,7 @@ def _confirmed_stop_snapshot(
             order_id,
             expected_trigger=expected_trigger,
             expected_qty=expected_qty,
+            symbol=symbol,
         ):
             return "active", row
         return "unknown", row
@@ -591,12 +633,13 @@ def _protective_venue_row_identity(
     *,
     expected_trigger: Any = None,
     expected_qty: Any = None,
+    symbol: str = SYMBOL,
 ) -> bool:
     """Strict spot identity for a row returned by the fixed StopOrder query above."""
     trigger_direction = row.get("triggerDirection")
     if (
         (requested_order_id is not None and str(row.get("orderId", "")) != requested_order_id)
-        or row.get("symbol") != SYMBOL
+        or row.get("symbol") != symbol
         or row.get("side") != "Sell"
         or row.get("orderType") != "Market"
         or ("orderFilter" in row and row.get("orderFilter") != "StopOrder")
@@ -711,6 +754,7 @@ def preflight_tracked_stop(
     api_key: str,
     secret: str,
     transport: pf.Transport,
+    symbol: str = SYMBOL,
 ) -> tuple[dict[str, Any] | None, bool, dict[str, Any] | None]:
     """Resolve status, POST safety, and a non-ambiguous active venue confirmation row."""
     if resting is None:
@@ -747,6 +791,7 @@ def preflight_tracked_stop(
             transport,
             expected_trigger=expected_trigger,
             expected_qty=expected_qty,
+            symbol=symbol,
         )
     states = {order_id: snapshot[0] for order_id, snapshot in snapshots.items()}
     filled = [order_id for order_id, status in states.items() if status == "filled"]
@@ -779,6 +824,7 @@ def _backfill_confirmed_stop_metadata(
     entry: Decimal,
     price_tick: Decimal,
     qty_step: Decimal,
+    symbol: str = SYMBOL,
 ) -> dict[str, Any] | None:
     """Enrich a legacy record only when the venue row confirms this exact active stop."""
     if not resting or (
@@ -796,6 +842,7 @@ def _backfill_confirmed_stop_metadata(
             order_id,
             expected_trigger=resting.get("trigger_price"),
             expected_qty=resting.get("base_qty"),
+            symbol=symbol,
         )
     ):
         return resting
@@ -851,7 +898,11 @@ def _ambiguous_stop_record(
 
 
 def _reconcile_ambiguous_stop(
-    resting: dict[str, Any], api_key: str, secret: str, transport: pf.Transport
+    resting: dict[str, Any],
+    api_key: str,
+    secret: str,
+    transport: pf.Transport,
+    symbol: str = SYMBOL,
 ) -> dict[str, Any] | None:
     expected_by_order = _ambiguous_expected_records(resting)
     if expected_by_order is None:
@@ -864,6 +915,7 @@ def _reconcile_ambiguous_stop(
             transport,
             expected_trigger=trigger,
             expected_qty=qty,
+            symbol=symbol,
         )
         for order_id, (trigger, qty) in expected_by_order.items()
     }
@@ -902,6 +954,7 @@ def apply_stop_decision(
     qty_step: Decimal | None = None,
     post_transport: rt.PostTransport = _live_post_transport,
     client_key: str | None = None,
+    symbol: str = SYMBOL,
 ) -> dict[str, Any] | None:
     """Execute a stop_reconcile_action decision; return the new resting-stop record (or None).
 
@@ -911,9 +964,12 @@ def apply_stop_decision(
     `client_key` (Stage B only): binds the persisted `orderLinkId` to the primary stop CREATE POST
     (place/replace); the old-stop cancel and any rollback still target their ORIGINAL correlation by
     orderId. None on the NOT_ACTIVATED compensating path keeps every venue request byte-identical.
+
+    `symbol` defaults to SYMBOL (byte-identical ETH path); the multi-coin lane binds each coin so a
+    coin's protective stop is priced, quantized, and confirmed against its OWN instrument.
     """
     if decision == "reconcile" and resting:
-        return _reconcile_ambiguous_stop(resting, api_key, secret, get_transport)
+        return _reconcile_ambiguous_stop(resting, api_key, secret, get_transport, symbol)
     if decision == "noop":
         return resting
     if decision == "cancel":
@@ -921,7 +977,11 @@ def apply_stop_decision(
             return None
         try:
             cancelled = cancel_stop_order(
-                str(resting["order_id"]), api_key, secret, post_transport=post_transport
+                str(resting["order_id"]),
+                api_key,
+                secret,
+                post_transport=post_transport,
+                symbol=symbol,
             )
         except Exception as error:  # noqa: BLE001 - preserve state for retry
             print(f"venue stop cancel failed: {error}", file=sys.stderr)
@@ -929,7 +989,9 @@ def apply_stop_decision(
         if cancelled.get("retCode") != 0:
             print(f"venue stop cancel rejected: {cancelled.get('retMsg')}", file=sys.stderr)
             return resting
-        state = _confirmed_stop_state(str(resting["order_id"]), api_key, secret, get_transport)
+        state = _confirmed_stop_state(
+            str(resting["order_id"]), api_key, secret, get_transport, symbol
+        )
         if state == "cleared":
             return None
         if state == "filled":
@@ -946,9 +1008,11 @@ def apply_stop_decision(
     risk_boundary = disaster_stop_price(entry)
     try:
         resolved_tick = (
-            price_tick if price_tick is not None else instrument_price_tick(get_transport)
+            price_tick if price_tick is not None else instrument_price_tick(get_transport, symbol)
         )
-        resolved_qty_step = qty_step if qty_step is not None else instrument_qty_step(get_transport)
+        resolved_qty_step = (
+            qty_step if qty_step is not None else instrument_qty_step(get_transport, symbol)
+        )
         venue_trigger = quantize_price_up(risk_boundary, resolved_tick)
         venue_qty = quantize_stop_qty_down(lane_base, resolved_qty_step)
     except Exception as error:  # noqa: BLE001 - metadata failure must never mutate venue state
@@ -965,6 +1029,7 @@ def apply_stop_decision(
             secret,
             post_transport=post_transport,
             client_key=client_key,
+            symbol=symbol,
         )
     except Exception as error:  # noqa: BLE001 - preserve existing stop on place failure
         print(f"venue stop place failed: {error}", file=sys.stderr)
@@ -1007,6 +1072,7 @@ def apply_stop_decision(
         get_transport,
         expected_trigger=venue_trigger,
         expected_qty=venue_qty,
+        symbol=symbol,
     )
     old_order_id = str(resting.get("order_id", "")) if resting else ""
     if new_state == "cleared":
@@ -1026,9 +1092,11 @@ def apply_stop_decision(
 
     old_state = "unknown"
     try:
-        cancelled = cancel_stop_order(old_order_id, api_key, secret, post_transport=post_transport)
+        cancelled = cancel_stop_order(
+            old_order_id, api_key, secret, post_transport=post_transport, symbol=symbol
+        )
         if cancelled.get("retCode") == 0:
-            old_state = _confirmed_stop_state(old_order_id, api_key, secret, get_transport)
+            old_state = _confirmed_stop_state(old_order_id, api_key, secret, get_transport, symbol)
         else:
             print(f"venue old-stop cancel rejected: {cancelled.get('retMsg')}", file=sys.stderr)
     except Exception as error:  # noqa: BLE001 - rollback new stop and preserve known IDs
@@ -1047,9 +1115,13 @@ def apply_stop_decision(
 
     rollback_state = "unknown"
     try:
-        rollback = cancel_stop_order(new_order_id, api_key, secret, post_transport=post_transport)
+        rollback = cancel_stop_order(
+            new_order_id, api_key, secret, post_transport=post_transport, symbol=symbol
+        )
         if rollback.get("retCode") == 0:
-            rollback_state = _confirmed_stop_state(new_order_id, api_key, secret, get_transport)
+            rollback_state = _confirmed_stop_state(
+                new_order_id, api_key, secret, get_transport, symbol
+            )
         else:
             print(
                 f"venue replacement rollback rejected: {rollback.get('retMsg')}",
@@ -1079,18 +1151,32 @@ def apply_stop_decision(
     )
 
 
-def read_state() -> dict[str, Any]:
-    if not LANE_STATE.is_file():
+def _state_path(symbol: str) -> Path:
+    """Per-coin lane-state path. The default ETH lane keeps the original lane_state.json (so its
+    state is preserved and tests that monkeypatch LANE_STATE still hit it); every other coin gets
+    its own lane_state_<symbol>.json so each position/cursor is independent."""
+    return LANE_STATE if symbol == SYMBOL else LANE_DIR / f"lane_state_{symbol}.json"
+
+
+def _heartbeat_path(symbol: str) -> Path:
+    """Per-coin heartbeat path. Default ETH keeps heartbeat.json; other coins get their own."""
+    return HEARTBEAT if symbol == SYMBOL else LANE_DIR / f"heartbeat_{symbol}.json"
+
+
+def read_state(symbol: str = SYMBOL) -> dict[str, Any]:
+    path = _state_path(symbol)
+    if not path.is_file():
         return {"lane_base": "0", "cursor": None}
-    payload = json.loads(LANE_STATE.read_text())
+    payload = json.loads(path.read_text())
     return payload if isinstance(payload, dict) else {"lane_base": "0", "cursor": None}
 
 
-def write_state(state: dict[str, Any]) -> None:
+def write_state(state: dict[str, Any], symbol: str = SYMBOL) -> None:
     LANE_DIR.mkdir(parents=True, exist_ok=True)
-    tmp = LANE_STATE.with_suffix(".tmp")
+    path = _state_path(symbol)
+    tmp = path.with_suffix(".tmp")
     tmp.write_text(json.dumps(state, sort_keys=True))
-    tmp.replace(LANE_STATE)
+    tmp.replace(path)
 
 
 def write_state_durable(state: dict[str, Any]) -> None:
@@ -2250,16 +2336,23 @@ def active_stop_decision(
     return new_resting, state
 
 
-def fetch_closed_bars(transport: pf.Transport, limit: int = KLINE_LIMIT) -> tuple[MarketBar, ...]:
-    """Public demo-venue 1h klines -> chronological closed MarketBars (forming bar dropped)."""
-    url = f"{pf.DEMO_BASE}/v5/market/kline?category=spot&symbol={SYMBOL}&interval=60&limit={limit}"
+def fetch_closed_bars(
+    transport: pf.Transport, limit: int = KLINE_LIMIT, symbol: str = SYMBOL
+) -> tuple[MarketBar, ...]:
+    """Public demo-venue 1h klines -> chronological closed MarketBars (forming bar dropped).
+
+    `symbol` defaults to SYMBOL (byte-identical ETH path); the multi-coin lane passes each coin, so
+    the kline request and the MarketBar instrument/dataset identity are that coin's own.
+    """
+    url = f"{pf.DEMO_BASE}/v5/market/kline?category=spot&symbol={symbol}&interval=60&limit={limit}"
     rows = list(reversed(json.loads(transport(url, {}))["result"]["list"]))[:-1]
+    base_coin = symbol.removesuffix("USDT")
     market = Market(
         MarketName("CRYPTO_SPOT"),
         VenueFamily("BYBIT_DEMO_SPOT"),
-        InstrumentId("ETH-USDT.BYBIT_DEMO_SPOT"),
+        InstrumentId(f"{base_coin}-USDT.BYBIT_DEMO_SPOT"),
         Timeframe.H1,
-        DatasetId("DS-BYBIT-DEMO-ETHUSDT-1H-LIVE"),
+        DatasetId(f"DS-BYBIT-DEMO-{symbol}-1H-LIVE"),
     )
     provenance = Provenance((DomainRef("EV-BYBIT-DEMO-KLINE-LIVE"),))
     now = datetime.now(UTC)
@@ -2380,6 +2473,8 @@ def run_cycle(
     post_transport: rt.PostTransport = _live_post_transport,
     sleep: Any = time.sleep,
     capability: stage_b.LaneLockCapability | None = None,
+    symbol: str = SYMBOL,
+    entry_notional_budget: Decimal | None = None,
 ) -> dict[str, Any]:
     """One evaluation cycle: fresh signals newer than the cursor drive at most one action.
 
@@ -2387,23 +2482,32 @@ def run_cycle(
     threaded into the sink-invoking entry path so evidence is committed UNDER the held lock, never
     re-acquiring it. None when NOT_ACTIVATED, or when ACTIVE but no lock was threaded (entries then
     fail closed rather than POST without a durable key).
+
+    `symbol` defaults to the ETH lane's SYMBOL, so the single-symbol cycle is byte-identical (same
+    state file, heartbeat, requests). The multi-coin lane calls this per coin.
+    `entry_notional_budget` is the shared-total-capital headroom for a NEW entry: None (the default)
+    means unlimited (legacy single lane); when set, a fresh entry whose BUY_QUOTE_USDT would exceed
+    it is skipped (logged, never an error) while risk-reducing exits/stops on an already-open
+    position still run.
     """
-    state = read_state()
+    base_coin = symbol.removesuffix("USDT")
+    state = read_state(symbol)
     cursor = state.get("cursor")
     lane_base = Decimal(str(state.get("lane_base", "0")))
     # Entry price drives the -15% stop. From state normally; reconstructed from the append-only
-    # ledger for a position opened before this process started (restart safety).
-    entry_price = resolve_entry_price(state, _read_ledger_records())
+    # ledger for a position opened before this process started (restart safety). The ledger is
+    # shared across coins, so it is filtered to THIS coin's own entries.
+    entry_price = resolve_entry_price(state, _read_ledger_records(), symbol)
     stored_resting_stop = state.get("resting_stop")
     resting_stop, post_paths_safe, venue_stop_confirmation = preflight_tracked_stop(
-        stored_resting_stop, api_key, secret, get_transport
+        stored_resting_stop, api_key, secret, get_transport, symbol
     )
     if resting_stop is not stored_resting_stop and (
         resting_stop and resting_stop.get("state") == "FILLED_PENDING_RECONCILIATION"
     ):
         # Persist before any later read can fail, so a restart cannot forget the filled-stop latch.
-        write_state({**state, "resting_stop": resting_stop})
-    bars = fetch_closed_bars(get_transport)
+        write_state({**state, "resting_stop": resting_stop}, symbol)
+    bars = fetch_closed_bars(get_transport, symbol=symbol)
     signals = canonical_signals(bars)
     fresh = [s for s in signals if cursor is None or s.observed_at.isoformat() > cursor]
     action: dict[str, Any] | None = None
@@ -2412,8 +2516,10 @@ def run_cycle(
     # Stage B (when ACTIVE) may latch ENTRY_BLOCK on evidence degradation or an unresolved attempted
     # create. That gate suppresses NEW risk-increasing entries ONLY — every risk-reducing path
     # (SELL exit, disaster stop, venue-stop reconciliation) below stays fully available. When
-    # NOT_ACTIVATED this is always False, so the legacy flow is unchanged.
-    stage_b_on = stage_b_active()
+    # NOT_ACTIVATED this is always False, so the legacy flow is unchanged. Stage B is bound to the
+    # single ETH lane only: the multi-coin path (any non-default symbol) always runs NOT_ACTIVATED,
+    # so a non-ETH signal can never route through the ETH-hardcoded Stage B evidence chain.
+    stage_b_on = stage_b_active() and symbol == SYMBOL
     # ACTIVE without a threaded lock cannot durably persist an entry key -> block new entries.
     new_entries_blocked = stage_b_on and (entry_blocked(state) or capability is None)
     if stage_b_on:
@@ -2435,7 +2541,15 @@ def run_cycle(
     for signal in fresh if post_paths_safe else ():
         side = signal.side.value  # BUY | SELL
         if side == "BUY" and lane_base == 0 and not new_entries_blocked:
-            if stage_b_on:
+            if entry_notional_budget is not None and BUY_QUOTE_USDT > entry_notional_budget:
+                # Shared total-capital cap reached: skip this NEW entry (logged, never an error).
+                # Risk-reducing exits/stops below are never gated by the cap.
+                print(
+                    f"{symbol}: entry skipped — shared demo capital cap reached "
+                    f"(need {BUY_QUOTE_USDT} USDT, budget {entry_notional_budget} USDT)",
+                    file=sys.stderr,
+                )
+            elif stage_b_on:
                 # ACTIVE: pre-submission chain committed (key home) before the POST; lane_base from
                 # exact executions. The held capability is threaded so the sink runs under it.
                 action, lane_base, entry_price, state = active_entry(
@@ -2458,9 +2572,10 @@ def run_cycle(
                     get_transport=get_transport,
                     post_transport=post_transport,
                     sleep=sleep,
+                    symbol=symbol,
                 )
                 if action.get("ok"):
-                    lane_base += Decimal(str(action["reconcile"]["ETH_delta"]))
+                    lane_base += Decimal(str(action["reconcile"][f"{base_coin}_delta"]))
                     entry_price = (
                         Decimal(str(action["avg_price"])) if action.get("avg_price") else None
                     )
@@ -2486,6 +2601,7 @@ def run_cycle(
                     get_transport=get_transport,
                     post_transport=post_transport,
                     sleep=sleep,
+                    symbol=symbol,
                 )
             if action is not None and action.get("ok"):
                 lane_base = Decimal("0")
@@ -2498,7 +2614,7 @@ def run_cycle(
     # close is the primary tail insurance; the venue-resting stop below is the process-death backup.
     stop_event: dict[str, Any] | None = None
     try:
-        mark = last_price(get_transport)
+        mark = last_price(get_transport, symbol)
     except Exception as error:  # noqa: BLE001 - no mark means no basis to trigger; skip this cycle
         print(f"disaster-stop mark unavailable: {error}", file=sys.stderr)
         mark = Decimal("0")
@@ -2533,6 +2649,7 @@ def run_cycle(
                 get_transport=get_transport,
                 post_transport=post_transport,
                 sleep=sleep,
+                symbol=symbol,
             )
         if closed.get("ok"):
             stop_event = {
@@ -2565,8 +2682,8 @@ def run_cycle(
         decision = "noop"
     elif lane_base > 0 and entry_price is not None:
         try:
-            price_tick = instrument_price_tick(get_transport)
-            qty_step = instrument_qty_step(get_transport)
+            price_tick = instrument_price_tick(get_transport, symbol)
+            qty_step = instrument_qty_step(get_transport, symbol)
             decision = stop_reconcile_action(
                 lane_base, entry_price, resting_stop, price_tick, qty_step
             )
@@ -2588,6 +2705,7 @@ def run_cycle(
             entry_price,
             price_tick,
             qty_step,
+            symbol=symbol,
         )
     if stage_b_on:
         # ACTIVE: the protective-stop create/replace/cleanup and cancel are routed through the
@@ -2619,6 +2737,7 @@ def run_cycle(
             price_tick=price_tick,
             qty_step=qty_step,
             post_transport=post_transport,
+            symbol=symbol,
         )
 
     final_state: dict[str, Any] = {
@@ -2630,12 +2749,14 @@ def run_cycle(
     # Carry the Stage B latch (pending records, evidence_state, episode anchor) forward when ACTIVE;
     # absent when NOT_ACTIVATED, so the persisted state stays byte-identical to today. When present,
     # persist through the durable 0600 writer so the final write never regresses the latch's mode.
+    # (write_state_durable targets the ETH LANE_STATE; Stage B is bound to the single ETH lane, so
+    # this branch is never reached on a non-default symbol.)
     stage_b_state = stage_b_latch(state)
     if stage_b_state is not None:
         final_state["stage_b_v2"] = stage_b_state
         write_state_durable(final_state)
     else:
-        write_state(final_state)
+        write_state(final_state, symbol)
 
     # Wallet and mark are captured every cycle, not only when an order fills. A lane that
     # trades rarely would otherwise show balances frozen at the last fill, and a stale
@@ -2644,7 +2765,7 @@ def run_cycle(
     mark_price = "0"
     try:
         wallet_snapshot = dict(rt.wallet(get_transport, api_key, secret, rt._now()))
-        mark_price = str(last_price(get_transport))
+        mark_price = str(last_price(get_transport, symbol))
     except Exception as error:  # noqa: BLE001 - snapshot is informational, never fatal
         wallet_snapshot = {}
         mark_price = "0"
@@ -2654,6 +2775,11 @@ def run_cycle(
         "schema_version": 2,
         "at": datetime.now(UTC).isoformat(),
         "candidate": "ETH-VOLUME-BREAKOUT-PROSPECTIVE-V1",
+        # The coin this heartbeat is for (ETHUSDT on the default single lane). The SAME already-
+        # screened strategy runs on every coin; this is execution measurement ACROSS coins, NOT
+        # validated per-coin edge.
+        "symbol": symbol,
+        "measurement_note": "execution-measurement across coins; NOT validated edge",
         "latest_closed_bar": latest_bar_close,
         "signals_in_window": len(signals),
         "fresh_signals": len(fresh),
@@ -2690,17 +2816,105 @@ def run_cycle(
             else None,
         }
     LANE_DIR.mkdir(parents=True, exist_ok=True)
-    tmp = HEARTBEAT.with_suffix(".tmp")
+    heartbeat_path = _heartbeat_path(symbol)
+    tmp = heartbeat_path.with_suffix(".tmp")
     tmp.write_text(json.dumps(heartbeat, sort_keys=True, indent=2))
-    tmp.replace(HEARTBEAT)
+    tmp.replace(heartbeat_path)
     return heartbeat
 
 
+def open_demo_exposure(symbols: list[str]) -> Decimal:
+    """Sum of per-coin buy notional currently open across the multi-coin lane.
+
+    Each open position was entered at BUY_QUOTE_USDT, so an open coin contributes exactly that to
+    the shared total-capital exposure regardless of subsequent mark drift. A coin never run has no
+    state file and contributes nothing.
+    """
+    total = Decimal("0")
+    for symbol in symbols:
+        if Decimal(str(read_state(symbol).get("lane_base", "0"))) > 0:
+            total += BUY_QUOTE_USDT
+    return total
+
+
+def run_multi_cycle(
+    api_key: str,
+    secret: str,
+    *,
+    symbols: list[str] | None = None,
+    total_cap: Decimal = TOTAL_DEMO_CAPITAL_USDT,
+    get_transport: pf.Transport = pf._urllib_transport,
+    post_transport: rt.PostTransport = _live_post_transport,
+    sleep: Any = time.sleep,
+) -> dict[str, Any]:
+    """One multi-coin cycle: run the per-symbol `run_cycle` for each coin in the universe.
+
+    Demo/fake money, execution-measurement only — the SAME already-screened strategy on every coin,
+    NOT validated per-coin edge. Safety composition:
+      * SHARED kill switch — checked ONCE up front; if set, ALL coins halt and nothing runs.
+      * SHARED total-capital cap — a new entry that would push total open buy notional past
+        `total_cap` is skipped (logged, not an error); already-open coins still run their
+        risk-reducing exits/stops.
+      * one coin's failure never aborts the others (caught, logged, the cycle continues).
+    Every per-coin position, stop, and the -15% disaster stop remain fully independent and apply
+    per coin, inheriting the same kill-switch/notional-cap/quantize guards as the single ETH lane.
+    """
+    coin_list = list(symbols if symbols is not None else DEMO_COINS)
+    if kill_switch_active():
+        # Shared kill switch halts ALL coins: do nothing, place no order for any coin.
+        return {
+            "kill_switch": True,
+            "coins": {symbol: {"stage": "kill_switch"} for symbol in coin_list},
+            **LANE_LABEL,
+        }
+    # Seed the shared budget from exposure already open, then decrement as coins enter this cycle.
+    remaining = total_cap - open_demo_exposure(coin_list)
+    coins: dict[str, Any] = {}
+    for symbol in coin_list:
+        was_open = Decimal(str(read_state(symbol).get("lane_base", "0"))) > 0
+        try:
+            heartbeat = run_cycle(
+                api_key,
+                secret,
+                get_transport=get_transport,
+                post_transport=post_transport,
+                sleep=sleep,
+                symbol=symbol,
+                entry_notional_budget=remaining,
+            )
+            coins[symbol] = {
+                "lane_base": heartbeat["lane_base"],
+                "fresh_signals": heartbeat["fresh_signals"],
+                "action": heartbeat.get("action"),
+                "entry_price": heartbeat.get("entry_price"),
+                "resting_stop": heartbeat.get("resting_stop"),
+            }
+            now_open = Decimal(str(heartbeat["lane_base"])) > 0
+            if now_open and not was_open:
+                # A fresh entry consumed one BUY_QUOTE_USDT of the shared cap this cycle.
+                remaining -= BUY_QUOTE_USDT
+        except Exception as error:  # noqa: BLE001 - one coin must never abort the whole cycle
+            print(f"{symbol}: cycle failed, continuing other coins: {error}", file=sys.stderr)
+            coins[symbol] = {"error": str(error)}
+    return {
+        "kill_switch": False,
+        "total_cap": str(total_cap),
+        "remaining_budget": str(remaining),
+        "coins": coins,
+        **LANE_LABEL,
+    }
+
+
 def main() -> int:
-    parser = argparse.ArgumentParser(description="D-104 ETH demo measurement lane.")
+    parser = argparse.ArgumentParser(description="D-104 demo measurement lane (ETH or multi-coin).")
     mode = parser.add_mutually_exclusive_group(required=True)
-    mode.add_argument("--once", action="store_true", help="run one evaluation cycle")
-    mode.add_argument("--loop", action="store_true", help="run hourly until killed")
+    mode.add_argument("--once", action="store_true", help="run one ETH evaluation cycle")
+    mode.add_argument("--loop", action="store_true", help="run the ETH lane hourly until killed")
+    mode.add_argument(
+        "--multi",
+        action="store_true",
+        help="run one multi-coin cycle across the demo coin universe (shared cap + kill switch)",
+    )
     args = parser.parse_args()
 
     pf.load_dotenv(pf.ROOT / ".env")
@@ -2708,6 +2922,15 @@ def main() -> int:
     if not api_key or not secret:
         print("No demo key in .env. See docs/program/DEMO_LANE_PLAN.md.")
         return 2
+    if args.multi:
+        # Multi-coin is execution-measurement, always NOT_ACTIVATED (per-coin Stage B is out of
+        # scope). It shares the single lane.lock with the ETH lane so the two can never run at once
+        # and double-trade ETHUSDT (which is one of the coins in the universe).
+        with exclusive_lane_lock() as acquired:
+            if not acquired:
+                print("another demo lane is already running — refusing to start a second one.")
+                return 3
+            return _run_multi_lane(api_key, secret)
     # When Stage B is ACTIVE, hold the Wave 1 lane-lock CAPABILITY (same lane.lock, exclusive) and
     # thread it into run_cycle so the sink is invoked under the already-held lock — never a second
     # flock on the same file. When NOT_ACTIVATED, keep the legacy boolean lock, byte-identical.
@@ -2750,6 +2973,21 @@ def _run_lane(
         now = datetime.now(UTC)
         next_hour = (now + timedelta(hours=1)).replace(minute=1, second=0, microsecond=0)
         time.sleep(max(60.0, (next_hour - now).total_seconds()))
+
+
+def _run_multi_lane(api_key: str, secret: str) -> int:
+    """Preflight once, then run a single multi-coin cycle across the demo coin universe."""
+    pre = pf.preflight(pf._urllib_transport, api_key, secret)
+    if not pre.get("ok"):
+        print(json.dumps({"ok": False, "stage": "preflight", "preflight": pre}, indent=2))
+        return 1
+    print(
+        f"preflight GREEN on {pre['host']} — multi-coin demo measurement lane "
+        f"({len(DEMO_COINS)} coins, shared cap {TOTAL_DEMO_CAPITAL_USDT} USDT)"
+    )
+    report = run_multi_cycle(api_key, secret)
+    print(json.dumps(report, indent=2, sort_keys=True))
+    return 0
 
 
 if __name__ == "__main__":
