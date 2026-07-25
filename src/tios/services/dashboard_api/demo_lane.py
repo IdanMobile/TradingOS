@@ -39,6 +39,25 @@ DIVERGENCE_REPORT = LANE_DIR / "DIVERGENCE_REPORT.json"
 BASE_COIN = "ETH"
 QUOTE_COIN = "USDT"
 
+# The multi-coin demo lane runs the SAME already-screened volume-breakout rule on each of these,
+# independently. Mirrors scripts/demo_eth_lane.py DEMO_COINS; the operator view walks them in this
+# exact order. ETHUSDT is the default lane (heartbeat.json / lane_state.json); every other coin has
+# per-symbol heartbeat_<SYMBOL>.json / lane_state_<SYMBOL>.json.
+DEFAULT_SYMBOL = "ETHUSDT"
+DEMO_COINS = (
+    "BTCUSDT",
+    "ETHUSDT",
+    "SOLUSDT",
+    "BNBUSDT",
+    "XRPUSDT",
+    "DOGEUSDT",
+    "ADAUSDT",
+    "AVAXUSDT",
+    "LINKUSDT",
+    "LTCUSDT",
+)
+DEMO_DISASTER_STOP_PCT = 15.0  # fixed -15% hard stop from entry (measurement-mode tail insurance)
+
 ACTIONS = frozenset({"START", "STOP", "RUN_ONCE"})
 _IDENTIFIER = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,199}$")
 RUN_ONCE_TIMEOUT_SECONDS = 90
@@ -182,16 +201,285 @@ def _operational_snapshot(root: Path) -> tuple[str, bool]:
     return ("STOPPED" if kill_switch else "IDLE"), kill_switch
 
 
-def build_demo_lane(root: Path | None = None) -> dict[str, Any]:
-    """Global-allowlist demo-lane projection: operational status plus Stage B readiness only.
+def _coin_heartbeat_path(root: Path, symbol: str) -> Path:
+    return root / (HEARTBEAT if symbol == DEFAULT_SYMBOL else LANE_DIR / f"heartbeat_{symbol}.json")
 
-    No heartbeat/PID/cursor/wallet/positions/orders/signals/per-trade or window PnL is
-    exposed in any state (Appendix C global removal), inactive or active.
+
+def _coin_state_path(root: Path, symbol: str) -> Path:
+    return root / (
+        LANE_STATE if symbol == DEFAULT_SYMBOL else LANE_DIR / f"lane_state_{symbol}.json"
+    )
+
+
+def _coin_trades(
+    orders_for_coin: list[dict[str, Any]], base_coin: str
+) -> tuple[list[float], float, dict[str, Any] | None]:
+    """Fold this coin's fills into closed-trip realised P&Ls, total fees, and the open entry.
+
+    A buy opens an entry; the next sell closes it (received minus what the entry cost). A trailing
+    unmatched buy is the currently open position. Deterministic: order follows the ledger.
+    """
+    closed_pnls: list[float] = []
+    fees = 0.0
+    entry: dict[str, Any] | None = None
+    for order in orders_for_coin:
+        money = _order_money(order, base_coin)
+        fees += money["fee_usd"]
+        if order.get("side") == "Buy":
+            entry = {
+                "spent_usd": money["usd_spent"],
+                "size_base": money["base_delta"],
+                "opened_at": order.get("recorded_at"),
+            }
+        elif entry is not None:
+            closed_pnls.append(money["usd_received"] - entry["spent_usd"])
+            entry = None
+    return closed_pnls, round(fees, 4), entry
+
+
+def _coin_projection(
+    root: Path, symbol: str, orders: list[dict[str, Any]], kill_switch: bool, now: datetime
+) -> dict[str, Any]:
+    """Rich, live, per-coin operator view. Missing/malformed files degrade to idle — never crash.
+
+    Field definitions mirror scripts/report_demo_status.py so the dashboard matches that report:
+    position side/live unrealised, protection (-15% disaster + venue-resting stop), what the coin
+    is watching (bands, distance-to-entry, volume-vs-gate), signals, and realised trade history.
+    """
+    base_coin = symbol.removesuffix(QUOTE_COIN)
+    heartbeat = _read_json(_coin_heartbeat_path(root, symbol))
+    state = _read_json(_coin_state_path(root, symbol))
+    orders_for_coin = [o for o in orders if o.get("symbol") == symbol]
+    data_available = bool(heartbeat) or bool(state) or bool(orders_for_coin)
+
+    lane_base = _number(state.get("lane_base", heartbeat.get("lane_base", "0")))
+    mark = _number(heartbeat.get("mark_price"))
+    entry = _number(heartbeat.get("entry_price") or state.get("entry_price"))
+    is_long = lane_base > 0
+
+    closed_pnls, fees, open_entry = _coin_trades(orders_for_coin, base_coin)
+
+    # --- position (entry-based live P&L, matching report_demo_status) ---
+    cost = lane_base * entry if (is_long and entry > 0) else None
+    value = lane_base * mark if (is_long and mark > 0) else None
+    unrealised = value - cost if (value is not None and cost is not None) else None
+    spent_usd = (
+        open_entry["spent_usd"]
+        if open_entry is not None
+        else (round(cost, 4) if cost is not None else None)
+    )
+    opened_at = open_entry["opened_at"] if open_entry is not None else None
+    opened = _parse_ts(opened_at)
+    time_in_trade_seconds = (
+        round((now - opened.astimezone(UTC)).total_seconds(), 1)
+        if opened is not None and opened.tzinfo is not None
+        else None
+    )
+    position = {
+        "side": "LONG" if is_long else "FLAT",
+        "base_qty": round(lane_base, 8) if is_long else 0.0,
+        "entry_price_usd": round(entry, 2) if (is_long and entry > 0) else None,
+        "mark_price_usd": round(mark, 2) if mark > 0 else None,
+        "spent_usd": spent_usd,
+        "value_usd": round(value, 4) if value is not None else None,
+        "unrealised_pnl_usd": round(unrealised, 4) if unrealised is not None else None,
+        "unrealised_pnl_pct": (
+            round(unrealised / cost * 100, 2) if unrealised is not None and cost else None
+        ),
+        "opened_at": opened_at,
+        "time_in_trade_seconds": time_in_trade_seconds,
+    }
+
+    # --- protection: -15% disaster floor + any venue-resting/trailing stop ---
+    resting = state.get("resting_stop") or heartbeat.get("resting_stop")
+    resting = resting if isinstance(resting, dict) else {}
+    resting_trigger = _number(
+        resting.get("trigger_price") or resting.get("venue_trigger_price_usd")
+    )
+    disaster = _number(heartbeat.get("disaster_stop_price"))
+    if disaster <= 0 and is_long and entry > 0:
+        disaster = entry * (1 - DEMO_DISASTER_STOP_PCT / 100)
+    stop_level = resting_trigger if resting_trigger > 0 else disaster
+    protection = {
+        "disaster_stop_price_usd": round(disaster, 2) if disaster > 0 else None,
+        "disaster_stop_pct": DEMO_DISASTER_STOP_PCT,
+        "venue_resting_stop_trigger_usd": round(resting_trigger, 2)
+        if resting_trigger > 0
+        else None,
+        "venue_resting_stop_state": resting.get("state") if resting else None,
+        "distance_to_stop_pct": (
+            round((mark - stop_level) / mark * 100, 2) if mark > 0 and stop_level > 0 else None
+        ),
+    }
+
+    # --- what it's watching / how close to acting ---
+    raw_levels = heartbeat.get("rule_levels")
+    levels = raw_levels if isinstance(raw_levels, dict) else {}
+    warming = bool(levels.get("warming_up")) or not levels
+    upper = _number(levels.get("donchian_upper"))
+    lower = _number(levels.get("donchian_lower"))
+    close = _number(levels.get("close"))
+    volume_base = _number(levels.get("volume_base"))
+    volume_threshold = _number(levels.get("volume_threshold"))
+    watching = {
+        "warming_up": warming,
+        "donchian_upper_usd": round(upper, 2) if upper else None,
+        "donchian_lower_usd": round(lower, 2) if lower else None,
+        "close_usd": round(close, 2) if close else None,
+        "distance_to_entry_pct": (
+            round((upper - close) / upper * 100, 2) if upper > 0 and close > 0 else None
+        ),
+        "exit_trigger_usd": round(lower, 2) if lower else None,
+        "volume_base": round(volume_base, 4) if volume_base else None,
+        "volume_threshold": round(volume_threshold, 4) if volume_threshold else None,
+        "volume_pct_of_gate": (
+            round(volume_base / volume_threshold * 100, 1) if volume_threshold > 0 else None
+        ),
+        "entry_rule": "close > donchian_upper(40) AND volume > 1.5x average(40)",
+        "exit_rule": "close < donchian_lower(40)",
+        "latest_closed_bar": heartbeat.get("latest_closed_bar"),
+    }
+
+    freshness = _heartbeat_freshness(heartbeat, now)
+    closed_count = len(closed_pnls)
+    wins = sum(1 for p in closed_pnls if p > 0)
+    losses = sum(1 for p in closed_pnls if p < 0)
+    return {
+        "symbol": symbol,
+        "base_coin": base_coin,
+        "data_available": data_available,
+        "kill_switch": kill_switch,
+        "heartbeat_age_seconds": freshness["age_seconds"],
+        "heartbeat_fresh": freshness["fresh"],
+        "signals": {
+            "in_window": heartbeat.get("signals_in_window"),
+            "fresh": heartbeat.get("fresh_signals"),
+        },
+        "position": position,
+        "protection": protection,
+        "watching": watching,
+        "trade_history": {
+            "closed_count": closed_count,
+            "wins": wins,
+            "losses": losses,
+            "win_rate_pct": round(wins / closed_count * 100, 1) if closed_count else None,
+            "realised_pnl_usd": round(sum(closed_pnls), 4),
+            "fees_usd": fees,
+        },
+    }
+
+
+def _portfolio_rollup(coins: list[dict[str, Any]]) -> dict[str, Any]:
+    """Cross-coin totals: open/flat counts, realised + unrealised P&L, exposure, fees, win rate."""
+    in_position = 0
+    open_exposure = 0.0
+    unrealised = 0.0
+    realised = 0.0
+    fees = 0.0
+    closed = 0
+    wins = 0
+    for coin in coins:
+        pos = coin["position"]
+        if pos["side"] == "LONG":
+            in_position += 1
+            exposure = pos["spent_usd"]
+            if exposure is None and pos["base_qty"] and pos["entry_price_usd"]:
+                exposure = pos["base_qty"] * pos["entry_price_usd"]
+            open_exposure += exposure or 0.0
+            unrealised += pos["unrealised_pnl_usd"] or 0.0
+        hist = coin["trade_history"]
+        realised += hist["realised_pnl_usd"]
+        fees += hist["fees_usd"]
+        closed += hist["closed_count"]
+        wins += hist["wins"]
+    return {
+        "coins_total": len(coins),
+        "coins_in_position": in_position,
+        "coins_flat": len(coins) - in_position,
+        "open_exposure_usd": round(open_exposure, 4),
+        "unrealised_pnl_usd": round(unrealised, 4),
+        "realised_pnl_usd": round(realised, 4),
+        "total_fees_usd": round(fees, 4),
+        "closed_trades": closed,
+        "wins": wins,
+        "win_rate_pct": round(wins / closed * 100, 1) if closed else None,
+    }
+
+
+def build_demo_lane(root: Path | None = None) -> dict[str, Any]:
+    """Rich, live, multi-coin operator projection plus the fixed aggregate-only Stage B field.
+
+    The top-level safety envelope (authority NONE, real_money False, UNVALIDATED, no promotion,
+    no auto-tune) and the `stage_b` field stay exactly as the aggregate-only projection they were:
+    `stage_b` is redacted and never carries per-episode rows. The operator view lives in `coins`
+    (one rich section per DEMO_COINS entry, in order) and a `portfolio` roll-up. Read-only; a
+    missing or malformed per-coin file degrades that coin to idle, never fails the response.
     """
     root = (root or Path(__file__).resolve().parents[4]).resolve()
     operational_status, kill_switch = _operational_snapshot(root)
+    now = datetime.now(tz=UTC)
+    orders = _orders(root)
+    coins: list[dict[str, Any]] = []
+    for symbol in DEMO_COINS:
+        try:
+            coins.append(_coin_projection(root, symbol, orders, kill_switch, now))
+        except Exception:  # noqa: BLE001 — one bad coin never fails the whole operator view
+            coins.append(
+                {
+                    "symbol": symbol,
+                    "base_coin": symbol.removesuffix(QUOTE_COIN),
+                    "data_available": False,
+                    "kill_switch": kill_switch,
+                    "heartbeat_age_seconds": None,
+                    "heartbeat_fresh": False,
+                    "signals": {"in_window": None, "fresh": None},
+                    "position": {
+                        "side": "FLAT",
+                        "base_qty": 0.0,
+                        "entry_price_usd": None,
+                        "mark_price_usd": None,
+                        "spent_usd": None,
+                        "value_usd": None,
+                        "unrealised_pnl_usd": None,
+                        "unrealised_pnl_pct": None,
+                        "opened_at": None,
+                        "time_in_trade_seconds": None,
+                    },
+                    "protection": {
+                        "disaster_stop_price_usd": None,
+                        "disaster_stop_pct": DEMO_DISASTER_STOP_PCT,
+                        "venue_resting_stop_trigger_usd": None,
+                        "venue_resting_stop_state": None,
+                        "distance_to_stop_pct": None,
+                    },
+                    "watching": {
+                        "warming_up": True,
+                        "donchian_upper_usd": None,
+                        "donchian_lower_usd": None,
+                        "close_usd": None,
+                        "distance_to_entry_pct": None,
+                        "exit_trigger_usd": None,
+                        "volume_base": None,
+                        "volume_threshold": None,
+                        "volume_pct_of_gate": None,
+                        "entry_rule": "close > donchian_upper(40) AND volume > 1.5x average(40)",
+                        "exit_rule": "close < donchian_lower(40)",
+                        "latest_closed_bar": None,
+                    },
+                    "trade_history": {
+                        "closed_count": 0,
+                        "wins": 0,
+                        "losses": 0,
+                        "win_rate_pct": None,
+                        "realised_pnl_usd": 0.0,
+                        "fees_usd": 0.0,
+                    },
+                }
+            )
     return {
-        "schema_version": 2,
+        # schema_version 1 to match every other GET endpoint and the client's fetchJson gate
+        # (which rejects anything != 1); the demo-lane action POST body keeps its own version.
+        "schema_version": 1,
         "operational_status": operational_status,
         "kill_switch": kill_switch,
         "environment": "VENUE_DEMO",
@@ -200,6 +488,8 @@ def build_demo_lane(root: Path | None = None) -> dict[str, Any]:
         "validation_state": "UNVALIDATED",
         "promotion_eligible": False,
         "auto_tune": False,
+        "coins": coins,
+        "portfolio": _portfolio_rollup(coins),
         "stage_b": _project_stage_b(root),
     }
 
@@ -448,16 +738,19 @@ def _operational_disaster_stop(
     }
 
 
-def _order_money(order: dict[str, Any]) -> dict[str, Any]:
+def _order_money(order: dict[str, Any], base_coin: str = BASE_COIN) -> dict[str, Any]:
     """Cash and base movement for one order, taken from reconciled wallet deltas.
 
     The venue's own before/after balances are the source of truth rather than
     `qty * avg_price`: the delta already includes the fee however the venue charged it
     (quote on sells, base on buys), so a derived notional would disagree with the wallet.
+
+    `base_coin` selects the `<COIN>_delta` reconcile key; it defaults to ETH so the single-lane
+    callers (and demo_readiness) are byte-identical, and the multi-coin projection passes each coin.
     """
     reconcile = order.get("reconcile") or {}
     quote_delta = _number(reconcile.get(f"{QUOTE_COIN}_delta"))
-    base_delta = _number(reconcile.get(f"{BASE_COIN}_delta"))
+    base_delta = _number(reconcile.get(f"{base_coin}_delta"))
     price = _number(order.get("avg_price"))
 
     return {

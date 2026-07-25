@@ -1,8 +1,9 @@
-"""Tests for the global-allowlist demo-lane projection and bounded controls (Wave 3).
+"""Tests for the rich multi-coin demo-lane operator projection and bounded controls.
 
-The GET /api/v1/demo-lane body is restricted to operational status plus the fixed,
-fail-closed Stage B readiness object; every legacy per-trade/wallet/order/heartbeat
-field is globally removed. The action handler returns exactly four fixed fields.
+GET /api/v1/demo-lane returns the top-level safety envelope, a rich per-coin operator view
+(`coins`) with a `portfolio` roll-up, and the fixed, fail-closed Stage B readiness object.
+The `stage_b` EVIDENCE field stays aggregate-only and redacted even though the operator view is
+rich. The action handler returns exactly four fixed fields.
 """
 
 from __future__ import annotations
@@ -25,7 +26,22 @@ _BODY_KEYS = {
     "validation_state",
     "promotion_eligible",
     "auto_tune",
+    "coins",
+    "portfolio",
     "stage_b",
+}
+_COIN_KEYS = {
+    "symbol",
+    "base_coin",
+    "data_available",
+    "kill_switch",
+    "heartbeat_age_seconds",
+    "heartbeat_fresh",
+    "signals",
+    "position",
+    "protection",
+    "watching",
+    "trade_history",
 }
 _STAGE_B_KEYS = {"status", "cohort_size", "series"}
 _COHORT_KEYS = {
@@ -133,7 +149,9 @@ def _projection(status: str, series: list[dict[str, Any]]) -> dict[str, Any]:
 def test_absent_stage_b_is_not_activated_with_authority_none(root: Path) -> None:
     lane = demo_lane.build_demo_lane(root)
     assert set(lane) == _BODY_KEYS
-    assert lane["schema_version"] == 2
+    assert (
+        lane["schema_version"] == 1
+    )  # matches every other GET endpoint + the client fetchJson gate
     assert lane["operational_status"] == "IDLE"
     assert lane["execution_authority"] == "NONE"
     assert lane["real_money"] is False
@@ -142,6 +160,158 @@ def test_absent_stage_b_is_not_activated_with_authority_none(root: Path) -> None
     assert lane["validation_state"] == "UNVALIDATED"
     assert set(lane["stage_b"]) == _STAGE_B_KEYS
     assert lane["stage_b"] == {"status": "NOT_ACTIVATED", "cohort_size": 30, "series": []}
+
+
+# --- rich, live, multi-coin operator view -------------------------------------------
+
+
+def _long_coin_files(root: Path, symbol: str) -> None:
+    """Write a per-coin heartbeat/state/order set for an open LONG position on `symbol`."""
+    base = symbol.removesuffix("USDT")
+    hb = demo_lane.LANE_DIR / (
+        "heartbeat.json" if symbol == "ETHUSDT" else f"heartbeat_{symbol}.json"
+    )
+    st = demo_lane.LANE_DIR / (
+        "lane_state.json" if symbol == "ETHUSDT" else f"lane_state_{symbol}.json"
+    )
+    (root / hb).write_text(
+        json.dumps(
+            {
+                "at": "2099-01-01T00:00:00+00:00",
+                "symbol": symbol,
+                "lane_base": "2",
+                "mark_price": "110",
+                "entry_price": "100",
+                "disaster_stop_price": "85",
+                "signals_in_window": 3,
+                "fresh_signals": 1,
+                "latest_closed_bar": "2099-01-01T00:00:00+00:00",
+                "resting_stop": {"state": "ACTIVE", "trigger_price": "95", "base_qty": "2"},
+                "rule_levels": {
+                    "warming_up": False,
+                    "close": "108",
+                    "donchian_upper": "120",
+                    "donchian_lower": "90",
+                    "volume_base": "1.2",
+                    "volume_threshold": "1.5",
+                },
+            }
+        )
+    )
+    (root / st).write_text(
+        json.dumps(
+            {
+                "lane_base": "2",
+                "entry_price": "100",
+                "resting_stop": {"state": "ACTIVE", "trigger_price": "95", "base_qty": "2"},
+            }
+        )
+    )
+    orders = [
+        {
+            "symbol": symbol,
+            "side": "Buy",
+            "avg_price": "100",
+            "fee": "0.001",
+            "recorded_at": "2099-01-01T00:00:00+00:00",
+            "reconcile": {"USDT_delta": -200.0, f"{base}_delta": 2.0},
+        }
+    ]
+    (root / demo_lane.ORDERS_LEDGER).write_text("\n".join(json.dumps(o) for o in orders) + "\n")
+
+
+def test_coins_are_every_demo_coin_in_order_with_no_selector(root: Path) -> None:
+    lane = demo_lane.build_demo_lane(root)
+    assert [c["symbol"] for c in lane["coins"]] == list(demo_lane.DEMO_COINS)
+    assert all(set(c) == _COIN_KEYS for c in lane["coins"])
+    # No request/query parameter selects a coin — build_demo_lane accepts only an optional root.
+    import inspect
+
+    assert list(inspect.signature(demo_lane.build_demo_lane).parameters) == ["root"]
+
+
+def test_missing_coin_degrades_to_idle_not_a_crash(root: Path) -> None:
+    lane = demo_lane.build_demo_lane(root)
+    btc = next(c for c in lane["coins"] if c["symbol"] == "BTCUSDT")
+    assert btc["data_available"] is False
+    assert btc["position"]["side"] == "FLAT"
+    assert btc["position"]["unrealised_pnl_usd"] is None
+    assert btc["trade_history"]["closed_count"] == 0
+
+
+def test_malformed_coin_data_degrades_gracefully_not_a_crash(root: Path) -> None:
+    # A heartbeat present but with wrong-typed nested fields (rule_levels/resting_stop not dicts,
+    # non-numeric prices) must NOT 500 the whole response: that coin degrades to safe defaults
+    # while every other coin still projects in order.
+    hb = demo_lane.LANE_DIR / "heartbeat_SOLUSDT.json"
+    (root / hb).parent.mkdir(parents=True, exist_ok=True)
+    (root / hb).write_text(
+        json.dumps(
+            {
+                "at": "2099-01-01T00:00:00+00:00",
+                "symbol": "SOLUSDT",
+                "lane_base": "not-a-number",
+                "mark_price": "oops",
+                "rule_levels": ["not", "a", "dict"],
+                "resting_stop": "also-not-a-dict",
+            }
+        )
+    )
+    lane = demo_lane.build_demo_lane(root)
+    assert [c["symbol"] for c in lane["coins"]] == list(demo_lane.DEMO_COINS)
+    sol = next(c for c in lane["coins"] if c["symbol"] == "SOLUSDT")
+    assert set(sol) == _COIN_KEYS
+    assert sol["position"]["side"] == "FLAT"  # bad lane_base -> 0 -> flat
+    assert sol["watching"]["donchian_upper_usd"] is None  # malformed rule_levels -> degraded
+
+
+def test_open_position_live_unrealised_and_distance_to_entry(root: Path) -> None:
+    _long_coin_files(root, "ETHUSDT")
+    eth = next(c for c in demo_lane.build_demo_lane(root)["coins"] if c["symbol"] == "ETHUSDT")
+    pos = eth["position"]
+    assert pos["side"] == "LONG"
+    assert pos["base_qty"] == 2.0
+    assert pos["entry_price_usd"] == 100.0
+    assert pos["mark_price_usd"] == 110.0
+    # 2 @ (110-100) = 20 live unrealised, +10%.
+    assert pos["unrealised_pnl_usd"] == 20.0
+    assert pos["unrealised_pnl_pct"] == 10.0
+    # close 108 vs breakout upper 120 -> 10% below.
+    assert eth["watching"]["distance_to_entry_pct"] == 10.0
+    # volume 1.2 of 1.5 gate -> 80%.
+    assert eth["watching"]["volume_pct_of_gate"] == 80.0
+    # -15% disaster floor + venue-resting stop surfaced.
+    assert eth["protection"]["disaster_stop_price_usd"] == 85.0
+    assert eth["protection"]["venue_resting_stop_trigger_usd"] == 95.0
+    assert eth["protection"]["venue_resting_stop_state"] == "ACTIVE"
+
+
+def test_portfolio_rollup_sums_across_coins(root: Path) -> None:
+    _long_coin_files(root, "ETHUSDT")
+    portfolio = demo_lane.build_demo_lane(root)["portfolio"]
+    assert portfolio["coins_total"] == len(demo_lane.DEMO_COINS)
+    assert portfolio["coins_in_position"] == 1
+    assert portfolio["coins_flat"] == len(demo_lane.DEMO_COINS) - 1
+    assert portfolio["unrealised_pnl_usd"] == 20.0
+    assert portfolio["open_exposure_usd"] == 200.0  # cost basis = ledger USDT spent on the entry
+
+
+def test_stage_b_field_stays_aggregate_only_and_lists_no_coins(
+    root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The operator view is rich, but the stage_b FIELD remains the redacted aggregate-only one."""
+    _long_coin_files(root, "ETHUSDT")
+    projection = _projection(
+        "READY", [{"series_number": 1, "cohorts": [_cohort(1, "COMPLETE", _complete_aggregate())]}]
+    )
+    monkeypatch.setattr(demo_lane, "public_stage_b_projection", lambda _root: projection)
+    stage_b = demo_lane.build_demo_lane(root)["stage_b"]
+    assert set(stage_b) == _STAGE_B_KEYS
+    stage_b_body = json.dumps(stage_b).lower()
+    for token in _FORBIDDEN_TOKENS:
+        assert token not in stage_b_body, f"forbidden token leaked into stage_b: {token}"
+    # The per-coin operator data lives only under coins/portfolio, never inside stage_b.
+    assert "ethusdt" not in stage_b_body
 
 
 def test_kill_switch_and_operational_status_derive_from_lane_signals(root: Path) -> None:
@@ -233,10 +403,14 @@ def test_complete_cohort_renders_only_approved_totals(
 # --- redaction: forbidden fields never surface ---------------------------------------
 
 
-def test_forbidden_fields_are_globally_stripped(
+def test_forbidden_fields_are_stripped_from_stage_b(
     root: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Even if upstream leaks private data, the API boundary reprojects to the allowlist."""
+    """Even if upstream leaks private data, the stage_b field reprojects to the allowlist.
+
+    Scoped to `stage_b`: the rich operator view (coins/portfolio) legitimately carries position,
+    pnl, and signal fields, but the Stage B EVIDENCE field stays aggregate-only and redacted.
+    """
     dirty_aggregate = {**_complete_aggregate(), "private_path": "artifacts/evidence/private_demo"}
     dirty_cohort = {
         **_cohort(1, "COMPLETE", dirty_aggregate),
@@ -266,7 +440,7 @@ def test_forbidden_fields_are_globally_stripped(
     assert set(series["cohorts"][0]) == _COHORT_KEYS
     assert set(series["cohorts"][0]["aggregate"]) == _AGGREGATE_KEYS
 
-    body = json.dumps(lane).lower()
+    body = json.dumps(lane["stage_b"]).lower()
     for token in _FORBIDDEN_TOKENS:
         assert token not in body, f"forbidden token leaked: {token}"
     assert "deadbeef" not in body

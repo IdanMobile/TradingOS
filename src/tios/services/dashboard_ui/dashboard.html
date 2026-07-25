@@ -278,6 +278,36 @@ function renderDemoLane(lane){
     return `<div style="margin-top:10px"><div class="muted">Series ${dec(s.series_number)}</div>${cohortsHtml}</div>`;
   }).join(''):'<p class="muted" style="margin-top:6px">No completed series yet. Stage B releases only immutable 30-episode cohort aggregates.</p>';
 
+  // --- rich, live, multi-coin operator view ---
+  const coins=Array.isArray(lane.coins)?lane.coins:[];
+  const pf=(lane.portfolio&&typeof lane.portfolio==='object')?lane.portfolio:{};
+  const usd=v=>(v===null||v===undefined)?'—':'$'+dec(v);
+  const pctv=v=>(v===null||v===undefined)?'—':dec(v)+'%';
+  const dur=s=>(s===null||s===undefined)?'—':(s<3600?Math.round(s/60)+'m':Math.round(s/3600)+'h');
+  const banner=`${dec(pf.coins_in_position)} of ${dec(pf.coins_total)} coins in a position · ${dec(pf.coins_flat)} flat / watching`;
+  const portfolioHtml=`<div class="card" style="margin-top:8px">
+    <div><strong>Portfolio</strong> · <span class="badge ${(pf.coins_in_position||0)>0?'green':''}">${esc(banner)}</span></div>
+    <div class="muted" style="font-size:.85em;margin-top:4px">
+      realised ${usd(pf.realised_pnl_usd)} · unrealised ${usd(pf.unrealised_pnl_usd)} · open exposure ${usd(pf.open_exposure_usd)} · fees ${usd(pf.total_fees_usd)} · ${dec(pf.closed_trades)} closed · win rate ${pctv(pf.win_rate_pct)}
+    </div></div>`;
+  const coinHtml=c=>{
+    const p=c.position||{},pr=c.protection||{},w=c.watching||{},sig=c.signals||{},th=c.trade_history||{};
+    const long=p.side==='LONG';
+    const sideTone=long?'green':'';
+    const stale=c.heartbeat_fresh===false?' <span class="badge amber">STALE</span>':'';
+    const posLine=long
+      ? `<div class="muted" style="font-size:.85em">${dec(p.base_qty)} ${esc(String(c.base_coin||''))} @ entry ${usd(p.entry_price_usd)} · mark ${usd(p.mark_price_usd)} · unrealised ${usd(p.unrealised_pnl_usd)} (${pctv(p.unrealised_pnl_pct)}) · in trade ${dur(p.time_in_trade_seconds)} · spent ${usd(p.spent_usd)}</div>`
+      : `<div class="muted" style="font-size:.85em">Flat — watching for a volume-confirmed breakout. Needs close above ${usd(w.donchian_upper_usd)} (${pctv(w.distance_to_entry_pct)} away) and ${pctv(w.volume_pct_of_gate)} of the volume gate.</div>`;
+    return `<div class="card" style="margin-top:8px">
+      <div><strong>${esc(String(c.symbol||''))}</strong> <span class="badge ${sideTone}">${esc(String(p.side||'FLAT'))}</span>${c.data_available===false?' <span class="badge">NO DATA</span>':''}${stale}</div>
+      ${posLine}
+      <div class="muted" style="font-size:.82em;margin-top:4px">Protection: -${dec(pr.disaster_stop_pct)}% disaster stop ${usd(pr.disaster_stop_price_usd)} · venue-resting stop ${usd(pr.venue_resting_stop_trigger_usd)} (${dec(pr.venue_resting_stop_state)}) · ${pctv(pr.distance_to_stop_pct)} from mark</div>
+      <div class="muted" style="font-size:.82em">Watching: upper ${usd(w.donchian_upper_usd)} · lower/exit ${usd(w.exit_trigger_usd)} · close ${usd(w.close_usd)} · vol ${dec(w.volume_base)} vs gate ${dec(w.volume_threshold)} (${pctv(w.volume_pct_of_gate)}) · signals ${dec(sig.in_window)} in window / ${dec(sig.fresh)} fresh · bar ${dec(w.latest_closed_bar)}${w.warming_up?' · warming up':''}</div>
+      <div class="muted" style="font-size:.82em">Realised: ${dec(th.closed_count)} closed · ${dec(th.wins)}W / ${dec(th.losses)}L · win rate ${pctv(th.win_rate_pct)} · P&L ${usd(th.realised_pnl_usd)} · fees ${usd(th.fees_usd)}</div>
+    </div>`;
+  };
+  const coinsHtml=coins.length?coins.map(coinHtml).join(''):'<p class="muted" style="margin-top:6px">No demo coins reporting yet.</p>';
+
   card.innerHTML=`<div class="card">
   <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
     <img src="${BYBIT_LOGO}" alt="Bybit" style="width:44px;height:44px;border-radius:10px;object-fit:cover">
@@ -303,6 +333,11 @@ function renderDemoLane(lane){
     <button class="action" data-lane-action="RUN_ONCE" ${status==='RUNNING'?'disabled':''}>Run one cycle</button>
   </div>
   <p class="muted" id="demoLaneActionStatus" role="status" aria-live="polite">Start runs it hourly and clears any previous stop. Stop blocks every order immediately.</p>
+
+  <div class="section-title" style="margin-top:20px"><h3 style="font-size:1rem;margin:0">Live lane — per coin</h3><span class="badge ${(pf.coins_in_position||0)>0?'green':''}">${esc(banner)}</span></div>
+  <p class="muted" style="margin-top:6px">Fake money, real market. Each coin runs the same volume-confirmed Donchian breakout independently — position, live P&L, protection, and what it is watching. DIAGNOSTIC ONLY · authority NONE · UNVALIDATED.</p>
+  ${portfolioHtml}
+  ${coinsHtml}
 
   <div class="section-title" style="margin-top:20px"><h3 style="font-size:1rem;margin:0">Stage B decision evidence</h3><span class="badge ${sbTone}">${esc(sbStatus)}</span></div>
   <p class="muted" style="margin-top:6px">Default-disabled, activation-gated, authority NONE. Cohort size ${esc(String(cohortSize))}. No per-trade data, wallet, orders, signals, or identifiers are exposed — only immutable completed-cohort aggregates.</p>

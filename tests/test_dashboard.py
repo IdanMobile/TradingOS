@@ -2105,7 +2105,10 @@ def test_demo_lane_card_renders_aggregate_null_and_the_ten_totals() -> None:
         assert "agg." + field in source, field
 
 
-def test_demo_lane_card_drops_every_legacy_field() -> None:
+def test_demo_lane_card_reads_only_coins_and_portfolio_not_flat_legacy_fields() -> None:
+    """The rich operator view reads lane.coins / lane.portfolio — never a flat legacy lane.* object
+    (the Wave-3 aggregate-only card exposed none of these, and the operator card keeps that shape at
+    the top level, moving the per-coin detail into the coins array)."""
     source = _demo_lane_render_source()
     for legacy in (
         "lane.orders",
@@ -2120,12 +2123,42 @@ def test_demo_lane_card_drops_every_legacy_field() -> None:
         "lane.pid",
         "lane.counts",
         "position_base",
-        "realised_pnl",
         "walletTotal",
         "data-lane-range",
         "Order history",
     ):
         assert legacy not in source, legacy
+    assert "lane.coins" in source
+    assert "lane.portfolio" in source
+
+
+def test_demo_lane_card_renders_rich_multi_coin_operator_view() -> None:
+    source = _demo_lane_render_source()
+    # Per-coin loop over the coins array, with the live operator fields.
+    assert "coins.map(coinHtml)" in source
+    for token in (
+        "c.position",
+        "c.protection",
+        "c.watching",
+        "c.trade_history",
+        "unrealised_pnl_usd",
+        "unrealised_pnl_pct",
+        "time_in_trade_seconds",
+        "distance_to_entry_pct",
+        "volume_pct_of_gate",
+        "disaster_stop_price_usd",
+        "venue_resting_stop_trigger_usd",
+        "realised_pnl_usd",
+    ):
+        assert token in source, token
+    # Corrected banner reflects the actual aggregate state, and a portfolio roll-up is present.
+    assert "coins in a position" in source
+    assert "flat / watching" in source
+    assert "pf.realised_pnl_usd" in source
+    assert "pf.open_exposure_usd" in source
+    # Safety labels stay visible on the operator card.
+    for label in ("DIAGNOSTIC ONLY", "authority NONE", "UNVALIDATED"):
+        assert label in source, label
 
 
 def test_demo_lane_route_is_the_only_stage_b_surface_and_authority_is_none(
@@ -2147,18 +2180,20 @@ def test_demo_lane_route_is_the_only_stage_b_surface_and_authority_is_none(
         "validation_state",
         "promotion_eligible",
         "auto_tune",
+        "coins",
+        "portfolio",
         "stage_b",
     }
-    assert payload["schema_version"] == 2
+    assert payload["schema_version"] == 1
     assert payload["execution_authority"] == "NONE"
     assert payload["real_money"] is False
     assert payload["promotion_eligible"] is False
     assert payload["auto_tune"] is False
     assert payload["stage_b"] == {"status": "NOT_ACTIVATED", "cohort_size": 30, "series": []}
-    # No order/trade surface anywhere in the body.
-    lowered = body.lower()
+    # The Stage B EVIDENCE field stays aggregate-only: no per-trade surface leaks into it.
+    stage_b_lowered = json.dumps(payload["stage_b"]).lower().encode()
     for token in (b"order", b"wallet", b"pnl", b"position", b"heartbeat", b"pid", b"signal"):
-        assert token not in lowered, token
+        assert token not in stage_b_lowered, token
 
     # There is no separate Stage B route; readiness is a field on this one route only.
     missing = _handle_request(b"GET /api/v1/stage-b HTTP/1.1\r\nHost: localhost\r\n\r\n", tmp_path)

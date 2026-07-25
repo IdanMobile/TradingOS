@@ -1,5 +1,35 @@
 # Package Changelog
 
+## v8.147 — 2026-07-26 — Multi-coin demo lane, rich live dashboard, deterministic reports
+
+Operator-directed follow-on to Stage B. Fake-money demo only; execution authority NONE;
+nothing validated or promoted.
+
+- Multi-coin demo lane: `scripts/demo_eth_lane.py` is parameterized by `symbol` (default
+  `ETHUSDT`, byte-identical to the prior single-coin behavior) and gains a `run_multi_cycle` /
+  `--multi` driver over a fixed liquid universe (BTC, ETH, SOL, BNB, XRP, DOGE, ADA, AVAX, LINK,
+  LTC). Each coin trades the same volume-confirmed Donchian-breakout strategy independently with
+  its own state (`lane_state_<SYMBOL>.json`) and −15% + venue-resting stops, under one shared
+  kill switch and a shared total-capital cap ($300, $25/coin). The Stage B evidence path stays
+  ETH-only (`symbol == SYMBOL`) so non-ETH coins run the legacy NOT_ACTIVATED path and Stage B is
+  untouched. Independent order-path review confirmed the ETH lane is byte-identical, the cap gates
+  only new entries (never exits/stops), coins can't corrupt each other's state, and one coin's
+  failure is isolated.
+- Rich, live, multi-coin operator dashboard: the demo-lane projection is re-expanded (reversing
+  the Stage B Wave-3 operator-view redaction, per operator direction) to a per-coin operator view
+  (`coins`) with a `portfolio` roll-up — position, live unrealised % and time-in-trade, protection
+  (disaster + trailing stop, distance-to-stop), and what each coin is watching (Donchian bands,
+  distance-to-entry %, volume-vs-gate %). The Stage B **evidence** field stays aggregate-only and
+  redacted. Fixes a latent render bug: the demo-lane GET response now returns `schema_version: 1`
+  (matching every other endpoint and the client fetch gate) so the card actually renders — this
+  also fixes the committed Stage B Wave-3 dashboard, which would otherwise fail to render on
+  restart. `dashboard.html` and `tests/test_dashboard.py` are integrity-manifest-tracked; this
+  entry accompanies their manifest hash regeneration per the D-030 rule.
+- Deterministic, zero-AI report tools: `scripts/report_demo_trades.py` (per-trade win/loss),
+  `scripts/report_demo_status.py` (live operational status), and `scripts/report_research_findings.py`
+  (honest, breadth-ranked summary of the universe research screen — exploratory leads, explicitly
+  not validated edge). All read-only, authority NONE.
+
 ## v8.146 — 2026-07-24 — Stage B demo-evidence v2 (default-disabled)
 
 - Implemented Option A of the 2026-07-23 Stage B demo-evidence security decision packet: a new
