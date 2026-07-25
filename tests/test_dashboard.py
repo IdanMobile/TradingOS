@@ -2058,3 +2058,131 @@ def test_workspace_decision_post_is_the_only_allowed_write_path(tmp_path: Path) 
         tmp_path,
     )
     assert b" 404 " in blocked.split(b"\r\n\r\n", 1)[0]
+
+
+def _demo_lane_render_source() -> str:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    start = html.index("function renderDemoLane(lane){")
+    end = html.index("async function loadDemoLane(){", start)
+    return html[start:end]
+
+
+def test_demo_lane_card_pins_stage_b_and_authority_labels() -> None:
+    source = _demo_lane_render_source()
+    for label in (
+        "Stage B decision evidence",
+        "DEMO / FAKE MONEY",
+        "NO REAL MONEY",
+        "AUTHORITY:",
+        "DIAGNOSTIC ONLY",
+        "NO PROMOTION",
+        "NO AUTO-TUNE",
+        "lane.execution_authority",
+        "lane.operational_status",
+        "lane.stage_b",
+    ):
+        assert label in source, label
+
+
+def test_demo_lane_card_renders_aggregate_null_and_the_ten_totals() -> None:
+    source = _demo_lane_render_source()
+    # aggregate=null path shows a pending message and never a PnL value.
+    assert "Aggregate pending" in source
+    for field in (
+        "closed_count",
+        "positive_count",
+        "negative_count",
+        "flat_count",
+        "entry_exec_value_total",
+        "exit_exec_value_total",
+        "gross_quote_total",
+        "quote_fee_total",
+        "base_fee_total",
+        "net_quote_total",
+    ):
+        assert "agg." + field in source, field
+
+
+def test_demo_lane_card_drops_every_legacy_field() -> None:
+    source = _demo_lane_render_source()
+    for legacy in (
+        "lane.orders",
+        "lane.wallet",
+        "lane.pnl",
+        "lane.positions",
+        "lane.position",
+        "lane.heartbeat",
+        "lane.windows",
+        "lane.rules",
+        "lane.divergence",
+        "lane.pid",
+        "lane.counts",
+        "position_base",
+        "realised_pnl",
+        "walletTotal",
+        "data-lane-range",
+        "Order history",
+    ):
+        assert legacy not in source, legacy
+
+
+def test_demo_lane_route_is_the_only_stage_b_surface_and_authority_is_none(
+    tmp_path: Path,
+) -> None:
+    response = _handle_request(
+        b"GET /api/v1/demo-lane HTTP/1.1\r\nHost: localhost\r\n\r\n", tmp_path
+    )
+    headers, body = response.split(b"\r\n\r\n", 1)
+    assert b" 200 " in headers
+    payload = json.loads(body)
+    assert set(payload) == {
+        "schema_version",
+        "operational_status",
+        "kill_switch",
+        "environment",
+        "real_money",
+        "execution_authority",
+        "validation_state",
+        "promotion_eligible",
+        "auto_tune",
+        "stage_b",
+    }
+    assert payload["schema_version"] == 2
+    assert payload["execution_authority"] == "NONE"
+    assert payload["real_money"] is False
+    assert payload["promotion_eligible"] is False
+    assert payload["auto_tune"] is False
+    assert payload["stage_b"] == {"status": "NOT_ACTIVATED", "cohort_size": 30, "series": []}
+    # No order/trade surface anywhere in the body.
+    lowered = body.lower()
+    for token in (b"order", b"wallet", b"pnl", b"position", b"heartbeat", b"pid", b"signal"):
+        assert token not in lowered, token
+
+    # There is no separate Stage B route; readiness is a field on this one route only.
+    missing = _handle_request(b"GET /api/v1/stage-b HTTP/1.1\r\nHost: localhost\r\n\r\n", tmp_path)
+    missing_headers, missing_body = missing.split(b"\r\n\r\n", 1)
+    assert b" 200 " not in missing_headers
+    assert b"cohort" not in missing_body and b"series" not in missing_body
+
+
+def test_demo_lane_action_response_body_is_exactly_four_fields(tmp_path: Path) -> None:
+    (tmp_path / "scripts").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "scripts/demo_eth_lane.py").write_text("# stand-in\n")
+    body = b'{"action":"STOP","idempotency_key":"dash-stop-1"}'
+    response = _handle_request(
+        b"POST /api/v1/demo-lane-actions HTTP/1.1\r\n"
+        b"Host: localhost\r\nContent-Type: application/json\r\n"
+        + f"Content-Length: {len(body)}\r\n\r\n".encode()
+        + body,
+        tmp_path,
+    )
+    headers, payload = response.split(b"\r\n\r\n", 1)
+    assert b" 201 " in headers
+    assert json.loads(payload) == {
+        "schema_version": 2,
+        "ok": True,
+        "action": "STOP",
+        "state": "STOPPED",
+    }

@@ -22,6 +22,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
+from tios.evidence.demo_decision_evidence_v2 import public_stage_b_projection
 from tios.services.dashboard_api.audit import AuditPathError, confined_audit_handle
 
 LANE_DIR = Path("artifacts/trading_domain/demo_lane")
@@ -108,108 +109,104 @@ def _orders(root: Path) -> list[dict[str, Any]]:
     return records
 
 
-def build_demo_lane(root: Path | None = None) -> dict[str, Any]:
-    """Project current lane liveness, heartbeat, and retained fills. Pure read."""
-    root = (root or Path(__file__).resolve().parents[4]).resolve()
-    running, pid, started_at = _running(root)
-    stopped = (root / KILL_SWITCH).exists()
-    orders = _orders(root)
-    filled = [o for o in orders if o.get("ok") is True]
-    heartbeat = _read_json(root / HEARTBEAT)
-    state = _read_json(root / LANE_STATE)
-    lane_base = _number(state.get("lane_base", heartbeat.get("lane_base")))
-    now = datetime.now(tz=UTC)
-    ledger_base = sum(_order_money(order)["base_delta"] for order in filled)
-    operational_stop = _operational_disaster_stop(
-        state, heartbeat, running=running, ledger_base=ledger_base, now=now
-    )
-    if running:
-        status = "STOPPING" if stopped else "RUNNING"
-    else:
-        status = "STOPPED" if stopped else "IDLE"
-    _mark = _number(heartbeat.get("mark_price"))
-    _annotations = _annotate_orders(filled)
-    rules = _rules(heartbeat or {}, lane_base > 0, _mark)
-    positions = _attach_operational_stop(_round_trips(filled, _mark), operational_stop)
+_STAGE_B_STATUSES = frozenset({"NOT_ACTIVATED", "READY", "ENTRY_BLOCK", "UNAVAILABLE"})
+_AGGREGATE_FIELDS = (
+    "closed_count",
+    "positive_count",
+    "negative_count",
+    "flat_count",
+    "entry_exec_value_total",
+    "exit_exec_value_total",
+    "gross_quote_total",
+    "quote_fee_total",
+    "base_fee_total",
+    "net_quote_total",
+)
+
+
+def _unavailable_stage_b() -> dict[str, Any]:
+    return {"status": "UNAVAILABLE", "cohort_size": 30, "series": []}
+
+
+def _reshape_cohort(cohort: Any) -> dict[str, Any]:
+    aggregate = cohort["aggregate"]
     return {
-        "schema_version": 1,
-        "generated_at": now.isoformat(),
-        "status": status,
-        "running": running,
-        "pid": pid,
-        "started_at": started_at,
-        "kill_switch": stopped,
-        "candidate": "ETH-VOLUME-BREAKOUT-PROSPECTIVE-V1",
-        "symbol": "ETHUSDT",
-        "timeframe": "1h",
-        "environment": "VENUE_DEMO",
-        "real_money": False,
-        "validation_state": "UNVALIDATED",
-        "promotion_eligible": False,
-        "venue": "api-demo.bybit.com",
-        "limits": {
-            "buy_notional_usdt": "50",
-            "sell_notional_usdt": "120",
-            "order_type": "MARKET",
-        },
-        "position_base": state.get("lane_base", heartbeat.get("lane_base", "0")),
-        "cursor": state.get("cursor"),
-        "heartbeat": heartbeat or None,
-        "counts": {
-            "orders_recorded": len(orders),
-            "orders_filled": len(filled),
-            "buys": sum(1 for o in filled if o.get("side") == "Buy"),
-            "sells": sum(1 for o in filled if o.get("side") == "Sell"),
-            "refused": sum(1 for o in orders if o.get("ok") is False),
-        },
-        "account": {
-            "venue": "Bybit",
-            "venue_host": "api-demo.bybit.com",
-            "account_type": "UNIFIED",
-            "environment": "DEMO",
-            "real_money": False,
-            "credential_holder": "lane process only; the dashboard holds none",
-        },
-        "divergence": _divergence(root, len(filled)),
-        "operational_disaster_stop": operational_stop,
-        "wallet": _wallet(heartbeat or {}, filled),
-        "pnl": _pnl(filled, _mark),
-        "rules": rules,
-        "position": _position(filled, _mark, rules, operational_stop),
-        "positions": positions,
-        "windows": _window_stats(positions, filled, now),
-        "orders": [
-            {
-                **{
-                    field: order.get(field)
-                    for field in (
-                        "recorded_at",
-                        "side",
-                        "qty",
-                        "unit",
-                        "ok",
-                        "stage",
-                        "avg_price",
-                        "cum_exec_qty",
-                        "fee",
-                        "reason",
-                        "error",
-                        "reconcile",
-                    )
-                },
-                **_order_money(order),
-                **_annotations.get(str(order.get("order_id") or ""), {}),
-            }
-            for order in orders[-ORDER_HISTORY_LIMIT:][::-1]
-        ],
-        "note": (
-            "Demo/fake money on the venue demo host. The candidate is UNVALIDATED and demo "
-            "fills are execution-measurement evidence only — they cannot validate or promote "
-            "a strategy. No live path, credential access, or real-money capability exists here."
+        "cohort_number": cohort["cohort_number"],
+        "assigned_count": cohort["assigned_count"],
+        "eligible_closed_count": cohort["eligible_closed_count"],
+        "ineligible_count": cohort["ineligible_count"],
+        "open_count": cohort["open_count"],
+        "readiness": cohort["readiness"],
+        # aggregate is null until an exact 30-assignment cohort is complete; when present it
+        # is reprojected to exactly the approved totals so nothing upstream can leak.
+        "aggregate": (
+            None if aggregate is None else {key: aggregate[key] for key in _AGGREGATE_FIELDS}
         ),
     }
 
 
+def _project_stage_b(root: Path) -> dict[str, Any]:
+    """Reproject the fixed, fail-closed Stage B public projection through a strict allowlist.
+
+    Any parse/validation surprise (missing key, wrong type, bad status) fails closed to
+    UNAVAILABLE with no series, so no private field can ever reach the API boundary.
+    """
+    try:
+        raw = public_stage_b_projection(root)
+        if not isinstance(raw, dict) or raw.get("status") not in _STAGE_B_STATUSES:
+            return _unavailable_stage_b()
+        series_in = raw["series"]
+        if not isinstance(series_in, list):
+            return _unavailable_stage_b()
+        series_out = [
+            {
+                "series_number": series["series_number"],
+                "cohorts": [_reshape_cohort(cohort) for cohort in series["cohorts"]],
+            }
+            for series in series_in
+        ]
+        return {"status": raw["status"], "cohort_size": 30, "series": series_out}
+    except Exception:  # noqa: BLE001 — fail closed on any projection defect, never leak
+        return _unavailable_stage_b()
+
+
+def _operational_snapshot(root: Path) -> tuple[str, bool]:
+    """Derive only operational status and kill-switch from the lane's own liveness signals."""
+    try:
+        running, _pid, _started = _running(root)
+        kill_switch = (root / KILL_SWITCH).exists()
+    except OSError:
+        return "UNAVAILABLE", False
+    if running:
+        return ("STOPPING" if kill_switch else "RUNNING"), kill_switch
+    return ("STOPPED" if kill_switch else "IDLE"), kill_switch
+
+
+def build_demo_lane(root: Path | None = None) -> dict[str, Any]:
+    """Global-allowlist demo-lane projection: operational status plus Stage B readiness only.
+
+    No heartbeat/PID/cursor/wallet/positions/orders/signals/per-trade or window PnL is
+    exposed in any state (Appendix C global removal), inactive or active.
+    """
+    root = (root or Path(__file__).resolve().parents[4]).resolve()
+    operational_status, kill_switch = _operational_snapshot(root)
+    return {
+        "schema_version": 2,
+        "operational_status": operational_status,
+        "kill_switch": kill_switch,
+        "environment": "VENUE_DEMO",
+        "real_money": False,
+        "execution_authority": "NONE",
+        "validation_state": "UNVALIDATED",
+        "promotion_eligible": False,
+        "auto_tune": False,
+        "stage_b": _project_stage_b(root),
+    }
+
+
+# ponytail: the legacy fill/pnl/stop helpers below are no longer in the API projection but are
+# retained because out-of-scope src/tios/ops/demo_readiness.py imports _order_money and
+# _operational_disaster_stop; delete this cluster only alongside that consumer.
 def _number(value: Any) -> float:
     if isinstance(value, bool):
         return 0.0
@@ -904,7 +901,8 @@ def _divergence(root: Path, fills_now: int) -> dict[str, Any]:
 def _validated(payload: dict[str, Any]) -> tuple[str, str]:
     action = str(payload.get("action", "")).strip().upper()
     if action not in ACTIONS:
-        raise DemoLaneActionError(f"unknown demo lane action: {action or '(missing)'}")
+        # Fixed generic error — never reflect the requested action value back to the client.
+        raise DemoLaneActionError("demo lane action is invalid")
     key = payload.get("idempotency_key")
     if not isinstance(key, str) or not _IDENTIFIER.fullmatch(key):
         raise DemoLaneActionError("idempotency_key must be a bounded identifier")
@@ -997,4 +995,6 @@ def perform_demo_lane_action(root: Path, payload: dict[str, Any]) -> dict[str, A
         "real_money": False,
     }
     _audit(root, record)
-    return {"schema_version": 1, "recorded": record, "state": build_demo_lane(root)}
+    # Detailed audit stays disk-only; the success body is restricted to four fixed fields.
+    state, _kill = _operational_snapshot(root)
+    return {"schema_version": 2, "ok": True, "action": action, "state": state}
