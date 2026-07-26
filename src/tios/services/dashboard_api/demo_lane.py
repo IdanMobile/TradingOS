@@ -1450,6 +1450,107 @@ def build_wallet(root: Path | None = None) -> dict[str, Any]:
         return _empty_wallet()
 
 
+# --- read-only PRICE HISTORY view ----------------------------------------------------------------
+# GET /api/v1/price-history answers "what did the price actually do while we held this?" from the
+# closes the LANE ITSELF already captured (price_history_<SYMBOL>.json) — no venue call, no kline
+# fetch, no new data source. Same rails as every projection above: no request parameter at all, no
+# subprocess, no write, fixed paths, schema_version 1, fail closed.
+#
+# It is a RECORD of what happened, never a forecast and never a signal. The held set and every
+# entry/stop/mark string are taken straight from `build_wallet`, so this endpoint cannot quote a
+# different mark, a different stop precedence, or a coin the wallet does not hold.
+PRICE_HISTORY_POINT_LIMIT = 288  # ~24h at the lane's 5m cadence; mirrors the lane's own cap
+_PRICE_SYMBOL = re.compile(r"^[A-Z0-9]{2,20}$")  # ledger symbols only — no traversal reaches a path
+
+
+def _price_points(raw: Any) -> list[dict[str, str]]:
+    """Well-formed closes oldest -> newest, capped. Malformed rows are DROPPED, never raised, so one
+    bad line can never cost the operator the rest of the series."""
+    points: list[dict[str, str]] = []
+    for row in raw if isinstance(raw, list) else []:
+        if not isinstance(row, dict):
+            continue
+        at = row.get("at")
+        close = _decimal_or_none(row.get("close"))
+        if not isinstance(at, str) or _parse_ts(at) is None or close is None:
+            continue
+        points.append({"at": at, "close": _plain(close)})
+    return points[-PRICE_HISTORY_POINT_LIMIT:]
+
+
+def _price_series(root: Path, position: dict[str, Any]) -> dict[str, Any]:
+    """One held coin's captured closes plus the wallet's own entry/stop/mark for that position.
+
+    A coin whose history file does not exist yet (the lane writes it on its next cycle) is the
+    NORMAL empty case: `closes: []`, null timestamps, `point_count: 0` — never an error, never a
+    guess. `interval` is null rather than assumed when the file is absent: the capture cadence is
+    the file's to state.
+    """
+    symbol = str(position.get("symbol") or "")
+    payload = (
+        _read_json(root / LANE_DIR / f"price_history_{symbol}.json")
+        if _PRICE_SYMBOL.fullmatch(symbol)
+        else {}
+    )
+    closes = _price_points(payload.get("points"))
+    interval = payload.get("interval")
+    updated_at = payload.get("updated_at")
+    return {
+        "symbol": symbol,
+        "interval": interval if isinstance(interval, str) else None,
+        "updated_at": updated_at if isinstance(updated_at, str) else None,
+        "point_count": len(closes),
+        "first_at": closes[0]["at"] if closes else None,
+        "last_at": closes[-1]["at"] if closes else None,
+        "closes": closes,
+        # Same source as the wallet's position row: no second mark, no second stop precedence.
+        "entry_price": position.get("entry_price"),
+        "stop_price": position.get("stop_price"),
+        "mark_price": position.get("mark_price"),
+        "held": True,  # a series is only ever emitted for a coin the lane holds right now
+    }
+
+
+def _empty_price_history() -> dict[str, Any]:
+    """Fail-closed shape: identical key set, nothing claimed. Never a 500, never a traceback."""
+    return {
+        "schema_version": 1,
+        "available": False,
+        "generated_at": _iso(datetime.now(tz=UTC)),
+        "series": [],
+        "coverage": {"held_count": 0, "series_count": 0, "missing": []},
+    }
+
+
+def build_price_history(root: Path | None = None) -> dict[str, Any]:
+    """GET /api/v1/price-history — the lane's own captured closes for each coin it holds right now.
+
+    Bounded by construction: one series per OPEN wallet position (<= the lane's slot count), each
+    capped at PRICE_HISTORY_POINT_LIMIT closes. `coverage.missing` names every held coin whose
+    history has not been captured yet, so the client can say so instead of drawing nothing.
+    """
+    try:
+        resolved = (root or Path(__file__).resolve().parents[4]).resolve()
+        wallet = build_wallet(resolved)
+        if not wallet["available"]:
+            return _empty_price_history()  # no wallet truth means no honest held set
+        positions = wallet["positions"]
+        series = [_price_series(resolved, position) for position in positions]
+        return {
+            "schema_version": 1,
+            "available": True,
+            "generated_at": _iso(datetime.now(tz=UTC)),
+            "series": series,
+            "coverage": {
+                "held_count": len(positions),
+                "series_count": len(series),
+                "missing": [row["symbol"] for row in series if not row["point_count"]],
+            },
+        }
+    except Exception:  # noqa: BLE001 — a read defect must never crash the read-only server
+        return _empty_price_history()
+
+
 # ponytail: the legacy fill/pnl/stop helpers below are no longer in the API projection but are
 # retained because out-of-scope src/tios/ops/demo_readiness.py imports _order_money and
 # _operational_disaster_stop; delete this cluster only alongside that consumer.

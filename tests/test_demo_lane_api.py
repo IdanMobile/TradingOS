@@ -1959,3 +1959,265 @@ def test_wallet_route_serves_schema_version_1_through_the_real_handler(root: Pat
     assert b"Content-Type: application/json" in headers
     assert payload["schema_version"] == 1
     assert set(payload) == _WALLET_KEYS
+
+
+# --- GET /api/v1/price-history --------------------------------------------------------------------
+# "What did the price actually do while we held this?" answered from the closes the LANE captured
+# itself. No request parameter, no venue call, no subprocess, no write. One series per HELD coin
+# (the wallet's own open positions), so the payload stays bounded; a held coin whose history file
+# does not exist yet is the normal empty case, never an error.
+
+_HISTORY_KEYS = {"schema_version", "available", "generated_at", "series", "coverage"}
+_HISTORY_SERIES_KEYS = {
+    "symbol",
+    "interval",
+    "updated_at",
+    "point_count",
+    "first_at",
+    "last_at",
+    "closes",
+    "entry_price",
+    "stop_price",
+    "mark_price",
+    "held",
+}
+_HISTORY_COVERAGE_KEYS = {"held_count", "series_count", "missing"}
+
+
+def _price_file(root: Path, symbol: str, points: Any, **overrides: Any) -> None:
+    """A price_history_<SYMBOL>.json exactly as the lane persists it (bars it already fetched)."""
+    payload: dict[str, Any] = {
+        "schema_version": 1,
+        "symbol": symbol,
+        "interval": "5m",
+        "updated_at": "2026-07-26T15:00:00+00:00",
+        "max_points": 288,
+        "points": points,
+    }
+    payload.update(overrides)
+    (root / demo_lane.LANE_DIR / f"price_history_{symbol}.json").write_text(json.dumps(payload))
+
+
+def _closes(count: int, start: float = 100.0) -> list[dict[str, str]]:
+    base = datetime(2026, 7, 26, 12, 0, tzinfo=UTC)
+    return [
+        {"at": (base + timedelta(minutes=5 * i)).isoformat(), "close": str(start + i)}
+        for i in range(count)
+    ]
+
+
+def _assert_history_shape(history: dict[str, Any]) -> None:
+    assert history["schema_version"] == 1  # matches the client fetchJson gate
+    assert set(history) == _HISTORY_KEYS
+    assert set(history["coverage"]) == _HISTORY_COVERAGE_KEYS
+    assert all(set(row) == _HISTORY_SERIES_KEYS for row in history["series"])
+    for row in history["series"]:
+        assert all(set(point) == {"at", "close"} for point in row["closes"])
+        assert all(isinstance(point["close"], str) for point in row["closes"])
+
+
+def test_price_history_contract_keys_are_identical_available_and_unavailable(root: Path) -> None:
+    """(a) schema_version 1 and the exact key set at every level, in BOTH states."""
+    _write_feed_orders(root, [_wallet_buy("TRXUSDT", "2026-07-20T10:00:00+00:00", "0.30", 83.0)])
+    _price_file(root, "TRXUSDT", _closes(3, 0.3))
+    history = demo_lane.build_price_history(root)
+    _assert_history_shape(history)
+    assert history["available"] is True
+    empty = demo_lane._empty_price_history()
+    _assert_history_shape(empty)
+    assert empty["available"] is False
+    assert set(history) == set(empty)
+    assert empty["series"] == []
+    assert empty["coverage"] == {"held_count": 0, "series_count": 0, "missing": []}
+
+
+def test_price_history_emits_one_series_per_held_coin_only(root: Path) -> None:
+    """(b) held coins only: a closed trip and an unheld coin's file are both ignored."""
+    _write_feed_orders(
+        root,
+        [
+            _wallet_buy("TRXUSDT", "2026-07-20T10:00:00+00:00", "0.30", 100.0),
+            _wallet_buy("SOLUSDT", "2026-07-20T11:00:00+00:00", "100.0", 0.25),
+            _wallet_sell("SOLUSDT", "2026-07-20T12:00:00+00:00", "110.0", 0.25, 27.5),  # closed
+        ],
+    )
+    _price_file(root, "TRXUSDT", _closes(4, 0.3))
+    _price_file(root, "SOLUSDT", _closes(4, 100.0))  # closed position — must NOT be emitted
+    _price_file(root, "ADAUSDT", _closes(4, 0.5))  # never held at all
+    history = demo_lane.build_price_history(root)
+    assert [row["symbol"] for row in history["series"]] == ["TRXUSDT"]
+    assert history["coverage"] == {"held_count": 1, "series_count": 1, "missing": []}
+    assert all(row["held"] is True for row in history["series"])
+    # Held set and order are the wallet's own, never a second derivation.
+    held = [p["symbol"] for p in demo_lane.build_wallet(root)["positions"]]
+    assert [row["symbol"] for row in history["series"]] == held
+
+
+def test_price_history_held_coin_without_a_file_is_empty_not_an_error(root: Path) -> None:
+    """(c) the lane has not written the file yet: empty closes, null stamps, named in coverage."""
+    at = "2026-07-20T10:00:00+00:00"
+    _write_feed_orders(
+        root, [_wallet_buy("TRXUSDT", at, "0.30", 100.0), _wallet_buy("ADAUSDT", at, "0.50", 50.0)]
+    )
+    _price_file(root, "TRXUSDT", _closes(2, 0.3))
+    history = demo_lane.build_price_history(root)
+    _assert_history_shape(history)
+    assert history["available"] is True
+    ada = next(row for row in history["series"] if row["symbol"] == "ADAUSDT")
+    assert ada["closes"] == [] and ada["point_count"] == 0
+    assert ada["first_at"] is None and ada["last_at"] is None
+    assert ada["updated_at"] is None and ada["interval"] is None  # never a guessed cadence
+    assert history["coverage"]["missing"] == ["ADAUSDT"]
+    assert history["coverage"]["held_count"] == 2 == history["coverage"]["series_count"]
+
+
+def test_price_history_closes_are_oldest_first_capped_and_string_valued(root: Path) -> None:
+    """(d) the series stays bounded and Decimal-exact: newest tail kept, oldest -> newest."""
+    _write_feed_orders(root, [_wallet_buy("TRXUSDT", "2026-07-20T10:00:00+00:00", "0.30", 100.0)])
+    points = _closes(demo_lane.PRICE_HISTORY_POINT_LIMIT + 40, 0.3)
+    _price_file(root, "TRXUSDT", points)
+    series = demo_lane.build_price_history(root)["series"][0]
+    assert series["point_count"] == demo_lane.PRICE_HISTORY_POINT_LIMIT
+    assert series["closes"][0] == points[40]  # the oldest 40 are dropped, not the newest
+    assert series["closes"][-1]["at"] == points[-1]["at"]
+    assert series["first_at"] == series["closes"][0]["at"]
+    assert series["last_at"] == series["closes"][-1]["at"]
+    assert series["interval"] == "5m" and series["updated_at"] == "2026-07-26T15:00:00+00:00"
+    stamps = [point["at"] for point in series["closes"]]
+    assert stamps == sorted(stamps)
+
+
+def test_price_history_drops_malformed_points_without_failing_the_response(root: Path) -> None:
+    """(e) one bad row must never cost the operator the rest of the series."""
+    _write_feed_orders(root, [_wallet_buy("TRXUSDT", "2026-07-20T10:00:00+00:00", "0.30", 100.0)])
+    good = _closes(2, 0.3)
+    _price_file(
+        root,
+        "TRXUSDT",
+        [
+            good[0],
+            "not a dict",
+            {"at": "2026-07-26T12:00:00+00:00"},  # no close
+            {"close": "0.31"},  # no timestamp
+            {"at": "not-a-time", "close": "0.31"},
+            {"at": "2026-07-26T12:05:00+00:00", "close": "not-a-number"},
+            {"at": "2026-07-26T12:10:00+00:00", "close": None},
+            good[1],
+        ],
+    )
+    history = demo_lane.build_price_history(root)
+    assert history["available"] is True
+    assert history["series"][0]["closes"] == good
+    assert history["series"][0]["point_count"] == 2
+
+
+@pytest.mark.parametrize(
+    "content", ["{not valid json", "[]", '{"points": "nope"}', '{"points": null}', ""]
+)
+def test_price_history_malformed_file_degrades_to_an_empty_series(root: Path, content: str) -> None:
+    """(f) a corrupt history file yields an empty series, never an exception or a 500."""
+    _write_feed_orders(root, [_wallet_buy("TRXUSDT", "2026-07-20T10:00:00+00:00", "0.30", 100.0)])
+    (root / demo_lane.LANE_DIR / "price_history_TRXUSDT.json").write_text(content)
+    history = demo_lane.build_price_history(root)
+    _assert_history_shape(history)
+    assert history["available"] is True
+    assert history["series"][0]["closes"] == []
+    assert history["coverage"]["missing"] == ["TRXUSDT"]
+
+
+def test_price_history_entry_stop_and_mark_agree_with_the_wallet(root: Path) -> None:
+    """(g) the three price levels ARE build_wallet's — no second mark, no second stop precedence."""
+    at = "2026-07-20T10:00:00+00:00"
+    _write_feed_orders(
+        root,
+        [
+            _wallet_buy("TRXUSDT", at, "0.30", 100.0),
+            _wallet_buy("SOLUSDT", at, "100.0", 0.25),
+            _wallet_buy("ADAUSDT", at, "0.50", 50.0),
+        ],
+    )
+    _mark_files(root, "TRXUSDT", mark="0.315", entry="0.30")  # -15% floor, no resting stop
+    _mark_files(root, "SOLUSDT", mark="110.0", entry="100.0", resting="85.0")  # resting stop wins
+    # ADAUSDT has no heartbeat at all -> no mark anywhere.
+    for symbol in ("TRXUSDT", "SOLUSDT", "ADAUSDT"):
+        _price_file(root, symbol, _closes(3, 1.0))
+    positions = {p["symbol"]: p for p in demo_lane.build_wallet(root)["positions"]}
+    for series in demo_lane.build_price_history(root)["series"]:
+        position = positions[series["symbol"]]
+        for field in ("entry_price", "stop_price", "mark_price"):
+            assert series[field] == position[field], f"{series['symbol']}.{field}"
+    by_symbol = {row["symbol"]: row for row in demo_lane.build_price_history(root)["series"]}
+    assert by_symbol["SOLUSDT"]["stop_price"] == "85"  # venue resting stop, not the -15% floor
+    assert by_symbol["TRXUSDT"]["stop_price"] == "0.26"  # derived disaster floor
+    assert by_symbol["ADAUSDT"]["mark_price"] is None  # never invented
+
+
+def test_price_history_fails_closed_when_a_read_raises_without_leaking_the_reason(
+    root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """(h) any exception on the read path is contained — never a 500, never a traceback."""
+    _write_feed_orders(root, [_wallet_buy("TRXUSDT", "2026-07-20T10:00:00+00:00", "0.30", 100.0)])
+    _price_file(root, "TRXUSDT", _closes(3, 0.3))
+
+    def boom(*_args: Any, **_kwargs: Any) -> dict[str, Any]:
+        raise OSError("history exploded at /Users/secret/price_history_TRXUSDT.json")
+
+    monkeypatch.setattr(demo_lane, "_price_series", boom)
+    history = demo_lane.build_price_history(root)
+    _assert_history_shape(history)
+    assert history["available"] is False and history["series"] == []
+    assert "exploded" not in json.dumps(history)
+    # A wallet that cannot be read leaves no honest held set: same fail-closed shape.
+    monkeypatch.setattr(demo_lane, "build_wallet", lambda _root: demo_lane._empty_wallet())
+    closed = demo_lane.build_price_history(root)
+    _assert_history_shape(closed)
+    assert closed["available"] is False
+
+
+def test_price_history_is_a_pure_read_and_never_spawns_a_subprocess(
+    root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """(i) a spawn from a read-only chart source would be a governance break."""
+    monkeypatch.setattr(
+        demo_lane.subprocess, "Popen", lambda *_a, **_k: pytest.fail("history must not spawn")
+    )
+    monkeypatch.setattr(
+        demo_lane.subprocess, "run", lambda *_a, **_k: pytest.fail("history must not spawn")
+    )
+    _write_feed_orders(root, [_wallet_buy("TRXUSDT", "2026-07-20T10:00:00+00:00", "0.30", 100.0)])
+    _price_file(root, "TRXUSDT", _closes(3, 0.3))
+    assert demo_lane.build_price_history(root)["schema_version"] == 1
+
+
+def test_price_history_leaks_no_identifying_token(root: Path) -> None:
+    """(j) the serialized body carries no order id, signal ref, path, pid or credential."""
+    _write_feed_orders(
+        root,
+        [
+            _wallet_buy(
+                "TRXUSDT",
+                "2026-07-20T10:00:00+00:00",
+                "0.30",
+                100.0,
+                signal_ref="ACT-CONF:0.4300:2026-07-20T09:55:00+00:00",
+                error=_LEAKY_ERROR,
+            )
+        ],
+    )
+    _mark_files(root, "TRXUSDT", mark="0.315", entry="0.30")
+    _price_file(root, "TRXUSDT", _closes(3, 0.3))
+    body = json.dumps(demo_lane.build_price_history(root))
+    for token in _WALLET_FORBIDDEN:
+        assert token not in body, f"price history leaked {token!r}"
+    assert "BYBIT" not in body and "abcd1234" not in body
+
+
+def test_price_history_route_serves_schema_version_1_through_the_real_handler(root: Path) -> None:
+    """(k) end-to-end through the real GET handler: 200 JSON with schema_version 1."""
+    _write_feed_orders(root, [_wallet_buy("TRXUSDT", "2026-07-20T10:00:00+00:00", "0.30", 100.0)])
+    _price_file(root, "TRXUSDT", _closes(3, 0.3))
+    headers, payload = _handle_get("/api/v1/price-history", root)
+    assert b" 200 " in headers
+    assert b"Content-Type: application/json" in headers
+    assert payload["schema_version"] == 1
+    assert payload["series"][0]["symbol"] == "TRXUSDT"

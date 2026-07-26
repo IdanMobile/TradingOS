@@ -2548,3 +2548,83 @@ are structurally subordinated to lane budget and can never be summed with or pre
 Fake-money demo only; execution authority `NONE`; 0 validated strategies; demo P&L remains NON-EVIDENCE.
 No price chart is drawn because no price history exists in this view. No venue, order, live, or
 real-money authority is granted, and no investment advice is given.**
+
+### D-123 — Four D-121 parked items cleared; lane captures the bars it already fetches so real price charts exist; first live turnover confirms the fee-drag arithmetic
+
+Decision: on operator instruction ("complete them") the four items parked in D-121 were cleared and the
+price-chart gap left open in D-122 was closed honestly.
+
+**Parked item 1 (money visibility, the only logic change).** `load_filled()` admitted only
+`ok is True and order_status == "Filled"`, so a `PartiallyFilledCanceled` row — a terminal status the lane
+defines, where part of the order genuinely filled and the remainder was cancelled, carrying a REAL
+reconciled wallet delta — was filtered out before the fold and appeared as neither a trip nor an unmatched
+fill. It is now admitted **only** when `order_status == "PartiallyFilledCanceled"` AND the reconciled delta
+is non-zero, and is surfaced as an unmatched fill with `reason: "partial_fill_cancelled"` — never folded
+into a trip, never priced. Folding it was rejected on evidence from the lane itself: `run_cycle` credits
+`lane_base` only under `if action.get("ok")` and `entry_price_from_ledger` likewise gates on `ok`, so the
+lane never treats a partial fill as a position; folding it would invent a position no exit could ever
+close, or book a whole cost basis against partial proceeds — a fabricated P&L in the flattering direction.
+The other `ok: False` write sites (`kill_switch`, `price_unavailable`, `qty_below_step`, `place` failure)
+carry no `reconcile` block at all, and `Cancelled`/`Rejected` fail the exact status match, so no rejected
+order can become a trade or move the win rate. `total_fees_usd` keeps its prior trips-only meaning with
+partial-fill fees isolated in `unmatched_fees_usd`; all public signatures and existing keys are unchanged
+for the `build_equity_curve`/`build_wallet` library callers. Verified byte-identical on the real ledger via
+a frozen snapshot (the live ledger is being appended to by a running lane): today's 16 rows are all
+`Filled`, so nothing changed.
+**Parked items 2–4 (tests only).** 3+ successive scale-ins now pin exact money and a bounded weighted-entry
+drift; the research self-lock's exit-3 contention path is test-locked (flock held on a second in-process
+FD, `build_report` monkeypatched to fail, pre-seeded report asserted byte-identical, no real search run);
+an orphan sell followed by a fresh buy+close on the same key is proven not to corrupt the later trip.
+
+**Price history (order-path change, reviewed as such).** The lane already FETCHES a window of closed bars
+every cycle and discarded them. It now persists them to
+`artifacts/trading_domain/demo_lane/price_history_<SYMBOL>.json` (bounded 288 points, deduped by bar close
+time, atomic tmp+replace, interval-guarded) with **ZERO new venue calls** — `scripts/demo_activity_lane.py`
+needed no edit because its prefetched reference bars already flow through `run_cycle`. The diff to the
+order-path file is **83 insertions, 0 deletions**: the write sits after the durable `final_state` write and
+immediately before the existing heartbeat write, with no order submission, kill-switch check or state
+transition below it, and the `try` wraps the whole call expression so even argument evaluation cannot
+escape the guard. **The binding invariant — a price-history failure must never block or delay a
+risk-reducing order — is test-locked for both an entry and a −15% disaster-stop sell with the writer forced
+to raise.** Because the lane seeds from the window it already holds, real history exists from the first
+cycle rather than accumulating from zero.
+
+**Charts (read-only).** New `GET /api/v1/price-history` (no query parameters, no request-derived path,
+symbol regex-gated before any filename is built) emits a series only for coins the lane currently HOLDS,
+with the held set, ordering and `entry_price`/`stop_price`/`mark_price` all reused verbatim from
+`build_wallet` — no second mark, stop precedence or held-set derivation. Missing/malformed files degrade
+per series; the fail-closed shape keeps an identical key set. The Wallet page draws each position's price
+path with its entry and stop levels marked. Honest-framing decisions: `interval` returns `null` rather than
+a guessed cadence when no file exists; coins still collecting are NAMED rather than silently dropped;
+0/1/flat-point series render a note, a single dot, or a midline rather than a fabricated or broken line;
+and every chart is captioned as a CAPPED, lane-captured RECORD — explicitly not a full exchange chart, not
+a forecast, not a signal. This closes D-122's "no price chart" gap without inventing data: the research
+parquets were rejected as a source (~13h stale, 15 of 40 coins at 1h) because stale prices beside live
+marks would mislead.
+
+**Measured during this change — the fee-drag arithmetic of D-121 confirmed in production.** The lane
+completed its first turnover: APTUSDT's agreement fell below the exit gate and it sold at 17:16:52Z
+(entry 0.6293 → exit 0.6289), freeing a slot that ADAUSDT took ~6 minutes later. The price moved **−0.064%**
+but the round trip realised **−0.28% (−$0.0702)** — fees (~$0.05) were roughly **3× the price move**. A trade
+essentially flat on the market still lost money. Realised fell $0.5379 → $0.4677 and the win rate moved
+from a meaningless 100% (n=1) to 50% (1W/1L). This is direct evidence for D-121's conclusion that
+high-frequency churn on an unvalidated signal is fee-negative, and that every round trip must clear a
+~0.2% hurdle merely to break even.
+
+Evidence: operator instruction 2026-07-26; the live `orders.jsonl` (APT exit + ADA entry, 2 closed / 12
+open, realised $0.4677, fees $0.4006) read read-only; an independent adversarial review returning GO with
+no blocking findings across all three parts, which hash-verified 11 files, walked `run_cycle` top to bottom
+to confirm nothing order-related executes after the new write, traced every `ok: False` ledger-write site to
+confirm no rejected order can be admitted, and checked the real ledger for partial-fill rows (none).
+Non-blocking notes recorded: `except Exception` does not catch `KeyboardInterrupt`/`SystemExit` (would skip
+one heartbeat write, no order impact); price-history files are keyed by symbol not lane, so alternating
+`--multi` and `--activity` on a shared coin restarts that chart series (continuity only); dedup keyed on bar
+timestamp would keep a stale close if a venue ever revised a closed kline. `PACKAGE_INTEGRITY_MANIFEST.md`;
+`PACKAGE_CHANGELOG.md`. Normal reconciliation (v8.154) under D-030/T-000-02 — `dashboard_ui/server.py`,
+`dashboard.html` ×2, `tests/test_dashboard.py` ×2 and this decision log ×1 rehashed; NOT an integrity
+exception.
+Status: **All four D-121 parked items CLEARED; price capture and real position charts SHIPPED. The
+risk-reducing-order invariant is preserved and test-locked. Fake-money demo only; execution authority
+`NONE`; 0 validated strategies; demo P&L remains NON-EVIDENCE and charts are a record, never a forecast.
+The running lane must be restarted to begin capturing price history. No venue, order, live, or real-money
+authority is granted, and no investment advice is given.**

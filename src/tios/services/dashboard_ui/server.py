@@ -24,6 +24,7 @@ from tios.services.dashboard_api.demo_lane import (
     build_demo_trades_view,
     build_equity_curve,
     build_live_feed,
+    build_price_history,
     build_research_findings_view,
     build_wallet,
     perform_demo_lane_action,
@@ -132,6 +133,9 @@ class Handler(BaseHTTPRequestHandler):
             self._send(200, "application/json", json.dumps(build_live_feed(self.root)).encode())
         elif path == "/api/v1/wallet":
             self._send(200, "application/json", json.dumps(build_wallet(self.root)).encode())
+        elif path == "/api/v1/price-history":
+            body = json.dumps(build_price_history(self.root)).encode()
+            self._send(200, "application/json", body)
         elif path == "/api/v1/equity-curve":
             self._send(200, "application/json", json.dumps(build_equity_curve(self.root)).encode())
         elif path == "/api/v1/research-findings":

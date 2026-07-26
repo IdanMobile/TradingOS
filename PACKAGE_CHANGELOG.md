@@ -1,5 +1,57 @@
 # Package Changelog
 
+## v8.154 — 2026-07-26 — Parked items cleared; lane price capture and real position charts
+
+Clears the four items parked in D-121 and closes D-122's "no price chart" gap without inventing data.
+Fake money only; execution authority NONE; 0 validated strategies; demo P&L is NON-EVIDENCE.
+Independent adversarial review (weighted on the order-path change): GO, no blocking findings. See
+DECISION_LOG.md D-123.
+
+- **Money visibility (`scripts/report_demo_trades.py`).** `load_filled()` admitted only
+  `ok is True and order_status == "Filled"`, so a `PartiallyFilledCanceled` row — where part of the order
+  genuinely filled, carrying a real reconciled delta — vanished from the report entirely. It is now
+  admitted ONLY on an exact `PartiallyFilledCanceled` status AND a non-zero delta, and surfaced as an
+  unmatched fill (`reason: "partial_fill_cancelled"`) — never folded, never priced. Folding was rejected
+  on the lane's own evidence: `run_cycle` and `entry_price_from_ledger` both gate on `ok`, so the lane
+  never credits a partial fill to a position; folding would invent a position no exit could close or book
+  a full cost basis against partial proceeds. Rejected orders still cannot become trades (the other
+  `ok:False` sites carry no `reconcile`; `Cancelled`/`Rejected` fail the exact status match).
+  `total_fees_usd` keeps its trips-only meaning; partial-fill fees are isolated in `unmatched_fees_usd`.
+  Verified byte-identical against a frozen snapshot of the live ledger (all 16 rows are `Filled`).
+- **Tests closing the remaining parked items:** 3+ successive scale-ins pin exact money and bounded
+  weighted-entry drift; the research self-lock's exit-3 contention path is test-locked (no real search
+  executed); an orphan sell is proven not to corrupt a later trip on the same key.
+- **Price capture (order-path change).** The lane persists the bar window it ALREADY fetches to
+  `artifacts/trading_domain/demo_lane/price_history_<SYMBOL>.json` (288 points, deduped by bar close time,
+  atomic tmp+replace, interval-guarded) with **zero new venue calls**; `demo_activity_lane.py` needed no
+  edit. The order-path diff is 83 insertions / 0 deletions: the write sits after the durable state write
+  and immediately before the heartbeat, with no order submission, kill-switch check or state transition
+  below it, and the `try` wraps the whole call expression. The invariant that a price-history failure can
+  never block a risk-reducing order is test-locked for both an entry and a −15% disaster-stop sell.
+  History exists from the first cycle because the fetched window seeds the file.
+- **Real position charts (read-only).** New `GET /api/v1/price-history` — no query parameters, symbol
+  regex-gated, series only for coins currently HELD, with the held set and entry/stop/mark reused verbatim
+  from `build_wallet` (no second mark or stop rule). Malformed files degrade per series; fail-closed keeps
+  an identical key set. The Wallet page draws each position's price path with entry and stop levels
+  marked. Honest framing: `interval` is `null` rather than a guessed cadence when no file exists; coins
+  still collecting are named, not dropped; 0/1/flat series render a note, a dot, or a midline rather than
+  a fabricated line; every chart is captioned a CAPPED, lane-captured RECORD — not a full exchange chart,
+  not a forecast, not a signal. The research parquets were rejected as a source (~13h stale, 15 of 40
+  coins) because stale prices beside live marks would mislead.
+
+Measured in production during this change: the lane's first turnover. APTUSDT exited at 17:16:52Z
+(entry 0.6293 → exit 0.6289) and ADAUSDT took the freed slot ~6 minutes later. The price moved −0.064%
+but the round trip realised −0.28% (−$0.0702) — fees were roughly 3× the price move. Realised fell
+$0.5379 → $0.4677; win rate moved from a meaningless 100% (n=1) to 50% (1W/1L). Direct evidence for
+D-121's conclusion that churn on an unvalidated signal is fee-negative.
+
+**Operational note:** a running lane must be RESTARTED to begin capturing price history; until then the
+charts honestly report "collecting price history".
+
+Manifest-tracked files rehashed (D-030): `dashboard_ui/server.py`, `dashboard.html`,
+`tests/test_dashboard.py`, `DECISION_LOG.md`. Gates green: package integrity PASS (453 rows),
+project-wide ruff + mypy (139 files) clean, 403 tests pass across the affected suites.
+
 ## v8.153 — 2026-07-26 — Wallet page: balance, budget, positions and honest charts
 
 Answers the operator's money questions on one surface after they reported the Watch split was still

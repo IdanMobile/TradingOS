@@ -330,6 +330,143 @@ def test_legacy_eth_only_ledger_folds_byte_identically(tmp_path: Path) -> None:
     ]
 
 
+def test_partially_filled_cancelled_order_reaches_the_report(tmp_path: Path) -> None:
+    # FAILS pre-fix: `load_filled` admitted a row only on `ok is True and order_status == "Filled"`,
+    # but demo_eth_lane.place() writes `ok: status.orderStatus == "Filled"`, so a terminal
+    # PartiallyFilledCanceled order (part executed, remainder cancelled) lands with ok=False and was
+    # dropped BEFORE the fold — real wallet movement appearing as neither a trip nor an unmatched
+    # fill. Pre-fix this asserted 0 unmatched and 0 visible dollars.
+    partial = _priced_order(
+        "SOLUSDT", "Buy", -12.5, 0.125, "100", "0.00125", "2026-07-26T14:00:00+00:00"
+    )
+    partial["ok"] = False
+    partial["order_status"] = "PartiallyFilledCanceled"
+    partial["cum_exec_qty"] = "0.125"
+    rows = [
+        partial,
+        _priced_order("SOLUSDT", "Buy", -25.0, 0.25, "100", "0", "2026-07-26T14:01:00+00:00"),
+        _priced_order("SOLUSDT", "Sell", 27.0, -0.25, "108", "0", "2026-07-26T14:02:00+00:00"),
+    ]
+    trips, unmatched = rpt.fold_fills(rpt.load_filled(_write(tmp_path, rows)))
+    # Surfaced with its own reason, never priced, never a trip.
+    assert [u["reason"] for u in unmatched] == ["partial_fill_cancelled"]
+    assert "pnl_usd" not in unmatched[0] and "outcome" not in unmatched[0]
+    assert unmatched[0]["spent_usd"] == 12.5 and unmatched[0]["size_base"] == 0.125
+    assert unmatched[0]["at"] == "2026-07-26T14:00:00+00:00"
+    # ...and it does not contaminate the real trade on the same key: the lane never credited that
+    # partial to lane_base (`run_cycle` gates on `action.get("ok")`), so the following buy is the
+    # whole cost basis of the following exit.
+    assert [t["status"] for t in trips] == ["CLOSED"]
+    assert trips[0]["spent_usd"] == 25.0 and trips[0]["pnl_usd"] == 2.0
+    summary = rpt.summarize(trips, unmatched)
+    assert summary["closed_trades"] == 1 and summary["wins"] == 1  # counts/win rate untouched
+    assert summary["realised_pnl_usd"] == 2.0  # no invented P&L
+    assert summary["unmatched_fills"] == 1 and summary["unmatched_fees_usd"] == 0.125
+    assert "partial_fill_cancelled" in rpt.render_markdown(rpt.build_report(_write(tmp_path, rows)))
+
+
+def test_failed_orders_never_become_trades(tmp_path: Path) -> None:
+    # The other side of the same guard: widening load_filled must NOT let ok=False records that
+    # moved no money start counting. The lane's pre-send rejects carry no `reconcile` key at all;
+    # a terminal Cancelled/Rejected `done` record reconciles to zero on both coins.
+    rejects: list[dict[str, object]] = [
+        {"ok": False, "stage": "kill_switch", "side": "Buy", "recorded_at": "2026-07-26T14:00:00Z"},
+        {"ok": False, "stage": "place", "side": "Buy", "recorded_at": "2026-07-26T14:01:00Z"},
+        {
+            "ok": False,
+            "stage": "done",
+            "order_status": "Rejected",
+            "side": "Buy",
+            "symbol": "SOLUSDT",
+            "recorded_at": "2026-07-26T14:02:00Z",
+            "reconcile": {"USDT_delta": 0.0, "SOL_delta": 0.0},
+        },
+        {
+            "ok": False,
+            "stage": "done",
+            "order_status": "PartiallyFilledCanceled",  # cancelled before anything executed
+            "side": "Buy",
+            "symbol": "SOLUSDT",
+            "recorded_at": "2026-07-26T14:03:00Z",
+            "reconcile": {"USDT_delta": 0.0, "SOL_delta": 0.0},
+        },
+    ]
+    trips, unmatched = rpt.fold_fills(rpt.load_filled(_write(tmp_path, rejects)))
+    assert trips == [] and unmatched == []
+    assert rpt.summarize(trips, unmatched)["closed_trades"] == 0
+
+
+def test_three_successive_scale_ins_keep_the_money_exact(tmp_path: Path) -> None:
+    # No test locked 3+ successive scale-ins on one key: each `_scale_in` rounds spend/fees to 4dp
+    # and size to 8dp and recomputes a size-weighted entry, so repeated folding is where rounding
+    # drift would accumulate. Amounts are deliberately awkward (7 dp of size, 4+ dp of fee).
+    buys = [
+        ("-33.3333", 0.3333333, "100.0001", "0.0003333", "2026-07-26T14:00:00+00:00"),
+        ("-16.6667", 0.1481481, "112.5003", "0.0001481", "2026-07-26T14:10:00+00:00"),
+        ("-24.9999", 0.1999992, "125.0000", "0.0002000", "2026-07-26T14:20:00+00:00"),
+        ("-11.1111", 0.0793650, "140.0000", "0.0000794", "2026-07-26T14:30:00+00:00"),
+    ]
+    rows = [
+        _priced_order("SOLUSDT", "Buy", float(usdt), base, price, fee, at)
+        for usdt, base, price, fee, at in buys
+    ]
+    trips = rpt.round_trips(rpt.load_filled(_write(tmp_path, rows)))
+    assert len(trips) == 1 and trips[0]["status"] == "OPEN"
+    open_trip = trips[0]
+    total_spent = round(sum(-float(b[0]) for b in buys), 4)
+    total_size = round(sum(b[1] for b in buys), 8)
+    total_fees = round(sum(float(b[3]) * float(b[2]) for b in buys), 4)
+    # EXACT, not approximate: aggregation must not lose or gain a cent across four folds.
+    assert open_trip["spent_usd"] == total_spent == 86.111
+    assert open_trip["size_base"] == total_size == 0.7608456
+    assert open_trip["fees_usd"] == total_fees == 0.0861
+    # Size-weighted entry: bounded drift only, since each fold rounds the running average to 8dp.
+    exact_vwap = sum(b[1] * float(b[2]) for b in buys) / total_size
+    assert abs(open_trip["entry_price_usd"] - exact_vwap) < 1e-6
+
+    # ...and closing it books total received minus total spent, with no drift from the four folds.
+    rows.append(
+        _priced_order(
+            "SOLUSDT", "Sell", 91.1111, -total_size, "119.75", "0.09", "2026-07-26T15:00Z"
+        )
+    )
+    trips, unmatched = rpt.fold_fills(rpt.load_filled(_write(tmp_path, rows)))
+    assert unmatched == [] and [t["status"] for t in trips] == ["CLOSED"]
+    assert trips[0]["spent_usd"] == 86.111 and trips[0]["received_usd"] == 91.1111
+    assert trips[0]["pnl_usd"] == round(91.1111 - 86.111, 4) == 5.0001
+    assert trips[0]["fees_usd"] == round(total_fees + 0.09, 4)
+    assert trips[0]["size_base"] == total_size  # the whole position exits as one unit
+    assert rpt.summarize(trips, unmatched)["realised_pnl_usd"] == 5.0001
+
+
+def test_orphan_sell_does_not_corrupt_a_later_trip_on_the_same_key(tmp_path: Path) -> None:
+    # An orphan sell followed by a fresh buy+close on the SAME (symbol, strategy) key: the orphan
+    # must not leave residue in `open_entries` that the next buy scales into or the next sell prices
+    # against. It pops nothing (there is nothing open) and is reported; the following buy->sell is a
+    # clean, independent trip.
+    rows = [
+        _priced_order("SOLUSDT", "Sell", 30.0, -0.30, "100", "0.03", "2026-07-26T14:00:00+00:00"),
+        _priced_order("SOLUSDT", "Buy", -25.0, 0.25, "100", "0.0025", "2026-07-26T14:10:00+00:00"),
+        _priced_order("SOLUSDT", "Sell", 27.0, -0.25, "108", "0.027", "2026-07-26T14:20:00+00:00"),
+    ]
+    trips, unmatched = rpt.fold_fills(rpt.load_filled(_write(tmp_path, rows)))
+    assert [u["reason"] for u in unmatched] == ["orphan_sell"]
+    assert unmatched[0]["at"] == "2026-07-26T14:00:00+00:00"
+    assert "pnl_usd" not in unmatched[0]  # never priced
+    # The later trip is independent: opened by the 14:10 buy, its 25 spend, its own fees.
+    assert [t["status"] for t in trips] == ["CLOSED"]
+    trip = trips[0]
+    assert trip["opened_at"] == "2026-07-26T14:10:00+00:00"
+    assert trip["spent_usd"] == 25.0 and trip["received_usd"] == 27.0
+    assert trip["size_base"] == 0.25 and trip["entry_price_usd"] == 100.0
+    assert trip["pnl_usd"] == 2.0 and trip["outcome"] == "WIN"
+    assert trip["fees_usd"] == 0.277  # 0.0025*100 + 0.027 — the orphan's 0.03 is NOT in here
+    summary = rpt.summarize(trips, unmatched)
+    assert summary["closed_trades"] == 1 and summary["open_trades"] == 0
+    assert summary["realised_pnl_usd"] == 2.0  # the orphan's 30.0 never inflates realised P&L
+    assert summary["total_fees_usd"] == 0.277 and summary["unmatched_fees_usd"] == 0.03
+
+
 def test_twelve_concurrent_coins_all_stay_open_and_none_aggregate(tmp_path: Path) -> None:
     # The live lane opened 12 concurrent positions on one shared ledger. Distinct symbols must stay
     # 12 separate positions (aggregation is per key, never across coins), oldest-first, none lost.

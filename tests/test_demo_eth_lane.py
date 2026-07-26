@@ -2136,3 +2136,131 @@ def test_active_stop_decision_persists_new_stop_before_clear_pending(
     persisted = json.loads(lane.LANE_STATE.read_text())
     assert persisted["stage_b_v2"]["pending_risk_reduction"] is None
     assert persisted["resting_stop"]["order_id"] == resting["order_id"]  # not orphaned
+
+
+# --- price history: the chart series persisted from bars the cycle already fetched ---------------
+def _price_history(lane_dirs: Path, symbol: str = "ETHUSDT") -> dict[str, Any]:
+    return json.loads((lane_dirs / f"price_history_{symbol}.json").read_text())
+
+
+def test_price_history_first_write_seeds_the_whole_fetched_window(lane_dirs: Path) -> None:
+    # The lane already holds a window of closed bars, so real history exists on the FIRST write
+    # instead of accumulating one point per cycle.
+    venue = FakeVenue(_flat_history())
+    lane.run_cycle(
+        "k", "s", get_transport=venue.get, post_transport=venue.post, sleep=lambda _s: None
+    )
+    payload = _price_history(lane_dirs)
+    assert set(payload) == {
+        "schema_version",
+        "symbol",
+        "interval",
+        "updated_at",
+        "max_points",
+        "points",
+    }
+    assert payload["schema_version"] == 1
+    assert payload["symbol"] == "ETHUSDT"
+    assert payload["interval"] == "1h"  # the default "60" kline code the ETH lane fetches
+    assert payload["max_points"] == lane.PRICE_HISTORY_MAX_POINTS
+    points = payload["points"]
+    assert len(points) == len(_flat_history())  # the whole window, not just the latest bar
+    # Decimal-safe strings, oldest -> newest, one point per closed bar.
+    assert all(isinstance(p["at"], str) and isinstance(p["close"], str) for p in points)
+    assert [p["at"] for p in points] == sorted(p["at"] for p in points)
+    assert points[0]["at"] == (START + timedelta(hours=1)).isoformat()
+    assert points[-1]["close"] == "100"
+
+
+def test_price_history_second_cycle_appends_only_new_bars(lane_dirs: Path) -> None:
+    venue = FakeVenue(_flat_history())
+    lane.run_cycle(
+        "k", "s", get_transport=venue.get, post_transport=venue.post, sleep=lambda _s: None
+    )
+    first = _price_history(lane_dirs)["points"]
+    venue.closes = _flat_history() + [("101", "10")]  # one more closed bar, same window re-fetched
+    lane.run_cycle(
+        "k", "s", get_transport=venue.get, post_transport=venue.post, sleep=lambda _s: None
+    )
+    second = _price_history(lane_dirs)["points"]
+    ats = [p["at"] for p in second]
+    assert len(ats) == len(set(ats))  # a re-fetched bar never double-appends
+    assert second[: len(first)] == first  # prior history preserved in order
+    assert len(second) == len(first) + 1 and second[-1]["close"] == "101"
+
+
+def test_price_history_is_capped_dropping_oldest(lane_dirs: Path) -> None:
+    venue = FakeVenue(_flat_history())
+    bars = lane.fetch_closed_bars(venue.get)
+    lane.write_price_history("ETHUSDT", "60", bars[:5], max_points=3)
+    lane.write_price_history("ETHUSDT", "60", bars[:6], max_points=3)
+    payload = _price_history(lane_dirs)
+    assert payload["max_points"] == 3
+    assert [p["at"] for p in payload["points"]] == [b.close_time.isoformat() for b in bars[3:6]]
+
+
+def test_price_history_failure_never_blocks_an_entry(
+    lane_dirs: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # THE invariant: the chart series is bookkeeping. A write that raises must not propagate and
+    # must not cost the lane an order.
+    def _boom(*_args: Any, **_kwargs: Any) -> None:
+        raise OSError("disk full")
+
+    monkeypatch.setattr(lane, "write_price_history", _boom)
+    venue = FakeVenue(_flat_history())
+    lane.run_cycle(
+        "k", "s", get_transport=venue.get, post_transport=venue.post, sleep=lambda _s: None
+    )
+    venue.closes = _flat_history() + [("200", "500")]  # fresh breakout + volume surge
+    heartbeat = lane.run_cycle(
+        "k", "s", get_transport=venue.get, post_transport=venue.post, sleep=lambda _s: None
+    )
+    assert len([o for o in venue.orders if o["side"] == "Buy"]) == 1
+    assert len([o for o in venue.orders if o.get("orderFilter") == "StopOrder"]) == 1
+    assert heartbeat["action"]["ok"] is True  # the cycle completed and still reported the entry
+    assert not (lane_dirs / "price_history_ETHUSDT.json").exists()
+
+
+def test_price_history_failure_never_blocks_a_risk_reducing_stop(
+    lane_dirs: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def _boom(*_args: Any, **_kwargs: Any) -> None:
+        raise OSError("disk full")
+
+    monkeypatch.setattr(lane, "write_price_history", _boom)
+    venue = FakeVenue(_flat_history())
+    # Open at 200 with the venue marking 100: the local -15% disaster stop must fire this cycle.
+    lane.write_state(
+        {
+            "lane_base": "0.01",
+            "cursor": "2999-01-01T00:00:00+00:00",
+            "entry_price": "200",
+            "resting_stop": None,
+        }
+    )
+    heartbeat = lane.run_cycle(
+        "k", "s", get_transport=venue.get, post_transport=venue.post, sleep=lambda _s: None
+    )
+    sells = [o for o in venue.orders if o["side"] == "Sell" and o.get("orderFilter") != "StopOrder"]
+    assert len(sells) == 1  # the exit went out despite the failing chart write
+    assert heartbeat["disaster_stop_event"]["action"] == "DISASTER_STOP"
+    assert heartbeat["lane_base"] == "0"
+
+
+def test_price_history_write_is_atomic(lane_dirs: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    # A crash between staging and publishing must leave the PREVIOUS file untouched — never a
+    # half-written one — so a concurrent dashboard read is always of a complete series.
+    venue = FakeVenue(_flat_history())
+    bars = lane.fetch_closed_bars(venue.get)
+    lane.write_price_history("ETHUSDT", "60", bars[:5])
+    before = (lane_dirs / "price_history_ETHUSDT.json").read_text()
+
+    def _crash(self: Path, _target: Path) -> None:
+        raise OSError("crash between temp write and publish")
+
+    monkeypatch.setattr(Path, "replace", _crash)
+    with pytest.raises(OSError, match="crash between"):
+        lane.write_price_history("ETHUSDT", "60", bars)
+    assert (lane_dirs / "price_history_ETHUSDT.json").read_text() == before
+    assert (lane_dirs / "price_history_ETHUSDT.tmp").is_file()  # the partial went to the temp path

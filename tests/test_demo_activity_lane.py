@@ -351,3 +351,50 @@ def test_ledger_recovery_isolates_lanes_by_strategy_tag() -> None:
     assert lane.entry_price_from_ledger(records, "BTCUSDT", None) == Decimal("100")
     # activity restart recovers its OWN tagged 200, not the legacy 100
     assert lane.entry_price_from_ledger(records, "BTCUSDT", "ACTIVITY-CONFLUENCE") == Decimal("200")
+
+
+# --- price history: the chart series comes from the bars the confluence cycle already fetched -----
+def test_price_history_reuses_the_reference_bars_without_extra_fetches(lane_dirs: Path) -> None:
+    venue = ActivityVenue(closes={"BTCUSDT": BULL})
+    lane.write_state(
+        {"lane_base": "0", "cursor": OLD_CURSOR, "entry_price": None, "resting_stop": None},
+        "BTCUSDT_activity",
+    )
+    _cycle(venue, ["BTCUSDT"], timeframes=("5m", "15m", "1h"))
+
+    # Exactly one kline request per (coin, timeframe) — the price history adds no venue call.
+    assert len(venue.kline_urls) == 3
+    # Named by the COIN (what a chart is of), not by the activity state key.
+    payload = json.loads((lane_dirs / "price_history_BTCUSDT.json").read_text())
+    assert not (lane_dirs / "price_history_BTCUSDT_activity.json").exists()
+    assert payload["symbol"] == "BTCUSDT"
+    assert payload["interval"] == "5m"  # the fastest (reference) timeframe run_cycle evaluated
+    assert payload["schema_version"] == 1 and payload["max_points"] == lane.PRICE_HISTORY_MAX_POINTS
+    assert len(payload["points"]) == len(BULL)  # whole fetched window seeded on the first write
+    assert payload["points"][-1]["close"] == BULL[-1][0]
+    assert all(isinstance(p["close"], str) for p in payload["points"])
+
+
+def test_price_history_failure_never_blocks_a_confluence_entry(
+    lane_dirs: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def _boom(*_args: Any, **_kwargs: Any) -> None:
+        raise OSError("disk full")
+
+    monkeypatch.setattr(lane, "write_price_history", _boom)
+    venue = ActivityVenue(closes={"BTCUSDT": BULL})
+    lane.write_state(
+        {"lane_base": "0", "cursor": OLD_CURSOR, "entry_price": None, "resting_stop": None},
+        "BTCUSDT_activity",
+    )
+    report = _cycle(venue, ["BTCUSDT"])
+    assert "error" not in report["coins"]["BTCUSDT"]  # the failure never reaches the per-coin guard
+    assert len([o for o in venue.orders if o["side"] == "Buy"]) == 1
+    assert not (lane_dirs / "price_history_BTCUSDT.json").exists()
+
+
+def test_price_history_only_written_for_coins_the_lane_evaluates(lane_dirs: Path) -> None:
+    venue = ActivityVenue(closes={"BTCUSDT": BULL}, fail_kline="XRPUSDT")
+    _cycle(venue, ["BTCUSDT", "XRPUSDT"])
+    assert (lane_dirs / "price_history_BTCUSDT.json").is_file()
+    assert not (lane_dirs / "price_history_XRPUSDT.json").exists()  # never evaluated -> no file

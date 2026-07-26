@@ -4,7 +4,8 @@
 Zero AI, no network, no venue call: it reads the append-only `orders.jsonl` the demo
 lane already writes and folds the fills into buy->sell round trips per (symbol, strategy)
 (a trailing unmatched buy is the open one, a repeat buy aggregates into that position's cost
-basis, a sell with no entry is reported as an UNMATCHED fill rather than dropped), then
+basis, a sell with no entry — or a partial fill the venue then cancelled — is reported as an
+UNMATCHED fill rather than dropped), then
 reports each trade's realised P&L and a summary. Realised P&L uses the reconciled deltas as the
 truth (`pnl = usd_received - usd_spent`), so the numbers can never disagree with the
 fills underneath them. This is the ONLY round-trip folder in the repo: the dashboard's
@@ -39,8 +40,35 @@ def _number(value: Any) -> float:
         return 0.0
 
 
+# The one terminal venue status besides "Filled" where quantity genuinely executed
+# (`demo_eth_lane._TERMINAL_STATUS_MAP`): part of the order filled, the remainder was cancelled.
+PARTIAL_FILL_STATUS = "PartiallyFilledCanceled"
+
+
+def _wallet_moved(row: dict[str, Any]) -> bool:
+    """True when the order's before/after reconciliation shows a coin balance actually changed."""
+    reconcile = row.get("reconcile") or {}
+    return any(
+        name.endswith("_delta") and _number(value) != 0.0 for name, value in reconcile.items()
+    )
+
+
 def load_filled(orders_path: Path) -> list[dict[str, Any]]:
-    """Filled orders only, oldest first — the ledger order the round trips fold over."""
+    """Orders whose wallet actually moved, oldest first — what the fold below folds over.
+
+    That is every `Filled` order, PLUS a terminal `PartiallyFilledCanceled` one that really settled.
+    The lane writes `ok: status.orderStatus == "Filled"` (`demo_eth_lane.place`), so a partial fill
+    lands with `ok: False` and was dropped here — BEFORE the fold, which is why v8.152's "nothing
+    vanishes silently" guarantee stopped at the fold loop instead of covering the whole
+    ledger -> report pipeline. Real (fake-money) wallet movement appeared as neither a round trip
+    nor an unmatched fill.
+
+    The admission test is non-zero reconciled deltas, and that is exactly what keeps every other
+    `ok: False` record out: the `kill_switch` / `price_unavailable` / `qty_below_step` / `place`
+    records carry no `reconcile` key at all, and a plain `Cancelled` / `Rejected` `done` record
+    reconciles to zero on both coins. Rejected and failed orders therefore still cannot become
+    trades, and the trade counts and win rate are unaffected.
+    """
     if not orders_path.is_file():
         return []
     orders: list[dict[str, Any]] = []
@@ -50,6 +78,8 @@ def load_filled(orders_path: Path) -> list[dict[str, Any]]:
             continue
         row = json.loads(line)
         if row.get("ok") is True and row.get("order_status") == "Filled":
+            orders.append(row)
+        elif row.get("order_status") == PARTIAL_FILL_STATUS and _wallet_moved(row):
             orders.append(row)
     orders.sort(key=lambda o: str(o.get("recorded_at") or ""))
     return orders
@@ -149,8 +179,9 @@ def fold_fills(filled: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list
     always part of the key so the breakout and confluence lanes never cross-pair on a shared symbol;
     untagged legacy records read as None and pair only with each other, so an ETH-only ledger folds
     byte-identically to before. A repeat buy on an open key aggregates into its cost basis
-    (`_scale_in`); a sell with no open entry, or a fill with neither side, is returned as an
-    UNMATCHED fill instead of being dropped silently — money moved, so the report has to say so.
+    (`_scale_in`); a sell with no open entry, a fill with neither side, or a partially-filled-then-
+    cancelled order is returned as an UNMATCHED fill instead of being dropped silently — money
+    moved, so the report has to say so.
     """
     trips: list[dict[str, Any]] = []
     unmatched: list[dict[str, Any]] = []
@@ -159,7 +190,19 @@ def fold_fills(filled: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list
         money = _order_money(order)
         key = (order.get("symbol"), order.get("strategy"))
         side = order.get("side")
-        if side == "Buy":
+        if order.get("order_status") == PARTIAL_FILL_STATUS:
+            # UNMATCHED, not folded, because THE LANE ITSELF does not treat this fill as a position
+            # event: `demo_eth_lane.run_cycle` only credits `lane_base` under
+            # `if action.get("ok"): lane_base += reconcile[f"{base}_delta"]`, and
+            # `entry_price_from_ledger` likewise requires `record.get("ok")` — both False here.
+            # Folding it as an entry would invent a position no exit will ever close (an exit sells
+            # only the `lane_base` the lane believes it holds), and folding it as an exit would book
+            # a whole position's cost basis against a fraction of its proceeds — a fabricated P&L
+            # in the flattering direction. Surfacing it keeps the wallet movement visible and
+            # leaves the trip pairing, trade counts and win rate untouched. The exact status test
+            # (not `!= "Filled"`) means rows without the field fold exactly as they always did.
+            unmatched.append(_unmatched(order, money, "partial_fill_cancelled"))
+        elif side == "Buy":
             if (open_entry := open_entries.get(key)) is not None:
                 _scale_in(open_entry, order, money)
             else:

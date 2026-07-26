@@ -2,10 +2,15 @@
 
 from __future__ import annotations
 
+import fcntl
+import json
+import os
 import sys
 from decimal import Decimal
 from pathlib import Path
 from types import SimpleNamespace
+
+import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))  # project root, for scripts.*
 
@@ -78,3 +83,54 @@ def test_report_is_method_blocked_without_global_candidate(monkeypatch) -> None:
     assert report["screen"]["best_context_ranking_partition"] == "train"
     assert report["screen"]["global_candidate_frozen"] is False
     assert report["screen"]["promotion_eligible"] is False
+
+
+def _redirect_lock(monkeypatch, tmp_path: Path) -> tuple[Path, Path]:
+    """Point the module's lock/report at tmp_path. No real search is ever run from these tests."""
+    out = tmp_path / "universe_search"
+    out.mkdir()
+    lock, report = out / ".research_run.lock", out / "REPORT.json"
+    monkeypatch.setattr(uni, "OUT", out)
+    monkeypatch.setattr(uni, "RUN_LOCK", lock)
+    monkeypatch.setattr(uni, "REPORT", report)
+    return lock, report
+
+
+def test_second_search_exits_3_and_writes_nothing(monkeypatch, tmp_path: Path) -> None:
+    # D-119 Finding B: two concurrent searches would clobber the same output JSON. flock is held per
+    # OPEN FILE DESCRIPTION, so a second open() of the same path conflicts even in this process —
+    # which is exactly what a second `uv run scripts/run_universe_search.py` does.
+    lock, report = _redirect_lock(monkeypatch, tmp_path)
+    report.write_text('{"live": "holder-run"}\n', encoding="utf-8")
+    before = report.read_bytes()
+    # A search must never start; if the guard leaks, build_report is where it would.
+    monkeypatch.setattr(uni, "build_report", lambda: pytest.fail("a second search started"))
+
+    holder = lock.open("a+", encoding="utf-8")
+    try:
+        fcntl.flock(holder.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        holder.write("holder")
+        holder.flush()
+        assert uni.main() == 3
+    finally:
+        holder.close()
+    # The live holder's record and report survive untouched — no truncation, no partial write.
+    assert report.read_bytes() == before
+    assert lock.read_text(encoding="utf-8") == "holder"
+
+
+def test_uncontended_lock_records_the_pid_and_releases(monkeypatch, tmp_path: Path) -> None:
+    lock, _ = _redirect_lock(monkeypatch, tmp_path)
+    with uni.exclusive_search_lock() as acquired:
+        assert acquired is True
+        assert json.loads(lock.read_text(encoding="utf-8"))["pid"] == os.getpid()
+    # Released on exit: the next start acquires immediately rather than wedging.
+    with uni.exclusive_search_lock() as again:
+        assert again is True
+
+    # ...and released after an exception too, so a crashed search never wedges the next one.
+    with pytest.raises(RuntimeError), uni.exclusive_search_lock() as third:
+        assert third is True
+        raise RuntimeError("search blew up")
+    with uni.exclusive_search_lock() as fourth:
+        assert fourth is True

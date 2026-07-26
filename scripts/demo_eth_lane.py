@@ -77,6 +77,13 @@ LANE_STATE = LANE_DIR / "lane_state.json"
 HEARTBEAT = LANE_DIR / "heartbeat.json"
 LANE_LOCK = LANE_DIR / "lane.lock"
 
+# Rolling per-coin close series persisted next to the heartbeat so the dashboard can draw a real
+# price chart instead of inventing one. 288 points = 24h of 5m bars (the confluence lane's fastest
+# reference timeframe); on the 1h ETH/multi lane the same cap is 12 days. Bounded so the file can
+# never grow without limit. ponytail: one fixed cap for every timeframe, split it per-interval only
+# if a lane ever needs a different window.
+PRICE_HISTORY_MAX_POINTS = 288
+
 # Stage B default-disabled evidence root. Absent => NOT_ACTIVATED => the lane behaves exactly as it
 # does today (no sink, no latch, no client key). The runtime root is created only by a later,
 # separately gated activation ceremony — never by this module or its tests.
@@ -2410,6 +2417,71 @@ def fetch_closed_bars(
     )
 
 
+def _price_history_path(symbol: str) -> Path:
+    """Per-coin price-history path, next to that coin's heartbeat."""
+    return LANE_DIR / f"price_history_{symbol}.json"
+
+
+def _price_history_interval(interval: str) -> str:
+    """Bybit kline code -> the compact timeframe label stored in the price-history file."""
+    minutes = _INTERVAL_META[interval][0]
+    return f"{minutes}m" if minutes < 60 else f"{minutes // 60}h"
+
+
+def write_price_history(
+    symbol: str,
+    interval: str,
+    bars: tuple[MarketBar, ...],
+    *,
+    max_points: int = PRICE_HISTORY_MAX_POINTS,
+) -> None:
+    """Persist the closed-bar window the cycle ALREADY fetched as this coin's chart series.
+
+    Reuses `bars` verbatim — this never issues a venue or network call of its own. The first write
+    seeds the whole fetched window (real history immediately, not accumulated from zero); later
+    cycles merge only genuinely new bars, de-duplicated by bar close time, so a re-fetched bar can
+    never double-append. Points stay oldest->newest and are capped at `max_points` (oldest dropped),
+    and the file is replaced atomically so a reader never observes a partial write.
+
+    Non-critical bookkeeping: the caller runs this with the heartbeat write, AFTER every order path,
+    and swallows any failure — it must never block, delay, or fail an order.
+    """
+    if not bars:
+        return
+    path = _price_history_path(symbol)
+    label = _price_history_interval(interval)
+    points: list[dict[str, str]] = []
+    if path.is_file():
+        existing = json.loads(path.read_text())
+        # Only merge a series of the SAME timeframe; interleaving 5m and 1h closes would draw a
+        # chart of bars that are not comparable, so a timeframe change restarts the series.
+        if isinstance(existing, dict) and existing.get("interval") == label:
+            points = [
+                point
+                for point in existing.get("points", [])
+                if isinstance(point, dict) and "at" in point and "close" in point
+            ]
+    seen = {point["at"] for point in points}
+    for bar in bars:
+        at = bar.close_time.isoformat()
+        if at not in seen:
+            seen.add(at)
+            points.append({"at": at, "close": str(bar.close)})
+    points.sort(key=lambda point: point["at"])
+    payload = {
+        "schema_version": 1,
+        "symbol": symbol,
+        "interval": label,
+        "updated_at": datetime.now(UTC).isoformat(),
+        "max_points": max_points,
+        "points": points[-max_points:],
+    }
+    LANE_DIR.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(payload, indent=2))
+    tmp.replace(path)
+
+
 def canonical_signals(bars: tuple[MarketBar, ...]) -> list[Any]:
     raw_spec = yaml.safe_load(SPEC_PATH.read_text(encoding="utf-8"))
     spec = parse_spec(raw_spec)
@@ -2891,6 +2963,17 @@ def run_cycle(
         # Confluence score + contributing bullish/bearish signals, so the dashboard/report can show
         # WHY the coin is (or is not) in a position this cycle.
         heartbeat.update(heartbeat_extra)
+    # Price history for the dashboard chart, written HERE with the heartbeat: every order path
+    # (entry, exit, disaster stop, venue-stop reconcile/cancel) has already completed above, and the
+    # final state has already been persisted, so nothing below can delay or fail an order. It reuses
+    # `bars` — the window already fetched for signal evaluation — so it adds NO venue call. Any
+    # failure is logged and swallowed: a broken chart file must never break the lane, least of all a
+    # risk-reducing action.
+    try:
+        write_price_history(symbol, interval, bars)
+    except Exception as error:  # noqa: BLE001 - chart series is informational, never fatal
+        print(f"price history unavailable: {error}", file=sys.stderr)
+
     LANE_DIR.mkdir(parents=True, exist_ok=True)
     heartbeat_path = _heartbeat_path(key)
     tmp = heartbeat_path.with_suffix(".tmp")

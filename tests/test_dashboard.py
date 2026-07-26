@@ -3290,7 +3290,11 @@ def test_wallet_page_is_read_only_with_no_input_and_no_new_action_name() -> None
     # No write path and no scheduler of its own: GET /api/v1/wallet plus the shared equity GET.
     for banned in ("method:'POST'", "method: 'POST'", "setInterval", "setTimeout", "randomUUID"):
         assert banned not in source, banned
-    assert re.findall(r"fetchJson\('([^']+)'\)", source) == ["/api/v1/wallet"]
+    # Two read-only GETs only: the money view and the lane's own captured price history.
+    assert re.findall(r"fetchJson\('([^']+)'\)", source) == [
+        "/api/v1/price-history",
+        "/api/v1/wallet",
+    ]
     # It adds no control surface: no lane action attribute anywhere in the new panels.
     panels = section[: section.index("<summary>Per-coin lane detail</summary>")]
     for attribute in ("data-lane-action", "data-live-lane", "data-overview-lane", "<button"):
@@ -3329,8 +3333,9 @@ def test_wallet_page_holds_the_honest_labelling_doctrine() -> None:
     ):
         assert forbidden not in section.lower(), forbidden
         assert forbidden not in source.lower(), forbidden
-    # No fabricated price chart: the page says so rather than drawing one.
-    assert "no price history in this view" in section.lower()
+    # The price charts are framed as a record, never as a forecast or a signal.
+    assert "record of what already happened, never a forecast and never a signal" in section
+    assert "not a forecast" in source.lower() and "not a signal" in source.lower()
 
 
 def test_wallet_page_keeps_the_legacy_per_coin_detail_reachable() -> None:
@@ -3383,7 +3388,7 @@ for(const id of ['liveStatusBody','liveEventsBody','liveEventsCount','liveAgreem
   'liveAgreementSummary','livePositionsBody','livePositionsSummary','liveEquityBody',
   'liveLaneControls','liveLaneControlStatus','liveNextScan','walletBudgetBody',
   'walletBudgetSummary','walletPositionsBody','walletPositionsSummary','walletResultBody',
-  'walletVenueBody','walletEquityBody'])make(id);
+  'walletVenueBody','walletEquityBody','walletChartsBody'])make(id);
 const document={
   hidden:false,
   querySelector(selector){return nodes[selector.replace('#','')]||null},
@@ -3394,8 +3399,19 @@ const overviewLaneAction=()=>{};
         + _live_render_source()
         + _wallet_render_source()
         + """
-const render=(wallet,equity)=>{
-  renderWalletMoney(wallet);renderLiveEquity(equity,'#walletEquityBody')};
+const empties={schema_version:1,available:false,generated_at:'2026-07-26T15:00:00+00:00',
+  series:[],coverage:{held_count:0,series_count:0,missing:[]}};
+const emptyWallet={schema_version:1,available:false,as_of:null,environment:'VENUE_DEMO',
+  real_money:false,execution_authority:'NONE',
+  venue:{balances:[],quote_usdt:'0',quote_usdc:'0',note:''},
+  budget:{total_cap_usdt:'0',per_trade_usdt:'0',deployed_usdt:'0',free_usdt:'0',
+    slots_total:0,slots_used:0,slots_free:0,disaster_stop_pct:'0'},
+  positions:[],realised:{closed_count:0,wins:0,losses:0,realised_usdt:'0',fees_usdt:'0'},
+  unrealised_total_usdt:null,disclaimer:''};
+const emptyEquity={schema_version:1,available:false,points:[],summary:{},disclaimer:''};
+const render=(wallet,equity,charts)=>{
+  renderWalletMoney(wallet);renderLiveEquity(equity,'#walletEquityBody');
+  renderWalletPriceCharts(charts||empties)};
 const dump=()=>Object.fromEntries(Object.entries(nodes)
   .filter(([id])=>id.startsWith('wallet'))
   .map(([id,node])=>[id,`${node.innerHTML}|${node.textContent}`]));
@@ -3465,6 +3481,31 @@ render({schema_version:1,available:true,as_of:'2026-07-26T14:55:00+00:00',
      win_rate_pct:'100.0'},
    disclaimer:'Demo execution measurement only — not evidence of edge.'});
 out.full=dump();
+// 5. price history: a real 3-close series with entry+stop, a coin nothing was captured for yet,
+//    a single-point series and a flat series — the four documented chart cases.
+render(emptyWallet,emptyEquity,{schema_version:1,available:true,
+  generated_at:'2026-07-26T15:00:00+00:00',
+  series:[
+    {symbol:'BTCUSDT',interval:'5m',updated_at:'2026-07-26T15:00:00+00:00',point_count:3,
+     first_at:'2026-07-26T14:50:00+00:00',last_at:'2026-07-26T15:00:00+00:00',
+     closes:[{at:'2026-07-26T14:50:00+00:00',close:'118000'},
+       {at:'2026-07-26T14:55:00+00:00',close:'118600'},
+       {at:'2026-07-26T15:00:00+00:00',close:'119180'}],
+     entry_price:'118000',stop_price:'100300',mark_price:'119180',held:true},
+    {symbol:'ETHUSDT',interval:null,updated_at:null,point_count:0,first_at:null,last_at:null,
+     closes:[],entry_price:'3000',stop_price:'2550',mark_price:null,held:true},
+    {symbol:'SOLUSDT',interval:'5m',updated_at:'2026-07-26T15:00:00+00:00',point_count:1,
+     first_at:'2026-07-26T15:00:00+00:00',last_at:'2026-07-26T15:00:00+00:00',
+     closes:[{at:'2026-07-26T15:00:00+00:00',close:'150.5'}],
+     entry_price:null,stop_price:null,mark_price:'150.5',held:true},
+    {symbol:'ADAUSDT',interval:'5m',updated_at:'2026-07-26T15:00:00+00:00',point_count:3,
+     first_at:'2026-07-26T14:50:00+00:00',last_at:'2026-07-26T15:00:00+00:00',
+     closes:[{at:'2026-07-26T14:50:00+00:00',close:'0.5'},
+       {at:'2026-07-26T14:55:00+00:00',close:'0.5'},
+       {at:'2026-07-26T15:00:00+00:00',close:'0.5'}],
+     entry_price:null,stop_price:null,mark_price:'0.5',held:true}],
+  coverage:{held_count:4,series_count:4,missing:['ETHUSDT']}});
+out.charts=dump();
 console.log(JSON.stringify(out));
 """
     )
@@ -3592,3 +3633,115 @@ def test_wallet_result_and_venue_panels_frame_the_prefunded_balance_honestly() -
     assert venue.count("<td>coin</td>") == 2
     assert "49673.4412" in venue
     assert "The lane only ever touches the $300 cap" in venue
+
+
+# --- price charts per open position (GET /api/v1/price-history) ----------------------------------
+# The lane captures its own closes; the page only draws them. Each test below pins one honesty
+# property: the chart reads the documented fields, degenerate series degrade instead of breaking,
+# entry/stop lines appear only when the payload carries them, and the caption refuses to let the
+# series read as a full exchange chart, a forecast or a signal.
+
+
+def _wallet_charts() -> list[str]:
+    """The rendered per-coin chart cards, in payload order (BTC, ETH, SOL, ADA)."""
+    body = _wallet_state()["charts"]["walletChartsBody"]
+    return body.split('<div class="wallet-chart">')[1:]
+
+
+def test_wallet_price_chart_renders_from_the_documented_price_history_fields() -> None:
+    source = _wallet_render_source()
+    body = _wallet_state()["charts"]["walletChartsBody"]
+    # Every field the chart claims to draw is actually read from the payload.
+    for field in (
+        "p.series",
+        "p.coverage",
+        "p.available",
+        "s.symbol",
+        "s.interval",
+        "s.closes",
+        "s.entry_price",
+        "s.stop_price",
+        "coverage.missing",
+        "point.close",
+    ):
+        assert field in source, field
+    btc = _wallet_charts()[0]
+    assert "BTCUSDT" in btc and "5m bars" in btc and "3 closes" in btc
+    # Oldest -> newest, left to right, with the latest point marked.
+    assert 'd="M0.00,6.00 L50.00,4.98 L100.00,4.00"' in btc
+    assert '<circle cx="100.00" cy="4.00"' in btc
+    assert "last $119,180" in btc
+    # One svg per series that HAS points: BTC, SOL, ADA — never one for the uncaptured coin.
+    assert body.count('<svg class="wallet-price"') == 3
+
+
+def test_wallet_price_chart_draws_entry_and_stop_only_when_the_payload_carries_them() -> None:
+    btc, _eth, sol, ada = _wallet_charts()
+    # Entry and stop are horizontal dashed levels, inside the same frame as the closes.
+    assert btc.count('stroke="var(--cyan)"') == 1 and btc.count('stroke="var(--red)"') == 1
+    assert "entry $118,000 (dashed)" in btc and "stop $100,300 (dashed)" in btc
+    assert '<line x1="0" y1="6.00" x2="100" y2="6.00" stroke="var(--cyan)"' in btc  # entry
+    assert '<line x1="0" y1="36.00" x2="100" y2="36.00" stroke="var(--red)"' in btc  # stop
+    # Null entry/stop simply omit the line and the legend entry — never a line at NaN.
+    for chart in (sol, ada):
+        assert "var(--cyan)" not in chart and "var(--red)" not in chart
+        assert "<line" not in chart
+        assert "entry" not in chart and "stop" not in chart
+
+
+def test_wallet_price_chart_survives_zero_one_and_flat_series() -> None:
+    btc, eth, sol, ada = _wallet_charts()
+    # 0 points: a calm note, no svg at all — the normal early state, not an error.
+    assert "<svg" not in eth
+    assert "Collecting price history — no points captured yet for this coin." in eth
+    assert "unavailable" not in eth.lower()
+    # 1 point: the marker only, never a line of any kind.
+    assert "<circle" in sol and "<path" not in sol
+    assert '<circle cx="50.00"' in sol
+    # Flat series (max === min): a straight midline, never a divide-by-zero.
+    assert 'd="M0.00,20.00 L50.00,20.00 L100.00,20.00"' in ada
+    assert "Infinity" not in ada
+    # A multi-point series is the only one that gets a line.
+    assert "<path" in btc and "<path" in ada
+    # Uncaptured coins are named rather than silently dropped.
+    body = _wallet_state()["charts"]["walletChartsBody"]
+    assert "Still collecting, nothing drawn yet: ETHUSDT." in body
+
+
+def test_wallet_price_charts_are_captioned_as_a_capped_lane_captured_record() -> None:
+    body = _wallet_state()["charts"]["walletChartsBody"]
+    for phrase in (
+        "own captured closes at its scan interval",
+        "capped at the most recent ~24h",
+        "record of what already happened",
+        "NOT a full exchange chart",
+        "NOT a forecast",
+        "NOT a signal",
+    ):
+        assert phrase in body, phrase
+    # No held coin at all -> calm prose, no fabricated series.
+    empty = _wallet_state()["empty"]["walletChartsBody"]
+    assert "No captured price history yet." in empty
+    assert "<svg" not in empty
+
+
+def test_wallet_price_history_rides_the_existing_poll_tick_and_adds_no_write_surface() -> None:
+    html = _dashboard_html()
+    source = _wallet_render_source()
+    section = _wallet_section()
+    # Wired into the one guarded ~5s wallet load; no competing timer, no second fetch loop.
+    assert "await loadPriceHistory()" in source
+    assert html.count("async function loadPriceHistory()") == 1
+    assert html.count("setInterval(()=>pollDemoLane(false),DEMO_LANE_REFRESH_MS)") == 1
+    for banned in ("setInterval", "setTimeout", "method:'POST'", "randomUUID"):
+        assert banned not in source, banned
+    # Read-only surface: the chart host is a bare div inside the existing positions panel.
+    assert '<div id="walletChartsBody">' in section
+    charts_panel = section[
+        section.index('id="walletPositionsPanel"') : section.index("walletResultPanel")
+    ]
+    for attribute in ("<input", "<form", "<button", "data-lane-action"):
+        assert attribute not in charts_panel, attribute
+    # Server values are escaped, never interpolated raw.
+    assert "walletText(s.symbol)" in source
+    assert "esc(error.message)" in source
