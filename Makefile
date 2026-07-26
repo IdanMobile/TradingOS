@@ -47,7 +47,11 @@ required: check-full audit
 
 # Local dashboard (loopback-only, read-only: no venue, no orders, no real money).
 # Open the URL it prints (default http://127.0.0.1:8765).
+# Frees the port first so a stale dashboard server can't block a restart with "Address already in
+# use". ponytail: SIGTERMs whatever holds the fixed dashboard port 8765 — safe in dev, that port is
+# the dashboard's alone; it never touches the demo lane (a separate process on no port).
 dashboard:
+	@pids=$$(lsof -ti:8765 2>/dev/null); if [ -n "$$pids" ]; then echo "freeing port 8765 (pid $$pids)"; kill $$pids 2>/dev/null || true; sleep 1; fi
 	uv run python -m tios.services.dashboard_ui.server
 
 # D-104/D-105 ETH demo measurement lane (Bybit DEMO account, fake money, UNVALIDATED
