@@ -321,7 +321,16 @@ def test_universe_and_roster_constants() -> None:
     assert len(act.ACTIVITY_UNIVERSE) >= 39 and "ETHUSDT" in act.ACTIVITY_UNIVERSE
     assert 6 <= len(act.ROSTER) <= 10
     assert act.ENTRY_THRESHOLD > act.EXIT_THRESHOLD  # hysteresis band
-    assert act.TIMEFRAME_WEIGHTS["4h"] > act.TIMEFRAME_WEIGHTS["15m"]  # higher tf weighted more
+    assert act.TIMEFRAME_WEIGHTS["1h"] > act.TIMEFRAME_WEIGHTS["15m"]  # higher tf weighted more
+
+
+def test_activity_tuned_for_traffic_drops_4h_anchor() -> None:
+    # Activity/visibility tuning (NOT edge): the 4h filter is dropped and --interval swaps the
+    # fastest member, so `--interval 5m` scores on {5m,15m,1h}. Pins the trade-frequency tuning.
+    assert act.CONFLUENCE_TIMEFRAMES == ("5m", "15m", "1h")
+    assert "4h" not in act.CONFLUENCE_HIGHER_TIMEFRAMES
+    assert act._timeframes_for("5m") == ("5m", "15m", "1h")
+    assert act.ENTRY_THRESHOLD == Decimal("0.15")
 
 
 def test_ledger_recovery_isolates_lanes_by_strategy_tag() -> None:

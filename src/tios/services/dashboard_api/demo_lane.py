@@ -5,7 +5,7 @@ It can observe the lane's own artifacts, and it can start/stop the separate lane
 which enforces every safety rail itself (demo-host lock, caps, quantization, kill switch).
 
 Governed by D-106: this is the second audited write surface on the local loopback dashboard,
-allowlisted to three actions with no free-form input reaching the spawned command.
+allowlisted to four actions with no free-form input reaching the spawned command.
 """
 
 from __future__ import annotations
@@ -72,8 +72,10 @@ ACTIVITY_COINS = (
     "SUIUSDT", "THETAUSDT", "TIAUSDT", "TRXUSDT", "UNIUSDT", "XLMUSDT", "XRPUSDT", "XTZUSDT",
 )  # fmt: skip
 
-ACTIONS = frozenset({"START", "STOP", "RUN_ONCE"})
+ACTIONS = frozenset({"START", "START_ACTIVITY", "STOP", "RUN_ONCE"})
 _IDENTIFIER = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,199}$")
+# Fixed confluence cadence for the START_ACTIVITY button — a hardcoded constant, never from input.
+ACTIVITY_INTERVAL = "5m"
 RUN_ONCE_TIMEOUT_SECONDS = 90
 ORDER_HISTORY_LIMIT = 25
 # The lane's documented loop is hourly. A small grace covers scheduling/network delay;
@@ -1364,13 +1366,24 @@ def _audit(root: Path, record: dict[str, Any]) -> None:
         raise DemoLaneActionError("demo lane audit is unavailable", 503) from error
 
 
+# The ONLY flag-sets _spawn will launch, keyed by internal mode literal. perform_demo_lane_action
+# picks the key from the allowlisted action; no request/user value ever reaches this map, so the
+# spawned argv stays fixed. "--activity" is bare START's confluence sibling: --loop until killed at
+# a hardcoded interval; it shares lane.lock and the same KILL_SWITCH, so STOP halts it too.
+_SPAWN_FLAGS: dict[str, tuple[str, ...]] = {
+    "--loop": ("--loop",),
+    "--activity": ("--activity", "--loop", "--interval", ACTIVITY_INTERVAL),
+}
+
+
 def _spawn(root: Path, mode: str) -> subprocess.Popen[bytes]:
-    """Launch the lane. Fixed argv, no shell, no user input — `mode` is an internal literal."""
-    assert mode in {"--loop", "--once"}
+    """Launch the lane. Fixed argv, no shell, no user input — `mode` is an internal literal that
+    selects one hardcoded flag-set from _SPAWN_FLAGS (an unknown key is a bug, never a request)."""
+    flags = _SPAWN_FLAGS[mode]
     (root / LANE_DIR).mkdir(parents=True, exist_ok=True)
     log = (root / LANE_LOG).open("ab")
     return subprocess.Popen(  # noqa: S603 (fixed argv, shell=False)
-        [sys.executable, str(root / LANE_SCRIPT), mode],
+        [sys.executable, str(root / LANE_SCRIPT), *flags],
         cwd=str(root),
         stdout=log,
         stderr=log,
@@ -1395,6 +1408,14 @@ def perform_demo_lane_action(root: Path, payload: dict[str, Any]) -> dict[str, A
         kill_switch.unlink(missing_ok=True)  # starting clears a previous stop
         process = _spawn(root, "--loop")
         detail = f"lane started (pid {process.pid}); stop flag cleared"
+    elif action == "START_ACTIVITY":
+        # Shares lane.lock (so `running` above already refuses a second lane) and the same
+        # KILL_SWITCH STOP writes, so STOP halts it too. Fixed argv: --activity --loop --interval.
+        if running:
+            raise DemoLaneActionError("the demo lane is already running", 409)
+        kill_switch.unlink(missing_ok=True)  # starting clears a previous stop
+        process = _spawn(root, "--activity")
+        detail = f"confluence activity lane started (pid {process.pid}); stop flag cleared"
     elif action == "STOP":
         kill_switch.parent.mkdir(parents=True, exist_ok=True)
         kill_switch.write_text(

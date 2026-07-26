@@ -100,6 +100,15 @@
               <button type="button" class="action" id="refreshCockpit">Refresh now</button>
             </div>
           </section>
+          <section class="card" id="demoLaneControlPanel" aria-labelledby="demoLaneControlHeading">
+            <div class="section-title"><h2 id="demoLaneControlHeading">Demo lane controls</h2><span id="demoLaneLive" class="badge" role="status" aria-live="polite">live · connecting…</span></div>
+            <p class="muted">Start or stop the fake-money demo lanes on the venue demo account. DIAGNOSTIC ONLY · execution authority NONE · fake money · no real money.</p>
+            <div class="lane-status" style="margin-top:8px">
+              <span class="badge">DEMO / FAKE MONEY</span><span class="badge">NO REAL MONEY</span><span class="badge">AUTHORITY: NONE</span><span class="badge">DIAGNOSTIC ONLY</span><span class="badge">UNVALIDATED</span>
+            </div>
+            <div class="ticket-actions" id="demoLaneControls" style="flex-direction:row;flex-wrap:wrap;margin:12px 0 4px"></div>
+            <p class="muted" id="demoLaneControlStatus" role="status" aria-live="polite">Loading demo lane state…</p>
+          </section>
           <h1 class="headline" id="nowHeadline">Loading what is happening now…</h1>
           <section class="card" aria-labelledby="ethSignalHeading"><div class="section-title"><h2 id="ethSignalHeading">ETH signal verification</h2><span>Frozen historical reproduction · independent risk gate</span></div><p class="muted">Run the fixed ETHUSDT 1h volume-breakout verifier. This check cannot connect a venue or create an order.</p><button type="button" class="action" id="runEthSignal">Run ETH signal check</button><div id="ethSignalResult" class="empty signal-check-result" role="status" aria-live="polite">Not run in this browser session.</div></section>
           <section class="card" id="openWorkPanel" aria-labelledby="openWorkHeading"><div class="section-title"><h2 id="openWorkHeading">Open work</h2><span id="openWorkCount">Loading…</span></div><p class="muted">Every open item from the task registry, the parked ledger, and orchestrator escalations — grouped by who can act. Read-only.</p><div id="openWorkBody"><div class="empty">Loading open work.</div></div></section>
@@ -386,6 +395,74 @@ async function loadDemoLane(){
   }
 }
 window.loadDemoLane=loadDemoLane;
+// --- overview demo-lane controls + live auto-refresh (mirrors the cockpit in-flight-guard pattern)
+const DEMO_LANE_REFRESH_MS=5000;
+let demoLaneInFlight=false,demoLaneLastUpdate=0,demoLaneStatus='UNAVAILABLE',demoLaneControlsStatus=null;
+function renderLaneControls(status){
+  const box=document.querySelector('#demoLaneControls');
+  if(!box)return;
+  const running=status==='RUNNING'||status==='STOPPING';
+  const startDis=running?'disabled':'',stopDis=running?'':'disabled';
+  box.innerHTML=`
+    <button class="action" data-overview-lane="START_ACTIVITY" ${startDis}>Start Activity Lane</button>
+    <button class="action" data-overview-lane="START" ${startDis}>Start ETH Lane (loop)</button>
+    <button class="action" data-overview-lane="RUN_ONCE" ${startDis}>Run Once (ETH)</button>
+    <button class="action" data-overview-lane="STOP" ${stopDis}>Stop</button>`;
+  box.querySelectorAll('[data-overview-lane]').forEach(b=>b.addEventListener('click',()=>overviewLaneAction(b.dataset.overviewLane,b)));
+  demoLaneControlsStatus=status;
+  const st=document.querySelector('#demoLaneControlStatus');
+  if(st&&st.dataset.busy!=='1')st.textContent=running?`Lane ${status.toLowerCase()} — Stop halts every lane (activity + ETH) immediately.`:'Lane stopped/idle. Start runs on the venue demo account with fake money, authority NONE.';
+}
+async function overviewLaneAction(action,button){
+  if((action==='STOP'||action==='START'||action==='START_ACTIVITY')&&!confirm(`${action.replace('_',' ')} the demo lane? Fake money on the venue demo account, execution authority NONE.`))return;
+  const box=document.querySelector('#demoLaneControls');
+  box?.querySelectorAll('button').forEach(b=>{b.disabled=true});
+  if(button)button.setAttribute('aria-busy','true');
+  const st=document.querySelector('#demoLaneControlStatus');
+  if(st){st.dataset.busy='1';st.textContent=action==='RUN_ONCE'?'Running one cycle…':'Working…'}
+  try{
+    const response=await fetch('/api/v1/demo-lane-actions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,idempotency_key:crypto.randomUUID()})});
+    const payload=await response.json().catch(()=>({error:'malformed response'}));
+    if(!response.ok)throw new Error(payload.error||`action failed (${response.status})`);
+    if(st){st.dataset.busy='';st.textContent=`${action.replace('_',' ')} accepted.`}
+  }catch(error){
+    if(st){st.dataset.busy='';st.textContent=`Could not ${action.toLowerCase().replace('_',' ')}: ${error.message}`}
+  }
+  demoLaneControlsStatus=null;  // force a control re-render on the next poll
+  await pollDemoLane(true);
+}
+async function pollDemoLane(force){
+  if(demoLaneInFlight)return;  // skip this tick if the previous fetch is still in flight
+  if(!force&&(document.hidden||(activeView!=='now'&&activeView!=='wallets-demo')))return;
+  demoLaneInFlight=true;
+  try{
+    const lane=await fetchJson('/api/v1/demo-lane');  // fetchJson still requires schema_version===1
+    demoLaneStatus=String(lane.operational_status||'UNAVAILABLE');
+    if(activeView==='wallets-demo'){
+      // re-render the rich card without losing scroll position or any open <details>
+      const y=window.scrollY;
+      const open=[...document.querySelectorAll('#demoLaneCard details[open]')].map(d=>d.dataset.k||'');
+      renderDemoLane(lane);
+      document.querySelectorAll('#demoLaneCard details').forEach(d=>{if(open.includes(d.dataset.k||''))d.open=true});
+      window.scrollTo(0,y);
+    }
+    if(demoLaneControlsStatus!==demoLaneStatus)renderLaneControls(demoLaneStatus);
+    demoLaneLastUpdate=Date.now();
+  }catch(error){
+    if(!document.querySelector('#demoLaneControls')?.children.length)renderLaneControls('UNAVAILABLE');
+  }finally{
+    demoLaneInFlight=false;
+    updateDemoLaneLive();
+  }
+}
+function updateDemoLaneLive(){
+  const el=document.querySelector('#demoLaneLive');
+  if(!el)return;
+  if(document.hidden){el.textContent='live · paused (tab hidden)';return}
+  if(!demoLaneLastUpdate){el.textContent='live · connecting…';return}
+  el.textContent=`live · updated ${Math.max(0,Math.round((Date.now()-demoLaneLastUpdate)/1000))}s ago`;
+}
+window.pollDemoLane=pollDemoLane;
 function renderWalletTab(mode){
   const body=document.querySelector(mode==='demo'?'#walletDemoBody':'#walletRealBody');
   if(!body)return;
@@ -827,8 +904,9 @@ function scheduleNetworkRefresh(){
 document.querySelectorAll('[data-range]').forEach(button=>button.addEventListener('click',()=>{selectedRange=button.dataset.range;document.querySelectorAll('[data-range]').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));sharedRefresh(true)}));
 document.querySelector('#refreshRate').addEventListener('change',scheduleNetworkRefresh);
 document.querySelector('#refreshCockpit').addEventListener('click',()=>sharedRefresh(true));
-document.addEventListener('visibilitychange',()=>{scheduleNetworkRefresh();if(!document.hidden)sharedRefresh(false)});
+document.addEventListener('visibilitychange',()=>{scheduleNetworkRefresh();if(!document.hidden){sharedRefresh(false);pollDemoLane(false)}updateDemoLaneLive()});
 showWorkspace('now');loadAll();sharedRefresh(true);scheduleNetworkRefresh();setInterval(updateDisplayStatus,1000);
+renderLaneControls('UNAVAILABLE');pollDemoLane(true);setInterval(()=>pollDemoLane(false),DEMO_LANE_REFRESH_MS);setInterval(updateDemoLaneLive,1000);
 </script>
 <script>
 /* Operations panel — self-contained (D-041 governed trigger + read-only projection). */

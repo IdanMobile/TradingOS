@@ -2252,3 +2252,57 @@ def test_demo_lane_action_response_body_is_exactly_four_fields(tmp_path: Path) -
         "action": "STOP",
         "state": "STOPPED",
     }
+
+
+def test_overview_has_demo_lane_control_panel_with_four_allowlisted_buttons() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    now_section = html[html.index('id="now"') : html.index('id="nowHeadline"')]
+    assert 'id="demoLaneControlPanel"' in now_section
+    # Four buttons wired to the allowlisted demo-lane actions (rendered by renderLaneControls).
+    for action in ("START_ACTIVITY", "START", "RUN_ONCE", "STOP"):
+        assert f'data-overview-lane="{action}"' in html
+    for label in ("Start Activity Lane", "Start ETH Lane (loop)", "Run Once (ETH)", ">Stop<"):
+        assert label in html
+    # Every button POSTs to the same audited allowlisted endpoint; no free-form input field.
+    assert "/api/v1/demo-lane-actions" in html
+    assert "async function overviewLaneAction" in html
+    assert "crypto.randomUUID()" in html
+    assert "<input" not in now_section
+    # Confirm-on-click for the state-changing starts and stop.
+    assert "confirm(" in html
+    # Running/stopped drives disable: Start disabled while running, Stop disabled while stopped.
+    assert "const running=status==='RUNNING'||status==='STOPPING'" in html
+    assert "startDis=running?'disabled':'',stopDis=running?'':'disabled'" in html
+    # Fake-money / DIAGNOSTIC / authority-NONE labels stay visible next to the controls.
+    for badge in ("DEMO / FAKE MONEY", "NO REAL MONEY", "AUTHORITY: NONE", "DIAGNOSTIC ONLY"):
+        assert badge in now_section
+
+
+def test_overview_demo_lane_live_auto_refresh_is_guarded_and_visibility_aware() -> None:
+    html = (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+    # ~5s auto-poll that re-uses fetchJson + renderDemoLane, no full page reload.
+    assert "const DEMO_LANE_REFRESH_MS=5000" in html
+    assert "setInterval(()=>pollDemoLane(false),DEMO_LANE_REFRESH_MS)" in html
+    assert "async function pollDemoLane(force)" in html
+    assert "await fetchJson('/api/v1/demo-lane')" in html
+    assert "renderDemoLane(lane)" in html
+    # Overlap guard: skip a tick while the previous fetch is still in flight.
+    assert "if(demoLaneInFlight)return" in html
+    # Pause when the tab is hidden, resume on visibilitychange.
+    assert "document.hidden" in html
+    assert "visibilitychange" in html
+    assert "pollDemoLane(false)" in html
+    # Scroll position and any open <details> are preserved across the re-render.
+    assert "const y=window.scrollY" in html
+    assert "details[open]" in html
+    assert "window.scrollTo(0,y)" in html
+    # Live indicator shows "updated Xs ago".
+    assert 'id="demoLaneLive"' in html
+    assert "function updateDemoLaneLive" in html
+    assert "updated ${" in html and "s ago" in html
+    # schema_version handling unchanged: the client still requires schema_version === 1.
+    assert "payload.schema_version!==1" in html

@@ -107,10 +107,14 @@ ROSTER: tuple[tuple[str, ext.SignalBuilder], ...] = (
     ("SIG-VOLUME-BREAKOUT", sig.volume_breakout(20, Decimal("1.5"))),
 )
 
-# Confluence timeframe SET and per-timeframe weight. Higher timeframes count more (a 1h/4h agreement
-# is stronger than 15m). 1h and 4h are ALWAYS included; the CLI --interval swaps the fastest member.
-CONFLUENCE_HIGHER_TIMEFRAMES: tuple[str, ...] = ("1h", "4h")
-CONFLUENCE_TIMEFRAMES: tuple[str, ...] = ("15m", "1h", "4h")
+# Confluence timeframe SET and per-timeframe weight. Higher timeframes count more (a 1h agreement is
+# stronger than 5m). 15m and 1h are ALWAYS included; the CLI --interval swaps the fastest member
+# (default 5m). The 4h anchor was dropped for the activity/visibility lane: with weight 3 and a
+# frequently-bearish higher trend it pinned most coins below ENTRY and starved the lane of trades.
+# This is activity tuning (more demo traffic on an UNVALIDATED, fake-money lane), NOT a claim of
+# better edge — dropping the higher-timeframe trend filter admits weaker confluence, not stronger.
+CONFLUENCE_HIGHER_TIMEFRAMES: tuple[str, ...] = ("15m", "1h")
+CONFLUENCE_TIMEFRAMES: tuple[str, ...] = ("5m", "15m", "1h")
 TIMEFRAME_WEIGHTS: dict[str, Decimal] = {
     "5m": Decimal("1"),
     "15m": Decimal("1"),
@@ -122,7 +126,9 @@ _TF_MINUTES: dict[str, int] = {"5m": 5, "15m": 15, "1h": 60, "4h": 240}
 
 # Hysteresis band: go long once bullish confidence clears ENTRY; stay long until it falls to EXIT.
 # ENTRY > EXIT, so a score drifting in the middle neither opens nor churns an existing position.
-ENTRY_THRESHOLD = Decimal("0.25")
+# ENTRY lowered 0.25 -> 0.15 to sustain visible demo activity (~5 trades/30min) past the cold-start
+# burst; like the 4h drop above this widens the entry gate for traffic, not for edge.
+ENTRY_THRESHOLD = Decimal("0.15")
 EXIT_THRESHOLD = Decimal("0.05")
 
 # --loop cadence: one cycle per fastest-timeframe bar (interval minutes -> seconds), floored so a
@@ -241,7 +247,7 @@ def activity_open_exposure(symbols: list[str]) -> Decimal:
 
 
 def _timeframes_for(interval_label: str) -> tuple[str, ...]:
-    """Confluence set for a chosen fastest timeframe: {interval} + always 1h/4h, de-duplicated."""
+    """Confluence set for a chosen fastest timeframe: {interval} + always 15m/1h, de-duplicated."""
     return tuple(dict.fromkeys([interval_label, *CONFLUENCE_HIGHER_TIMEFRAMES]))
 
 

@@ -1,5 +1,36 @@
 # Package Changelog
 
+## v8.149 — 2026-07-26 — Dashboard control panel + live auto-refresh; audited spawn extended; lane tuned for demo traffic
+
+Operator-directed (control the demo lanes from the dashboard, make it live, produce frequent demo
+trades). Fake-money demo only; execution authority NONE; nothing validated or promoted; demo P&L
+is non-evidence. Execution stays human-initiated — the operator clicks Start. Independent
+adversarial security review of the spawn-surface extension returned GO/PASS, no blocking findings.
+See DECISION_LOG.md D-118.
+
+- Audited spawn surface extended (within the D-106 allowlisted + fixed-argv + audited pattern):
+  new `START_ACTIVITY` action in `dashboard_api/demo_lane.py` spawns the fixed argv
+  `[sys.executable, scripts/demo_eth_lane.py, --activity, --loop, --interval, 5m]` — allowlist-gated,
+  no request/free-form input reaches the command, 409-refused when a lane holds `lane.lock` (with the
+  lane's own `exclusive_lane_lock` exit-3 as a second anti-double-spawn layer), audited to
+  `artifacts/human_decisions/demo_lane_actions.jsonl`, and halted by the existing STOP kill switch.
+  Pre-existing `START`/`STOP`/`RUN_ONCE` behavior is byte-identical (`_SPAWN_FLAGS["--loop"]`).
+- Overview control panel in `dashboard.html`: Start Activity Lane / Start ETH Lane / Run Once / Stop,
+  each POSTing its allowlisted action (no free-form fields; Start/Start-Activity/Stop `confirm()`-gated;
+  disable-state driven by running status; fake-money/authority-NONE/DIAGNOSTIC/UNVALIDATED labels).
+- Live auto-refresh: the demo-lane view re-fetches `/api/v1/demo-lane` (read-only GET) every ~5s and
+  re-renders in place — in-flight-guarded, paused when the tab is hidden, preserves scroll + open
+  `<details>`, shows an "updated Xs ago" live indicator; `schema_version === 1` gate unchanged.
+- Confluence lane tuned for demo VISIBILITY (not edge): `scripts/demo_activity_lane.py` drops the 4h
+  timeframe (`{5m,15m,1h}`) and lowers `ENTRY_THRESHOLD` 0.25 → 0.15, so `--activity --loop --interval
+  5m` yields a large cold-start trade burst and ~4–5 trades/30min sustained. This widens the entry
+  gate for traffic; it is explicitly NOT a predictive-edge claim. Backed by a read-only market-data
+  frequency probe (37/40 coins, no orders). Risk-reducing exit/stop/kill-switch/cap paths unchanged.
+
+Manifest-tracked files rehashed (D-030 regeneration): `dashboard.html`, `tests/test_dashboard.py`,
+`DECISION_LOG.md`. Gates green: package integrity PASS (453 rows), project-wide ruff + mypy (139
+files) clean, 226 tests pass across the four affected suites.
+
 ## v8.148 — 2026-07-26 — Confluence lane self-loop + dashboard confluence-confidence view
 
 Operator-directed follow-on. Fake-money demo only; execution authority NONE; nothing validated

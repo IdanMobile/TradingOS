@@ -9,6 +9,7 @@ rich. The action handler returns exactly four fixed fields.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -521,6 +522,87 @@ def test_run_once_returns_exact_body(root: Path) -> None:
     )
     assert set(result) == {"schema_version", "ok", "action", "state"}
     assert result["action"] == "RUN_ONCE" and result["ok"] is True
+
+
+# --- START_ACTIVITY: fixed-argv confluence lane (extends the D-106 audited spawn surface) --------
+
+
+def test_start_activity_spawns_exact_fixed_argv_and_is_audited(
+    root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """START_ACTIVITY spawns `demo_eth_lane.py --activity --loop --interval 5m` with a fixed argv
+    (no request value reaches it), returns the four-field body, and is audited like the rest."""
+    captured: dict[str, Any] = {}
+
+    class FakePopen:
+        def __init__(self, argv: list[str], **kwargs: Any) -> None:
+            captured["argv"] = argv
+            captured["kwargs"] = kwargs
+            self.pid = 7777
+
+    monkeypatch.setattr(demo_lane.subprocess, "Popen", FakePopen)
+    result = demo_lane.perform_demo_lane_action(
+        root, {"action": "START_ACTIVITY", "idempotency_key": "a1"}
+    )
+    assert captured["argv"] == [
+        sys.executable,
+        str(root / demo_lane.LANE_SCRIPT),
+        "--activity",
+        "--loop",
+        "--interval",
+        "5m",
+    ]
+    assert captured["kwargs"].get("shell") in (None, False)  # never a shell
+    assert set(result) == {"schema_version", "ok", "action", "state"}
+    assert result["action"] == "START_ACTIVITY" and result["ok"] is True
+    assert "7777" not in json.dumps(result)  # pid never leaks into the body
+    audit = json.loads((root / demo_lane.AUDIT_PATH).read_text().splitlines()[-1])
+    assert audit["action"] == "START_ACTIVITY" and audit["idempotency_key"] == "a1"
+
+
+def test_start_activity_refused_while_a_lane_holds_the_lock(
+    root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """It shares lane.lock with the ETH/multi lanes, so it refuses to start a second lane."""
+    import fcntl
+
+    lock = root / demo_lane.LANE_LOCK
+    lock.write_text(json.dumps({"pid": 4242}))
+    handle = lock.open("a+", encoding="utf-8")
+    fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    monkeypatch.setattr(
+        demo_lane, "_spawn", lambda *_a, **_k: pytest.fail("must not spawn a second lane")
+    )
+    try:
+        with pytest.raises(demo_lane.DemoLaneActionError) as excinfo:
+            demo_lane.perform_demo_lane_action(
+                root, {"action": "START_ACTIVITY", "idempotency_key": "a1"}
+            )
+        assert excinfo.value.status_code == 409
+    finally:
+        handle.close()
+
+
+@pytest.mark.parametrize(
+    "action",
+    ["START_ACTIVITY_LIVE", "ACTIVITY", "START ACTIVITY", "STARTACTIVITY", "STOP_ACTIVITY"],
+)
+def test_mutated_activity_action_is_rejected_without_reflecting_it(root: Path, action: str) -> None:
+    """A string that does not normalize to an allowlisted action is rejected generically."""
+    with pytest.raises(demo_lane.DemoLaneActionError) as excinfo:
+        demo_lane.perform_demo_lane_action(root, {"action": action, "idempotency_key": "k1"})
+    assert action not in str(excinfo.value)
+    assert str(excinfo.value) == "demo lane action is invalid"
+
+
+def test_stop_writes_the_kill_switch_the_activity_lane_checks(root: Path) -> None:
+    """STOP halts the confluence activity lane too: it writes the SAME KILL_SWITCH the activity
+    lane honors via lane.kill_switch_active() (scripts/demo_eth_lane.py
+    KILL_SWITCH = artifacts/trading_domain/demo_lane/KILL_SWITCH)."""
+    assert demo_lane.KILL_SWITCH == Path("artifacts/trading_domain/demo_lane/KILL_SWITCH")
+    result = demo_lane.perform_demo_lane_action(root, {"action": "STOP", "idempotency_key": "s1"})
+    assert result["action"] == "STOP"
+    assert (root / demo_lane.KILL_SWITCH).is_file()
 
 
 # --- generic, non-reflecting handler errors ------------------------------------------

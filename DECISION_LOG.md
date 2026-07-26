@@ -2266,3 +2266,39 @@ separately gated. One-time exception limited to the v8.146 package-version line 
 hash-row occurrences: project state ×1, decision log ×1, architecture doc ×1, dashboard HTML ×2,
 and dashboard test ×2. Authority remains `NONE`; no admission, promotion, venue, order, live, or
 real-money authority is granted.**
+
+### D-118 — Operator-directed dashboard control panel + live auto-refresh; audited spawn surface extended with START_ACTIVITY; confluence lane tuned for demo traffic
+
+Decision: on operator direction (2026-07-26) to stop driving the demo lanes from the terminal and
+control them from the dashboard, the D-106 audited spawn surface is extended with one new
+allowlisted action, `START_ACTIVITY`, and an overview-page control panel (Start Activity Lane,
+Start ETH Lane, Run Once, Stop). `START_ACTIVITY` spawns the fixed argv
+`[sys.executable, scripts/demo_eth_lane.py, --activity, --loop, --interval, 5m]` via the same
+`_spawn` mechanism as the existing actions: allowlist-gated (exact `ACTIONS` membership, mutated
+strings rejected and never reflected), fixed argv built only from module constants (`shell=False`,
+no request/free-form input reaches the command), refused with 409 when a lane already holds
+`lane.lock` (with the lane's own `exclusive_lane_lock` exit-3 as a second anti-double-spawn layer),
+audited to `artifacts/human_decisions/demo_lane_actions.jsonl`, and halted by the existing `STOP`
+kill switch (the activity lane checks `lane.kill_switch_active()` on the same `KILL_SWITCH` path
+each cycle). The dashboard demo-lane view also gains a ~5s read-only auto-refresh (GET of
+`/api/v1/demo-lane`, in-flight-guarded, paused when the tab is hidden). Separately, the confluence
+activity lane is tuned for demo VISIBILITY, not edge: the 4h timeframe is dropped
+(`{5m,15m,1h}`) and `ENTRY_THRESHOLD` lowered `0.25 → 0.15` so the lane produces frequent visible
+demo trades; this widens the entry gate for traffic and is explicitly NOT a claim of predictive
+edge. Execution remains human-initiated: the operator clicks Start; the assistant does not run the
+order-placing lane. This is a normal package reconciliation (v8.149) under the D-030/T-000-02
+regeneration rule — the edited manifest-tracked files (`dashboard.html` ×2, `tests/test_dashboard.py`
+×2, this decision log ×1) are rehashed; it is NOT an integrity exception and grants no manifest-edit
+authority beyond rehashing edited files.
+
+Evidence: operator direction in the 2026-07-26 session (dashboard buttons for all runnable
+commands, a live non-reloading dashboard, and ≥5 demo trades / 30 min); an independent read-only
+market-data frequency probe (37/40 coins, no orders) establishing that `{5m,15m,1h}` at entry 0.15
+yields a cold-start burst well above 5 trades and ~4–5/30 min sustained; an independent adversarial
+security review of the spawn-surface extension returning GO / PASS with no blocking findings
+(command-injection, allowlist, double-spawn, kill-switch, audit, and frontend surfaces all verified
+against source); `PACKAGE_INTEGRITY_MANIFEST.md`; `PACKAGE_CHANGELOG.md`.
+Status: **Dashboard demo-lane control panel + live auto-refresh SHIPPED; confluence lane tuned for
+demo traffic. Fake-money demo only; execution authority `NONE`; nothing validated or promoted;
+demo P&L remains non-evidence. Execution stays human-initiated (operator clicks Start). No venue,
+order, live, or real-money authority is granted.**
