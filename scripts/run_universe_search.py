@@ -8,14 +8,22 @@ more shots on goal; the screen and (later) G10 stay exactly as strict.
 
 Research only: nothing validated, no venue, no orders, execution_authority=NONE.
 
+Single-run only: like the demo lanes, this holds its own advisory flock and exits 3 if a
+search is already in flight, so two runs can never clobber the same output JSON.
+
 ponytail: reuses the strategy rosters + screen helpers from the two existing searches;
 adds only the multi-pair parquet loader and the universe loop.
 """
 
 from __future__ import annotations
 
+import fcntl
 import json
+import os
 import sys
+from collections.abc import Iterator
+from contextlib import contextmanager
+from datetime import UTC, datetime
 from decimal import Decimal
 from pathlib import Path
 
@@ -29,11 +37,42 @@ import scripts.run_signal_strategy_search as sig  # noqa: E402
 
 MULTI = ROOT / "data" / "normalized_multi"
 OUT = ROOT / "artifacts" / "research_lab" / "universe_search"
+# Same file the dashboard's START_RESEARCH guard reads for a fast "already running" 409; the flock
+# below (not that PID probe) is what actually guarantees a single search.
+RUN_LOCK = OUT / ".research_run.lock"
+REPORT = OUT / "UNIVERSE_SEARCH_TRAIN_SELECT_V2_2026_07_13.json"
 TIMEFRAMES = ("1h", "4h", "1d")  # tradeable frequencies; skip fee-churning 5m/15m
 # Require near-complete history per timeframe (~70%+ of full 2021-2026 coverage) so
 # partial / still-downloading series (e.g. a 1-month listing pump) can't contaminate.
 MIN_BARS = {"1h": 33000, "4h": 8000, "1d": 1400}
 ALL_STRATEGIES = (*ext.STRATEGIES, *sig.STRATEGIES)  # 32 public + 5 signal
+
+
+@contextmanager
+def exclusive_search_lock() -> Iterator[bool]:
+    """Hold the single-search lock for this process's lifetime (mirrors demo_eth_lane's lane lock).
+
+    Two concurrent searches would clobber the same output JSON, so only one may run. Yields False
+    if another search already holds it — and then writes nothing, so a live run's lock record and
+    report survive untouched. The lock releases when the process exits, so a crashed search never
+    wedges the next start.
+    """
+    OUT.mkdir(parents=True, exist_ok=True)
+    handle = RUN_LOCK.open("a+", encoding="utf-8")
+    try:
+        try:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError:
+            yield False
+            return
+        handle.seek(0)
+        handle.truncate()
+        handle.write(json.dumps({"pid": os.getpid(), "started_at": datetime.now(UTC).isoformat()}))
+        handle.flush()
+        os.fsync(handle.fileno())
+        yield True
+    finally:
+        handle.close()
 
 
 def _load(path: Path) -> ext.Candles:
@@ -122,25 +161,27 @@ def build_report() -> dict:
     }
 
 
-def main() -> None:
-    OUT.mkdir(parents=True, exist_ok=True)
-    report = build_report()
-    (OUT / "UNIVERSE_SEARCH_TRAIN_SELECT_V2_2026_07_13.json").write_text(
-        json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
-    print(
-        json.dumps(
-            {
-                "datasets": report["dataset_count"],
-                "pairs": len(report["pairs"]),
-                "strategies": report["strategy_count"],
-                "context_passes": report["context_pass_count"],
-                "context_pass_ids": [s["strategy_id"] for s in report["context_passes"]],
-            },
-            indent=2,
+def main() -> int:
+    with exclusive_search_lock() as acquired:
+        if not acquired:
+            print("another research search is already running — refusing to start a second one.")
+            return 3
+        report = build_report()
+        REPORT.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        print(
+            json.dumps(
+                {
+                    "datasets": report["dataset_count"],
+                    "pairs": len(report["pairs"]),
+                    "strategies": report["strategy_count"],
+                    "context_passes": report["context_pass_count"],
+                    "context_pass_ids": [s["strategy_id"] for s in report["context_passes"]],
+                },
+                indent=2,
+            )
         )
-    )
+        return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

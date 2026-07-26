@@ -912,12 +912,13 @@ def test_dashboard_ui_a11y_responsive_and_state_contracts() -> None:
     assert "S1" not in text_html
 
 
-def test_humanized_cockpit_has_twelve_workspaces_and_live_is_default() -> None:
+def test_watch_and_lab_workspaces_keep_every_page_and_live_is_default() -> None:
     html = (
         Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
     ).read_text()
 
-    # Watch group first (Live, Wallet), then the collapsed Lab group with the ten other pages.
+    # Watch group first (Live, Wallet), then the collapsed Lab group: the ten pre-existing
+    # developer pages plus the read-only Automation control map.
     assert re.findall(r'<button[^>]+data-workspace="([^"]+)"', html) == [
         "live",
         "wallets",
@@ -927,6 +928,7 @@ def test_humanized_cockpit_has_twelve_workspaces_and_live_is_default() -> None:
         "testing",
         "research",
         "operations",
+        "automation-map",
         "library",
         "skills",
         "todos",
@@ -2403,7 +2405,8 @@ def test_lab_group_is_collapsed_by_default_and_persists_state_in_localstorage() 
     assert 'aria-expanded="false" aria-controls="labGroup"' in lab
     assert 'id="labGroup" aria-label="Trading OS lab workspaces" hidden' in lab
     assert ".nav[hidden]{display:none}" in html
-    # All ten pre-existing pages stay reachable inside the group, none deleted.
+    # All ten pre-existing pages stay reachable inside the group, none deleted; the read-only
+    # Automation control map joins them.
     assert re.findall(r'<button[^>]+data-workspace="([^"]+)"', lab) == [
         "now",
         "signals",
@@ -2411,6 +2414,7 @@ def test_lab_group_is_collapsed_by_default_and_persists_state_in_localstorage() 
         "testing",
         "research",
         "operations",
+        "automation-map",
         "library",
         "skills",
         "todos",
@@ -2762,3 +2766,393 @@ console.log(JSON.stringify(out));
     assert re.findall(r'data-live-lane="([^"]+)"', controls) == ["START_ACTIVITY", "START", "STOP"]
     assert 'data-live-lane="STOP" disabled' in controls
     assert "Lane stopped/idle" in state["empty"]["liveLaneControlStatus"]
+
+
+def _header_health_source() -> str:
+    html = _dashboard_html()
+    start = html.index("// --- Header status strip:")
+    return html[start : html.index("function freshnessLabel(", start)]
+
+
+def _run_node(script: str) -> dict[str, object]:
+    return json.loads(
+        subprocess.run(
+            ["node", "--input-type=module", "-"],
+            input=script,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+    )
+
+
+def _health_harness(source: str, body: str) -> str:
+    """Drive the header-status helpers against a fake topbar with a switchable workspace."""
+    return f"""
+const dot={{className:''}},text={{textContent:''}};
+let active='live';
+const document={{querySelector(selector){{
+  if(selector==='#healthDot')return dot;
+  if(selector==='#healthText')return text;
+  if(selector==='[data-workspace].active')return {{dataset:{{workspace:active}}}};
+  return null;
+}}}};
+const window={{}};
+const asArray=value=>Array.isArray(value)?value:[];
+const esc=s=>String(s??'');
+const timeText=value=>String(value??'');
+const humanStatus=value=>String(value??'');
+{source}
+const snap=()=>({{dot:dot.className,text:text.textContent}});
+const out={{}};
+{body}
+console.log(JSON.stringify(out));
+"""
+
+
+def test_watch_header_reports_the_lane_instead_of_the_blanket_source_alarm() -> None:
+    poll = _dashboard_html()[
+        _dashboard_html().index("async function pollDemoLane(force)") : _dashboard_html().index(
+            "function updateDemoLaneLive"
+        )
+    ]
+    # Both poll outcomes feed the Watch header: a good payload and a failed fetch.
+    assert "setLaneHealthFrom(lane)" in poll
+    assert "setLaneHealthUnavailable()" in poll
+
+    state = _run_node(
+        _health_harness(
+            _header_health_source(),
+            """
+// The cockpit's own roll-up keeps firing in the background on every page.
+const cockpitAlarm=()=>setHealthIndicator('unavailable','Some sources unavailable');
+cockpitAlarm();
+setLaneHealthFrom({operational_status:'RUNNING',
+  activity:[{heartbeat_fresh:true}],coins:[{heartbeat_fresh:false}]});
+out.watchRunning=snap();
+cockpitAlarm();
+setLaneHealthFrom({operational_status:'RUNNING',
+  activity:[{heartbeat_fresh:false}],coins:[{heartbeat_fresh:false}]});
+out.watchStale=snap();
+setLaneHealthFrom({operational_status:'IDLE',activity:[],coins:[]});
+out.watchIdle=snap();
+setLaneHealthFrom({operational_status:'STOPPED',activity:[],coins:[]});
+out.watchStopped=snap();
+setLaneHealthFrom({operational_status:'UNAVAILABLE'});
+out.watchUnavailable=snap();
+setLaneHealthFrom(undefined);
+out.watchMalformed=snap();
+setLaneHealthFrom({operational_status:'RUNNING',activity:[{heartbeat_fresh:true}]});
+setLaneHealthUnavailable();
+out.watchFetchFailed=snap();
+// Lab pages keep the untouched cockpit roll-up, including its alarming wording.
+setLaneHealthFrom({operational_status:'RUNNING',activity:[{heartbeat_fresh:true}]});
+active='now';applyHealthIndicator();
+out.labAlarm=snap();
+setHealthIndicator('degraded','Sources delayed');
+out.labDelayed=snap();
+setHealthIndicator('live','Sources live');
+out.labLive=snap();
+active='wallets';applyHealthIndicator();
+out.walletRunning=snap();
+""",
+        )
+    )
+
+    # A Watch page never shows the blanket source alarm — it shows the lane it depends on.
+    assert state["watchRunning"] == {"dot": "dot live", "text": "Lane running · fake money"}
+    assert state["walletRunning"] == {"dot": "dot live", "text": "Lane running · fake money"}
+    # ...and never claims healthy when the lane's own artifacts are stale, missing or unreadable.
+    assert state["watchStale"] == {"dot": "dot degraded", "text": "Lane running · heartbeats stale"}
+    assert state["watchUnavailable"] == {"dot": "dot unavailable", "text": "Lane state unavailable"}
+    assert state["watchMalformed"] == {"dot": "dot unavailable", "text": "Lane state unavailable"}
+    assert state["watchFetchFailed"] == {"dot": "dot unavailable", "text": "Lane state unavailable"}
+    # Stopped/idle is honest and calm: neither green nor an error.
+    assert state["watchIdle"] == {"dot": "dot", "text": "Lane idle · nothing trading"}
+    assert state["watchStopped"] == {"dot": "dot", "text": "Lane stopped · nothing trading"}
+    for watch_case in ("watchRunning", "watchStale", "watchIdle", "watchStopped", "walletRunning"):
+        assert "sources" not in str(state[watch_case]).lower(), watch_case
+    # Lab keeps every pre-existing cockpit label and tone, unchanged.
+    assert state["labAlarm"] == {"dot": "dot unavailable", "text": "Some sources unavailable"}
+    assert state["labDelayed"] == {"dot": "dot degraded", "text": "Sources delayed"}
+    assert state["labLive"] == {"dot": "dot live", "text": "Sources live"}
+
+
+def test_every_source_health_entry_carries_a_plain_language_explainer() -> None:
+    html = _dashboard_html()
+    source = html[
+        html.index("// Plain-language explainer per") : html.index("function renderAttention")
+    ]
+    state = _run_node(
+        f"""
+const list={{innerHTML:''}};
+const document={{querySelector:()=>list}};
+const asArray=value=>Array.isArray(value)?value:[];
+const escapes={{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>escapes[c]);
+const timeText=value=>String(value??'');
+const humanStatus=value=>String(value??'Unknown').replaceAll('_',' ');
+{source}
+const out={{}};
+renderFreshness([
+  {{source:'PAPER_RUNTIME',status:'UNAVAILABLE',observed_at:null,
+    detail:'No strategy is approved for paper simulation.'}},
+  {{source:'BINANCE_PUBLIC_DATA:eth-bot',status:'LIVE',observed_at:'2026-07-26T00:00:00Z',
+    detail:'Public prices only; no account, credential, or order connection.'}},
+  {{source:'RESEARCH_JOBS',status:'LIVE',observed_at:null,detail:'Local jobs store: AVAILABLE.'}},
+  {{source:'RESEARCH_DATA',status:'DELAYED',observed_at:'2026-07-26T00:00:00Z',
+    detail:'Governed local dataset refresh status.'}},
+  {{source:'COINDESK_DATA_NEWS',status:'UNAVAILABLE',observed_at:null,
+    detail:'Optional external news is not configured.'}},
+  {{source:'SOMETHING_NEW',status:'STALE',observed_at:null,detail:'A source added later.'}}
+]);
+out.rendered=list.innerHTML;
+renderFreshness([{{source:'RESEARCH_JOBS',status:'LIVE',observed_at:null,detail:'d'}}],true);
+out.degraded=list.innerHTML;
+renderFreshness([]);
+out.empty=list.innerHTML;
+console.log(JSON.stringify(out));
+"""
+    )
+    rendered = str(state["rendered"])
+    # One chip per entry, each with the ⓘ affordance and an explainer alongside the raw detail.
+    assert rendered.count('class="source-chip') == 6
+    assert rendered.count('class="source-why" aria-hidden="true"') == 6
+    assert rendered.count("ⓘ") == 6
+    for raw_detail in (
+        "No strategy is approved for paper simulation.",
+        "Public prices only; no account, credential, or order connection.",
+        "Local jobs store: AVAILABLE.",
+        "Governed local dataset refresh status.",
+        "Optional external news is not configured.",
+        "A source added later.",
+    ):
+        assert raw_detail in rendered, raw_detail
+    for explainer in (
+        "the legacy event-sourced paper simulator",
+        "public Binance price heartbeats",
+        "the local offline research-jobs database can be read",
+        "how old the last governed dataset refresh is",
+        "optional external news metadata",
+        # An unknown future source still gets an honest fallback rather than silence.
+        "a development or optional data source",
+    ):
+        assert explainer in rendered, explainer
+    # Once in the hover tooltip and once in the screen-reader text, for each of the six entries.
+    assert rendered.count("What it is:") == 12
+    # Pre-existing behaviour intact: raw detail stays its own screen-reader span, and the
+    # last-good downgrade (Live -> Delayed) and the empty fallback are unchanged.
+    assert (
+        '<span class="visually-hidden">PAPER_RUNTIME · No strategy is approved for '
+        "paper simulation.</span>" in rendered
+    )
+    assert "<strong>Delayed</strong>" in str(state["degraded"])
+    assert "No source freshness was returned." in str(state["empty"])
+
+
+def test_lab_overview_keeps_the_full_raw_source_health_detail() -> None:
+    html = _dashboard_html()
+    now_section = html[html.index('<section id="now"') : html.index('id="nowHeadline"')]
+    # The Overview block, its chip list and every raw field it projects are untouched.
+    assert ">Environment and source health<" in now_section
+    assert 'id="freshnessList" aria-label="Source freshness"' in now_section
+    assert (
+        "const detail=[row?.source,timeText(row?.observed_at),row?.detail].filter(Boolean)" in html
+    )
+    assert "esc(humanStatus(row?.source||'Unknown source'))" in html
+    assert "({LIVE:'Live',DELAYED:'Delayed',STALE:'Stale',UNAVAILABLE:'Unavailable'})" in html
+    assert '<span class="visually-hidden">${esc(detail)}</span>' in html
+    # Plus the one-line caption that says what "Unavailable" means here.
+    assert "not running" in now_section and "not configured" in now_section
+    assert "The Watch pages (Live, Wallet) depend on none of these" in now_section
+
+
+def _automation_section() -> str:
+    html = _dashboard_html()
+    start = html.index('<section id="automation-map"')
+    return html[start : html.index("</section>", html.index("Deliberately not automated"))]
+
+
+def test_automation_page_is_reachable_under_lab_and_lists_real_capabilities() -> None:
+    html = _dashboard_html()
+    section = _automation_section()
+    assert '<button data-workspace="automation-map">Automation</button>' in html
+    assert "'automation-map':[['automation-map','Automation']]" in html
+    # Three groups, exactly as the operator asked for them.
+    for heading in (
+        ">Deterministic · zero AI<",
+        ">Judgement · AI-assisted<",
+        ">Human-gated execution<",
+    ):
+        assert heading in section, heading
+    # Every capability cites the command or endpoint that actually runs it.
+    for citation in (
+        "GET /api/v1/live-feed",
+        "GET /api/v1/demo-lane",
+        "GET /api/v1/equity-curve",
+        "GET /api/v1/cockpit?range=…",
+        "GET /api/v1/demo-trades → scripts/report_demo_trades.py",
+        "GET /api/v1/demo-status → scripts/report_demo_status.py",
+        "GET /api/v1/research-findings → scripts/report_research_findings.py",
+        "START_RESEARCH → python scripts/run_universe_search.py",
+        "GET /api/v1/eth-signal",
+        "make eth-signal → scripts/verify_eth_volume_breakout_flow.py --summary",
+        "POST /api/v1/signals/poll",
+        "POST /api/v1/workspace-actions/data-update",
+        "POST /api/v1/workspace-actions/decision",
+        "POST /api/v1/cockpit-actions",
+        "make orchestrator → scripts/run_orchestrator.py --loop",
+        "make orchestrator-once",
+        "touch artifacts/orchestrator/KILL_SWITCH",
+        "python scripts/demo_eth_lane.py --loop",
+        "python scripts/demo_eth_lane.py --activity --loop --interval 5m",
+        "python scripts/demo_eth_lane.py --multi",
+        "python scripts/demo_eth_lane.py --once",
+        "make demo-lane · make demo-lane-once",
+        "src/tios/approval/intake_admission.py",
+        "scripts/build_validation_package.py",
+        "/trading-os-supervisor",
+    ):
+        assert citation in section, citation
+    # Capabilities with no control surface say so instead of inventing a button.
+    assert section.count("no control yet — runs from the terminal:") == 4
+    assert "no control yet — library path only:" in section
+    for mode in (
+        "already-live read-only projection",
+        ">on-click<",
+        "self-looping",
+        "human-armed only",
+    ):
+        assert mode in section, mode
+
+
+def test_automation_page_cites_only_commands_and_endpoints_that_exist() -> None:
+    root = Path(__file__).resolve().parents[1]
+    section = _automation_section()
+    real_routes = {
+        "/api/v1/dashboard",
+        "/api/v1/status",
+        "/api/v1/operations",
+        "/api/v1/stage-gates",
+        "/api/v1/search",
+        "/api/v1/market",
+        "/api/v1/cockpit",
+        "/api/v1/signals",
+        "/api/v1/signals/reliability",
+        "/api/v1/signals/ingest",
+        "/api/v1/signals/poll",
+        "/api/v1/skills",
+        "/api/v1/demo-lane",
+        "/api/v1/demo-trades",
+        "/api/v1/demo-status",
+        "/api/v1/live-feed",
+        "/api/v1/equity-curve",
+        "/api/v1/research-findings",
+        "/api/v1/ai-costs",
+        "/api/v1/open-work",
+        "/api/v1/orchestrator",
+        "/api/v1/eth-signal",
+        "/api/v1/workspace-actions/data-update",
+        "/api/v1/workspace-actions/decision",
+        "/api/v1/cockpit-actions",
+        "/api/v1/demo-lane-actions",
+    }
+    cited_routes = set(re.findall(r"/api/v1/[a-z0-9/-]+", section))
+    assert cited_routes <= real_routes, cited_routes - real_routes
+    # No fictional script or Makefile target: the page can only cite what is really there.
+    makefile = (root / "Makefile").read_text()
+    targets = set(re.findall(r"^([a-zA-Z0-9_.-]+):", makefile, re.MULTILINE))
+    cited_targets = set(re.findall(r"\bmake ([a-z][a-z-]*)", section))
+    assert cited_targets <= targets, cited_targets - targets
+    for script in set(re.findall(r"(?:scripts|src)/[A-Za-z0-9_/]+\.py", section)):
+        assert (root / script).is_file(), script
+
+
+def test_automation_page_adds_no_control_surface_and_no_new_action_name() -> None:
+    section = _automation_section()
+    # Documentation only: nothing clickable, nothing typable, no write path of its own.
+    for forbidden in ("<input", "<form", "<select", "<textarea", "<button", "onclick", "fetch("):
+        assert forbidden not in section, forbidden
+    for wiring in (
+        "data-live-lane",
+        "data-overview-lane",
+        "data-cockpit-action",
+        "data-demo-report",
+    ):
+        assert wiring not in section, wiring
+    assert "method:'POST'" not in section
+    assert "innerHTML" not in section  # the page is static markup; nothing is server-derived
+    # No POST path beyond the four that already exist, and no invented action name.
+    assert set(re.findall(r"POST (/api/v1/[a-z/-]+)", section)) == {
+        "/api/v1/signals/poll",
+        "/api/v1/workspace-actions/data-update",
+        "/api/v1/workspace-actions/decision",
+        "/api/v1/cockpit-actions",
+    }
+    allowlisted = {"START", "START_ACTIVITY", "START_MULTI", "START_RESEARCH", "STOP", "RUN_ONCE"}
+    assert set(re.findall(r'<td class="mono">([A-Z_]+)</td>', section)) == allowlisted - {
+        "START_RESEARCH"
+    }
+    assert set(re.findall(r"\b[A-Z]{3,}(?:_[A-Z]+)+\b", section)) <= allowlisted | {
+        "STOP_ARMED",  # a live-feed event kind, not an action
+        "KILL_SWITCH",  # the stop flag's filename
+        "DECISION_LOG",  # DECISION_LOG.md
+    }
+
+
+def test_automation_page_pins_human_armed_execution_and_authority_none() -> None:
+    section = _automation_section()
+    assert "Order-placing lanes are human-armed only." in section
+    assert "The app never auto-starts trading by itself." in section
+    assert "Execution authority is <strong>NONE</strong>" in section
+    assert "AUTHORITY: NONE" in section
+    assert (
+        "There is no scheduler, cron, timer or background job anywhere in this system that can "
+        "start an order-placing lane" in section
+    )
+    # Every order-placing row is marked human-armed; the stop path is always available.
+    execution = section[section.index(">Human-gated execution<") :]
+    for action in ("START", "START_ACTIVITY", "START_MULTI", "RUN_ONCE"):
+        row = execution[execution.index(f'<td class="mono">{action}</td>') :]
+        assert "human-armed only" in row[: row.index("</tr>")], action
+    stop_row = execution[execution.index('<td class="mono">STOP</td>') :]
+    assert "always available" in stop_row[: stop_row.index("</tr>")]
+    assert "touch artifacts/trading_domain/demo_lane/KILL_SWITCH" in section
+    assert "artifacts/human_decisions/demo_lane_actions.jsonl" in section
+    # The page states the absence of automation explicitly rather than implying it.
+    assert "No automatic trading start" in section
+    assert "No auto-promotion, no auto-tuning" in section
+
+
+def test_automation_page_holds_the_honest_labelling_doctrine() -> None:
+    section = _automation_section()
+    assert "confidence" not in section.lower()
+    assert "Agreement is how much of the roster points the same way" in section
+    assert "Execution measurement — not edge" in section
+    assert "0 strategies are validated today" in section
+    assert "Demo P&amp;L is non-evidence" in section
+    assert "UNVALIDATED" in section
+    assert section.lower().count("probability of profit") == 1
+    assert "not a probability of profit" in section
+    for forbidden in (
+        "expected return",
+        "profitable",
+        "money printer",
+        "win probability",
+        "predicted",
+        "guaranteed",
+    ):
+        assert forbidden not in section.lower(), forbidden
+    assert "0 validated strategies" in section
+
+
+def test_every_navigable_workspace_view_resolves_to_a_section() -> None:
+    html = _dashboard_html()
+    workspaces = html[html.index("const WORKSPACES=") : html.index("let activeWorkspace=")]
+    view_ids = re.findall(r"\['([a-z-]+)','[^']+'\]", workspaces)
+    # All twelve pre-existing pages plus the Automation map remain reachable and rendered.
+    assert len(view_ids) >= 26
+    for view_id in view_ids:
+        assert f'id="{view_id}"' in html, view_id
+    for workspace in re.findall(r'<button[^>]+data-workspace="([^"]+)"', html):
+        assert f"{workspace}:[[" in workspaces or f"'{workspace}':[[" in workspaces, workspace

@@ -867,7 +867,9 @@ def test_start_multi_refused_while_a_lane_holds_the_lock(
         handle.close()
 
 
-# --- START_RESEARCH: fixed-argv offline search, separate PID-liveness guard (NOT lane.lock) ------
+# --- START_RESEARCH: fixed-argv offline search, own lock file (NOT lane.lock) ---------------------
+# Two layers: the dashboard PID probe (fast 409, tested here) and the search script's own flock
+# (exit 3, the actual single-run guarantee — tested in the section below).
 
 
 def test_start_research_spawns_exact_fixed_argv_and_is_audited(
@@ -972,6 +974,83 @@ def test_research_guard_never_crashes_on_a_hostile_lock_file(root: Path, pid: ob
     (root / demo_lane.RESEARCH_LOCK).parent.mkdir(parents=True, exist_ok=True)
     (root / demo_lane.RESEARCH_LOCK).write_text(json.dumps({"pid": pid}))
     assert demo_lane._research_running(root) is False
+
+
+# --- the search script's OWN flock: the real single-run guarantee (dashboard 409 is only fast) ----
+
+
+def _search_module(tmp: Path, monkeypatch: pytest.MonkeyPatch) -> Any:
+    """run_universe_search with its lock + report redirected into tmp (never the real artifacts)."""
+    monkeypatch.syspath_prepend(
+        str(Path(__file__).resolve().parents[1])
+    )  # scripts/ isn't installed
+    import scripts.run_universe_search as search
+
+    out = tmp / "universe_search"
+    out.mkdir(parents=True, exist_ok=True)
+    monkeypatch.setattr(search, "OUT", out)
+    monkeypatch.setattr(search, "RUN_LOCK", out / ".research_run.lock")
+    monkeypatch.setattr(search, "REPORT", out / "UNIVERSE_SEARCH_TRAIN_SELECT_V2_2026_07_13.json")
+    return search
+
+
+def test_second_concurrent_search_exits_3_and_writes_no_output(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A held flock makes the search refuse with exit code 3 without running the search or touching
+    the report / the live run's lock record — no full search is ever executed here."""
+    import fcntl
+
+    search = _search_module(tmp_path, monkeypatch)
+    monkeypatch.setattr(
+        search, "build_report", lambda: pytest.fail("a second search must not run the search")
+    )
+    search.REPORT.write_text("PRIOR REPORT\n")  # a live run's output must survive untouched
+    search.RUN_LOCK.write_text(json.dumps({"pid": 4242}))
+    handle = search.RUN_LOCK.open("a+", encoding="utf-8")
+    fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    try:
+        assert search.main() == 3
+    finally:
+        handle.close()
+    assert search.REPORT.read_text() == "PRIOR REPORT\n"
+    assert json.loads(search.RUN_LOCK.read_text())["pid"] == 4242  # not truncated by the refusal
+
+
+def test_search_lock_acquires_records_pid_and_releases_even_on_exception(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A first acquisition succeeds and records its pid, and the lock is released on normal exit AND
+    after an exception (flock is per-open-file-description, so a fresh open really re-locks)."""
+    search = _search_module(tmp_path, monkeypatch)
+    with search.exclusive_search_lock() as acquired:
+        assert acquired is True
+        assert json.loads(search.RUN_LOCK.read_text())["pid"] == os.getpid()
+    with pytest.raises(RuntimeError):
+        with search.exclusive_search_lock() as acquired:
+            assert acquired is True
+            raise RuntimeError("boom")
+    with search.exclusive_search_lock() as acquired:
+        assert acquired is True  # released cleanly after both the normal exit and the exception
+
+
+def test_single_run_writes_the_same_report_path_and_format(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The uncontended path is unchanged: exit 0, same filename, same indent=2/sort_keys JSON with a
+    trailing newline (build_report is stubbed — no real search runs)."""
+    search = _search_module(tmp_path, monkeypatch)
+    report = {
+        "dataset_count": 2,
+        "pairs": ["BTCUSDT"],
+        "strategy_count": 37,
+        "context_pass_count": 0,
+        "context_passes": [],
+    }
+    monkeypatch.setattr(search, "build_report", lambda: report)
+    assert search.main() == 0
+    assert search.REPORT.name == "UNIVERSE_SEARCH_TRAIN_SELECT_V2_2026_07_13.json"
+    assert search.REPORT.read_text() == json.dumps(report, indent=2, sort_keys=True) + "\n"
 
 
 @pytest.mark.parametrize(

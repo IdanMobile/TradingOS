@@ -21,6 +21,7 @@
     .live-bar{position:relative;height:9px;border-radius:5px;background:#17263a;margin:8px 0;overflow:hidden}.live-bar-fill{display:block;height:9px;border-radius:5px}.live-bar-fill.up{background:var(--green)}.live-bar-fill.down{background:var(--red)}.live-bar-gate{position:absolute;top:0;left:15%;width:1px;height:9px;background:var(--amber)}
     .live-chips{display:flex;gap:6px;flex-wrap:wrap}.live-chip{background:#17263a;border-radius:4px;padding:2px 6px;font-size:10px}.live-chips-bear .live-chip{color:#ff9aae}
     .live-positions{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}.live-position{padding:12px}.live-spark{display:block;width:100%;height:64px;color:var(--cyan)}
+    .source-why{cursor:help;color:var(--muted);font-size:11px}.cap-table table{min-width:860px}.cap-note{color:var(--muted);font-size:.85em;margin:10px 0 0}
     @media(max-width:640px){.live-when{flex-basis:58px}.live-positions{grid-template-columns:1fr}}
   </style>
 </head>
@@ -44,6 +45,7 @@
       <button data-workspace="testing">Testing</button>
       <button data-workspace="research">Research</button>
       <button data-workspace="operations">Operations</button>
+      <button data-workspace="automation-map">Automation</button>
       <button data-workspace="library">Library</button>
       <button data-workspace="skills">Skills</button>
       <button data-workspace="todos">TODO</button>
@@ -128,6 +130,7 @@
               <div class="eyebrow" id="environmentHeading">Environment and source health</div>
               <div class="mode-line"><span id="nowModeBadge" class="badge amber">MODE LOADING</span><span class="mode-copy" id="nowModeText">Gate-bound synthetic paper cockpit · no real money · no exchange account</span></div>
               <div class="freshness-list" id="freshnessList" aria-label="Source freshness"><span class="source-chip unavailable">Sources loading</span></div>
+              <p class="muted" id="freshnessCaption" style="font-size:.85em;margin:8px 0 0">Development and optional subsystems — hover any <span class="source-why" title="Each chip carries what that source is, when it was last observed, and whether the Watch pages depend on it.">ⓘ</span> for what that entry is. Here "Unavailable" almost always means <em>not running</em> or <em>not configured</em>, not broken. The Watch pages (Live, Wallet) depend on none of these: they read the demo lane's own artifacts, and the header reports that lane directly.</p>
               <p class="muted" id="cockpitUpdated">Waiting for the first local snapshot.</p>
             </div>
             <div class="control-row">
@@ -222,6 +225,76 @@
       <section id="workspace" class="view"><div class="title-row"><div><div class="eyebrow">Operations</div><h1>Workspace status</h1><p class="subtitle">The project-management view lives here, secondary to the Trading OS evidence surface.</p></div></div><div class="card" id="workspaceBody"></div></section>
       <section id="todos" class="view" aria-labelledby="todosHeading"><div class="title-row"><div><div class="eyebrow">TODO · project task index</div><h1 id="todosHeading">Open tasks</h1><p class="subtitle">Every task tracked in the local todos directory, grouped by status.</p></div><button class="action" id="copySessionPrompt" onclick="copySessionPrompt(this)">Copy session prompt</button></div><div class="card" id="todosBody"></div></section>
       <section id="skills" class="view" aria-labelledby="skillsHeading"><div class="title-row"><div><div class="eyebrow">Agent skills · planning baseline</div><h1 id="skillsHeading">Skills</h1><p class="subtitle">Reusable task procedures the project's AI agents follow: trigger conditions, process, and quality gates, read straight from <span class="mono">skills/*.md</span>.</p></div><span id="skillsSummary" class="muted"></span></div><div class="hero-note"><strong>Specs, not code:</strong> these are planning-baseline procedures for AI agents working on this repo, not trading capabilities. Most are marked "specified, not yet implemented."</div><div class="provider-grid" id="skillsBody"></div></section>
+      <section id="automation-map" class="view" aria-labelledby="automationMapHeading">
+        <div class="title-row"><div><div class="eyebrow">Lab · control map</div><h1 id="automationMapHeading">Automation</h1><p class="subtitle">Every capability this system has, how it runs today, where its control lives, and whether it is deterministic or needs judgement. Read off the Makefile, the <span class="mono">scripts/</span> entrypoints and the allowlisted dashboard actions — this page is documentation of truth. It has no controls of its own, starts nothing, and cannot schedule anything.</p></div><span class="badge amber">READ-ONLY MAP</span></div>
+        <div class="hero-note danger"><strong>Order-placing lanes are human-armed only.</strong> The app never auto-starts trading by itself. Execution authority is <strong>NONE</strong>, the money is fake on the venue demo account, and every order-placing start is an explicit human click on an existing allowlisted control, confirmed in a dialog and written to <span class="mono">artifacts/human_decisions/demo_lane_actions.jsonl</span>. There is no scheduler, cron, timer or background job anywhere in this system that can start an order-placing lane — and this page adds none. Stopping never needs this dashboard: <span class="mono">touch artifacts/trading_domain/demo_lane/KILL_SWITCH</span>.</div>
+        <div class="card">
+          <div class="section-title"><h2>The four modes</h2><span>how to read the tables below</span></div>
+          <div class="list">
+            <div class="list-item"><div><strong>Already-live read-only projection</strong><small>A GET endpoint the open page loads or polls by itself. Reads retained artifacts, writes nothing, starts nothing, places nothing.</small></div><span class="badge green">AUTOMATIC · READ-ONLY</span></div>
+            <div class="list-item"><div><strong>On-click</strong><small>Runs only when a human presses the existing button. No timer stands behind it.</small></div><span class="badge">MANUAL</span></div>
+            <div class="list-item"><div><strong>Self-looping</strong><small>Keeps its own loop once a human starts it from the terminal, and halts on its kill switch. Cannot place an order.</small></div><span class="badge amber">LOOPING · NO ORDERS</span></div>
+            <div class="list-item"><div><strong>Human-armed only</strong><small>Can place fake-money demo orders. Never starts by itself, on any schedule, for any reason.</small></div><span class="badge red">HUMAN-ARMED</span></div>
+          </div>
+        </div>
+        <div class="card cap-table" style="margin-top:18px">
+          <div class="section-title"><h2>Deterministic · zero AI</h2><span>fixed code, same input to same output; no model in the path</span></div>
+          <div class="table-wrap"><table><caption>Deterministic capabilities with the exact command or endpoint each one runs.</caption><thead><tr><th>Capability</th><th>What it does</th><th>How it runs today</th><th>Command / endpoint</th><th>Control lives</th></tr></thead><tbody>
+            <tr><td>Live event feed</td><td>Newest-first ENTER / EXIT / STOP_ARMED / SCAN / REJECT events derived from the lane's append-only order ledger and its scan heartbeats.</td><td><span class="badge green">already-live read-only projection</span> 5s while the Live page is open and visible</td><td class="mono">GET /api/v1/live-feed</td><td>Watch ▸ Live</td></tr>
+            <tr><td>Agreement leaderboard + holdings</td><td>Per-coin agreement across the strategy × timeframe roster, open positions and armed stops. Agreement is how much of the roster points the same way — not a probability of profit, not validated edge.</td><td><span class="badge green">already-live read-only projection</span> same 5s tick</td><td class="mono">GET /api/v1/demo-lane</td><td>Watch ▸ Live · Watch ▸ Wallet</td></tr>
+            <tr><td>Equity curve</td><td>Cumulative realised demo P&amp;L over closed round trips. Execution measurement — not edge.</td><td><span class="badge green">already-live read-only projection</span></td><td class="mono">GET /api/v1/equity-curve</td><td>Watch ▸ Live</td></tr>
+            <tr><td>Cockpit snapshot + source health</td><td>Mode, attention items, retained paper portfolio, and the freshness of each dev/optional source.</td><td><span class="badge green">already-live read-only projection</span> shared refresh, 15s default, pauses on a hidden tab</td><td class="mono">GET /api/v1/cockpit?range=…</td><td>Lab ▸ Overview</td></tr>
+            <tr><td>Evidence and status projections</td><td>Datasets, canonical strategies, retained runs, validation state, stage gates, completion matrix, AI cost ledger, open work, skills, orchestrator journal.</td><td><span class="badge green">already-live read-only projection</span> on page load</td><td class="mono">GET /api/v1/dashboard · /api/v1/status · /api/v1/operations · /api/v1/stage-gates · /api/v1/ai-costs · /api/v1/open-work · /api/v1/skills · /api/v1/orchestrator · /api/v1/search · /api/v1/market</td><td>Lab pages</td></tr>
+            <tr><td>Demo trades report</td><td>Deterministic per-symbol round-trip report, run as a library call (no subprocess).</td><td><span class="badge">on-click</span> never auto-refreshes</td><td class="mono">GET /api/v1/demo-trades → scripts/report_demo_trades.py</td><td>Lab ▸ Overview ▸ Reports</td></tr>
+            <tr><td>Demo status report</td><td>Deterministic lane status snapshot, run as a library call.</td><td><span class="badge">on-click</span></td><td class="mono">GET /api/v1/demo-status → scripts/report_demo_status.py</td><td>Lab ▸ Overview ▸ Reports</td></tr>
+            <tr><td>Research findings report</td><td>Screen output as LEADS only — confounded by multiple testing and cross-coin correlation, UNVALIDATED, not promotable.</td><td><span class="badge">on-click</span></td><td class="mono">GET /api/v1/research-findings → scripts/report_research_findings.py</td><td>Lab ▸ Overview ▸ Reports</td></tr>
+            <tr><td>Offline universe search (screens / backtests)</td><td>Offline train-select screen over the coin universe. No venue, no orders, authority NONE; single-run enforced by its own flock.</td><td><span class="badge">on-click</span> then runs in the background until it finishes</td><td class="mono">START_RESEARCH → python scripts/run_universe_search.py</td><td>Lab ▸ Overview ▸ Research</td></tr>
+            <tr><td>ETH signal + independent risk check</td><td>Frozen historical reproduction of the ETHUSDT 1h volume-breakout rule with an independent risk gate. Cannot connect a venue or create an order.</td><td><span class="badge">on-click</span> · also terminal</td><td class="mono">GET /api/v1/eth-signal · make eth-signal → scripts/verify_eth_volume_breakout_flow.py --summary</td><td>Lab ▸ Overview · terminal</td></tr>
+            <tr><td>Live signal sources</td><td>Keyless public sources (Fear &amp; Greed, CoinGecko, Binance 24h momentum) plus the 24h outcome-checked reliability table. Signals only — they arm nothing.</td><td><span class="badge">on-click</span> · optional operator-chosen auto-poll, <strong>Off</strong> by default</td><td class="mono">POST /api/v1/signals/poll · GET /api/v1/signals · GET /api/v1/signals/reliability</td><td>Lab ▸ Signals</td></tr>
+            <tr><td>Governed dataset refresh</td><td>Refreshes the governed local dataset and records the update.</td><td><span class="badge">on-click</span></td><td class="mono">POST /api/v1/workspace-actions/data-update</td><td>Lab ▸ Operations ▸ "Refresh data now"</td></tr>
+            <tr><td>Orchestrator</td><td>Observes 8 domains every 15 minutes — integrity, statistical, evidence, strategy, blockers, execution, parked, prospective observation — and halts on any escalation. Cannot read the sealed holdout, edit its own constraints, promote a candidate, or place an order.</td><td><span class="badge amber">self-looping</span> human-started from the terminal</td><td class="mono">make orchestrator → scripts/run_orchestrator.py --loop · make orchestrator-once · stop: touch artifacts/orchestrator/KILL_SWITCH</td><td>No control here — terminal only; read-only view at Lab ▸ Operations ▸ Orchestrator</td></tr>
+            <tr><td>Offline research job worker</td><td>Runs allowlisted offline research jobs from the local jobs database. No trading job exists in the allowlist.</td><td><span class="badge amber">self-looping / one-shot</span></td><td class="mono">no control yet — runs from the terminal: make jobs-init · make jobs-once → scripts/run_job_worker.py</td><td>No control yet; read-only view at Lab ▸ Operations ▸ Automation operations</td></tr>
+            <tr><td>Integrity + lint + type + test gate</td><td>Package integrity manifest hashes, ruff, mypy and pytest in one pass; writes the machine-readable check artifact.</td><td><span class="badge">on-demand</span></td><td class="mono">no control yet — runs from the terminal: make check · make check-full · make required</td><td>No control yet — terminal only</td></tr>
+            <tr><td>Dependency vulnerability audit</td><td>Exports the locked dependency set and audits it. Needs network, so it is outside the offline gate.</td><td><span class="badge">on-demand</span></td><td class="mono">no control yet — runs from the terminal: make audit</td><td>No control yet — terminal only</td></tr>
+            <tr><td>This dashboard</td><td>Loopback-only local server. Read-only except the four audited POST paths named on this page.</td><td><span class="badge">on-demand</span></td><td class="mono">no control yet — runs from the terminal: make dashboard → python -m tios.services.dashboard_ui.server</td><td>No control yet — terminal only</td></tr>
+          </tbody></table></div>
+          <p class="cap-note">Every row above is fixed code with no model in the path. None of them can place an order, connect a venue, or touch a credential.</p>
+        </div>
+        <div class="card cap-table" style="margin-top:18px">
+          <div class="section-title"><h2>Judgement · AI-assisted</h2><span>a human or a reviewing agent decides; no automatic path exists</span></div>
+          <div class="table-wrap"><table><caption>Capabilities that need judgement, with where the decision is actually made.</caption><thead><tr><th>Capability</th><th>What it does</th><th>How it runs today</th><th>Where it lives</th></tr></thead><tbody>
+            <tr><td>Strategy admission (candidate intake)</td><td>Admits or refuses a research candidate. Requires independent signed reviews; it is deliberately not a button.</td><td><span class="badge red">human-gated review</span> no automatic path</td><td class="mono">no control yet — library path only: src/tios/approval/intake_admission.py · src/tios/research_assets/admission.py · decisions recorded in DECISION_LOG.md</td></tr>
+            <tr><td>Validation gates</td><td>The statistics are deterministic scripts; reading them as PASS or FAIL, and what to do next, is a human call.</td><td><span class="badge red">human-gated review</span> deterministic inputs, judged output</td><td class="mono">scripts/build_validation_package.py · scripts/build_validation_plans.py · read-only view at Lab ▸ Research ▸ Validation</td></tr>
+            <tr><td>Promotion decision</td><td>Whether a candidate may leave measurement. <strong>0 strategies are validated today</strong> (20+ strategies × 40 coins, all fail; one earlier PASS was retracted for a sample-count bug). Auto-tune and auto-promotion do not exist in the code.</td><td><span class="badge red">human-gated review</span> no automatic path</td><td class="mono">DECISION_LOG.md · read-only view at Lab ▸ Research ▸ Validation</td></tr>
+            <tr><td>Architecture, risk and supervision review</td><td>Reviews scope, safety boundaries and evidence claims before work lands.</td><td><span class="badge red">human-invoked</span> AI-assisted, never scheduled</td><td class="mono">project skill /trading-os-supervisor · procedures in skills/*.md (GET /api/v1/skills)</td></tr>
+            <tr><td>Operator decisions recorded for later agents</td><td>Records one chosen option per open workspace question so future work inherits the decision.</td><td><span class="badge">on-click</span> human choice, deterministic recording</td><td class="mono">POST /api/v1/workspace-actions/decision · Lab ▸ Operations ▸ Workspace actions</td></tr>
+            <tr><td>Attention acknowledgement · legacy simulator and research-schedule pause</td><td>Acknowledges an attention item, or pauses/resumes the legacy paper simulator's entries and the offline research schedule. Touches no lane and no venue.</td><td><span class="badge">on-click</span></td><td class="mono">POST /api/v1/cockpit-actions · Lab ▸ Overview</td></tr>
+          </tbody></table></div>
+          <p class="cap-note">Nothing in this group runs on a timer, and nothing in it can start or arm an order-placing lane.</p>
+        </div>
+        <div class="card cap-table" style="margin-top:18px">
+          <div class="section-title"><h2>Human-gated execution</h2><span>fake money · execution authority NONE · human-armed only</span></div>
+          <div class="lane-status" style="margin-bottom:12px"><span class="badge amber">FAKE MONEY</span><span class="badge">AUTHORITY: NONE</span><span class="badge">UNVALIDATED</span><span class="badge red">HUMAN-ARMED ONLY</span></div>
+          <div class="table-wrap"><table><caption>Every order-placing capability, the exact argv it runs, and the human control that arms it.</caption><thead><tr><th>Capability</th><th>Command it actually runs</th><th>Allowlisted action</th><th>How it runs today</th><th>Control lives</th></tr></thead><tbody>
+            <tr><td>ETH breakout demo lane</td><td class="mono">python scripts/demo_eth_lane.py --loop</td><td class="mono">START</td><td><span class="badge red">human-armed only</span> confirmed, then audited</td><td>Watch ▸ Live ▸ lane strip · Lab ▸ Overview ▸ Lane control</td></tr>
+            <tr><td>Confluence activity lane</td><td class="mono">python scripts/demo_eth_lane.py --activity --loop --interval 5m</td><td class="mono">START_ACTIVITY</td><td><span class="badge red">human-armed only</span></td><td>Watch ▸ Live ▸ lane strip · Lab ▸ Overview ▸ Lane control</td></tr>
+            <tr><td>Multi-coin breakout lane</td><td class="mono">python scripts/demo_eth_lane.py --multi</td><td class="mono">START_MULTI</td><td><span class="badge red">human-armed only</span></td><td>Lab ▸ Overview ▸ Lane control</td></tr>
+            <tr><td>One measurement cycle</td><td class="mono">python scripts/demo_eth_lane.py --once</td><td class="mono">RUN_ONCE</td><td><span class="badge red">human-armed only</span> single cycle, 90s timeout, no loop</td><td>Lab ▸ Overview ▸ Lane control</td></tr>
+            <tr><td>Stop everything</td><td class="mono">write artifacts/trading_domain/demo_lane/KILL_SWITCH, then SIGTERM the lane</td><td class="mono">STOP</td><td><span class="badge green">always available</span> the flag alone refuses every order</td><td>Watch ▸ Live ▸ lane strip · Lab ▸ Overview ▸ Lane control · terminal</td></tr>
+            <tr><td>Terminal equivalents</td><td class="mono">make demo-lane · make demo-lane-once</td><td>—</td><td><span class="badge red">human-typed only</span></td><td>Terminal only</td></tr>
+          </tbody></table></div>
+          <p class="cap-note">One lane at a time (advisory <span class="mono">lane.lock</span>). Every start above clears the stop flag, is confirmed in a dialog first, and is appended to <span class="mono">artifacts/human_decisions/demo_lane_actions.jsonl</span>. The allowlist is exactly these six action names and nothing else; each maps to a hardcoded argv, so no text typed anywhere in this app ever reaches a spawned command.</p>
+        </div>
+        <div class="card" style="margin-top:18px">
+          <div class="section-title"><h2>Deliberately not automated</h2><span>absent by design, not pending</span></div>
+          <div class="list">
+            <div class="list-item"><div><strong>No automatic trading start</strong><small>No scheduler, cron, timer or background job in this system can start an order-placing lane. Execution authority is NONE and stays NONE.</small></div><span class="badge red">ABSENT</span></div>
+            <div class="list-item"><div><strong>No auto-promotion, no auto-tuning</strong><small>The lane projection reports auto-tune false and promotion-eligible false. Admission and promotion require human review.</small></div><span class="badge red">ABSENT</span></div>
+            <div class="list-item"><div><strong>No real money, venue credential or withdrawal path</strong><small>Fake money on the venue demo account only; no credential access and no order endpoint outside the lane process itself.</small></div><span class="badge red">ABSENT</span></div>
+            <div class="list-item"><div><strong>No validated edge to automate</strong><small>0 validated strategies. Demo P&amp;L is non-evidence: it measures execution, not edge, and agreement measures roster consensus among correlated strategies.</small></div><span class="badge amber">UNVALIDATED</span></div>
+          </div>
+        </div>
+      </section>
     </div>
   </main>
 </div>
@@ -496,6 +569,7 @@ async function pollDemoLane(force){
     try{
       const lane=await fetchJson('/api/v1/demo-lane');  // fetchJson still requires schema_version===1
       demoLaneStatus=String(lane.operational_status||'UNAVAILABLE');
+      setLaneHealthFrom(lane);  // Watch header reports THIS lane, never the Lab source roll-up
       if(activeView==='wallets-demo'){
         // re-render the rich card without losing scroll position or any open <details>
         const y=window.scrollY;
@@ -517,6 +591,7 @@ async function pollDemoLane(force){
     }catch(error){
       if(!document.querySelector('#demoLaneControls')?.children.length)renderLaneControls('UNAVAILABLE');
       if(!document.querySelector('#liveLaneControls')?.children.length)renderLiveLaneControls('UNAVAILABLE');
+      setLaneHealthUnavailable();  // never claim healthy when the lane projection cannot be read
     }
     if(activeView==='live')await pollLiveFeed();  // same tick, same in-flight guard — no competing timer
   }finally{
@@ -778,6 +853,7 @@ const WORKSPACES={
   trading:[['paper-trading','Portfolio, bots & signals'],['market','Market monitor']],
   testing:[['testing-providers','Providers'],['testing-tests','Tests']],
   research:[['research-lab','Research Lab'],['strategies','Strategies'],['comparisons','Comparisons'],['validation','Validation']],
+  'automation-map':[['automation-map','Automation']],
   operations:[['orchestrator','Orchestrator'],['automation','Automation'],['operations','Data health'],['trading','Risk & approvals (Trading Domain)'],['workspace','Workspace actions']],
   library:[['overview','Evidence overview'],['datasets','Datasets'],['runs','Experiments & runs'],['engines','Engine Lab'],['dictionary','Dictionary'],['search','Search'],['evidence','Evidence links']],
   skills:[['skills','Skills']]
@@ -789,6 +865,7 @@ function showView(viewId,label){
   document.querySelectorAll('#workspaceTools [data-view]').forEach(button=>{const selected=button.dataset.view===viewId;button.classList.toggle('active',selected);button.setAttribute('aria-current',selected?'page':'false')});
   const workspaceLabel=document.querySelector(`[data-workspace="${activeWorkspace}"]`)?.textContent||activeWorkspace;
   document.querySelector('#crumb').textContent=(WORKSPACES[activeWorkspace]?.length===1?workspaceLabel:`${workspaceLabel} / ${label}`).toUpperCase();
+  window.applyHealthIndicator?.();  // Watch pages show lane status; Lab pages show source health
   if(viewId==='live')window.pollDemoLane?.(true);
   if(viewId==='market'){initTradingView();loadMarket()}
   if(viewId==='operations'){window.loadOps?.();window.loadAiCosts?.()}
@@ -939,11 +1016,54 @@ function fractionPercent(value){
   const fraction=match[3]||'',denominator=10n**BigInt(fraction.length),units=BigInt(`${match[2]}${fraction}`),hundredths=(units*10000n+denominator/2n)/denominator,whole=hundredths/100n,decimals=String(hundredths%100n).padStart(2,'0'),sign=match[1]==='-'&&hundredths!==0n?'-':'';
   return `${sign}${whole}.${decimals}%`;
 }
-function setHealthIndicator(state,label){const dot=document.querySelector('#healthDot'),text=document.querySelector('#healthText');dot.className=`dot ${state||''}`.trim();text.textContent=label}
+// --- Header status strip: one element, two audiences.
+// The Watch pages (Live, Wallet) depend on exactly one thing — the demo lane and the freshness of
+// its OWN artifacts — so they report that, not the cockpit's dev/optional source roll-up. The Lab
+// pages keep the full roll-up unchanged. Neither mode ever reports healthy when the thing it
+// describes is stale or missing: a running lane with no fresh heartbeat reads "heartbeats stale",
+// and an unreadable lane projection reads "unavailable".
+const WATCH_WORKSPACES=['live','wallets'];
+let labHealth={state:'',label:'Health loading'},watchHealth={state:'',label:'Lane status loading'};
+// Read the active workspace off the DOM, not a module variable: no declaration-order/TDZ coupling.
+const watchModeActive=()=>WATCH_WORKSPACES.includes(document.querySelector('[data-workspace].active')?.dataset.workspace||'live');
+function applyHealthIndicator(){
+  const health=watchModeActive()?watchHealth:labHealth,dot=document.querySelector('#healthDot'),text=document.querySelector('#healthText');
+  if(!dot||!text)return;
+  dot.className=`dot ${health.state||''}`.trim();text.textContent=health.label;
+}
+window.applyHealthIndicator=applyHealthIndicator;
+function setHealthIndicator(state,label){labHealth={state,label};applyHealthIndicator()}
+function setLaneHealthFrom(lane){
+  const status=String((lane&&lane.operational_status)||'UNAVAILABLE').toUpperCase();
+  const rows=[...(Array.isArray(lane&&lane.coins)?lane.coins:[]),...(Array.isArray(lane&&lane.activity)?lane.activity:[])];
+  const fresh=rows.some(row=>row&&row.heartbeat_fresh===true);
+  if(status==='UNAVAILABLE')watchHealth={state:'unavailable',label:'Lane state unavailable'};
+  else if(status==='RUNNING'||status==='STOPPING')watchHealth=fresh?{state:'live',label:'Lane running · fake money'}:{state:'degraded',label:'Lane running · heartbeats stale'};
+  else watchHealth={state:'',label:status==='STOPPED'?'Lane stopped · nothing trading':'Lane idle · nothing trading'};
+  applyHealthIndicator();
+}
+function setLaneHealthUnavailable(){watchHealth={state:'unavailable',label:'Lane state unavailable'};applyHealthIndicator()}
+// Plain-language explainer per source-health entry: what it measures, and whether the Watch pages
+// depend on it. Keyed by the source prefix (BINANCE_PUBLIC_DATA carries a per-bot suffix). The raw
+// server detail still leads the tooltip and the screen-reader text, so nothing is hidden.
+const SOURCE_EXPLAINERS={
+  PAPER_RUNTIME:'What it is: the legacy event-sourced paper simulator, a Lab-only subsystem. "Unavailable" is its normal state — no strategy is approved for paper simulation. The Live and Wallet pages never read it.',
+  BINANCE_PUBLIC_DATA:'What it is: public Binance price heartbeats feeding that legacy paper simulator. Lab only; no account, credential or order connection. It is absent whenever the simulator is not running.',
+  RESEARCH_JOBS:'What it is: whether the local offline research-jobs database can be read. Dev tooling only — it can never touch a lane, a venue or an order, and the Watch pages never read it.',
+  RESEARCH_DATA:'What it is: how old the last governed dataset refresh is. "Delayed" only means the last refresh is over 15 minutes old; refresh it from Lab ▸ Operations ▸ "Refresh data now". The Watch pages never read it.',
+  COINDESK_DATA_NEWS:'What it is: optional external news metadata. "Unavailable" means no TIOS_COINDESK_API_KEY is configured — nothing is broken, the feature is simply off. The Watch pages never read it.'
+};
+const sourceExplainer=source=>SOURCE_EXPLAINERS[String(source??'').split(':')[0].toUpperCase()]||'What it is: a development or optional data source. The Live and Wallet pages depend only on the demo lane\'s own artifacts.';
 function freshnessLabel(value){return ({LIVE:'Live',DELAYED:'Delayed',STALE:'Stale',UNAVAILABLE:'Unavailable'})[String(value).toUpperCase()]||'Unavailable'}
 function renderFreshness(rows,degraded=false){
   const list=document.querySelector('#freshnessList');
-  list.innerHTML=asArray(rows).length?asArray(rows).map(row=>{let state=freshnessLabel(row?.status);if(degraded)state=state==='Live'?'Delayed':state==='Delayed'?'Stale':state;const tone=state.toLowerCase();const detail=[row?.source,timeText(row?.observed_at),row?.detail].filter(Boolean).join(' · ');return `<span class="source-chip ${tone}" title="${esc(detail)}"><span>${esc(humanStatus(row?.source||'Unknown source'))}</span><strong>${esc(state)}</strong><span class="visually-hidden">${esc(detail)}</span></span>`}).join(''):'<span class="source-chip unavailable"><span>Sources</span><strong>Unavailable</strong><span class="visually-hidden">No source freshness was returned.</span></span>';
+  list.innerHTML=asArray(rows).length?asArray(rows).map(row=>{
+    let state=freshnessLabel(row?.status);if(degraded)state=state==='Live'?'Delayed':state==='Delayed'?'Stale':state;
+    const tone=state.toLowerCase();
+    const detail=[row?.source,timeText(row?.observed_at),row?.detail].filter(Boolean).join(' · ');
+    const why=sourceExplainer(row?.source);
+    return `<span class="source-chip ${tone}" title="${esc(detail)} — ${esc(why)}"><span>${esc(humanStatus(row?.source||'Unknown source'))}</span><strong>${esc(state)}</strong><span class="source-why" aria-hidden="true">ⓘ</span><span class="visually-hidden">${esc(detail)}</span><span class="visually-hidden">${esc(why)}</span></span>`;
+  }).join(''):'<span class="source-chip unavailable"><span>Sources</span><strong>Unavailable</strong><span class="visually-hidden">No source freshness was returned.</span></span>';
 }
 function renderAttention(snapshot){
   const unresolved=asArray(snapshot.attention).filter(item=>item&&item.acknowledged!==true);

@@ -8,7 +8,9 @@ Governed by D-106: this is the second audited write surface on the local loopbac
 Every ACTION is allowlisted to a fixed internal literal that selects a hardcoded argv — no
 free-form input ever reaches a spawned command. The lane starts (START/START_ACTIVITY/START_MULTI)
 and RUN_ONCE/STOP share the lane's advisory `lane.lock`; the research search (START_RESEARCH) is
-NOT a lane, so it is guarded by a separate PID-liveness research lock instead.
+NOT a lane, so it uses its own lock file — the dashboard's PID probe answers "already running"
+fast, and `run_universe_search.py` holds an flock and exits 3 on a duplicate start, exactly as the
+lanes do.
 
 It also serves read-only VIEW endpoints (demo trades, demo status, research findings) that call the
 deterministic report scripts as library functions — no subprocess, no command execution — and
@@ -45,8 +47,9 @@ AUDIT_PATH = Path("artifacts/human_decisions/demo_lane_actions.jsonl")
 DIVERGENCE_REPORT = LANE_DIR / "DIVERGENCE_REPORT.json"
 
 # Research search (START_RESEARCH): offline, no venue, no orders, authority NONE. It is NOT a lane,
-# so it does not use lane.lock; a separate PID-liveness guard (RESEARCH_LOCK) stops two concurrent
-# searches from clobbering the same output JSON.
+# so it does not use lane.lock; RESEARCH_LOCK is its own lock file. Two layers keep it single-run:
+# the dashboard PID probe below (fast 409) and run_universe_search.py's flock on the same file,
+# which refuses a duplicate start with exit 3 before writing any output.
 RESEARCH_SCRIPT = Path("scripts/run_universe_search.py")
 RESEARCH_LOCK = Path("artifacts/research_lab/universe_search/.research_run.lock")
 RESEARCH_LOG = Path("artifacts/research_lab/universe_search/research_run.log")
@@ -1883,13 +1886,13 @@ def _spawn(root: Path, mode: str) -> subprocess.Popen[bytes]:
 
 
 def _research_running(root: Path) -> bool:
-    """Is a prior research search still alive? PID-liveness on the research guard lock.
+    """Is a prior research search still alive? PID-liveness on the research lock file.
 
-    ponytail: PID-liveness (not an flock) because run_universe_search.py holds no lock of its own;
-    PID reuse could in theory mask a dead run, and a concurrent-request burst can still race the
-    check-then-spawn to launch >1 search (the script has no self-lock) — both acceptable for a
-    single-operator local search. Upgrade to a self-locking (flock/exit-3) wrapper on
-    run_universe_search.py if research ever runs multi-tenant or must be double-click-safe.
+    ponytail: this is the FAST layer only — an immediate 409 for the common double-click. It is
+    deliberately not the guarantee: a concurrent-request burst can still race this check-then-spawn,
+    and PID reuse could mask a dead run. What actually bounds it to one search is
+    run_universe_search.py's own flock on the same file (exclusive_search_lock), which exits 3
+    without writing any output — the same self-locking contract the trading lanes use.
     """
     holder = _read_json(root / RESEARCH_LOCK)
     pid = holder.get("pid")
@@ -1909,8 +1912,8 @@ def _research_running(root: Path) -> bool:
 
 def _spawn_research(root: Path) -> subprocess.Popen[bytes]:
     """Launch the offline universe search detached. Fixed argv, no flags, no shell, no user input —
-    research only (no venue, no orders, authority NONE). Records a PID-liveness guard lock so a
-    second search is refused while one is in flight."""
+    research only (no venue, no orders, authority NONE). Records the pid so the PID probe can refuse
+    a second search fast; the spawned script's own flock is what actually enforces one at a time."""
     (root / RESEARCH_LOCK).parent.mkdir(parents=True, exist_ok=True)
     log = (root / RESEARCH_LOG).open("ab")
     process = subprocess.Popen(  # noqa: S603 (fixed argv, shell=False)
@@ -1961,7 +1964,8 @@ def perform_demo_lane_action(root: Path, payload: dict[str, Any]) -> dict[str, A
         detail = f"multi-coin lane started (pid {process.pid}); stop flag cleared"
     elif action == "START_RESEARCH":
         # Research-only (NO orders, authority NONE): NOT a lane, so it does NOT share lane.lock.
-        # A separate PID-liveness research guard stops two searches clobbering the same output.
+        # The PID probe below is fast feedback; the script's own flock (exit 3, no output written)
+        # is the guarantee that two searches never clobber the same output.
         if not (root / RESEARCH_SCRIPT).is_file():
             raise DemoLaneActionError("research search script is missing", 503)
         if _research_running(root):

@@ -2,9 +2,10 @@
 """Deterministic per-trade win/loss report over the demo lane's order ledger.
 
 Zero AI, no network, no venue call: it reads the append-only `orders.jsonl` the demo
-lane already writes and folds the fills into buy->sell round trips (one closed position
-per pair, a trailing unmatched buy is the open one), then reports each trade's realised
-P&L and a summary. Realised P&L uses the venue-reconciled wallet deltas as the source of
+lane already writes and folds the fills into buy->sell round trips per (symbol, strategy)
+(a trailing unmatched buy is the open one, a repeat buy aggregates into that position's cost
+basis, a sell with no entry is reported as an UNMATCHED fill rather than dropped), then
+reports each trade's realised P&L and a summary. Realised P&L uses the reconciled deltas as the
 truth (`pnl = usd_received - usd_spent`), so the numbers can never disagree with the
 fills underneath them. This is the ONLY round-trip folder in the repo: the dashboard's
 old private copy was deleted, since a second implementation is a second place to drift.
@@ -84,24 +85,96 @@ def _order_money(order: dict[str, Any]) -> dict[str, float]:
     }
 
 
-def round_trips(filled: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Fold fills into buy->sell round trips; unmatched buys stay OPEN (no mark).
+def _scale_in(entry: dict[str, Any], order: dict[str, Any], money: dict[str, float]) -> None:
+    """Merge a second buy on an already-open key into that position's cost basis, in place.
+
+    COST-BASIS AGGREGATION, not a FIFO lot queue, because that is what the lane actually does: an
+    entry only fires when the per-key `lane_base` is 0 and an exit always sells the WHOLE
+    `lane_base` in one order (`demo_eth_lane.run_cycle`: `side == "BUY" and lane_base == 0` /
+    `LaneIntent("Sell", lane_base, "baseCoin", ...)`), so a position is one economic unit and there
+    is no per-lot exit to match. FIFO would pair a whole-position exit's proceeds against only the
+    oldest lot's spend and OVER-report that trip's P&L while parking the rest as still-open; summing
+    the spend cannot over- or under-report, since `pnl = usd_received - usd_spent` then compares the
+    same wallet's total out against its total in. (The pre-fix `open_entries[key] = {...}` overwrote
+    the first buy outright, dropping its spend, size and fees from the report entirely.)
+    """
+    prior = entry["money"]
+    size = round(prior["base_delta"] + money["base_delta"], 8)
+    if size > 0:
+        # Size-weighted average fill price. Only reached on a real scale-in, so a single-buy
+        # position keeps its raw `avg_price` and the legacy fold stays byte-identical.
+        entry["entry_price"] = round(
+            (
+                entry["entry_price"] * prior["base_delta"]
+                + _number(order.get("avg_price")) * money["base_delta"]
+            )
+            / size,
+            8,
+        )
+    entry["money"] = {
+        "usd_spent": round(prior["usd_spent"] + money["usd_spent"], 4),
+        "usd_received": 0.0,
+        "base_delta": size,
+        "fee_usd": round(prior["fee_usd"] + money["fee_usd"], 4),
+    }
+
+
+def _unmatched(order: dict[str, Any], money: dict[str, float], reason: str) -> dict[str, Any]:
+    """A filled order this fold could not attach to a position — reported, never priced.
+
+    No `pnl_usd`: inventing one for a sell whose entry is missing would fabricate a trade. The
+    identifying detail is what a reconciliation actually needs to go find the fill in the ledger.
+    """
+    return {
+        "reason": reason,
+        "symbol": order.get("symbol"),
+        "strategy": order.get("strategy"),
+        "at": order.get("recorded_at"),
+        "side": order.get("side"),
+        "size_base": money["base_delta"],
+        "price_usd": _number(order.get("avg_price")),
+        "spent_usd": money["usd_spent"],
+        "received_usd": money["usd_received"],
+        "fees_usd": money["fee_usd"],
+        "signal_ref": order.get("signal_ref"),
+    }
+
+
+def fold_fills(filled: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Fold fills into (round trips, unmatched fills); unmatched buys stay OPEN (no mark).
 
     Entries are held PER (symbol, strategy), not in one global slot: the multi-coin and confluence
     lanes hold many positions at once on one shared ledger, so a single slot silently dropped every
     open but the last and could pair coin A's exit against coin B's entry (wrong P&L). `strategy` is
     always part of the key so the breakout and confluence lanes never cross-pair on a shared symbol;
     untagged legacy records read as None and pair only with each other, so an ETH-only ledger folds
-    byte-identically to before.
+    byte-identically to before. A repeat buy on an open key aggregates into its cost basis
+    (`_scale_in`); a sell with no open entry, or a fill with neither side, is returned as an
+    UNMATCHED fill instead of being dropped silently — money moved, so the report has to say so.
     """
     trips: list[dict[str, Any]] = []
+    unmatched: list[dict[str, Any]] = []
     open_entries: dict[tuple[Any, Any], dict[str, Any]] = {}
     for order in filled:
         money = _order_money(order)
         key = (order.get("symbol"), order.get("strategy"))
-        if order.get("side") == "Buy":
-            open_entries[key] = {"order": order, "money": money}
-        elif (entry := open_entries.pop(key, None)) is not None:
+        side = order.get("side")
+        if side == "Buy":
+            if (open_entry := open_entries.get(key)) is not None:
+                _scale_in(open_entry, order, money)
+            else:
+                open_entries[key] = {
+                    "order": order,
+                    "money": money,
+                    "entry_price": _number(order.get("avg_price")),
+                }
+        elif side != "Sell":
+            unmatched.append(_unmatched(order, money, "unknown_side"))
+        elif (entry := open_entries.pop(key, None)) is None:
+            # Entry predates this ledger window, a duplicate/double exit, or a genuine
+            # reconciliation fault. All three are real problems; none may pass silently.
+            unmatched.append(_unmatched(order, money, "orphan_sell"))
+        else:
             spent = entry["money"]["usd_spent"]
             received = money["usd_received"]
             pnl = round(received - spent, 4)
@@ -114,7 +187,7 @@ def round_trips(filled: list[dict[str, Any]]) -> list[dict[str, Any]]:
                     "opened_at": entry["order"].get("recorded_at"),
                     "closed_at": order.get("recorded_at"),
                     "size_base": entry["money"]["base_delta"],
-                    "entry_price_usd": _number(entry["order"].get("avg_price")),
+                    "entry_price_usd": entry["entry_price"],
                     "exit_price_usd": _number(order.get("avg_price")),
                     "spent_usd": spent,
                     "received_usd": received,
@@ -134,7 +207,7 @@ def round_trips(filled: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "strategy": entry["order"].get("strategy"),
                 "opened_at": entry["order"].get("recorded_at"),
                 "size_base": entry["money"]["base_delta"],
-                "entry_price_usd": _number(entry["order"].get("avg_price")),
+                "entry_price_usd": entry["entry_price"],
                 "spent_usd": entry["money"]["usd_spent"],
                 "fees_usd": entry["money"]["fee_usd"],
                 "pnl_usd": None,  # unrealised: needs a live mark, which this offline report omits
@@ -142,10 +215,19 @@ def round_trips(filled: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "signal_ref": entry["order"].get("signal_ref"),
             }
         )
-    return trips
+    return trips, unmatched
 
 
-def summarize(trips: list[dict[str, Any]]) -> dict[str, Any]:
+def round_trips(filled: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """The round trips only (see `fold_fills` for the unmatched fills alongside them)."""
+    return fold_fills(filled)[0]
+
+
+def summarize(
+    trips: list[dict[str, Any]], unmatched: list[dict[str, Any]] | None = None
+) -> dict[str, Any]:
+    """Totals over the trip list. `unmatched` (from `fold_fills`) adds the reconciliation counters;
+    omitting it reports them as None — "not measured" rather than a false "none found"."""
     closed = [t for t in trips if t["status"] == "CLOSED"]
     wins = [t for t in closed if t["outcome"] == "WIN"]
     losses = [t for t in closed if t["outcome"] == "LOSS"]
@@ -166,12 +248,20 @@ def summarize(trips: list[dict[str, Any]]) -> dict[str, Any]:
         "worst_trade_usd": round(min((t["pnl_usd"] for t in closed), default=0.0), 4)
         if closed
         else None,
+        # Reconciliation counters. Non-zero means money moved on a fill this fold could not attach
+        # to a position, so the realised total above is incomplete until it is explained. The fees
+        # are kept OUT of `total_fees_usd` (its definition is unchanged: trips only) and surfaced
+        # here instead, so the spend is still visible rather than lost.
+        "unmatched_fills": None if unmatched is None else len(unmatched),
+        "unmatched_fees_usd": None
+        if unmatched is None
+        else round(sum(u["fees_usd"] for u in unmatched), 4),
     }
 
 
 def build_report(orders_path: Path = DEFAULT_ORDERS) -> dict[str, Any]:
     """Pure: the full per-trade report as data. IO lives in the CLI below."""
-    trips = round_trips(load_filled(orders_path))
+    trips, unmatched = fold_fills(load_filled(orders_path))
     return {
         "schema": "tios.demo_trade_report.v1",
         "source": str(orders_path.relative_to(ROOT))
@@ -182,7 +272,8 @@ def build_report(orders_path: Path = DEFAULT_ORDERS) -> dict[str, Any]:
         "execution_authority": "NONE",
         "note": "Read-only diagnostic over fake-money demo fills; realised P&L only.",
         "round_trips": trips,
-        "summary": summarize(trips),
+        "unmatched_fills": unmatched,
+        "summary": summarize(trips, unmatched),
     }
 
 
@@ -222,6 +313,27 @@ def render_markdown(report: dict[str, Any]) -> str:
             f"{t.get('spent_usd', '')} | {t.get('received_usd', '')} | {t.get('fees_usd', '')} | "
             f"{t.get('pnl_usd', '')} | {t.get('pnl_pct', '')} | {t['outcome']} |"
         )
+    unmatched = report.get("unmatched_fills") or []
+    if unmatched:
+        # Only rendered when non-zero: a clean ledger reads exactly as it did before.
+        lines += [
+            "",
+            f"## Unmatched fills — {len(unmatched)} (RECONCILE)",
+            "",
+            "Filled orders that could not be attached to a position: money moved and no trade "
+            "above accounts for it, so the realised total is incomplete until each is explained. "
+            f"No P&L is invented for them; their fees total "
+            f"${report['summary']['unmatched_fees_usd']}.",
+            "",
+            "| # | Reason | Coin | Strategy | At | Side | Spent $ | Recv $ | Fees $ |",
+            "|--|--|--|--|--|--|--|--|--|",
+        ]
+        for i, u in enumerate(unmatched, 1):
+            lines.append(
+                f"| {i} | {u['reason']} | {u.get('symbol') or ''} | {u.get('strategy') or ''} | "
+                f"{u.get('at') or ''} | {u.get('side') or ''} | {u['spent_usd']} | "
+                f"{u['received_usd']} | {u['fees_usd']} |"
+            )
     return "\n".join(lines) + "\n"
 
 

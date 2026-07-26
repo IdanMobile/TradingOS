@@ -2397,3 +2397,97 @@ round-trip folder DELETED. Fake-money demo only; execution authority `NONE`; not
 promoted. Demo P&L is execution measurement and remains NON-EVIDENCE of edge; "agreement" is not a
 probability of profit. Execution stays human-initiated. No venue, order, live, or real-money authority
 is granted.**
+
+### D-121 — Integration completion: scale-in/orphan-fill money gaps closed, research self-lock (Finding B) closed, honest Watch status + Automation control map; "money printer" framing rejected on the evidence
+
+Decision: the operator asked to finish the app and reach "a money printer like you said". That framing is
+REJECTED and corrected on the record: the assistant's statement was the OPPOSITE — a warning that a
+livelier dashboard is how an UNVALIDATED fake-money lane starts *feeling* like a money printer. The
+project's own evidence stands: 20+ public strategies × 40 coins → **0 validated**; all 7 families
+searched → ALL FAIL; a prior CFTC "PASS" was RETRACTED for a sample-count inflation bug; the confluence
+lane passed nothing and its gate was deliberately loosened to 0.15 for traffic (D-118); the closed record
+is n=1. What was delivered is a fully integrated, continuously running **measurement instrument**, not a
+profit machine, and no real-money or advisory step is authorized or taken.
+
+Measured structural finding (recorded because it bounds the operator's stated goal of "a trade every few
+minutes"): trade frequency is bounded by capital ÷ position size, then by turnover — NOT by the number of
+strategies, coins or timeframes scanned. The lane opened 12 positions in 90 seconds (the cold-start burst
+filling empty slots), deployed 12 × $25 = $300 = the entire shared cap, and then correctly idled: as of
+the same session all 12 held coins still showed agreement +0.25..+1.00 (none near the 0.05 exit gate)
+while 7 unheld coins were entry-ready but unfundable. At the observed 0.1% per-fill fee (~0.2% round
+trip), churning all 12 slots every 30 minutes would burn ~$28.80/day ≈ **~10% of a $300 account per day
+in fees alone**, requiring >0.2% reliable edge per round trip merely to break even — against a signal
+with none demonstrated. Higher churn on a zero-edge signal is a fee pump, not a printer. Levers that
+raise visible activity (smaller position size, tighter exit gate, adding the short side) are therefore
+recorded as ACTIVITY levers only; none creates edge and each increases fee drag.
+
+Changes, all fake-money / read-only / authority NONE, verified by an independent adversarial review
+returning GO with no blocking findings:
+- **Money-correctness (`scripts/report_demo_trades.py`).** `round_trips` became `fold_fills(filled) ->
+  (trips, unmatched)`, with `round_trips()` kept as a thin wrapper so `build_equity_curve`'s library
+  contract and `summarize(trips)`'s arity are untouched. (a) A repeat Buy on an already-open
+  `(symbol, strategy)` key now AGGREGATES cost basis (summed spend/size/fees, size-weighted entry price)
+  instead of overwriting it; the pre-fix overwrite dropped the first buy and OVER-reported that trip
+  (+35 where the truth is +10 — the failure direction that flatters the account). Cost-basis aggregation
+  (not FIFO) was chosen and the justification was independently verified against the lane code: an entry
+  fires only when the per-key position is flat and every exit path (EXIT_LONG, disaster stop, venue
+  resting stop) sells the WHOLE `lane_base`, so no partial exit or per-lot matching exists and FIFO would
+  actively over-report. (b) A Sell with no open entry, or a fill with an unrecognised side, is now
+  surfaced as an UNMATCHED fill (`unmatched_fills` in report and summary, `unmatched_fees_usd`, a
+  markdown section only when non-zero) — never dropped, never given a fabricated P&L. `total_fees_usd`
+  keeps its exact prior definition; `summarize(trips)` without the new list reports `None`, not a false
+  `0`. The legacy untagged `(None, None)` ETH-only fold is byte-identical, pinned by an exact-trip-list
+  test. NOTE: both new paths are currently unreachable by lane design (it only buys when flat; zero
+  orphan sells exist) — this is hardening, not a correction of numbers already read.
+- **Research self-lock, closing D-119's deferred Finding B (`scripts/run_universe_search.py`).** The
+  script now acquires its own non-blocking `fcntl.flock` and returns exit code **3** on contention before
+  any output work, never truncating a live holder's record and never partially writing the report,
+  releasing on every path including exceptions — the same `exclusive_lane_lock`/exit-3 pattern the trading
+  lanes use. The dashboard's PID-liveness probe is retained as fast 409 feedback but is no longer the
+  guarantee; `demo_lane.py`'s change is comments/docstrings ONLY (zero executable lines) and the
+  allowlist, fixed argv, audit write and 409/503 status codes are untouched. Single-run output path
+  (filename, JSON format, stdout) byte-identical.
+- **Honest Watch status + Automation control map (`dashboard.html`).** Root cause of the alarming global
+  "Some sources unavailable" banner: `build_cockpit`'s freshness array contains NO demo-lane entry at all,
+  so the banner could never describe the only subsystem the Watch pages depend on. Watch pages now derive
+  status from `/api/v1/demo-lane` and go green ONLY when a heartbeat is genuinely fresh, degrading
+  distinctly for stale heartbeats / stopped lane / missing payload / fetch failure / schema mismatch; Lab
+  keeps the full raw detail byte-for-byte, and each source chip gained a plain-language explainer.
+  Investigation confirmed nothing is broken: PAPER_RUNTIME is permanently unavailable by design (it needs
+  an approved strategy and there are none), COINDESK_DATA_NEWS is unconfigured by choice, RESEARCH_DATA
+  "Delayed" only means >15 min since refresh. One pre-existing over-generous label is now stated honestly
+  rather than papered over: RESEARCH_JOBS "Live" means only that the jobs store is readable. A new
+  read-only Lab page **Automation** inventories all capabilities with their real commands/endpoints,
+  grouped deterministic-zero-AI / judgement-AI-assisted / human-gated-execution, guarded by an
+  anti-fiction test that checks every cited route against the server, every `make` target against the
+  Makefile and every script path against disk. It adds NO input, POST path, action name or scheduler.
+- **Execution boundary reaffirmed and made explicit in the product:** order-placing lanes are
+  **human-armed only**. No scheduler, cron, timer or background job in this system can start an
+  order-placing lane, and none was added. Automating the deterministic half (reports, screens, research,
+  gates) is free; starting the money side stays an explicit human click. Any future auto-arming of
+  trading must be designed deliberately (explicit armed state + expiry), never introduced incidentally.
+
+Parked (recorded, NOT fixed — each needs its own reviewed change): (1) `load_filled()` admits only
+`order_status == "Filled"`, so a `PartiallyFilledCanceled` row — a terminal status the lane defines —
+would be filtered out BEFORE the fold and appear as neither a trip nor an unmatched fill despite real
+wallet movement; the new "nothing vanishes" guarantee is scoped to the fold loop, not the whole
+ledger→report pipeline (zero such rows exist today). (2) No test locks 3+ successive scale-ins for
+bounded rounding drift. (3) The exit-3 contention path is hand-verified but not test-locked in
+`tests/test_universe_search.py`. (4) An orphan sell followed by a fresh buy+close on the same key is
+traced correct but not test-locked.
+
+Evidence: operator direction in the 2026-07-26 session; the live `orders.jsonl` (12 filled
+ACTIVITY-CONFLUENCE entries 14:53:02–14:54:32Z, $300 cap bound, 0 exits) and the 37 activity heartbeats
+read read-only at 15:44Z for the agreement spread; the independent review (GO, no blocking findings) which
+hand-verified the aggregation arithmetic, traced the no-partial-exit invariant through
+`demo_eth_lane.run_cycle`/disaster stop/resting stop and `demo_activity_lane`, empirically confirmed
+exit-3 leaves the report untouched, and independently spot-checked the Automation page's citations rather
+than trusting its own anti-fiction test; `PACKAGE_INTEGRITY_MANIFEST.md`; `PACKAGE_CHANGELOG.md`. Normal
+package reconciliation (v8.152) under D-030/T-000-02 — manifest-tracked `dashboard.html` ×2,
+`tests/test_dashboard.py` ×2 and this decision log ×1 rehashed; NOT an integrity exception.
+Status: **Integration COMPLETE as a measurement instrument: money-correctness gaps closed, Finding B
+closed, Watch status honest, Automation map shipped. "Money printer" framing REJECTED — 0 validated
+strategies, demo P&L is NON-EVIDENCE, and high-frequency churn on an unvalidated signal is fee-negative
+(~10%/day of a $300 account at 30-minute full turnover). Fake-money demo only; execution authority
+`NONE`; order-placing stays HUMAN-ARMED ONLY; no scheduler may start a lane. Four items parked. No venue,
+order, live, or real-money authority is granted, and no investment advice is given.**

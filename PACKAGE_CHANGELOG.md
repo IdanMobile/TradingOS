@@ -1,5 +1,63 @@
 # Package Changelog
 
+## v8.152 — 2026-07-26 — Integration completion: money-correctness gaps, research self-lock, honest Watch status + Automation map
+
+Finishes the app as a continuously running **measurement instrument**. The "money printer" framing is
+rejected on the project's own evidence: 0 validated strategies (20+ × 40 coins → all fail; a prior PASS
+retracted for a sample-count bug), the confluence lane passed nothing and its gate was loosened to 0.15
+for traffic, and the closed record is n=1. Fake money only; execution authority NONE; demo P&L is
+NON-EVIDENCE; no real-money or advisory step. Independent adversarial review: GO, no blocking findings.
+See DECISION_LOG.md D-121.
+
+- **Money correctness (`scripts/report_demo_trades.py`).** `round_trips` → `fold_fills() -> (trips,
+  unmatched)`, with `round_trips()` retained as a wrapper so `build_equity_curve`'s library contract and
+  `summarize(trips)`'s arity are unchanged. A repeat buy on an open `(symbol, strategy)` key now
+  AGGREGATES cost basis (summed spend/size/fees, size-weighted entry price) instead of overwriting it —
+  the pre-fix overwrite dropped the first buy and OVER-reported the trip (+35 vs a true +10). Cost-basis
+  aggregation (not FIFO) was verified correct against the lane: entries fire only when flat and every
+  exit path (EXIT_LONG, disaster stop, venue resting stop) sells the whole position, so no partial exit
+  exists and FIFO would over-report. Orphan sells and unrecognised-side fills are now surfaced as
+  `unmatched_fills` (+ `unmatched_fees_usd`, markdown section only when non-zero) instead of being
+  silently dropped, and are never given a fabricated P&L. `total_fees_usd` keeps its prior definition;
+  `summarize(trips)` without the list reports `None`, not a false `0`. Legacy untagged ETH-only folds
+  byte-identically (exact-trip-list test). Both new paths are unreachable by current lane design — this
+  is hardening, not a correction to numbers already read.
+- **Research self-lock (closes the Finding B ceiling deferred in D-119).** `scripts/run_universe_search.py`
+  now takes its own non-blocking `fcntl.flock` and returns exit code **3** on contention before any output
+  work, never truncating a live holder's record or partially writing the report, releasing on all paths
+  including exceptions — the same pattern the trading lanes use. The dashboard's PID probe stays as fast
+  409 feedback but is no longer the guarantee; `demo_lane.py`'s change is comments/docstrings only (zero
+  executable lines), with the allowlist, fixed argv, audit write and 409/503 codes untouched.
+- **Honest Watch status.** Root cause of the alarming global "Some sources unavailable" banner: the
+  cockpit freshness array has NO demo-lane entry, so it could never describe the subsystem the Watch pages
+  depend on. Watch now derives from `/api/v1/demo-lane` and goes green ONLY on a genuinely fresh
+  heartbeat, degrading distinctly for stale / stopped / missing / fetch-failed / schema-mismatch; Lab keeps
+  the raw detail byte-for-byte and every source chip gained a plain-language explainer. Nothing was
+  broken: PAPER_RUNTIME is permanently unavailable by design (needs an approved strategy; there are none),
+  COINDESK_DATA_NEWS is unconfigured, RESEARCH_DATA "Delayed" = >15 min since refresh. RESEARCH_JOBS
+  "Live" is now stated honestly as "the jobs store is readable" (no staleness dimension).
+- **New read-only Lab page `Automation`** inventorying every capability with its real command/endpoint,
+  grouped deterministic-zero-AI / judgement-AI-assisted / human-gated-execution, protected by an
+  anti-fiction test (cited routes checked against the server, `make` targets against the Makefile, script
+  paths against disk). Adds no input, POST path, action name or scheduler.
+- **Execution boundary stated in the product:** order-placing lanes are HUMAN-ARMED ONLY; no scheduler,
+  cron or timer can start one, and none was added.
+
+Recorded structural finding: trade frequency is bounded by capital ÷ position size then turnover, not by
+strategy/coin/timeframe count. The 12-positions-in-90-seconds burst filled all 12 slots ($300 cap) and the
+lane then correctly idled. At the observed ~0.2% round-trip fee, full turnover every 30 minutes would burn
+~10% of a $300 account per day in fees, needing >0.2% reliable edge per trip just to break even. Activity
+levers (smaller size, tighter exit gate, short side) increase churn and fee drag, never edge.
+
+Parked for their own reviewed changes: `load_filled()` filters to `order_status == "Filled"`, so a
+`PartiallyFilledCanceled` row would be excluded before the fold and show as neither trip nor unmatched
+fill (none exist today); no test for 3+ successive scale-ins; exit-3 contention hand-verified but not
+test-locked; orphan-then-reuse on one key traced correct but not test-locked.
+
+Manifest-tracked files rehashed (D-030): `dashboard.html`, `tests/test_dashboard.py`, `DECISION_LOG.md`.
+Gates green: package integrity PASS (453 rows), project-wide ruff + mypy (139 files) clean, 333 tests pass
+across the affected suites.
+
 ## v8.151 — 2026-07-26 — Watch/Lab dashboard split + Live cockpit; two multi-coin P&L reporting defects fixed
 
 Operator-directed frontend reorganization, plus two real reporting defects that only surfaced once the

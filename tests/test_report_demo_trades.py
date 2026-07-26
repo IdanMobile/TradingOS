@@ -137,3 +137,224 @@ def test_base_size_reads_the_traded_coins_own_delta(tmp_path: Path) -> None:
     rows = [_coin_order("AAVEUSDT", "ACT", "Buy", -25.0, 0.25945356, "2026-07-26T14:53:00+00:00")]
     trips = rpt.round_trips(rpt.load_filled(_write(tmp_path, rows)))
     assert trips[0]["size_base"] == 0.25945356
+
+
+def _priced_order(
+    symbol: str, side: str, usdt: float, base: float, price: str, fee: str, at: str
+) -> dict[str, object]:
+    """A tagged fill with an explicit price/fee, for cost-basis and fee-total assertions."""
+    return {
+        "ok": True,
+        "order_status": "Filled",
+        "symbol": symbol,
+        "strategy": "ACT",
+        "side": side,
+        "avg_price": price,
+        "fee": fee,
+        "recorded_at": at,
+        "reconcile": {"USDT_delta": usdt, f"{symbol[:-4]}_delta": base},
+        "signal_ref": f"SIG-{at}",
+    }
+
+
+def test_scale_in_aggregates_cost_basis_and_never_drops_the_first_buy(tmp_path: Path) -> None:
+    # FAILS pre-fix: a second Buy on an already-open (symbol, strategy) did
+    # `open_entries[key] = {...}`, overwriting the first buy, so its 25 USDT of spend, its size and
+    # its fee vanished and the exit's 60 USDT was booked against 25 spent (+35 instead of +10).
+    # The lane exits the WHOLE position in one order, so the exit's proceeds must face the WHOLE
+    # cost basis.
+    rows = [
+        _priced_order("SOLUSDT", "Buy", -25.0, 0.25, "100", "0.0025", "2026-07-26T14:00:00+00:00"),
+        _priced_order("SOLUSDT", "Buy", -25.0, 0.20, "125", "0.0020", "2026-07-26T14:10:00+00:00"),
+        _priced_order(
+            "SOLUSDT", "Sell", 60.0, -0.45, "133.33", "0.06", "2026-07-26T15:00:00+00:00"
+        ),
+    ]
+    trips, unmatched = rpt.fold_fills(rpt.load_filled(_write(tmp_path, rows)))
+    assert unmatched == []
+    assert len(trips) == 1
+    trip = trips[0]
+    assert trip["spent_usd"] == 50.0  # both buys, not just the last one
+    assert trip["size_base"] == 0.45
+    assert trip["pnl_usd"] == 10.0  # 60 received - 50 spent
+    assert trip["pnl_pct"] == 20.0
+    # Fees: 0.0025*100 + 0.0020*125 (base-coin buy fees priced at fill) + 0.06 quote sell fee.
+    assert trip["fees_usd"] == 0.56
+    # Size-weighted average entry: (100*0.25 + 125*0.20) / 0.45.
+    assert trip["entry_price_usd"] == round(50.0 / 0.45, 8)
+    assert trip["opened_at"] == "2026-07-26T14:00:00+00:00"  # the position opened on the FIRST buy
+    summary = rpt.summarize(trips, unmatched)
+    assert summary["realised_pnl_usd"] == 10.0 and summary["closed_trades"] == 1
+    assert summary["total_fees_usd"] == 0.56  # internally consistent with the trip list
+    assert summary["unmatched_fills"] == 0 and summary["unmatched_fees_usd"] == 0.0
+
+
+def test_scale_in_still_open_reports_the_whole_cost_basis(tmp_path: Path) -> None:
+    # FAILS pre-fix: the still-open scaled-in position reported only the last buy (25 spent), so the
+    # report understated live exposure by half.
+    rows = [
+        _priced_order("SOLUSDT", "Buy", -25.0, 0.25, "100", "0.0025", "2026-07-26T14:00:00+00:00"),
+        _priced_order("SOLUSDT", "Buy", -25.0, 0.20, "125", "0.0020", "2026-07-26T14:10:00+00:00"),
+    ]
+    trips = rpt.round_trips(rpt.load_filled(_write(tmp_path, rows)))
+    assert len(trips) == 1 and trips[0]["status"] == "OPEN"
+    assert trips[0]["spent_usd"] == 50.0 and trips[0]["size_base"] == 0.45
+    assert trips[0]["fees_usd"] == 0.5 and trips[0]["pnl_usd"] is None
+
+
+def test_sell_closes_its_own_key_while_a_scaled_in_position_stays_open(tmp_path: Path) -> None:
+    # Under cost-basis aggregation a sell closes the WHOLE position on its own key and touches no
+    # other key: BTC's two buys are one open position, SOL's single buy closes cleanly.
+    rows = [
+        _priced_order("BTCUSDT", "Buy", -25.0, 0.0004, "62500", "0", "2026-07-26T14:00:00+00:00"),
+        _priced_order("SOLUSDT", "Buy", -25.0, 0.25, "100", "0", "2026-07-26T14:01:00+00:00"),
+        _priced_order("BTCUSDT", "Buy", -25.0, 0.0004, "62500", "0", "2026-07-26T14:02:00+00:00"),
+        _priced_order("SOLUSDT", "Sell", 27.0, -0.25, "108", "0", "2026-07-26T14:03:00+00:00"),
+    ]
+    trips, unmatched = rpt.fold_fills(rpt.load_filled(_write(tmp_path, rows)))
+    assert unmatched == []
+    closed = [t for t in trips if t["status"] == "CLOSED"]
+    opens = [t for t in trips if t["status"] == "OPEN"]
+    assert len(closed) == 1 and closed[0]["symbol"] == "SOLUSDT" and closed[0]["pnl_usd"] == 2.0
+    assert len(opens) == 1 and opens[0]["symbol"] == "BTCUSDT" and opens[0]["spent_usd"] == 50.0
+    summary = rpt.summarize(trips, unmatched)
+    assert summary["closed_trades"] == 1 and summary["open_trades"] == 1
+    assert summary["realised_pnl_usd"] == 2.0
+
+
+def test_orphan_and_duplicate_sells_are_surfaced_never_priced(tmp_path: Path) -> None:
+    # FAILS pre-fix: both sells hit the `pop(...) is not None` else-branch and were skipped in
+    # total silence — money left the position and the report said nothing. A sell with no entry is
+    # an entry outside the window, a double exit, or a reconciliation fault; all must be visible.
+    rows = [
+        # orphan: the ETH entry predates this ledger window
+        _priced_order("ETHUSDT", "Sell", 30.0, -0.013, "2300", "0.03", "2026-07-26T14:00:00+00:00"),
+        _priced_order("SOLUSDT", "Buy", -25.0, 0.25, "100", "0", "2026-07-26T14:01:00+00:00"),
+        _priced_order("SOLUSDT", "Sell", 27.0, -0.25, "108", "0", "2026-07-26T14:02:00+00:00"),
+        # duplicate: SOL already exited above
+        _priced_order("SOLUSDT", "Sell", 27.0, -0.25, "108", "0.02", "2026-07-26T14:03:00+00:00"),
+    ]
+    trips, unmatched = rpt.fold_fills(rpt.load_filled(_write(tmp_path, rows)))
+    # Exactly one real trade; neither orphan became a trip or got a P&L number.
+    assert [t["status"] for t in trips] == ["CLOSED"]
+    assert trips[0]["symbol"] == "SOLUSDT" and trips[0]["pnl_usd"] == 2.0
+    assert len(unmatched) == 2
+    assert all("pnl_usd" not in u and "outcome" not in u for u in unmatched)
+    assert [u["reason"] for u in unmatched] == ["orphan_sell", "orphan_sell"]
+    # Identifying detail a reconciliation needs to find the fill in the ledger.
+    assert unmatched[0]["symbol"] == "ETHUSDT" and unmatched[0]["strategy"] == "ACT"
+    assert unmatched[0]["at"] == "2026-07-26T14:00:00+00:00" and unmatched[0]["side"] == "Sell"
+    assert unmatched[0]["received_usd"] == 30.0 and unmatched[0]["fees_usd"] == 0.03
+    assert unmatched[1]["symbol"] == "SOLUSDT" and unmatched[1]["at"] == "2026-07-26T14:03:00+00:00"
+
+    summary = rpt.summarize(trips, unmatched)
+    assert summary["closed_trades"] == 1 and summary["open_trades"] == 0
+    assert summary["wins"] == 1 and summary["losses"] == 0
+    assert summary["unmatched_fills"] == 2
+    assert summary["unmatched_fees_usd"] == 0.05  # 0.03 + 0.02, kept out of total_fees_usd
+    assert summary["total_fees_usd"] == 0.0  # unchanged definition: trips only
+    assert summary["realised_pnl_usd"] == 2.0  # no invented P&L from the orphans
+
+    md = rpt.render_markdown(rpt.build_report(_write(tmp_path, rows)))
+    assert "## Unmatched fills — 2 (RECONCILE)" in md
+    assert "orphan_sell" in md and "2026-07-26T14:03:00+00:00" in md
+
+
+def test_fill_with_no_recognised_side_is_surfaced_not_dropped(tmp_path: Path) -> None:
+    # FAILS pre-fix: a filled record whose side is neither Buy nor Sell fell through the if/elif
+    # into nothing at all.
+    rows = [_priced_order("SOLUSDT", "", -25.0, 0.25, "100", "0.01", "2026-07-26T14:00:00+00:00")]
+    trips, unmatched = rpt.fold_fills(rpt.load_filled(_write(tmp_path, rows)))
+    assert trips == []
+    assert [u["reason"] for u in unmatched] == ["unknown_side"]
+    assert unmatched[0]["spent_usd"] == 25.0 and unmatched[0]["symbol"] == "SOLUSDT"
+
+
+def test_clean_ledger_reports_no_unmatched_fills_and_no_markdown_section(tmp_path: Path) -> None:
+    rows = [
+        _order("Buy", -25.0, 0.0134, "1862.37", "0.0000134", "2026-07-20T14:15:58+00:00"),
+        _order("Sell", 30.0, -0.0134, "2238.80", "0.03", "2026-07-20T18:00:00+00:00"),
+    ]
+    report = rpt.build_report(_write(tmp_path, rows))
+    assert report["unmatched_fills"] == []
+    assert report["summary"]["unmatched_fills"] == 0
+    assert "Unmatched fills" not in rpt.render_markdown(report)
+    # summarize() without the unmatched list reports the counters as "not measured", never a
+    # false "none found" (the dashboard's equity curve calls it with trips only).
+    bare = rpt.summarize(report["round_trips"])
+    assert bare["unmatched_fills"] is None and bare["unmatched_fees_usd"] is None
+    assert bare["realised_pnl_usd"] == 5.0 and bare["closed_trades"] == 1
+
+
+def test_legacy_eth_only_ledger_folds_byte_identically(tmp_path: Path) -> None:
+    # The untagged single-coin ETH ledger keys (None, None) and must fold EXACTLY as it did before
+    # the scale-in/orphan work: same trip list, key for key, value for value.
+    rows = [
+        _order("Buy", -25.0, 0.0134, "1862.37", "0.0000134", "2026-07-20T14:15:58+00:00"),
+        _order("Sell", 30.0, -0.0134, "2238.80", "0.03", "2026-07-20T18:00:00+00:00"),
+        _order("Buy", -25.0, 0.0140, "1785.00", "0.0000140", "2026-07-22T09:00:00+00:00"),
+    ]
+    trips, unmatched = rpt.fold_fills(rpt.load_filled(_write(tmp_path, rows)))
+    assert unmatched == []
+    assert trips == [
+        {
+            "status": "CLOSED",
+            "symbol": None,
+            "strategy": None,
+            "opened_at": "2026-07-20T14:15:58+00:00",
+            "closed_at": "2026-07-20T18:00:00+00:00",
+            "size_base": 0.0134,
+            "entry_price_usd": 1862.37,
+            "exit_price_usd": 2238.8,
+            "spent_usd": 25.0,
+            "received_usd": 30.0,
+            "fees_usd": 0.055,
+            "pnl_usd": 5.0,
+            "pnl_pct": 20.0,
+            "outcome": "WIN",
+            "signal_ref": "SIG-x",
+        },
+        {
+            "status": "OPEN",
+            "symbol": None,
+            "strategy": None,
+            "opened_at": "2026-07-22T09:00:00+00:00",
+            "size_base": 0.014,
+            "entry_price_usd": 1785.0,
+            "spent_usd": 25.0,
+            "fees_usd": 0.025,
+            "pnl_usd": None,
+            "outcome": "OPEN",
+            "signal_ref": "SIG-x",
+        },
+    ]
+
+
+def test_twelve_concurrent_coins_all_stay_open_and_none_aggregate(tmp_path: Path) -> None:
+    # The live lane opened 12 concurrent positions on one shared ledger. Distinct symbols must stay
+    # 12 separate positions (aggregation is per key, never across coins), oldest-first, none lost.
+    symbols = [
+        "AAVEUSDT",
+        "APTUSDT",
+        "AXSUSDT",
+        "BCHUSDT",
+        "BNBUSDT",
+        "BTCUSDT",
+        "ETHUSDT",
+        "LINKUSDT",
+        "RUNEUSDT",
+        "SOLUSDT",
+        "TIAUSDT",
+        "UNIUSDT",
+    ]
+    rows = [
+        _coin_order(symbol, "ACTIVITY-CONFLUENCE", "Buy", -25.0, 2.5, f"2026-07-26T14:{i:02d}:00Z")
+        for i, symbol in enumerate(symbols)
+    ]
+    trips, unmatched = rpt.fold_fills(rpt.load_filled(_write(tmp_path, rows)))
+    assert unmatched == []
+    assert [t["symbol"] for t in trips] == symbols
+    assert all(t["status"] == "OPEN" and t["spent_usd"] == 25.0 for t in trips)
+    summary = rpt.summarize(trips, unmatched)
+    assert summary["open_trades"] == 12 and summary["closed_trades"] == 0
+    assert summary["total_fees_usd"] == round(12 * 0.001 * 10, 4)  # every entry fee counted
