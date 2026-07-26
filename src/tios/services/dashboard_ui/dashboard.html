@@ -101,13 +101,29 @@
             </div>
           </section>
           <section class="card" id="demoLaneControlPanel" aria-labelledby="demoLaneControlHeading">
-            <div class="section-title"><h2 id="demoLaneControlHeading">Demo lane controls</h2><span id="demoLaneLive" class="badge" role="status" aria-live="polite">live · connecting…</span></div>
-            <p class="muted">Start or stop the fake-money demo lanes on the venue demo account. DIAGNOSTIC ONLY · execution authority NONE · fake money · no real money.</p>
+            <div class="section-title"><h2 id="demoLaneControlHeading">Demo lane control center</h2><span id="demoLaneLive" class="badge" role="status" aria-live="polite">live · connecting…</span></div>
+            <p class="muted">Start or stop the fake-money demo lanes, read deterministic reports, and launch offline research. DIAGNOSTIC ONLY · execution authority NONE · fake money · no real money.</p>
             <div class="lane-status" style="margin-top:8px">
               <span class="badge">DEMO / FAKE MONEY</span><span class="badge">NO REAL MONEY</span><span class="badge">AUTHORITY: NONE</span><span class="badge">DIAGNOSTIC ONLY</span><span class="badge">UNVALIDATED</span>
             </div>
+            <h3 style="font-size:1rem;margin:16px 0 2px">Lane control</h3>
+            <p class="muted" style="font-size:.85em;margin:0">Only one lane runs at a time. Start and Stop are confirmed before they act; fake money on the venue demo account, execution authority NONE.</p>
             <div class="ticket-actions" id="demoLaneControls" style="flex-direction:row;flex-wrap:wrap;margin:12px 0 4px"></div>
             <p class="muted" id="demoLaneControlStatus" role="status" aria-live="polite">Loading demo lane state…</p>
+            <h3 style="font-size:1rem;margin:18px 0 2px">Reports</h3>
+            <p class="muted" style="font-size:.85em;margin:0">Read-only deterministic reports (zero AI). Each loads on click into the escaped panel below; they do not auto-refresh. Research findings are LEADS from an exploratory screen — NOT validated edge, confounded by multiple testing and cross-coin correlation; UNVALIDATED and not promotable.</p>
+            <div class="ticket-actions" id="demoReportButtons" style="flex-direction:row;flex-wrap:wrap;margin:12px 0 4px">
+              <button type="button" class="action" data-demo-report="/api/v1/demo-trades">Demo Trades</button>
+              <button type="button" class="action" data-demo-report="/api/v1/demo-status">Demo Status</button>
+              <button type="button" class="action" data-demo-report="/api/v1/research-findings">Research Findings</button>
+            </div>
+            <pre id="demoReportPanel" class="mono" role="status" aria-live="polite" style="max-height:340px;overflow:auto;white-space:pre-wrap;word-break:break-word;font-size:.8em;margin:6px 0 0;padding:10px;background:rgba(128,128,128,.08);border-radius:8px">No report loaded. Pick a report above.</pre>
+            <h3 style="font-size:1rem;margin:18px 0 2px">Research</h3>
+            <p class="muted" style="font-size:.85em;margin:0">Runs in background — no orders, research only; results appear in Research Findings when done. Authority NONE; the fake-money demo lane is unaffected.</p>
+            <div class="ticket-actions" style="flex-direction:row;flex-wrap:wrap;margin:12px 0 4px">
+              <button type="button" class="action" id="runResearchSearch">Run Research Search</button>
+            </div>
+            <p class="muted" id="demoResearchStatus" role="status" aria-live="polite"></p>
           </section>
           <h1 class="headline" id="nowHeadline">Loading what is happening now…</h1>
           <section class="card" aria-labelledby="ethSignalHeading"><div class="section-title"><h2 id="ethSignalHeading">ETH signal verification</h2><span>Frozen historical reproduction · independent risk gate</span></div><p class="muted">Run the fixed ETHUSDT 1h volume-breakout verifier. This check cannot connect a venue or create an order.</p><button type="button" class="action" id="runEthSignal">Run ETH signal check</button><div id="ethSignalResult" class="empty signal-check-result" role="status" aria-live="polite">Not run in this browser session.</div></section>
@@ -404,8 +420,9 @@ function renderLaneControls(status){
   const running=status==='RUNNING'||status==='STOPPING';
   const startDis=running?'disabled':'',stopDis=running?'':'disabled';
   box.innerHTML=`
-    <button class="action" data-overview-lane="START_ACTIVITY" ${startDis}>Start Activity Lane</button>
     <button class="action" data-overview-lane="START" ${startDis}>Start ETH Lane (loop)</button>
+    <button class="action" data-overview-lane="START_ACTIVITY" ${startDis}>Start Activity Lane</button>
+    <button class="action" data-overview-lane="START_MULTI" ${startDis}>Start Multi Lane</button>
     <button class="action" data-overview-lane="RUN_ONCE" ${startDis}>Run Once (ETH)</button>
     <button class="action" data-overview-lane="STOP" ${stopDis}>Stop</button>`;
   box.querySelectorAll('[data-overview-lane]').forEach(b=>b.addEventListener('click',()=>overviewLaneAction(b.dataset.overviewLane,b)));
@@ -414,7 +431,7 @@ function renderLaneControls(status){
   if(st&&st.dataset.busy!=='1')st.textContent=running?`Lane ${status.toLowerCase()} — Stop halts every lane (activity + ETH) immediately.`:'Lane stopped/idle. Start runs on the venue demo account with fake money, authority NONE.';
 }
 async function overviewLaneAction(action,button){
-  if((action==='STOP'||action==='START'||action==='START_ACTIVITY')&&!confirm(`${action.replace('_',' ')} the demo lane? Fake money on the venue demo account, execution authority NONE.`))return;
+  if((action==='STOP'||action==='START'||action==='START_ACTIVITY'||action==='START_MULTI')&&!confirm(`${action.replace('_',' ')} the demo lane? Fake money on the venue demo account, execution authority NONE.`))return;
   const box=document.querySelector('#demoLaneControls');
   box?.querySelectorAll('button').forEach(b=>{b.disabled=true});
   if(button)button.setAttribute('aria-busy','true');
@@ -463,6 +480,41 @@ function updateDemoLaneLive(){
   el.textContent=`live · updated ${Math.max(0,Math.round((Date.now()-demoLaneLastUpdate)/1000))}s ago`;
 }
 window.pollDemoLane=pollDemoLane;
+// --- read-only report panel (loads on click; never auto-polls; textContent escapes every value) ---
+async function loadDemoReport(url,button){
+  const panel=document.querySelector('#demoReportPanel');
+  document.querySelectorAll('[data-demo-report]').forEach(b=>{b.disabled=true});
+  if(button)button.setAttribute('aria-busy','true');
+  if(panel)panel.textContent='Loading…';
+  try{
+    const payload=await fetchJson(url);  // fetchJson still requires schema_version===1
+    if(panel)panel.textContent=payload.available===false?'Report unavailable — its source artifact is missing or malformed.':JSON.stringify(payload.report,null,2);
+  }catch(error){
+    if(panel)panel.textContent=`Report unavailable: ${error.message}`;
+  }finally{
+    document.querySelectorAll('[data-demo-report]').forEach(b=>{b.disabled=false});
+    if(button)button.removeAttribute('aria-busy');
+  }
+}
+document.querySelectorAll('[data-demo-report]').forEach(b=>b.addEventListener('click',()=>loadDemoReport(b.dataset.demoReport,b)));
+// --- research search: confirmed, background, research-only (no orders); reuses the audited POST ---
+async function runResearchSearch(button){
+  if(!confirm('Run the offline research search? It runs in the background — no orders, research only. Fake-money demo lane is unaffected, execution authority NONE.'))return;
+  const st=document.querySelector('#demoResearchStatus');
+  if(button)button.disabled=true;
+  if(st)st.textContent='Starting research search…';
+  try{
+    const response=await fetch('/api/v1/demo-lane-actions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'START_RESEARCH',idempotency_key:crypto.randomUUID()})});
+    const payload=await response.json().catch(()=>({error:'malformed response'}));
+    if(!response.ok)throw new Error(payload.error||`action failed (${response.status})`);
+    if(st)st.textContent='Research search started — runs in background, no orders. Results appear in Research Findings when done.';
+  }catch(error){
+    if(st)st.textContent=`Could not start research search: ${error.message}`;
+  }finally{
+    if(button)button.disabled=false;
+  }
+}
+document.querySelector('#runResearchSearch')?.addEventListener('click',e=>runResearchSearch(e.currentTarget));
 function renderWalletTab(mode){
   const body=document.querySelector(mode==='demo'?'#walletDemoBody':'#walletRealBody');
   if(!body)return;

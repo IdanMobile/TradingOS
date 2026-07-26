@@ -2306,3 +2306,64 @@ def test_overview_demo_lane_live_auto_refresh_is_guarded_and_visibility_aware() 
     assert "updated ${" in html and "s ago" in html
     # schema_version handling unchanged: the client still requires schema_version === 1.
     assert "payload.schema_version!==1" in html
+
+
+def _dashboard_html() -> str:
+    return (
+        Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
+    ).read_text()
+
+
+def test_control_center_has_three_labeled_sections_with_all_wired_buttons() -> None:
+    html = _dashboard_html()
+    now_section = html[html.index('id="now"') : html.index('id="nowHeadline"')]
+    assert 'id="demoLaneControlPanel"' in now_section
+    # Three labeled sections.
+    for label in (">Lane control<", ">Reports<", ">Research<"):
+        assert label in now_section, label
+    # Lane control: five allowlisted actions, all rendered by renderLaneControls; START_MULTI added.
+    for action in ("START", "START_ACTIVITY", "START_MULTI", "RUN_ONCE", "STOP"):
+        assert f'data-overview-lane="{action}"' in html, action
+    assert "Start Multi Lane" in html
+    # Reports: three read-only view endpoints, each loaded on click via the escaped report panel.
+    for endpoint in ("/api/v1/demo-trades", "/api/v1/demo-status", "/api/v1/research-findings"):
+        assert f'data-demo-report="{endpoint}"' in now_section, endpoint
+    for report_label in (">Demo Trades<", ">Demo Status<", ">Research Findings<"):
+        assert report_label in now_section, report_label
+    assert 'id="demoReportPanel"' in now_section
+    assert "async function loadDemoReport" in html
+    assert "await fetchJson(url)" in html  # reuses the schema_version===1 fetch path
+    # The report panel is written with textContent (escapes every value); never innerHTML.
+    assert "panel.textContent=" in html
+    # Research: a confirmed background START_RESEARCH launch with the honest 'no orders' note.
+    assert 'id="runResearchSearch"' in now_section
+    assert "async function runResearchSearch" in html
+    assert "action:'START_RESEARCH'" in html
+    assert "runs in background" in now_section.lower()
+    assert "no orders" in now_section.lower()
+    assert "crypto.randomUUID()" in html
+    # Honest research framing stays present next to the controls (LEADS, not validated edge).
+    assert "LEADS" in now_section
+    assert "NOT validated edge" in now_section
+    assert "confounded by multiple testing and cross-coin correlation" in now_section
+    assert "UNVALIDATED" in now_section
+    # Safety labels stay visible; no free-form input field anywhere in the panel.
+    for badge in ("DEMO / FAKE MONEY", "NO REAL MONEY", "AUTHORITY: NONE", "DIAGNOSTIC ONLY"):
+        assert badge in now_section
+    assert "<input" not in now_section
+    # Start/Stop remain confirm()-gated, including the new START_MULTI.
+    assert "action==='START_MULTI'" in html
+
+
+def test_control_center_report_endpoints_return_schema_version_1(tmp_path: Path) -> None:
+    for endpoint in ("demo-trades", "demo-status", "research-findings"):
+        response = _handle_request(
+            f"GET /api/v1/{endpoint} HTTP/1.1\r\nHost: localhost\r\n\r\n".encode(), tmp_path
+        )
+        headers, body = response.split(b"\r\n\r\n", 1)
+        assert b" 200 " in headers, endpoint
+        payload = json.loads(body)
+        # The client fetchJson gate requires schema_version === 1; the read-only views satisfy it
+        # and degrade gracefully (never a 500) even against an empty root.
+        assert payload["schema_version"] == 1, endpoint
+        assert "available" in payload and "report" in payload, endpoint

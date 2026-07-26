@@ -2302,3 +2302,37 @@ Status: **Dashboard demo-lane control panel + live auto-refresh SHIPPED; conflue
 demo traffic. Fake-money demo only; execution authority `NONE`; nothing validated or promoted;
 demo P&L remains non-evidence. Execution stays human-initiated (operator clicks Start). No venue,
 order, live, or real-money authority is granted.**
+
+### D-119 — Dashboard control center: START_MULTI + START_RESEARCH spawn actions, read-only report views; research-guard hardened, TOCTOU ceiling deferred to operator
+
+Decision: on operator direction (2026-07-26, "add everything we can"), the dashboard becomes an
+operator control center with three labeled sections. ACTIONS (allowlisted + fixed-argv + audited,
+the D-106 pattern) gain two entries: `START_MULTI` (order-path, spawns `demo_eth_lane.py --multi`,
+lane.lock-gated 409, audited, STOP kill switch halts it) and `START_RESEARCH` (research-only, NO
+orders, authority NONE — spawns `run_universe_search.py`, not lane-lock-gated, guarded by a separate
+PID-liveness research lock, detached, audited; missing script → 503). VIEWS (read-only GET, NO
+subprocess): `/api/v1/demo-trades`, `/api/v1/demo-status`, `/api/v1/research-findings`, each a
+library call into the existing report modules returning `schema_version 1` and failing closed to
+`{available:false, report:null}`; the research view preserves the honest LEADS-not-edges /
+multiple-testing / cross-coin-correlation / UNVALIDATED framing. Pre-existing four actions are
+byte-identical. An independent adversarial security review returned PASS (no blocking findings):
+argv integrity, allowlist, START_MULTI double-spawn, the read-only/fixed-name-import/no-path-traversal
+view surface, and escaped rendering all verified against source. Two non-blocking research-guard
+findings: (A) `_research_running` could crash on a hostile/huge pid — FIXED (guard now rejects
+bool/non-positive pids and treats any liveness-probe failure as not-running, fail-closed, + a
+parametrized hostile-lock test); (B) a check-then-spawn TOCTOU could let a concurrent burst /
+double-click launch >1 research process (the script has no self-lock) — NOT fixed; deferred to the
+operator as a documented ceiling (research-only, no orders; the clean fix is giving
+run_universe_search.py the same flock/exit-3 self-lock the trading lanes have). Normal package
+reconciliation (v8.150) under D-030/T-000-02: edited manifest-tracked files
+(`dashboard_ui/server.py`, `dashboard.html` ×2, `tests/test_dashboard.py` ×2, this decision log ×1)
+rehashed; NOT an integrity exception.
+
+Evidence: operator direction in the 2026-07-26 session ("add everything we can … I will decide what
+runs manually, automatically, or by AI"); the independent security review (PASS with two non-blocking
+notes, Finding A fixed, Finding B deferred); `PACKAGE_INTEGRITY_MANIFEST.md`; `PACKAGE_CHANGELOG.md`.
+Status: **Control center SHIPPED (5 lane/research actions + 3 read-only views). Fake-money demo only;
+research is offline/no-orders; execution authority `NONE`; nothing validated or promoted; demo P&L
+and research leads remain non-evidence. Execution stays human-initiated. Known non-blocking research
+double-spawn ceiling flagged for operator decision. No venue, order, live, or real-money authority is
+granted.**

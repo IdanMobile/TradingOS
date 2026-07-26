@@ -4,8 +4,15 @@ The dashboard never touches credentials, never signs a request, and never places
 It can observe the lane's own artifacts, and it can start/stop the separate lane process,
 which enforces every safety rail itself (demo-host lock, caps, quantization, kill switch).
 
-Governed by D-106: this is the second audited write surface on the local loopback dashboard,
-allowlisted to four actions with no free-form input reaching the spawned command.
+Governed by D-106: this is the second audited write surface on the local loopback dashboard.
+Every ACTION is allowlisted to a fixed internal literal that selects a hardcoded argv — no
+free-form input ever reaches a spawned command. The lane starts (START/START_ACTIVITY/START_MULTI)
+and RUN_ONCE/STOP share the lane's advisory `lane.lock`; the research search (START_RESEARCH) is
+NOT a lane, so it is guarded by a separate PID-liveness research lock instead.
+
+It also serves read-only VIEW endpoints (demo trades, demo status, research findings) that call the
+deterministic report scripts as library functions — no subprocess, no command execution — and
+fail closed to a safe "unavailable" shape on any defect.
 """
 
 from __future__ import annotations
@@ -35,6 +42,16 @@ LANE_LOG = LANE_DIR / "lane.log"
 LANE_SCRIPT = Path("scripts/demo_eth_lane.py")
 AUDIT_PATH = Path("artifacts/human_decisions/demo_lane_actions.jsonl")
 DIVERGENCE_REPORT = LANE_DIR / "DIVERGENCE_REPORT.json"
+
+# Research search (START_RESEARCH): offline, no venue, no orders, authority NONE. It is NOT a lane,
+# so it does not use lane.lock; a separate PID-liveness guard (RESEARCH_LOCK) stops two concurrent
+# searches from clobbering the same output JSON.
+RESEARCH_SCRIPT = Path("scripts/run_universe_search.py")
+RESEARCH_LOCK = Path("artifacts/research_lab/universe_search/.research_run.lock")
+RESEARCH_LOG = Path("artifacts/research_lab/universe_search/research_run.log")
+RESEARCH_REPORT = Path(
+    "artifacts/research_lab/universe_search/UNIVERSE_SEARCH_TRAIN_SELECT_V2_2026_07_13.json"
+)
 
 BASE_COIN = "ETH"
 QUOTE_COIN = "USDT"
@@ -72,7 +89,9 @@ ACTIVITY_COINS = (
     "SUIUSDT", "THETAUSDT", "TIAUSDT", "TRXUSDT", "UNIUSDT", "XLMUSDT", "XRPUSDT", "XTZUSDT",
 )  # fmt: skip
 
-ACTIONS = frozenset({"START", "START_ACTIVITY", "STOP", "RUN_ONCE"})
+ACTIONS = frozenset(
+    {"START", "START_ACTIVITY", "START_MULTI", "START_RESEARCH", "STOP", "RUN_ONCE"}
+)
 _IDENTIFIER = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,199}$")
 # Fixed confluence cadence for the START_ACTIVITY button — a hardcoded constant, never from input.
 ACTIVITY_INTERVAL = "5m"
@@ -642,6 +661,60 @@ def build_demo_lane(root: Path | None = None) -> dict[str, Any]:
         "activity_summary": _activity_summary(activity),
         "stage_b": _project_stage_b(root),
     }
+
+
+# --- read-only VIEW endpoints -------------------------------------------------------------------
+# These render the deterministic report scripts as LIBRARY CALLS (import + call the pure function),
+# never a subprocess. Each returns schema_version 1 (the client fetchJson gate requires === 1) and
+# fails closed to a safe {available: False, report: None} shape on any defect — never a 500, never a
+# leaked secret/pid/path. The report scripts live at the repo root (a namespace `scripts` package),
+# which is independent of the `root` DATA directory passed in (tmp in tests, repo root in prod).
+
+
+def _report_module(name: str) -> Any:
+    """Import a `scripts.<name>` report module, ensuring the repo root is importable. Returns Any so
+    the dynamic import never drags the scripts into this module's static type surface."""
+    import importlib
+
+    repo_root = str(Path(__file__).resolve().parents[4])
+    if repo_root not in sys.path:
+        sys.path.insert(0, repo_root)
+    return importlib.import_module(f"scripts.{name}")
+
+
+def _report_view(root: Path | None, name: str, build: Any) -> dict[str, Any]:
+    """Shared fail-closed wrapper: call one report module's pure function and wrap it with
+    schema_version 1. Any error (missing/malformed source, import defect) degrades to a safe
+    unavailable shape."""
+    resolved = (root or Path(__file__).resolve().parents[4]).resolve()
+    try:
+        module = _report_module(name)
+        return {"schema_version": 1, "available": True, "report": build(module, resolved)}
+    except Exception:  # noqa: BLE001 — a report defect must never crash the read-only server
+        return {"schema_version": 1, "available": False, "report": None}
+
+
+def build_demo_trades_view(root: Path | None = None) -> dict[str, Any]:
+    """Read-only per-trade P&L over the demo order ledger (report_demo_trades.build_report)."""
+    return _report_view(root, "report_demo_trades", lambda m, r: m.build_report(r / ORDERS_LEDGER))
+
+
+def build_demo_status_view(root: Path | None = None) -> dict[str, Any]:
+    """Read-only operational status of the demo lane (report_demo_status.build_status)."""
+    return _report_view(
+        root,
+        "report_demo_status",
+        lambda m, r: m.build_status(r / HEARTBEAT, r / LANE_STATE, r / ORDERS_LEDGER),
+    )
+
+
+def build_research_findings_view(root: Path | None = None) -> dict[str, Any]:
+    """Read-only honest research-findings summary (report_research_findings.build_report). The
+    honest framing — LEADS not edges, multiple-testing + cross-coin-correlation confounders,
+    UNVALIDATED — is carried through verbatim from the report's own fields; nothing is stripped."""
+    return _report_view(
+        root, "report_research_findings", lambda m, r: m.build_report(r / RESEARCH_REPORT)
+    )
 
 
 # ponytail: the legacy fill/pnl/stop helpers below are no longer in the API projection but are
@@ -1372,6 +1445,7 @@ def _audit(root: Path, record: dict[str, Any]) -> None:
 # a hardcoded interval; it shares lane.lock and the same KILL_SWITCH, so STOP halts it too.
 _SPAWN_FLAGS: dict[str, tuple[str, ...]] = {
     "--loop": ("--loop",),
+    "--multi": ("--multi",),
     "--activity": ("--activity", "--loop", "--interval", ACTIVITY_INTERVAL),
 }
 
@@ -1390,6 +1464,51 @@ def _spawn(root: Path, mode: str) -> subprocess.Popen[bytes]:
         stdin=subprocess.DEVNULL,
         start_new_session=True,
     )
+
+
+def _research_running(root: Path) -> bool:
+    """Is a prior research search still alive? PID-liveness on the research guard lock.
+
+    ponytail: PID-liveness (not an flock) because run_universe_search.py holds no lock of its own;
+    PID reuse could in theory mask a dead run, and a concurrent-request burst can still race the
+    check-then-spawn to launch >1 search (the script has no self-lock) — both acceptable for a
+    single-operator local search. Upgrade to a self-locking (flock/exit-3) wrapper on
+    run_universe_search.py if research ever runs multi-tenant or must be double-click-safe.
+    """
+    holder = _read_json(root / RESEARCH_LOCK)
+    pid = holder.get("pid")
+    # bool is an int subclass; a non-positive pid targets a process GROUP or the caller, never a
+    # research run. Reject both, and treat ANY liveness-probe failure (incl. OverflowError from a
+    # huge/corrupt pid) as "not running" so a hostile/garbage lock file can never crash the guard.
+    if not isinstance(pid, int) or isinstance(pid, bool) or pid <= 0:
+        return False
+    try:
+        os.kill(pid, 0)
+    except PermissionError:
+        return True  # the process exists, just owned by another user
+    except Exception:
+        return False
+    return True
+
+
+def _spawn_research(root: Path) -> subprocess.Popen[bytes]:
+    """Launch the offline universe search detached. Fixed argv, no flags, no shell, no user input —
+    research only (no venue, no orders, authority NONE). Records a PID-liveness guard lock so a
+    second search is refused while one is in flight."""
+    (root / RESEARCH_LOCK).parent.mkdir(parents=True, exist_ok=True)
+    log = (root / RESEARCH_LOG).open("ab")
+    process = subprocess.Popen(  # noqa: S603 (fixed argv, shell=False)
+        [sys.executable, str(root / RESEARCH_SCRIPT)],
+        cwd=str(root),
+        stdout=log,
+        stderr=log,
+        stdin=subprocess.DEVNULL,
+        start_new_session=True,
+    )
+    (root / RESEARCH_LOCK).write_text(
+        json.dumps({"pid": process.pid, "started_at": datetime.now(tz=UTC).isoformat()})
+    )
+    return process
 
 
 def perform_demo_lane_action(root: Path, payload: dict[str, Any]) -> dict[str, Any]:
@@ -1416,6 +1535,23 @@ def perform_demo_lane_action(root: Path, payload: dict[str, Any]) -> dict[str, A
         kill_switch.unlink(missing_ok=True)  # starting clears a previous stop
         process = _spawn(root, "--activity")
         detail = f"confluence activity lane started (pid {process.pid}); stop flag cleared"
+    elif action == "START_MULTI":
+        # Multi-coin order-path lane. Shares lane.lock (so `running` above already refuses a second
+        # lane) and the same KILL_SWITCH STOP writes, so STOP halts it too. Fixed argv: --multi.
+        if running:
+            raise DemoLaneActionError("the demo lane is already running", 409)
+        kill_switch.unlink(missing_ok=True)  # starting clears a previous stop
+        process = _spawn(root, "--multi")
+        detail = f"multi-coin lane started (pid {process.pid}); stop flag cleared"
+    elif action == "START_RESEARCH":
+        # Research-only (NO orders, authority NONE): NOT a lane, so it does NOT share lane.lock.
+        # A separate PID-liveness research guard stops two searches clobbering the same output.
+        if not (root / RESEARCH_SCRIPT).is_file():
+            raise DemoLaneActionError("research search script is missing", 503)
+        if _research_running(root):
+            raise DemoLaneActionError("a research search is already running", 409)
+        process = _spawn_research(root)
+        detail = f"offline research search started (pid {process.pid}); no orders, authority NONE"
     elif action == "STOP":
         kill_switch.parent.mkdir(parents=True, exist_ok=True)
         kill_switch.write_text(

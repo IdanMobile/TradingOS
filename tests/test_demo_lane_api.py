@@ -9,6 +9,7 @@ rich. The action handler returns exactly four fixed fields.
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -808,3 +809,271 @@ def test_activity_summary_sums_and_stage_b_stays_aggregate_only(root: Path) -> N
     stage_b_body = json.dumps(lane["stage_b"]).lower()
     for token in _FORBIDDEN_TOKENS:
         assert token not in stage_b_body, f"forbidden token leaked into stage_b: {token}"
+
+
+# --- START_MULTI: fixed-argv multi-coin order-path lane (extends the D-106 audited spawn) --------
+
+
+def test_start_multi_spawns_exact_fixed_argv_and_is_audited(
+    root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """START_MULTI spawns `demo_eth_lane.py --multi` with a fixed argv (no request value reaches
+    it), returns the four-field body, and is audited like the rest of the D-106 surface."""
+    captured: dict[str, Any] = {}
+
+    class FakePopen:
+        def __init__(self, argv: list[str], **kwargs: Any) -> None:
+            captured["argv"] = argv
+            captured["kwargs"] = kwargs
+            self.pid = 8888
+
+    monkeypatch.setattr(demo_lane.subprocess, "Popen", FakePopen)
+    result = demo_lane.perform_demo_lane_action(
+        root, {"action": "START_MULTI", "idempotency_key": "m1"}
+    )
+    assert captured["argv"] == [sys.executable, str(root / demo_lane.LANE_SCRIPT), "--multi"]
+    assert captured["kwargs"].get("shell") in (None, False)  # never a shell
+    assert set(result) == {"schema_version", "ok", "action", "state"}
+    assert result["action"] == "START_MULTI" and result["ok"] is True
+    assert "8888" not in json.dumps(result)  # pid never leaks into the body
+    audit = json.loads((root / demo_lane.AUDIT_PATH).read_text().splitlines()[-1])
+    assert audit["action"] == "START_MULTI" and audit["idempotency_key"] == "m1"
+
+
+def test_start_multi_refused_while_a_lane_holds_the_lock(
+    root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """It shares lane.lock with the ETH/activity lanes, so it refuses to start a second lane."""
+    import fcntl
+
+    lock = root / demo_lane.LANE_LOCK
+    lock.write_text(json.dumps({"pid": 4242}))
+    handle = lock.open("a+", encoding="utf-8")
+    fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    monkeypatch.setattr(
+        demo_lane, "_spawn", lambda *_a, **_k: pytest.fail("must not spawn a second lane")
+    )
+    try:
+        with pytest.raises(demo_lane.DemoLaneActionError) as excinfo:
+            demo_lane.perform_demo_lane_action(
+                root, {"action": "START_MULTI", "idempotency_key": "m1"}
+            )
+        assert excinfo.value.status_code == 409
+    finally:
+        handle.close()
+
+
+# --- START_RESEARCH: fixed-argv offline search, separate PID-liveness guard (NOT lane.lock) ------
+
+
+def test_start_research_spawns_exact_fixed_argv_and_is_audited(
+    root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """START_RESEARCH spawns `run_universe_search.py` with a fixed no-flag argv (no request value
+    reaches it), records the research guard lock, returns the four-field body, and is audited."""
+    (root / demo_lane.RESEARCH_SCRIPT).parent.mkdir(parents=True, exist_ok=True)
+    (root / demo_lane.RESEARCH_SCRIPT).write_text("# stand-in research script\n")
+    captured: dict[str, Any] = {}
+
+    class FakePopen:
+        def __init__(self, argv: list[str], **kwargs: Any) -> None:
+            captured["argv"] = argv
+            captured["kwargs"] = kwargs
+            self.pid = 6666
+
+    monkeypatch.setattr(demo_lane.subprocess, "Popen", FakePopen)
+    result = demo_lane.perform_demo_lane_action(
+        root, {"action": "START_RESEARCH", "idempotency_key": "r1"}
+    )
+    # Fixed argv: interpreter + the research script, no flags, no request/user value.
+    assert captured["argv"] == [sys.executable, str(root / demo_lane.RESEARCH_SCRIPT)]
+    assert captured["kwargs"].get("shell") in (None, False)
+    assert set(result) == {"schema_version", "ok", "action", "state"}
+    assert result["action"] == "START_RESEARCH" and result["ok"] is True
+    assert "6666" not in json.dumps(result)  # pid never leaks into the body
+    # The research guard lock records the pid so a second search can be refused.
+    lock = json.loads((root / demo_lane.RESEARCH_LOCK).read_text())
+    assert lock["pid"] == 6666
+    audit = json.loads((root / demo_lane.AUDIT_PATH).read_text().splitlines()[-1])
+    assert audit["action"] == "START_RESEARCH" and audit["idempotency_key"] == "r1"
+
+
+def test_start_research_does_not_touch_lane_lock(
+    root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A held lane.lock (a demo lane running) must NOT block a research search — they are separate
+    surfaces; research uses its own guard, not lane.lock."""
+    import fcntl
+
+    (root / demo_lane.RESEARCH_SCRIPT).parent.mkdir(parents=True, exist_ok=True)
+    (root / demo_lane.RESEARCH_SCRIPT).write_text("# stand-in research script\n")
+    lock = root / demo_lane.LANE_LOCK
+    lock.write_text(json.dumps({"pid": 4242}))
+    handle = lock.open("a+", encoding="utf-8")
+    fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+
+    class FakePopen:
+        def __init__(self, *_a: Any, **_k: Any) -> None:
+            self.pid = 6667
+
+    monkeypatch.setattr(demo_lane.subprocess, "Popen", FakePopen)
+    try:
+        result = demo_lane.perform_demo_lane_action(
+            root, {"action": "START_RESEARCH", "idempotency_key": "r1"}
+        )
+        assert result["action"] == "START_RESEARCH" and result["ok"] is True
+    finally:
+        handle.close()
+
+
+def test_start_research_refused_while_a_research_run_is_in_progress(
+    root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The research guard refuses a second search while a live one is recorded (409), and never
+    spawns."""
+    (root / demo_lane.RESEARCH_SCRIPT).parent.mkdir(parents=True, exist_ok=True)
+    (root / demo_lane.RESEARCH_SCRIPT).write_text("# stand-in research script\n")
+    # os.getpid() is a definitely-alive pid, so the PID-liveness guard reports the run as running.
+    (root / demo_lane.RESEARCH_LOCK).parent.mkdir(parents=True, exist_ok=True)
+    (root / demo_lane.RESEARCH_LOCK).write_text(json.dumps({"pid": os.getpid()}))
+    monkeypatch.setattr(
+        demo_lane,
+        "_spawn_research",
+        lambda *_a, **_k: pytest.fail("must not spawn a second search"),
+    )
+    with pytest.raises(demo_lane.DemoLaneActionError) as excinfo:
+        demo_lane.perform_demo_lane_action(
+            root, {"action": "START_RESEARCH", "idempotency_key": "r2"}
+        )
+    assert excinfo.value.status_code == 409
+
+
+def test_start_research_missing_script_is_unavailable_not_a_crash(root: Path) -> None:
+    """No research script present -> 503, never a crash (no stand-in script is written here)."""
+    with pytest.raises(demo_lane.DemoLaneActionError) as excinfo:
+        demo_lane.perform_demo_lane_action(
+            root, {"action": "START_RESEARCH", "idempotency_key": "r1"}
+        )
+    assert excinfo.value.status_code == 503
+
+
+@pytest.mark.parametrize(
+    "pid",
+    [10**40, True, 0, -1, "not-an-int", None],
+    ids=["huge", "bool", "zero", "negative", "string", "none"],
+)
+def test_research_guard_never_crashes_on_a_hostile_lock_file(root: Path, pid: object) -> None:
+    """A corrupt/hostile RESEARCH_LOCK pid (huge int -> OverflowError, bool, non-positive, wrong
+    type) must fail closed to 'not running', never raise, so the guard can't crash the endpoint."""
+    (root / demo_lane.RESEARCH_LOCK).parent.mkdir(parents=True, exist_ok=True)
+    (root / demo_lane.RESEARCH_LOCK).write_text(json.dumps({"pid": pid}))
+    assert demo_lane._research_running(root) is False
+
+
+@pytest.mark.parametrize(
+    "action",
+    ["START_MULTI_LIVE", "MULTI", "START MULTI", "START_RESEARCH_LIVE", "RESEARCH", "RUN_RESEARCH"],
+)
+def test_mutated_multi_research_action_is_rejected_without_reflecting_it(
+    root: Path, action: str
+) -> None:
+    """A string that does not normalize to an allowlisted action is rejected generically, without
+    reflecting the request value back."""
+    with pytest.raises(demo_lane.DemoLaneActionError) as excinfo:
+        demo_lane.perform_demo_lane_action(root, {"action": action, "idempotency_key": "k1"})
+    assert action not in str(excinfo.value)
+    assert str(excinfo.value) == "demo lane action is invalid"
+
+
+# --- read-only VIEW endpoints (no subprocess): schema_version 1 + graceful degradation -----------
+
+
+def _write_universe_report(root: Path, contexts: list[dict[str, Any]]) -> None:
+    path = root / demo_lane.RESEARCH_REPORT
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(
+            {
+                "schema": "tios-universe-search-v2",
+                "dataset_count": 3,
+                "pairs": ["BTCUSDT", "ETHUSDT"],
+                "context_passes": [{"strategy_id": "EXT-KELTNER-BREAKOUT", "contexts": contexts}],
+            }
+        )
+    )
+
+
+def test_demo_trades_view_schema_version_1_with_report(root: Path) -> None:
+    _long_coin_files(root, "ETHUSDT")  # one open ETH buy -> an OPEN round trip
+    view = demo_lane.build_demo_trades_view(root)
+    assert view["schema_version"] == 1  # matches the client fetchJson gate
+    assert view["available"] is True
+    report = view["report"]
+    assert report["schema"] == "tios.demo_trade_report.v1"
+    assert report["execution_authority"] == "NONE" and report["real_money"] is False
+    assert isinstance(report["round_trips"], list)
+    assert set(report["summary"]) >= {"closed_trades", "open_trades", "realised_pnl_usd"}
+
+
+def test_demo_status_view_schema_version_1_with_report(root: Path) -> None:
+    _long_coin_files(root, "ETHUSDT")
+    view = demo_lane.build_demo_status_view(root)
+    assert view["schema_version"] == 1
+    assert view["available"] is True
+    report = view["report"]
+    assert report["schema"] == "tios.demo_status_report.v1"
+    assert report["execution_authority"] == "NONE" and report["real_money"] is False
+    assert report["position"]["side"] == "LONG"  # the open ETH buy is reflected
+    assert "trade_history" in report and "protection" in report
+
+
+def test_research_findings_view_schema_version_1_and_preserves_honest_framing(root: Path) -> None:
+    _write_universe_report(root, [{"dataset": "BTCUSDT_1d", "holdout_total_return": 0.5}])
+    view = demo_lane.build_research_findings_view(root)
+    assert view["schema_version"] == 1
+    assert view["available"] is True
+    report = view["report"]
+    assert report["schema"] == "tios.research_findings_summary.v1"
+    # Honest framing is carried through verbatim, not stripped.
+    assert report["validated"] is False
+    assert report["promotion_eligible"] is False
+    assert report["execution_authority"] == "NONE"
+    assert report["evidence_scope"] == "CONTEXT_LEVEL_EXPLORATORY_SCREEN"
+    body = json.dumps(report).lower()
+    assert "multiple testing" in body and "cross-coin correlation" in body
+
+
+def test_research_findings_view_degrades_when_source_missing(root: Path) -> None:
+    # No universe-search report in this tmp root -> the pure function returns its own honest
+    # 'no report' shape; the view still returns schema_version 1 and never crashes.
+    view = demo_lane.build_research_findings_view(root)
+    assert view["schema_version"] == 1
+    assert view["available"] is True
+    assert view["report"].get("error") == "no universe-search report"
+
+
+@pytest.mark.parametrize(
+    "builder",
+    ["build_demo_trades_view", "build_demo_status_view"],
+)
+def test_views_fail_closed_on_malformed_source(root: Path, builder: str) -> None:
+    # A malformed orders ledger makes the report function raise; the view must degrade to a safe
+    # unavailable shape (schema_version 1, available False, report None) — never a 500 or a leak.
+    (root / demo_lane.ORDERS_LEDGER).write_text("{not valid json\n")
+    view = getattr(demo_lane, builder)(root)
+    assert view["schema_version"] == 1
+    assert view["available"] is False
+    assert view["report"] is None
+
+
+def test_views_are_pure_reads_no_subprocess(root: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """The VIEW endpoints must never spawn a process — they are library calls only."""
+    monkeypatch.setattr(
+        demo_lane.subprocess, "Popen", lambda *_a, **_k: pytest.fail("view must not spawn")
+    )
+    monkeypatch.setattr(
+        demo_lane.subprocess, "run", lambda *_a, **_k: pytest.fail("view must not spawn")
+    )
+    demo_lane.build_demo_trades_view(root)
+    demo_lane.build_demo_status_view(root)
+    demo_lane.build_research_findings_view(root)

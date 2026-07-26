@@ -1,5 +1,36 @@
 # Package Changelog
 
+## v8.150 — 2026-07-26 — Operator control center: Start Multi + Run Research actions, read-only report views
+
+Operator-directed ("add everything we can"). Fake-money demo only; research is offline/no-orders;
+execution authority NONE; nothing validated or promoted; demo P&L and research leads are
+non-evidence; execution stays human-initiated. Independent adversarial security review: PASS, no
+blocking findings. See DECISION_LOG.md D-119.
+
+- Two new allowlisted + fixed-argv + audited actions (D-106 pattern): `START_MULTI` (order-path,
+  spawns `demo_eth_lane.py --multi`, lane.lock-gated 409, STOP kill switch halts it) and
+  `START_RESEARCH` (research-only, NO orders, authority NONE — spawns `run_universe_search.py`,
+  PID-liveness research guard, detached, audited; missing script → 503). No request/free-form input
+  reaches any spawned command. Pre-existing START/START_ACTIVITY/STOP/RUN_ONCE byte-identical.
+- Three read-only VIEW endpoints (GET, no subprocess, schema_version 1, fail-closed to
+  `{available:false, report:null}`): `/api/v1/demo-trades`, `/api/v1/demo-status`,
+  `/api/v1/research-findings`, each a library call into the existing report modules (imported by
+  fixed name, no path traversal). The research view keeps the honest LEADS-not-edges /
+  multiple-testing / cross-coin-correlation / UNVALIDATED framing verbatim.
+- `dashboard.html` control center: three labeled sections — Lane control (Start ETH / Start Activity
+  / Start Multi / Run Once / Stop), Reports (Demo Trades / Demo Status / Research Findings, rendered
+  read-only via escaped textContent), Research (Run Research Search, confirm-gated, "no orders" note).
+  No free-form input fields; safety labels retained; ~5s auto-refresh stays read-only GET.
+- Security review notes: `_research_running` hardened to fail closed on a hostile/garbage lock file
+  (rejects bool/non-positive pids, catches OverflowError etc.) with a parametrized test (Finding A,
+  fixed). A check-then-spawn TOCTOU that could double-spawn the research search under a concurrent
+  burst / double-click is a documented non-blocking ceiling (research-only, no orders) deferred to
+  operator decision — the clean fix is an flock/exit-3 self-lock on run_universe_search.py (Finding B).
+
+Manifest-tracked files rehashed (D-030 regeneration): `dashboard_ui/server.py`, `dashboard.html`,
+`tests/test_dashboard.py`, `DECISION_LOG.md`. Gates green: package integrity PASS (453 rows),
+project-wide ruff + mypy (139 files) clean, 236 tests pass across the affected suites.
+
 ## v8.149 — 2026-07-26 — Dashboard control panel + live auto-refresh; audited spawn extended; lane tuned for demo traffic
 
 Operator-directed (control the demo lanes from the dashboard, make it live, produce frequent demo

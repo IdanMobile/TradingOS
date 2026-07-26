@@ -20,6 +20,9 @@ from tios.services.dashboard_api.cockpit import (
 from tios.services.dashboard_api.demo_lane import (
     DemoLaneActionError,
     build_demo_lane,
+    build_demo_status_view,
+    build_demo_trades_view,
+    build_research_findings_view,
     perform_demo_lane_action,
 )
 from tios.services.dashboard_api.eth_signal import EthSignalCheckError, build_eth_signal_check
@@ -116,6 +119,15 @@ class Handler(BaseHTTPRequestHandler):
             self._send(200, "application/json", json.dumps(build_skills(self.root)).encode())
         elif path == "/api/v1/demo-lane":
             self._send(200, "application/json", json.dumps(build_demo_lane(self.root)).encode())
+        elif path == "/api/v1/demo-trades":
+            body = json.dumps(build_demo_trades_view(self.root)).encode()
+            self._send(200, "application/json", body)
+        elif path == "/api/v1/demo-status":
+            body = json.dumps(build_demo_status_view(self.root)).encode()
+            self._send(200, "application/json", body)
+        elif path == "/api/v1/research-findings":
+            body = json.dumps(build_research_findings_view(self.root)).encode()
+            self._send(200, "application/json", body)
         elif path == "/api/v1/ai-costs":
             self._send(200, "application/json", json.dumps(build_ai_costs(self.root)).encode())
         elif path == "/api/v1/open-work":
