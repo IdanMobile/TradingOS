@@ -22,6 +22,8 @@ from tios.services.dashboard_api.demo_lane import (
     build_demo_lane,
     build_demo_status_view,
     build_demo_trades_view,
+    build_equity_curve,
+    build_live_feed,
     build_research_findings_view,
     perform_demo_lane_action,
 )
@@ -125,6 +127,10 @@ class Handler(BaseHTTPRequestHandler):
         elif path == "/api/v1/demo-status":
             body = json.dumps(build_demo_status_view(self.root)).encode()
             self._send(200, "application/json", body)
+        elif path == "/api/v1/live-feed":
+            self._send(200, "application/json", json.dumps(build_live_feed(self.root)).encode())
+        elif path == "/api/v1/equity-curve":
+            self._send(200, "application/json", json.dumps(build_equity_curve(self.root)).encode())
         elif path == "/api/v1/research-findings":
             body = json.dumps(build_research_findings_view(self.root)).encode()
             self._send(200, "application/json", body)

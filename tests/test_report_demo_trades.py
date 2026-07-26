@@ -77,3 +77,63 @@ def test_markdown_renders_header_and_rows(tmp_path: Path) -> None:
     assert "per-trade win/loss report" in md
     assert "authority NONE" in md
     assert "WIN" in md
+
+
+def _coin_order(
+    symbol: str, strategy: str | None, side: str, usdt: float, base: float, at: str
+) -> dict[str, object]:
+    """A fill on any coin: the venue reconciles the base coin under its own `<COIN>_delta` key."""
+    return {
+        "ok": True,
+        "order_status": "Filled",
+        "symbol": symbol,
+        "strategy": strategy,
+        "side": side,
+        "avg_price": "10",
+        "fee": "0.001",
+        "recorded_at": at,
+        "reconcile": {"USDT_delta": usdt, f"{symbol[:-4]}_delta": base},
+    }
+
+
+def test_concurrent_positions_on_many_coins_all_surface(tmp_path: Path) -> None:
+    # The multi-coin/confluence lanes hold many positions at once on ONE shared ledger. A single
+    # global entry slot silently dropped every open but the last (reporting "1 open" while 3 were
+    # live) and could pair one coin's exit against another coin's entry. Pairing is per-symbol.
+    rows = [
+        _coin_order("BTCUSDT", "ACT", "Buy", -25.0, 0.0004, "2026-07-26T14:53:00+00:00"),
+        _coin_order("SOLUSDT", "ACT", "Buy", -25.0, 0.33, "2026-07-26T14:53:10+00:00"),
+        _coin_order("LINKUSDT", "ACT", "Buy", -25.0, 2.9, "2026-07-26T14:53:20+00:00"),
+        # SOL exits; BTC and LINK must stay open and keep their own entries.
+        _coin_order("SOLUSDT", "ACT", "Sell", 26.0, -0.33, "2026-07-26T14:58:00+00:00"),
+    ]
+    trips = rpt.round_trips(rpt.load_filled(_write(tmp_path, rows)))
+    closed = [t for t in trips if t["status"] == "CLOSED"]
+    opens = [t for t in trips if t["status"] == "OPEN"]
+    assert len(closed) == 1 and closed[0]["symbol"] == "SOLUSDT"
+    assert closed[0]["pnl_usd"] == 1.0  # 26.0 received - 25.0 spent, SOL's own entry
+    assert [t["symbol"] for t in opens] == ["BTCUSDT", "LINKUSDT"]  # oldest-first, none dropped
+    assert rpt.summarize(trips)["open_trades"] == 2
+
+
+def test_same_coin_in_two_lanes_never_cross_pairs(tmp_path: Path) -> None:
+    # ETHUSDT trades in both the legacy breakout lane (untagged) and the confluence lane. An exit in
+    # one lane must close ITS OWN entry, never the other lane's, or the P&L is attributed wrongly.
+    rows = [
+        _coin_order("ETHUSDT", None, "Buy", -25.0, 0.013, "2026-07-26T14:00:00+00:00"),
+        _coin_order("ETHUSDT", "ACT", "Buy", -25.0, 0.013, "2026-07-26T14:53:00+00:00"),
+        _coin_order("ETHUSDT", "ACT", "Sell", 27.0, -0.013, "2026-07-26T14:58:00+00:00"),
+    ]
+    trips = rpt.round_trips(rpt.load_filled(_write(tmp_path, rows)))
+    closed = [t for t in trips if t["status"] == "CLOSED"]
+    opens = [t for t in trips if t["status"] == "OPEN"]
+    assert len(closed) == 1 and closed[0]["strategy"] == "ACT" and closed[0]["pnl_usd"] == 2.0
+    assert len(opens) == 1 and opens[0]["strategy"] is None  # the legacy position is still open
+
+
+def test_base_size_reads_the_traded_coins_own_delta(tmp_path: Path) -> None:
+    # A hardcoded ETH_delta reported size 0 for every non-ETH position; the size must come from the
+    # traded coin's own reconcile key.
+    rows = [_coin_order("AAVEUSDT", "ACT", "Buy", -25.0, 0.25945356, "2026-07-26T14:53:00+00:00")]
+    trips = rpt.round_trips(rpt.load_filled(_write(tmp_path, rows)))
+    assert trips[0]["size_base"] == 0.25945356

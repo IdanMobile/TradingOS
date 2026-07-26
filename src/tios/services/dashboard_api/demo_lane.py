@@ -26,6 +26,7 @@ import signal
 import subprocess  # noqa: S404 (fixed argv, no shell, no user input — see _spawn)
 import sys
 from datetime import UTC, datetime, timedelta
+from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
@@ -104,6 +105,46 @@ BOUNDARY_ABS_TOLERANCE_USD = 0.000001
 EXPOSURE_REL_TOLERANCE = 0.000001
 EXPOSURE_ABS_TOLERANCE = 0.00000001
 MIN_STOP_QTY_COVERAGE = 0.999
+
+# --- read-only live feed / equity curve constants ------------------------------------------------
+# Newest-first event cap for GET /api/v1/live-feed. Bounded so a long ledger can never blow up the
+# response; `truncated` tells the client that older events exist.
+LIVE_FEED_EVENT_LIMIT = 60
+# Mirrors scripts/demo_activity_lane.py LOOP_MIN_SLEEP_SECONDS / _TF_MINUTES — keep in sync. The
+# confluence lane sleeps max(floor, reference-timeframe minutes) between cycles, and that sleep is
+# the only scan cadence the feed can honestly quote. The ETH/multi lanes have no loop, so their
+# cadence (and therefore the next-scan ETA) is unknown, not guessed.
+ACTIVITY_LOOP_MIN_SLEEP_SECONDS = 60.0
+_TIMEFRAME_MINUTES = {"5m": 5, "15m": 15, "1h": 60, "4h": 240}
+# One confluence cycle rewrites all ~40 per-coin activity heartbeats a couple of seconds apart and
+# then sleeps at least ACTIVITY_LOOP_MIN_SLEEP_SECONDS, so a gap this wide separates cycles cleanly.
+# ponytail: single-linkage on the write timestamps; the heartbeats are overwritten in place so in
+# practice only the current cycle is ever on disk, and this yields exactly one SCAN event.
+SCAN_CYCLE_GAP_SECONDS = 30.0
+# Contributing (strategy, timeframe) pairs named in one SCAN/ENTER detail line before it is elided.
+AGREEMENT_DETAIL_LIMIT = 4
+_MONEY_QUANTUM = Decimal("0.0001")
+_PCT_QUANTUM = Decimal("0.1")
+_AGREEMENT_QUANTUM = Decimal("0.0001")
+DEMO_DISCLAIMER = (
+    "Execution measurement on fake money - NOT validated edge. Demo P&L is not evidence."
+)
+# Ledger `reason` -> live-feed event kind. These are the only reasons demo_eth_lane ever appends to
+# orders.jsonl (ENTRY_LONG / EXIT_LONG / DISASTER_STOP); the resting venue stop is never ledgered.
+# DISASTER_STOP is an exit executed BY the -15% stop, surfaced under the frontend's STOP_ARMED kind.
+_ORDER_EVENT_KIND = {
+    "ENTRY_LONG": "ENTER",
+    "EXIT_LONG": "EXIT",
+    "DISASTER_STOP": "STOP_ARMED",
+}
+# Failure `stage` -> fixed operator phrase. Deliberately a closed allowlist: the venue's own
+# `error`/retMsg text is NEVER echoed, so no path, pid, credential, or account detail can leak.
+_REJECT_DETAIL = {
+    "kill_switch": "kill switch was set - no order was sent",
+    "price_unavailable": "no venue price was available",
+    "qty_below_step": "size fell below the venue step",
+    "place": "the venue rejected the order",
+}
 
 
 class DemoLaneActionError(ValueError):
@@ -717,6 +758,458 @@ def build_research_findings_view(root: Path | None = None) -> dict[str, Any]:
     )
 
 
+# --- read-only LIVE FEED + EQUITY CURVE ---------------------------------------------------------
+# Two more GETs, both PURE PROJECTIONS of artifacts the lane already wrote: no subprocess, no write,
+# no mutation, no request-derived path (only the fixed Path constants above). Both return
+# schema_version 1 and fail closed exactly like `_report_view` — any defect degrades to a safe empty
+# shape, never a 500 and never a traceback, secret, pid, or absolute path at the boundary. Stage B
+# stays aggregate-only and is NOT part of either response.
+
+
+def _iso(moment: datetime) -> str:
+    return moment.astimezone(UTC).isoformat()
+
+
+def _decimal_or_none(value: Any) -> Decimal | None:
+    """Exact Decimal for money/score strings, or None when missing/malformed. Keeps 0 distinct from
+    'no value' (unlike `_number`) and never introduces float drift."""
+    if isinstance(value, bool) or value is None:
+        return None
+    try:
+        number = Decimal(str(value))
+    except (ArithmeticError, ValueError):
+        return None
+    return number if number.is_finite() else None
+
+
+def _as_string(value: Any, quantum: Decimal) -> str | None:
+    number = _decimal_or_none(value)
+    return None if number is None else str(number.quantize(quantum))
+
+
+def _money(value: Any) -> str:
+    number = _decimal_or_none(value)
+    return str((number if number is not None else Decimal("0")).quantize(_MONEY_QUANTUM))
+
+
+def _short_strategy(name: str) -> str:
+    """`EXT-KELTNER-BREAKOUT` -> `KELTNER`, `EXT-EMA-12-26` -> `EMA-12-26`. Display only."""
+    short = name.removeprefix("EXT-").removeprefix("SIG-")
+    return short.removesuffix("-BREAKOUT").removesuffix("-CROSS")
+
+
+def _agreement_phrase(contributors: list[dict[str, str]]) -> str | None:
+    """`KELTNER@1h, BB@15m agree` — the frontend's vocabulary is AGREEMENT, never 'confidence'."""
+    if not contributors:
+        return None
+    named = [
+        f"{_short_strategy(c['strategy'])}@{c['timeframe']}"
+        for c in contributors[:AGREEMENT_DETAIL_LIMIT]
+    ]
+    elided = len(contributors) - len(named)
+    return ", ".join(named) + (f" (+{elided} more)" if elided > 0 else "") + " agree"
+
+
+def _fresh_at(at: datetime | None, now: datetime) -> bool:
+    if at is None or at.tzinfo is None:
+        return False
+    age = (now - at.astimezone(UTC)).total_seconds()
+    return 0 <= age <= HEARTBEAT_FRESHNESS_MAX_AGE.total_seconds()
+
+
+def _activity_scan_rows(root: Path) -> list[dict[str, Any]]:
+    """One row per confluence coin that has an activity heartbeat on disk, oldest write first."""
+    rows: list[dict[str, Any]] = []
+    for symbol in ACTIVITY_COINS:
+        heartbeat = _read_json(root / LANE_DIR / f"heartbeat_{symbol}_activity.json")
+        if not heartbeat:
+            continue
+        at = _parse_ts(heartbeat.get("at"))
+        if at is None or at.tzinfo is None:
+            continue
+        confluence = heartbeat.get("confluence")
+        confluence = confluence if isinstance(confluence, dict) else {}
+        reference = confluence.get("reference_timeframe")
+        rows.append(
+            {
+                "symbol": symbol,
+                "at": at.astimezone(UTC),
+                "agreement": _decimal_or_none(confluence.get("confidence")),
+                "gate": _decimal_or_none(confluence.get("entry_threshold")),
+                "reference_timeframe": reference if isinstance(reference, str) else None,
+                "bar": heartbeat.get("latest_closed_bar"),
+                "bullish": _contributors(confluence.get("bullish")),
+            }
+        )
+    rows.sort(key=lambda row: row["at"])
+    return rows
+
+
+def _scan_cycles(rows: list[dict[str, Any]]) -> list[list[dict[str, Any]]]:
+    """Group per-coin heartbeat writes into scan CYCLES, so the feed emits one SCAN per cycle rather
+    than one per coin. Consecutive writes inside a cycle are seconds apart; the lane's inter-cycle
+    sleep is far longer than SCAN_CYCLE_GAP_SECONDS."""
+    cycles: list[list[dict[str, Any]]] = []
+    for row in rows:
+        gap = (row["at"] - cycles[-1][-1]["at"]).total_seconds() if cycles else None
+        if gap is not None and gap <= SCAN_CYCLE_GAP_SECONDS:
+            cycles[-1].append(row)
+        else:
+            cycles.append([row])
+    return cycles
+
+
+def _event(
+    at: datetime | None,
+    raw_at: Any,
+    kind: str,
+    symbol: str | None,
+    headline: str,
+    detail: str,
+    now: datetime,
+    *,
+    agreement: str | None = None,
+    pnl_pct: str | None = None,
+    ok: bool = True,
+) -> dict[str, Any]:
+    return {
+        "at": _iso(at)
+        if at is not None and at.tzinfo is not None
+        else (raw_at if isinstance(raw_at, str) else None),
+        "age_seconds": (
+            round((now - at.astimezone(UTC)).total_seconds(), 1)
+            if at is not None and at.tzinfo is not None
+            else None
+        ),
+        "kind": kind,
+        "symbol": symbol,
+        "headline": headline,
+        "detail": detail,
+        "agreement": agreement,
+        "pnl_pct": pnl_pct,
+        "ok": ok,
+    }
+
+
+def _scan_events(cycles: list[list[dict[str, Any]]], now: datetime) -> list[dict[str, Any]]:
+    events: list[dict[str, Any]] = []
+    for cycle in cycles:
+        scores = [row["agreement"] for row in cycle if row["agreement"] is not None]
+        gate = next((row["gate"] for row in cycle if row["gate"] is not None), None)
+        above = sum(1 for score in scores if gate is not None and score >= gate)
+        at = max(row["at"] for row in cycle)
+        gate_text = f" ({gate})" if gate is not None else ""
+        events.append(
+            _event(
+                at,
+                None,
+                "SCAN",
+                None,
+                f"{len(scores)} coins scored",
+                f"{len(scores)} coins scored - {above} above the agreement gate{gate_text}",
+                now,
+                agreement=(str(max(scores).quantize(_AGREEMENT_QUANTUM)) if scores else None),
+            )
+        )
+    return events
+
+
+def _signal_agreement(order: dict[str, Any]) -> tuple[Decimal | None, str | None]:
+    """Confluence orders carry `ACT-CONF:<score>:<bar close ISO>` in signal_ref, so a historical
+    order stays attributable to the agreement score and the exact cycle that produced it."""
+    ref = order.get("signal_ref")
+    if not isinstance(ref, str) or not ref.startswith("ACT-CONF:"):
+        return None, None
+    parts = ref.split(":", 2)
+    if len(parts) != 3:
+        return None, None
+    return _decimal_or_none(parts[1]), parts[2]
+
+
+def _quote_delta(order: dict[str, Any]) -> Decimal | None:
+    reconcile = order.get("reconcile")
+    if not isinstance(reconcile, dict):
+        return None
+    return _decimal_or_none(reconcile.get("USDT_delta"))
+
+
+def _order_events(
+    orders: list[dict[str, Any]], rows: list[dict[str, Any]], now: datetime
+) -> list[dict[str, Any]]:
+    """Project the append-only order ledger into ENTER / EXIT / STOP_ARMED / REJECT events.
+
+    Only fixed, derived text reaches the client: the venue's own error string is never echoed (see
+    `_REJECT_DETAIL`), and no order id, wallet snapshot, or signal id is projected. Realised pnl_pct
+    is paired per (symbol, strategy) off the SAME reconciled USDT wallet delta report_demo_trades
+    uses, so a coin's exit percentage can never contradict the Demo Trades report.
+    """
+    contributors_by_cycle = {(row["symbol"], str(row["bar"])): row["bullish"] for row in rows}
+    open_spend: dict[tuple[str, str], Decimal] = {}
+    events: list[dict[str, Any]] = []
+    for order in orders:
+        raw_symbol = order.get("symbol")
+        symbol = raw_symbol if isinstance(raw_symbol, str) else None
+        reason = order.get("reason")
+        kind = _ORDER_EVENT_KIND.get(reason) if isinstance(reason, str) else None
+        filled = order.get("ok") is True
+        if kind is None and filled:
+            continue  # an unknown filled reason is not projected rather than guessed at
+        base = symbol.removesuffix(QUOTE_COIN) if symbol else "lane"
+        at = _parse_ts(order.get("recorded_at"))
+        score, bar = _signal_agreement(order)
+        agreement = str(score.quantize(_AGREEMENT_QUANTUM)) if score is not None else None
+        activity = order.get("strategy") == ACTIVITY_STRATEGY
+
+        if not filled:
+            stage = order.get("stage")
+            detail = _REJECT_DETAIL.get(stage) if isinstance(stage, str) else None
+            events.append(
+                _event(
+                    at,
+                    order.get("recorded_at"),
+                    "REJECT",
+                    symbol,
+                    f"{base} order rejected",
+                    detail or "the order did not complete",
+                    now,
+                    agreement=agreement,
+                    ok=False,
+                )
+            )
+            continue
+
+        key = (symbol or "", str(order.get("strategy") or ""))
+        delta = _quote_delta(order)
+        pnl_pct: str | None = None
+        if kind == "ENTER":
+            if delta is not None and delta < 0:
+                open_spend[key] = -delta
+            phrase = _agreement_phrase(contributors_by_cycle.get((symbol or "", str(bar)), []))
+            if phrase is not None:
+                detail = phrase
+            elif agreement is not None:
+                detail = f"agreement {agreement} cleared the entry gate"
+            else:
+                detail = "volume-breakout entry signal"
+            headline = f"{base} long opened"
+        else:
+            spent = open_spend.pop(key, None)
+            if spent is not None and spent > 0 and delta is not None:
+                pnl_pct = str(((delta - spent) / spent * 100).quantize(_PCT_QUANTUM))
+            if kind == "STOP_ARMED":
+                detail = f"-{DEMO_DISASTER_STOP_PCT:.0f}% disaster stop fired from entry"
+                headline = f"{base} disaster stop fired"
+            else:
+                if agreement is not None:
+                    detail = f"agreement fell to {agreement}"
+                elif activity:
+                    detail = "agreement fell to the exit gate"
+                else:
+                    detail = "volume-breakout exit signal"
+                headline = f"{base} long closed"
+        events.append(
+            _event(
+                at,
+                order.get("recorded_at"),
+                kind or "EXIT",
+                symbol,
+                headline,
+                detail,
+                now,
+                agreement=agreement,
+                pnl_pct=pnl_pct,
+            )
+        )
+    return events
+
+
+def _lane_feed_status(
+    root: Path, cycles: list[list[dict[str, Any]]], now: datetime
+) -> dict[str, Any]:
+    """Lane status/mode/cadence for the feed header.
+
+    `mode` is inferred from which artifacts are FRESH: fresh confluence heartbeats -> ACTIVITY,
+    else a fresh non-default per-coin breakout heartbeat -> MULTI, else only the fresh ETH
+    heartbeat -> ETH, else NONE. `next_scan_eta_seconds` is quoted only for the confluence lane,
+    whose loop cadence is known (max(floor, reference-timeframe minutes)); the ETH/multi lanes have
+    no loop, so their ETA stays null rather than invented.
+    """
+    running, _pid, _started = _running(root)
+    kill_switch = (root / KILL_SWITCH).exists()
+    fresh_cycle = next(
+        (cycle for cycle in reversed(cycles) if any(_fresh_at(row["at"], now) for row in cycle)),
+        None,
+    )
+    cadence: float | None = None
+    if fresh_cycle is not None:
+        mode = "ACTIVITY"
+        coins_scored = sum(1 for row in fresh_cycle if row["agreement"] is not None)
+        last_scan: datetime | None = max(row["at"] for row in fresh_cycle)
+        timeframe = next(
+            (
+                row["reference_timeframe"]
+                for row in reversed(fresh_cycle)
+                if row["reference_timeframe"]
+            ),
+            None,
+        )
+        minutes = _TIMEFRAME_MINUTES.get(timeframe or "")
+        cadence = max(ACTIVITY_LOOP_MIN_SLEEP_SECONDS, minutes * 60) if minutes else None
+    else:
+        breakout = [
+            (symbol, at)
+            for symbol in DEMO_COINS
+            if _fresh_at(
+                at := _parse_ts(_read_json(_coin_heartbeat_path(root, symbol)).get("at")), now
+            )
+        ]
+        coins_scored = len(breakout)
+        last_scan = max((at for _s, at in breakout if at is not None), default=None)
+        if any(symbol != DEFAULT_SYMBOL for symbol, _at in breakout):
+            mode = "MULTI"
+        elif breakout:
+            mode = "ETH"
+        else:
+            mode = "NONE"
+    age = (
+        round((now - last_scan.astimezone(UTC)).total_seconds(), 1)
+        if last_scan is not None
+        else None
+    )
+    eta = (
+        max(0, int(cadence - age)) if running and cadence is not None and age is not None else None
+    )
+    return {
+        "status": "RUNNING" if running else "STOPPED",
+        "mode": mode,
+        "kill_switch": kill_switch,
+        "coins_scored": coins_scored,
+        "last_scan_utc": _iso(last_scan) if last_scan is not None else None,
+        "scan_age_seconds": age,
+        "next_scan_eta_seconds": eta,
+    }
+
+
+def _empty_live_feed(now: datetime) -> dict[str, Any]:
+    return {
+        "schema_version": 1,
+        "available": False,
+        "generated_at": _iso(now),
+        "lane": {
+            "status": "STOPPED",
+            "mode": "NONE",
+            "kill_switch": False,
+            "coins_scored": 0,
+            "last_scan_utc": None,
+            "scan_age_seconds": None,
+            "next_scan_eta_seconds": None,
+        },
+        "events": [],
+        "event_count": 0,
+        "truncated": False,
+    }
+
+
+def build_live_feed(root: Path | None = None) -> dict[str, Any]:
+    """GET /api/v1/live-feed — newest-first merged event stream derived from the lane's artifacts.
+
+    Read-only: order events come from the append-only `orders.jsonl`, SCAN events from the
+    per-coin confluence heartbeats (ONE event per scan cycle, never one per coin). Nothing is
+    written, no lane is touched, and the response is capped at LIVE_FEED_EVENT_LIMIT events.
+    """
+    now = datetime.now(tz=UTC)
+    try:
+        resolved = (root or Path(__file__).resolve().parents[4]).resolve()
+        rows = _activity_scan_rows(resolved)
+        cycles = _scan_cycles(rows)
+        events = _order_events(_orders(resolved), rows, now) + _scan_events(cycles, now)
+        # Newest first; an unparseable timestamp sorts last rather than crashing the sort.
+        events.sort(key=lambda event: (event["age_seconds"] is None, event["age_seconds"] or 0.0))
+        shown = events[:LIVE_FEED_EVENT_LIMIT]
+        return {
+            "schema_version": 1,
+            "available": True,
+            "generated_at": _iso(now),
+            "lane": _lane_feed_status(resolved, cycles, now),
+            "events": shown,
+            "event_count": len(shown),
+            "truncated": len(events) > len(shown),
+        }
+    except Exception:  # noqa: BLE001 — a projection defect must never crash the read-only server
+        return _empty_live_feed(now)
+
+
+def _empty_equity_curve() -> dict[str, Any]:
+    return {
+        "schema_version": 1,
+        "available": False,
+        "points": [],
+        "summary": {
+            "closed_count": 0,
+            "wins": 0,
+            "losses": 0,
+            "flat": 0,
+            "realised_net_quote": "0.0000",
+            "fees_quote": "0.0000",
+            "win_rate_pct": "0.0",
+        },
+        "disclaimer": DEMO_DISCLAIMER,
+    }
+
+
+def build_equity_curve(root: Path | None = None) -> dict[str, Any]:
+    """GET /api/v1/equity-curve — cumulative REALISED demo P&L over CLOSED round trips.
+
+    Ordered oldest -> newest (it is a curve). The round-trip pairing and the summary are
+    report_demo_trades' own pure functions, reprojected as Decimal-safe strings, so this curve can
+    never disagree with the Demo Trades report. Open trips
+    are excluded from the points (no mark, so no realised number); `fees_quote` mirrors the report's
+    fee total, which includes an open trip's entry fee.
+    """
+    try:
+        resolved = (root or Path(__file__).resolve().parents[4]).resolve()
+        module = _report_module("report_demo_trades")
+        filled = module.load_filled(resolved / ORDERS_LEDGER)
+        trips = module.round_trips(filled)
+        summary = module.summarize(trips)
+        symbol_at_close = {
+            str(order.get("recorded_at")): order.get("symbol")
+            for order in filled
+            if isinstance(order.get("symbol"), str)
+        }
+        cumulative = Decimal("0")
+        points: list[dict[str, Any]] = []
+        for number, trip in enumerate((t for t in trips if t["status"] == "CLOSED"), start=1):
+            net = _decimal_or_none(trip["pnl_usd"]) or Decimal("0")
+            cumulative += net
+            points.append(
+                {
+                    "at": trip["closed_at"] if isinstance(trip["closed_at"], str) else None,
+                    "trade_number": number,
+                    "cumulative_net_quote": str(cumulative.quantize(_MONEY_QUANTUM)),
+                    "net_quote": str(net.quantize(_MONEY_QUANTUM)),
+                    "symbol": symbol_at_close.get(str(trip["closed_at"])),
+                }
+            )
+        return {
+            "schema_version": 1,
+            "available": True,
+            "points": points,
+            "summary": {
+                "closed_count": int(summary["closed_trades"]),
+                "wins": int(summary["wins"]),
+                "losses": int(summary["losses"]),
+                "flat": int(summary["flats"]),
+                "realised_net_quote": _money(summary["realised_pnl_usd"]),
+                "fees_quote": _money(summary["total_fees_usd"]),
+                "win_rate_pct": _as_string(summary["win_rate_pct"], _PCT_QUANTUM) or "0.0",
+            },
+            "disclaimer": DEMO_DISCLAIMER,
+        }
+    except Exception:  # noqa: BLE001 — a report defect must never crash the read-only server
+        return _empty_equity_curve()
+
+
 # ponytail: the legacy fill/pnl/stop helpers below are no longer in the API projection but are
 # retained because out-of-scope src/tios/ops/demo_readiness.py imports _order_money and
 # _operational_disaster_stop; delete this cluster only alongside that consumer.
@@ -1120,83 +1613,6 @@ def _position(
 EXPECTED_HOLD_BARS = 65
 EXPECTED_HOLD_SOURCE = "median of 259 historical trades of this rule"
 STRATEGY_ID = "STRAT-ETH-volume-breakout-prospective-v1"
-
-
-def _round_trips(filled: list[dict[str, Any]], mark: float) -> list[dict[str, Any]]:
-    """Fills folded into positions: each buy→sell round trip is one closed position,
-    a trailing unmatched buy is the open one.
-
-    This is the object the operator actually thinks in. The ledger stores orders because
-    orders are what the venue confirms; positions are derived, never stored, so they can
-    never disagree with the fills underneath them.
-    """
-    positions: list[dict[str, Any]] = []
-    entry: dict[str, Any] | None = None
-
-    for order in filled:
-        money = _order_money(order)
-        if order.get("side") == "Buy":
-            entry = {
-                "coin": "ETH",
-                "symbol": "ETHUSDT",
-                "side": "LONG",
-                "status": "OPEN",
-                "opened_at": order.get("recorded_at"),
-                "size_base": money["base_delta"],
-                "entry_price_usd": (
-                    round(money["usd_spent"] / money["base_delta"], 2)
-                    if money["base_delta"] > 0
-                    else None
-                ),
-                "spent_usd": money["usd_spent"],
-                "strategy": STRATEGY_ID,
-                "timeframe": "1h",
-                # Steps as lists so a future laddered-TP/SL strategy fits unchanged.
-                "tp_steps": [],
-                "sl_steps": [],
-                "protection": "none — rule-driven exit (close < 40-bar Donchian low)",
-                "expected_hold_bars": EXPECTED_HOLD_BARS,
-                "expected_hold_source": EXPECTED_HOLD_SOURCE,
-            }
-        elif entry is not None:
-            received = money["usd_received"]
-            pnl = received - entry["spent_usd"]
-            positions.append(
-                {
-                    **entry,
-                    "status": "CLOSED",
-                    "closed_at": order.get("recorded_at"),
-                    "exit_price_usd": (
-                        round(received / -money["base_delta"], 2)
-                        if money["base_delta"] < 0
-                        else None
-                    ),
-                    "received_usd": received,
-                    "pnl_usd": round(pnl, 4),
-                    "pnl_pct": (
-                        round(pnl / entry["spent_usd"] * 100, 2) if entry["spent_usd"] > 0 else None
-                    ),
-                }
-            )
-            entry = None
-
-    if entry is not None:
-        value = entry["size_base"] * mark if mark > 0 else None
-        pnl = value - entry["spent_usd"] if value is not None else None
-        positions.append(
-            {
-                **entry,
-                "mark_price_usd": round(mark, 2) if mark > 0 else None,
-                "value_usd": round(value, 4) if value is not None else None,
-                "pnl_usd": round(pnl, 4) if pnl is not None else None,
-                "pnl_pct": (
-                    round(pnl / entry["spent_usd"] * 100, 2)
-                    if pnl is not None and entry["spent_usd"] > 0
-                    else None
-                ),
-            }
-        )
-    return positions[::-1]  # newest first
 
 
 def _attach_operational_stop(

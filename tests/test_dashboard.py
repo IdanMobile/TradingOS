@@ -912,31 +912,33 @@ def test_dashboard_ui_a11y_responsive_and_state_contracts() -> None:
     assert "S1" not in text_html
 
 
-def test_humanized_cockpit_has_eleven_workspaces_and_overview_is_default() -> None:
+def test_humanized_cockpit_has_twelve_workspaces_and_live_is_default() -> None:
     html = (
         Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
     ).read_text()
 
+    # Watch group first (Live, Wallet), then the collapsed Lab group with the ten other pages.
     assert re.findall(r'<button[^>]+data-workspace="([^"]+)"', html) == [
+        "live",
         "wallets",
-        "signals",
         "now",
-        "todos",
+        "signals",
         "trading",
         "testing",
         "research",
         "operations",
         "library",
         "skills",
+        "todos",
         "settings",
     ]
-    assert (
-        '<button class="active" data-workspace="now" aria-current="page">Overview</button>' in html
-    )
-    assert '<span id="crumb">OVERVIEW</span>' in html
-    assert 'id="workspaceTools" aria-label="Overview tools" hidden' in html
-    assert '<section id="now" class="view active"' in html
-    assert "showWorkspace('now')" in html
+    assert '<button class="active" data-workspace="live" aria-current="page">Live</button>' in html
+    assert '<span id="crumb">LIVE</span>' in html
+    assert 'id="workspaceTools" aria-label="Live tools" hidden' in html
+    assert '<section id="live" class="view active"' in html
+    assert '<section id="now" class="view" aria-labelledby="nowHeadline"' in html
+    assert "showWorkspace('live')" in html
+    assert "live:[['live','Live']]" in html
     assert "now:[['now','Overview']]" in html
     assert "['ArrowDown','ArrowUp','Home','End']" in html
     assert "workspaceButtons[index].focus()" in html
@@ -2367,3 +2369,396 @@ def test_control_center_report_endpoints_return_schema_version_1(tmp_path: Path)
         # and degrade gracefully (never a 500) even against an empty root.
         assert payload["schema_version"] == 1, endpoint
         assert "available" in payload and "report" in payload, endpoint
+
+
+def _live_section() -> str:
+    html = _dashboard_html()
+    start = html.index('<section id="live" class="view active"')
+    return html[start : html.index('<section id="settings-integration"', start)]
+
+
+def _live_render_source() -> str:
+    html = _dashboard_html()
+    start = html.index("// --- Live cockpit:")
+    return html[start : html.index("async function pollLiveFeed(){", start)]
+
+
+def test_watch_group_holds_live_and_wallet_with_live_as_the_landing_view() -> None:
+    html = _dashboard_html()
+    watch = html[html.index('<div class="nav-label">Watch</div>') : html.index('id="labToggle"')]
+    # WATCH contains exactly Live + Wallet; Wallet keeps the pre-existing "wallets" view id.
+    assert re.findall(r'<button[^>]+data-workspace="([^"]+)"', watch) == ["live", "wallets"]
+    assert ">Wallet</button>" in watch
+    assert "wallets:[['wallets-demo','Demo'],['wallets-real','Real']]" in html
+    # Live is the default landing view: static active markup, active state, and the init call.
+    assert '<button class="active" data-workspace="live" aria-current="page">Live</button>' in watch
+    assert "let activeWorkspace='live',activeView='live'" in html
+    assert "showWorkspace('live');loadAll()" in html
+
+
+def test_lab_group_is_collapsed_by_default_and_persists_state_in_localstorage() -> None:
+    html = _dashboard_html()
+    lab = html[html.index('id="labToggle"') : html.index("</nav>\n    </div></div>")]
+    # A plain disclosure button, collapsed by default (hidden + aria-expanded="false").
+    assert 'aria-expanded="false" aria-controls="labGroup"' in lab
+    assert 'id="labGroup" aria-label="Trading OS lab workspaces" hidden' in lab
+    assert ".nav[hidden]{display:none}" in html
+    # All ten pre-existing pages stay reachable inside the group, none deleted.
+    assert re.findall(r'<button[^>]+data-workspace="([^"]+)"', lab) == [
+        "now",
+        "signals",
+        "trading",
+        "testing",
+        "research",
+        "operations",
+        "library",
+        "skills",
+        "todos",
+        "settings",
+    ]
+    # One-click toggle, no dependency, state remembered across reloads via localStorage.
+    assert "const LAB_GROUP_KEY='tios.nav.lab.expanded'" in html
+    assert "labToggle?.addEventListener('click',()=>setLabExpanded(labGroup.hidden))" in html
+    assert "localStorage.setItem(LAB_GROUP_KEY,expanded?'1':'0')" in html
+    assert "localStorage.getItem(LAB_GROUP_KEY)==='1'" in html
+    # Only an explicit stored '1' expands it, so a fresh browser lands collapsed.
+    assert "labToggle.setAttribute('aria-expanded',String(expanded))" in html
+    assert "labGroup.hidden=!expanded" in html
+
+
+def test_live_page_has_the_four_panels_in_order_reading_the_named_endpoints() -> None:
+    section = _live_section()
+    ordered = [
+        'id="liveStatusPanel"',
+        'id="liveEventsPanel"',
+        'id="liveAgreementPanel"',
+        'id="livePositionsPanel"',
+        'id="liveEquityBody"',
+    ]
+    indexes = [section.index(panel) for panel in ordered]
+    assert indexes == sorted(indexes)
+    html = _dashboard_html()
+    # (a) status + (b) events read /api/v1/live-feed; (d) equity reads /api/v1/equity-curve.
+    assert "await fetchJson('/api/v1/live-feed')" in html
+    assert "await fetchJson('/api/v1/equity-curve')" in html
+    assert "renderLiveStatus(feed);renderLiveEvents(feed)" in html
+    source = _live_render_source()
+    for field in ("lane.status", "lane.mode", "lane.coins_scored", "lane.scan_age_seconds"):
+        assert field in source, field
+    assert "lane.next_scan_eta_seconds" in source
+    assert "7 strategies × 3 timeframes" in source
+    assert "next scan in " in source and "last scan " in source
+    for field in ("e.kind", "e.headline", "e.detail", "e.agreement", "e.pnl_pct", "e.age_seconds"):
+        assert field in source, field
+    assert "feed.event_count" in source and "feed.truncated" in source
+    assert "LIVE_EVENT_CAP=40" in html and "events.slice(0,LIVE_EVENT_CAP)" in source
+    assert (
+        "LIVE_EVENT_TONE={ENTER:'green',EXIT:'cyan',STOP_ARMED:'amber',SCAN:'',REJECT:'red'}"
+        in html
+    )
+    # (c) the leaderboard reuses the already-shipped demo-lane activity arrays, no new endpoint.
+    for field in ("lane.activity", "lane.activity_summary", "a.confidence_score", "a.decision"):
+        assert field in source, field
+    assert "s.strategy" in source and "s.timeframe" in source
+    assert "asum.coins_scored" in source and "asum.highest_confidence" in source
+    # (d) positions read demo-lane activity[] and coins[]; equity reads points/summary/disclaimer.
+    assert "lane.coins" in source and "item.position.side!=='LONG'" in source
+    for field in ("p.unrealised_pnl_pct", "p.entry_price_usd", "p.time_in_trade_seconds"):
+        assert field in source, field
+    assert "pr.disaster_stop_price_usd" in source and "pr.distance_to_stop_pct" in source
+    assert "p.cumulative_net_quote" in source
+    for field in ("summary.closed_count", "summary.wins", "summary.losses"):
+        assert field in source, field
+    assert "summary.realised_net_quote" in source and "summary.fees_quote" in source
+    # Read-only render: no innerHTML of an unescaped server string anywhere in the Live renderers.
+    assert "esc(headline)" in source and "esc(symbol)" in source
+    assert "esc(String(e.detail" in source and "esc(String(e.agreement))" in source
+    assert "esc(String(a.symbol" in source and "esc(String(s&&s.strategy))" in source
+    # No raw server field is ever interpolated into markup without esc().
+    assert not re.search(r"\$\{(?:e|a|p|pr|x|s|lane|feed|summary|payload)\.[A-Za-z_]+\}", source)
+
+
+def test_live_lane_controls_reuse_overview_action_with_only_allowlisted_strings() -> None:
+    html = _dashboard_html()
+    section = _live_section()
+    controls = html[
+        html.index("function renderLiveLaneControls") : html.index("function updateLiveCountdown")
+    ]
+    # Exactly the three required buttons, mapped to the three allowlisted action strings.
+    assert re.findall(r'data-live-lane="([^"]+)"', controls) == ["START_ACTIVITY", "START", "STOP"]
+    assert ">Start Activity Lane<" in controls
+    assert ">Start ETH Lane<" in controls
+    assert ">Stop<" in controls
+    # They reuse the existing helper and its existing POST path; no new action name or endpoint.
+    assert "overviewLaneAction(b.dataset.liveLane,b)" in controls
+    assert "async function overviewLaneAction(action,button)" in html
+    assert html.count("'/api/v1/demo-lane-actions'") == 3  # demoLaneAction, overview, research
+    for forbidden in ("RUN_ONCE", "START_MULTI", "START_RESEARCH"):
+        assert f'data-live-lane="{forbidden}"' not in html, forbidden
+    # confirm() gating is untouched and still covers START / START_ACTIVITY / STOP.
+    gate = html[
+        html.index("async function overviewLaneAction") : html.index("async function pollDemoLane")
+    ]
+    assert "!confirm(" in gate
+    for action in ("STOP", "START", "START_ACTIVITY"):
+        assert f"action==='{action}'" in gate, action
+    # Running/stopped disable logic is preserved on the Live surface.
+    assert "const running=status==='RUNNING'||status==='STOPPING'" in controls
+    assert "startDis=running?'disabled':'',stopDis=running?'':'disabled'" in controls
+    # Both surfaces are locked out during an in-flight action, and both status lines are updated.
+    assert "'#demoLaneControls button,#liveLaneControls button'" in html
+    assert "'#demoLaneControlStatus,#liveLaneControlStatus'" in html
+    # No free-form input anywhere on the Live page.
+    assert "<input" not in section
+    assert "<textarea" not in section and "<select" not in section
+
+
+def test_live_page_labels_the_score_agreement_and_never_confidence() -> None:
+    section = _live_section()
+    source = _live_render_source()
+    # The user-facing label is "agreement", with the honest one-line explainer and entry gate.
+    assert "agreement ${score.toFixed(4)}" in source
+    assert "top agreement" in source
+    assert "weighted agreement among correlated strategies" in section
+    assert "NOT a probability of profit and NOT validated edge" in section
+    assert "Entry gate 0.15 — the bar fills as agreement builds" in section
+    # "confidence" is never a user-facing label; it survives only as the server payload key names.
+    labels = source
+    for server_key in ("confidence_score", "highest_confidence", "average_confidence"):
+        labels = labels.replace(server_key, "")
+    assert "confidence" not in labels.lower()
+    assert "confidence" not in section.lower()
+    # "probability of profit" appears only as an explicit denial, never as a claim.
+    assert section.lower().count("probability of profit") == 1
+    assert "NOT a probability of profit" in section
+    for forbidden in ("win probability", "expected return", "predicted"):
+        assert forbidden not in section.lower(), forbidden
+
+
+def test_live_equity_panel_renders_the_disclaimer_verbatim_and_the_not_edge_label() -> None:
+    section = _live_section()
+    source = _live_render_source()
+    assert '<span class="badge amber">execution measurement — not edge</span>' in section
+    # The endpoint's own disclaimer string is rendered (escaped, so verbatim on screen).
+    assert "esc(String((payload&&payload.disclaimer)||" in source
+    assert "not validated edge" in source
+    # Safety badges stay pinned on the Live status strip.
+    for badge in ("FAKE MONEY", "AUTHORITY: NONE", "UNVALIDATED"):
+        assert badge in section, badge
+    assert "nothing on this page is validated edge" in section
+
+
+def test_live_poll_reuses_the_guarded_visibility_aware_demo_lane_tick() -> None:
+    html = _dashboard_html()
+    poll = html[
+        html.index("async function pollDemoLane(force)") : html.index("function updateDemoLaneLive")
+    ]
+    # One timer only: the Live view rides the existing ~5s demo-lane tick.
+    assert "const DEMO_LANE_REFRESH_MS=5000" in html
+    assert html.count("setInterval(()=>pollDemoLane(false),DEMO_LANE_REFRESH_MS)") == 1
+    assert "if(demoLaneInFlight)return" in poll  # in-flight guard intact
+    assert "document.hidden" in poll  # visibility pause intact
+    assert "!['now','wallets-demo','live'].includes(activeView)" in poll  # only polls active views
+    assert "await pollLiveFeed()" in poll
+    assert "if(activeView==='live')await pollLiveFeed()" in poll
+    # Scroll position and open <details> are preserved across the Live re-render too.
+    assert "const y=window.scrollY" in poll
+    assert "'#live details[open]'" in poll
+    assert "window.scrollTo(0,y)" in poll
+    # The schema_version === 1 gate is untouched for every Live fetch.
+    assert "payload.schema_version!==1" in html
+    assert html.count("fetchJson(url)") + html.count("fetchJson('/api/v1/") >= 3
+    # The countdown ticks locally on the existing 1s interval, no extra timer.
+    assert "setInterval(updateDemoLaneLive,1000)" in html
+    assert "updateLiveCountdown()" in html
+    assert "function updateLiveCountdown" in html
+
+
+def test_live_panels_degrade_without_undefined_or_nan_on_empty_payloads() -> None:
+    source = _live_render_source()
+    esc_helper = (
+        "const esc=s=>String(s??'').replace(/[&<>\"']/g,"
+        "c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c]));"
+    )
+    script = (
+        esc_helper
+        + """
+const nodes={};
+const make=id=>(nodes[id]={id,innerHTML:'',textContent:'',dataset:{},
+  setAttribute(){},querySelectorAll(){return []}});
+for(const id of ['liveStatusBody','liveEventsBody','liveEventsCount','liveAgreementBody',
+  'liveAgreementSummary','livePositionsBody','livePositionsSummary','liveEquityBody',
+  'liveLaneControls','liveLaneControlStatus','liveNextScan'])make(id);
+const document={
+  hidden:false,
+  querySelector(selector){return nodes[selector.replace('#','')]||null},
+  querySelectorAll(){return []}
+};
+const overviewLaneAction=()=>{};
+"""
+        + source
+        + """
+const render=(feed,lane,equity)=>{
+  renderLiveStatus(feed);renderLiveEvents(feed);
+  renderLiveAgreement(lane);renderLivePositions(lane);renderLiveEquity(equity);
+};
+const dump=()=>Object.fromEntries(
+  Object.entries(nodes).map(([id,node])=>[id,`${node.innerHTML}|${node.textContent}`]));
+const out={};
+renderLiveLaneControls('UNAVAILABLE');
+// 1. hard-empty: available:false, nothing anywhere.
+render({schema_version:1,available:false,lane:{},events:[],event_count:0,truncated:false},
+  {schema_version:1},{schema_version:1,available:false,points:[],summary:{},disclaimer:''});
+out.empty=dump();
+// 2. one equity point only (must not divide by zero or draw a broken path).
+render({schema_version:1,available:false,lane:{},events:[],event_count:0,truncated:false},
+  {schema_version:1},
+  {schema_version:1,available:true,points:[{at:'2026-07-24T00:00:00Z',trade_number:1,
+    cumulative_net_quote:'12.5',net_quote:'12.5',symbol:'ETHUSDT'}],
+   summary:{closed_count:1,wins:1,losses:0,flat:0,realised_net_quote:'12.5',
+     fees_quote:'0.4',win_rate_pct:'100.0'},disclaimer:'Execution measurement only.'});
+out.one=dump();
+// 3. zero equity points but a running lane with junk/missing numeric fields.
+render({schema_version:1,available:true,generated_at:'2026-07-24T00:00:00Z',
+  lane:{status:'RUNNING',mode:'ACTIVITY',kill_switch:false,coins_scored:null,
+    last_scan_utc:null,scan_age_seconds:null,next_scan_eta_seconds:null},
+  events:[{at:'2026-07-24T00:00:00Z',age_seconds:null,kind:'SCAN',symbol:null,
+    headline:'Scanned 10 coins',detail:'',agreement:null,pnl_pct:null,ok:true}],
+  event_count:1,truncated:false},
+  {schema_version:1,activity:[{symbol:'ETHUSDT',confidence_score:null,decision:'FLAT'}],
+   activity_summary:{},coins:[]},
+  {schema_version:1,available:true,points:[],summary:{},disclaimer:'d'});
+out.junk=dump();
+// 4. fully populated, both lane shapes.
+render({schema_version:1,available:true,generated_at:'2026-07-24T00:00:00Z',
+  lane:{status:'RUNNING',mode:'ACTIVITY',kill_switch:true,coins_scored:10,
+    last_scan_utc:'2026-07-24T00:00:00Z',scan_age_seconds:12,next_scan_eta_seconds:78},
+  events:[
+    {at:'2026-07-24T00:00:00Z',age_seconds:12,kind:'ENTER',symbol:'ETHUSDT',
+     headline:'Entered ETHUSDT',detail:'4 of 7 strategies agreed',agreement:'0.2143',
+     pnl_pct:null,ok:true},
+    {at:'2026-07-24T00:00:00Z',age_seconds:900,kind:'EXIT',symbol:'BTCUSDT',
+     headline:'Exited BTCUSDT',detail:'agreement decayed',agreement:'0.0400',
+     pnl_pct:'-1.25',ok:true},
+    {at:'2026-07-24T00:00:00Z',age_seconds:7200,kind:'REJECT',symbol:'SOLUSDT',
+     headline:'Rejected SOLUSDT',detail:'below the entry gate',agreement:'0.1100',
+     pnl_pct:null,ok:false}],
+  event_count:3,truncated:true},
+  {schema_version:1,
+   activity:[
+     {symbol:'ETHUSDT',confidence_score:0.2143,decision:'LONG',
+      bullish:[{strategy:'DONCHIAN',timeframe:'1h'},{strategy:'RSI',timeframe:'4h'}],
+      bearish:[],
+      position:{side:'LONG',base_qty:'0.5',entry_price_usd:'3000',mark_price_usd:'3060',
+        unrealised_pnl_usd:'30',unrealised_pnl_pct:2,time_in_trade_seconds:5400},
+      protection:{disaster_stop_price_usd:'2850',distance_to_stop_pct:6.8}},
+     {symbol:'BTCUSDT',confidence_score:-0.31,decision:'FLAT',
+      bullish:[],bearish:[{strategy:'MACD',timeframe:'15m'}]},
+     {symbol:'ADAUSDT',confidence_score:null,decision:'FLAT'}],
+   activity_summary:{coins_long:1,coins_scored:2,highest_confidence:0.31},
+   coins:[{symbol:'ETHUSDT',position:{side:'LONG'}},
+     {symbol:'LINKUSDT',position:{side:'LONG',entry_price_usd:'14',mark_price_usd:'13',
+       unrealised_pnl_usd:'-1',unrealised_pnl_pct:-7.1,time_in_trade_seconds:120},
+      protection:{disaster_stop_price_usd:'12.6',distance_to_stop_pct:3.1}}]},
+  {schema_version:1,available:true,points:[
+    {at:'a',trade_number:1,cumulative_net_quote:'5',net_quote:'5',symbol:'ETHUSDT'},
+    {at:'b',trade_number:2,cumulative_net_quote:'5',net_quote:'0',symbol:'ETHUSDT'},
+    {at:'c',trade_number:3,cumulative_net_quote:'18.25',net_quote:'13.25',symbol:'BTCUSDT'}],
+   summary:{closed_count:3,wins:2,losses:1,flat:0,realised_net_quote:'18.25',
+     fees_quote:'1.2',win_rate_pct:'66.67'},
+   disclaimer:'Execution measurement only, not evidence of edge.'});
+out.full=dump();
+console.log(JSON.stringify(out));
+"""
+    )
+    state = json.loads(
+        subprocess.run(
+            ["node", "--input-type=module", "-"],
+            input=script,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+    )
+
+    # No panel ever shows undefined / NaN / null, in any of the four payload shapes.
+    for case, nodes in state.items():
+        for node_id, rendered in nodes.items():
+            for forbidden in ("undefined", "NaN", "null"):
+                assert forbidden not in rendered, f"{case}/{node_id}: {forbidden}"
+
+    # available:false degrades to calm prose, not a blank panel and not a crash.
+    assert "Confluence lane · stopped" in state["empty"]["liveStatusBody"]
+    assert "NO FEED YET" in state["empty"]["liveStatusBody"]
+    assert "Nothing yet." in state["empty"]["liveEventsBody"]
+    assert state["empty"]["liveEventsCount"].endswith("|nothing yet")
+    assert "No coin is reporting agreement yet" in state["empty"]["liveAgreementBody"]
+    assert "Holding nothing right now" in state["empty"]["livePositionsBody"]
+    assert "No closed trade yet" in state["empty"]["liveEquityBody"]
+    assert "not validated edge" in state["empty"]["liveEquityBody"]
+
+    # 0 points -> no <svg> at all; 1 point -> a single dot, never a polyline.
+    assert "<svg" not in state["empty"]["liveEquityBody"]
+    assert "<circle" in state["one"]["liveEquityBody"]
+    assert "polyline" not in state["one"]["liveEquityBody"]
+    assert "Execution measurement only." in state["one"]["liveEquityBody"]
+
+    # A running lane with all-null numerics still reads cleanly.
+    status = state["junk"]["liveStatusBody"]
+    assert "Confluence lane · live" in status
+    assert "scanning — coins · 7 strategies × 3 timeframes" in status
+    assert "no scan yet" in status
+    assert "1 quiet" in state["junk"]["liveAgreementBody"]
+
+    # Populated: status strip, colour-coded kinds, agreement bars, positions, sparkline.
+    full = state["full"]
+    assert "Confluence lane · live" in full["liveStatusBody"]
+    assert "MODE ACTIVITY" in full["liveStatusBody"]
+    assert "scanning 10 coins" in full["liveStatusBody"]
+    assert "last scan 12s ago" in full["liveStatusBody"]
+    assert "KILL SWITCH ON" in full["liveStatusBody"]
+    assert "next scan in 1:18" in full["liveNextScan"]
+    events = full["liveEventsBody"]
+    assert '<span class="badge green">ENTER</span>' in events
+    assert '<span class="badge cyan">EXIT</span>' in events
+    assert '<span class="badge red">REJECT</span>' in events
+    assert "12s ago" in events and "15m ago" in events and "2h ago" in events
+    assert "agreement 0.2143" in events
+    assert '<span class="badge red">-1.25%</span>' in events
+    assert "truncated" in full["liveEventsCount"]
+    agreement = full["liveAgreementBody"]
+    # Strongest agreement first (|-0.31| > |0.2143|), bar width maps the score, chips are mono.
+    assert agreement.index("BTCUSDT") < agreement.index("ETHUSDT")
+    assert 'style="width:31.00%"' in agreement
+    assert 'style="width:21.43%"' in agreement
+    assert '<span class="live-chip mono">DONCHIAN@1h</span>' in agreement
+    assert '<span class="live-chip mono">MACD@15m</span>' in agreement
+    assert "1 quiet" in agreement
+    assert "top agreement 0.3100" in full["liveAgreementSummary"]
+    positions = full["livePositionsBody"]
+    # activity[] and coins[] merge, deduped by symbol; ETHUSDT appears once.
+    assert positions.count(">ETHUSDT<") == 1
+    assert ">LINKUSDT<" in positions
+    assert '<span class="live-up">+2.00%</span>' in positions
+    assert '<span class="live-down">-7.10%</span>' in positions
+    assert "in trade 1h 30m" in positions and "in trade 2m" in positions
+    assert "stop $2,850 · 6.80% from mark" in positions
+    assert full["livePositionsSummary"].endswith("|2 open")
+    equity = full["liveEquityBody"]
+    # Oldest -> newest polyline, first x=0 and last x=100, y clamped inside the 32-unit box.
+    assert "<polyline" in equity
+    points = re.search(r'points="([^"]+)"', equity)
+    assert points is not None
+    coords = [tuple(float(v) for v in pair.split(",")) for pair in points.group(1).split(" ")]
+    assert [x for x, _ in coords] == [0.0, 50.0, 100.0]
+    assert coords[0][1] == 28.0 and coords[-1][1] == 4.0
+    assert all(0.0 <= y <= 32.0 for _, y in coords)
+    assert "3 closed · 2W / 1L" in equity
+    assert "win rate 66.67%" in equity
+    assert "realised $18.25 · fees $1.2" in equity
+    assert "Execution measurement only, not evidence of edge." in equity
+    # The lane controls render the three allowlisted buttons in the stopped/disabled state.
+    controls = state["empty"]["liveLaneControls"]
+    assert re.findall(r'data-live-lane="([^"]+)"', controls) == ["START_ACTIVITY", "START", "STOP"]
+    assert 'data-live-lane="STOP" disabled' in controls
+    assert "Lane stopped/idle" in state["empty"]["liveLaneControlStatus"]

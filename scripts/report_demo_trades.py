@@ -5,9 +5,10 @@ Zero AI, no network, no venue call: it reads the append-only `orders.jsonl` the 
 lane already writes and folds the fills into buy->sell round trips (one closed position
 per pair, a trailing unmatched buy is the open one), then reports each trade's realised
 P&L and a summary. Realised P&L uses the venue-reconciled wallet deltas as the source of
-truth (`pnl = usd_received - usd_spent`), exactly as the dashboard's `_round_trips` did,
-so the numbers can never disagree with the fills underneath them. Fees are charged in the
-base coin on a buy and the quote coin on a sell; both are expressed in USD.
+truth (`pnl = usd_received - usd_spent`), so the numbers can never disagree with the
+fills underneath them. This is the ONLY round-trip folder in the repo: the dashboard's
+old private copy was deleted, since a second implementation is a second place to drift.
+Fees are charged in the base coin on a buy and the quote coin on a sell; both are in USD.
 
 This is a read-only reporting function. It has no order, credential, venue, or execution
 authority and changes no lane state.
@@ -53,11 +54,26 @@ def load_filled(orders_path: Path) -> list[dict[str, Any]]:
     return orders
 
 
+def _base_delta(order: dict[str, Any], reconcile: dict[str, Any]) -> float:
+    """The traded coin's wallet delta. The venue reconciles per base coin (`AAVE_delta`,
+    `ETH_delta`, ...), so a hardcoded `ETH_delta` read 0 for every non-ETH position."""
+    symbol = str(order.get("symbol") or "")
+    if symbol.endswith("USDT"):
+        keyed = reconcile.get(f"{symbol[:-4]}_delta")
+        if keyed is not None:
+            return _number(keyed)
+    # Fallback: the single non-quote delta the venue reported for this fill.
+    for name, value in reconcile.items():
+        if name.endswith("_delta") and name != "USDT_delta":
+            return _number(value)
+    return 0.0
+
+
 def _order_money(order: dict[str, Any]) -> dict[str, float]:
     """Cash/base movement for one order from reconciled wallet deltas (fee already in the delta)."""
     reconcile = order.get("reconcile") or {}
     quote_delta = _number(reconcile.get("USDT_delta"))
-    base_delta = _number(reconcile.get("ETH_delta"))
+    base_delta = _base_delta(order, reconcile)
     price = _number(order.get("avg_price"))
     fee = _number(order.get("fee"))
     return {
@@ -69,14 +85,23 @@ def _order_money(order: dict[str, Any]) -> dict[str, float]:
 
 
 def round_trips(filled: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Fold fills into buy->sell round trips; a trailing unmatched buy stays OPEN (no mark)."""
+    """Fold fills into buy->sell round trips; unmatched buys stay OPEN (no mark).
+
+    Entries are held PER (symbol, strategy), not in one global slot: the multi-coin and confluence
+    lanes hold many positions at once on one shared ledger, so a single slot silently dropped every
+    open but the last and could pair coin A's exit against coin B's entry (wrong P&L). `strategy` is
+    always part of the key so the breakout and confluence lanes never cross-pair on a shared symbol;
+    untagged legacy records read as None and pair only with each other, so an ETH-only ledger folds
+    byte-identically to before.
+    """
     trips: list[dict[str, Any]] = []
-    entry: dict[str, Any] | None = None
+    open_entries: dict[tuple[Any, Any], dict[str, Any]] = {}
     for order in filled:
         money = _order_money(order)
+        key = (order.get("symbol"), order.get("strategy"))
         if order.get("side") == "Buy":
-            entry = {"order": order, "money": money}
-        elif entry is not None:
+            open_entries[key] = {"order": order, "money": money}
+        elif (entry := open_entries.pop(key, None)) is not None:
             spent = entry["money"]["usd_spent"]
             received = money["usd_received"]
             pnl = round(received - spent, 4)
@@ -84,6 +109,8 @@ def round_trips(filled: list[dict[str, Any]]) -> list[dict[str, Any]]:
             trips.append(
                 {
                     "status": "CLOSED",
+                    "symbol": entry["order"].get("symbol"),
+                    "strategy": entry["order"].get("strategy"),
                     "opened_at": entry["order"].get("recorded_at"),
                     "closed_at": order.get("recorded_at"),
                     "size_base": entry["money"]["base_delta"],
@@ -98,11 +125,13 @@ def round_trips(filled: list[dict[str, Any]]) -> list[dict[str, Any]]:
                     "signal_ref": entry["order"].get("signal_ref"),
                 }
             )
-            entry = None
-    if entry is not None:
+    # Every still-unmatched entry is a live position; insertion order keeps them oldest-first.
+    for entry in open_entries.values():
         trips.append(
             {
                 "status": "OPEN",
+                "symbol": entry["order"].get("symbol"),
+                "strategy": entry["order"].get("strategy"),
                 "opened_at": entry["order"].get("recorded_at"),
                 "size_base": entry["money"]["base_delta"],
                 "entry_price_usd": _number(entry["order"].get("avg_price")),
@@ -161,6 +190,7 @@ def render_markdown(report: dict[str, Any]) -> str:
     s = report["summary"]
     cols = [
         "#",
+        "Coin",
         "Opened",
         "Closed",
         "Entry",
@@ -186,7 +216,8 @@ def render_markdown(report: dict[str, Any]) -> str:
     ]
     for i, t in enumerate(report["round_trips"], 1):
         lines.append(
-            f"| {i} | {t.get('opened_at', '')} | {t.get('closed_at', '')} | "
+            f"| {i} | {t.get('symbol') or ''} | {t.get('opened_at', '')} | "
+            f"{t.get('closed_at', '')} | "
             f"{t.get('entry_price_usd', '')} | {t.get('exit_price_usd', '')} | "
             f"{t.get('spent_usd', '')} | {t.get('received_usd', '')} | {t.get('fees_usd', '')} | "
             f"{t.get('pnl_usd', '')} | {t.get('pnl_pct', '')} | {t['outcome']} |"

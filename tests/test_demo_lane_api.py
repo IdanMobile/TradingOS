@@ -11,12 +11,16 @@ from __future__ import annotations
 import json
 import os
 import sys
+from datetime import UTC, datetime, timedelta
+from io import BytesIO
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
 
 from tios.services.dashboard_api import demo_lane
+from tios.services.dashboard_ui.server import Handler
 
 _BODY_KEYS = {
     "schema_version",
@@ -1077,3 +1081,387 @@ def test_views_are_pure_reads_no_subprocess(root: Path, monkeypatch: pytest.Monk
     demo_lane.build_demo_trades_view(root)
     demo_lane.build_demo_status_view(root)
     demo_lane.build_research_findings_view(root)
+
+
+# --- GET /api/v1/live-feed + /api/v1/equity-curve ------------------------------------------------
+# Both are pure read-only projections of artifacts the lane already wrote: no subprocess, no write,
+# no request-derived path. Every response carries schema_version 1 and fails closed to a safe empty
+# shape rather than raising.
+
+_FEED_KEYS = {
+    "schema_version",
+    "available",
+    "generated_at",
+    "lane",
+    "events",
+    "event_count",
+    "truncated",
+}
+_FEED_LANE_KEYS = {
+    "status",
+    "mode",
+    "kill_switch",
+    "coins_scored",
+    "last_scan_utc",
+    "scan_age_seconds",
+    "next_scan_eta_seconds",
+}
+_FEED_EVENT_KEYS = {
+    "at",
+    "age_seconds",
+    "kind",
+    "symbol",
+    "headline",
+    "detail",
+    "agreement",
+    "pnl_pct",
+    "ok",
+}
+_CURVE_KEYS = {"schema_version", "available", "points", "summary", "disclaimer"}
+_CURVE_POINT_KEYS = {"at", "trade_number", "cumulative_net_quote", "net_quote", "symbol"}
+_CURVE_SUMMARY_KEYS = {
+    "closed_count",
+    "wins",
+    "losses",
+    "flat",
+    "realised_net_quote",
+    "fees_quote",
+    "win_rate_pct",
+}
+# A secret-shaped venue message: the feed must never echo it back to the client.
+_LEAKY_ERROR = "/Users/secret/.env BYBIT_API_KEY=abcd1234 pid=4242 rejected"
+
+
+def _feed_order(**overrides: Any) -> dict[str, Any]:
+    """One orders.jsonl record shaped exactly like scripts/demo_eth_lane._append_ledger writes."""
+    order: dict[str, Any] = {
+        "schema_version": 1,
+        "recorded_at": "2026-07-20T10:00:00+00:00",
+        "symbol": "TRXUSDT",
+        "side": "Buy",
+        "unit": "quoteCoin",
+        "signal_ref": "SIG-plain",
+        "reason": "ENTRY_LONG",
+        "strategy": demo_lane.ACTIVITY_STRATEGY,
+        "ok": True,
+        "stage": "done",
+        "qty": "25",
+        "order_id": "2263422258146184448",
+        "order_status": "Filled",
+        "avg_price": "0.30",
+        "fee": "0.0001",
+        "reconcile": {"USDT_delta": -25.0, "TRX_delta": 83.0},
+        "wallet_after": {"USDT": "975.0", "TRX": "83.0"},
+    }
+    order.update(overrides)
+    return order
+
+
+def _write_feed_orders(root: Path, orders: list[dict[str, Any]]) -> None:
+    (root / demo_lane.ORDERS_LEDGER).write_text(
+        "\n".join(json.dumps(order) for order in orders) + "\n"
+    )
+
+
+def _scan_heartbeat(root: Path, symbol: str, at: datetime, agreement: str, bar: str) -> None:
+    """A heartbeat_<SYMBOL>_activity.json shaped like run_activity_cycle's heartbeat_extra."""
+    (root / demo_lane.LANE_DIR / f"heartbeat_{symbol}_activity.json").write_text(
+        json.dumps(
+            {
+                "at": at.isoformat(),
+                "symbol": symbol,
+                "strategy": demo_lane.ACTIVITY_STRATEGY,
+                "lane_base": "0",
+                "latest_closed_bar": bar,
+                "confluence": {
+                    "confidence": agreement,
+                    "bullish": [
+                        {"strategy": "EXT-KELTNER-BREAKOUT", "timeframe": "1h", "weight": "2"},
+                        {"strategy": "EXT-EMA-8-21", "timeframe": "15m", "weight": "1"},
+                    ],
+                    "bearish": [],
+                    "entry_threshold": "0.15",
+                    "exit_threshold": "0.05",
+                    "timeframes": ["5m", "15m", "1h"],
+                    "reference_timeframe": "5m",
+                    "decision": "BUY",
+                },
+            }
+        )
+    )
+
+
+def test_live_feed_contract_keys_and_newest_first(root: Path) -> None:
+    """(a) schema_version 1, the documented key set, and events strictly newest-first."""
+    _write_feed_orders(
+        root,
+        [
+            _feed_order(recorded_at="2026-07-20T10:00:00+00:00"),
+            _feed_order(
+                recorded_at="2026-07-21T10:00:00+00:00",
+                side="Sell",
+                reason="EXIT_LONG",
+                reconcile={"USDT_delta": 26.0, "TRX_delta": -83.0},
+            ),
+            _feed_order(recorded_at="2026-07-22T10:00:00+00:00"),
+        ],
+    )
+    feed = demo_lane.build_live_feed(root)
+    assert feed["schema_version"] == 1  # matches the client fetchJson gate
+    assert set(feed) == _FEED_KEYS
+    assert feed["available"] is True
+    assert set(feed["lane"]) == _FEED_LANE_KEYS
+    assert feed["lane"]["status"] in {"RUNNING", "STOPPED"}
+    assert feed["lane"]["mode"] in {"ACTIVITY", "ETH", "MULTI", "NONE"}
+    assert all(set(event) == _FEED_EVENT_KEYS for event in feed["events"])
+    ages = [event["age_seconds"] for event in feed["events"]]
+    assert ages == sorted(ages)  # smallest age first == newest first
+    assert [event["at"] for event in feed["events"]] == [
+        "2026-07-22T10:00:00+00:00",
+        "2026-07-21T10:00:00+00:00",
+        "2026-07-20T10:00:00+00:00",
+    ]
+    assert feed["event_count"] == 3 and feed["truncated"] is False
+    # No 'confidence' vocabulary anywhere: the frontend calls this AGREEMENT.
+    assert "confidence" not in json.dumps(feed).lower()
+
+
+def test_live_feed_projects_enter_exit_reject_without_leaking(root: Path) -> None:
+    """(b) a seeded ledger produces the expected kinds/symbols/pnl/detail and leaks nothing."""
+    _write_feed_orders(
+        root,
+        [
+            _feed_order(
+                recorded_at="2026-07-20T10:00:00+00:00",
+                signal_ref="ACT-CONF:0.4300:2026-07-20T09:55:00+00:00",
+            ),
+            _feed_order(
+                recorded_at="2026-07-20T12:00:00+00:00",
+                side="Sell",
+                reason="EXIT_LONG",
+                signal_ref="ACT-CONF:0.0300:2026-07-20T11:55:00+00:00",
+                reconcile={"USDT_delta": 26.0, "TRX_delta": -83.0},
+            ),
+            _feed_order(
+                recorded_at="2026-07-20T13:00:00+00:00",
+                symbol="SOLUSDT",
+                ok=False,
+                stage="place",
+                error=_LEAKY_ERROR,
+                reconcile={},
+            ),
+        ],
+    )
+    feed = demo_lane.build_live_feed(root)
+    by_kind = {event["kind"]: event for event in feed["events"]}
+    assert set(by_kind) == {"ENTER", "EXIT", "REJECT"}
+
+    enter = by_kind["ENTER"]
+    assert enter["symbol"] == "TRXUSDT" and enter["headline"] == "TRX long opened"
+    assert enter["agreement"] == "0.4300" and enter["ok"] is True
+    assert "agreement 0.4300" in enter["detail"]
+
+    exit_event = by_kind["EXIT"]
+    assert exit_event["headline"] == "TRX long closed"
+    assert exit_event["detail"] == "agreement fell to 0.0300"
+    assert exit_event["pnl_pct"] == "4.0"  # (26.00 - 25.00) / 25.00 * 100
+
+    reject = by_kind["REJECT"]
+    assert reject["symbol"] == "SOLUSDT" and reject["ok"] is False
+    assert reject["headline"] == "SOL order rejected"
+    assert reject["detail"] == "the venue rejected the order"  # fixed phrase, not the venue text
+
+    body = json.dumps(feed)
+    for secret in ("BYBIT_API_KEY", "abcd1234", "/Users/", "pid=", "2263422258146184448", "975.0"):
+        assert secret not in body, f"live feed leaked {secret!r}"
+
+
+def test_live_feed_emits_one_scan_per_cycle_not_per_coin(root: Path) -> None:
+    """(c) SCAN events are per scan CYCLE, reporting scored and at/above-gate counts."""
+    now = datetime.now(tz=UTC)
+    current_bar = "2026-07-24T12:00:00+00:00"
+    older_bar = "2026-07-24T11:55:00+00:00"
+    # Current cycle: three coins written seconds apart -> ONE SCAN event, two above the 0.15 gate.
+    _scan_heartbeat(root, "TRXUSDT", now - timedelta(seconds=6), "0.4000", current_bar)
+    _scan_heartbeat(root, "SOLUSDT", now - timedelta(seconds=4), "0.2000", current_bar)
+    _scan_heartbeat(root, "ADAUSDT", now - timedelta(seconds=2), "-0.1000", current_bar)
+    # An earlier cycle (a coin whose file was not refreshed) is its own SCAN, not merged in.
+    _scan_heartbeat(root, "XRPUSDT", now - timedelta(minutes=10), "0.9000", older_bar)
+
+    feed = demo_lane.build_live_feed(root)
+    scans = [event for event in feed["events"] if event["kind"] == "SCAN"]
+    assert len(scans) == 2  # two cycles, forty coin files would still be two events
+    newest = scans[0]
+    assert newest["symbol"] is None
+    assert newest["headline"] == "3 coins scored"
+    assert newest["detail"] == "3 coins scored - 2 above the agreement gate (0.15)"
+    assert newest["agreement"] == "0.4000"  # strongest agreement in the cycle
+    assert scans[1]["detail"] == "1 coins scored - 1 above the agreement gate (0.15)"
+
+    # mode/cadence are inferred from the FRESH confluence heartbeats, 5m reference timeframe.
+    lane = feed["lane"]
+    assert lane["mode"] == "ACTIVITY"
+    assert lane["coins_scored"] == 3
+    assert lane["last_scan_utc"] is not None and lane["scan_age_seconds"] is not None
+    assert lane["status"] == "STOPPED"  # no lane process holds the lock in this tmp root
+    assert lane["next_scan_eta_seconds"] is None  # ETA only while the lane is running
+
+
+def test_live_feed_caps_events_and_flags_truncated(root: Path) -> None:
+    """(d) the newest LIVE_FEED_EVENT_LIMIT events are returned and `truncated` is set."""
+    base = datetime(2026, 7, 20, 10, 0, tzinfo=UTC)
+    stamps = [
+        (base + timedelta(minutes=minute)).isoformat()
+        for minute in range(demo_lane.LIVE_FEED_EVENT_LIMIT + 5)
+    ]
+    _write_feed_orders(root, [_feed_order(recorded_at=stamp) for stamp in stamps])
+    feed = demo_lane.build_live_feed(root)
+    assert len(feed["events"]) == demo_lane.LIVE_FEED_EVENT_LIMIT
+    assert feed["event_count"] == demo_lane.LIVE_FEED_EVENT_LIMIT
+    assert feed["truncated"] is True
+    assert feed["events"][0]["at"] == stamps[-1]  # newest kept
+    assert feed["events"][-1]["at"] == stamps[5]  # the five oldest were dropped
+
+
+def test_live_feed_and_equity_curve_degrade_on_missing_artifacts(root: Path) -> None:
+    """(e1) an empty lane directory yields the safe empty shape, never a raise."""
+    feed = demo_lane.build_live_feed(root)
+    assert feed["schema_version"] == 1 and feed["events"] == []
+    assert feed["event_count"] == 0 and feed["truncated"] is False
+    assert feed["lane"]["status"] == "STOPPED" and feed["lane"]["mode"] == "NONE"
+    assert feed["lane"]["coins_scored"] == 0 and feed["lane"]["last_scan_utc"] is None
+    curve = demo_lane.build_equity_curve(root)
+    assert curve["schema_version"] == 1 and curve["points"] == []
+    assert curve["summary"]["closed_count"] == 0
+    assert curve["summary"]["realised_net_quote"] == "0.0000"
+    assert curve["disclaimer"] == demo_lane.DEMO_DISCLAIMER
+
+
+def test_live_feed_and_equity_curve_fail_closed_on_malformed_artifacts(
+    root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """(e2) a defect on either read path degrades to available False — never a 500/traceback."""
+    (root / demo_lane.ORDERS_LEDGER).write_text("{not valid json\n")
+    curve = demo_lane.build_equity_curve(root)
+    assert curve["schema_version"] == 1 and curve["available"] is False
+    assert curve["points"] == [] and curve["summary"]["closed_count"] == 0
+    assert curve["disclaimer"] == demo_lane.DEMO_DISCLAIMER
+
+    def boom(_root: Path) -> list[dict[str, Any]]:
+        raise OSError("ledger exploded")
+
+    monkeypatch.setattr(demo_lane, "_orders", boom)
+    feed = demo_lane.build_live_feed(root)
+    assert feed["schema_version"] == 1 and feed["available"] is False
+    assert set(feed) == _FEED_KEYS and feed["events"] == []
+    assert feed["lane"]["status"] == "STOPPED" and feed["lane"]["mode"] == "NONE"
+    assert "exploded" not in json.dumps(feed)
+
+
+def test_equity_curve_is_oldest_first_and_agrees_with_report_demo_trades(root: Path) -> None:
+    """(f) points run oldest->newest with a correct running total; summary == the report's."""
+    _write_feed_orders(
+        root,
+        [
+            # +5 WIN
+            _feed_order(recorded_at="2026-07-20T10:00:00+00:00", symbol="ETHUSDT"),
+            _feed_order(
+                recorded_at="2026-07-20T12:00:00+00:00",
+                symbol="ETHUSDT",
+                side="Sell",
+                reason="EXIT_LONG",
+                fee="0.03",
+                reconcile={"USDT_delta": 30.0, "ETH_delta": -0.0134},
+            ),
+            # -5 LOSS
+            _feed_order(recorded_at="2026-07-21T10:00:00+00:00", symbol="ETHUSDT"),
+            _feed_order(
+                recorded_at="2026-07-21T12:00:00+00:00",
+                symbol="ETHUSDT",
+                side="Sell",
+                reason="EXIT_LONG",
+                fee="0.02",
+                reconcile={"USDT_delta": 20.0, "ETH_delta": -0.0134},
+            ),
+            # trailing unmatched buy -> OPEN, excluded from the curve
+            _feed_order(recorded_at="2026-07-22T10:00:00+00:00", symbol="ETHUSDT"),
+        ],
+    )
+    curve = demo_lane.build_equity_curve(root)
+    assert set(curve) == _CURVE_KEYS
+    assert curve["schema_version"] == 1 and curve["available"] is True
+    points = curve["points"]
+    assert all(set(point) == _CURVE_POINT_KEYS for point in points)
+    assert [point["trade_number"] for point in points] == [1, 2]  # oldest -> newest, closed only
+    assert [point["at"] for point in points] == [
+        "2026-07-20T12:00:00+00:00",
+        "2026-07-21T12:00:00+00:00",
+    ]
+    assert [point["net_quote"] for point in points] == ["5.0000", "-5.0000"]
+    assert [point["cumulative_net_quote"] for point in points] == ["5.0000", "0.0000"]
+    assert points[0]["symbol"] == "ETHUSDT"
+
+    summary = curve["summary"]
+    assert set(summary) == _CURVE_SUMMARY_KEYS
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    import scripts.report_demo_trades as rpt
+
+    report = rpt.build_report(root / demo_lane.ORDERS_LEDGER)["summary"]
+    assert summary["closed_count"] == report["closed_trades"] == 2
+    assert summary["wins"] == report["wins"] == 1
+    assert summary["losses"] == report["losses"] == 1
+    assert summary["flat"] == report["flats"] == 0
+    assert summary["realised_net_quote"] == f"{report['realised_pnl_usd']:.4f}"
+    assert summary["fees_quote"] == f"{report['total_fees_usd']:.4f}"
+    assert summary["win_rate_pct"] == f"{report['win_rate_pct']:.1f}" == "50.0"
+    # Decimal-safe: every money/number field is a STRING, so no float drift reaches the client.
+    assert all(isinstance(point["cumulative_net_quote"], str) for point in points)
+    assert isinstance(summary["realised_net_quote"], str)
+
+
+def test_equity_curve_carries_the_unvalidated_disclaimer(root: Path) -> None:
+    """(g) the disclaimer is present, non-empty, and names demo P&L as non-evidence."""
+    for curve in (demo_lane.build_equity_curve(root), demo_lane._empty_equity_curve()):
+        disclaimer = curve["disclaimer"]
+        assert isinstance(disclaimer, str) and disclaimer
+        assert "NOT validated edge" in disclaimer
+        assert "not evidence" in disclaimer.lower()
+
+
+def test_live_feed_and_equity_curve_never_spawn_a_subprocess(
+    root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """(h) both endpoints are pure reads — a spawn would be a governance break."""
+    monkeypatch.setattr(
+        demo_lane.subprocess, "Popen", lambda *_a, **_k: pytest.fail("feed must not spawn")
+    )
+    monkeypatch.setattr(
+        demo_lane.subprocess, "run", lambda *_a, **_k: pytest.fail("feed must not spawn")
+    )
+    _write_feed_orders(root, [_feed_order()])
+    assert demo_lane.build_live_feed(root)["schema_version"] == 1
+    assert demo_lane.build_equity_curve(root)["schema_version"] == 1
+
+
+def _handle_get(path: str, root: Path) -> tuple[bytes, dict[str, Any]]:
+    handler = object.__new__(Handler)
+    handler.root = root
+    handler.html = "dashboard"
+    handler.rfile = BytesIO(f"GET {path} HTTP/1.1\r\nHost: localhost\r\n\r\n".encode())
+    handler.wfile = BytesIO()
+    handler.client_address = ("127.0.0.1", 1)
+    handler.server = SimpleNamespace(server_name="test", server_port=80)
+    handler.close_connection = True
+    handler.handle_one_request()
+    headers, body = handler.wfile.getvalue().split(b"\r\n\r\n", 1)
+    return headers, json.loads(body)
+
+
+@pytest.mark.parametrize("path", ["/api/v1/live-feed", "/api/v1/equity-curve"])
+def test_new_routes_serve_schema_version_1_through_the_real_handler(path: str, root: Path) -> None:
+    """(i) end-to-end through the real GET handler: 200 JSON with schema_version 1."""
+    _write_feed_orders(root, [_feed_order()])
+    headers, payload = _handle_get(path, root)
+    assert b" 200 " in headers
+    assert b"Content-Type: application/json" in headers
+    assert payload["schema_version"] == 1

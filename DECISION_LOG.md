@@ -2336,3 +2336,64 @@ research is offline/no-orders; execution authority `NONE`; nothing validated or 
 and research leads remain non-evidence. Execution stays human-initiated. Known non-blocking research
 double-spawn ceiling flagged for operator decision. No venue, order, live, or real-money authority is
 granted.**
+
+### D-120 — Watch/Lab dashboard split + Live cockpit; two P&L reporting defects found by live multi-coin execution and fixed; duplicate round-trip folder deleted
+
+Decision: on operator direction (2026-07-26, "organize and improve the frontend … more understandable
+and fun to watch … a lot of things are redundant for a user"), the dashboard is split into a
+user-facing **Watch** mode (`Live`, `Wallet`) and a collapsed-by-default **Lab ▸** group holding the
+ten pre-existing developer/governance pages (Overview, Signals, Trading, Testing, Research,
+Operations, Library, Skills, TODO, Settings). NO page is deleted or made unreachable; `Live` becomes
+the landing view. The new `Live` page answers four questions in order — what it is doing now (event
+feed), what is closest to firing (agreement leaderboard), what it holds (position cards), how it has
+gone (equity sparkline) — fed by two NEW read-only GET endpoints, `/api/v1/live-feed` (events derived
+from `orders.jsonl` + activity heartbeats: ENTER/EXIT/STOP_ARMED/SCAN/REJECT with reasons, lane
+status, scan cadence) and `/api/v1/equity-curve` (cumulative realised P&L over closed round trips).
+Both are pure projections: GET only, no subprocess, no writes, fixed paths, `schema_version 1`,
+fail-closed, with rejection detail drawn from a closed allowlist so venue error text, order ids,
+wallet balances, paths and pids can never reach a client. The Live page's lane controls REUSE the
+existing allowlisted `START_ACTIVITY`/`START`/`STOP` actions through the existing audited POST path —
+no new command surface. Stage B remains aggregate-only and outside these endpoints.
+
+**Honest-labelling decision (doctrine, binding on future UI work):** a more engaging dashboard makes
+an UNVALIDATED fake-money lane easier to mistake for a validated edge, so the framing is part of the
+design, not a disclaimer bolted on. The confluence score is labelled **"agreement"** and never
+"confidence" or anything implying probability of profit — it is weighted agreement among strategies
+that are heavily correlated with each other, on a gate deliberately loosened to 0.15 for traffic
+(D-118). The equity curve is labelled **"execution measurement — not edge"** and renders the
+endpoint's disclaimer verbatim. Fake-money / authority-NONE / UNVALIDATED badges stay pinned.
+
+**Two P&L reporting defects, found only because the lane ran for real, now fixed.** The operator
+started the confluence lane; it opened **12 positions in 90 seconds** (AAVE, APT, AXS, BCH, BNB, BTC,
+ETH, LINK, RUNE, SOL, TIA, UNI, all filled) and the shared total-capital cap bound at exactly
+12 × $25 = $300, correctly refusing further entries — the cap's first real multi-coin exercise, and it
+held. That live state exposed: (a) `scripts/report_demo_trades.py::round_trips` held a SINGLE global
+entry slot, so it reported "1 open" while 12 positions were live, silently discarding 11 entries, and
+could pair one coin's exit against another coin's entry (wrong realised P&L). Entries are now keyed
+per `(symbol, strategy)`, so concurrent positions all surface and the breakout and confluence lanes
+can never cross-pair on a shared symbol; untagged legacy records key `(None, None)` so an ETH-only
+ledger folds byte-identically. (b) `_order_money` read a hardcoded `reconcile["ETH_delta"]`, reporting
+`size_base = 0` for every non-ETH position; size now derives from the traded coin's own
+`<BASE>_delta`. P&L was unaffected by (b) (it uses `USDT_delta`). Trip rows now carry `symbol` and
+`strategy`, and the report table gained a Coin column — a 12-row multi-coin report was unreadable
+without it. Three regression tests pin the behaviour, including one proving ETHUSDT in two lanes never
+cross-pairs; an independent reviewer confirmed by hand that they fail against the pre-fix code.
+Additionally the dashboard's private duplicate `_round_trips` (single-slot, hardcoded `ETHUSDT` — the
+same defect class, zero callers) was DELETED rather than left as a landmine; `report_demo_trades` is
+now the repo's only round-trip folder.
+
+Evidence: operator direction in the 2026-07-26 session; the live `orders.jsonl` burst of 12 filled
+ACTIVITY-CONFLUENCE entries 14:53:02–14:54:32Z with the $300 cap binding; an independent adversarial
+review returning GO/PASS on all three parts, which traced the money-pairing fix by hand, confirmed
+the legacy fold is byte-identical, verified the new tests distinguish old from new behaviour, and
+verified no-leak / fail-closed / escaping / no-new-command-surface (its non-blocking notes — orphan-sell
+and scale-in silently losing cost basis, both pre-existing; a SCAN-clustering heuristic that may split
+a slow cycle cosmetically; an unlogged `_base_delta` fallback — are recorded, not fixed);
+`PACKAGE_INTEGRITY_MANIFEST.md`; `PACKAGE_CHANGELOG.md`. Normal package reconciliation (v8.151) under
+D-030/T-000-02 — manifest-tracked `dashboard_ui/server.py`, `dashboard.html` ×2,
+`tests/test_dashboard.py` ×2 and this decision log ×1 rehashed; NOT an integrity exception.
+Status: **Watch/Lab dashboard + Live cockpit SHIPPED; two P&L reporting defects FIXED; duplicate
+round-trip folder DELETED. Fake-money demo only; execution authority `NONE`; nothing validated or
+promoted. Demo P&L is execution measurement and remains NON-EVIDENCE of edge; "agreement" is not a
+probability of profit. Execution stays human-initiated. No venue, order, live, or real-money authority
+is granted.**

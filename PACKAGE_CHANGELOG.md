@@ -1,5 +1,45 @@
 # Package Changelog
 
+## v8.151 — 2026-07-26 — Watch/Lab dashboard split + Live cockpit; two multi-coin P&L reporting defects fixed
+
+Operator-directed frontend reorganization, plus two real reporting defects that only surfaced once the
+confluence lane ran for real. Fake-money demo only; execution authority NONE; nothing validated or
+promoted; demo P&L is execution measurement and remains NON-EVIDENCE of edge. Independent adversarial
+review: GO/PASS on all three parts. See DECISION_LOG.md D-120.
+
+- Navigation split into a user-facing **Watch** mode (`Live`, `Wallet`) and a collapsed-by-default
+  **Lab ▸** group holding the ten pre-existing developer pages (Overview, Signals, Trading, Testing,
+  Research, Operations, Library, Skills, TODO, Settings). No page deleted or unreachable; collapse
+  state persists in `localStorage`; `Live` is the landing view.
+- New **Live cockpit page** answering four questions in order: what it's doing now (event feed), what's
+  closest to firing (agreement leaderboard), what it holds (position cards), how it's gone (equity
+  sparkline). Its lane controls reuse the existing allowlisted `START_ACTIVITY`/`START`/`STOP` through
+  the existing audited POST path — no new command surface, no free-form input.
+- Two new read-only GET endpoints: `/api/v1/live-feed` (ENTER/EXIT/STOP_ARMED/SCAN/REJECT events with
+  reasons, derived from `orders.jsonl` + activity heartbeats, plus lane status and scan cadence) and
+  `/api/v1/equity-curve` (cumulative realised P&L over closed round trips). Pure projections: no
+  subprocess, no writes, fixed paths, `schema_version 1`, fail-closed; rejection detail comes from a
+  closed allowlist so venue error text, order ids, wallet balances, paths and pids never reach a
+  client. Stage B stays aggregate-only and outside both endpoints.
+- **Honest labelling (binding on future UI work):** the confluence score is labelled **"agreement"**,
+  never "confidence" or anything implying probability of profit — it is weighted agreement among
+  correlated strategies on a gate loosened to 0.15 for traffic (v8.149). The equity curve is labelled
+  **"execution measurement — not edge"** and renders its disclaimer verbatim.
+- **P&L defect 1 (wrong-number class):** `report_demo_trades.round_trips` held a SINGLE global entry
+  slot, so with 12 concurrent positions it reported "1 open", silently discarded 11 entries, and could
+  pair one coin's exit against another coin's entry. Entries are now keyed per `(symbol, strategy)`;
+  untagged legacy records key `(None, None)` so an ETH-only ledger folds byte-identically. Trip rows
+  carry `symbol`/`strategy` and the report table gained a Coin column.
+- **P&L defect 2:** `_order_money` read a hardcoded `reconcile["ETH_delta"]`, reporting `size_base = 0`
+  for every non-ETH position; size now derives from the traded coin's own `<BASE>_delta`. Realised P&L
+  was unaffected (it uses `USDT_delta`).
+- The dashboard's private duplicate `_round_trips` (single-slot, hardcoded `ETHUSDT` — same defect
+  class, zero callers) was DELETED; `report_demo_trades` is now the repo's only round-trip folder.
+
+Manifest-tracked files rehashed (D-030 regeneration): `dashboard_ui/server.py`, `dashboard.html`,
+`tests/test_dashboard.py`, `DECISION_LOG.md`. Gates green: package integrity PASS (453 rows),
+project-wide ruff + mypy (139 files) clean, 309 tests pass across the affected suites.
+
 ## v8.150 — 2026-07-26 — Operator control center: Start Multi + Run Research actions, read-only report views
 
 Operator-directed ("add everything we can"). Fake-money demo only; research is offline/no-orders;
