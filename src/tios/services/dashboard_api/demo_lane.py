@@ -1213,6 +1213,243 @@ def build_equity_curve(root: Path | None = None) -> dict[str, Any]:
         return _empty_equity_curve()
 
 
+# --- read-only WALLET view ----------------------------------------------------------------------
+# GET /api/v1/wallet answers the operator's four money questions — what the venue holds, what was
+# spent, what one trade may spend, and what is open right now — from artifacts the lane already
+# wrote. Same rails as the projections above: no subprocess, no write, no venue/network call, no
+# request-derived path, schema_version 1, fail closed. Stage B is NOT part of this response.
+#
+# The two halves are deliberately NOT added together anywhere in this response:
+#   `venue`  = the pre-funded fake-money demo account's own balances (seeded ~1 BTC / ~1 ETH /
+#              50k USDC / 50k USDT before any trading). NOT performance, NOT operator money, and
+#              mostly NOT reachable by the lane.
+#   `budget` = the only funds the lane can ever move (TOTAL_DEMO_CAPITAL_USDT at
+#              BUY_QUOTE_USDT per position), and `realised`/`unrealised_*` are what it earned.
+
+# Mirrors scripts/demo_eth_lane.py TOTAL_DEMO_CAPITAL_USDT / BUY_QUOTE_USDT — keep in sync, exactly
+# as ACTIVITY_COINS mirrors that lane's universe. (DEMO_DISASTER_STOP_PCT above mirrors its stop.)
+DEMO_TOTAL_CAP_USDT = Decimal("300")
+DEMO_PER_TRADE_USDT = Decimal("25")
+QUOTE_COINS = ("USDT", "USDC")
+VENUE_BALANCE_NOTE = (
+    "Pre-funded fake-money demo account: seeded before any trading, so this total is NOT "
+    "performance and NOT operator money. Only the budget below is controlled by the lane."
+)
+WALLET_DISCLAIMER = (
+    f"{DEMO_DISCLAIMER} Execution authority NONE, UNVALIDATED - and the venue balance is "
+    "pre-funded demo money, not performance and not operator funds."
+)
+
+
+def _plain(value: Decimal) -> str:
+    """Decimal as a plain string: no exponent, no trailing-zero noise ('300.0' -> '300')."""
+    return f"{value.normalize():f}"
+
+
+def _num(value: Any) -> str | None:
+    """Any numeric as an exact Decimal-safe string, or None when missing/malformed."""
+    number = _decimal_or_none(value)
+    return None if number is None else _plain(number)
+
+
+def _wallet_snapshot(orders: list[dict[str, Any]]) -> tuple[dict[str, Any], str | None]:
+    """The freshest full venue wallet snapshot in the ledger, with its record's timestamp.
+
+    Every order carries `wallet_after`; the newest one is the freshest venue truth available
+    offline. Ordered by `recorded_at` the same way report_demo_trades.load_filled orders fills.
+    """
+    carriers = [order for order in orders if isinstance(order.get("wallet_after"), dict)]
+    newest = max(carriers, key=lambda o: str(o.get("recorded_at") or ""), default=None)
+    if newest is None:
+        return {}, None
+    snapshot = newest["wallet_after"]
+    at = newest.get("recorded_at")
+    return snapshot, str(at) if _parse_ts(at) is not None else None
+
+
+def _wallet_balances(snapshot: dict[str, Any]) -> list[dict[str, Any]]:
+    """Venue holdings, quote coins first then largest amount first. Unparseable rows are dropped."""
+    parsed = [
+        (str(coin), amount)
+        for coin, raw in snapshot.items()
+        if (amount := _decimal_or_none(raw)) is not None
+    ]
+    parsed.sort(key=lambda item: (item[0] not in QUOTE_COINS, -item[1]))
+    return [
+        {"coin": coin, "amount": _plain(amount), "is_quote": coin in QUOTE_COINS}
+        for coin, amount in parsed
+    ]
+
+
+def _wallet_position(root: Path, trip: dict[str, Any], now: datetime) -> dict[str, Any]:
+    """One OPEN round trip as an operator position row.
+
+    Size/entry/spend come from report_demo_trades' fold (ledger truth); the MARK is the coin's own
+    `heartbeat.mark_price` and the P&L/stop numbers are `_position_projection` /
+    `_protection_projection` — the same helpers the `coins` and `activity` views use, so this can
+    never quote a different mark or a different unrealised than the rest of the dashboard. A
+    confluence position reads heartbeat_<SYMBOL>_activity.json, a breakout position the coin's
+    plain heartbeat. No heartbeat (or a stale/zero mark) leaves every mark-derived field null.
+    """
+    symbol = str(trip.get("symbol") or "")
+    strategy = trip.get("strategy")
+    if strategy == ACTIVITY_STRATEGY:
+        heartbeat = _read_json(root / LANE_DIR / f"heartbeat_{symbol}_activity.json")
+        state = _read_json(root / LANE_DIR / f"lane_state_{symbol}_activity.json")
+    else:
+        heartbeat = _read_json(_coin_heartbeat_path(root, symbol))
+        state = _read_json(_coin_state_path(root, symbol))
+
+    size = _number(trip.get("size_base"))
+    entry = _number(trip.get("entry_price_usd"))
+    mark = _number(heartbeat.get("mark_price"))
+    is_long = size > 0
+    open_entry = {"spent_usd": trip.get("spent_usd"), "opened_at": trip.get("opened_at")}
+    position = _position_projection(size, mark, entry, is_long, open_entry, now)
+    protection = _protection_projection(heartbeat, state, is_long, entry, mark)
+    # Same precedence as _protection_projection's own stop level: the venue's resting stop if one
+    # is live, otherwise the -15% disaster floor.
+    resting = protection["venue_resting_stop_trigger_usd"]
+    stop = resting if resting is not None else protection["disaster_stop_price_usd"]
+    held = position["time_in_trade_seconds"]
+    return {
+        "symbol": symbol,
+        "strategy": str(strategy) if strategy is not None else None,
+        "opened_at": position["opened_at"] if isinstance(position["opened_at"], str) else None,
+        "held_seconds": int(held) if held is not None else None,
+        "size_base": _num(trip.get("size_base")),
+        "entry_price": _num(trip.get("entry_price_usd")),
+        # Raw heartbeat price, gated on the projection having accepted it (mark > 0).
+        "mark_price": _num(heartbeat.get("mark_price"))
+        if position["mark_price_usd"] is not None
+        else None,
+        "spent_usdt": _num(position["spent_usd"]),
+        "value_usdt": _num(position["value_usd"]),
+        "unrealised_usdt": _num(position["unrealised_pnl_usd"]),
+        "unrealised_pct": _num(position["unrealised_pnl_pct"]),
+        "stop_price": _num(stop),
+        "distance_to_stop_pct": _num(protection["distance_to_stop_pct"]),
+    }
+
+
+def _empty_wallet() -> dict[str, Any]:
+    """Fail-closed shape: identical key set, nothing claimed. Never a 500, never a traceback."""
+    return {
+        "schema_version": 1,
+        "available": False,
+        "as_of": None,
+        "environment": "VENUE_DEMO",
+        "real_money": False,
+        "execution_authority": "NONE",
+        "venue": {
+            "balances": [],
+            "quote_usdt": "0",
+            "quote_usdc": "0",
+            "note": VENUE_BALANCE_NOTE,
+        },
+        "budget": {
+            "total_cap_usdt": "0",
+            "per_trade_usdt": "0",
+            "deployed_usdt": "0",
+            "free_usdt": "0",
+            "slots_total": 0,
+            "slots_used": 0,
+            "slots_free": 0,
+            "disaster_stop_pct": "0",
+        },
+        "positions": [],
+        "realised": {
+            "closed_count": 0,
+            "wins": 0,
+            "losses": 0,
+            "realised_usdt": "0",
+            "fees_usdt": "0",
+        },
+        "unrealised_total_usdt": None,
+        "disclaimer": WALLET_DISCLAIMER,
+    }
+
+
+def build_wallet(root: Path | None = None) -> dict[str, Any]:
+    """GET /api/v1/wallet — what the venue holds, what the lane may spend, and what is open now.
+
+    Read-only projection of `orders.jsonl` plus the per-coin heartbeats. Positions and `realised`
+    are report_demo_trades' own pure functions (`load_filled` / `fold_fills` / `summarize`), so
+    this endpoint can never disagree with the Demo Trades report.
+
+    `unrealised_total_usdt` sums only the positions that HAVE a mark: it is null when no position
+    has one, and otherwise a PARTIAL total when some coin's heartbeat is missing — a position
+    without a mark keeps its own mark/value/unrealised fields null and never zeroes the total.
+    """
+    try:
+        resolved = (root or Path(__file__).resolve().parents[4]).resolve()
+        orders = _orders(resolved)
+        if not orders:
+            return _empty_wallet()  # missing or empty ledger: no wallet truth, so claim nothing
+        module = _report_module("report_demo_trades")
+        trips, unmatched = module.fold_fills(module.load_filled(resolved / ORDERS_LEDGER))
+        summary = module.summarize(trips, unmatched)
+        now = datetime.now(tz=UTC)
+        snapshot, as_of = _wallet_snapshot(orders)
+        balances = _wallet_balances(snapshot)
+
+        positions = [
+            _wallet_position(resolved, trip, now) for trip in trips if trip["status"] == "OPEN"
+        ]
+        positions.sort(
+            key=lambda p: (
+                p["unrealised_pct"] is None,  # unmarked positions sink to the bottom
+                -(_decimal_or_none(p["unrealised_pct"]) or Decimal("0")),
+            )
+        )
+        marked = [
+            value
+            for p in positions
+            if (value := _decimal_or_none(p["unrealised_usdt"])) is not None
+        ]
+        deployed = sum(
+            (_decimal_or_none(p["spent_usdt"]) or Decimal("0") for p in positions), Decimal("0")
+        )
+        slots_total = int(DEMO_TOTAL_CAP_USDT // DEMO_PER_TRADE_USDT)
+        by_coin = {row["coin"]: row["amount"] for row in balances}
+        return {
+            "schema_version": 1,
+            "available": True,
+            "as_of": as_of,
+            "environment": "VENUE_DEMO",
+            "real_money": False,
+            "execution_authority": "NONE",
+            "venue": {
+                "balances": balances,
+                "quote_usdt": by_coin.get("USDT", "0"),
+                "quote_usdc": by_coin.get("USDC", "0"),
+                "note": VENUE_BALANCE_NOTE,
+            },
+            "budget": {
+                "total_cap_usdt": _plain(DEMO_TOTAL_CAP_USDT),
+                "per_trade_usdt": _plain(DEMO_PER_TRADE_USDT),
+                "deployed_usdt": _plain(deployed),
+                "free_usdt": _plain(max(Decimal("0"), DEMO_TOTAL_CAP_USDT - deployed)),
+                "slots_total": slots_total,
+                "slots_used": len(positions),
+                "slots_free": max(0, slots_total - len(positions)),
+                "disaster_stop_pct": _plain(Decimal(str(DEMO_DISASTER_STOP_PCT))),
+            },
+            "positions": positions,
+            "realised": {
+                "closed_count": int(summary["closed_trades"]),
+                "wins": int(summary["wins"]),
+                "losses": int(summary["losses"]),
+                "realised_usdt": _num(summary["realised_pnl_usd"]) or "0",
+                "fees_usdt": _num(summary["total_fees_usd"]) or "0",
+            },
+            "unrealised_total_usdt": _plain(sum(marked, Decimal("0"))) if marked else None,
+            "disclaimer": WALLET_DISCLAIMER,
+        }
+    except Exception:  # noqa: BLE001 — a report defect must never crash the read-only server
+        return _empty_wallet()
+
+
 # ponytail: the legacy fill/pnl/stop helpers below are no longer in the API projection but are
 # retained because out-of-scope src/tios/ops/demo_readiness.py imports _order_money and
 # _operational_disaster_stop; delete this cluster only alongside that consumer.

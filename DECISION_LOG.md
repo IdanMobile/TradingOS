@@ -2491,3 +2491,60 @@ strategies, demo P&L is NON-EVIDENCE, and high-frequency churn on an unvalidated
 (~10%/day of a $300 account at 30-minute full turnover). Fake-money demo only; execution authority
 `NONE`; order-placing stays HUMAN-ARMED ONLY; no scheduler may start a lane. Four items parked. No venue,
 order, live, or real-money authority is granted, and no investment advice is given.**
+
+### D-122 — Wallet page answers the money questions; venue holdings deliberately subordinated to lane budget so a pre-funded demo balance can never read as performance
+
+Decision: the operator reported that the Watch split was still unintelligible — "what is the difference
+between live and wallet? … i dont know how much money my wallet holds, how much was spent, how much we
+can spend for a single trade, positions list, graphs, real charts". The diagnosis was accepted as a real
+product defect and partly a naming error introduced in D-120: `Wallet` was a RELABELLED LEGACY per-coin
+page that never showed a balance, budget, free capital or per-trade size. Each WATCH page now carries a
+one-line subtitle that distinguishes it (`Live` = what the system is doing right now; `Wallet` = the
+money), and a new read-only `GET /api/v1/wallet` endpoint plus a rebuilt Wallet page answer each question
+directly: venue balances, lane cap, deployed, free, per-trade size, slot count, the full open-position
+table (size, entry, mark, value, unrealised $/%, time held, stop, distance-to-stop), realised/unrealised
+totals, and two honest inline-SVG charts (equity sparkline reused from the Live page — one shared
+implementation, not a copy — plus a deployed-vs-free allocation bar).
+
+**Framing decision (binding, extends D-120's honest-labelling doctrine).** The venue demo wallet holds
+~$99.7k of PRE-FUNDED fake money (seeded ~1 BTC, ~1 ETH, 50k USDC, ~50k USDT before any trading). That
+total is NOT performance and NOT operator funds, and the lane never touches more than its $300 cap. The
+API therefore keeps `venue.*` and `budget.*`/`realised.*` as separate blocks that are NEVER summed and
+exposes no derived field mixing them; a test asserts the combined `99673` figure never appears in the
+response body at all. On the page the LANE BUDGET is the headline with big-number styling ($300 cap /
+$300 deployed / $0 free / $25 per position / 12-of-12 slots, plus a plain-language line explaining that
+no new position can open until one exits — the answer to "why is nothing happening"), while the venue
+balance list renders LAST, visually secondary, with no big-number styling and led by a "read this first"
+note. Rationale: a pre-funded balance presented as a headline would read as "I have $99.7k and the bot
+earned it", and both halves of that are false.
+
+**No fabricated data.** The operator asked for "real charts"; only charts backed by payload data were
+drawn. No price/candlestick chart exists because no endpoint in this view carries OHLC history — the page
+states "no price history in this view" rather than inventing a series. Real price charts remain an
+unbuilt feature requiring kline fetch/storage. Null marks render as em dashes, never invented zeros.
+
+Measured state at build time (read-only, from the live artifacts): budget cap $300, deployed $300, free
+$0, 12/12 slots, per-trade $25, disaster stop −15%; realised +$0.5379 (1 closed, 1W/0L), fees $0.3506,
+unrealised +$1.6267 across 12 open positions held ~135 min. Recorded with the standing caveat that this
+is ~4 hours of n=12 noise and that the 12 positions are NOT independent bets — all are long, all crypto,
+all opened within 90 seconds on strategies that agree largely because they are correlated, so the
+multi-coin spread reads as diversification while behaving as a single directional exposure.
+
+Evidence: operator's 2026-07-26 message; the live `orders.jsonl` `wallet_after` snapshot (14 balances)
+and the lane constants `TOTAL_DEMO_CAPITAL_USDT=300` / `BUY_QUOTE_USDT=25` / `DEMO_DISASTER_STOP_PCT=0.15`;
+an independent review returning GO with no blocking findings, which hash-verified all five files,
+live-called `build_wallet(Path('.'))` and inspected the projection field by field, and confirmed the
+venue/lane separation, single-source-of-truth reuse (`report_demo_trades` fold + the existing
+`_position_projection`/`_protection_projection`, no second mark or P&L formula), leak-freedom,
+fail-closed identical key sets, and the shared equity renderer. Non-blocking notes recorded: the lane
+capital constants are mirrored rather than imported (matching the file's existing convention for
+`DEMO_DISASTER_STOP_PCT`) and so could desync if the lane's cap changes; `orders.jsonl` is read twice per
+request; a ledger of only non-filled records yields `available:true` with empty balances.
+`PACKAGE_INTEGRITY_MANIFEST.md`; `PACKAGE_CHANGELOG.md`. Normal reconciliation (v8.153) under
+D-030/T-000-02 — `dashboard.html` ×2, `tests/test_dashboard.py` ×2 and this decision log ×1 rehashed;
+NOT an integrity exception.
+Status: **Wallet page SHIPPED and answers the operator's money questions on one surface. Venue holdings
+are structurally subordinated to lane budget and can never be summed with or presented as performance.
+Fake-money demo only; execution authority `NONE`; 0 validated strategies; demo P&L remains NON-EVIDENCE.
+No price chart is drawn because no price history exists in this view. No venue, order, live, or
+real-money authority is granted, and no investment advice is given.**

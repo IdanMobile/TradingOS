@@ -22,6 +22,9 @@
     .live-chips{display:flex;gap:6px;flex-wrap:wrap}.live-chip{background:#17263a;border-radius:4px;padding:2px 6px;font-size:10px}.live-chips-bear .live-chip{color:#ff9aae}
     .live-positions{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}.live-position{padding:12px}.live-spark{display:block;width:100%;height:64px;color:var(--cyan)}
     .source-why{cursor:help;color:var(--muted);font-size:11px}.cap-table table{min-width:860px}.cap-note{color:var(--muted);font-size:.85em;margin:10px 0 0}
+    .wallet-headline{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end;margin:6px 0 10px}.wallet-figure{display:grid;gap:2px}.wallet-figure .label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}.wallet-figure .value{font-size:clamp(20px,2.4vw,30px);font-weight:600;line-height:1.1}.wallet-figure.small .value{font-size:1.05rem;font-weight:500}
+    .wallet-alloc{display:block;width:100%;height:14px;margin:4px 0 6px}.wallet-pips{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0}.wallet-pip{width:12px;height:12px;border-radius:3px;background:#17263a;border:1px solid var(--line)}.wallet-pip.on{background:var(--green);border-color:var(--green)}
+    .wallet-secondary{opacity:.85}.wallet-secondary .live-h2{font-size:.95rem}.wallet-table table{min-width:820px}.wallet-legacy>summary{cursor:pointer;color:var(--muted);padding:10px 0;min-height:44px;display:flex;align-items:center}
     @media(max-width:640px){.live-when{flex-basis:58px}.live-positions{grid-template-columns:1fr}}
   </style>
 </head>
@@ -58,7 +61,7 @@
     <header class="topbar"><div class="crumb">TRADING OS / <span id="crumb">LIVE</span></div><div class="env"><span class="dot" id="healthDot" aria-hidden="true"></span><span id="healthText">Health loading</span><span>LOCAL · SYNTHETIC PAPER · NO REAL MONEY</span><span class="refresh" id="refresh" role="status" aria-live="polite">Loading cockpit…</span><button class="retry" id="retry" hidden>Retry</button></div></header>
     <div class="content" id="dashboardContent" aria-busy="true">
       <nav class="workspace-tools" id="workspaceTools" aria-label="Live tools" hidden></nav><div class="action-status" id="cockpitActionStatus" role="status" aria-live="polite" hidden></div>
-      <section id="live" class="view active" aria-labelledby="liveHeading"><div class="title-row"><div><div class="eyebrow">Live · fake money</div><h1 id="liveHeading">Live</h1><p class="subtitle">What the demo lane is doing right now, in plain language. Fake money on the venue demo account — nothing on this page is validated edge.</p></div><span id="liveUpdated" class="badge" role="status" aria-live="polite">live · connecting…</span></div>
+      <section id="live" class="view active" aria-labelledby="liveHeading"><div class="title-row"><div><div class="eyebrow">Live · fake money</div><h1 id="liveHeading">Live</h1><p class="subtitle">What the system is doing right now: scanning, agreement, entries and exits. Fake money on the venue demo account — nothing on this page is validated edge. For the money — cap, free capital, positions, result — open Wallet.</p></div><span id="liveUpdated" class="badge" role="status" aria-live="polite">live · connecting…</span></div>
         <div class="card" id="liveStatusPanel" aria-labelledby="liveStatusHeading">
           <h2 id="liveStatusHeading" class="live-h2">Status</h2>
           <div id="liveStatusBody"><p class="muted">Loading lane status…</p></div>
@@ -103,7 +106,34 @@
           <article class="card"><div class="wallet-card-head"><div class="wallet-card-id"><div class="mark">MO</div><div><strong>Moralis</strong><span class="badge red">NOT CONNECTED</span></div></div></div><p class="muted" style="margin:10px 0 0">On-chain/wallet data; claims a 40,000 units/mo free tier, needs signup — unverified.</p></article>
         </div>
       </section>
-      <section id="wallets-demo" class="view" aria-labelledby="walletsDemoHeading"><div class="title-row"><div><div class="eyebrow">Wallets · demo</div><h1 id="walletsDemoHeading">Demo</h1><p class="subtitle">The live ETH demo lane runs here on the venue demo account. Fake money, real market, real fills.</p></div><span class="badge green">LIVE LANE</span></div><div id="demoLaneCard"></div><div class="section-title" style="margin-top:26px"><h2>Sample provider balances</h2><span>placeholder mockup</span></div><div class="hero-note"><strong>Not built yet:</strong> the provider cards below are a UI placeholder. Their numbers are sample data that wiggles on a timer to preview a live feel — no venue connection feeds them. Only the ETH demo lane above is real.</div><div id="walletDemoBody"></div></section>
+      <section id="wallets-demo" class="view" aria-labelledby="walletsDemoHeading"><div class="title-row"><div><div class="eyebrow">Wallets · demo</div><h1 id="walletsDemoHeading">Demo wallet</h1><p class="subtitle">The money: what the venue holds, what the lane is allowed to use, what it holds now, and what it has earned. Fake money on the venue demo account — none of it is validated edge.</p></div><span class="badge green">LIVE LANE</span></div>
+        <div class="lane-status" style="margin:0 0 16px"><span class="badge amber">FAKE MONEY</span><span class="badge">AUTHORITY: NONE</span><span class="badge">UNVALIDATED</span><span id="walletUpdated" class="badge" role="status" aria-live="polite">live · connecting…</span></div>
+        <div class="card" id="walletBudgetPanel" aria-labelledby="walletBudgetHeading">
+          <div class="section-title"><h2 id="walletBudgetHeading" class="live-h2">What the lane is working with</h2><span id="walletBudgetSummary" class="badge">—</span></div>
+          <p class="muted" style="margin:0 0 10px">This — not the venue balance further down — is the money the lane can actually touch: a fixed total cap, cut into fixed-size slots, one slot per open position.</p>
+          <div id="walletBudgetBody"><p class="muted">Loading the lane budget…</p></div>
+        </div>
+        <div class="card" id="walletPositionsPanel" style="margin-top:18px" aria-labelledby="walletPositionsHeading">
+          <div class="section-title"><h2 id="walletPositionsHeading" class="live-h2">Open positions</h2><span id="walletPositionsSummary" class="badge">—</span></div>
+          <div id="walletPositionsBody"><p class="muted">Loading open positions…</p></div>
+        </div>
+        <div class="card" id="walletResultPanel" style="margin-top:18px" aria-labelledby="walletResultHeading">
+          <div class="section-title"><h2 id="walletResultHeading" class="live-h2">Result so far</h2><span class="badge amber">execution measurement — not edge</span></div>
+          <p class="muted" style="margin:0 0 10px">0 strategies are validated. These numbers measure how the fake-money lane executed, not whether the signal has an edge — demo P&amp;L is NON-EVIDENCE. There is no price history in this view, so no price chart is drawn.</p>
+          <div id="walletResultBody"><p class="muted">Loading the result…</p></div>
+          <div id="walletEquityBody"><p class="muted">Loading the equity curve…</p></div>
+        </div>
+        <div class="card wallet-secondary" id="walletVenuePanel" style="margin-top:18px" aria-labelledby="walletVenueHeading">
+          <div class="section-title"><h2 id="walletVenueHeading" class="live-h2">Venue wallet</h2><span class="badge">background · pre-funded</span></div>
+          <div id="walletVenueBody"><p class="muted">Loading venue balances…</p></div>
+        </div>
+        <details class="wallet-legacy" style="margin-top:18px"><summary>Per-coin lane detail</summary>
+          <div id="demoLaneCard"></div>
+          <div class="section-title" style="margin-top:26px"><h2>Sample provider balances</h2><span>placeholder mockup</span></div>
+          <div class="hero-note"><strong>Not built yet:</strong> the provider cards below are a UI placeholder. Their numbers are sample data that wiggles on a timer to preview a live feel — no venue connection feeds them. Only the per-coin lane detail above is real.</div>
+          <div id="walletDemoBody"></div>
+        </details>
+      </section>
       <section id="wallets-real" class="view" aria-labelledby="walletsRealHeading"><div class="title-row"><div><div class="eyebrow">Wallets · mockup</div><h1 id="walletsRealHeading">Real</h1><p class="subtitle">Real-money wallet balances for each provider you've switched to Real mode. Nothing here is wired up yet — layout only.</p></div><span class="badge red">NO REAL MONEY</span></div><div class="hero-note danger"><strong>Safety boundary:</strong> no real-money wallet, venue connection, credential, or live balance exists in this project. Every number on this tab is sample data, not a real account — this previews the layout only, and nothing here can move real funds.</div><div id="walletRealBody"></div></section>
       <section id="signals" class="view" aria-labelledby="signalsHeading"><div class="title-row"><div><div class="eyebrow">Signals · live</div><h1 id="signalsHeading">Signals</h1><p class="subtitle">Real buy/sell/hold signals from free market-data sources, refreshed on demand.</p></div><div class="control-row" style="align-items:center"><div class="control-group"><label for="autoPollRate" title="Each source has its own cooldown (Fear &amp; Greed: 1h, the rest: 15min) — picking faster than that just re-checks without finding anything new most of the time.">Auto-poll ⓘ</label><select id="autoPollRate"><option value="off" selected>Off</option><option value="60000">1m</option><option value="300000">5m</option><option value="900000">15m</option><option value="1800000">30m</option><option value="3600000">1h</option></select></div><button type="button" class="action" id="pollSignalsButton">Poll real sources now</button></div></div>
         <div class="hero-note"><strong>Roadmap note:</strong> the "Canonical ETH volume-breakout rule" source below is an independent live computation of a real project strategy, not this project's governed frozen/reviewed pipeline or a preregistered prospective observation (neither accepts live data by design). Later, go all the way: build proper live/prospective infrastructure, gather as much real information as we can across strategies and assets, then calculate and decide what to actually do with that knowledge.</div>
@@ -444,7 +474,7 @@ function renderDemoLane(lane){
   };
   const coinsHtml=coins.length?coins.map(coinHtml).join(''):'<p class="muted" style="margin-top:6px">No demo coins reporting yet.</p>';
 
-  // --- read-only confluence activity view: per-coin confidence, strongest first ---
+  // --- read-only confluence activity view: per-coin agreement, strongest first ---
   const activity=Array.isArray(lane.activity)?lane.activity:[];
   const asum=(lane.activity_summary&&typeof lane.activity_summary==='object')?lane.activity_summary:{};
   const conf=v=>(v===null||v===undefined)?'—':Number(v).toFixed(4);
@@ -459,7 +489,7 @@ function renderDemoLane(lane){
     const stale=a.heartbeat_fresh===false?' <span class="badge amber">STALE</span>':'';
     return `<div class="card" style="margin-top:8px">
       <div><strong>${esc(String(a.symbol||''))}</strong> <span class="badge ${long?'green':''}">${esc(String(a.decision||'—'))}</span>${a.data_available===false?' <span class="badge">NO DATA</span>':''}${stale}</div>
-      <div class="muted" style="font-size:.85em;margin-top:4px">confidence <strong class="mono">${conf(score)}</strong>
+      <div class="muted" style="font-size:.85em;margin-top:4px">agreement <strong class="mono">${conf(score)}</strong>
         <span style="display:inline-block;vertical-align:middle;width:120px;height:8px;background:rgba(128,128,128,.25);border-radius:4px;margin-left:6px"><span style="display:block;height:8px;border-radius:4px;width:${barPct}%;background:${barColor}"></span></span></div>
       <div class="muted" style="font-size:.82em">bullish: ${bull||'—'}</div>
       <div class="muted" style="font-size:.82em">bearish: ${bear||'—'}</div>
@@ -468,7 +498,7 @@ function renderDemoLane(lane){
     </div>`;
   };
   const activityHtml=activity.length?activity.map(actHtml).join(''):'<p class="muted" style="margin-top:6px">No confluence activity reporting yet.</p>';
-  const actBanner=`${dec(asum.coins_long)} long · ${dec(asum.coins_scored)} scored · top confidence ${conf(asum.highest_confidence)} · avg ${conf(asum.average_confidence)}`;
+  const actBanner=`${dec(asum.coins_long)} long · ${dec(asum.coins_scored)} scored · top agreement ${conf(asum.highest_confidence)} · avg ${conf(asum.average_confidence)}`;
 
   card.innerHTML=`<div class="card">
   <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
@@ -502,7 +532,7 @@ function renderDemoLane(lane){
   ${coinsHtml}
 
   <div class="section-title" style="margin-top:20px"><h3 style="font-size:1rem;margin:0">Confluence activity — per coin</h3><span class="badge ${(asum.coins_long||0)>0?'green':''}">${esc(actBanner)}</span></div>
-  <p class="muted" style="margin-top:6px">Read-only. A 7-strategy roster scored across 15m / 1h / 4h into one confidence per coin in [-1, +1], strongest setups first, showing the agreeing strategies and timeframes. Fake money · DIAGNOSTIC ONLY · authority NONE · UNVALIDATED.</p>
+  <p class="muted" style="margin-top:6px">Read-only. A 7-strategy roster scored across 15m / 1h / 4h into one agreement score per coin in [-1, +1], strongest setups first, showing the agreeing strategies and timeframes. Agreement is weighted agreement among correlated strategies, NOT a probability of profit. Fake money · DIAGNOSTIC ONLY · authority NONE · UNVALIDATED.</p>
   ${activityHtml}
 
   <div class="section-title" style="margin-top:20px"><h3 style="font-size:1rem;margin:0">Stage B decision evidence</h3><span class="badge ${sbTone}">${esc(sbStatus)}</span></div>
@@ -594,13 +624,14 @@ async function pollDemoLane(force){
       setLaneHealthUnavailable();  // never claim healthy when the lane projection cannot be read
     }
     if(activeView==='live')await pollLiveFeed();  // same tick, same in-flight guard — no competing timer
+    if(activeView==='wallets-demo')await loadWallet();  // money view rides the same tick and guard too
   }finally{
     demoLaneInFlight=false;
     updateDemoLaneLive();
   }
 }
 function updateDemoLaneLive(){
-  const els=[document.querySelector('#demoLaneLive'),document.querySelector('#liveUpdated')].filter(Boolean);
+  const els=[document.querySelector('#demoLaneLive'),document.querySelector('#liveUpdated'),document.querySelector('#walletUpdated')].filter(Boolean);
   updateLiveCountdown();
   if(!els.length)return;
   const text=document.hidden?'live · paused (tab hidden)'
@@ -745,8 +776,10 @@ function renderLivePositions(lane){
     </div>`;
   }).join('')}</div>`;
 }
-function renderLiveEquity(payload){
-  const body=document.querySelector('#liveEquityBody');
+// ONE equity implementation for both pages: the Live cockpit and the Wallet "Result so far" panel
+// pass their own target node; there is no second curve renderer anywhere.
+function renderLiveEquity(payload,target){
+  const body=document.querySelector(target||'#liveEquityBody');
   if(!body)return;
   const points=Array.isArray(payload&&payload.points)?payload.points:[];
   const summary=(payload&&typeof payload.summary==='object'&&payload.summary)?payload.summary:{};
@@ -767,6 +800,13 @@ function renderLiveEquity(payload){
     <div class="muted" style="font-size:.85em;margin-top:8px">${liveNum(summary.closed_count)??0} closed · ${liveNum(summary.wins)??0}W / ${liveNum(summary.losses)??0}L${liveNum(summary.flat)?` / ${liveNum(summary.flat)} flat`:''} · win rate ${rate===null?'—':rate.toFixed(2)+'%'} · realised ${liveMoney(summary.realised_net_quote)} · fees ${liveMoney(summary.fees_quote)}</div>
     <p class="muted" style="font-size:.82em;margin-top:6px">${esc(String((payload&&payload.disclaimer)||'Demo execution measurement only — not validated edge.'))}</p>`;
 }
+async function loadEquityInto(target){
+  try{renderLiveEquity(await fetchJson('/api/v1/equity-curve'),target)}  // fetchJson still requires schema_version===1
+  catch(error){
+    const equity=document.querySelector(target);
+    if(equity)equity.innerHTML=`<div class="empty">Equity curve unavailable: ${esc(error.message)}</div>`;
+  }
+}
 async function pollLiveFeed(){
   try{
     const feed=await fetchJson('/api/v1/live-feed');  // fetchJson still requires schema_version===1
@@ -777,12 +817,115 @@ async function pollLiveFeed(){
     if(status)status.innerHTML=`<div class="empty">Lane status unavailable: ${message}</div>`;
     if(events)events.innerHTML=`<div class="empty">Live feed unavailable: ${message}</div>`;
   }
-  try{renderLiveEquity(await fetchJson('/api/v1/equity-curve'))}
-  catch(error){
-    const equity=document.querySelector('#liveEquityBody');
-    if(equity)equity.innerHTML=`<div class="empty">Equity curve unavailable: ${esc(error.message)}</div>`;
-  }
+  await loadEquityInto('#liveEquityBody');
 }
+// --- Wallet money view over /api/v1/wallet (read-only projection, no input, no POST).
+// Panel order is deliberate: the lane BUDGET is the headline, the venue balance comes last and
+// visually secondary because it was pre-funded — it is seeded fake money, not performance and not
+// the operator's money. Every server string goes through esc(); every number through liveNum(), so
+// a missing or malformed field renders as an em dash, never undefined/NaN/null.
+const walletText=v=>(v===null||v===undefined||v==='')?'—':esc(String(v));
+const walletSigned=v=>{const n=liveNum(v);return n===null?'—':`${n>0?'+$':n<0?'-$':'$'}${Math.abs(n).toLocaleString(undefined,{maximumFractionDigits:2})}`};
+const walletSignedPct=v=>{const n=liveNum(v);return n===null?'—':`${n>0?'+':''}${n.toFixed(2)}%`};
+const walletTone=v=>{const n=liveNum(v);return n===null?'muted':n<0?'live-down':'live-up'};
+function walletAllocation(budget,positions){
+  const cap=liveNum(budget.total_cap_usdt);
+  if(cap===null||cap<=0)return '<p class="muted" style="font-size:.82em;margin:6px 0 0">No cap reported yet — nothing to chart.</p>';
+  const deployed=Math.max(0,Math.min(cap,liveNum(budget.deployed_usdt)??0));
+  const spends=(Array.isArray(positions)?positions:[]).map(p=>liveNum(p&&p.spent_usdt)).filter(v=>v!==null&&v>0);
+  // ponytail: per-position segments when the payload carries them, otherwise one solid deployed block
+  const blocks=spends.length?spends:(deployed>0?[deployed]:[]);
+  let x=0,bars='';
+  for(const value of blocks){
+    const width=Math.min(100-x,value/cap*100);  // cap>0 is guaranteed above, so no division by zero
+    if(width<=0)break;
+    bars+=`<rect x="${x.toFixed(3)}" y="0" width="${Math.max(width-0.4,0.2).toFixed(3)}" height="14" rx="1.5" fill="var(--green)"></rect>`;
+    x+=width;
+  }
+  return `<svg class="wallet-alloc" viewBox="0 0 100 14" preserveAspectRatio="none" role="img" aria-label="Lane cap split: ${deployed.toFixed(2)} deployed across ${blocks.length} position block${blocks.length===1?'':'s'}, ${(cap-deployed).toFixed(2)} free of ${cap.toFixed(2)}."><rect x="0" y="0" width="100" height="14" rx="2" fill="#17263a"></rect>${bars}</svg>`;
+}
+function walletSlotPips(budget){
+  const total=liveNum(budget.slots_total),used=liveNum(budget.slots_used)??0;
+  if(total===null||total<=0)return '';
+  const count=Math.min(Math.round(total),120);  // ponytail: pip row caps at 120; raise it if a lane ever runs more slots
+  const pips=Array.from({length:count},(_,i)=>`<span class="wallet-pip${i<used?' on':''}"></span>`).join('');
+  return `<div class="wallet-pips" role="img" aria-label="${Math.round(used)} of ${Math.round(total)} position slots in use">${pips}</div>`;
+}
+function renderWalletMoney(payload){
+  const w=(payload&&typeof payload==='object')?payload:{};
+  const budget=(w.budget&&typeof w.budget==='object')?w.budget:{};
+  const venue=(w.venue&&typeof w.venue==='object')?w.venue:{};
+  const realised=(w.realised&&typeof w.realised==='object')?w.realised:{};
+  const positions=Array.isArray(w.positions)?w.positions:[];
+  const available=w.available!==false;
+  const set=(selector,html)=>{const node=document.querySelector(selector);if(node)node.innerHTML=html};
+  const say=(selector,value)=>{const node=document.querySelector(selector);if(node)node.textContent=value};
+
+  // 1. What the lane is working with — the headline. The lane cap, not the venue total.
+  const slotsTotal=liveNum(budget.slots_total),slotsUsed=liveNum(budget.slots_used),slotsFree=liveNum(budget.slots_free);
+  const slotsFull=slotsFree===0&&slotsTotal!==null&&slotsTotal>0;
+  say('#walletBudgetSummary',available&&slotsTotal!==null
+    ?`${slotsUsed===null?'—':Math.round(slotsUsed)} / ${Math.round(slotsTotal)} slots used`
+    :'no lane budget yet');
+  set('#walletBudgetBody',!available
+    ?'<div class="empty">No lane budget yet. Once a lane runs, its total cap, per-trade size, free capital and slots appear here.</div>'
+    :`<div class="lane-status" style="margin:0 0 10px"><span class="badge amber">${walletText(w.environment)}</span><span class="badge">${w.real_money===false?'NO REAL MONEY':'REAL MONEY'}</span><span class="badge">AUTHORITY: ${walletText(w.execution_authority)}</span><span class="muted" style="font-size:.82em">as of ${walletText(w.as_of)}</span></div>
+    <div class="wallet-headline">
+      <div class="wallet-figure"><span class="label">Lane cap</span><span class="value">${liveMoney(budget.total_cap_usdt)}</span></div>
+      <div class="wallet-figure"><span class="label">Deployed</span><span class="value">${liveMoney(budget.deployed_usdt)}</span></div>
+      <div class="wallet-figure"><span class="label">Free to spend</span><span class="value">${liveMoney(budget.free_usdt)}</span></div>
+      <div class="wallet-figure small"><span class="label">Per position</span><span class="value">${liveMoney(budget.per_trade_usdt)}</span></div>
+      <div class="wallet-figure small"><span class="label">Disaster stop</span><span class="value">${livePct(budget.disaster_stop_pct)}</span></div>
+    </div>
+    ${walletAllocation(budget,positions)}
+    ${walletSlotPips(budget)}
+    <p class="muted" style="font-size:.82em;margin:2px 0 0">Filled pips are slots in use; each one is a ${liveMoney(budget.per_trade_usdt)} position out of the ${liveMoney(budget.total_cap_usdt)} cap.</p>
+    ${slotsFull?'<p class="muted" style="margin:8px 0 0"><strong>Every slot is in use.</strong> No new position can open until one exits — that is why the lane can look idle while it keeps scanning.</p>':''}`);
+
+  // 2. Open positions — one row per held coin, em dash for anything the payload does not carry.
+  say('#walletPositionsSummary',positions.length?`${positions.length} open`:'none open');
+  set('#walletPositionsBody',positions.length
+    ?`<div class="table-wrap wallet-table"><table><thead><tr><th>Coin</th><th>Strategy</th><th>Size</th><th>Entry</th><th>Mark</th><th>Value</th><th>Unrealised</th><th>Unrealised %</th><th>Held</th><th>Stop</th><th>To stop</th></tr></thead><tbody>${positions.map(item=>{
+      const p=(item&&typeof item==='object')?item:{};
+      return `<tr><td class="mono">${walletText(p.symbol)}</td><td>${walletText(p.strategy)}</td><td class="mono">${walletText(p.size_base)}</td><td class="mono">${liveMoney(p.entry_price)}</td><td class="mono">${liveMoney(p.mark_price)}</td><td class="mono">${liveMoney(p.value_usdt)}</td><td class="mono ${walletTone(p.unrealised_usdt)}">${walletSigned(p.unrealised_usdt)}</td><td class="mono ${walletTone(p.unrealised_pct)}">${walletSignedPct(p.unrealised_pct)}</td><td class="mono">${liveDur(p.held_seconds)}</td><td class="mono">${liveMoney(p.stop_price)}</td><td class="mono">${livePct(p.distance_to_stop_pct)}</td></tr>`;
+    }).join('')}</tbody></table></div>
+    <p class="muted" style="font-size:.82em;margin:8px 0 0">Order is exactly as the projection reports it. Every position carries a ${livePct(budget.disaster_stop_pct)} disaster stop; "To stop" is how far the mark sits above it.</p>`
+    :'<div class="empty">No open positions. Each entry takes one slot at the per-position size above and shows up here with its live value, unrealised P&amp;L, time held and distance to stop.</div>');
+
+  // 3. Result so far — realised + unrealised, then the SHARED equity curve, labelled not-edge.
+  const closed=liveNum(realised.closed_count);
+  set('#walletResultBody',`<div class="wallet-headline">
+      <div class="wallet-figure"><span class="label">Realised</span><span class="value ${walletTone(realised.realised_usdt)}">${walletSigned(realised.realised_usdt)}</span></div>
+      <div class="wallet-figure"><span class="label">Unrealised</span><span class="value ${walletTone(w.unrealised_total_usdt)}">${walletSigned(w.unrealised_total_usdt)}</span></div>
+      <div class="wallet-figure small"><span class="label">Closed trades</span><span class="value">${closed===null?'—':Math.round(closed)}</span></div>
+      <div class="wallet-figure small"><span class="label">Win / loss</span><span class="value">${Math.round(liveNum(realised.wins)??0)}W / ${Math.round(liveNum(realised.losses)??0)}L</span></div>
+      <div class="wallet-figure small"><span class="label">Fees paid</span><span class="value">${liveMoney(realised.fees_usdt)}</span></div>
+    </div>
+    <p class="muted" style="font-size:.82em;margin:0 0 6px">${esc(String(w.disclaimer||'Fake-money demo execution measurement only — not validated edge.'))}</p>`);
+
+  // 4. Venue wallet — LAST and secondary. The note is loud: pre-funded, not performance, not yours.
+  const balances=Array.isArray(venue.balances)?venue.balances:[];
+  set('#walletVenueBody',`<div class="hero-note"><strong>Read this first:</strong> ${esc(String(venue.note||'The venue demo account was pre-funded with fake money before any trading. Its balance is seeded, not performance, and not the operator\'s money.'))}</div>
+    ${balances.length
+      ?`<div class="table-wrap"><table><thead><tr><th>Coin</th><th>Amount</th><th>Kind</th></tr></thead><tbody>${balances.map(item=>{
+        const b=(item&&typeof item==='object')?item:{};
+        return `<tr><td class="mono">${walletText(b.coin)}</td><td class="mono">${walletText(b.amount)}</td><td>${b.is_quote?'quote':'coin'}</td></tr>`;
+      }).join('')}</tbody></table></div>`
+      :'<div class="empty">No venue balances reported.</div>'}
+    <p class="muted" style="font-size:.82em;margin:8px 0 0">Quote on hand: USDT ${walletText(venue.quote_usdt)} · USDC ${walletText(venue.quote_usdc)}. The lane only ever touches the ${liveMoney(budget.total_cap_usdt)} cap at the top of this page; the rest sits untouched.</p>`);
+}
+async function loadWallet(){
+  try{renderWalletMoney(await fetchJson('/api/v1/wallet'))}  // fetchJson still requires schema_version===1
+  catch(error){
+    const message=esc(error.message);
+    for(const selector of ['#walletBudgetBody','#walletPositionsBody','#walletResultBody','#walletVenueBody']){
+      const node=document.querySelector(selector);
+      if(node)node.innerHTML=`<div class="empty">Wallet view unavailable: ${message}</div>`;
+    }
+  }
+  await loadEquityInto('#walletEquityBody');  // the Live page's curve renderer, same implementation
+}
+window.loadWallet=loadWallet;
 // --- read-only report panel (loads on click; never auto-polls; textContent escapes every value) ---
 async function loadDemoReport(url,button){
   const panel=document.querySelector('#demoReportPanel');
@@ -870,7 +1013,7 @@ function showView(viewId,label){
   if(viewId==='market'){initTradingView();loadMarket()}
   if(viewId==='operations'){window.loadOps?.();window.loadAiCosts?.()}
   if(viewId==='orchestrator')window.loadOrchestrator?.();
-  if(viewId==='wallets-demo'){renderWalletTab('demo');window.loadDemoLane?.()}
+  if(viewId==='wallets-demo'){renderWalletTab('demo');window.loadDemoLane?.();window.pollDemoLane?.(true)}
   if(viewId==='wallets-real')renderWalletTab('real');
   if(viewId==='skills')window.loadSkills?.();
   if(viewId==='signals')window.loadSignals?.();

@@ -1,3 +1,4 @@
+import functools
 import hashlib
 import json
 import re
@@ -3156,3 +3157,438 @@ def test_every_navigable_workspace_view_resolves_to_a_section() -> None:
         assert f'id="{view_id}"' in html, view_id
     for workspace in re.findall(r'<button[^>]+data-workspace="([^"]+)"', html):
         assert f"{workspace}:[[" in workspaces or f"'{workspace}':[[" in workspaces, workspace
+
+
+# --- Wallet page: the money view over /api/v1/wallet (D-120/D-121 honest-labelling doctrine) ---
+
+
+def _wallet_section() -> str:
+    html = _dashboard_html()
+    start = html.index('<section id="wallets-demo"')
+    return html[start : html.index('<section id="wallets-real"', start)]
+
+
+def _wallet_render_source() -> str:
+    html = _dashboard_html()
+    start = html.index("// --- Wallet money view over /api/v1/wallet")
+    return html[start : html.index("// --- read-only report panel", start)]
+
+
+def test_watch_pages_carry_distinguishing_subtitles() -> None:
+    """Live vs Wallet explains itself from the heading down, without opening either page."""
+    live = _live_section()
+    wallet = _wallet_section()
+    assert "What the system is doing right now: scanning, agreement, entries and exits." in live
+    assert (
+        "The money: what the venue holds, what the lane is allowed to use, "
+        "what it holds now, and what it has earned." in wallet
+    )
+    # Each subtitle sits directly under its own heading, inside its own view section.
+    assert live.index('id="liveHeading"') < live.index("What the system is doing right now")
+    assert wallet.index('id="walletsDemoHeading"') < wallet.index("The money: what the venue holds")
+    # Neither view id moved, and the Demo/Real tabs still resolve.
+    assert 'id="wallets-demo"' in wallet
+    assert "wallets:[['wallets-demo','Demo'],['wallets-real','Real']]" in _dashboard_html()
+    assert '<section id="wallets-real"' in _dashboard_html()
+
+
+def test_wallet_page_has_the_four_money_panels_in_order_reading_the_wallet_endpoint() -> None:
+    section = _wallet_section()
+    source = _wallet_render_source()
+    ordered = [
+        'id="walletBudgetPanel"',
+        'id="walletPositionsPanel"',
+        'id="walletResultPanel"',
+        'id="walletEquityBody"',
+        'id="walletVenuePanel"',
+        "<summary>Per-coin lane detail</summary>",
+    ]
+    positions = [section.index(marker) for marker in ordered]
+    assert positions == sorted(positions), ordered
+    for heading in (
+        ">What the lane is working with<",
+        ">Open positions<",
+        ">Result so far<",
+        ">Venue wallet<",
+    ):
+        assert heading in section, heading
+    # Every documented /api/v1/wallet field the panels claim to show is actually read.
+    assert "fetchJson('/api/v1/wallet')" in source
+    for field in (
+        "w.available",
+        "w.as_of",
+        "w.environment",
+        "w.real_money",
+        "w.execution_authority",
+        "w.venue",
+        "w.budget",
+        "w.positions",
+        "w.realised",
+        "w.unrealised_total_usdt",
+        "w.disclaimer",
+        "budget.total_cap_usdt",
+        "budget.per_trade_usdt",
+        "budget.deployed_usdt",
+        "budget.free_usdt",
+        "budget.slots_total",
+        "budget.slots_used",
+        "budget.slots_free",
+        "budget.disaster_stop_pct",
+        "p.symbol",
+        "p.strategy",
+        "p.size_base",
+        "p.entry_price",
+        "p.mark_price",
+        "p.value_usdt",
+        "p.spent_usdt",
+        "p.unrealised_usdt",
+        "p.unrealised_pct",
+        "p.held_seconds",
+        "p.stop_price",
+        "p.distance_to_stop_pct",
+        "realised.closed_count",
+        "realised.wins",
+        "realised.losses",
+        "realised.realised_usdt",
+        "realised.fees_usdt",
+        "venue.balances",
+        "venue.quote_usdt",
+        "venue.quote_usdc",
+        "venue.note",
+        "b.coin",
+        "b.amount",
+        "b.is_quote",
+    ):
+        assert field in source, field
+
+
+def test_wallet_reuses_the_live_equity_renderer_instead_of_a_second_implementation() -> None:
+    html = _dashboard_html()
+    source = _wallet_render_source()
+    # Exactly one curve renderer and one loader, both parameterised by target node.
+    assert html.count("function renderLiveEquity(") == 1
+    assert html.count("async function loadEquityInto(") == 1
+    assert "function renderLiveEquity(payload,target)" in html
+    assert "document.querySelector(target||'#liveEquityBody')" in html
+    # Live and Wallet both go through it; neither draws its own polyline.
+    assert "await loadEquityInto('#liveEquityBody')" in html
+    assert "await loadEquityInto('#walletEquityBody')" in source
+    assert html.count("<polyline") == 1
+    assert source.count("polyline") == 0
+    assert source.count("cumulative_net_quote") == 0
+    # And it stays labelled the honest way on the wallet page too.
+    assert '<span class="badge amber">execution measurement — not edge</span>' in _wallet_section()
+
+
+def test_wallet_page_is_read_only_with_no_input_and_no_new_action_name() -> None:
+    section = _wallet_section()
+    source = _wallet_render_source()
+    assert "<input" not in section
+    assert "<form" not in section
+    assert "<textarea" not in section
+    assert "<select" not in section
+    # No write path and no scheduler of its own: GET /api/v1/wallet plus the shared equity GET.
+    for banned in ("method:'POST'", "method: 'POST'", "setInterval", "setTimeout", "randomUUID"):
+        assert banned not in source, banned
+    assert re.findall(r"fetchJson\('([^']+)'\)", source) == ["/api/v1/wallet"]
+    # It adds no control surface: no lane action attribute anywhere in the new panels.
+    panels = section[: section.index("<summary>Per-coin lane detail</summary>")]
+    for attribute in ("data-lane-action", "data-live-lane", "data-overview-lane", "<button"):
+        assert attribute not in panels, attribute
+
+
+def test_wallet_page_holds_the_honest_labelling_doctrine() -> None:
+    section = _wallet_section()
+    source = _wallet_render_source()
+    lane_source = _demo_lane_render_source()
+    # Badges pinned; the demo lane's fake money and NONE authority stated on the page itself.
+    for badge in ("FAKE MONEY", "AUTHORITY: NONE", "UNVALIDATED"):
+        assert badge in section, badge
+    assert "0 strategies are validated" in section
+    assert "demo P&amp;L is NON-EVIDENCE" in section
+    # "confidence" is never a user-facing score label on this page: the per-coin detail now says
+    # "agreement", and "confidence" survives only inside server payload key names.
+    labels = lane_source
+    for server_key in ("confidence_score", "highest_confidence", "average_confidence"):
+        labels = labels.replace(server_key, "")
+    assert "confidence" not in labels.lower()
+    assert "confidence" not in section.lower()
+    assert "agreement <strong" in lane_source
+    assert "top agreement" in lane_source
+    assert "NOT a probability of profit" in lane_source
+    # No profit-expectation / money-printer vocabulary anywhere on the page or in its renderer.
+    for forbidden in (
+        "profit",
+        "returns",
+        "growth",
+        "money printer",
+        "gains",
+        "expected return",
+        "predicted",
+        "roi",
+    ):
+        assert forbidden not in section.lower(), forbidden
+        assert forbidden not in source.lower(), forbidden
+    # No fabricated price chart: the page says so rather than drawing one.
+    assert "no price history in this view" in section.lower()
+
+
+def test_wallet_page_keeps_the_legacy_per_coin_detail_reachable() -> None:
+    section = _wallet_section()
+    html = _dashboard_html()
+    # The pre-existing per-coin card and the mockup provider grid are demoted, not deleted.
+    detail = section[section.index('<details class="wallet-legacy"') :]
+    assert "<summary>Per-coin lane detail</summary>" in detail
+    assert 'id="demoLaneCard"' in detail
+    assert 'id="walletDemoBody"' in detail
+    assert "Sample provider balances" in detail
+    # Still driven by the same renderers, and still below every money panel.
+    assert section.index('id="walletVenuePanel"') < section.index('<details class="wallet-legacy"')
+    assert "renderDemoLane(lane)" in html
+    assert "renderWalletTab('demo')" in html
+
+
+def test_wallet_poll_reuses_the_guarded_visibility_aware_demo_lane_tick() -> None:
+    html = _dashboard_html()
+    poll = html[
+        html.index("async function pollDemoLane(force)") : html.index("function updateDemoLaneLive")
+    ]
+    # No competing timer: the wallet view rides the single existing ~5s tick.
+    assert html.count("setInterval(()=>pollDemoLane(false),DEMO_LANE_REFRESH_MS)") == 1
+    assert "if(demoLaneInFlight)return" in poll  # in-flight guard intact
+    assert "document.hidden" in poll  # visibility pause intact
+    assert "!['now','wallets-demo','live'].includes(activeView)" in poll  # wallet view allowlisted
+    assert "if(activeView==='wallets-demo')await loadWallet()" in poll
+    # Every wallet fetch still goes through the schema_version === 1 gate.
+    assert "payload.schema_version!==1" in html
+    assert "async function loadWallet()" in html
+    assert "fetchJson('/api/v1/wallet')" in html
+
+
+@functools.cache
+def _wallet_state() -> dict[str, dict[str, str]]:
+    """Drive the real wallet renderer under node over four payload shapes."""
+    esc_helper = (
+        "const esc=s=>String(s??'').replace(/[&<>\"']/g,"
+        "c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c]));"
+    )
+    script = (
+        esc_helper
+        + """
+const window={};
+const nodes={};
+const make=id=>(nodes[id]={id,innerHTML:'',textContent:'',dataset:{},
+  setAttribute(){},querySelectorAll(){return []}});
+for(const id of ['liveStatusBody','liveEventsBody','liveEventsCount','liveAgreementBody',
+  'liveAgreementSummary','livePositionsBody','livePositionsSummary','liveEquityBody',
+  'liveLaneControls','liveLaneControlStatus','liveNextScan','walletBudgetBody',
+  'walletBudgetSummary','walletPositionsBody','walletPositionsSummary','walletResultBody',
+  'walletVenueBody','walletEquityBody'])make(id);
+const document={
+  hidden:false,
+  querySelector(selector){return nodes[selector.replace('#','')]||null},
+  querySelectorAll(){return []}
+};
+const overviewLaneAction=()=>{};
+"""
+        + _live_render_source()
+        + _wallet_render_source()
+        + """
+const render=(wallet,equity)=>{
+  renderWalletMoney(wallet);renderLiveEquity(equity,'#walletEquityBody')};
+const dump=()=>Object.fromEntries(Object.entries(nodes)
+  .filter(([id])=>id.startsWith('wallet'))
+  .map(([id,node])=>[id,`${node.innerHTML}|${node.textContent}`]));
+const out={};
+// 1. available:false — the same key set, empty. Nothing may render as undefined/NaN/null.
+render({schema_version:1,available:false,as_of:null,environment:'VENUE_DEMO',real_money:false,
+  execution_authority:'NONE',
+  venue:{balances:[],quote_usdt:'0',quote_usdc:'0',note:''},
+  budget:{total_cap_usdt:'0',per_trade_usdt:'0',deployed_usdt:'0',free_usdt:'0',
+    slots_total:0,slots_used:0,slots_free:0,disaster_stop_pct:'0'},
+  positions:[],realised:{closed_count:0,wins:0,losses:0,realised_usdt:'0',fees_usdt:'0'},
+  unrealised_total_usdt:null,disclaimer:''},
+  {schema_version:1,available:false,points:[],summary:{},disclaimer:''});
+out.empty=dump();
+// 2. a cap with nothing deployed and no position: the allocation bar is a bare track.
+render({schema_version:1,available:true,as_of:'2026-07-26T10:00:00+00:00',
+  environment:'VENUE_DEMO',real_money:false,execution_authority:'NONE',
+  venue:{balances:[{coin:'USDC',amount:'50000',is_quote:true}],quote_usdt:'49673.21',
+    quote_usdc:'50000',note:'Pre-funded seed capital.'},
+  budget:{total_cap_usdt:'300',per_trade_usdt:'25',deployed_usdt:'0',free_usdt:'300',
+    slots_total:12,slots_used:0,slots_free:12,disaster_stop_pct:'15'},
+  positions:[],realised:{closed_count:0,wins:0,losses:0,realised_usdt:'0',fees_usdt:'0'},
+  unrealised_total_usdt:'0',disclaimer:'Execution measurement only.'},
+  {schema_version:1,available:true,points:[{at:'a',trade_number:1,cumulative_net_quote:'0.5379',
+    net_quote:'0.5379',symbol:'ETHUSDT'}],
+   summary:{closed_count:1,wins:1,losses:0,flat:0,realised_net_quote:'0.5379',fees_quote:'0.05',
+     win_rate_pct:'100.0'},disclaimer:'Execution measurement only.'});
+out.one=dump();
+// 3. no cap reported at all — no chart, no division by zero, no pips.
+render({schema_version:1,available:true,as_of:null,environment:'VENUE_DEMO',real_money:false,
+  execution_authority:'NONE',
+  venue:{balances:[],quote_usdt:null,quote_usdc:null,note:''},
+  budget:{total_cap_usdt:null,per_trade_usdt:null,deployed_usdt:null,free_usdt:null,
+    slots_total:0,slots_used:0,slots_free:null,disaster_stop_pct:null},
+  positions:[],realised:{closed_count:null,wins:null,losses:null,realised_usdt:null,
+    fees_usdt:null},unrealised_total_usdt:null,disclaimer:''},
+  {schema_version:1,available:true,points:[],summary:{},disclaimer:''});
+out.nocap=dump();
+// 4. the real shape: $300 cap, $25 per position, 12/12 slots used, $0 free, one null-mark row.
+render({schema_version:1,available:true,as_of:'2026-07-26T14:55:00+00:00',
+  environment:'VENUE_DEMO',real_money:false,execution_authority:'NONE',
+  venue:{balances:[{coin:'BTC',amount:'1.00021',is_quote:false},
+    {coin:'ETH',amount:'0.9987',is_quote:false},
+    {coin:'USDC',amount:'50000',is_quote:true},
+    {coin:'USDT',amount:'49673.4412',is_quote:true}],
+   quote_usdt:'49673.4412',quote_usdc:'50000',
+   note:'Pre-funded fake money: the venue demo account was seeded before any '
+     +'trading. Not performance, not the operator money.'},
+  budget:{total_cap_usdt:'300',per_trade_usdt:'25',deployed_usdt:'300',free_usdt:'0',
+    slots_total:12,slots_used:12,slots_free:0,disaster_stop_pct:'15'},
+  positions:[
+    {symbol:'BTCUSDT',strategy:'ACTIVITY-CONFLUENCE',opened_at:'2026-07-26T14:53:02+00:00',
+     held_seconds:5400,size_base:'0.00021',entry_price:'118000',mark_price:'119180',
+     spent_usdt:'25',value_usdt:'25.25',unrealised_usdt:'0.25',unrealised_pct:'1.0',
+     stop_price:'100300',distance_to_stop_pct:'15.84'},
+    {symbol:'AXSUSDT',strategy:'ACTIVITY-CONFLUENCE',opened_at:'2026-07-26T14:54:32+00:00',
+     held_seconds:120,size_base:'6.1',entry_price:'4.1',mark_price:null,
+     spent_usdt:'25',value_usdt:null,unrealised_usdt:null,unrealised_pct:null,
+     stop_price:null,distance_to_stop_pct:null}],
+  realised:{closed_count:1,wins:1,losses:0,realised_usdt:'0.5379',fees_usdt:'0.0512'},
+  unrealised_total_usdt:'-1.14',
+  disclaimer:'Demo execution measurement only — not evidence of edge.'},
+  {schema_version:1,available:true,points:[
+    {at:'a',trade_number:1,cumulative_net_quote:'0.5379',net_quote:'0.5379',symbol:'ETHUSDT'},
+    {at:'b',trade_number:2,cumulative_net_quote:'0.5379',net_quote:'0',symbol:'ETHUSDT'}],
+   summary:{closed_count:1,wins:1,losses:0,flat:0,realised_net_quote:'0.5379',fees_quote:'0.0512',
+     win_rate_pct:'100.0'},
+   disclaimer:'Demo execution measurement only — not evidence of edge.'});
+out.full=dump();
+console.log(JSON.stringify(out));
+"""
+    )
+    return _run_node(script)  # type: ignore[return-value]
+
+
+def test_wallet_panels_never_render_undefined_nan_or_null() -> None:
+    state = _wallet_state()
+    for case, panels in state.items():
+        for panel_id, rendered in panels.items():
+            for forbidden in ("undefined", "NaN", "null"):
+                assert forbidden not in rendered, f"{case}/{panel_id}: {forbidden}"
+    # available:false degrades to calm prose in every panel, not a blank card and not a crash.
+    empty = state["empty"]
+    assert "No lane budget yet" in empty["walletBudgetBody"]
+    assert "No open positions." in empty["walletPositionsBody"]
+    assert empty["walletPositionsSummary"].endswith("|none open")
+    assert empty["walletBudgetSummary"].endswith("|no lane budget yet")
+    assert "No venue balances reported." in empty["walletVenueBody"]
+    assert "No closed trade yet" in empty["walletEquityBody"]
+    # Missing numbers become em dashes, never zeros invented on the operator's behalf.
+    nocap = state["nocap"]
+    assert nocap["walletBudgetBody"].count("—") >= 5
+    assert "Closed trades" in nocap["walletResultBody"] and "—" in nocap["walletResultBody"]
+
+
+def test_wallet_budget_headline_is_the_lane_cap_and_explains_a_full_slot_book() -> None:
+    state = _wallet_state()
+    full = state["full"]
+    budget = full["walletBudgetBody"]
+    # The headline figures are the lane's own money, read from budget.* — not the venue total.
+    assert "Lane cap" in budget and "$300" in budget
+    assert "Deployed" in budget
+    assert "Free to spend" in budget and "$0" in budget
+    assert "Per position" in budget and "$25" in budget
+    assert "15.00%" in budget  # disaster stop
+    assert full["walletBudgetSummary"].endswith("|12 / 12 slots used")
+    # The venue's ~$99.7k never appears as a headline anywhere.
+    assert "99" not in budget and "50000" not in budget and "49673" not in budget
+    assert "wallet-figure" not in full["walletVenueBody"]
+    assert "wallet-headline" not in full["walletVenueBody"]
+    # slots_free === 0 gets the plain-language answer to "why is nothing happening".
+    assert "Every slot is in use." in budget
+    assert "No new position can open until one exits" in budget
+    assert "Every slot is in use." not in state["one"]["walletBudgetBody"]
+
+
+def test_wallet_charts_survive_zero_and_one_data_point() -> None:
+    state = _wallet_state()
+    # Allocation bar: track only with nothing deployed, one extra block per reporting position.
+    assert state["one"]["walletBudgetBody"].count("<rect") == 1
+    assert state["full"]["walletBudgetBody"].count("<rect") == 3  # track + two positions
+    assert '<svg class="wallet-alloc"' in state["one"]["walletBudgetBody"]
+    # No cap -> no chart at all rather than a divide-by-zero or a broken path.
+    assert '<svg class="wallet-alloc"' not in state["nocap"]["walletBudgetBody"]
+    assert "nothing to chart" in state["nocap"]["walletBudgetBody"]
+    assert "wallet-pips" not in state["nocap"]["walletBudgetBody"]
+    # Slot pips: exactly slots_total pips, exactly slots_used filled.
+    assert state["one"]["walletBudgetBody"].count('class="wallet-pip"') == 12
+    assert state["one"]["walletBudgetBody"].count('class="wallet-pip on"') == 0
+    assert state["full"]["walletBudgetBody"].count('class="wallet-pip on"') == 12
+    # Equity sparkline (the shared renderer) into the wallet target: 0 points, 1 point, 2 points.
+    assert "<svg" not in state["empty"]["walletEquityBody"]
+    assert "No closed trade yet" in state["empty"]["walletEquityBody"]
+    assert "<circle" in state["one"]["walletEquityBody"]
+    assert "polyline" not in state["one"]["walletEquityBody"]
+    assert "<polyline" in state["full"]["walletEquityBody"]
+
+
+def test_wallet_positions_table_renders_every_column_and_dashes_null_marks() -> None:
+    state = _wallet_state()
+    body = state["full"]["walletPositionsBody"]
+    headers = re.findall(r"<th>([^<]+)</th>", body)
+    assert headers == [
+        "Coin",
+        "Strategy",
+        "Size",
+        "Entry",
+        "Mark",
+        "Value",
+        "Unrealised",
+        "Unrealised %",
+        "Held",
+        "Stop",
+        "To stop",
+    ]
+    assert state["full"]["walletPositionsSummary"].endswith("|2 open")
+    # API order is preserved, not re-sorted client-side.
+    assert body.index("BTCUSDT") < body.index("AXSUSDT")
+    rows = re.findall(r"<tr><td class=\"mono\">(.*?)</tr>", body)
+    assert len(rows) == 2
+    # A fully-marked row: money, signed P&L with a colour class, humanised hold, stop distance.
+    assert "ACTIVITY-CONFLUENCE" in rows[0]
+    assert "$118,000" in rows[0] and "$119,180" in rows[0] and "$25.25" in rows[0]
+    assert '<td class="mono live-up">+$0.25</td>' in rows[0]
+    assert '<td class="mono live-up">+1.00%</td>' in rows[0]
+    assert "1h 30m" in rows[0]
+    assert "$100,300" in rows[0] and "15.84%" in rows[0]
+    # The null-mark row renders em dashes in every unknown cell, never NaN/undefined/null.
+    assert rows[1].count("—") == 6  # mark, value, unrealised $, unrealised %, stop, to stop
+    assert '<td class="mono muted">—</td>' in rows[1]
+    assert "2m" in rows[1]
+
+
+def test_wallet_result_and_venue_panels_frame_the_prefunded_balance_honestly() -> None:
+    state = _wallet_state()
+    full = state["full"]
+    result = full["walletResultBody"]
+    # Result so far: realised, unrealised, closed count, W/L and fees, signed and colour-coded.
+    assert "Realised" in result and "+$0.54" in result
+    assert 'class="value live-down">-$1.14' in result
+    assert "Closed trades" in result and ">1<" in result
+    assert "1W / 0L" in result
+    assert "Fees paid" in result and "$0.05" in result
+    assert "Demo execution measurement only — not evidence of edge." in result
+    # Venue wallet: the API's own note leads the panel, then the full balance list, then quotes.
+    venue = full["walletVenueBody"]
+    assert venue.index("Read this first:") < venue.index("<table")
+    assert "Pre-funded fake money" in venue
+    assert "seeded before any trading" in venue
+    assert "Not performance, not the operator money." in venue
+    for coin in ("BTC", "ETH", "USDC", "USDT"):
+        assert f'<td class="mono">{coin}</td>' in venue, coin
+    assert venue.count("<td>quote</td>") == 2
+    assert venue.count("<td>coin</td>") == 2
+    assert "49673.4412" in venue
+    assert "The lane only ever touches the $300 cap" in venue

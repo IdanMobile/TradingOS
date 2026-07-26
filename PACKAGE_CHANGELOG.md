@@ -1,5 +1,45 @@
 # Package Changelog
 
+## v8.153 — 2026-07-26 — Wallet page: balance, budget, positions and honest charts
+
+Answers the operator's money questions on one surface after they reported the Watch split was still
+unintelligible ("what is the difference between live and wallet? … i dont know how much money my wallet
+holds, how much was spent, how much we can spend for a single trade, positions list, graphs, real
+charts"). Partly a naming error from v8.151: `Wallet` was a relabelled legacy per-coin page that never
+showed a balance, budget, free capital or per-trade size. Fake money only; execution authority NONE;
+0 validated strategies; demo P&L is NON-EVIDENCE. Independent review: GO, no blocking findings. See
+DECISION_LOG.md D-122.
+
+- Each WATCH page gained a distinguishing subtitle — `Live` = what the system is doing right now
+  (scanning, agreement, entries and exits); `Wallet` = the money (what the venue holds, what the lane may
+  use, what it holds now, what it has earned). View ids and the Demo/Real tabs are unchanged.
+- New read-only `GET /api/v1/wallet` (`schema_version 1`, fail-closed to an identical key set, no
+  subprocess, no network, fixed paths, GET only): venue balances from the newest `wallet_after` snapshot,
+  lane budget (cap / per-trade / deployed / free / slots / disaster-stop), the open-position list
+  (size, entry, mark, value, unrealised $/%, held seconds, stop, distance-to-stop), realised totals and
+  an unrealised total. Positions and realised come from `report_demo_trades` (`load_filled`/`fold_fills`/
+  `summarize`) and marks/stops from the existing `_position_projection`/`_protection_projection`, so this
+  endpoint can never disagree with the Demo Trades report or the `coins`/`activity` views. No second mark,
+  no second P&L formula, no second fold.
+- Rebuilt Wallet page: budget headline → open-position table → result (realised, unrealised, fees, equity
+  sparkline) → venue balances last. The equity renderer is SHARED with the Live page (one implementation,
+  one `<polyline>` path), and a deployed-vs-free allocation bar plus slot pips are drawn as inline SVG
+  (no dependency), all guarded for 0/1 data points and a null/zero cap. The legacy per-coin detail stays
+  reachable under a collapsed `<details>`.
+- **Framing (binding, extends D-120):** the venue demo wallet holds ~$99.7k of PRE-FUNDED fake money —
+  not performance, not operator funds. `venue.*` and `budget.*`/`realised.*` are never summed and no
+  derived field mixes them (a test asserts the combined figure never appears in the response body). The
+  LANE BUDGET is the page headline with big-number styling; the venue list renders last, dimmed, without
+  big-number styling, led by a "read this first" note. A slots-full line explains that no new position can
+  open until one exits.
+- **No fabricated data:** no price/candlestick chart is drawn because no endpoint in this view carries
+  OHLC history — the page says so rather than inventing a series. Null marks render as em dashes, never
+  invented zeros. Real price charts remain an unbuilt feature (needs kline fetch/storage).
+
+Manifest-tracked files rehashed (D-030): `dashboard_ui/server.py`, `dashboard.html`,
+`tests/test_dashboard.py`, `DECISION_LOG.md`. Gates green: package integrity PASS (453 rows),
+project-wide ruff + mypy (139 files) clean, 361 tests pass across the affected suites.
+
 ## v8.152 — 2026-07-26 — Integration completion: money-correctness gaps, research self-lock, honest Watch status + Automation map
 
 Finishes the app as a continuously running **measurement instrument**. The "money printer" framing is

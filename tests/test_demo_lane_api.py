@@ -1544,3 +1544,418 @@ def test_new_routes_serve_schema_version_1_through_the_real_handler(path: str, r
     assert b" 200 " in headers
     assert b"Content-Type: application/json" in headers
     assert payload["schema_version"] == 1
+
+
+# --- GET /api/v1/wallet --------------------------------------------------------------------------
+# The operator's money questions: what the venue holds, what was spent, what one trade may spend,
+# and what is open right now. Pure read-only projection of orders.jsonl + the per-coin heartbeats,
+# schema_version 1, fail-closed. The VENUE balance (pre-funded fake money) and the LANE BUDGET are
+# separate blocks and are never added together.
+
+_WALLET_KEYS = {
+    "schema_version",
+    "available",
+    "as_of",
+    "environment",
+    "real_money",
+    "execution_authority",
+    "venue",
+    "budget",
+    "positions",
+    "realised",
+    "unrealised_total_usdt",
+    "disclaimer",
+}
+_WALLET_VENUE_KEYS = {"balances", "quote_usdt", "quote_usdc", "note"}
+_WALLET_BALANCE_KEYS = {"coin", "amount", "is_quote"}
+_WALLET_BUDGET_KEYS = {
+    "total_cap_usdt",
+    "per_trade_usdt",
+    "deployed_usdt",
+    "free_usdt",
+    "slots_total",
+    "slots_used",
+    "slots_free",
+    "disaster_stop_pct",
+}
+_WALLET_POSITION_KEYS = {
+    "symbol",
+    "strategy",
+    "opened_at",
+    "held_seconds",
+    "size_base",
+    "entry_price",
+    "mark_price",
+    "spent_usdt",
+    "value_usdt",
+    "unrealised_usdt",
+    "unrealised_pct",
+    "stop_price",
+    "distance_to_stop_pct",
+}
+_WALLET_REALISED_KEYS = {"closed_count", "wins", "losses", "realised_usdt", "fees_usdt"}
+# Nothing identifying may reach the client: no venue order id, no signal ref, no filesystem path,
+# no pid, no credential.
+_WALLET_FORBIDDEN = ("order_id", "signal_ref", "/Users/", "pid", "key", "2263422258146184448")
+
+
+def _wallet_buy(symbol: str, at: str, price: str, base: float, **overrides: Any) -> dict[str, Any]:
+    """One 25-USDT confluence entry fill on `symbol` (the only shape the lane ever writes)."""
+    order = _feed_order(
+        symbol=symbol,
+        recorded_at=at,
+        avg_price=price,
+        reconcile={"USDT_delta": -25.0, f"{symbol.removesuffix('USDT')}_delta": base},
+    )
+    order.update(overrides)
+    return order
+
+
+def _wallet_sell(symbol: str, at: str, price: str, base: float, received: float) -> dict[str, Any]:
+    return _feed_order(
+        symbol=symbol,
+        recorded_at=at,
+        side="Sell",
+        reason="EXIT_LONG",
+        avg_price=price,
+        fee="0.02",
+        reconcile={"USDT_delta": received, f"{symbol.removesuffix('USDT')}_delta": -base},
+    )
+
+
+def _mark_files(root: Path, symbol: str, mark: str, entry: str, resting: str | None = None) -> None:
+    """The coin's confluence heartbeat — the ONLY source of a live mark this endpoint reads."""
+    payload: dict[str, Any] = {
+        "at": datetime.now(tz=UTC).isoformat(),
+        "symbol": symbol,
+        "strategy": demo_lane.ACTIVITY_STRATEGY,
+        "mark_price": mark,
+        "entry_price": entry,
+    }
+    if resting is not None:
+        payload["resting_stop"] = {"state": "ACTIVE", "trigger_price": resting}
+    (root / demo_lane.LANE_DIR / f"heartbeat_{symbol}_activity.json").write_text(
+        json.dumps(payload)
+    )
+
+
+def _assert_wallet_shape(wallet: dict[str, Any]) -> None:
+    assert wallet["schema_version"] == 1  # matches the client fetchJson gate
+    assert set(wallet) == _WALLET_KEYS
+    assert set(wallet["venue"]) == _WALLET_VENUE_KEYS
+    assert set(wallet["budget"]) == _WALLET_BUDGET_KEYS
+    assert set(wallet["realised"]) == _WALLET_REALISED_KEYS
+    assert all(set(row) == _WALLET_BALANCE_KEYS for row in wallet["venue"]["balances"])
+    assert all(set(row) == _WALLET_POSITION_KEYS for row in wallet["positions"])
+    assert wallet["environment"] == "VENUE_DEMO"
+    assert wallet["real_money"] is False
+    assert wallet["execution_authority"] == "NONE"
+
+
+def test_wallet_contract_keys_are_identical_available_and_unavailable(root: Path) -> None:
+    """(a) schema_version 1 and the exact key set at every level, in BOTH states."""
+    _write_feed_orders(root, [_wallet_buy("TRXUSDT", "2026-07-20T10:00:00+00:00", "0.30", 83.0)])
+    wallet = demo_lane.build_wallet(root)
+    _assert_wallet_shape(wallet)
+    assert wallet["available"] is True
+    empty = demo_lane._empty_wallet()
+    _assert_wallet_shape(empty)
+    assert empty["available"] is False
+    assert set(wallet) == set(empty)
+    for block in ("venue", "budget", "realised"):
+        assert set(wallet[block]) == set(empty[block])
+
+
+def test_wallet_balances_are_the_freshest_snapshot_quote_first_then_largest(root: Path) -> None:
+    """(b) balances come from the NEWEST record's wallet_after, sorted quote coins first."""
+    _write_feed_orders(
+        root,
+        [
+            _wallet_buy(
+                "TRXUSDT",
+                "2026-07-20T10:00:00+00:00",
+                "0.30",
+                83.0,
+                wallet_after={"USDT": "1.0", "BTC": "9.0"},  # stale — must NOT be used
+            ),
+            _wallet_buy(
+                "SOLUSDT",
+                "2026-07-21T10:00:00+00:00",
+                "100.0",
+                0.25,
+                wallet_after={
+                    "BTC": "1.5",
+                    "USDT": "49673.31775303",
+                    "SOL": "0.25",
+                    "USDC": "50000",
+                    "ETH": "2.5",
+                },
+            ),
+        ],
+    )
+    wallet = demo_lane.build_wallet(root)
+    assert wallet["as_of"] == "2026-07-21T10:00:00+00:00"
+    assert [row["coin"] for row in wallet["venue"]["balances"]] == [
+        "USDC",
+        "USDT",
+        "ETH",
+        "BTC",
+        "SOL",
+    ]
+    assert [row["is_quote"] for row in wallet["venue"]["balances"]] == [
+        True,
+        True,
+        False,
+        False,
+        False,
+    ]
+    # Exact strings, no float drift: 49673.31775303 survives to the client intact.
+    assert wallet["venue"]["quote_usdt"] == "49673.31775303"
+    assert wallet["venue"]["quote_usdc"] == "50000"
+    assert all(isinstance(row["amount"], str) for row in wallet["venue"]["balances"])
+
+
+def test_wallet_budget_slot_math_when_partially_deployed(root: Path) -> None:
+    """(c) deployed is SUMMED from the open positions; free/slots follow from the lane's caps."""
+    _write_feed_orders(
+        root,
+        [
+            _wallet_buy("TRXUSDT", "2026-07-20T10:00:00+00:00", "0.30", 83.0),
+            _wallet_buy("SOLUSDT", "2026-07-20T11:00:00+00:00", "100.0", 0.25),
+        ],
+    )
+    budget = demo_lane.build_wallet(root)["budget"]
+    assert budget["total_cap_usdt"] == "300" and budget["per_trade_usdt"] == "25"
+    assert budget["deployed_usdt"] == "50" and budget["free_usdt"] == "250"
+    assert budget["slots_total"] == 12  # floor(300 / 25)
+    assert budget["slots_used"] == 2 and budget["slots_free"] == 10
+    assert budget["disaster_stop_pct"] == "15"
+    assert all(isinstance(budget[field], str) for field in ("deployed_usdt", "free_usdt"))
+
+
+def test_wallet_budget_is_full_when_every_slot_is_used(root: Path) -> None:
+    """(d) twelve open positions exhaust the shared cap: free 0, slots_free 0 — never negative."""
+    coins = [
+        "AAVE",
+        "APT",
+        "AXS",
+        "BCH",
+        "BNB",
+        "BTC",
+        "ETH",
+        "LINK",
+        "RUNE",
+        "SOL",
+        "TIA",
+        "UNI",
+    ]
+    _write_feed_orders(
+        root,
+        [
+            _wallet_buy(f"{coin}USDT", f"2026-07-20T{hour:02d}:00:00+00:00", "10.0", 2.5)
+            for hour, coin in enumerate(coins)
+        ],
+    )
+    budget = demo_lane.build_wallet(root)["budget"]
+    assert budget["deployed_usdt"] == "300" and budget["free_usdt"] == "0"
+    assert budget["slots_used"] == 12 and budget["slots_free"] == 0
+
+
+def test_wallet_positions_carry_marks_and_sort_by_unrealised_desc_nulls_last(root: Path) -> None:
+    """(e) entry/mark/unrealised/held_seconds per position, best first, unmarked positions last."""
+    opened = datetime.now(tz=UTC) - timedelta(hours=2)
+    _write_feed_orders(
+        root,
+        [
+            _wallet_buy("TRXUSDT", opened.isoformat(), "0.30", 100.0),
+            _wallet_buy("SOLUSDT", opened.isoformat(), "100.0", 0.25),
+            _wallet_buy("ADAUSDT", opened.isoformat(), "0.50", 50.0),
+        ],
+    )
+    _mark_files(root, "TRXUSDT", mark="0.315", entry="0.30")  # +5%
+    _mark_files(root, "SOLUSDT", mark="110.0", entry="100.0", resting="85.0")  # +10%
+    # ADAUSDT deliberately has NO heartbeat -> no mark.
+    positions = demo_lane.build_wallet(root)["positions"]
+    assert [p["symbol"] for p in positions] == ["SOLUSDT", "TRXUSDT", "ADAUSDT"]
+
+    sol = positions[0]
+    assert sol["strategy"] == demo_lane.ACTIVITY_STRATEGY
+    # Plain Decimal strings: trailing-zero noise is normalized away ('100.0' -> '100').
+    assert sol["size_base"] == "0.25" and sol["entry_price"] == "100"
+    assert sol["mark_price"] == "110" and sol["spent_usdt"] == "25"
+    assert sol["value_usdt"] == "27.5" and sol["unrealised_usdt"] == "2.5"
+    assert sol["unrealised_pct"] == "10"
+    assert sol["stop_price"] == "85"  # the live venue resting stop wins over the -15% floor
+    assert sol["distance_to_stop_pct"] == "22.73"
+    assert sol["opened_at"] == opened.isoformat()
+    assert 7195 <= sol["held_seconds"] <= 7215  # ~2h, computed to now (UTC)
+
+    trx = positions[1]
+    assert trx["unrealised_pct"] == "5" and trx["mark_price"] == "0.315"
+    assert trx["stop_price"] == "0.26"  # no resting stop -> the derived -15% disaster floor
+    assert all(isinstance(p["spent_usdt"], str) for p in positions)
+
+
+def test_wallet_position_without_a_mark_is_null_and_the_total_stays_partial(root: Path) -> None:
+    """(f) a markless position nulls only its own mark fields and never zeroes the total."""
+    at = "2026-07-20T10:00:00+00:00"
+    _write_feed_orders(
+        root,
+        [
+            _wallet_buy("TRXUSDT", at, "0.30", 100.0),
+            _wallet_buy("ADAUSDT", at, "0.50", 50.0),
+        ],
+    )
+    _mark_files(root, "TRXUSDT", mark="0.315", entry="0.30")
+    wallet = demo_lane.build_wallet(root)
+    ada = next(p for p in wallet["positions"] if p["symbol"] == "ADAUSDT")
+    for field in ("mark_price", "value_usdt", "unrealised_usdt", "unrealised_pct"):
+        assert ada[field] is None, field
+    # Still a real position: size/spend/entry are ledger truth and still counted in the budget.
+    assert ada["spent_usdt"] == "25" and ada["size_base"] == "50"
+    assert wallet["budget"]["deployed_usdt"] == "50"
+    # PARTIAL total: the one known unrealised, not a fabricated 0 for the unmarked coin.
+    assert wallet["unrealised_total_usdt"] == "1.5"
+
+    # No mark anywhere at all -> null, not "0".
+    (root / demo_lane.LANE_DIR / "heartbeat_TRXUSDT_activity.json").unlink()
+    assert demo_lane.build_wallet(root)["unrealised_total_usdt"] is None
+
+
+def test_wallet_realised_agrees_field_for_field_with_report_demo_trades(root: Path) -> None:
+    """(g) realised totals ARE report_demo_trades.summarize — the two can never disagree."""
+    _write_feed_orders(
+        root,
+        [
+            _wallet_buy("ETHUSDT", "2026-07-20T10:00:00+00:00", "1862.37", 0.01341033),
+            _wallet_sell("ETHUSDT", "2026-07-20T12:00:00+00:00", "1900.0", 0.01341033, 25.5379),
+            _wallet_buy("TRXUSDT", "2026-07-21T10:00:00+00:00", "0.30", 100.0),  # still open
+        ],
+    )
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    import scripts.report_demo_trades as rpt
+
+    trips, unmatched = rpt.fold_fills(rpt.load_filled(root / demo_lane.ORDERS_LEDGER))
+    report = rpt.summarize(trips, unmatched)
+    realised = demo_lane.build_wallet(root)["realised"]
+    assert realised["closed_count"] == report["closed_trades"] == 1
+    assert realised["wins"] == report["wins"] == 1
+    assert realised["losses"] == report["losses"] == 0
+    assert realised["realised_usdt"] == str(report["realised_pnl_usd"]) == "0.5379"
+    assert realised["fees_usdt"] == str(report["total_fees_usd"])
+    # The OPEN trip is a position, not a realised trade.
+    assert [p["symbol"] for p in demo_lane.build_wallet(root)["positions"]] == ["TRXUSDT"]
+
+
+@pytest.mark.parametrize("ledger", [None, "{not valid json\n", "", "[]\n"])
+def test_wallet_missing_or_malformed_artifacts_fail_closed(root: Path, ledger: str | None) -> None:
+    """(h) a missing or corrupt ledger degrades to the same keys with available False — no raise."""
+    if ledger is not None:
+        (root / demo_lane.ORDERS_LEDGER).write_text(ledger)
+    wallet = demo_lane.build_wallet(root)
+    _assert_wallet_shape(wallet)
+    assert wallet["available"] is False
+    assert wallet["as_of"] is None
+    assert wallet["venue"]["balances"] == [] and wallet["positions"] == []
+    assert wallet["budget"]["deployed_usdt"] == "0" and wallet["budget"]["slots_total"] == 0
+    assert wallet["realised"] == {
+        "closed_count": 0,
+        "wins": 0,
+        "losses": 0,
+        "realised_usdt": "0",
+        "fees_usdt": "0",
+    }
+    assert wallet["unrealised_total_usdt"] is None
+
+
+def test_wallet_fails_closed_when_a_read_raises_without_leaking_the_reason(
+    root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """(i) any exception on the read path is contained — never a 500, never a traceback."""
+    _write_feed_orders(root, [_wallet_buy("TRXUSDT", "2026-07-20T10:00:00+00:00", "0.30", 83.0)])
+
+    def boom(_root: Path) -> list[dict[str, Any]]:
+        raise OSError("ledger exploded at /Users/secret/orders.jsonl")
+
+    monkeypatch.setattr(demo_lane, "_orders", boom)
+    wallet = demo_lane.build_wallet(root)
+    assert wallet["available"] is False and set(wallet) == _WALLET_KEYS
+    assert "exploded" not in json.dumps(wallet)
+
+
+def test_wallet_is_a_pure_read_and_never_spawns_a_subprocess(
+    root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """(j) a spawn from a read-only money view would be a governance break."""
+    monkeypatch.setattr(
+        demo_lane.subprocess, "Popen", lambda *_a, **_k: pytest.fail("wallet must not spawn")
+    )
+    monkeypatch.setattr(
+        demo_lane.subprocess, "run", lambda *_a, **_k: pytest.fail("wallet must not spawn")
+    )
+    _write_feed_orders(root, [_wallet_buy("TRXUSDT", "2026-07-20T10:00:00+00:00", "0.30", 83.0)])
+    assert demo_lane.build_wallet(root)["schema_version"] == 1
+
+
+def test_wallet_leaks_no_identifying_token(root: Path) -> None:
+    """(k) the serialized body carries no order id, signal ref, path, pid or credential."""
+    _write_feed_orders(
+        root,
+        [
+            _wallet_buy(
+                "TRXUSDT",
+                "2026-07-20T10:00:00+00:00",
+                "0.30",
+                83.0,
+                signal_ref="ACT-CONF:0.4300:2026-07-20T09:55:00+00:00",
+                error=_LEAKY_ERROR,
+            )
+        ],
+    )
+    _mark_files(root, "TRXUSDT", mark="0.315", entry="0.30")
+    body = json.dumps(demo_lane.build_wallet(root))
+    for token in _WALLET_FORBIDDEN:
+        assert token not in body, f"wallet leaked {token!r}"
+    assert "BYBIT" not in body and "abcd1234" not in body
+
+
+def test_wallet_separates_venue_holdings_from_what_the_lane_controls(root: Path) -> None:
+    """(l) the note and disclaimer are present, non-empty, and refuse to read as performance."""
+    _write_feed_orders(
+        root,
+        [
+            _wallet_buy(
+                "TRXUSDT",
+                "2026-07-20T10:00:00+00:00",
+                "0.30",
+                83.0,
+                wallet_after={"USDT": "49673.31775303", "USDC": "50000", "BTC": "1.0"},
+            )
+        ],
+    )
+    wallet = demo_lane.build_wallet(root)
+    note = wallet["venue"]["note"]
+    assert isinstance(note, str) and note
+    assert "pre-funded" in note.lower() and "fake-money" in note.lower()
+    assert "not" in note.lower() and "lane" in note.lower()
+
+    disclaimer = wallet["disclaimer"]
+    assert isinstance(disclaimer, str) and disclaimer
+    assert "fake money" in disclaimer.lower()
+    assert "NONE" in disclaimer and "UNVALIDATED" in disclaimer
+    assert "not evidence" in disclaimer.lower()
+    assert "not performance" in disclaimer.lower()
+    # The ~$99.7k venue balance is NEVER presented as the lane's money: the cap stays 300 and no
+    # field adds the two together.
+    assert wallet["budget"]["total_cap_usdt"] == "300"
+    assert "99673" not in json.dumps(wallet)
+
+
+def test_wallet_route_serves_schema_version_1_through_the_real_handler(root: Path) -> None:
+    """(m) end-to-end through the real GET handler: 200 JSON with schema_version 1."""
+    _write_feed_orders(root, [_wallet_buy("TRXUSDT", "2026-07-20T10:00:00+00:00", "0.30", 83.0)])
+    headers, payload = _handle_get("/api/v1/wallet", root)
+    assert b" 200 " in headers
+    assert b"Content-Type: application/json" in headers
+    assert payload["schema_version"] == 1
+    assert set(payload) == _WALLET_KEYS

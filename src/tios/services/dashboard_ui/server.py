@@ -25,6 +25,7 @@ from tios.services.dashboard_api.demo_lane import (
     build_equity_curve,
     build_live_feed,
     build_research_findings_view,
+    build_wallet,
     perform_demo_lane_action,
 )
 from tios.services.dashboard_api.eth_signal import EthSignalCheckError, build_eth_signal_check
@@ -129,6 +130,8 @@ class Handler(BaseHTTPRequestHandler):
             self._send(200, "application/json", body)
         elif path == "/api/v1/live-feed":
             self._send(200, "application/json", json.dumps(build_live_feed(self.root)).encode())
+        elif path == "/api/v1/wallet":
+            self._send(200, "application/json", json.dumps(build_wallet(self.root)).encode())
         elif path == "/api/v1/equity-curve":
             self._send(200, "application/json", json.dumps(build_equity_curve(self.root)).encode())
         elif path == "/api/v1/research-findings":
