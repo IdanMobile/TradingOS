@@ -8,10 +8,12 @@ rich. The action handler returns exactly four fixed fields.
 
 from __future__ import annotations
 
+import inspect
 import json
 import os
 import sys
 from datetime import UTC, datetime, timedelta
+from decimal import Decimal
 from io import BytesIO
 from pathlib import Path
 from types import SimpleNamespace
@@ -1566,7 +1568,17 @@ _WALLET_KEYS = {
     "unrealised_total_usdt",
     "disclaimer",
 }
-_WALLET_VENUE_KEYS = {"balances", "quote_usdt", "quote_usdc", "note"}
+_WALLET_VENUE_KEYS = {
+    "name",
+    "environment_label",
+    "api_host",
+    "url",
+    "balances",
+    "quote_usdt",
+    "quote_usdc",
+    "cash_total_usdt",
+    "note",
+}
 _WALLET_BALANCE_KEYS = {"coin", "amount", "is_quote"}
 _WALLET_BUDGET_KEYS = {
     "total_cap_usdt",
@@ -1650,6 +1662,12 @@ def _assert_wallet_shape(wallet: dict[str, Any]) -> None:
     assert wallet["environment"] == "VENUE_DEMO"
     assert wallet["real_money"] is False
     assert wallet["execution_authority"] == "NONE"
+    # Venue IDENTITY is stated in both states, with exactly these values — the operator must be
+    # able to read "which platform is this?" off the payload without a lane running.
+    assert wallet["venue"]["name"] == "Bybit"
+    assert wallet["venue"]["environment_label"] == "VENUE_DEMO"
+    assert wallet["venue"]["api_host"] == "api-demo.bybit.com"
+    assert wallet["venue"]["url"] == "https://www.bybit.com"
 
 
 def test_wallet_contract_keys_are_identical_available_and_unavailable(root: Path) -> None:
@@ -1713,6 +1731,89 @@ def test_wallet_balances_are_the_freshest_snapshot_quote_first_then_largest(root
     assert wallet["venue"]["quote_usdt"] == "49673.31775303"
     assert wallet["venue"]["quote_usdc"] == "50000"
     assert all(isinstance(row["amount"], str) for row in wallet["venue"]["balances"])
+
+
+def test_wallet_cash_total_is_the_quote_only_sum_and_excludes_every_coin(root: Path) -> None:
+    """(b2) "how much cash is in the account?" — USDT + USDC exactly, no coin valued in.
+
+    The BTC/ETH/SOL rows sit right beside the quote rows and must contribute nothing: the figure is
+    cash on hand, not a portfolio valuation, and it must survive as an exact Decimal string.
+    """
+    _write_feed_orders(
+        root,
+        [
+            _wallet_buy(
+                "SOLUSDT",
+                "2026-07-21T10:00:00+00:00",
+                "100.0",
+                0.25,
+                wallet_after={
+                    "BTC": "1.5",
+                    "USDT": "49673.31775303",
+                    "SOL": "0.25",
+                    "USDC": "50000",
+                    "ETH": "2.5",
+                },
+            )
+        ],
+    )
+    venue = demo_lane.build_wallet(root)["venue"]
+    cash = venue["cash_total_usdt"]
+    assert isinstance(cash, str)
+    # Exact quote-only sum: 49673.31775303 + 50000. No float drift, no coin, no rounding.
+    assert cash == "99673.31775303"
+    assert Decimal(cash) == Decimal(venue["quote_usdt"]) + Decimal(venue["quote_usdc"])
+    quote_rows = [row for row in venue["balances"] if row["is_quote"]]
+    assert Decimal(cash) == sum((Decimal(row["amount"]) for row in quote_rows), Decimal("0"))
+    # And it is strictly LESS than "everything in the account counted as dollars" — the coins are
+    # out, so the number can never quietly become a portfolio total.
+    every_row = sum((Decimal(row["amount"]) for row in venue["balances"]), Decimal("0"))
+    assert Decimal(cash) < every_row
+    assert demo_lane._empty_wallet()["venue"]["cash_total_usdt"] == "0"
+
+
+def test_wallet_venue_identity_is_fixed_constants_never_derived_from_a_request(
+    root: Path,
+) -> None:
+    """(b3) name/api_host/url come from module constants, not from the ledger and not from a caller.
+
+    The API host mirrors scripts/demo_preflight.py DEMO_HOST (the verified fact); the site URL is a
+    fixed convenience link. A ledger that tries to inject its own host/url must be ignored, and
+    build_wallet takes no parameter that could reach either field.
+    """
+    import scripts.demo_preflight as preflight
+
+    assert demo_lane.VENUE_API_HOST == preflight.DEMO_HOST  # mirrored constant stays in sync
+    assert demo_lane.VENUE_SITE_URL.startswith("https://")
+    assert "{" not in demo_lane.VENUE_SITE_URL and " " not in demo_lane.VENUE_SITE_URL
+
+    _write_feed_orders(
+        root,
+        [
+            _wallet_buy(
+                "TRXUSDT",
+                "2026-07-20T10:00:00+00:00",
+                "0.30",
+                83.0,
+                url="https://evil.test/steal",
+                api_host="evil.test",
+                venue={"name": "EvilVenue", "url": "javascript:alert(1)"},
+                wallet_after={"USDT": "10", "url": "https://evil.test/steal"},
+            )
+        ],
+    )
+    venue = demo_lane.build_wallet(root)["venue"]
+    assert venue["api_host"] == "api-demo.bybit.com"
+    assert venue["url"] == "https://www.bybit.com"
+    assert venue["name"] == "Bybit"
+    assert "evil.test" not in json.dumps(venue)
+    assert "javascript:" not in json.dumps(demo_lane.build_wallet(root))
+    # build_wallet's ONLY parameter is the repo root — there is no request-shaped input at all, so
+    # the identity has no path by which a caller could influence it.
+    assert list(inspect.signature(demo_lane.build_wallet).parameters) == ["root"]
+    # The fail-closed shape carries the identical identity, from the identical constants.
+    for field in ("name", "environment_label", "api_host", "url"):
+        assert demo_lane._empty_wallet()["venue"][field] == venue[field]
 
 
 def test_wallet_budget_slot_math_when_partially_deployed(root: Path) -> None:
@@ -1945,10 +2046,31 @@ def test_wallet_separates_venue_holdings_from_what_the_lane_controls(root: Path)
     assert "NONE" in disclaimer and "UNVALIDATED" in disclaimer
     assert "not evidence" in disclaimer.lower()
     assert "not performance" in disclaimer.lower()
-    # The ~$99.7k venue balance is NEVER presented as the lane's money: the cap stays 300 and no
-    # field adds the two together.
+    # The ~$99.7k of venue CASH is reported honestly — the operator asked "how much is in the
+    # account?" and hiding it would be its own dishonesty — but only as the quote-only sum.
+    venue = wallet["venue"]
+    assert venue["cash_total_usdt"] == "99673.31775303"
+    assert Decimal(venue["cash_total_usdt"]) == Decimal(venue["quote_usdt"]) + Decimal(
+        venue["quote_usdc"]
+    )
+
+    # It is NEVER merged with the lane's money: the cap stays 300, and no field anywhere in the
+    # payload carries cash+budget, cash+P&L, or cash+coins as one number.
     assert wallet["budget"]["total_cap_usdt"] == "300"
-    assert "99673" not in json.dumps(wallet)
+    cash = Decimal(venue["cash_total_usdt"])
+    coins = sum(
+        (Decimal(row["amount"]) for row in venue["balances"] if not row["is_quote"]),
+        Decimal("0"),
+    )
+    body = json.dumps(wallet)
+    forbidden_totals = {
+        cash + Decimal(wallet["budget"]["total_cap_usdt"]),  # cash + lane cap
+        cash + Decimal(wallet["realised"]["realised_usdt"]),  # cash + realised P&L
+        cash + coins,  # cash + coins valued at 1:1 — a portfolio "grand total"
+    } - {cash}  # a zero addend is not a combined total, it is the cash figure itself
+    assert forbidden_totals
+    for total in forbidden_totals:
+        assert demo_lane._plain(total) not in body, f"combined total {total} leaked into the wallet"
 
 
 def test_wallet_route_serves_schema_version_1_through_the_real_handler(root: Path) -> None:

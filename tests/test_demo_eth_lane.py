@@ -2264,3 +2264,19 @@ def test_price_history_write_is_atomic(lane_dirs: Path, monkeypatch: pytest.Monk
         lane.write_price_history("ETHUSDT", "60", bars)
     assert (lane_dirs / "price_history_ETHUSDT.json").read_text() == before
     assert (lane_dirs / "price_history_ETHUSDT.tmp").is_file()  # the partial went to the temp path
+
+
+def test_empty_kline_response_places_no_order_and_raises_nothing(lane_dirs: Path) -> None:
+    """A delisted/empty-bar symbol must be inert at the SHARED cycle layer too.
+
+    The confluence lane skips such a coin before scoring; this pins the property that the order
+    machinery underneath it never indexes an empty bar series and never sends anything on one, so
+    the skip is a genuine no-op rather than the only thing standing between the lane and a crash.
+    """
+    venue = FakeVenue([])
+    heartbeat = lane.run_cycle(
+        "k", "s", get_transport=venue.get, post_transport=venue.post, sleep=lambda _s: None
+    )
+    assert venue.orders == []
+    assert heartbeat["fresh_signals"] == 0
+    assert heartbeat["lane_base"] == "0"

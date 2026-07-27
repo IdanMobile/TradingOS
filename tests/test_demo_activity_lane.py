@@ -15,7 +15,9 @@ import sys
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
+from socket import gaierror
 from typing import Any
+from urllib.error import URLError
 from urllib.parse import parse_qs, urlsplit
 
 import pytest
@@ -24,6 +26,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import scripts.demo_activity_lane as act  # noqa: E402
 import scripts.demo_eth_lane as lane  # noqa: E402
+import scripts.demo_preflight as pf  # noqa: E402
 from tios.trading_domain import Timeframe  # noqa: E402
 
 START = datetime(2026, 7, 1, tzinfo=UTC)
@@ -55,10 +58,14 @@ class ActivityVenue:
         closes: dict[str, list[tuple[str, str]]] | None = None,
         marks: dict[str, str] | None = None,
         fail_kline: str | None = None,
+        transport_down: bool = False,
     ) -> None:
-        self.closes = closes or {}
+        self.closes = closes if closes is not None else {}
         self.marks = marks or {}
         self.fail_kline = fail_kline
+        # `transport_down` reproduces the observed laptop-sleep DNS loss: EVERY request raises the
+        # real urllib error (a socket.gaierror wrapped in URLError -> an OSError subclass).
+        self.transport_down = transport_down
         self.orders: list[dict[str, Any]] = []
         self.kline_urls: list[str] = []
         self.balances: dict[str, Decimal] = {"USDT": Decimal("100000")}
@@ -70,6 +77,8 @@ class ActivityVenue:
 
     def get(self, url: str, headers: dict[str, str]) -> bytes:
         symbol = self._symbol(url)
+        if self.transport_down:
+            raise URLError(gaierror(8, "nodename nor servname provided, or not known"))
         if "/v5/market/kline" in url:
             self.kline_urls.append(url)
             if symbol == self.fail_kline:
@@ -132,6 +141,14 @@ class ActivityVenue:
             self.balances[base] -= Decimal("0.01")
             self.balances["USDT"] += Decimal("1")
         return json.dumps({"retCode": 0, "result": {"orderId": order_id}}).encode()
+
+
+@pytest.fixture(autouse=True)
+def _fresh_warn_set() -> Any:
+    """`warn once per RUN` is module state — every test starts from a clean run."""
+    act._NO_DATA_WARNED.clear()
+    yield
+    act._NO_DATA_WARNED.clear()
 
 
 @pytest.fixture()
@@ -398,3 +415,212 @@ def test_price_history_only_written_for_coins_the_lane_evaluates(lane_dirs: Path
     _cycle(venue, ["BTCUSDT", "XRPUSDT"])
     assert (lane_dirs / "price_history_BTCUSDT.json").is_file()
     assert not (lane_dirs / "price_history_XRPUSDT.json").exists()  # never evaluated -> no file
+
+
+# --- DEFECT 1: a delisted / empty-bar coin is a quiet SKIP, never a recurring exception -----------
+def test_empty_bar_coin_is_skipped_cleanly_and_never_reaches_the_roster(lane_dirs: Path) -> None:
+    # EOSUSDT is delisted on the demo venue and returns an empty kline list. Before the fix the
+    # roster's ATR indexed `high[0]` and raised `list index out of range` EVERY cycle.
+    venue = ActivityVenue(closes={"BTCUSDT": BULL, "EOSUSDT": []})
+    lane.write_state(
+        {"lane_base": "0", "cursor": OLD_CURSOR, "entry_price": None, "resting_stop": None},
+        "BTCUSDT_activity",
+    )
+    report = _cycle(venue, ["EOSUSDT", "BTCUSDT"])
+
+    eos = report["coins"]["EOSUSDT"]
+    assert eos == {"skipped": "insufficient_bars", "bars": dict.fromkeys(("5m", "15m", "1h"), 0)}
+    assert "error" not in eos  # a skip, not an exception
+    # The other coin in the SAME cycle is scored and traded exactly as before.
+    assert "error" not in report["coins"]["BTCUSDT"]
+    assert Decimal(report["coins"]["BTCUSDT"]["confidence"]) >= act.ENTRY_THRESHOLD
+    assert [o for o in venue.orders if o["side"] == "Buy" and o["symbol"] == "BTCUSDT"]
+    assert not any(o["symbol"] == "EOSUSDT" for o in venue.orders)
+
+
+def test_insufficient_but_nonempty_bars_are_skipped_the_same_way(lane_dirs: Path) -> None:
+    short = [("100", "10")] * (act.MIN_ROSTER_BARS - 1)  # one bar short of the roster's lookback
+    venue = ActivityVenue(closes={"THINUSDT": short})
+    report = _cycle(venue, ["THINUSDT"])
+    assert report["coins"]["THINUSDT"]["skipped"] == "insufficient_bars"
+    assert venue.orders == []
+
+
+def test_exactly_enough_bars_is_still_scored_normally(lane_dirs: Path) -> None:
+    # Boundary: the guard must not steal a coin that has just enough data for the whole roster.
+    # `_kline_rows` appends a forming bar that fetch_closed_bars drops: N closes -> N closed bars.
+    enough = [("100", "10")] * act.MIN_ROSTER_BARS
+    venue = ActivityVenue(closes={"OKUSDT": enough})
+    report = _cycle(venue, ["OKUSDT"])
+    assert "skipped" not in report["coins"]["OKUSDT"]
+    assert "error" not in report["coins"]["OKUSDT"]
+    assert "confidence" in report["coins"]["OKUSDT"]
+
+
+def test_no_data_warning_is_emitted_once_per_run_not_once_per_cycle(
+    lane_dirs: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    venue = ActivityVenue(closes={"EOSUSDT": [], "FTMUSDT": []})
+    for _ in range(3):
+        _cycle(venue, ["EOSUSDT", "FTMUSDT"])
+    lines = [ln for ln in capsys.readouterr().err.splitlines() if "no usable bars" in ln]
+    assert len(lines) == 2  # one per SYMBOL for the whole run, not 2 per cycle
+    assert sorted(ln.split(":")[0] for ln in lines) == ["EOSUSDT", "FTMUSDT"]
+
+
+def test_scoring_for_healthy_coins_is_identical_with_and_without_a_dead_coin(
+    lane_dirs: Path,
+) -> None:
+    """A skipped coin must not perturb any other coin's score or decision."""
+    alone = _cycle(ActivityVenue(closes={"BTCUSDT": BULL}), ["BTCUSDT"])
+    with_dead = _cycle(
+        ActivityVenue(closes={"BTCUSDT": BULL, "EOSUSDT": []}), ["EOSUSDT", "BTCUSDT", "FTMUSDT"]
+    )
+    assert with_dead["coins"]["BTCUSDT"]["confidence"] == alone["coins"]["BTCUSDT"]["confidence"]
+    assert with_dead["coins"]["BTCUSDT"]["decision"] == alone["coins"]["BTCUSDT"]["decision"]
+
+
+def test_a_universe_of_only_dead_coins_is_not_a_connectivity_outage(lane_dirs: Path) -> None:
+    # DATA absence must never be reinterpreted as a network outage (it would back the lane off for
+    # nothing). No coin was evaluated, so there is nothing to call an outage.
+    report = _cycle(ActivityVenue(closes={"EOSUSDT": [], "FTMUSDT": []}), ["EOSUSDT", "FTMUSDT"])
+    assert report["connectivity_outage"] is False
+
+
+# --- DEFECT 2: a total connectivity loss is ONE outage, logged once, and backs off ----------------
+def test_all_coins_failing_on_transport_is_one_outage_logged_once(
+    lane_dirs: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    venue = ActivityVenue(transport_down=True)
+    report = _cycle(venue, ["BTCUSDT", "SOLUSDT", "XRPUSDT"])
+
+    assert report["connectivity_outage"] is True
+    err = capsys.readouterr().err
+    assert err.count("connectivity outage") == 1  # ONE line, not one per coin
+    assert "activity cycle failed" not in err  # the 3-per-cycle flood is suppressed
+    assert all("error" in report["coins"][s] for s in ("BTCUSDT", "SOLUSDT", "XRPUSDT"))
+
+
+def test_a_mixed_cycle_is_not_an_outage_and_still_logs_each_coin(
+    lane_dirs: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    class HalfDown(ActivityVenue):
+        def get(self, url: str, headers: dict[str, str]) -> bytes:
+            if self._symbol(url) == "SOLUSDT":
+                raise URLError(gaierror(8, "nodename nor servname provided, or not known"))
+            return super().get(url, headers)
+
+    venue = HalfDown(closes={"BTCUSDT": BULL})
+    lane.write_state(
+        {"lane_base": "0", "cursor": OLD_CURSOR, "entry_price": None, "resting_stop": None},
+        "BTCUSDT_activity",
+    )
+    report = _cycle(venue, ["SOLUSDT", "BTCUSDT"])
+
+    assert report["connectivity_outage"] is False  # one coin succeeded -> not a run-level outage
+    err = capsys.readouterr().err
+    assert "connectivity outage" not in err
+    assert err.count("SOLUSDT: activity cycle failed") == 1  # per-coin line still emitted verbatim
+    assert [o for o in venue.orders if o["side"] == "Buy" and o["symbol"] == "BTCUSDT"]
+
+
+def test_a_pure_data_failure_is_never_classified_as_a_connectivity_outage(lane_dirs: Path) -> None:
+    # fail_kline raises RuntimeError — a DATA problem. Even as the only evaluated coin it must not
+    # be reinterpreted as transport loss, and the error is neither swallowed nor rewritten.
+    venue = ActivityVenue(fail_kline="XRPUSDT")
+    report = _cycle(venue, ["XRPUSDT"])
+    assert report["connectivity_outage"] is False
+    assert "kline unavailable" in report["coins"]["XRPUSDT"]["error"]
+
+
+def test_orders_exits_and_stops_still_go_out_as_soon_as_a_coin_succeeds(lane_dirs: Path) -> None:
+    """The safety invariant: an outage delays nothing once connectivity is back."""
+    lane.write_state(
+        {"lane_base": "0", "cursor": OLD_CURSOR, "entry_price": None, "resting_stop": None},
+        "BTCUSDT_activity",
+    )
+    lane.write_state(  # open and 20% underwater -> its disaster-stop exit is due
+        {"lane_base": "0.01", "cursor": FUTURE_CURSOR, "entry_price": "100", "resting_stop": None},
+        "SOLUSDT_activity",
+    )
+    down = ActivityVenue(transport_down=True)
+    assert _cycle(down, ["BTCUSDT", "SOLUSDT"])["connectivity_outage"] is True
+    assert down.orders == []  # nothing could be sent while the network was gone
+
+    back = ActivityVenue(closes={"BTCUSDT": BULL}, marks={"SOLUSDT": "80"})
+    report = _cycle(back, ["BTCUSDT", "SOLUSDT"])
+
+    assert report["connectivity_outage"] is False
+    # The entry the bullish score asks for goes out on the very first healthy cycle...
+    assert [o for o in back.orders if o["side"] == "Buy" and o["symbol"] == "BTCUSDT"]
+    # ...and so does the risk-reducing exit that was due on the underwater coin.
+    sells = [
+        o
+        for o in back.orders
+        if o["side"] == "Sell" and o["symbol"] == "SOLUSDT" and o.get("orderFilter") != "StopOrder"
+    ]
+    assert len(sells) == 1
+    assert report["coins"]["SOLUSDT"]["lane_base"] == "0"
+
+
+def test_outage_backoff_is_bounded_capped_and_never_faster_than_cadence() -> None:
+    assert act.outage_backoff_seconds(0, 300.0) == 300.0  # healthy -> normal cadence
+    assert act.outage_backoff_seconds(1, 300.0) == 600.0  # first outage doubles
+    assert act.outage_backoff_seconds(2, 300.0) == act.OUTAGE_BACKOFF_MAX_SECONDS  # capped
+    assert act.outage_backoff_seconds(99, 60.0) == act.OUTAGE_BACKOFF_MAX_SECONDS  # stays capped
+    # A cadence slower than the cap must never be sped UP by "backing off".
+    slow = act.OUTAGE_BACKOFF_MAX_SECONDS * 4
+    assert act.outage_backoff_seconds(3, slow) == slow
+
+
+def test_loop_backs_off_while_down_then_logs_recovery_and_resumes_cadence(
+    lane_dirs: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    reports: list[dict[str, Any]] = [
+        {"connectivity_outage": True},
+        {"connectivity_outage": True},
+        {"connectivity_outage": False},
+    ]
+    monkeypatch.setattr(pf, "preflight", lambda *_a, **_k: {"ok": True, "host": "demo"})
+    monkeypatch.setattr(act, "run_activity_cycle", lambda *_a, **_k: reports.pop(0))
+
+    waits: list[float] = []
+
+    def _wait(seconds: float, _sleep: Any) -> bool:
+        waits.append(seconds)
+        return bool(reports)  # False == kill switch seen mid-wait; ends the loop after cycle 3
+
+    monkeypatch.setattr(act, "_wait_honouring_kill_switch", _wait)
+    assert act.run_activity_lane("k", "s", interval="5m", loop=True, sleep=lambda _s: None) == 0
+
+    cadence = max(act.LOOP_MIN_SLEEP_SECONDS, 5 * 60)
+    assert waits == [
+        act.outage_backoff_seconds(1, cadence),  # backed off after the first outage cycle
+        act.outage_backoff_seconds(2, cadence),  # and further after the second
+        cadence,  # recovered -> normal cadence restored immediately
+    ]
+    assert waits[0] > cadence and waits[1] > waits[0]
+    out = capsys.readouterr()
+    assert "connectivity restored — resuming normal cadence." in out.out
+    assert out.err.count("connectivity outage — backing off") == 2  # once per outage cycle, not 37
+
+
+def test_kill_switch_is_honoured_while_backing_off(lane_dirs: Path) -> None:
+    # A 900s backoff must not make the lane deaf to the kill switch for 900s.
+    calls: list[float] = []
+
+    def _sleep(seconds: float) -> None:
+        calls.append(seconds)
+        if len(calls) == 2:
+            (lane_dirs / "KILL_SWITCH").write_text("stop")
+
+    assert act._wait_honouring_kill_switch(act.OUTAGE_BACKOFF_MAX_SECONDS, _sleep) is False
+    assert len(calls) == 2  # aborted on the second slice, not after the full wait
+    assert sum(calls) < act.OUTAGE_BACKOFF_MAX_SECONDS
+    assert all(step <= act.OUTAGE_BACKOFF_POLL_SECONDS for step in calls)
+
+
+def test_wait_returns_true_when_no_kill_switch_and_sleeps_the_whole_wait(lane_dirs: Path) -> None:
+    calls: list[float] = []
+    assert act._wait_honouring_kill_switch(70.0, calls.append) is True
+    assert sum(calls) == 70.0  # cadence is preserved exactly; only the granularity changed

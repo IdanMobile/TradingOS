@@ -1220,9 +1220,11 @@ def build_equity_curve(root: Path | None = None) -> dict[str, Any]:
 # request-derived path, schema_version 1, fail closed. Stage B is NOT part of this response.
 #
 # The two halves are deliberately NOT added together anywhere in this response:
-#   `venue`  = the pre-funded fake-money demo account's own balances (seeded ~1 BTC / ~1 ETH /
-#              50k USDC / 50k USDT before any trading). NOT performance, NOT operator money, and
-#              mostly NOT reachable by the lane.
+#   `venue`  = the pre-funded fake-money demo account's own identity and balances (seeded ~1 BTC /
+#              ~1 ETH / 50k USDC / 50k USDT before any trading). NOT performance, NOT operator
+#              money, and mostly NOT reachable by the lane. `cash_total_usdt` is the QUOTE-ONLY
+#              sum (USDT + USDC) — coins are never valued into it, and it is never added to the
+#              lane budget or to any P&L figure.
 #   `budget` = the only funds the lane can ever move (TOTAL_DEMO_CAPITAL_USDT at
 #              BUY_QUOTE_USDT per position), and `realised`/`unrealised_*` are what it earned.
 
@@ -1231,6 +1233,26 @@ def build_equity_curve(root: Path | None = None) -> dict[str, Any]:
 DEMO_TOTAL_CAP_USDT = Decimal("300")
 DEMO_PER_TRADE_USDT = Decimal("25")
 QUOTE_COINS = ("USDT", "USDC")
+
+# Venue identity. VENUE_API_HOST mirrors scripts/demo_preflight.py DEMO_HOST — keep in sync, the
+# same way DEMO_COINS/ACTIVITY_COINS mirror the lane scripts. That host is the VERIFIED fact: it is
+# the only endpoint the demo lane is ever allowed to reach.
+#
+# VENUE_SITE_URL is NOT verified in the same sense — the repo documents only the API host. It is a
+# fixed convenience link so the operator can reach the venue's own site; docs/archive/
+# DEMO_LANE_PLAN.md records that the Demo Trading module lives on bybit.com itself (explicitly NOT
+# testnet.bybit.com), so the public site is the honest destination. Change it here, in one place.
+# It is a hardcoded constant and is NEVER derived from a request, a payload or an artifact.
+VENUE_NAME = "Bybit"
+VENUE_API_HOST = "api-demo.bybit.com"
+VENUE_SITE_URL = "https://www.bybit.com"
+# Spread into both wallet shapes so the identity can never differ between available and fail-closed.
+_VENUE_IDENTITY: dict[str, Any] = {
+    "name": VENUE_NAME,
+    "environment_label": "VENUE_DEMO",
+    "api_host": VENUE_API_HOST,
+    "url": VENUE_SITE_URL,
+}
 VENUE_BALANCE_NOTE = (
     "Pre-funded fake-money demo account: seeded before any trading, so this total is NOT "
     "performance and NOT operator money. Only the budget below is controlled by the lane."
@@ -1342,9 +1364,11 @@ def _empty_wallet() -> dict[str, Any]:
         "real_money": False,
         "execution_authority": "NONE",
         "venue": {
+            **_VENUE_IDENTITY,
             "balances": [],
             "quote_usdt": "0",
             "quote_usdc": "0",
+            "cash_total_usdt": "0",
             "note": VENUE_BALANCE_NOTE,
         },
         "budget": {
@@ -1412,6 +1436,16 @@ def build_wallet(root: Path | None = None) -> dict[str, Any]:
         )
         slots_total = int(DEMO_TOTAL_CAP_USDT // DEMO_PER_TRADE_USDT)
         by_coin = {row["coin"]: row["amount"] for row in balances}
+        # Quote/stablecoin balances only. Coins are NOT valued into this: it is "how much cash sits
+        # in the account", not a portfolio total, and it is never added to the lane budget or P&L.
+        cash_total = sum(
+            (
+                _decimal_or_none(row["amount"]) or Decimal("0")
+                for row in balances
+                if row["is_quote"]
+            ),
+            Decimal("0"),
+        )
         return {
             "schema_version": 1,
             "available": True,
@@ -1420,9 +1454,11 @@ def build_wallet(root: Path | None = None) -> dict[str, Any]:
             "real_money": False,
             "execution_authority": "NONE",
             "venue": {
+                **_VENUE_IDENTITY,
                 "balances": balances,
                 "quote_usdt": by_coin.get("USDT", "0"),
                 "quote_usdc": by_coin.get("USDC", "0"),
+                "cash_total_usdt": _plain(cash_total),
                 "note": VENUE_BALANCE_NOTE,
             },
             "budget": {

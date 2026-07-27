@@ -7,6 +7,7 @@ from datetime import UTC, datetime, timedelta
 from io import BytesIO
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Any
 
 import duckdb
 import pytest
@@ -918,16 +919,16 @@ def test_watch_and_lab_workspaces_keep_every_page_and_live_is_default() -> None:
         Path(__file__).resolve().parents[1] / "src/tios/services/dashboard_ui/dashboard.html"
     ).read_text()
 
-    # Watch group first (Live, Wallet), then the collapsed Lab group: the ten pre-existing
-    # developer pages plus the read-only Automation control map.
+    # Watch group first (Live, Wallet), then the collapsed Evidence and Machine groups: the same
+    # eleven pre-existing pages, regrouped by the question each one answers, none deleted.
     assert re.findall(r'<button[^>]+data-workspace="([^"]+)"', html) == [
         "live",
         "wallets",
-        "now",
-        "signals",
-        "trading",
-        "testing",
         "research",
+        "testing",
+        "signals",
+        "now",
+        "trading",
         "operations",
         "automation-map",
         "library",
@@ -2388,7 +2389,9 @@ def _live_render_source() -> str:
 
 def test_watch_group_holds_live_and_wallet_with_live_as_the_landing_view() -> None:
     html = _dashboard_html()
-    watch = html[html.index('<div class="nav-label">Watch</div>') : html.index('id="labToggle"')]
+    watch = html[
+        html.index('<div class="nav-label">Watch</div>') : html.index('<div class="nav-bottom">')
+    ]
     # WATCH contains exactly Live + Wallet; Wallet keeps the pre-existing "wallets" view id.
     assert re.findall(r'<button[^>]+data-workspace="([^"]+)"', watch) == ["live", "wallets"]
     assert ">Wallet</button>" in watch
@@ -2397,23 +2400,35 @@ def test_watch_group_holds_live_and_wallet_with_live_as_the_landing_view() -> No
     assert '<button class="active" data-workspace="live" aria-current="page">Live</button>' in watch
     assert "let activeWorkspace='live',activeView='live'" in html
     assert "showWorkspace('live');loadAll()" in html
+    # WATCH is always expanded: no disclosure toggle and no hidden attribute on its <nav>.
+    assert "nav-group-toggle" not in watch
+    assert 'aria-label="Trading OS watch views">' in watch
+    assert "hidden" not in watch
 
 
-def test_lab_group_is_collapsed_by_default_and_persists_state_in_localstorage() -> None:
+def _nav_group_markup(name: str) -> str:
+    """The disclosure button plus the <nav> of one collapsible sidebar group."""
     html = _dashboard_html()
-    lab = html[html.index('id="labToggle"') : html.index("</nav>\n    </div></div>")]
-    # A plain disclosure button, collapsed by default (hidden + aria-expanded="false").
-    assert 'aria-expanded="false" aria-controls="labGroup"' in lab
-    assert 'id="labGroup" aria-label="Trading OS lab workspaces" hidden' in lab
-    assert ".nav[hidden]{display:none}" in html
-    # All ten pre-existing pages stay reachable inside the group, none deleted; the read-only
-    # Automation control map joins them.
-    assert re.findall(r'<button[^>]+data-workspace="([^"]+)"', lab) == [
-        "now",
-        "signals",
-        "trading",
-        "testing",
+    start = html.index(f'id="{name}Toggle"')
+    return html[start : html.index("</nav>", start)]
+
+
+def test_three_nav_groups_split_the_old_lab_bin_by_the_question_each_page_answers() -> None:
+    """WATCH / EVIDENCE / MACHINE. Every pre-existing page keeps its workspace id and stays
+    reachable; "Lab" is gone as a category, not as a set of pages."""
+    html = _dashboard_html()
+    evidence = _nav_group_markup("evidence")
+    machine = _nav_group_markup("machine")
+    # EVIDENCE — "is any of this actually any good?": the pages that make or present evidence.
+    assert re.findall(r'<button[^>]+data-workspace="([^"]+)"', evidence) == [
         "research",
+        "testing",
+        "signals",
+    ]
+    # MACHINE — "is the machinery healthy?": everything else, nothing dropped.
+    assert re.findall(r'<button[^>]+data-workspace="([^"]+)"', machine) == [
+        "now",
+        "trading",
         "operations",
         "automation-map",
         "library",
@@ -2421,14 +2436,109 @@ def test_lab_group_is_collapsed_by_default_and_persists_state_in_localstorage() 
         "todos",
         "settings",
     ]
-    # One-click toggle, no dependency, state remembered across reloads via localStorage.
-    assert "const LAB_GROUP_KEY='tios.nav.lab.expanded'" in html
-    assert "labToggle?.addEventListener('click',()=>setLabExpanded(labGroup.hidden))" in html
-    assert "localStorage.setItem(LAB_GROUP_KEY,expanded?'1':'0')" in html
-    assert "localStorage.getItem(LAB_GROUP_KEY)==='1'" in html
-    # Only an explicit stored '1' expands it, so a fresh browser lands collapsed.
-    assert "labToggle.setAttribute('aria-expanded',String(expanded))" in html
-    assert "labGroup.hidden=!expanded" in html
+    # Both groups are plain disclosures, collapsed by default, reusing the pre-existing pattern.
+    for name, label in (("evidence", "Evidence"), ("machine", "Machine")):
+        group = _nav_group_markup(name)
+        assert f'aria-expanded="false" aria-controls="{name}Group"' in group
+        assert f'id="{name}Group" aria-label="Trading OS {name} workspaces" hidden' in group
+        assert f'data-nav-group="{name}"' in group
+        assert f">{label}<" in group
+    assert ".nav[hidden]{display:none}" in html
+    # The retired "Lab" group leaves no toggle, nav or label behind.
+    for stale in ('id="labToggle"', 'id="labGroup"', ">Lab<", "setLabExpanded"):
+        assert stale not in html, stale
+
+
+def _nav_group_source() -> str:
+    html = _dashboard_html()
+    start = html.index("// --- NAV GROUPS:")
+    return html[start : html.index("function renderAutomation(", start)]
+
+
+def _run_nav_groups(stored: dict[str, str], clicks: tuple[str, ...] = ()) -> dict[str, Any]:
+    """Run the real sidebar-group script against a stubbed DOM + localStorage."""
+    script = f"""
+const store={json.dumps(stored)};
+const localStorage={{
+  getItem:k=>Object.prototype.hasOwnProperty.call(store,k)?store[k]:null,
+  setItem:(k,v)=>{{store[k]=String(v)}},
+  removeItem:k=>{{delete store[k]}}
+}};
+const nodes={{}};
+for(const name of ['evidence','machine'])nodes[name]={{
+  toggle:{{attrs:{{}},handler:null,setAttribute(k,v){{this.attrs[k]=v}},
+    addEventListener(_e,fn){{this.handler=fn}}}},
+  group:{{hidden:true}}}};
+const document={{querySelector(selector){{
+  const toggle=/\\[data-nav-group="([a-z]+)"\\]/.exec(selector);
+  if(toggle)return nodes[toggle[1]].toggle;
+  const group=/^#([a-z]+)Group$/.exec(selector);
+  if(group)return nodes[group[1]].group;
+  return null;
+}}}};
+{_nav_group_source()}
+for(const name of {json.dumps(list(clicks))})nodes[name].toggle.handler();
+console.log(JSON.stringify({{store,groups:Object.fromEntries(Object.entries(nodes).map(
+  ([name,node])=>[name,{{hidden:node.group.hidden,
+    expanded:node.toggle.attrs['aria-expanded']}}]))}}));
+"""
+    result = subprocess.run(
+        ["node", "--input-type=module", "-"],
+        input=script,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return dict(json.loads(result.stdout))
+
+
+def test_evidence_and_machine_collapse_expand_and_persist_separately_per_group() -> None:
+    # A fresh browser: both groups collapsed, each writing its own key.
+    fresh = _run_nav_groups({})
+    assert fresh["groups"] == {
+        "evidence": {"hidden": True, "expanded": "false"},
+        "machine": {"hidden": True, "expanded": "false"},
+    }
+    assert fresh["store"] == {
+        "tios.nav.evidence.expanded": "0",
+        "tios.nav.machine.expanded": "0",
+    }
+    # Clicking EVIDENCE expands only EVIDENCE, and persists only its own key.
+    clicked = _run_nav_groups({}, clicks=("evidence",))
+    assert clicked["groups"]["evidence"] == {"hidden": False, "expanded": "true"}
+    assert clicked["groups"]["machine"] == {"hidden": True, "expanded": "false"}
+    assert clicked["store"]["tios.nav.evidence.expanded"] == "1"
+    assert clicked["store"]["tios.nav.machine.expanded"] == "0"
+    # Clicking again collapses it back.
+    assert _run_nav_groups({}, clicks=("evidence", "evidence"))["groups"]["evidence"] == {
+        "hidden": True,
+        "expanded": "false",
+    }
+    # A returning user's stored per-group state is restored independently.
+    restored = _run_nav_groups(
+        {"tios.nav.evidence.expanded": "0", "tios.nav.machine.expanded": "1"}
+    )
+    assert restored["groups"]["evidence"]["hidden"] is True
+    assert restored["groups"]["machine"]["hidden"] is False
+
+
+def test_returning_lab_user_is_migrated_cleanly_onto_the_per_group_keys() -> None:
+    # Lab was open: both halves of it stay open, and the retired key is dropped.
+    expanded = _run_nav_groups({"tios.nav.lab.expanded": "1"})
+    assert "tios.nav.lab.expanded" not in expanded["store"]
+    assert expanded["store"] == {
+        "tios.nav.evidence.expanded": "1",
+        "tios.nav.machine.expanded": "1",
+    }
+    assert all(group["hidden"] is False for group in expanded["groups"].values())
+    # Lab was closed: both groups stay closed, key still retired.
+    collapsed = _run_nav_groups({"tios.nav.lab.expanded": "0"})
+    assert "tios.nav.lab.expanded" not in collapsed["store"]
+    assert all(group["hidden"] is True for group in collapsed["groups"].values())
+    # An already-migrated user is never overwritten by the legacy value.
+    kept = _run_nav_groups({"tios.nav.lab.expanded": "1", "tios.nav.evidence.expanded": "0"})
+    assert kept["groups"]["evidence"]["hidden"] is True
+    assert kept["groups"]["machine"]["hidden"] is False
 
 
 def test_live_page_has_the_four_panels_in_order_reading_the_named_endpoints() -> None:
@@ -3103,14 +3213,27 @@ def test_automation_page_adds_no_control_surface_and_no_new_action_name() -> Non
 
 def test_automation_page_pins_human_armed_execution_and_authority_none() -> None:
     section = _automation_section()
-    assert "Order-placing lanes are human-armed only." in section
-    assert "The app never auto-starts trading by itself." in section
+    # v8.156: an OPT-IN launchd supervisor may now start the activity lane unattended, so the old
+    # "no scheduler can ever start a lane" claim would be a lie. The page must say so plainly and
+    # name the three rails that bound it — a stale safety promise is worse than no promise.
+    assert (
+        "Order-placing lanes start by human click, or by the supervisor if you installed it."
+        in (section)
+    )
     assert "Execution authority is <strong>NONE</strong>" in section
     assert "AUTHORITY: NONE" in section
-    assert (
-        "There is no scheduler, cron, timer or background job anywhere in this system that can "
-        "start an order-placing lane" in section
-    )
+    assert "make lane-supervise-install" in section  # opt-in, and named
+    assert "inactive until you run" in section  # off by default
+    for rail in (
+        "can never resurrect a lane you stopped",  # KILL_SWITCH is absolute
+        "crash-loop guard",  # restart storms are bounded
+        "is written to that same audit ledger",  # unattended starts are visible
+    ):
+        assert rail in section, rail
+    # The old absolute claim must be GONE from the page, not merely contradicted further down.
+    assert "human-armed only." not in section
+    assert "never auto-starts trading by itself" not in section
+    assert "no scheduler, cron, timer or background job anywhere in this system" not in section
     # Every order-placing row is marked human-armed; the stop path is always available.
     execution = section[section.index(">Human-gated execution<") :]
     for action in ("START", "START_ACTIVITY", "START_MULTI", "RUN_ONCE"):
@@ -3120,8 +3243,9 @@ def test_automation_page_pins_human_armed_execution_and_authority_none() -> None
     assert "always available" in stop_row[: stop_row.index("</tr>")]
     assert "touch artifacts/trading_domain/demo_lane/KILL_SWITCH" in section
     assert "artifacts/human_decisions/demo_lane_actions.jsonl" in section
-    # The page states the absence of automation explicitly rather than implying it.
-    assert "No automatic trading start" in section
+    # The page states what is and isn't automated explicitly rather than implying it.
+    assert "Unattended trading start — opt-in, off until you install it" in section
+    assert "No arm-expiry yet" in section  # the rail that must exist before real money
     assert "No auto-promotion, no auto-tuning" in section
 
 
@@ -3196,6 +3320,8 @@ def test_wallet_page_has_the_four_money_panels_in_order_reading_the_wallet_endpo
     section = _wallet_section()
     source = _wallet_render_source()
     ordered = [
+        'id="walletVenueChip"',
+        'id="walletCashBody"',
         'id="walletBudgetPanel"',
         'id="walletPositionsPanel"',
         'id="walletResultPanel"',
@@ -3255,6 +3381,11 @@ def test_wallet_page_has_the_four_money_panels_in_order_reading_the_wallet_endpo
         "venue.quote_usdt",
         "venue.quote_usdc",
         "venue.note",
+        "venue.name",
+        "venue.environment_label",
+        "venue.api_host",
+        "venue.url",
+        "venue.cash_total_usdt",
         "b.coin",
         "b.amount",
         "b.is_quote",
@@ -3388,7 +3519,8 @@ for(const id of ['liveStatusBody','liveEventsBody','liveEventsCount','liveAgreem
   'liveAgreementSummary','livePositionsBody','livePositionsSummary','liveEquityBody',
   'liveLaneControls','liveLaneControlStatus','liveNextScan','walletBudgetBody',
   'walletBudgetSummary','walletPositionsBody','walletPositionsSummary','walletResultBody',
-  'walletVenueBody','walletEquityBody','walletChartsBody'])make(id);
+  'walletVenueBody','walletEquityBody','walletChartsBody','walletVenueChip',
+  'walletCashBody'])make(id);
 const document={
   hidden:false,
   querySelector(selector){return nodes[selector.replace('#','')]||null},
@@ -3401,9 +3533,12 @@ const overviewLaneAction=()=>{};
         + """
 const empties={schema_version:1,available:false,generated_at:'2026-07-26T15:00:00+00:00',
   series:[],coverage:{held_count:0,series_count:0,missing:[]}};
+// The venue identity the API always sends, in both the available and the fail-closed shape.
+const VENUE_ID={name:'Bybit',environment_label:'VENUE_DEMO',api_host:'api-demo.bybit.com',
+  url:'https://www.bybit.com'};
 const emptyWallet={schema_version:1,available:false,as_of:null,environment:'VENUE_DEMO',
   real_money:false,execution_authority:'NONE',
-  venue:{balances:[],quote_usdt:'0',quote_usdc:'0',note:''},
+  venue:{...VENUE_ID,balances:[],quote_usdt:'0',quote_usdc:'0',cash_total_usdt:'0',note:''},
   budget:{total_cap_usdt:'0',per_trade_usdt:'0',deployed_usdt:'0',free_usdt:'0',
     slots_total:0,slots_used:0,slots_free:0,disaster_stop_pct:'0'},
   positions:[],realised:{closed_count:0,wins:0,losses:0,realised_usdt:'0',fees_usdt:'0'},
@@ -3419,7 +3554,7 @@ const out={};
 // 1. available:false — the same key set, empty. Nothing may render as undefined/NaN/null.
 render({schema_version:1,available:false,as_of:null,environment:'VENUE_DEMO',real_money:false,
   execution_authority:'NONE',
-  venue:{balances:[],quote_usdt:'0',quote_usdc:'0',note:''},
+  venue:{...VENUE_ID,balances:[],quote_usdt:'0',quote_usdc:'0',cash_total_usdt:'0',note:''},
   budget:{total_cap_usdt:'0',per_trade_usdt:'0',deployed_usdt:'0',free_usdt:'0',
     slots_total:0,slots_used:0,slots_free:0,disaster_stop_pct:'0'},
   positions:[],realised:{closed_count:0,wins:0,losses:0,realised_usdt:'0',fees_usdt:'0'},
@@ -3429,8 +3564,8 @@ out.empty=dump();
 // 2. a cap with nothing deployed and no position: the allocation bar is a bare track.
 render({schema_version:1,available:true,as_of:'2026-07-26T10:00:00+00:00',
   environment:'VENUE_DEMO',real_money:false,execution_authority:'NONE',
-  venue:{balances:[{coin:'USDC',amount:'50000',is_quote:true}],quote_usdt:'49673.21',
-    quote_usdc:'50000',note:'Pre-funded seed capital.'},
+  venue:{...VENUE_ID,balances:[{coin:'USDC',amount:'50000',is_quote:true}],quote_usdt:'49673.21',
+    quote_usdc:'50000',cash_total_usdt:'99673.21',note:'Pre-funded seed capital.'},
   budget:{total_cap_usdt:'300',per_trade_usdt:'25',deployed_usdt:'0',free_usdt:'300',
     slots_total:12,slots_used:0,slots_free:12,disaster_stop_pct:'15'},
   positions:[],realised:{closed_count:0,wins:0,losses:0,realised_usdt:'0',fees_usdt:'0'},
@@ -3443,7 +3578,7 @@ out.one=dump();
 // 3. no cap reported at all — no chart, no division by zero, no pips.
 render({schema_version:1,available:true,as_of:null,environment:'VENUE_DEMO',real_money:false,
   execution_authority:'NONE',
-  venue:{balances:[],quote_usdt:null,quote_usdc:null,note:''},
+  venue:{...VENUE_ID,balances:[],quote_usdt:null,quote_usdc:null,cash_total_usdt:null,note:''},
   budget:{total_cap_usdt:null,per_trade_usdt:null,deployed_usdt:null,free_usdt:null,
     slots_total:0,slots_used:0,slots_free:null,disaster_stop_pct:null},
   positions:[],realised:{closed_count:null,wins:null,losses:null,realised_usdt:null,
@@ -3453,11 +3588,11 @@ out.nocap=dump();
 // 4. the real shape: $300 cap, $25 per position, 12/12 slots used, $0 free, one null-mark row.
 render({schema_version:1,available:true,as_of:'2026-07-26T14:55:00+00:00',
   environment:'VENUE_DEMO',real_money:false,execution_authority:'NONE',
-  venue:{balances:[{coin:'BTC',amount:'1.00021',is_quote:false},
+  venue:{...VENUE_ID,balances:[{coin:'BTC',amount:'1.00021',is_quote:false},
     {coin:'ETH',amount:'0.9987',is_quote:false},
     {coin:'USDC',amount:'50000',is_quote:true},
     {coin:'USDT',amount:'49673.4412',is_quote:true}],
-   quote_usdt:'49673.4412',quote_usdc:'50000',
+   quote_usdt:'49673.4412',quote_usdc:'50000',cash_total_usdt:'99673.4412',
    note:'Pre-funded fake money: the venue demo account was seeded before any '
      +'trading. Not performance, not the operator money.'},
   budget:{total_cap_usdt:'300',per_trade_usdt:'25',deployed_usdt:'300',free_usdt:'0',
@@ -3506,6 +3641,11 @@ render(emptyWallet,emptyEquity,{schema_version:1,available:true,
      entry_price:null,stop_price:null,mark_price:'0.5',held:true}],
   coverage:{held_count:4,series_count:4,missing:['ETHUSDT']}});
 out.charts=dump();
+// 6. a venue.url that is not https:// (the only way the fixed constant could ever be tampered
+//    with) must degrade to plain text — never become a clickable target.
+render({...emptyWallet,available:true,
+  venue:{...emptyWallet.venue,url:'javascript:alert(1)',cash_total_usdt:'12.5'}},emptyEquity);
+out.badurl=dump();
 console.log(JSON.stringify(out));
 """
     )
@@ -3608,6 +3748,64 @@ def test_wallet_positions_table_renders_every_column_and_dashes_null_marks() -> 
     assert rows[1].count("—") == 6  # mark, value, unrealised $, unrealised %, stop, to stop
     assert '<td class="mono muted">—</td>' in rows[1]
     assert "2m" in rows[1]
+
+
+def test_wallet_venue_chip_names_the_platform_at_the_top_and_links_out_safely() -> None:
+    """Operator complaint 1: "which platform do we use?" must be answerable without scrolling."""
+    section = _wallet_section()
+    # The chip sits in the top badge row, beside FAKE MONEY / AUTHORITY: NONE — and far above the
+    # collapsed legacy detail and the secondary venue-balances panel.
+    top = section[: section.index('id="walletBudgetPanel"')]
+    assert 'id="walletVenueChip"' in top
+    assert top.index("FAKE MONEY") < top.index('id="walletVenueChip"')
+    assert "AUTHORITY: NONE" in top
+    assert section.index('id="walletVenueChip"') < section.index('id="walletVenuePanel"')
+    assert section.index('id="walletVenueChip"') < section.index('<details class="wallet-legacy"')
+
+    chip = _wallet_state()["full"]["walletVenueChip"]
+    # Name, environment and the verified API host, all three visible on the chip itself.
+    assert "Bybit" in chip and "VENUE_DEMO" in chip and "api-demo.bybit.com" in chip
+    # An anchor to venue.url, opened in a new tab with the full noopener/noreferrer pair.
+    assert '<a class="venue-chip" href="https://www.bybit.com"' in chip
+    assert 'target="_blank"' in chip and 'rel="noopener noreferrer"' in chip
+    assert "opens the venue website in a new tab" in chip
+    # A non-https url can never become a clickable target: it degrades to inert text.
+    bad = _wallet_state()["badurl"]["walletVenueChip"]
+    assert "<a " not in bad and "javascript:" not in bad
+    assert '<span class="venue-chip">' in bad
+    assert "Bybit" in bad
+    # No payload string is ever trusted raw: the renderer escapes the href it is handed.
+    assert 'href="${esc(venueUrl)}"' in _wallet_render_source()
+
+
+def test_wallet_cash_figure_is_legible_and_never_summed_with_the_lane_budget() -> None:
+    """Operator complaint 2: "how much does my wallet hold?" — shown, and labelled, not hidden."""
+    section = _wallet_section()
+    assert 'id="walletCashBody"' in section
+    assert section.index('id="walletCashBody"') < section.index('id="walletBudgetPanel"')
+
+    state = _wallet_state()
+    cash = state["full"]["walletCashBody"]
+    # The figure itself, legible: quote total rendered as money, in its own value class.
+    assert "Cash in the account" in cash
+    assert '<span class="cash-value">$99,673.44</span>' in cash
+    # The pre-funded framing rides alongside it as a LABEL, not as concealment.
+    assert "pre-funded demo money" in cash
+    assert "not performance" in cash and "not the lane" in cash
+    # Its two components are named so the number can be checked, and no coin is valued into it.
+    assert "USDT 49673.4412" in cash and "USDC 50000" in cash
+    assert "1.00021" not in cash and "0.9987" not in cash
+
+    # The $300 lane budget is still THE performance headline, and the two are never added up:
+    # 99673.44 + 300 = 99973.44 appears nowhere, in any panel.
+    budget = state["full"]["walletBudgetBody"]
+    assert "Lane cap" in budget and "$300" in budget
+    for panel in state["full"].values():
+        # cash+cap, cash+coins-at-1:1, cash+realised — none of these composites may be rendered.
+        for combined in ("99973", "99,973", "99675", "99,675", "99674", "99,674"):
+            assert combined not in panel, combined
+    # Missing cash degrades to an em dash, never a zero invented on the operator's behalf.
+    assert "—" in state["nocap"]["walletCashBody"]
 
 
 def test_wallet_result_and_venue_panels_frame_the_prefunded_balance_honestly() -> None:
@@ -3745,3 +3943,176 @@ def test_wallet_price_history_rides_the_existing_poll_tick_and_adds_no_write_sur
     # Server values are escaped, never interpolated raw.
     assert "walletText(s.symbol)" in source
     assert "esc(error.message)" in source
+
+
+# --- Persistent evidence-verdict line on both Watch surfaces (D-120/D-122/D-124 doctrine) ---
+
+
+VERDICT_DEFAULT = (
+    "validation state unavailable · demo measurement only, "
+    "not evidence of edge · net after fees unavailable"
+)
+
+
+def _verdict_source() -> str:
+    html = _dashboard_html()
+    start = html.index("// --- EVIDENCE VERDICT LINE")
+    return html[start : html.index("// --- Wallet money view over /api/v1/wallet", start)]
+
+
+def test_verdict_line_renders_above_the_activity_content_on_both_watch_pages() -> None:
+    live, wallet = _live_section(), _wallet_section()
+    for section, node_id, first_panel in (
+        (live, "liveVerdict", 'id="liveStatusPanel"'),
+        (wallet, "walletVerdict", 'class="lane-status"'),
+    ):
+        assert f'<p class="verdict-line" id="{node_id}"' in section, node_id
+        # Above the activity/status content, and below nothing but the page heading.
+        assert section.index(f'id="{node_id}"') < section.index(first_panel), node_id
+        assert section.index("</h1>") < section.index(f'id="{node_id}"'), node_id
+        # Honest before any fetch resolves: it never starts life claiming a validated strategy.
+        assert VERDICT_DEFAULT in section, node_id
+        # Persistent and not dismissible: no close control, no hidden attribute, no timer.
+        verdict = section[
+            section.index(f'id="{node_id}"') : section.index("</p>", section.index(node_id))
+        ]
+        for banned in ("hidden", "<button", "dismiss", "onclick"):
+            assert banned not in verdict, f"{node_id}/{banned}"
+    assert ".verdict-line{" in _dashboard_html()
+
+
+def test_verdict_line_is_derived_from_the_authoritative_sources_not_a_literal() -> None:
+    html = _dashboard_html()
+    source = _verdict_source()
+    # Validated count: the research-lab scorecard rows exposed by /api/v1/dashboard, counted by
+    # their own validation_state — no literal, no hardcoded fallback number.
+    assert "payload.comparisons&&payload.comparisons.candidate_rows" in source
+    assert "String(row.validation_state).toUpperCase()==='VALIDATED'" in source
+    assert ".length" in source
+    assert "setVerdictValidated(d)" in html  # fed by the existing /api/v1/dashboard fetch
+    assert "fetchJson('/api/v1/dashboard')" in html
+    # Net after fees: reused from the equity-curve summary, not recomputed here.
+    assert "curve.summary.realised_net_quote" in source
+    assert "setVerdictNet(curve)" in html
+    assert "await fetchJson('/api/v1/equity-curve')" in html
+    # Reused verbatim, never re-derived from the raw fee/realised components.
+    for recomputed in ("fees_quote", "realised_usdt", "closed_count"):
+        assert recomputed not in source, recomputed
+    # No literal verdict anywhere: the count is only ever assigned from the payload or null.
+    assert "verdictValidated=null,verdictNet=null" in source
+    assert not re.search(r"verdictValidated\s*=\s*\d", source)
+    assert not re.search(r"verdictNet\s*=\s*\d", source)
+    # No new request, no new timer, no new write path.
+    for banned in ("fetch(", "fetchJson", "setInterval", "setTimeout", "method:'POST'"):
+        assert banned not in source, banned
+
+
+def _run_verdict(cases: dict[str, dict[str, Any]]) -> dict[str, str]:
+    """Run the shipped verdict renderer over payload shapes and return what each one renders."""
+    html = _dashboard_html()
+    live_num = html[html.index("const liveNum=") : html.index("\n", html.index("const liveNum="))]
+    script = f"""
+const nodes={{liveVerdict:{{textContent:''}},walletVerdict:{{textContent:''}}}};
+const document={{querySelector:s=>nodes[s.replace('#','')]||null}};
+{live_num}
+{_verdict_source()}
+const out={{}};
+for(const [name,c] of Object.entries({json.dumps(cases)})){{
+  setVerdictValidated(c.dashboard);
+  setVerdictNet(c.curve);
+  if(nodes.liveVerdict.textContent!==nodes.walletVerdict.textContent)
+    throw new Error('watch pages disagree');
+  out[name]=nodes.liveVerdict.textContent;
+}}
+console.log(JSON.stringify(out));
+"""
+    result = subprocess.run(
+        ["node", "--input-type=module", "-"],
+        input=script,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return dict(json.loads(result.stdout))
+
+
+def _rows(*states: str) -> dict[str, Any]:
+    return {"comparisons": {"candidate_rows": [{"validation_state": s} for s in states]}}
+
+
+def test_verdict_line_states_what_is_established_in_every_payload_shape() -> None:
+    rendered = _run_verdict(
+        {
+            # Both sources unreadable: say so, never a reassuring default.
+            "dead": {"dashboard": None, "curve": None},
+            # Scorecards present, nothing has cleared validation, no closed trades yet.
+            "zero": {
+                "dashboard": _rows("UNVALIDATED", "UNVALIDATED", "REJECTED"),
+                "curve": {"available": True, "summary": {"realised_net_quote": "0.0000"}},
+            },
+            # The production shape today: unvalidated everywhere, negative net after fees.
+            "today": {
+                "dashboard": _rows("UNVALIDATED", "UNVALIDATED"),
+                "curve": {"available": True, "summary": {"realised_net_quote": "-0.0115"}},
+            },
+            # One strategy validated — proves the count is not pinned to 0.
+            "one": {
+                "dashboard": _rows("VALIDATED", "UNVALIDATED"),
+                "curve": {"available": True, "summary": {"realised_net_quote": "1.5"}},
+            },
+            "two": {
+                "dashboard": _rows("VALIDATED", "validated", "UNVALIDATED"),
+                "curve": {"available": True, "summary": {"realised_net_quote": "12.5"}},
+            },
+            # Endpoint answered but fails closed / carries junk: unavailable, not zero.
+            "closed": {
+                "dashboard": {"comparisons": {}},
+                "curve": {"available": False, "summary": {}},
+            },
+            "junk": {
+                "dashboard": {"comparisons": {"candidate_rows": "nope"}},
+                "curve": {"available": True, "summary": {"realised_net_quote": "not-a-number"}},
+            },
+        }
+    )
+    unavailable = "validation state unavailable"
+    assert rendered["dead"] == VERDICT_DEFAULT
+    assert rendered["closed"] == VERDICT_DEFAULT
+    assert rendered["junk"] == VERDICT_DEFAULT
+    assert rendered["zero"] == (
+        "0 strategies validated · demo measurement only, "
+        "not evidence of edge · net after fees $0.0000"
+    )
+    assert rendered["today"] == (
+        "0 strategies validated · demo measurement only, "
+        "not evidence of edge · net after fees -$0.0115"
+    )
+    # A real validation is reflected automatically, and reads as singular/plural English.
+    assert rendered["one"].startswith("1 strategy validated · ")
+    assert rendered["one"].endswith("net after fees +$1.5000")
+    assert rendered["two"].startswith("2 strategies validated · ")
+    assert unavailable not in rendered["one"] and unavailable not in rendered["two"]
+    # Never a placeholder artefact, and never a number where the source could not be read.
+    for name, text in rendered.items():
+        for forbidden in ("undefined", "NaN", "null", "$$", "  "):
+            assert forbidden not in text, f"{name}/{forbidden}"
+
+
+def test_verdict_line_holds_the_honest_labelling_doctrine() -> None:
+    source = _verdict_source()
+    live, wallet = _live_section(), _wallet_section()
+    assert "demo measurement only, not evidence of edge" in source
+    # No earnings vocabulary in anything the line can render, nor in the static default.
+    rendered = " ".join(
+        _run_verdict({"a": {"dashboard": _rows("VALIDATED"), "curve": None}}).values()
+    )
+    for text in (rendered, VERDICT_DEFAULT):
+        for forbidden in ("profit", "returns", "growth", "roi", "gain", "earned", "confidence"):
+            assert forbidden not in text.lower(), forbidden
+    # textContent only — no server string is ever written as markup by this block.
+    assert "node.textContent=text" in source
+    assert "innerHTML=" not in source
+    # The pre-existing safety badges stay on both Watch pages alongside the new line.
+    for section in (live, wallet):
+        for badge in ("FAKE MONEY", "AUTHORITY: NONE", "UNVALIDATED"):
+            assert badge in section, badge

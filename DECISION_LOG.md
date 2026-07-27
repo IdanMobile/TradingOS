@@ -2694,3 +2694,110 @@ undocumented POST write routes recorded as an OPEN governance item, not authoriz
 101.8% of gross with realised P&L now NEGATIVE. Fake-money demo only; execution authority `NONE`; 0
 validated strategies; demo P&L remains NON-EVIDENCE. Price capture inactive until the operator restarts the
 lane. No venue, order, live, or real-money authority is granted, and no investment advice is given.**
+
+### D-125 — BOUNDARY CHANGE: order-placing lanes may now start unattended via an opt-in supervisor; three rails, two of them fail-closed; lane resilience; venue identity and cash surfaced
+
+Decision: **this entry reverses part of D-121/D-123.** Those recorded that order-placing lanes were
+HUMAN-ARMED ONLY and that "no scheduler, cron, timer or background job in this system can start an
+order-placing lane". On explicit operator instruction ("those things should be running automatically
+without me needing to manually trigger it" → "yes do it"), an OPT-IN launchd supervisor may now start the
+confluence activity lane unattended. The prior stance is superseded, not quietly contradicted: the false
+statements were removed from the Automation page in the same change (see below), because a stale safety
+promise is more dangerous than no promise — an operator would read it and believe nothing could trade
+without them.
+
+**Trigger.** The lane died silently after ~4.5h and sat dead ~12h. Root cause was NOT a crash: DNS/network
+loss (laptop sleep) failed every coin (`nodename nor servname provided`), and the process ended with the
+machine. Two real defects surfaced in the same log: `EOSUSDT: list index out of range` every cycle
+(EOS/FTM/MATIC are delisted on Bybit demo and return empty klines), and ~37 identical error lines per
+cycle during the outage. Positions were NOT unprotected during the dead period — all 10 held coins had
+live venue-side resting stop orders with real Bybit order IDs, which is the architecture working as
+designed: the stop lives at the exchange, so it survives our process dying.
+
+**The supervisor** (`scripts/supervise_demo_lane.py`, new; `ops/com.tios.demo-lane.plist`, new; four
+`make lane-supervise-*` targets). Deliberate design: the lane is reviewed order-path code and was NOT
+touched (`scripts/demo_eth_lane.py` has a 0-line diff); every supervision concern lives in one small
+auditable wrapper that launchd invokes and that `os.execv`s into the lane with a fixed argv of module
+constants. Rails:
+1. **KILL_SWITCH is absolute.** Refuses before anything else and exits 0; the plist's
+   `KeepAlive={SuccessfulExit:false}` means a clean exit is launchd's signal to STAY DOWN. This holds
+   transitively — the lane also returns 0 on the kill switch mid-loop and `execv` propagates it, so a
+   dashboard STOP *ends* supervision rather than fighting it. A reboot/login re-runs the supervisor, which
+   re-checks the on-disk switch and refuses again: re-checking, not resurrecting. The residual TOCTOU
+   (switch created between the check and the launch) is closed by the lane's own layered checks —
+   `run_activity_cycle` checks first thing and `place()` re-checks immediately before any order send.
+2. **Crash-loop guard.** Bounded start history (atomic tmp+replace, capped at 20). >5 starts in 10 minutes
+   refuses; `ThrottleInterval=60` is the second layer. A refusal never appends to history, so repeated
+   operator stops cannot wedge the guard; a corrupt history fails OPEN to one start rather than blocking
+   forever. **Worst case, verified by review: exactly 5 lane starts in any window, then permanent
+   stand-down.** Blast radius if the operator leaves for a week: trading stays inside the existing $300
+   cap / $25 per position / 12 slots / −15% stop invariants, or the agent quietly stands down. The
+   realistic failure is "stops measuring", not "trades out of control".
+3. **Every supervised start is audited** to `artifacts/human_decisions/demo_lane_actions.jsonl` in the
+   dashboard's existing record shape, marked `source: launchd_supervisor`.
+**Two fail-closed hardenings added after review.** The reviewer found that a failed audit write was
+swallowed while the launch proceeded, making the operator-facing claim "an unattended start is never
+invisible" best-effort rather than a guarantee — and that a `_write_history` failure crashed before launch
+but was never counted, so a disk-full condition would relaunch every 60s unbounded. Both now REFUSE: a
+start that cannot be counted or cannot be audited does not happen. Refusals stay best-effort because they
+launch nothing.
+
+**Lane resilience** (`scripts/demo_activity_lane.py` only; the order-path file untouched). The
+`list index out of range` was traced to `_true_range` indexing `high[0]` on an empty series via the
+roster's first strategy. Now gated on the DATA (`MIN_ROSTER_BARS = 41`, the roster's longest lookback plus
+the evaluated bar), never on a symbol list, so a future delisting behaves identically; warned once per run
+instead of once per cycle. A cycle in which EVERY evaluated coin fails on transport (`OSError` and
+subclasses) is recognised as one connectivity outage, logged once, and backed off with capped doubling
+(≤900s), never faster than cadence — with the wait sliced so the kill switch is honoured during backoff
+rather than 900s later. CADENCE AND LOGGING ONLY: no order decision, sizing, threshold, stop, cap or
+kill-switch check changed, and a test asserts an entry AND a disaster-stop exit both fire on the first
+healthy cycle after an outage. A skipped thin-data coin is excluded from `evaluated`, so it can never be
+miscounted as an outage.
+
+**UI honesty corrections.** (a) The venue was not identifiable: `build_wallet`'s `venue` object carried no
+identity at all, and the "Bybit" chip the operator remembered lived on the legacy card demoted into a
+collapsed section in v8.153 — a regression introduced by that change. `venue` now carries `name`,
+`environment_label`, `api_host` (mirrored from the VERIFIED `demo_preflight.DEMO_HOST`) and a fixed
+`url`; a clickable chip renders near the top. Bybit's own help centre confirms Demo Trading is a MODE on
+bybit.com reached from the profile menu (not a separate subdomain, and explicitly not testnet), so
+`https://www.bybit.com` is the honest destination and no demo subdomain was invented. (b) Cash was
+unanswerable: the quote balances existed but were rendered last, dimmed and untotalled — an
+over-correction made to stop the pre-funded balance reading as profit, taken so far that "how much is in
+my account?" could not be answered. **Hiding a number the operator is asking for is its own dishonesty.**
+`cash_total_usdt` (quote-only, coins excluded) is now shown plainly with the pre-funded framing as a
+LABEL. The $300 lane budget remains the performance headline; cash and budget are never summed and tests
+forbid any cash+budget, cash+P&L or cash+coins composite anywhere in the payload or the rendered page.
+
+**Nav and verdict line.** WATCH (Live, Wallet) / EVIDENCE (Research, Testing, Signals) / MACHINE (the
+rest) replaces the WATCH-vs-Lab split, because "Lab" was a leftover bin holding three unrelated purposes;
+all thirteen pages remain reachable and per-group collapse state migrates cleanly off the old key. A
+persistent verdict line now sits ABOVE the activity on both Watch pages — busy on-screen activity reads as
+productive earning, and the first thing read should be what is actually established. It is DERIVED, never
+hardcoded: the validated count comes from `/api/v1/dashboard` `candidate_rows[].validation_state ==
+"VALIDATED"` (the research-lab scorecard registry, where validation is actually decided — the demo-lane
+`validation_state` field was explicitly rejected as a hardcoded literal), and net-after-fees from
+`/api/v1/equity-curve`. Tests prove 1 and 2 validated render correctly, so it cannot be a disguised
+constant; an unreadable source renders "validation state unavailable" and never a reassuring default.
+
+Parked / recorded, NOT fixed: **arm-expiry — an unattended start currently never expires; this MUST exist
+before the supervision pattern is used with real money** (stated in the supervisor's own docstring and on
+the Automation page). `_TRANSPORT_ERRORS = (OSError,)` can misclassify a local disk error as a
+connectivity outage (cadence/log only, no order impact). A coin delisted while holding an open position
+loses its per-cycle software disaster-stop evaluation — unchanged from prior behaviour, with the
+venue-side resting stop remaining the protection. Supervisor logs have no rotation.
+
+Evidence: operator instruction 2026-07-27; `artifacts/trading_domain/demo_lane/lane.log` (DNS failures,
+the recurring EOS IndexError); the live heartbeats showing all 10 held coins carrying venue resting stop
+order IDs; Bybit's Demo Trading help centre (retrieved 2026-07-27) for the mode-not-subdomain fact; an
+independent adversarial review returning GO with no blocking findings, which hash-verified 11 files,
+traced every kill-switch path hunting for resurrection, quantified the crash-loop bound, and confirmed the
+governance text is corrected rather than softened. 402 tests pass; ruff and mypy clean. Normal
+reconciliation (v8.156) under D-030/T-000-02 — `dashboard.html` ×2, `tests/test_dashboard.py` ×2 and this
+decision log ×1 rehashed; NOT an integrity exception.
+Status: **Opt-in supervised auto-start SHIPPED and INACTIVE until the operator runs
+`make lane-supervise-install`. D-121/D-123's human-armed-only stance is SUPERSEDED for the activity lane
+and the false claims are removed from the product. KILL_SWITCH remains absolute; unattended starts are
+bounded at 5 per window and fail closed when they cannot be counted or audited. Fake-money demo only;
+execution authority `NONE`; 0 validated strategies; demo P&L remains NON-EVIDENCE — supervision increases
+measurement UPTIME only and cannot improve results. Arm-expiry is a hard precondition for any real-money
+use. No venue, order, live, or real-money authority is granted, and no investment advice is given.**

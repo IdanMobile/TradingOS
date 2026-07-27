@@ -1,5 +1,56 @@
 # Package Changelog
 
+## v8.156 — 2026-07-27 — Opt-in supervised auto-start (boundary change); lane resilience; venue identity + cash; Watch/Evidence/Machine
+
+**This release reverses part of D-121/D-123.** Those recorded that order-placing lanes were human-armed
+only and that no scheduler could start one. On explicit operator instruction, an OPT-IN launchd supervisor
+may now start the confluence activity lane unattended. The superseded claims were REMOVED from the
+Automation page in the same change — a stale safety promise is more dangerous than no promise. Fake money;
+execution authority NONE; 0 validated strategies; demo P&L is NON-EVIDENCE; supervision increases
+measurement uptime only. Independent adversarial review: GO, no blocking findings. See DECISION_LOG D-125.
+
+- **Supervisor** (`scripts/supervise_demo_lane.py`, `ops/com.tios.demo-lane.plist`, four
+  `make lane-supervise-*` targets) — **inactive until `make lane-supervise-install`**. The lane itself is
+  untouched (`scripts/demo_eth_lane.py`: 0-line diff); all supervision lives in one wrapper that `execv`s
+  into the lane with a fixed argv. Rails: (1) **KILL_SWITCH absolute** — refuses and exits 0, and
+  `KeepAlive={SuccessfulExit:false}` keeps a clean exit down; transitively the lane's own clean exit means
+  a dashboard STOP ends supervision rather than fighting it; the residual TOCTOU is closed by the lane
+  re-checking the switch immediately before any order send. (2) **Crash-loop guard** — >5 starts in 10 min
+  refuses, `ThrottleInterval=60` as a second layer, refusals never wedge the guard, corrupt history fails
+  open to one start. Worst case verified: **exactly 5 lane starts, then permanent stand-down**. (3) **Every
+  supervised start audited** to the operator's existing ledger. **Two fail-closed hardenings after review:**
+  a start that cannot be written to the crash-loop history, or whose audit record cannot be written, now
+  REFUSES instead of launching — "an unattended start is never invisible" is a guarantee, not best effort.
+- **Lane resilience** (`scripts/demo_activity_lane.py` only). The recurring `list index out of range` was
+  traced to `_true_range` indexing `high[0]` on an empty series; now gated on the DATA
+  (`MIN_ROSTER_BARS = 41`), never a symbol list, so future delistings behave identically, warned once per
+  run instead of per cycle. An all-transport-failure cycle is recognised as ONE connectivity outage (was
+  ~37 lines/cycle) with capped backoff (≤900s, never faster than cadence), the wait sliced so the kill
+  switch is honoured during backoff. Cadence and logging only — no order, sizing, threshold, stop, cap or
+  kill-switch behaviour changed; a test asserts an entry and a disaster-stop exit both fire on the first
+  healthy cycle after an outage.
+- **Venue identity + cash (UI honesty).** `venue` gained `name`, `environment_label`, `api_host` (mirrored
+  from the verified `demo_preflight.DEMO_HOST`) and a fixed `url`, rendered as a clickable chip near the
+  top — the "Bybit" chip had been lost when v8.153 demoted the legacy card. Bybit's help centre confirms
+  Demo Trading is a MODE on bybit.com (not a subdomain, explicitly not testnet), so no demo URL was
+  invented. `cash_total_usdt` (quote-only) is now shown plainly with the pre-funded framing as a label
+  rather than as concealment: hiding a number the operator is asking for is its own dishonesty. The $300
+  lane budget stays the performance headline; cash and budget are never summed.
+- **Nav + verdict line.** WATCH (Live, Wallet) / EVIDENCE (Research, Testing, Signals) / MACHINE (the rest)
+  replaces the WATCH-vs-Lab bin; all thirteen pages stay reachable, collapse state migrates off the old
+  key. A persistent verdict line sits above the activity on both Watch pages, DERIVED from
+  `/api/v1/dashboard` `candidate_rows[].validation_state == "VALIDATED"` and `/api/v1/equity-curve` — never
+  hardcoded (tests prove 1 and 2 validated render), and an unreadable source says so rather than defaulting
+  to a reassuring value.
+
+Parked: **arm-expiry — an unattended start never expires; this MUST exist before real-money use.**
+`_TRANSPORT_ERRORS = (OSError,)` can misclassify a local disk error as a connectivity outage (cadence/log
+only). A coin delisted while holding a position loses its software stop evaluation (unchanged; the
+venue-side resting stop remains). Supervisor logs are unrotated.
+
+Manifest-tracked files rehashed (D-030): `dashboard.html`, `tests/test_dashboard.py`, `DECISION_LOG.md`.
+Gates: package integrity PASS (453 rows), project-wide ruff + mypy (139 files) clean, 402 tests pass.
+
 ## v8.155 — 2026-07-27 — SSOT resync: AD.md and PROJECT_STATE.md brought current after eight versions of drift
 
 Documentation-only; no source changed. The operator asked whether the architecture and state documents had

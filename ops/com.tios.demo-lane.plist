@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Supervised auto-start for the demo activity lane. Fake money, execution authority NONE.
+  This runs scripts/supervise_demo_lane.py, NEVER the lane directly: the kill-switch rail,
+  the crash-loop guard and the audit record all live in that wrapper.
+
+  KeepAlive is a dict with SuccessfulExit=false, deliberately:
+    * exit 0  -> launchd does NOT restart. The supervisor exits 0 when KILL_SWITCH is present or
+                 the crash-loop guard trips, so a lane the operator stopped STAYS down. The lane
+                 itself also returns 0 when it sees KILL_SWITCH mid-loop, so a stop from the
+                 dashboard likewise ends supervision instead of being fought by a restart.
+    * exit !=0 -> launchd restarts. That covers a crash, an OOM kill, and the lane's exit 3 when
+                 another lane already holds lane.lock. Restarts are bounded by ThrottleInterval
+                 below and then stopped for good by the supervisor's crash-loop guard.
+  Crashed=true is intentionally NOT set: a signal-killed lane is a crash and should come back;
+  the guard is what stops that from becoming a loop.
+
+  ThrottleInterval 60 is the second layer against restart storms: at most one start per minute,
+  so the guard's 5-starts-in-10-minutes threshold is reached in an orderly way, not instantly.
+
+  uv is invoked by ABSOLUTE path (/Users/user/.local/bin/uv): launchd hands the agent a minimal
+  PATH that does not include ~/.local/bin, so a bare `uv` would not resolve.
+
+  No secrets here. The lane loads .env itself from the repo root.
+-->
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.tios.demo-lane</string>
+
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Users/user/.local/bin/uv</string>
+		<string>run</string>
+		<string>python</string>
+		<string>scripts/supervise_demo_lane.py</string>
+	</array>
+
+	<key>WorkingDirectory</key>
+	<string>/Users/user/Downloads/trading_os_project_package</string>
+
+	<key>RunAtLoad</key>
+	<true/>
+
+	<key>KeepAlive</key>
+	<dict>
+		<key>SuccessfulExit</key>
+		<false/>
+	</dict>
+
+	<key>ThrottleInterval</key>
+	<integer>60</integer>
+
+	<key>ProcessType</key>
+	<string>Background</string>
+
+	<key>StandardOutPath</key>
+	<string>/Users/user/Downloads/trading_os_project_package/artifacts/trading_domain/demo_lane/supervisor.out.log</string>
+
+	<key>StandardErrorPath</key>
+	<string>/Users/user/Downloads/trading_os_project_package/artifacts/trading_domain/demo_lane/supervisor.err.log</string>
+</dict>
+</plist>

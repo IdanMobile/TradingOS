@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.155 SSOT resync — AD.md and PROJECT_STATE.md brought to v8.154 after eight versions of drift; two undocumented POST routes recorded (2026-07-27). Supersedes v8.154 hashes.
+Package version: v8.156 opt-in supervised auto-start (boundary change, D-125); lane resilience; venue identity + cash surfaced; Watch/Evidence/Machine + verdict line (2026-07-27). Supersedes v8.155 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -11,7 +11,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
 | `PROJECT_STATE.md` | `c8d381d9bfc5ae7b3cfe81eb1bda33187add52f181c4974901580ed0a63fa238` |
-| `DECISION_LOG.md` | `f80bc5576a15cbd4a1de17b19486ae067802d7839deb4d2c38fe9344f8f4a247` |
+| `DECISION_LOG.md` | `70684bd158ff9e963d4c6eb026fb12dbe0134d53ef29a47ee1d41174a160dd84` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
@@ -70,8 +70,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 |---|---|
 | `src/tios/services/dashboard_api/eth_signal.py` | `8b1a35780a5ef492d304cee65e4af33ea08e84a245a58290e99889e8fcb8a027` |
 | `src/tios/services/dashboard_ui/server.py` | `0bf6d2e0f7366f3e90a41bf5dd11ec7d1837f554dac19e48ace005056008b5f0` |
-| `src/tios/services/dashboard_ui/dashboard.html` | `3c8c481eb020c8570ddbd6a66ae9d46c6b3c10fe3984deeee34f130c77599777` |
-| `tests/test_dashboard.py` | `6eda81d296ad8c5fa0b4bf8b0d543745227d80b8ba5c431bc99563193ff38e05` |
+| `src/tios/services/dashboard_ui/dashboard.html` | `ca74dcb2d231cbf9dd1494ccb109e1c7ffc65df801adf9a2d3746c01a34837f5` |
+| `tests/test_dashboard.py` | `b970b28c874dfdae76657f26619863ff0adf74f89fe0fb6a025aead855893d58` |
 
 ## Required handoff inputs — planning system (added v8)
 
@@ -629,8 +629,8 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `scripts/run_prospective_observation_flow.py` | `049a30eae86bba0abb071016149a3414726a1d47655dcb1b1c19d5e69917f449` |
 | `tests/test_observation_flow.py` | `06bdf250404373a9e3636c5e40e09bde1ff03a0ceb538a7af9dcb95813b70611` |
 | `src/tios/services/dashboard_api/status.py` | `12d0107864407f06bc04219b5bbb6d9f322d4ce23e6cb70ec36737604b43e951` |
-| `src/tios/services/dashboard_ui/dashboard.html` | `3c8c481eb020c8570ddbd6a66ae9d46c6b3c10fe3984deeee34f130c77599777` |
-| `tests/test_dashboard.py` | `6eda81d296ad8c5fa0b4bf8b0d543745227d80b8ba5c431bc99563193ff38e05` |
+| `src/tios/services/dashboard_ui/dashboard.html` | `ca74dcb2d231cbf9dd1494ccb109e1c7ffc65df801adf9a2d3746c01a34837f5` |
+| `tests/test_dashboard.py` | `b970b28c874dfdae76657f26619863ff0adf74f89fe0fb6a025aead855893d58` |
 
 ## Managed observation adoption (added v8.101)
 

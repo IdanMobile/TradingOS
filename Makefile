@@ -62,6 +62,33 @@ demo-lane:
 demo-lane-once:
 	uv run python scripts/demo_eth_lane.py --once
 
+# Supervised auto-start for the demo activity lane (launchd). The LaunchAgent runs
+# scripts/supervise_demo_lane.py, never the lane directly: KILL_SWITCH refusal, the crash-loop
+# guard and the audit record live in that wrapper. Fake money, execution authority NONE —
+# supervision increases measurement UPTIME only, it does not improve results.
+LANE_AGENT = com.tios.demo-lane
+LANE_AGENT_PLIST = $(HOME)/Library/LaunchAgents/$(LANE_AGENT).plist
+
+lane-supervise-install:
+	@echo "installing $(LANE_AGENT): copy ops/$(LANE_AGENT).plist -> $(LANE_AGENT_PLIST), then launchctl bootstrap gui/$$(id -u)"
+	@mkdir -p $(HOME)/Library/LaunchAgents
+	cp ops/$(LANE_AGENT).plist $(LANE_AGENT_PLIST)
+	launchctl bootstrap gui/$$(id -u) $(LANE_AGENT_PLIST)
+
+lane-supervise-uninstall:
+	@echo "uninstalling $(LANE_AGENT): launchctl bootout gui/$$(id -u), then remove $(LANE_AGENT_PLIST)"
+	-launchctl bootout gui/$$(id -u)/$(LANE_AGENT)
+	rm -f $(LANE_AGENT_PLIST)
+
+lane-supervise-status:
+	@echo "status of $(LANE_AGENT) (launchctl print; nothing is started or stopped)"
+	@launchctl print gui/$$(id -u)/$(LANE_AGENT) || echo "$(LANE_AGENT) is not loaded"
+
+# Clears the supervisor's crash-loop guard so a refused lane can be supervised again.
+lane-supervise-clear-guard:
+	@echo "clearing the crash-loop guard: rm -f artifacts/trading_domain/demo_lane/supervisor_starts.json"
+	rm -f artifacts/trading_domain/demo_lane/supervisor_starts.json
+
 jobs-init:
 	uv run python scripts/run_job_worker.py init
 
@@ -82,4 +109,5 @@ orchestrator-once:
 	@uv run python scripts/run_orchestrator.py --once
 
 .PHONY: check check-full _gate bootstrap audit required dashboard jobs-init jobs-once eth-signal \
-	orchestrator orchestrator-once
+	orchestrator orchestrator-once lane-supervise-install lane-supervise-uninstall \
+	lane-supervise-status lane-supervise-clear-guard
