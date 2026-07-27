@@ -109,10 +109,22 @@ lane-supervise-install:
 	@echo "installing $(LANE_AGENT): copy ops/$(LANE_AGENT).plist -> $(LANE_AGENT_PLIST), then launchctl bootstrap gui/$$(id -u)"
 	@mkdir -p $(HOME)/Library/LaunchAgents
 	cp ops/$(LANE_AGENT).plist $(LANE_AGENT_PLIST)
-	@# Idempotent: bootstrap fails if the label is already loaded, so drop any existing one first.
-	@# `make up` must be safe to re-run; the bootout is expected to fail on a clean machine.
-	-@launchctl bootout gui/$$(id -u)/$(LANE_AGENT) 2>/dev/null || true
-	launchctl bootstrap gui/$$(id -u) $(LANE_AGENT_PLIST)
+	@# `launchctl bootout` and `cp` are both asynchronous from launchd's point of view: bootstrapping
+	@# a label immediately after either one loses a race and reports the famously unhelpful
+	@# "Bootstrap failed: 5: Input/output error". Observed in practice on a clean first install; the
+	@# identical command succeeded moments later. So: drop any existing label, let it settle, then
+	@# bootstrap with ONE retry, and VERIFY the result instead of trusting the exit code.
+	@launchctl bootout gui/$$(id -u)/$(LANE_AGENT) 2>/dev/null || true
+	@sleep 2
+	@launchctl bootstrap gui/$$(id -u) $(LANE_AGENT_PLIST) 2>&1 \
+		|| { echo "first bootstrap attempt failed (launchd race) — settling and retrying once"; \
+		     sleep 3; launchctl bootstrap gui/$$(id -u) $(LANE_AGENT_PLIST) 2>&1 || true; }
+	@launchctl print gui/$$(id -u)/$(LANE_AGENT) >/dev/null 2>&1 \
+		&& echo "$(LANE_AGENT) is loaded." \
+		|| { echo "FAILED: $(LANE_AGENT) is not loaded. Diagnose with:"; \
+		     echo "  plutil -lint $(LANE_AGENT_PLIST)"; \
+		     echo "  launchctl print-disabled gui/$$(id -u) | grep tios"; \
+		     echo "  tail artifacts/trading_domain/demo_lane/supervisor.err.log"; exit 1; }
 
 lane-supervise-uninstall:
 	@echo "uninstalling $(LANE_AGENT): launchctl bootout gui/$$(id -u), then remove $(LANE_AGENT_PLIST)"
