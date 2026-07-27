@@ -218,8 +218,10 @@ class Venue:
 @pytest.fixture(autouse=True)
 def _fresh_warn_set() -> Any:
     act._NO_DATA_WARNED.clear()
+    perp.reset_fee_burn_halt()  # per-process counter; every test starts (and leaves) it clean
     yield
     act._NO_DATA_WARNED.clear()
+    perp.reset_fee_burn_halt()
 
 
 @pytest.fixture()
@@ -732,3 +734,114 @@ def test_leverage_can_never_put_liquidation_inside_the_disaster_stop() -> None:
     assert perp.SHORT_NOTIONAL_USDT == perp.SHORT_MARGIN_USDT * perp.REQUIRED_LEVERAGE
     # The shared cap still counts MARGIN, so 12 slots still means 12 positions.
     assert perp.SHORT_QUOTE_USDT == perp.SHORT_MARGIN_USDT
+
+
+# --- FEE-BURN HALT ----------------------------------------------------------------------------
+# The repeating cost this guards against: the venue accepts the short but will not confirm the
+# protective stop, so every attempt opens and force-closes for nothing and burns TWO taker fees.
+
+
+def _open_position(venue: Venue, symbol: str, **overrides: str) -> None:
+    venue.positions[symbol] = {
+        "size": "0.25",
+        "side": "Sell",
+        "avgPrice": "100",
+        "stopLoss": "115.00",
+        **overrides,
+    }
+
+
+def test_fee_burn_halt_trips_at_the_threshold_and_stops_further_entries(lane_dirs: Path) -> None:
+    """Threshold reached => NEW entries stop: no further Sell ever reaches the venue this run."""
+    assert perp.STOP_UNCONFIRMED_HALT_THRESHOLD == 2
+    venue = Venue(marks={s: "100" for s in ("BTCUSDT", "ETHUSDT", "SOLUSDT")}, stop_fails=True)
+    for symbol in ("BTCUSDT", "ETHUSDT", "SOLUSDT"):
+        _arm(symbol)
+
+    assert _short(venue, "BTCUSDT", "SHORT")["stage"] == "closed_unprotected"
+    assert perp.short_entries_disabled() is False  # one is a fluke, not a pattern
+    assert _short(venue, "ETHUSDT", "SHORT")["stage"] == "closed_unprotected"
+    assert perp.short_entries_disabled() is True
+
+    sells_before = [o for o in venue.perp_orders() if o["side"] == "Sell"]
+    assert len(sells_before) == 2
+    assert _short(venue, "SOLUSDT", "SHORT")["stage"] == "skipped_entries_disabled"
+    assert [o for o in venue.perp_orders() if o["side"] == "Sell"] == sells_before
+
+
+def test_fee_burn_halt_is_per_process_and_a_fresh_run_starts_clean(lane_dirs: Path) -> None:
+    """Scoped like `_NO_DATA_WARNED`: fixing the payload shape and re-running clears it."""
+    venue = Venue(marks={"BTCUSDT": "100", "ETHUSDT": "100"}, stop_fails=True)
+    for symbol in ("BTCUSDT", "ETHUSDT"):
+        _arm(symbol)
+    _short(venue, "BTCUSDT", "SHORT")
+    _short(venue, "ETHUSDT", "SHORT")
+    assert perp.short_entries_disabled() is True
+    perp.reset_fee_burn_halt()
+    assert perp.short_entries_disabled() is False
+
+
+def test_fee_burn_halt_never_stops_the_unprotected_sweep(
+    lane_dirs: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Halt tripped, but an already-open short with no confirmable stop is STILL closed."""
+    monkeypatch.setattr(perp, "_SHORT_ENTRIES_DISABLED", True)
+    venue = Venue(marks={"BTCUSDT": "100"}, stop_fails=True)
+    _open_position(venue, "BTCUSDT", stopLoss="")
+    _arm("BTCUSDT")
+    report = _short(venue, "BTCUSDT", None)
+    assert report["stage"] == "closed_unprotected"
+    assert venue.perp_orders()[0]["reduceOnly"] is True
+    assert venue.positions["BTCUSDT"]["size"] == "0"
+
+
+def test_fee_burn_halt_never_stops_the_disaster_stop(
+    lane_dirs: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Halt tripped, mark 16% against an open short: the local mirrored stop still fires."""
+    monkeypatch.setattr(perp, "_SHORT_ENTRIES_DISABLED", True)
+    venue = Venue(marks={"BTCUSDT": "116"})
+    _open_position(venue, "BTCUSDT")
+    _arm("BTCUSDT")
+    report = _short(venue, "BTCUSDT", None)
+    assert report["stage"] == "disaster_stop"
+    assert report["action"]["reason"] == "DISASTER_STOP_SHORT"
+    assert venue.positions["BTCUSDT"]["size"] == "0"
+
+
+def test_fee_burn_halt_never_stops_a_cover(
+    lane_dirs: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Halt tripped: a COVER signal still closes the open short, reduce-only."""
+    monkeypatch.setattr(perp, "_SHORT_ENTRIES_DISABLED", True)
+    venue = Venue(marks={"BTCUSDT": "95"})
+    _open_position(venue, "BTCUSDT")
+    _arm("BTCUSDT")
+    report = _short(venue, "BTCUSDT", "COVER")
+    assert report["stage"] == "cover"
+    assert venue.perp_orders()[0]["reduceOnly"] is True
+    assert perp.short_open("BTCUSDT") is False
+
+
+def test_fee_burn_halt_never_stops_the_kill_switch(
+    lane_dirs: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Halt tripped: the kill switch still halts everything and still refuses the order path."""
+    monkeypatch.setattr(perp, "_SHORT_ENTRIES_DISABLED", True)
+    (lane_dirs / "KILL_SWITCH").write_text("stop")
+    venue = Venue(closes={"BTCUSDT": BEAR}, marks={"BTCUSDT": "100"})
+    _open_position(venue, "BTCUSDT")
+    _arm("BTCUSDT")
+    assert _cycle(venue, ["BTCUSDT"], shorts=True)["kill_switch"] is True
+    assert venue.posts == []
+    record = perp.open_short(
+        "BTCUSDT",
+        "k",
+        "s",
+        get_transport=venue.get,
+        post_transport=venue.post,
+        sleep=lambda _s: None,
+        signal_ref="TEST",
+    )
+    assert record["stage"] == "kill_switch"
+    assert venue.posts == []

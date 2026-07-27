@@ -1,5 +1,36 @@
 # Package Changelog
 
+## v8.161 — 2026-07-28 — Bounded first contact for the short side: single-symbol smoke test, automatic fee-burn halt, legible refusals
+
+Implements the live smoke test that D-127 made a PRECONDITION of enabling shorts, and shrinks its blast
+radius. Shorts remain DEFAULT-OFF and have still never run. No lane, order or venue call was made building
+this. See DECISION_LOG D-127/D-128.
+
+- **`--symbols BTCUSDT`** limits the `--activity` universe so first contact is ONE coin rather than all 37.
+  Values are validated against the existing `ACTIVITY_UNIVERSE` — no free-form symbol can reach an order
+  path — and a bad symbol exits 2 **without starting the lane or taking the lane lock**. Absent, the
+  universe is byte-identically today's.
+- **Automatic fee-burn halt** for the one failure the review said was most likely to bite: if the
+  `tpslMode` payload shape is wrong, a short opens, fails to confirm its stop, is force-closed, and repeats
+  every cycle — two taker fees each time, unattended, forever. After
+  `STOP_UNCONFIRMED_HALT_THRESHOLD = 2` such round trips the short side disables **new entries only** for
+  the rest of the run and says why. Worst case is therefore bounded at **4 taker fees**.
+  **Risk reduction is never disabled by it** — the unprotected sweep, stop re-attachment, the mirrored
+  disaster stop, signal covers, `reduceOnly` and the kill switch all keep working for anything already
+  open. Four separate tests prove each still fires with the halt tripped.
+- **Legible first contact:** an end-of-cycle summary groups refusals by reason
+  (`leverage_not_required_multiple` / `margin_not_isolated` / `switch_isolated` /
+  `no_one_way_position_row` / `position_read`) with opened, force-closed and first-sight tallies. If EVERY
+  symbol is refused for isolation it names the UNIFIED-account case explicitly as **fail-closed, expected,
+  and inert** — so a silent nothing is never mistaken for breakage. Nothing is printed or computed when
+  shorts are off.
+
+Still NOT settleable offline, stated rather than assumed: whether per-symbol isolation is accepted on this
+UTA account, and whether the `tpslMode: "Full"` shape is correct. The stubs encode what the code expects,
+not what Bybit does — which is precisely why the fee-burn halt exists.
+
+Gates: ruff + mypy clean, 451 tests pass across eight suites. Long-only behaviour byte-identical.
+
 ## v8.160 — 2026-07-27 — Leverage 5x FIXED (not 25x, not confidence-scaled); unsafe leverage now fails at import
 
 The operator asked for up to 25x scaled by confidence. Both halves declined on evidence and replaced with

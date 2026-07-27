@@ -624,3 +624,137 @@ def test_wait_returns_true_when_no_kill_switch_and_sleeps_the_whole_wait(lane_di
     calls: list[float] = []
     assert act._wait_honouring_kill_switch(70.0, calls.append) is True
     assert sum(calls) == 70.0  # cadence is preserved exactly; only the granularity changed
+
+
+# --- SINGLE-SYMBOL SMOKE TEST (--symbols) --------------------------------------------------------
+# The whole point: a first live `--shorts` contact must be ONE coin, not the full ~37-coin universe.
+
+
+def test_symbols_defaults_are_still_the_full_universe() -> None:
+    """Absent the option, both entry points score exactly what they always have."""
+    assert act.run_activity_cycle.__kwdefaults__["symbols"] is act.ACTIVITY_UNIVERSE
+    assert act.run_activity_lane.__kwdefaults__["symbols"] is act.ACTIVITY_UNIVERSE
+
+
+def test_parse_symbols_accepts_only_members_of_the_universe() -> None:
+    """TRUST BOUNDARY: no free-form string from the command line can reach an order path."""
+    assert act.parse_symbols("BTCUSDT") == ("BTCUSDT",)
+    assert act.parse_symbols(" btcusdt , ETHUSDT ") == ("BTCUSDT", "ETHUSDT")
+    assert act.parse_symbols("BTCUSDT,BTCUSDT") == ("BTCUSDT",)  # de-duplicated
+    for bad in ("NOTACOIN", "BTCUSDT,NOTACOIN", "BTC-USDT", "", " , "):
+        with pytest.raises(ValueError):
+            act.parse_symbols(bad)
+
+
+def test_symbols_limits_the_scored_universe(lane_dirs: Path) -> None:
+    """Only the named coin is fetched and scored — the other 36 are never touched."""
+    venue = ActivityVenue(closes={"BTCUSDT": BULL, "ETHUSDT": BULL})
+    report = _cycle(venue, list(act.parse_symbols("BTCUSDT")))
+    assert list(report["coins"]) == ["BTCUSDT"]
+    assert {ActivityVenue._symbol(url) for url in venue.kline_urls} == {"BTCUSDT"}
+
+
+def test_cli_symbols_reaches_the_lane_and_a_bad_one_never_starts_it(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """`--activity --shorts --symbols BTCUSDT` wires through; an unknown symbol exits 2 unrun."""
+    from contextlib import contextmanager
+
+    calls: list[dict[str, Any]] = []
+
+    @contextmanager
+    def _lock() -> Any:
+        yield True
+
+    monkeypatch.setattr(lane.pf, "load_dotenv", lambda _p: None)
+    monkeypatch.setattr(lane.pf, "_first", lambda _names: "k")
+    monkeypatch.setattr(lane, "exclusive_lane_lock", _lock)
+    monkeypatch.setattr(
+        act, "run_activity_lane", lambda *a, **kw: (calls.append(kw), 0)[1], raising=True
+    )
+
+    monkeypatch.setattr(
+        sys, "argv", ["demo_eth_lane.py", "--activity", "--shorts", "--symbols", "BTCUSDT"]
+    )
+    assert lane.main() == 0
+    assert calls[0]["symbols"] == ("BTCUSDT",) and calls[0]["shorts"] is True
+
+    monkeypatch.setattr(sys, "argv", ["demo_eth_lane.py", "--activity", "--symbols", "NOTACOIN"])
+    assert lane.main() == 2
+    assert len(calls) == 1  # the lane was never started
+
+    monkeypatch.setattr(sys, "argv", ["demo_eth_lane.py", "--activity"])
+    assert lane.main() == 0
+    assert calls[1]["symbols"] is act.ACTIVITY_UNIVERSE  # default = today's behaviour
+
+
+# --- END-OF-CYCLE SHORT SUMMARY ------------------------------------------------------------------
+
+
+def _refused(reason: str) -> dict[str, Any]:
+    return {"stage": "refused_unverified", "action": {"detail": {"refused": reason}}}
+
+
+def test_short_summary_groups_refusals_by_reason() -> None:
+    """First contact is readable without grepping: why each symbol was refused, and how many."""
+    coins = {
+        "AUSDT": _refused("leverage_not_required_multiple"),
+        "BUSDT": _refused("margin_not_isolated"),
+        "CUSDT": _refused("margin_not_isolated"),
+        "DUSDT": _refused("no_one_way_position_row"),
+        "EUSDT": _refused("position_read"),
+        "FUSDT": {"stage": "short_entry"},
+        "GUSDT": {"stage": "closed_unprotected"},
+        "HUSDT": {"stage": "armed"},
+    }
+    summary = act.short_cycle_summary({k: {"short": v} for k, v in coins.items()})
+    assert summary["refused"] == {
+        "leverage_not_required_multiple": 1,
+        "margin_not_isolated": 2,
+        "no_one_way_position_row": 1,
+        "position_read": 1,
+    }
+    assert summary["refused_total"] == 5
+    assert summary["opened"] == 1
+    assert summary["closed_unprotected"] == 1
+    assert summary["armed_first_sight"] == 1
+    assert summary["all_refused_isolation"] is False  # a non-isolation refusal is present
+
+
+def test_short_summary_names_the_uta_case_when_every_symbol_is_refused_for_isolation(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """The expected fail-closed UTA outcome is stated in words, never a silent nothing."""
+    coins = {
+        "AUSDT": {"short": _refused("switch_isolated")},
+        "BUSDT": {"short": _refused("margin_not_isolated")},
+    }
+    summary = act.short_cycle_summary(coins)
+    assert summary["all_refused_isolation"] is True
+    act.print_short_summary(summary)
+    err = capsys.readouterr().err
+    assert "UNIFIED" in err and "FAIL-CLOSED and EXPECTED" in err and "INERT" in err
+    assert "switch_isolated=1" in err and "margin_not_isolated=1" in err
+    assert "fee-burn halt not tripped" in err
+
+
+def test_short_summary_reports_the_fee_burn_halt(
+    capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The halt is visible in the per-cycle block, not only in the one-off trip log."""
+    import scripts.demo_perp_short as perp
+
+    monkeypatch.setattr(perp, "_SHORT_ENTRIES_DISABLED", True)
+    summary = act.short_cycle_summary({"AUSDT": {"short": {"stage": "closed_unprotected"}}})
+    assert summary["fee_burn_halt_tripped"] is True
+    act.print_short_summary(summary)
+    err = capsys.readouterr().err
+    assert "fee-burn halt TRIPPED" in err
+    assert "NEW SHORT ENTRIES ARE DISABLED" in err
+    assert "Covers, the disaster stop" in err  # risk reduction explicitly still runs
+
+
+def test_no_short_summary_at_all_when_shorts_are_off(lane_dirs: Path) -> None:
+    """Shorts absent => the long-only report is exactly what it has always been."""
+    venue = ActivityVenue(closes={"BTCUSDT": BULL})
+    assert "short_summary" not in _cycle(venue, ["BTCUSDT"])

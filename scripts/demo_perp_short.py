@@ -103,6 +103,56 @@ SHORT_STRATEGY = "ACTIVITY-CONFLUENCE-SHORT"
 _CONFIRM_POLLS = 12
 _CONFIRM_SLEEP_SECONDS = 0.5
 
+# --- FEE-BURN HALT ------------------------------------------------------------------------------
+# The failure this exists for: the venue ACCEPTS the short but rejects or never confirms the
+# protective stop (e.g. a wrong `tpslMode`/`trading-stop` payload shape), so `open_short` force-
+# closes on the spot. That outcome is SAFE — no unprotected perp exposure ever survives — but it
+# costs TWO taker fees per attempt, and unattended it repeats every single cycle, forever, for
+# every symbol. After this many such open-then-immediately-close round trips in ONE run, NEW short
+# ENTRIES stop for the rest of the run.
+#
+# WHAT THIS DISABLES: new short entries, and nothing else. Covers, the local mirrored disaster
+# stop, the every-cycle unprotected sweep and the kill switch all keep working for any short that is
+# already open — risk REDUCTION is never gated by this, exactly as it is never gated by
+# `verify_symbol` or by the shared cap.
+#
+# Per-PROCESS, like `demo_activity_lane._NO_DATA_WARNED`: a fresh run starts clean, so an operator
+# who fixes the payload shape just re-runs the lane.
+STOP_UNCONFIRMED_HALT_THRESHOLD = 2
+_STOP_UNCONFIRMED_CLOSES = 0
+_SHORT_ENTRIES_DISABLED = False
+
+
+def reset_fee_burn_halt() -> None:
+    """Clear the per-run fee-burn counter. Called once at the start of a lane run."""
+    global _STOP_UNCONFIRMED_CLOSES, _SHORT_ENTRIES_DISABLED
+    _STOP_UNCONFIRMED_CLOSES = 0
+    _SHORT_ENTRIES_DISABLED = False
+
+
+def short_entries_disabled() -> bool:
+    """True once the fee-burn halt has tripped. Gates NEW ENTRIES ONLY, never risk reduction."""
+    return _SHORT_ENTRIES_DISABLED
+
+
+def _count_stop_unconfirmed_close(symbol: str) -> None:
+    """Record one open-then-force-close round trip and trip the halt at the threshold."""
+    global _STOP_UNCONFIRMED_CLOSES, _SHORT_ENTRIES_DISABLED
+    _STOP_UNCONFIRMED_CLOSES += 1
+    if _SHORT_ENTRIES_DISABLED or _STOP_UNCONFIRMED_CLOSES < STOP_UNCONFIRMED_HALT_THRESHOLD:
+        return
+    _SHORT_ENTRIES_DISABLED = True
+    print(
+        f"SHORT SIDE DISABLED for the rest of this run ({symbol} was the "
+        f"{_STOP_UNCONFIRMED_CLOSES}th): a short opened and then had to be force-closed because "
+        "the venue would not confirm its protective stop. The likely cause is that this account "
+        "rejects the /v5/position/trading-stop payload shape this lane sends, so every attempt "
+        "opens and closes a position for nothing and burns TWO taker fees. NEW SHORT ENTRIES ARE "
+        "NOW SKIPPED. Covers, the disaster stop, the unprotected sweep and the kill switch all "
+        "keep running for any short still open.",
+        file=sys.stderr,
+    )
+
 
 def perp_ledger_path() -> Path:
     """Resolved at call time so tests that repoint `lane.LANE_DIR` are honoured."""
@@ -523,6 +573,9 @@ def open_short(
             sleep=sleep,
             reason="STOP_UNCONFIRMED_IMMEDIATE_CLOSE",
         )
+        # Two taker fees just went out for nothing. Count it; at the threshold this trips the
+        # fee-burn halt and no further ENTRY is attempted this run.
+        _count_stop_unconfirmed_close(symbol)
         return append_perp_ledger(
             _record(
                 symbol,
@@ -667,6 +720,12 @@ def run_short_cycle(
         write_short_state(symbol, {**state, "short_size": "0", "entry_price": None})
     if decision != "SHORT":
         return {**result, "stage": "flat"}
+    if short_entries_disabled():
+        # FEE-BURN HALT. Everything above this line — the unprotected sweep, the disaster stop and
+        # the cover — has already run for any open short and is deliberately NOT reachable from
+        # here; only the ENTRY below is stopped. `open_short` is reached from nowhere else, so this
+        # one guard covers the whole entry path.
+        return {**result, "stage": "skipped_entries_disabled"}
     if long_open:
         # A coin is NEVER long and short at the same time. The long side ran first this cycle; if
         # it is still open we simply do not short.

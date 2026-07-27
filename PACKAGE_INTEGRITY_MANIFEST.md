@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.160 leverage 5x fixed with an import-time liquidation-vs-stop invariant (D-128) (2026-07-27). Supersedes v8.159 hashes.
+Package version: v8.161 bounded first contact for shorts — single-symbol smoke test, fee-burn halt, legible refusals (2026-07-28). Supersedes v8.160 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 

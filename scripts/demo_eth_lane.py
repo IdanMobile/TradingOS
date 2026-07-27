@@ -3102,6 +3102,14 @@ def main() -> int:
         help="--activity only: also run the DEFAULT-DISABLED Bybit perp SHORT side (1x, isolated, "
         "verified per symbol; shares the SAME total capital cap as the long side)",
     )
+    # Absent (the default) => the FULL universe, exactly as before. Present => a validated subset,
+    # which is how a first live --shorts contact is kept to one symbol.
+    parser.add_argument(
+        "--symbols",
+        default=None,
+        help="--activity only: comma-separated subset of the activity universe to score, e.g. "
+        "BTCUSDT. Every value must already be in ACTIVITY_UNIVERSE. Default: the full universe",
+    )
     args = parser.parse_args()
 
     pf.load_dotenv(pf.ROOT / ".env")
@@ -3114,6 +3122,16 @@ def main() -> int:
         # the single lane.lock so it can never run alongside the ETH/multi lanes and double-trade.
         import scripts.demo_activity_lane as activity  # local import avoids an import cycle
 
+        # Validated BEFORE the lane lock: a bad --symbols is a usage error, not a lane run.
+        try:
+            symbols = (
+                activity.ACTIVITY_UNIVERSE
+                if args.symbols is None
+                else activity.parse_symbols(args.symbols)
+            )
+        except ValueError as error:
+            print(str(error))
+            return 2
         with exclusive_lane_lock() as acquired:
             if not acquired:
                 print("another demo lane is already running — refusing to start a second one.")
@@ -3126,6 +3144,7 @@ def main() -> int:
                 interval=args.interval,
                 loop=args.loop,
                 shorts=args.shorts or activity.perp.SHORTS_ENABLED,
+                symbols=symbols,
             )
     if args.multi:
         # Multi-coin is execution-measurement, always NOT_ACTIVATED (per-coin Stage B is out of

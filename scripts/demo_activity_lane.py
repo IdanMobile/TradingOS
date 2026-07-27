@@ -164,6 +164,96 @@ OUTAGE_BACKOFF_MAX_SECONDS = 900.0
 OUTAGE_BACKOFF_POLL_SECONDS = 30.0
 
 
+# Refusal reasons from `perp.verify_symbol` that mean "this account will not do PER-SYMBOL isolated
+# margin". On a Bybit UNIFIED (UTA) account isolated margin is an ACCOUNT-level setting, so every
+# symbol refuses here and the short side is simply inert. That is the documented fail-closed
+# outcome, not a defect, and the cycle summary says so in words.
+_ISOLATION_REFUSALS = frozenset({"switch_isolated", "margin_not_isolated"})
+
+
+def parse_symbols(raw: str) -> tuple[str, ...]:
+    """Comma-separated CLI symbols -> a validated, de-duplicated subset of ACTIVITY_UNIVERSE.
+
+    TRUST BOUNDARY: this is the only place a symbol enters the lane from outside, and anything not
+    already in `ACTIVITY_UNIVERSE` is REJECTED — no free-form string from the command line can ever
+    reach an order path. Exists so a first live `--shorts` contact can be ONE symbol instead of the
+    whole universe.
+    """
+    wanted = [part.strip().upper() for part in raw.split(",") if part.strip()]
+    if not wanted:
+        raise ValueError("--symbols was empty; omit it to score the full activity universe")
+    unknown = sorted({symbol for symbol in wanted if symbol not in ACTIVITY_UNIVERSE})
+    if unknown:
+        raise ValueError(
+            f"--symbols rejected: {', '.join(unknown)} not in the activity universe. "
+            f"Choose from: {', '.join(ACTIVITY_UNIVERSE)}"
+        )
+    return tuple(dict.fromkeys(wanted))
+
+
+def short_cycle_summary(coins: dict[str, Any]) -> dict[str, Any]:
+    """Group one cycle's short-side outcomes so first contact is readable without grepping."""
+    refused: dict[str, int] = {}
+    reported = opened = closed_unprotected = armed = 0
+    for report in (coin.get("short") for coin in coins.values()):
+        if not isinstance(report, dict):
+            continue
+        reported += 1
+        stage = report.get("stage")
+        if stage == "short_entry":
+            opened += 1
+        elif stage == "closed_unprotected":
+            closed_unprotected += 1
+        elif stage == "armed":
+            armed += 1
+        elif stage == "refused_unverified":
+            detail = (report.get("action") or {}).get("detail") or {}
+            reason = str(detail.get("refused", "unknown"))
+            refused[reason] = refused.get(reason, 0) + 1
+    return {
+        "symbols_reported": reported,
+        "refused_total": sum(refused.values()),
+        "refused": dict(sorted(refused.items())),
+        "opened": opened,
+        "closed_unprotected": closed_unprotected,
+        "armed_first_sight": armed,
+        "fee_burn_halt_tripped": perp.short_entries_disabled(),
+        # EVERY symbol refused, and every refusal was about isolation -> the expected UTA case.
+        "all_refused_isolation": reported > 0
+        and sum(refused.values()) == reported
+        and set(refused) <= _ISOLATION_REFUSALS,
+    }
+
+
+def print_short_summary(summary: dict[str, Any]) -> None:
+    """One legible block per cycle, so a silent nothing is never mistaken for a failure."""
+    reasons = ", ".join(f"{k}={v}" for k, v in summary["refused"].items()) or "none"
+    print(
+        f"SHORT SIDE this cycle: {summary['opened']} opened, "
+        f"{summary['refused_total']} refused ({reasons}), "
+        f"{summary['closed_unprotected']} force-closed unprotected, "
+        f"{summary['armed_first_sight']} first-sight (armed, never trades on first sight), "
+        f"fee-burn halt {'TRIPPED' if summary['fee_burn_halt_tripped'] else 'not tripped'}.",
+        file=sys.stderr,
+    )
+    if summary["fee_burn_halt_tripped"]:
+        print(
+            "  NEW SHORT ENTRIES ARE DISABLED for the rest of this run (the venue would not "
+            "confirm the protective stop). Covers, the disaster stop, the unprotected sweep and "
+            "the kill switch still run for any short that is still open.",
+            file=sys.stderr,
+        )
+    if summary["all_refused_isolation"]:
+        print(
+            "  EVERY symbol was refused for margin/isolation. This looks like the Bybit UNIFIED "
+            "(UTA) account case: isolated margin is an ACCOUNT-level setting there, so per-symbol "
+            "/v5/position/switch-isolated is unsupported and this lane will not change an "
+            "account-level setting. It is FAIL-CLOSED and EXPECTED, not a failure — no short was "
+            "opened, no entry order was sent, the short side is simply INERT.",
+            file=sys.stderr,
+        )
+
+
 def candles_from_bars(bars: tuple[MarketBar, ...]) -> ext.Candles:
     """MarketBar tuple -> the research builders' aligned Decimal-column `Candles` dict."""
     return {
@@ -474,7 +564,7 @@ def run_activity_cycle(
     else:
         for message in transport_failures:
             print(message, file=sys.stderr)
-    return {
+    report: dict[str, Any] = {
         "kill_switch": False,
         "total_cap": str(total_cap),
         "remaining_budget": str(remaining),
@@ -484,6 +574,12 @@ def run_activity_cycle(
         "coins": coins,
         **lane.LANE_LABEL,
     }
+    if shorts:
+        # Shorts-only, so the long-only report stays byte-identical to what it has always been.
+        summary = short_cycle_summary(coins)
+        print_short_summary(summary)
+        report["short_summary"] = summary
+    return report
 
 
 def outage_backoff_seconds(consecutive_outages: int, cadence_seconds: float) -> float:
@@ -523,6 +619,7 @@ def run_activity_lane(
     loop: bool = False,
     sleep: Any = time.sleep,
     shorts: bool = perp.SHORTS_ENABLED,
+    symbols: tuple[str, ...] = ACTIVITY_UNIVERSE,
 ) -> int:
     """Preflight once, then run confluence cycles across the universe.
 
@@ -534,8 +631,12 @@ def run_activity_lane(
     On a cycle reported as a connectivity outage the loop waits `outage_backoff_seconds` instead of
     the normal cadence (kill switch still polled throughout), and logs recovery on the first cycle
     that is not an outage. This changes ONLY when the next cycle starts and what is logged.
+
+    `symbols` defaults to the FULL universe — passing an explicit subset (validated by
+    `parse_symbols`) is how a first live `--shorts` contact is kept to one coin.
     """
     _NO_DATA_WARNED.clear()  # "warn once" is scoped to this run
+    perp.reset_fee_burn_halt()  # so is the fee-burn counter
     pre = pf.preflight(pf._urllib_transport, api_key, secret)
     if not pre.get("ok"):
         print(json.dumps({"ok": False, "stage": "preflight", "preflight": pre}, indent=2))
@@ -544,7 +645,7 @@ def run_activity_lane(
     sleep_seconds = max(LOOP_MIN_SLEEP_SECONDS, _TF_MINUTES[interval] * 60)
     print(
         f"preflight GREEN on {pre['host']} — confluence activity lane "
-        f"({len(ACTIVITY_UNIVERSE)} coins, timeframes {list(timeframes)}, "
+        f"({len(symbols)} coins, timeframes {list(timeframes)}, "
         f"shared cap {lane.TOTAL_DEMO_CAPITAL_USDT} USDT, "
         f"shorts {'ON (perp 1x isolated)' if shorts else 'OFF'}, "
         f"{'loop ~' + str(int(sleep_seconds)) + 's' if loop else 'once'})"
@@ -552,7 +653,9 @@ def run_activity_lane(
     consecutive_outages = 0
     try:
         while True:
-            report = run_activity_cycle(api_key, secret, timeframes=timeframes, shorts=shorts)
+            report = run_activity_cycle(
+                api_key, secret, symbols=symbols, timeframes=timeframes, shorts=shorts
+            )
             print(json.dumps(report, indent=2, sort_keys=True))
             if report.get("connectivity_outage"):
                 consecutive_outages += 1
