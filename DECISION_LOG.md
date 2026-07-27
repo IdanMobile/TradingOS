@@ -2943,3 +2943,47 @@ Status: **Perp short side SHIPPED and DEFAULT-OFF; inert until the operator pass
 provably uncorrupted; the never-both-sides and shared-cap invariants restored by the state fix. Wallet page
 states its SPOT-only scope. A live single-symbol smoke test is a PRECONDITION of enabling. No venue, order,
 live, or real-money authority is granted, and no investment advice is given.**
+
+### D-128 — Leverage set to 5x FIXED, not 25x and not confidence-scaled; an import-time invariant makes an unsafe leverage unshippable
+
+Decision: the operator asked for "leverage on maximum 25x depends on the confidence". Both halves were
+declined on evidence and replaced with **5x, fixed**, which the operator accepted.
+
+**Why not 25x.** Under isolated margin, liquidation occurs at roughly `(1/leverage − maintenance)` of
+adverse move. At 25x that is **~3.5%** — while the disaster stop sits at **15%**. The stop, the mirrored
+short stop, the venue resting stop and the entire "never unprotected" guarantee would all sit four times
+further away than liquidation, so the exchange would decide every exit and none of the safety code in this
+module could ever run. That is arithmetic, not preference. The ceiling at which the −15% stop still fires
+first is ~5x (liquidation ~19.5%); 6x is marginal and 7x+ is unsafe.
+
+**Why not confidence-scaled.** D-126's pre-registered study measured agreement as non-predictive, with the
+only statistically detectable relationship running the WRONG way (win rate declining 49.1% → 44.3% as
+agreement rises). Scaling leverage by that score would concentrate the most leverage in the states with the
+lowest median outcome and lowest hit rate — worse than fixed, and worse than random. Fixed leverage avoids
+importing a measured-backwards signal into position risk.
+
+**Encoded, not documented.** `REQUIRED_LEVERAGE = 5` now carries an IMPORT-TIME assertion that liquidation
+distance must exceed the disaster stop by a 1.25x buffer. Setting 25x fails at import with the arithmetic in
+the message — verified by temporarily setting it and confirming the module refuses to load. A future editor
+cannot quietly reintroduce an unreachable stop; the guard is not a comment.
+
+**Margin vs notional, the silent-failure risk.** At 1x these were the same number and the codebase used one
+constant. At 5x they diverge: `SHORT_MARGIN_USDT` ($25) remains the shared-cap slot contribution, so 12
+slots still means 12 positions and the $300 cap still bounds position COUNT; `SHORT_NOTIONAL_USDT` ($125 =
+margin × leverage) is what is actually sized. Conflating them would have either done nothing at all or
+silently 5x'd exposure. They are now named separately and never used interchangeably.
+**Consequence the operator was told before agreeing:** at 5x, hitting the −15% stop costs **75% of that
+slot** ($18.75 of $25), not 15%. Losses compound 5x faster on a signal running a 21.4% live win rate.
+
+Also corrected: the module docstring's "1x" claims, and the refusal reason `leverage_not_1x` →
+`leverage_not_required_multiple`. The "wrong leverage is refused" test fixture used `5` as its wrong value —
+now the CORRECT value — and was changed to `25`, the very setting the invariant exists to forbid.
+
+Evidence: the isolated-margin liquidation formula; D-126; the live 21.4% win rate; an import-refusal check
+run against 25x. 469 tests pass, ruff and mypy clean. Shorts remain DEFAULT-OFF and inert (no perp ledger
+has ever been written). Standing: fake money, execution authority NONE, 0 validated strategies, demo P&L
+NON-EVIDENCE — leverage amplifies outcomes in both directions and creates no edge.
+Status: **Leverage FIXED at 5x with an import-time invariant forbidding any value that would put
+liquidation inside the disaster stop. No confidence-scaled leverage or sizing is adopted. Shorts still
+DEFAULT-OFF; the live single-symbol smoke test (D-127) remains a precondition of enabling. No venue, order,
+live, or real-money authority is granted, and no investment advice is given.**

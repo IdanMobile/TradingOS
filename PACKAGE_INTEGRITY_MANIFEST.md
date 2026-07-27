@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.159 perp SHORT side default-off (D-127); position cards; wallet SPOT-scope stated (2026-07-27). Supersedes v8.158 hashes.
+Package version: v8.160 leverage 5x fixed with an import-time liquidation-vs-stop invariant (D-128) (2026-07-27). Supersedes v8.159 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -11,7 +11,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
 | `PROJECT_STATE.md` | `c8d381d9bfc5ae7b3cfe81eb1bda33187add52f181c4974901580ed0a63fa238` |
-| `DECISION_LOG.md` | `2fa44bb9fa49ec8983841fb43133d614ab3c1d7be0930ea52a6b530c2cd36b77` |
+| `DECISION_LOG.md` | `e7cd67b38c40c4e338899c96ecb61b25e6102b58542dee8135766b0d8b104922` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |

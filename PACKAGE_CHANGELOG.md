@@ -1,5 +1,25 @@
 # Package Changelog
 
+## v8.160 — 2026-07-27 — Leverage 5x FIXED (not 25x, not confidence-scaled); unsafe leverage now fails at import
+
+The operator asked for up to 25x scaled by confidence. Both halves declined on evidence and replaced with
+**5x fixed**, which the operator accepted. See DECISION_LOG D-128.
+
+- **Not 25x:** under isolated margin, liquidation is ~`(1/leverage − maintenance)` of adverse move. At 25x
+  that is **~3.5%** against a **15%** disaster stop — every stop in the module would be decorative and the
+  exchange would decide every exit. ~5x is the ceiling where the stop still fires first (liquidation ~19.5%).
+- **Not confidence-scaled:** D-126 measured agreement as non-predictive with win rate DECLINING as it rises,
+  so scaling by it would concentrate leverage in the measurably worst states.
+- **Encoded, not documented:** an import-time assertion requires liquidation to exceed the stop by a 1.25x
+  buffer. 25x now fails at import with the arithmetic in the message — verified by trying it.
+- **Margin vs notional split:** at 1x these were one constant; at 5x conflating them would either do nothing
+  or silently 5x exposure. `SHORT_MARGIN_USDT` ($25) stays the cap slot (12 slots = 12 positions);
+  `SHORT_NOTIONAL_USDT` ($125) is what is sized. Consequence: at 5x, hitting the stop costs **75% of a slot**,
+  not 15%.
+- The "wrong leverage refused" fixture used `5` — now the correct value — and was changed to `25`.
+
+Shorts remain DEFAULT-OFF and have never run. Gates: ruff + mypy clean, 469 tests pass.
+
 ## v8.159 — 2026-07-27 — Perp SHORT side (DEFAULT-OFF); position cards; wallet SPOT-scope stated
 
 The lane is long-only on spot while its roster reads 35 of 37 coins as SELL — all un-actionable. The

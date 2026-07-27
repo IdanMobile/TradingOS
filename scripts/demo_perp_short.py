@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""DEFAULT-DISABLED short side for the demo confluence lane — Bybit V5 USDT perpetuals, 1x.
+"""DEFAULT-DISABLED short side for the demo confluence lane — Bybit V5 USDT perpetuals, 5x.
 
 WHY THIS EXISTS: the confluence lane is long-only on SPOT, so a bearish roster produces a wall of
 un-actionable SELLs and an idle lane. A perp short is the only way to act on them.
@@ -10,8 +10,10 @@ module is imported but never called: no venue request, no state file, no ledger 
 
 SAFETY PROPERTIES (each has a test in tests/test_demo_perp_short.py):
   * DEFAULT OFF — `SHORTS_ENABLED = False`; the CLI `--shorts` flag is the only way to turn it on.
-  * 1x, VERIFIED — leverage is SET and then RE-READ from `/v5/position/list`; anything other than a
-    confirmed "1" REFUSES the symbol and no order is sent. Never assumed from an ack.
+  * LEVERAGE PINNED AND VERIFIED — set, then RE-READ from `/v5/position/list`; anything other than
+    a confirmed `REQUIRED_LEVERAGE` REFUSES the symbol and no order is sent, never assumed from an
+    ack. 5x is the CEILING at which the -15% stop still fires before liquidation (~19.5%); an
+    import-time assertion refuses any leverage that would put liquidation inside the stop.
   * ISOLATED margin, VERIFIED — the same set-then-re-read on `tradeMode == 1`. If isolated cannot
     be confirmed the symbol is REFUSED; cross is never used silently. (See ACCOUNT-MODE note below.)
   * ONE-WAY mode, VERIFIED — exactly one position row at `positionIdx == 0`. A hedge-mode account
@@ -63,10 +65,32 @@ import scripts.demo_roundtrip as rt  # noqa: E402
 # `python scripts/demo_eth_lane.py --activity --shorts`.
 SHORTS_ENABLED = False
 
-# Same money per position as the long side, out of the SAME shared cap.
-SHORT_QUOTE_USDT = lane.BUY_QUOTE_USDT
-# 1x. Not a tunable: the whole risk story of this lane is "no leverage".
-REQUIRED_LEVERAGE = Decimal("1")
+# MARGIN per short — one slot of the shared $300 cap, exactly like a long. This is what
+# `short_exposure` contributes to the cap, so 12 slots still means 12 positions.
+SHORT_MARGIN_USDT = lane.BUY_QUOTE_USDT
+REQUIRED_LEVERAGE = Decimal("5")
+# NOTIONAL actually sized = margin x leverage. At 1x these were the same number and the distinction
+# never mattered; at 5x it is the difference between "no change at all" and "5x the exposure", so
+# the two are named separately and never used interchangeably. $25 margin controls $125 of coin.
+SHORT_NOTIONAL_USDT = SHORT_MARGIN_USDT * REQUIRED_LEVERAGE
+# Back-compat alias: existing call sites that meant the cap contribution.
+SHORT_QUOTE_USDT = SHORT_MARGIN_USDT
+
+# HARD INVARIANT — the reason 5x and not more. Isolated liquidation happens at roughly
+# (1/leverage - maintenance) of adverse move; the disaster stop must fire comfortably BEFORE that,
+# or every stop in this module is decorative and the exchange decides the exit instead. At 25x
+# liquidation is ~3.5% away against a 15% stop, so the stop could never fire. This check makes that
+# unshippable rather than a comment someone can ignore: raising REQUIRED_LEVERAGE past ~5 fails
+# import, not production.
+MAINTENANCE_MARGIN_RATE = Decimal("0.005")  # ~0.5% on majors; conservative
+STOP_LIQUIDATION_BUFFER = Decimal("1.25")  # the stop must sit at least 25% nearer than liquidation
+_LIQUIDATION_DISTANCE = (Decimal("1") / REQUIRED_LEVERAGE) - MAINTENANCE_MARGIN_RATE
+if _LIQUIDATION_DISTANCE <= lane.DEMO_DISASTER_STOP_PCT * STOP_LIQUIDATION_BUFFER:
+    raise AssertionError(
+        f"leverage {REQUIRED_LEVERAGE}x liquidates at ~{_LIQUIDATION_DISTANCE:.1%}, which is not "
+        f"safely beyond the {lane.DEMO_DISASTER_STOP_PCT:.0%} disaster stop — the stop could never "
+        "fire. Lower REQUIRED_LEVERAGE."
+    )
 ISOLATED_TRADE_MODE = 1  # Bybit tradeMode: 0 = cross, 1 = isolated
 ONE_WAY_POSITION_IDX = 0
 
@@ -147,8 +171,8 @@ def short_open(symbol: str) -> bool:
 
 
 def short_exposure(symbols: list[str] | tuple[str, ...]) -> Decimal:
-    """Shared-cap contribution of the short side: one `SHORT_QUOTE_USDT` slot per open short."""
-    return SHORT_QUOTE_USDT * sum(1 for symbol in symbols if short_open(symbol))
+    """Shared-cap contribution: one MARGIN slot per open short (notional is 5x this)."""
+    return SHORT_MARGIN_USDT * sum(1 for symbol in symbols if short_open(symbol))
 
 
 # --- Mirrored disaster stop (pure) --------------------------------------------------------------
@@ -272,7 +296,7 @@ def verify_symbol(
         "positionIdx": str(row.get("positionIdx")),
     }
     if _decimal(row.get("leverage")) != REQUIRED_LEVERAGE:
-        return False, {"refused": "leverage_not_1x", **observed}
+        return False, {"refused": "leverage_not_required_multiple", **observed}
     if str(row.get("tradeMode")) != str(ISOLATED_TRADE_MODE):
         return False, {"refused": "margin_not_isolated", **observed}
     return True, {"verified": True, **observed}
@@ -410,7 +434,7 @@ def open_short(
     post_transport: rt.PostTransport,
     sleep: Any,
     signal_ref: str,
-    notional: Decimal = SHORT_QUOTE_USDT,
+    notional: Decimal = SHORT_NOTIONAL_USDT,
 ) -> dict[str, Any]:
     """Verify -> size -> short -> confirm -> protect (or close). Returns the ledger record.
 

@@ -338,16 +338,17 @@ def test_short_size_is_base_coin_and_refuses_below_the_venue_minimum() -> None:
 # --- VERIFICATION: leverage / margin mode / position mode ------------------------------------
 
 
-def test_leverage_is_explicitly_set_to_1x_and_read_back(lane_dirs: Path) -> None:
-    """1x is REQUESTED and then CONFIRMED from the position row before any order is sent."""
+def test_required_leverage_is_explicitly_set_and_read_back(lane_dirs: Path) -> None:
+    """The required multiple is REQUESTED then CONFIRMED from the row before any order is sent."""
     venue = Venue(marks={"BTCUSDT": "100"})
+    want = str(perp.REQUIRED_LEVERAGE)
     ok, detail = perp.verify_symbol(
         "BTCUSDT", "k", "s", get_transport=venue.get, post_transport=venue.post
     )
-    assert ok and detail["leverage"] == "1" and detail["tradeMode"] == "1"
+    assert ok and detail["leverage"] == want and detail["tradeMode"] == "1"
     leverage_bodies = venue.bodies("/v5/position/set-leverage")
     assert leverage_bodies == [
-        {"category": "linear", "symbol": "BTCUSDT", "buyLeverage": "1", "sellLeverage": "1"}
+        {"category": "linear", "symbol": "BTCUSDT", "buyLeverage": want, "sellLeverage": want}
     ]
     assert venue.bodies("/v5/position/switch-isolated")[0]["tradeMode"] == 1
 
@@ -355,7 +356,7 @@ def test_leverage_is_explicitly_set_to_1x_and_read_back(lane_dirs: Path) -> None
 @pytest.mark.parametrize(
     ("kwargs", "refusal"),
     [
-        ({"position_overrides": {"BTCUSDT": {"leverage": "5"}}}, "leverage_not_1x"),
+        ({"position_overrides": {"BTCUSDT": {"leverage": "25"}}}, "leverage_not_required_multiple"),
         ({"position_overrides": {"BTCUSDT": {"tradeMode": "0"}}}, "margin_not_isolated"),
         ({"empty_positions": True}, "no_one_way_position_row"),
         ({"hedge_mode": True}, "no_one_way_position_row"),
@@ -366,7 +367,7 @@ def test_leverage_is_explicitly_set_to_1x_and_read_back(lane_dirs: Path) -> None
 def test_unverifiable_settings_refuse_the_symbol_without_ordering(
     lane_dirs: Path, kwargs: dict[str, Any], refusal: str
 ) -> None:
-    """Non-1x, cross margin, hedge mode, a missing row, or an unreadable venue => NO perp order."""
+    """Wrong leverage, cross margin, hedge mode, missing row, unreadable venue => NO perp order."""
     venue = Venue(marks={"BTCUSDT": "100"}, **kwargs)
     record = perp.open_short(
         "BTCUSDT",
@@ -714,3 +715,20 @@ def test_a_confirmed_cover_does_zero_the_state(lane_dirs: Path) -> None:
     assert report["action"].get("ok") is True
     assert perp.short_open("BTCUSDT") is False
     assert perp.short_exposure(["BTCUSDT"]) == 0
+
+
+def test_leverage_can_never_put_liquidation_inside_the_disaster_stop() -> None:
+    """The import-time invariant that makes an unsafe leverage unshippable.
+
+    At 25x liquidation sits ~3.5% away while the disaster stop is at 15% — the stop could never
+    fire and the exchange would decide every exit instead. This is arithmetic, not preference, so
+    it is enforced at import rather than left as a comment for someone to override later.
+    """
+    liquidation = (Decimal("1") / perp.REQUIRED_LEVERAGE) - perp.MAINTENANCE_MARGIN_RATE
+    stop = lane.DEMO_DISASTER_STOP_PCT
+    assert liquidation > stop * perp.STOP_LIQUIDATION_BUFFER, "stop must fire before liquidation"
+    assert perp.REQUIRED_LEVERAGE <= Decimal("5"), "5x is the ceiling this invariant permits"
+    # And the notional/margin split is real: $25 of margin controls 5x that in coin.
+    assert perp.SHORT_NOTIONAL_USDT == perp.SHORT_MARGIN_USDT * perp.REQUIRED_LEVERAGE
+    # The shared cap still counts MARGIN, so 12 slots still means 12 positions.
+    assert perp.SHORT_QUOTE_USDT == perp.SHORT_MARGIN_USDT
