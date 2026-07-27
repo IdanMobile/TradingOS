@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.157 pre-registered study: agreement does not predict forward returns (NULL, D-126); no agreement-scaled sizing adopted (2026-07-27). Supersedes v8.156 hashes.
+Package version: v8.158 `make up` / `make down` one-command stack; supervisor install made idempotent (2026-07-27). Supersedes v8.157 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 

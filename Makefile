@@ -54,6 +54,42 @@ dashboard:
 	@pids=$$(lsof -ti:8765 2>/dev/null); if [ -n "$$pids" ]; then echo "freeing port 8765 (pid $$pids)"; kill $$pids 2>/dev/null || true; sleep 1; fi
 	uv run python -m tios.services.dashboard_ui.server
 
+# ONE COMMAND TO BRING EVERYTHING UP: dashboard + supervised activity lane, persistent across
+# sleep and login. `make down` reverses it exactly.
+#
+# Deliberately NOT folded into `make dashboard`. That target is read-only — no venue, no orders —
+# and it must stay the command you can run just to LOOK at something. If the innocuous command also
+# opened positions, the day that matters is the day you ran it without meaning to. `up` is named so
+# that starting trading is something you asked for, and it says so before it does it.
+#
+# Fake money, Bybit VENUE_DEMO, execution authority NONE, 0 validated strategies. This raises
+# measurement UPTIME; it cannot improve results. Stop everything instantly, without this Makefile:
+#   touch artifacts/trading_domain/demo_lane/KILL_SWITCH
+up:
+	@echo "make up will:"
+	@echo "  1. clear a stale KILL_SWITCH so the supervisor is allowed to start the lane"
+	@echo "  2. install + load the launchd agent $(LANE_AGENT) (persists across login and sleep)"
+	@echo "  3. start the read-only dashboard on http://127.0.0.1:8765"
+	@echo "  the lane trades FAKE money on the demo account. 'make down' reverses all of it."
+	@rm -f artifacts/trading_domain/demo_lane/KILL_SWITCH
+	@$(MAKE) --no-print-directory lane-supervise-install
+	@echo "lane supervised. giving launchd a moment, then starting the dashboard..."
+	@sleep 2
+	@$(MAKE) --no-print-directory lane-supervise-status | head -5 || true
+	@$(MAKE) --no-print-directory dashboard
+
+# Reverses `make up`: stops the lane via its own kill switch (the supervisor then refuses to
+# restart it), removes the launchd agent, and frees the dashboard port. The kill switch is written
+# BEFORE the agent is removed so there is no window where launchd relaunches a lane on the way out.
+down:
+	@echo "stopping the lane (KILL_SWITCH), removing $(LANE_AGENT), freeing port 8765"
+	@mkdir -p artifacts/trading_domain/demo_lane
+	@touch artifacts/trading_domain/demo_lane/KILL_SWITCH
+	@$(MAKE) --no-print-directory lane-supervise-uninstall || true
+	@pids=$$(lsof -ti:8765 2>/dev/null); if [ -n "$$pids" ]; then kill $$pids 2>/dev/null || true; fi
+	@echo "down. open positions are NOT closed — they keep their venue-side resting stops."
+	@echo "clear the stop flag when you next want to run: make up"
+
 # D-104/D-105 ETH demo measurement lane (Bybit DEMO account, fake money, UNVALIDATED
 # candidate). Stop it any time: touch artifacts/trading_domain/demo_lane/KILL_SWITCH
 demo-lane:
@@ -73,6 +109,9 @@ lane-supervise-install:
 	@echo "installing $(LANE_AGENT): copy ops/$(LANE_AGENT).plist -> $(LANE_AGENT_PLIST), then launchctl bootstrap gui/$$(id -u)"
 	@mkdir -p $(HOME)/Library/LaunchAgents
 	cp ops/$(LANE_AGENT).plist $(LANE_AGENT_PLIST)
+	@# Idempotent: bootstrap fails if the label is already loaded, so drop any existing one first.
+	@# `make up` must be safe to re-run; the bootout is expected to fail on a clean machine.
+	-@launchctl bootout gui/$$(id -u)/$(LANE_AGENT) 2>/dev/null || true
 	launchctl bootstrap gui/$$(id -u) $(LANE_AGENT_PLIST)
 
 lane-supervise-uninstall:
@@ -108,6 +147,6 @@ orchestrator:
 orchestrator-once:
 	@uv run python scripts/run_orchestrator.py --once
 
-.PHONY: check check-full _gate bootstrap audit required dashboard jobs-init jobs-once eth-signal \
-	orchestrator orchestrator-once lane-supervise-install lane-supervise-uninstall \
-	lane-supervise-status lane-supervise-clear-guard
+.PHONY: check check-full _gate bootstrap audit required dashboard up down jobs-init jobs-once \
+	eth-signal orchestrator orchestrator-once lane-supervise-install lane-supervise-uninstall \
+	lane-supervise-status lane-supervise-clear-guard demo-lane demo-lane-once

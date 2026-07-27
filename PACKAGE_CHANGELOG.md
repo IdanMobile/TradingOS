@@ -1,5 +1,26 @@
 # Package Changelog
 
+## v8.158 — 2026-07-27 — `make up` / `make down`: one command for the whole stack
+
+Convenience only; no behaviour change to the lane, the dashboard or the supervisor. The operator asked why
+the supervisor needed a separate manual install and whether `make dashboard` could just run everything.
+
+- **`make up`** brings the whole stack up in one command: clears a stale KILL_SWITCH, installs and loads
+  the launchd supervisor (so the lane persists across login and sleep), then starts the dashboard. It
+  echoes all three steps before doing any of them, and names that the lane trades fake money.
+- **`make down`** reverses it exactly, in the safe order: it writes the KILL_SWITCH *before* removing the
+  agent, so there is no window in which launchd relaunches a lane on the way out; then frees the dashboard
+  port. It states plainly that open positions are NOT closed and keep their venue-side resting stops.
+- `lane-supervise-install` is now idempotent (boots out any already-loaded label before bootstrapping), so
+  `make up` is safe to re-run.
+- **`make dashboard` is deliberately unchanged and stays read-only** — no venue, no orders. Starting
+  trading was NOT folded into it: it must remain the command that can be run just to look at something. If
+  the innocuous command also opened positions, the day that matters is the day it is run without meaning
+  to. `up` is named so that starting a trading lane is something explicitly asked for.
+
+Fake money, Bybit VENUE_DEMO, execution authority NONE, 0 validated strategies (D-126). These targets
+raise measurement uptime and reduce friction; they cannot improve results.
+
 ## v8.157 — 2026-07-27 — Pre-registered study: "agreement" does not predict forward returns (NULL); no agreement-scaled sizing
 
 Documentation-only; no code changed. The operator asked to let the confluence score move protection/sizing
