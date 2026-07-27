@@ -40,6 +40,7 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import scripts.demo_eth_lane as lane  # noqa: E402
+import scripts.demo_perp_short as perp  # noqa: E402
 import scripts.demo_preflight as pf  # noqa: E402
 import scripts.demo_roundtrip as rt  # noqa: E402
 import scripts.run_external_strategy_search as ext  # noqa: E402
@@ -242,6 +243,19 @@ def confluence_decision(score: Decimal) -> str | None:
     return None
 
 
+def short_decision(score: Decimal) -> str | None:
+    """Symmetric hysteresis for the DEFAULT-DISABLED perp short side.
+
+    Deliberately derived from the SAME ENTRY/EXIT constants as `confluence_decision`, negated, so
+    the two sides can never drift apart: SHORT at/below -ENTRY, COVER at/above -EXIT, else hold.
+    """
+    if score <= -ENTRY_THRESHOLD:
+        return "SHORT"
+    if score >= -EXIT_THRESHOLD:
+        return "COVER"
+    return None
+
+
 def _decision_signals_fn(
     decision: str | None, score: Decimal, ref_bars: tuple[MarketBar, ...]
 ) -> Any:
@@ -263,12 +277,19 @@ def _decision_signals_fn(
     return signals_fn
 
 
-def activity_open_exposure(symbols: list[str]) -> Decimal:
-    """Sum of per-coin buy notional currently open across the confluence lane (own state files)."""
+def activity_open_exposure(symbols: list[str], shorts: bool = False) -> Decimal:
+    """Open notional across the confluence lane — ONE shared budget for longs AND shorts.
+
+    `shorts=True` adds the short side's open slots to the SAME total, so long+short combined is what
+    the single `TOTAL_DEMO_CAPITAL_USDT` cap gates. Each side does NOT get its own cap. With shorts
+    off (the default) this is byte-identical to the long-only sum it has always returned.
+    """
     total = Decimal("0")
     for symbol in symbols:
         if Decimal(str(lane.read_state(f"{symbol}_activity").get("lane_base", "0"))) > 0:
             total += lane.BUY_QUOTE_USDT
+    if shorts:
+        total += perp.short_exposure(symbols)
     return total
 
 
@@ -287,6 +308,7 @@ def run_activity_cycle(
     get_transport: pf.Transport = pf._urllib_transport,
     post_transport: rt.PostTransport = lane._live_post_transport,
     sleep: Any = time.sleep,
+    shorts: bool = perp.SHORTS_ENABLED,
 ) -> dict[str, Any]:
     """One confluence cycle across the universe: ONE scored long per coin.
 
@@ -303,6 +325,15 @@ def run_activity_cycle(
       * a cycle in which EVERY evaluated coin failed on TRANSPORT is reported as one connectivity
         outage (`connectivity_outage`) and logs one line instead of one per coin. The caller backs
         off on that flag; nothing about scoring, sizing, entries, exits or stops changes.
+
+    `shorts` (DEFAULT OFF — `perp.SHORTS_ENABLED` is False) additionally runs the perp short side
+    per coin. With it off NOTHING below changes: no perp call, no short state, no cap arithmetic
+    difference, and the long path is exactly what it has always been. With it on:
+      * the SAME shared cap covers long + short COMBINED (`activity_open_exposure(..., shorts)`);
+      * a coin is never long and short at once — a long BUY is withheld while that coin's short is
+        still open, and a short is never opened while that coin's long is open;
+      * a short-side failure is isolated to that coin's `short` report and never disturbs its long
+        result or any other coin.
     """
     coin_list = list(symbols)
     if lane.kill_switch_active():
@@ -313,7 +344,8 @@ def run_activity_cycle(
         }
     reference_tf = min(timeframes, key=lambda tf: _TF_MINUTES[tf])
     # Seed the shared budget from exposure already open, then decrement as coins enter this cycle.
-    remaining = total_cap - activity_open_exposure(coin_list)
+    # ONE budget for both sides: an open short consumes the same slot an open long would.
+    remaining = total_cap - activity_open_exposure(coin_list, shorts)
     coins: dict[str, Any] = {}
     evaluated = 0  # coins actually attempted this cycle (no-data skips are not evaluated)
     transport_failures: list[str] = []  # deferred per-coin lines; flushed only if NOT an outage
@@ -354,6 +386,12 @@ def run_activity_cycle(
             score, context = confluence_score(signals_by_tf)
             decision = confluence_decision(score)
             ref_bars = bars_by_tf[reference_tf]
+            # Long-side decision, withheld while this coin still carries an open short so the two
+            # sides can never overlap. Only reachable when shorts are enabled.
+            long_decision = decision
+            short_still_open = shorts and perp.short_open(symbol)
+            if short_still_open and decision == "BUY":
+                long_decision = None
             heartbeat_extra = {
                 "confluence": {
                     **context,
@@ -371,7 +409,7 @@ def run_activity_cycle(
                 symbol=symbol,
                 interval=_TF_INTERVAL[reference_tf],
                 prefetched_bars=ref_bars,
-                signals_fn=_decision_signals_fn(decision, score, ref_bars),
+                signals_fn=_decision_signals_fn(long_decision, score, ref_bars),
                 state_key=state_key,
                 strategy=ACTIVITY_STRATEGY,
                 entry_notional_budget=remaining,
@@ -389,6 +427,30 @@ def run_activity_cycle(
             if now_open and not was_open:
                 # A fresh entry consumed one BUY_QUOTE_USDT of the shared cap this cycle.
                 remaining -= lane.BUY_QUOTE_USDT
+            if shorts:
+                # Short side LAST, and only after the long side's own result for this coin is in:
+                # `long_open` is this cycle's freshest truth, so a coin whose long just exited can
+                # short in the same cycle while one still holding a long cannot. Its own try/except
+                # so a perp failure never costs this coin its long result or touches another coin.
+                try:
+                    short_report = perp.run_short_cycle(
+                        symbol,
+                        short_decision(score),
+                        api_key,
+                        secret,
+                        get_transport=get_transport,
+                        post_transport=post_transport,
+                        sleep=sleep,
+                        long_open=now_open,
+                        entry_notional_budget=remaining,
+                        signal_ref=f"ACT-CONF-SHORT:{_q(score)}",
+                    )
+                    if short_report.get("stage") == "short_entry":
+                        remaining -= perp.SHORT_QUOTE_USDT
+                except Exception as error:  # noqa: BLE001 - short side never breaks the long side
+                    print(f"{symbol}: short side failed: {error}", file=sys.stderr)
+                    short_report = {"error": str(error)}
+                coins[symbol]["short"] = short_report
         except Exception as error:  # noqa: BLE001 - one coin must never abort the whole cycle
             evaluated += 1
             message = f"{symbol}: activity cycle failed, continuing other coins: {error}"
@@ -418,6 +480,7 @@ def run_activity_cycle(
         "remaining_budget": str(remaining),
         "reference_timeframe": reference_tf,
         "connectivity_outage": outage,
+        "shorts_enabled": shorts,
         "coins": coins,
         **lane.LANE_LABEL,
     }
@@ -459,6 +522,7 @@ def run_activity_lane(
     interval: str = "15m",
     loop: bool = False,
     sleep: Any = time.sleep,
+    shorts: bool = perp.SHORTS_ENABLED,
 ) -> int:
     """Preflight once, then run confluence cycles across the universe.
 
@@ -482,12 +546,13 @@ def run_activity_lane(
         f"preflight GREEN on {pre['host']} — confluence activity lane "
         f"({len(ACTIVITY_UNIVERSE)} coins, timeframes {list(timeframes)}, "
         f"shared cap {lane.TOTAL_DEMO_CAPITAL_USDT} USDT, "
+        f"shorts {'ON (perp 1x isolated)' if shorts else 'OFF'}, "
         f"{'loop ~' + str(int(sleep_seconds)) + 's' if loop else 'once'})"
     )
     consecutive_outages = 0
     try:
         while True:
-            report = run_activity_cycle(api_key, secret, timeframes=timeframes)
+            report = run_activity_cycle(api_key, secret, timeframes=timeframes, shorts=shorts)
             print(json.dumps(report, indent=2, sort_keys=True))
             if report.get("connectivity_outage"):
                 consecutive_outages += 1

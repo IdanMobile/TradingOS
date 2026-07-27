@@ -26,9 +26,11 @@
     .wallet-headline{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end;margin:6px 0 10px}.wallet-figure{display:grid;gap:2px}.wallet-figure .label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}.wallet-figure .value{font-size:clamp(20px,2.4vw,30px);font-weight:600;line-height:1.1}.wallet-figure.small .value{font-size:1.05rem;font-weight:500}
     .wallet-alloc{display:block;width:100%;height:14px;margin:4px 0 6px}.wallet-pips{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0}.wallet-pip{width:12px;height:12px;border-radius:3px;background:#17263a;border:1px solid var(--line)}.wallet-pip.on{background:var(--green);border-color:var(--green)}
     .wallet-cash{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.wallet-cash .label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}.wallet-cash .cash-value{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:1.15rem;font-weight:600}.venue-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 11px;color:#b8c7d9;font-size:12px;text-decoration:none}a.venue-chip:hover{background:#132238;color:var(--text)}
-    .wallet-secondary{opacity:.85}.wallet-secondary .live-h2{font-size:.95rem}.wallet-table table{min-width:820px}.wallet-legacy>summary{cursor:pointer;color:var(--muted);padding:10px 0;min-height:44px;display:flex;align-items:center}
-    .wallet-charts{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:12px}.wallet-chart{border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-width:0}.wallet-chart-head{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}.wallet-price{display:block;width:100%;height:72px;color:var(--blue);margin:6px 0 2px}.wallet-chart-legend{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:.78em}
-    @media(max-width:640px){.live-when{flex-basis:58px}.live-positions{grid-template-columns:1fr}.wallet-charts{grid-template-columns:1fr}}
+    .wallet-secondary{opacity:.85}.wallet-secondary .live-h2{font-size:.95rem}.wallet-legacy>summary{cursor:pointer;color:var(--muted);padding:10px 0;min-height:44px;display:flex;align-items:center}
+    .pos-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}.pos-card{border:1px solid var(--line);border-radius:8px;padding:12px;min-width:0;display:flex;flex-direction:column;gap:8px}.pos-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;min-width:0}.pos-coin{font-size:1.02rem;overflow-wrap:anywhere}.pos-side{border:1px solid var(--line);border-radius:999px;padding:1px 8px;font-size:.7em;letter-spacing:.06em}.pos-side.long{color:var(--green);border-color:var(--green)}.pos-side.short{color:var(--red);border-color:var(--red)}.pos-strategy{color:var(--muted);font-size:.78em;overflow-wrap:anywhere}
+    .pos-key{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pos-key>div{min-width:0}.pos-key .label{display:block;color:var(--muted);font-size:.72em;letter-spacing:.05em;text-transform:uppercase}.pos-key .value{display:block;font-size:1.35rem;font-weight:600;overflow-wrap:anywhere}.pos-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));gap:6px 10px;margin:0}.pos-facts>div{min-width:0}.pos-facts dt{color:var(--muted);font-size:.72em}.pos-facts dd{margin:0;font-size:.86em;overflow-wrap:anywhere}.pos-chart-note{font-size:.82em;margin:0}
+    .wallet-price{display:block;width:100%;height:72px;color:var(--blue);margin:2px 0}.wallet-chart-legend{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:.78em}
+    @media(max-width:640px){.live-when{flex-basis:58px}.live-positions{grid-template-columns:1fr}.pos-cards{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -124,8 +126,8 @@
         </div>
         <div class="card" id="walletPositionsPanel" style="margin-top:18px" aria-labelledby="walletPositionsHeading">
           <div class="section-title"><h2 id="walletPositionsHeading" class="live-h2">Open positions</h2><span id="walletPositionsSummary" class="badge">—</span></div>
+          <p class="muted" style="margin:0 0 10px">One card per open position: its own numbers and its own captured price path together, so nothing has to be joined by eye.</p>
           <div id="walletPositionsBody"><p class="muted">Loading open positions…</p></div>
-          <div id="walletChartsBody"><p class="muted">Loading captured price history…</p></div>
         </div>
         <div class="card" id="walletResultPanel" style="margin-top:18px" aria-labelledby="walletResultHeading">
           <div class="section-title"><h2 id="walletResultHeading" class="live-h2">Result so far</h2><span class="badge amber">execution measurement — not edge</span></div>
@@ -957,15 +959,11 @@ function renderWalletMoney(payload){
     <p class="muted" style="font-size:.82em;margin:2px 0 0">Filled pips are slots in use; each one is a ${liveMoney(budget.per_trade_usdt)} position out of the ${liveMoney(budget.total_cap_usdt)} cap.</p>
     ${slotsFull?'<p class="muted" style="margin:8px 0 0"><strong>Every slot is in use.</strong> No new position can open until one exits — that is why the lane can look idle while it keeps scanning.</p>':''}`);
 
-  // 2. Open positions — one row per held coin, em dash for anything the payload does not carry.
-  say('#walletPositionsSummary',positions.length?`${positions.length} open`:'none open');
-  set('#walletPositionsBody',positions.length
-    ?`<div class="table-wrap wallet-table"><table><thead><tr><th>Coin</th><th>Strategy</th><th>Size</th><th>Entry</th><th>Mark</th><th>Value</th><th>Unrealised</th><th>Unrealised %</th><th>Held</th><th>Stop</th><th>To stop</th></tr></thead><tbody>${positions.map(item=>{
-      const p=(item&&typeof item==='object')?item:{};
-      return `<tr><td class="mono">${walletText(p.symbol)}</td><td>${walletText(p.strategy)}</td><td class="mono">${walletText(p.size_base)}</td><td class="mono">${liveMoney(p.entry_price)}</td><td class="mono">${liveMoney(p.mark_price)}</td><td class="mono">${liveMoney(p.value_usdt)}</td><td class="mono ${walletTone(p.unrealised_usdt)}">${walletSigned(p.unrealised_usdt)}</td><td class="mono ${walletTone(p.unrealised_pct)}">${walletSignedPct(p.unrealised_pct)}</td><td class="mono">${liveDur(p.held_seconds)}</td><td class="mono">${liveMoney(p.stop_price)}</td><td class="mono">${livePct(p.distance_to_stop_pct)}</td></tr>`;
-    }).join('')}</tbody></table></div>
-    <p class="muted" style="font-size:.82em;margin:8px 0 0">Order is exactly as the projection reports it. Every position carries a ${livePct(budget.disaster_stop_pct)} disaster stop; "To stop" is how far the mark sits above it.</p>`
-    :'<div class="empty">No open positions. Each entry takes one slot at the per-position size above and shows up here with its live value, unrealised P&amp;L, time held and distance to stop.</div>');
+  // 2. Open positions — ONE CARD PER POSITION, drawn by renderWalletPositions() below, which joins
+  // this payload with the price-history payload by symbol. Handing it the view instead of writing
+  // markup here is what lets either fetch re-render the grid without a second card renderer.
+  walletPositionsView={positions,budget};
+  renderWalletPositions();
 
   // 3. Result so far — realised + unrealised, then the SHARED equity curve, labelled not-edge.
   const closed=liveNum(realised.closed_count);
@@ -996,15 +994,19 @@ function renderWalletMoney(payload){
 // walletText()/liveMoney(), every geometry number through liveNum(), so nothing renders as
 // undefined/NaN/null and no series can divide by zero.
 const PRICE_CHART_NOTE='Each chart is the lane&#39;s own captured closes at its scan interval, capped at the most recent ~24h — a record of what already happened. It is NOT a full exchange chart, NOT a forecast and NOT a signal.';
-function walletPriceChart(item){
+// The two read-only GETs land on the same tick and are joined by symbol in the card grid, so each
+// keeps the last thing it read and re-renders the grid. null view === the wallet has not answered.
+let walletPositionsView=null,walletPriceHistory=null,walletPriceHistoryError='';
+function walletPriceChart(item,label){
   const s=(item&&typeof item==='object')?item:{};
-  const symbol=walletText(s.symbol);
+  const symbol=label||walletText(s.symbol);  // the card already escaped its own coin name
   const closes=Array.isArray(s.closes)?s.closes:[];
   const values=closes.map(point=>liveNum(point&&point.close)).filter(v=>v!==null);
   const entry=liveNum(s.entry_price),stop=liveNum(s.stop_price);
-  const head=`<div class="wallet-chart-head"><strong class="mono">${symbol}</strong><span class="muted" style="font-size:.78em">${values.length} close${values.length===1?'':'s'}${typeof s.interval==='string'&&s.interval?` · ${walletText(s.interval)} bars`:''}</span></div>`;
-  // 0 points is the normal early state, not an error: say so plainly and draw no svg at all.
-  if(!values.length)return `<div class="wallet-chart">${head}<p class="muted" style="font-size:.82em;margin:8px 0 0">Collecting price history — no points captured yet for this coin.</p></div>`;
+  const meta=`${values.length} close${values.length===1?'':'s'}${typeof s.interval==='string'&&s.interval?` · ${walletText(s.interval)} bars`:''}`;
+  // 0 points — including a position the payload carries NO series for at all — is the normal early
+  // state, not an error: say so plainly and draw no svg. The card keeps every one of its numbers.
+  if(!values.length)return '<p class="muted pos-chart-note">Collecting price history — no points captured yet for this coin.</p>';
   const domain=values.concat([entry,stop].filter(v=>v!==null));  // keep both levels inside the frame
   const min=Math.min(...domain),max=Math.max(...domain),span=max-min;
   const y=v=>span>0?36-((v-min)/span)*32:20;  // a flat series draws a straight midline, never a /0
@@ -1015,36 +1017,82 @@ function walletPriceChart(item){
     ?`<path d="M${values.map((v,i)=>`${x(i).toFixed(2)},${y(v).toFixed(2)}`).join(' L')}" fill="none" stroke="currentColor" stroke-width="1.4" vector-effect="non-scaling-stroke"></path>`
     :'';
   const level=(v,stroke,dash)=>v===null?'':`<line x1="0" y1="${y(v).toFixed(2)}" x2="100" y2="${y(v).toFixed(2)}" stroke="${stroke}" stroke-width="1" stroke-dasharray="${dash}" vector-effect="non-scaling-stroke"></line>`;
-  return `<div class="wallet-chart">${head}
+  return `<div class="pos-chart">
     <svg class="wallet-price" viewBox="0 0 100 40" preserveAspectRatio="none" role="img" aria-label="${symbol}: ${values.length} captured close${values.length===1?'':'s'} oldest to newest, between ${liveMoney(min)} and ${liveMoney(max)}."><rect x="0" y="0" width="100" height="40" fill="#0a1420"></rect>${level(entry,'var(--cyan)','3 3')}${level(stop,'var(--red)','2 4')}${trace}<circle cx="${x(values.length-1).toFixed(2)}" cy="${y(last).toFixed(2)}" r="1.8" fill="currentColor"></circle></svg>
-    <div class="wallet-chart-legend"><span>last ${liveMoney(last)}</span>${entry===null?'':`<span>entry ${liveMoney(entry)} (dashed)</span>`}${stop===null?'':`<span>stop ${liveMoney(stop)} (dashed)</span>`}</div></div>`;
+    <div class="wallet-chart-legend"><span>${meta}</span><span>last ${liveMoney(last)}</span>${entry===null?'':`<span>entry ${liveMoney(entry)} (dashed)</span>`}${stop===null?'':`<span>stop ${liveMoney(stop)} (dashed)</span>`}</div></div>`;
 }
-function renderWalletPriceCharts(payload){
-  const body=document.querySelector('#walletChartsBody');
+// One self-contained card per open position: the coin and its strategy, the two numbers that matter
+// at a glance, that coin's own captured price path from the SAME chart helper above, then the
+// supporting figures. Every field the old table carried is still here, escaped the same way.
+function walletPositionCard(item,series){
+  const p=(item&&typeof item==='object')?item:{};
+  const symbol=walletText(p.symbol);
+  // side/direction is OPTIONAL: /api/v1/wallet does NOT carry one today, so nothing is claimed. If
+  // a short lane starts sending it, the chip appears; anything that is not LONG/SHORT gets no colour.
+  const side=(typeof p.side==='string')?p.side.trim().toUpperCase():'';
+  const sideTone=side==='SHORT'?' short':side==='LONG'?' long':'';
+  return `<article class="pos-card">
+    <div class="pos-head"><strong class="mono pos-coin">${symbol}</strong>${side?`<span class="pos-side${sideTone}">${walletText(side)}</span>`:''}<span class="pos-strategy">${walletText(p.strategy)}</span></div>
+    <div class="pos-key">
+      <div><span class="label">Unrealised %</span><span class="value ${walletTone(p.unrealised_pct)}">${walletSignedPct(p.unrealised_pct)}</span></div>
+      <div><span class="label">To stop</span><span class="value">${livePct(p.distance_to_stop_pct)}</span></div>
+    </div>
+    ${walletPriceChart(series,symbol)}
+    <dl class="pos-facts">
+      <div><dt>Size</dt><dd class="mono">${walletText(p.size_base)}</dd></div>
+      <div><dt>Entry</dt><dd class="mono">${liveMoney(p.entry_price)}</dd></div>
+      <div><dt>Mark</dt><dd class="mono">${liveMoney(p.mark_price)}</dd></div>
+      <div><dt>Value</dt><dd class="mono">${liveMoney(p.value_usdt)}</dd></div>
+      <div><dt>Unrealised</dt><dd class="mono ${walletTone(p.unrealised_usdt)}">${walletSigned(p.unrealised_usdt)}</dd></div>
+      <div><dt>Held</dt><dd class="mono">${liveDur(p.held_seconds)}</dd></div>
+      <div><dt>Stop</dt><dd class="mono">${liveMoney(p.stop_price)}</dd></div>
+    </dl>
+  </article>`;
+}
+function renderWalletPositions(){
+  // Until /api/v1/wallet has answered there is no position truth: leave whatever it wrote (its
+  // loading line, or its own failure message) alone rather than claiming an empty book.
+  if(walletPositionsView===null)return;
+  const body=document.querySelector('#walletPositionsBody');
+  const summary=document.querySelector('#walletPositionsSummary');
+  const positions=Array.isArray(walletPositionsView.positions)?walletPositionsView.positions:[];
+  const budget=walletPositionsView.budget||{};
+  if(summary)summary.textContent=positions.length?`${positions.length} open`:'none open';
   if(!body)return;
-  const p=(payload&&typeof payload==='object')?payload:{};
-  const series=Array.isArray(p.series)?p.series:[];
-  if(p.available===false||!series.length){
-    body.innerHTML='<div class="empty">No captured price history yet. Once the lane holds a position and records a scan cycle, its own captured closes for that coin are drawn here.</div>';
+  if(!positions.length){
+    body.innerHTML='<div class="empty">No open positions right now. Each entry takes one slot at the per-position size above and appears here as its own card — live value, unrealised P&amp;L, time held, distance to stop and the lane&#39;s captured price path.</div>';
     return;
   }
-  const coverage=(p.coverage&&typeof p.coverage==='object')?p.coverage:{};
+  const history=(walletPriceHistory&&typeof walletPriceHistory==='object')?walletPriceHistory:{};
+  const series=(history.available===false||!Array.isArray(history.series))?[]:history.series;
+  const seriesFor=symbol=>series.find(s=>s&&typeof s==='object'&&s.symbol===symbol)||null;
+  const coverage=(history.coverage&&typeof history.coverage==='object')?history.coverage:{};
   const missing=(Array.isArray(coverage.missing)?coverage.missing:[]).map(walletText);
-  body.innerHTML=`<div class="wallet-charts">${series.map(item=>walletPriceChart(item)).join('')}</div>
-    ${missing.length?`<p class="muted" style="font-size:.82em;margin:8px 0 0">Still collecting, nothing drawn yet: ${missing.join(', ')}.</p>`:''}
-    <p class="muted" style="font-size:.82em;margin:8px 0 0">${PRICE_CHART_NOTE}</p>`;
+  body.innerHTML=`<div class="pos-cards">${positions.map(item=>walletPositionCard(item,seriesFor(item&&item.symbol))).join('')}</div>
+    <p class="muted" style="font-size:.82em;margin:10px 0 0">Order is exactly as the projection reports it. Every position carries a ${livePct(budget.disaster_stop_pct)} disaster stop; "To stop" is how far the mark sits above it.</p>
+    <p class="muted" style="font-size:.82em;margin:6px 0 0"><strong>Scope: SPOT positions only.</strong> Perp shorts are recorded in a separate ledger and are <strong>not</strong> counted here — so if the short side has been enabled with <span class="mono">--shorts</span>, this panel and the deployed/free figures above understate real exposure. Shorts are off by default.</p>
+    ${missing.length?`<p class="muted" style="font-size:.82em;margin:6px 0 0">Still collecting, nothing drawn yet: ${missing.join(', ')}.</p>`:''}
+    ${walletPriceHistoryError?`<p class="muted" style="font-size:.82em;margin:6px 0 0">Price history unavailable: ${walletPriceHistoryError}</p>`:''}
+    <p class="muted" style="font-size:.82em;margin:6px 0 0">${PRICE_CHART_NOTE}</p>`;
+}
+function setWalletPriceHistory(payload){
+  walletPriceHistory=payload;
+  walletPriceHistoryError='';
+  renderWalletPositions();
 }
 async function loadPriceHistory(){
-  try{renderWalletPriceCharts(await fetchJson('/api/v1/price-history'))}  // fetchJson still requires schema_version===1
+  try{setWalletPriceHistory(await fetchJson('/api/v1/price-history'))}  // fetchJson still requires schema_version===1
   catch(error){
-    const body=document.querySelector('#walletChartsBody');
-    if(body)body.innerHTML=`<div class="empty">Price history unavailable: ${esc(error.message)}</div>`;
+    walletPriceHistory=null;
+    walletPriceHistoryError=esc(error.message);  // the cards keep every number; only the paths go
+    renderWalletPositions();
   }
 }
 async function loadWallet(){
   try{renderWalletMoney(await fetchJson('/api/v1/wallet'))}  // fetchJson still requires schema_version===1
   catch(error){
     const message=esc(error.message);
+    walletPositionsView=null;  // no position truth this tick — the message below stands unoverwritten
     for(const selector of ['#walletBudgetBody','#walletPositionsBody','#walletResultBody','#walletVenueBody']){
       const node=document.querySelector(selector);
       if(node)node.innerHTML=`<div class="empty">Wallet view unavailable: ${message}</div>`;

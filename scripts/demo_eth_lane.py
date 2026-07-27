@@ -3094,6 +3094,14 @@ def main() -> int:
         choices=("5m", "15m", "1h", "4h"),
         help="confluence reference/fastest timeframe (default 15m); 1h and 4h are always added",
     )
+    # DEFAULT OFF. Without this flag nothing in the perp short path is ever reached and every lane
+    # below behaves exactly as it did before shorts existed.
+    parser.add_argument(
+        "--shorts",
+        action="store_true",
+        help="--activity only: also run the DEFAULT-DISABLED Bybit perp SHORT side (1x, isolated, "
+        "verified per symbol; shares the SAME total capital cap as the long side)",
+    )
     args = parser.parse_args()
 
     pf.load_dotenv(pf.ROOT / ".env")
@@ -3110,8 +3118,14 @@ def main() -> int:
             if not acquired:
                 print("another demo lane is already running — refusing to start a second one.")
                 return 3
+            # `demo_perp_short.SHORTS_ENABLED` is the single default (False); --shorts can only
+            # ever turn shorts ON, never off, so the two switches cannot drift into "enabled".
             return activity.run_activity_lane(
-                api_key, secret, interval=args.interval, loop=args.loop
+                api_key,
+                secret,
+                interval=args.interval,
+                loop=args.loop,
+                shorts=args.shorts or activity.perp.SHORTS_ENABLED,
             )
     if args.multi:
         # Multi-coin is execution-measurement, always NOT_ACTIVATED (per-coin Stage B is out of

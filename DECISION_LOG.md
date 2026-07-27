@@ -2871,3 +2871,75 @@ adopted — doing so would fit noise and would over-allocate to the worst-median
 what the code already calls it: an activity and inspectability device, NOT measured edge. The −15% tail
 stop and the 0.05 exit gate are unchanged. 0 validated strategies; demo P&L remains NON-EVIDENCE. No venue,
 order, live, or real-money authority is granted, and no investment advice is given.**
+
+### D-127 — Perp SHORT side shipped DEFAULT-OFF; a structural ledger corruption and a state-zeroing defect caught before enable; position cards; wallet scope stated
+
+Decision: the operator asked for "full activity" first, improve later. The lane is long-only on SPOT while
+its own roster reads 35 of 37 coins as SELL — every one un-actionable — so it sat idle holding one
+position. The operator chose the short side on perpetuals at **1x, no leverage, tight caps**. It ships
+**DEFAULT OFF** (`SHORTS_ENABLED = False`; `--shorts` is the only way on, verified un-overridable by env or
+config) and the operator enables it as a separate deliberate act. An independent order-path review returned
+**GO for shipping default-off** with one must-fix-before-enable finding, now fixed.
+
+**Two ledger defects found, both of which would have silently corrupted reported money.**
+(a) STRUCTURAL: a short entry is `side: "Sell"`, which `report_demo_trades.fold_fills` reads as the EXIT of
+a long — it would have paired a perp short against a real SPOT long on the same `(symbol, strategy)` key and
+booked a fabricated P&L, or emitted a bogus unmatched fill. (b) Perp fills do not move the wallet by
+notional at all (margin is reserved, P&L and funding settle separately) and a perp position is not a wallet
+coin balance, so the `USDT_delta`/`<BASE>_delta` reconciliation the fold depends on does not apply. Funding
+compounds it: it settles every 8h attached to NO order and would land inside some trade's before/after
+window. FIX BY CONSTRUCTION, not by argument: perp records go to their own append-only `perp_orders.jsonl`,
+carry NO `reconcile` key, and are labelled `wallet_delta_attributable: false` with an explicit funding note.
+`load_filled` reads `orders.jsonl` only, so the spot report is *provably* untouched. Funding is also a real
+recurring cost the spot lane never had (~±0.01%/8h ≈ 11%/yr on notional, paid or received by sign).
+
+**Blocking defect found in review and FIXED before enable.** Three call sites in `run_short_cycle` zeroed
+the local short state UNCONDITIONALLY after a force-close, without checking `closed["ok"]`. A rejected or
+unconfirmed reduce-only close would therefore leave the state file claiming flat while the venue still held
+the short. Two consumers read that file and would both have been wrong in the dangerous direction:
+`short_exposure` would under-count the shared $300 cap, and the long/short mutual-exclusion gate
+(`short_open`) would stop withholding the spot BUY — so **a real long could open against a still-live
+short on the same coin**, breaking the never-both-sides invariant. Fixed via `_settle_short_close`, which
+zeroes only on a confirmed close; staying "short" until the venue says otherwise is the conservative
+direction and is self-correcting, since the cycle re-reads the live position row before any signal. The
+test venue could not previously make a close fail; a `cover_fails` mode plus two regression tests were
+added, and the fix was verified by temporarily reverting it and confirming the test fails.
+
+Rails verified against code by the review, not taken from docstrings: leverage 1x and isolated margin are
+SET-then-READ-BACK and gate entries only (six refusal paths each proven to send no order); hedge mode is
+detected via the one-way `positionIdx == 0` row; `reduceOnly` is hardcoded inside `force_close_short` so no
+caller can flip it; the mirrored stop fires ABOVE entry, quantizes DOWN (tightening, mirroring the long
+side's round-up) and derives from the SAME `DEMO_DISASTER_STOP_PCT`/`ENTRY_THRESHOLD`/`EXIT_THRESHOLD`
+constants so the sides cannot drift; one $300 cap covers both sides at $25 a slot, with covers, stops and
+unprotected-closes never budget-gated; the kill switch halts both sides. At 1x isolated, liquidation sits
+near +99% against a stop at +15% — roughly 6.6x closer — and isolated margin bounds a crash-window loss to
+one slot.
+
+**Operator-facing scope stated rather than inferred.** `build_wallet` derives from the SPOT ledger and has
+no knowledge of `perp_orders.jsonl`, so once shorts are enabled the wallet page and its deployed/free
+figures would silently understate real exposure. The positions panel now says so explicitly. Making the
+wallet perp-aware is deferred, recorded, and should precede any heavy use of the short side.
+
+Also shipped: **one card per open position** replacing the wide table plus a detached chart strip — each
+card carries all eleven former columns with its own price chart (entry and stop lines), with unrealised %
+and distance-to-stop given the visual weight. A direction chip is wired but renders ONLY if the payload
+carries a `side` field; it does not today, and no `LONG` was invented from `size_base > 0`.
+
+**BEFORE THE OPERATOR ENABLES `--shorts`** (recorded, not yet done): run a single-symbol, single-cycle
+non-loop smoke test against the real demo host. Two venue shapes cannot be validated offline — (i) on a
+UNIFIED/UTA account, per-symbol isolation may be unsupported (isolated is account-level), in which case
+every symbol is refused and **the short side is simply inert**, which is fail-closed and expected, not a
+bug; and (ii) if the `tpslMode: "Full"` payload shape is wrong, a short opens, fails to confirm its stop and
+force-closes immediately — safe, but it burns two taker fees per attempt until fixed. Watch for
+open-then-instant-close on the first run and stop if seen.
+
+Evidence: operator instruction 2026-07-27; the live heartbeats showing 35 of 37 coins at or below a −0.15
+short gate against 1 clearing the long gate; the independent order-path review (GO default-off, one
+must-fix, five verified claims, four open questions assessed as fail-closed); 468 tests pass with ruff and
+mypy clean. Standing: fake money, execution authority NONE, 0 validated strategies, demo P&L NON-EVIDENCE.
+Shorts increase the tradeable surface roughly 35x in a market like today's — that improves the INSTRUMENT,
+not the signal, which measured no predictive content (D-126) and 21.4% live.
+Status: **Perp short side SHIPPED and DEFAULT-OFF; inert until the operator passes `--shorts`. Spot report
+provably uncorrupted; the never-both-sides and shared-cap invariants restored by the state fix. Wallet page
+states its SPOT-only scope. A live single-symbol smoke test is a PRECONDITION of enabling. No venue, order,
+live, or real-money authority is granted, and no investment advice is given.**

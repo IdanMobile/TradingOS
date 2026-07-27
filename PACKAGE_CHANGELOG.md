@@ -1,5 +1,51 @@
 # Package Changelog
 
+## v8.159 — 2026-07-27 — Perp SHORT side (DEFAULT-OFF); position cards; wallet SPOT-scope stated
+
+The lane is long-only on spot while its roster reads 35 of 37 coins as SELL — all un-actionable. The
+operator chose the short side on perpetuals at 1x with tight caps. It ships **DEFAULT OFF**
+(`SHORTS_ENABLED = False`; `--shorts` is the only way on) and is enabled as a separate deliberate act.
+Independent order-path review: **GO for default-off**, one must-fix-before-enable finding, now fixed.
+See DECISION_LOG D-127.
+
+- **Two ledger defects that would have silently corrupted reported money.** A short entry is `side: "Sell"`,
+  which `fold_fills` reads as the EXIT of a long — it would have paired a perp short against a real SPOT
+  long on the same key and booked a fabricated P&L. And perp fills do not move the wallet by notional at
+  all, so the delta reconciliation the fold depends on does not apply; funding (settling every 8h attached
+  to no order) compounds it. Fixed **by construction**: perp records go to their own `perp_orders.jsonl`,
+  carry no `reconcile` key, and are labelled `wallet_delta_attributable: false`. `load_filled` reads
+  `orders.jsonl` only, so the spot report is provably untouched.
+- **Blocking defect found in review, fixed before enable.** Three sites zeroed the local short state after a
+  force-close WITHOUT checking whether the close succeeded — a rejected close would leave the state claiming
+  flat while the venue still held the short, under-counting the shared cap and letting a real spot long open
+  against a live short. `_settle_short_close` now zeroes only on a confirmed close. A `cover_fails` venue
+  mode and two regression tests were added; the fix was verified by temporarily reverting it and confirming
+  the test fails.
+- Rails verified against code, not docstrings: 1x leverage and isolated margin SET-then-READ-BACK, gating
+  entries only (six refusal paths each proven to send no order); hedge mode detected via the one-way
+  position row; `reduceOnly` hardcoded inside the close path; the mirrored stop fires ABOVE entry, quantizes
+  DOWN, and derives from the SAME constants as the long side so they cannot drift; one $300 cap across both
+  sides with risk reduction never budget-gated; kill switch halts both. At 1x isolated, liquidation ≈ +99%
+  vs a stop at +15%.
+- **One card per open position** replaces the wide table plus detached chart strip: all eleven former columns
+  plus that position's own chart with entry and stop lines, with unrealised % and distance-to-stop given the
+  visual weight. A direction chip is wired but renders only if the payload carries `side` — it does not
+  today, and no `LONG` was invented from `size_base > 0`.
+- **Wallet scope stated:** `build_wallet` derives from the spot ledger and cannot see `perp_orders.jsonl`, so
+  the positions panel now says plainly that it shows SPOT only and would understate exposure with shorts on.
+  Making the wallet perp-aware is deferred and recorded.
+
+**Precondition of enabling `--shorts`:** a single-symbol, single-cycle smoke test against the real demo host.
+Two venue shapes cannot be validated offline — on a UNIFIED account per-symbol isolation may be unsupported
+(every symbol refused; shorts simply inert, which is fail-closed and expected), and a wrong `tpslMode` shape
+would present as open-then-instant-close, burning two taker fees per attempt.
+
+Standing: fake money, execution authority NONE, 0 validated strategies, demo P&L NON-EVIDENCE. Shorts raise
+the tradeable surface ~35x in a market like today's — that improves the instrument, not the signal, which
+measured no predictive content (D-126) and 21.4% live.
+
+Gates: package integrity PASS, project-wide ruff + mypy clean, 468 tests pass across nine suites.
+
 ## v8.158 — 2026-07-27 — `make up` / `make down`: one command for the whole stack
 
 Convenience only; no behaviour change to the lane, the dashboard or the supervisor. The operator asked why

@@ -3519,7 +3519,7 @@ for(const id of ['liveStatusBody','liveEventsBody','liveEventsCount','liveAgreem
   'liveAgreementSummary','livePositionsBody','livePositionsSummary','liveEquityBody',
   'liveLaneControls','liveLaneControlStatus','liveNextScan','walletBudgetBody',
   'walletBudgetSummary','walletPositionsBody','walletPositionsSummary','walletResultBody',
-  'walletVenueBody','walletEquityBody','walletChartsBody','walletVenueChip',
+  'walletVenueBody','walletEquityBody','walletVenueChip',
   'walletCashBody'])make(id);
 const document={
   hidden:false,
@@ -3546,7 +3546,7 @@ const emptyWallet={schema_version:1,available:false,as_of:null,environment:'VENU
 const emptyEquity={schema_version:1,available:false,points:[],summary:{},disclaimer:''};
 const render=(wallet,equity,charts)=>{
   renderWalletMoney(wallet);renderLiveEquity(equity,'#walletEquityBody');
-  renderWalletPriceCharts(charts||empties)};
+  setWalletPriceHistory(charts||empties)};
 const dump=()=>Object.fromEntries(Object.entries(nodes)
   .filter(([id])=>id.startsWith('wallet'))
   .map(([id,node])=>[id,`${node.innerHTML}|${node.textContent}`]));
@@ -3616,9 +3616,18 @@ render({schema_version:1,available:true,as_of:'2026-07-26T14:55:00+00:00',
      win_rate_pct:'100.0'},
    disclaimer:'Demo execution measurement only — not evidence of edge.'});
 out.full=dump();
-// 5. price history: a real 3-close series with entry+stop, a coin nothing was captured for yet,
-//    a single-point series and a flat series — the four documented chart cases.
-render(emptyWallet,emptyEquity,{schema_version:1,available:true,
+// 5. price history INSIDE the cards: a real 3-close series with entry+stop, a coin nothing was
+//    captured for yet, a single-point series and a flat series — the four documented chart cases,
+//    each joined by symbol onto its own open position.
+const chartPosition=(symbol,extra)=>({symbol,strategy:'ACTIVITY-CONFLUENCE',
+  opened_at:'2026-07-26T14:53:02+00:00',held_seconds:5400,size_base:'1',entry_price:'10',
+  mark_price:'11',spent_usdt:'25',value_usdt:'25.25',unrealised_usdt:'0.25',unrealised_pct:'1.0',
+  stop_price:'8.5',distance_to_stop_pct:'15.84',...(extra||{})});
+render({...emptyWallet,available:true,as_of:'2026-07-26T15:00:00+00:00',
+  budget:{total_cap_usdt:'300',per_trade_usdt:'25',deployed_usdt:'100',free_usdt:'200',
+    slots_total:12,slots_used:4,slots_free:8,disaster_stop_pct:'15'},
+  positions:['BTCUSDT','ETHUSDT','SOLUSDT','ADAUSDT'].map(s=>chartPosition(s))},
+  emptyEquity,{schema_version:1,available:true,
   generated_at:'2026-07-26T15:00:00+00:00',
   series:[
     {symbol:'BTCUSDT',interval:'5m',updated_at:'2026-07-26T15:00:00+00:00',point_count:3,
@@ -3646,6 +3655,25 @@ out.charts=dump();
 render({...emptyWallet,available:true,
   venue:{...emptyWallet.venue,url:'javascript:alert(1)',cash_total_usdt:'12.5'}},emptyEquity);
 out.badurl=dump();
+// 7. a side/direction field the payload does NOT carry today. Proves the card is ready for the
+//    short lane without inventing a direction: LONG and SHORT render distinctly, an unknown value
+//    renders as a plain label with no colour class, and case 4 above proves none appears when the
+//    key is absent.
+render({...emptyWallet,available:true,
+  budget:{total_cap_usdt:'300',per_trade_usdt:'25',deployed_usdt:'75',free_usdt:'225',
+    slots_total:12,slots_used:3,slots_free:9,disaster_stop_pct:'15'},
+  positions:[
+    {symbol:'BTCUSDT',strategy:'S',side:'LONG',opened_at:null,held_seconds:60,size_base:'1',
+     entry_price:'10',mark_price:'11',spent_usdt:'25',value_usdt:'25',unrealised_usdt:'0.1',
+     unrealised_pct:'0.4',stop_price:'8.5',distance_to_stop_pct:'15'},
+    {symbol:'ETHUSDT',strategy:'S',side:'short',opened_at:null,held_seconds:60,size_base:'1',
+     entry_price:'10',mark_price:'9',spent_usdt:'25',value_usdt:'25',unrealised_usdt:'-0.1',
+     unrealised_pct:'-0.4',stop_price:'11.5',distance_to_stop_pct:'15'},
+    {symbol:'SOLUSDT',strategy:'S',side:'FLAT',opened_at:null,held_seconds:60,size_base:'1',
+     entry_price:'10',mark_price:'10',spent_usdt:'25',value_usdt:'25',unrealised_usdt:'0',
+     unrealised_pct:'0',stop_price:'8.5',distance_to_stop_pct:'15'}]},
+  emptyEquity);
+out.sided=dump();
 console.log(JSON.stringify(out));
 """
     )
@@ -3661,7 +3689,7 @@ def test_wallet_panels_never_render_undefined_nan_or_null() -> None:
     # available:false degrades to calm prose in every panel, not a blank card and not a crash.
     empty = state["empty"]
     assert "No lane budget yet" in empty["walletBudgetBody"]
-    assert "No open positions." in empty["walletPositionsBody"]
+    assert "No open positions right now." in empty["walletPositionsBody"]
     assert empty["walletPositionsSummary"].endswith("|none open")
     assert empty["walletBudgetSummary"].endswith("|no lane budget yet")
     assert "No venue balances reported." in empty["walletVenueBody"]
@@ -3715,39 +3743,98 @@ def test_wallet_charts_survive_zero_and_one_data_point() -> None:
     assert "<polyline" in state["full"]["walletEquityBody"]
 
 
-def test_wallet_positions_table_renders_every_column_and_dashes_null_marks() -> None:
+def _position_cards(case: str = "full") -> list[str]:
+    """The rendered per-position cards for a case, in payload order, without the grid footnotes."""
+    body = _wallet_state()[case]["walletPositionsBody"]
+    return [card.split("</article>")[0] for card in body.split('<article class="pos-card">')[1:]]
+
+
+def test_wallet_positions_render_one_card_per_position_carrying_every_old_table_field() -> None:
+    """The table is gone; no field went with it. One card per open position, all 11 columns."""
     state = _wallet_state()
     body = state["full"]["walletPositionsBody"]
-    headers = re.findall(r"<th>([^<]+)</th>", body)
-    assert headers == [
-        "Coin",
-        "Strategy",
-        "Size",
-        "Entry",
-        "Mark",
-        "Value",
-        "Unrealised",
-        "Unrealised %",
-        "Held",
-        "Stop",
-        "To stop",
-    ]
+    cards = _position_cards()
+    assert len(cards) == 2
     assert state["full"]["walletPositionsSummary"].endswith("|2 open")
+    # No table survives on this panel: the wide row layout is what the operator asked to lose.
+    assert "<table" not in body and "<th>" not in body and "<tr>" not in body
+    assert "wallet-table" not in body
+    btc, axs = cards
+    # 1-2. Coin and strategy, in the card head where the eye lands first.
+    assert '<strong class="mono pos-coin">BTCUSDT</strong>' in btc
+    assert '<span class="pos-strategy">ACTIVITY-CONFLUENCE</span>' in btc
+    # 3-11. Every remaining column of the retired table, each still labelled on the card.
+    for label, value in (
+        ("Size", "0.00021"),
+        ("Entry", "$118,000"),
+        ("Mark", "$119,180"),
+        ("Value", "$25.25"),
+        ("Unrealised", "+$0.25"),
+        ("Held", "1h 30m"),
+        ("Stop", "$100,300"),
+    ):
+        assert f"<dt>{label}</dt>" in btc, label
+        assert value in btc, value
+    assert "Unrealised %" in btc and "+1.00%" in btc
+    assert "To stop" in btc and "15.84%" in btc
+    # Signed money and percentages keep their green/red tone classes.
+    assert '<dd class="mono live-up">+$0.25</dd>' in btc
+    assert '<span class="value live-up">+1.00%</span>' in btc
     # API order is preserved, not re-sorted client-side.
     assert body.index("BTCUSDT") < body.index("AXSUSDT")
-    rows = re.findall(r"<tr><td class=\"mono\">(.*?)</tr>", body)
-    assert len(rows) == 2
-    # A fully-marked row: money, signed P&L with a colour class, humanised hold, stop distance.
-    assert "ACTIVITY-CONFLUENCE" in rows[0]
-    assert "$118,000" in rows[0] and "$119,180" in rows[0] and "$25.25" in rows[0]
-    assert '<td class="mono live-up">+$0.25</td>' in rows[0]
-    assert '<td class="mono live-up">+1.00%</td>' in rows[0]
-    assert "1h 30m" in rows[0]
-    assert "$100,300" in rows[0] and "15.84%" in rows[0]
-    # The null-mark row renders em dashes in every unknown cell, never NaN/undefined/null.
-    assert rows[1].count("—") == 6  # mark, value, unrealised $, unrealised %, stop, to stop
-    assert '<td class="mono muted">—</td>' in rows[1]
-    assert "2m" in rows[1]
+    # The null-mark position renders em dashes in every unknown field, never NaN/undefined/null.
+    numbers = re.sub(r'<p class="muted pos-chart-note">.*?</p>', "", axs)  # drop the chart's note
+    assert numbers.count("—") == 6  # mark, value, unrealised $, unrealised %, stop, to stop
+    assert '<span class="value muted">—</span>' in axs  # unrealised % headline
+    assert "2m" in axs and "AXSUSDT" in axs
+    # The disaster-stop footnote and its "To stop" explanation survive the move off the table.
+    assert "Every position carries a 15.00% disaster stop" in body
+
+
+def test_wallet_positions_panel_states_it_shows_spot_only() -> None:
+    """The wallet derives from the SPOT ledger; perp shorts live in a separate ledger.
+
+    An independent review flagged that once `--shorts` is enabled this panel and the deployed/free
+    figures would silently understate real exposure. Silence there is the dangerous kind, so the
+    scope is stated on the page rather than left to be inferred.
+    """
+    html = _dashboard_html()
+    assert "Scope: SPOT positions only." in html
+    assert "not</strong> counted here" in html
+    assert "--shorts" in html
+    assert "Shorts are off by default." in html
+
+
+def test_wallet_position_card_emphasises_unrealised_pct_and_distance_to_stop() -> None:
+    """The two numbers that matter at a glance sit in their own headline block, above the rest."""
+    btc = _position_cards()[0]
+    key = btc[btc.index('<div class="pos-key">') : btc.index('<dl class="pos-facts">')]
+    assert key.count('<span class="value') == 2
+    assert "Unrealised %" in key and "To stop" in key
+    # Supporting figures are NOT in the headline block — they sit in the smaller facts list below.
+    for supporting in ("<dt>Size</dt>", "<dt>Entry</dt>", "<dt>Mark</dt>", "<dt>Value</dt>"):
+        assert supporting not in key, supporting
+    assert btc.index('<div class="pos-key">') < btc.index('<dl class="pos-facts">')
+    # Styled as the largest text on the card, with the supporting facts deliberately smaller.
+    css = _dashboard_html()
+    assert ".pos-key .value{display:block;font-size:1.35rem;font-weight:600" in css
+    assert ".pos-facts dd{margin:0;font-size:.86em" in css
+
+
+def test_wallet_position_card_shows_a_direction_only_when_the_payload_carries_one() -> None:
+    """No side field exists in /api/v1/wallet today, so none is invented — but the chip is ready."""
+    # Case 4 is the production shape: no `side` key, therefore no chip and no fabricated LONG.
+    for card in _position_cards():
+        assert "pos-side" not in card
+        assert "LONG" not in card and "SHORT" not in card
+    # When a side does arrive, LONG and SHORT are visually distinct and anything else is neutral.
+    long_card, short_card, flat_card = _position_cards("sided")
+    assert '<span class="pos-side long">LONG</span>' in long_card
+    assert '<span class="pos-side short">SHORT</span>' in short_card  # normalised from "short"
+    assert '<span class="pos-side">FLAT</span>' in flat_card  # unknown value gets no colour
+    css = _dashboard_html()
+    assert ".pos-side.long{color:var(--green)" in css
+    assert ".pos-side.short{color:var(--red)" in css
 
 
 def test_wallet_venue_chip_names_the_platform_at_the_top_and_links_out_safely() -> None:
@@ -3841,19 +3928,18 @@ def test_wallet_result_and_venue_panels_frame_the_prefunded_balance_honestly() -
 
 
 def _wallet_charts() -> list[str]:
-    """The rendered per-coin chart cards, in payload order (BTC, ETH, SOL, ADA)."""
-    body = _wallet_state()["charts"]["walletChartsBody"]
-    return body.split('<div class="wallet-chart">')[1:]
+    """The position cards of the chart case, in payload order (BTC, ETH, SOL, ADA)."""
+    return _position_cards("charts")
 
 
 def test_wallet_price_chart_renders_from_the_documented_price_history_fields() -> None:
     source = _wallet_render_source()
-    body = _wallet_state()["charts"]["walletChartsBody"]
+    body = _wallet_state()["charts"]["walletPositionsBody"]
     # Every field the chart claims to draw is actually read from the payload.
     for field in (
-        "p.series",
-        "p.coverage",
-        "p.available",
+        "history.series",
+        "history.coverage",
+        "history.available",
         "s.symbol",
         "s.interval",
         "s.closes",
@@ -3871,6 +3957,34 @@ def test_wallet_price_chart_renders_from_the_documented_price_history_fields() -
     assert "last $119,180" in btc
     # One svg per series that HAS points: BTC, SOL, ADA — never one for the uncaptured coin.
     assert body.count('<svg class="wallet-price"') == 3
+    # And each one is INSIDE its own position card, joined by symbol — never a separate strip.
+    assert body.count('<article class="pos-card">') == 4
+    for card, symbol in zip(
+        _wallet_charts(), ("BTCUSDT", "ETHUSDT", "SOLUSDT", "ADAUSDT"), strict=True
+    ):
+        assert symbol in card, symbol
+        assert card.count('<div class="pos-key">') == 1
+        assert card.count('<dl class="pos-facts">') == 1
+    assert btc.index('<div class="pos-key">') < btc.index('<div class="pos-chart">')
+    assert btc.index('<div class="pos-chart">') < btc.index('<dl class="pos-facts">')
+
+
+def test_wallet_has_no_standalone_chart_strip_and_one_shared_chart_renderer() -> None:
+    """The separate chart strip is deleted; the renderer that drew it is reused, not duplicated."""
+    html = _dashboard_html()
+    # The old strip's host node, container class and renderer are gone from the page entirely.
+    for retired in ("walletChartsBody", "wallet-charts", "wallet-chart-head", "wallet-table"):
+        assert retired not in html, retired
+    assert "renderWalletPriceCharts" not in html
+    # Exactly one chart implementation, one call site, one svg template.
+    assert html.count("function walletPriceChart(") == 1
+    assert html.count("walletPriceChart(") == 2  # the definition plus its single call in the card
+    assert html.count('<svg class="wallet-price"') == 1
+    assert "${walletPriceChart(series,symbol)}" in html
+    # One card renderer, one grid, and both fetches feed it rather than each drawing their own.
+    assert html.count("function walletPositionCard(") == 1
+    assert html.count("function renderWalletPositions(") == 1
+    assert html.count('<div class="pos-cards">') == 1
 
 
 def test_wallet_price_chart_draws_entry_and_stop_only_when_the_payload_carries_them() -> None:
@@ -3881,7 +3995,8 @@ def test_wallet_price_chart_draws_entry_and_stop_only_when_the_payload_carries_t
     assert '<line x1="0" y1="6.00" x2="100" y2="6.00" stroke="var(--cyan)"' in btc  # entry
     assert '<line x1="0" y1="36.00" x2="100" y2="36.00" stroke="var(--red)"' in btc  # stop
     # Null entry/stop simply omit the line and the legend entry — never a line at NaN.
-    for chart in (sol, ada):
+    for card in (sol, ada):
+        chart = card[card.index('<div class="pos-chart">') : card.index('<dl class="pos-facts">')]
         assert "var(--cyan)" not in chart and "var(--red)" not in chart
         assert "<line" not in chart
         assert "entry" not in chart and "stop" not in chart
@@ -3901,13 +4016,21 @@ def test_wallet_price_chart_survives_zero_one_and_flat_series() -> None:
     assert "Infinity" not in ada
     # A multi-point series is the only one that gets a line.
     assert "<path" in btc and "<path" in ada
+    # A chartless position keeps every one of its numbers: the card degrades, it never empties.
+    for label in ("<dt>Size</dt>", "<dt>Entry</dt>", "<dt>Stop</dt>", "To stop"):
+        assert label in eth, label
     # Uncaptured coins are named rather than silently dropped.
-    body = _wallet_state()["charts"]["walletChartsBody"]
+    body = _wallet_state()["charts"]["walletPositionsBody"]
     assert "Still collecting, nothing drawn yet: ETHUSDT." in body
+    # A position the price-history payload knows nothing about behaves the same way (case 4 sends
+    # available:false), rather than rendering a broken svg.
+    for card in _position_cards():
+        assert "<svg" not in card
+        assert "Collecting price history — no points captured yet for this coin." in card
 
 
 def test_wallet_price_charts_are_captioned_as_a_capped_lane_captured_record() -> None:
-    body = _wallet_state()["charts"]["walletChartsBody"]
+    body = _wallet_state()["charts"]["walletPositionsBody"]
     for phrase in (
         "own captured closes at its scan interval",
         "capped at the most recent ~24h",
@@ -3917,10 +4040,14 @@ def test_wallet_price_charts_are_captioned_as_a_capped_lane_captured_record() ->
         "NOT a signal",
     ):
         assert phrase in body, phrase
-    # No held coin at all -> calm prose, no fabricated series.
-    empty = _wallet_state()["empty"]["walletChartsBody"]
-    assert "No captured price history yet." in empty
+    # The caption is stated once for the grid, not repeated on every card.
+    assert body.count("NOT a forecast") == 1
+    # Zero open positions -> one calm sentence, no empty grid and no fabricated series.
+    empty = _wallet_state()["empty"]["walletPositionsBody"]
+    assert "No open positions right now." in empty
     assert "<svg" not in empty
+    assert "pos-cards" not in empty and "pos-card" not in empty
+    assert _wallet_state()["empty"]["walletPositionsSummary"].endswith("|none open")
 
 
 def test_wallet_price_history_rides_the_existing_poll_tick_and_adds_no_write_surface() -> None:
@@ -3933,8 +4060,9 @@ def test_wallet_price_history_rides_the_existing_poll_tick_and_adds_no_write_sur
     assert html.count("setInterval(()=>pollDemoLane(false),DEMO_LANE_REFRESH_MS)") == 1
     for banned in ("setInterval", "setTimeout", "method:'POST'", "randomUUID"):
         assert banned not in source, banned
-    # Read-only surface: the chart host is a bare div inside the existing positions panel.
-    assert '<div id="walletChartsBody">' in section
+    # Read-only surface: the cards render into the one pre-existing positions host, no second node.
+    assert '<div id="walletPositionsBody">' in section
+    assert "walletChartsBody" not in section
     charts_panel = section[
         section.index('id="walletPositionsPanel"') : section.index("walletResultPanel")
     ]
@@ -3942,7 +4070,50 @@ def test_wallet_price_history_rides_the_existing_poll_tick_and_adds_no_write_sur
         assert attribute not in charts_panel, attribute
     # Server values are escaped, never interpolated raw.
     assert "walletText(s.symbol)" in source
+    assert "walletText(p.symbol)" in source
     assert "esc(error.message)" in source
+    # A price-history failure degrades to an escaped note under the cards; the numbers stay.
+    assert "walletPriceHistoryError=esc(error.message)" in source
+    # The join is client-side by symbol over the two existing GETs: no new endpoint, no parameter.
+    assert "series.find(s=>s&&typeof s==='object'&&s.symbol===symbol)" in source
+    assert "?" not in re.findall(r"fetchJson\('([^']+)'\)", source)[0]
+
+
+def test_position_cards_change_nothing_else_on_the_page() -> None:
+    """The card grid replaced a table inside one panel; every neighbouring surface is untouched."""
+    html = _dashboard_html()
+    section = _wallet_section()
+    source = _wallet_render_source()
+    state = _wallet_state()
+    # The other Wallet panels still render their own content from the same single wallet fetch.
+    full = state["full"]
+    assert "Lane cap" in full["walletBudgetBody"] and "$300" in full["walletBudgetBody"]
+    assert '<svg class="wallet-alloc"' in full["walletBudgetBody"]
+    assert "wallet-pips" in full["walletBudgetBody"]
+    assert '<span class="cash-value">$99,673.44</span>' in full["walletCashBody"]
+    assert "Realised" in full["walletResultBody"] and "Fees paid" in full["walletResultBody"]
+    assert "Read this first:" in full["walletVenueBody"]
+    assert "<polyline" in full["walletEquityBody"]  # the shared equity sparkline, still shared
+    assert "Bybit" in full["walletVenueChip"]
+    # The verdict line, the badges and the collapsed legacy per-coin detail all survive.
+    assert '<p class="verdict-line" id="walletVerdict"' in section
+    for badge in ("FAKE MONEY", "AUTHORITY: NONE", "UNVALIDATED"):
+        assert badge in section, badge
+    assert "<summary>Per-coin lane detail</summary>" in section
+    assert 'id="walletDemoBody"' in section
+    # All thirteen nav pages still resolve to a section, and the grid added no fourteenth.
+    workspaces = re.findall(r'<button[^>]+data-workspace="([^"]+)"', html)
+    assert len(workspaces) == 13
+    for workspace in workspaces:
+        assert f'<section id="{workspace}"' in html or f"{workspace}:[[" in html, workspace
+    # The card block adds no control surface, no write path and no clock of its own.
+    for banned in ("<input", "<form", "method:'POST'", "setInterval", "setTimeout", "randomUUID"):
+        assert banned not in source, banned
+    assert html.count("setInterval(()=>pollDemoLane(false),DEMO_LANE_REFRESH_MS)") == 1
+    # No payload string is ever written as raw markup: every card field goes through esc().
+    assert "innerHTML=payload" not in source
+    for field in ("p.symbol", "p.strategy", "p.size_base"):
+        assert f"walletText({field})" in source, field
 
 
 # --- Persistent evidence-verdict line on both Watch surfaces (D-120/D-122/D-124 doctrine) ---

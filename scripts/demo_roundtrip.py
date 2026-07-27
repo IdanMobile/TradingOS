@@ -29,6 +29,7 @@ import re
 import sys
 import time
 from collections.abc import Callable
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
 
@@ -596,6 +597,218 @@ def session(
         "note": "Demo/fake money, ends flat. Machinery test only — no strategy is validated; "
         "real execution_authority stays NONE.",
     }
+
+
+# --- Bybit V5 LINEAR (USDT perpetual) adapters ------------------------------------------------
+# ADDITIVE and unused by every spot path above. Venue endpoint literals stay confined to this
+# module (D-046 doctrine); the policy that decides whether to call them lives in
+# scripts/demo_perp_short.py, which is default-disabled. Perps are a DIFFERENT RISK CLASS from
+# spot: a position is not a wallet coin balance, `qty` is base coin (there is NO `marketUnit` on
+# linear), leverage/margin-mode are per-symbol account settings, and funding settles into the
+# wallet every 8h attached to no order at all.
+
+PERP_CATEGORY = "linear"
+# Bybit "already at that value" acknowledgements — a successful no-op, not a failure.
+LEVERAGE_NOT_MODIFIED = 110043
+MARGIN_MODE_NOT_MODIFIED = 110026
+
+
+def _signed_post(
+    post_transport: PostTransport,
+    api_key: str,
+    secret: str,
+    timestamp: str,
+    base: str,
+    path: str,
+    payload: dict[str, Any],
+) -> dict[str, Any]:
+    """One signed, demo-host-locked Bybit V5 POST. Same signature scheme as `_order_create`."""
+    pf.require_demo_base(base)
+    body = json.dumps(payload)
+    headers = {
+        "X-BAPI-API-KEY": api_key,
+        "X-BAPI-TIMESTAMP": timestamp,
+        "X-BAPI-RECV-WINDOW": pf.RECV_WINDOW,
+        "X-BAPI-SIGN": sign_post(secret, timestamp, api_key, body),
+        "Content-Type": "application/json",
+    }
+    decoded = json.loads(post_transport(f"{base}{path}", headers, body.encode()))
+    return decoded if isinstance(decoded, dict) else {}
+
+
+def perp_switch_isolated(
+    post_transport: PostTransport,
+    api_key: str,
+    secret: str,
+    timestamp: str,
+    base: str,
+    *,
+    symbol: str,
+    leverage: str,
+) -> dict[str, Any]:
+    """Ask the venue for ISOLATED margin on one linear symbol (tradeMode=1).
+
+    Returns the raw response; `MARGIN_MODE_NOT_MODIFIED` means it was already isolated. The caller
+    NEVER treats an ack as proof — it re-reads `perp_positions` and checks `tradeMode`.
+    """
+    return _signed_post(
+        post_transport,
+        api_key,
+        secret,
+        timestamp,
+        base,
+        "/v5/position/switch-isolated",
+        {
+            "category": PERP_CATEGORY,
+            "symbol": symbol,
+            "tradeMode": 1,
+            "buyLeverage": leverage,
+            "sellLeverage": leverage,
+        },
+    )
+
+
+def perp_set_leverage(
+    post_transport: PostTransport,
+    api_key: str,
+    secret: str,
+    timestamp: str,
+    base: str,
+    *,
+    symbol: str,
+    leverage: str,
+) -> dict[str, Any]:
+    """Set both sides' leverage on one linear symbol. `LEVERAGE_NOT_MODIFIED` = already there."""
+    return _signed_post(
+        post_transport,
+        api_key,
+        secret,
+        timestamp,
+        base,
+        "/v5/position/set-leverage",
+        {
+            "category": PERP_CATEGORY,
+            "symbol": symbol,
+            "buyLeverage": leverage,
+            "sellLeverage": leverage,
+        },
+    )
+
+
+def perp_market_order(
+    post_transport: PostTransport,
+    api_key: str,
+    secret: str,
+    timestamp: str,
+    base: str,
+    *,
+    symbol: str,
+    side: str,
+    base_qty: str,
+    reduce_only: bool,
+) -> dict[str, Any]:
+    """One linear market order. `qty` is BASE COIN (linear has no `marketUnit`).
+
+    `positionIdx` 0 is one-way mode — the caller verifies the account really is in one-way mode
+    before this is ever reached. `reduceOnly` is TRUE on every cover, so a cover can only ever
+    shrink a position and can never flip it into a reverse (long) position.
+    """
+    return _signed_post(
+        post_transport,
+        api_key,
+        secret,
+        timestamp,
+        base,
+        "/v5/order/create",
+        {
+            "category": PERP_CATEGORY,
+            "symbol": symbol,
+            "side": side,
+            "orderType": "Market",
+            "qty": base_qty,
+            "reduceOnly": reduce_only,
+            "positionIdx": 0,
+        },
+    )
+
+
+def perp_trading_stop(
+    post_transport: PostTransport,
+    api_key: str,
+    secret: str,
+    timestamp: str,
+    base: str,
+    *,
+    symbol: str,
+    stop_loss: str,
+) -> dict[str, Any]:
+    """Attach a full-position stop loss to a linear position (/v5/position/trading-stop).
+
+    Position-bound rather than a free-standing conditional order: it cannot be orphaned from the
+    position it protects and it disappears with it, so there is no cancel bookkeeping and no way to
+    leave a stop resting against a position that no longer exists.
+    """
+    return _signed_post(
+        post_transport,
+        api_key,
+        secret,
+        timestamp,
+        base,
+        "/v5/position/trading-stop",
+        {
+            "category": PERP_CATEGORY,
+            "symbol": symbol,
+            "stopLoss": stop_loss,
+            "tpslMode": "Full",
+            "positionIdx": 0,
+        },
+    )
+
+
+def perp_positions(
+    transport: pf.Transport, api_key: str, secret: str, base: str, symbol: str
+) -> list[dict[str, Any]]:
+    """Venue truth for one linear symbol: size, side, avgPrice, leverage, tradeMode, stopLoss."""
+    resp = pf._signed_get(
+        transport,
+        base,
+        "/v5/position/list",
+        {"category": PERP_CATEGORY, "symbol": symbol},
+        api_key,
+        secret,
+        _now(),
+    )
+    rows = resp.get("result", {}).get("list", [])
+    return [row for row in rows if isinstance(row, dict)]
+
+
+def perp_instrument(
+    transport: pf.Transport, base: str, symbol: str
+) -> tuple[Decimal, Decimal, Decimal]:
+    """(qtyStep, minOrderQty, tickSize) for a linear symbol — linear uses `qtyStep`, not spot's
+    `basePrecision`. Fails closed on missing/invalid metadata."""
+    url = f"{base}/v5/market/instruments-info?category={PERP_CATEGORY}&symbol={symbol}"
+    payload = json.loads(transport(url, {}))
+    try:
+        row = payload["result"]["list"][0]
+        values = (
+            Decimal(str(row["lotSizeFilter"]["qtyStep"])),
+            Decimal(str(row["lotSizeFilter"]["minOrderQty"])),
+            Decimal(str(row["priceFilter"]["tickSize"])),
+        )
+    except (KeyError, IndexError, TypeError, InvalidOperation, ValueError) as error:
+        raise ValueError(f"linear instrument metadata invalid for {symbol}") from error
+    if not all(value.is_finite() and value > 0 for value in values):
+        raise ValueError(f"linear instrument metadata must be positive for {symbol}")
+    return values
+
+
+def perp_last_price(transport: pf.Transport, base: str, symbol: str) -> Decimal:
+    """Last traded PERP price. The perp is its own instrument — never priced off the spot book."""
+    url = f"{base}/v5/market/tickers?category={PERP_CATEGORY}&symbol={symbol}"
+    payload = json.loads(transport(url, {}))
+    rows = payload.get("result", {}).get("list", [])
+    return Decimal(str(rows[0]["lastPrice"])) if rows else Decimal("0")
 
 
 def main() -> int:
