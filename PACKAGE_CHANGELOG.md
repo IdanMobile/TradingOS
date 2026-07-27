@@ -1,5 +1,42 @@
 # Package Changelog
 
+## v8.157 — 2026-07-27 — Pre-registered study: "agreement" does not predict forward returns (NULL); no agreement-scaled sizing
+
+Documentation-only; no code changed. The operator asked to let the confluence score move protection/sizing
+levels. Before changing anything, a pre-registered offline study asked the prerequisite question nobody had
+asked: **does agreement predict anything?** It does not, so the change is NOT made. See DECISION_LOG D-126.
+
+- **Method:** pre-specification frozen before any result was computed (five fixed buckets, primary horizon
+  H=24 with H=6/H=72 declared non-decision-bearing in advance, 0.2% round-trip fee, non-overlapping
+  sampling, moving-block bootstrap with coins travelling together, and a three-part decision rule). The
+  deployed scoring path was imported, not reimplemented. 664,198 scored bars over 14 coins, 2021→2026;
+  **effective sample 68 blocks, not 27,665 rows** — agreement is highly persistent and majors co-move.
+- **Integrity:** look-ahead causality enforced by 4,900 prefix-vs-full-series comparisons (zero
+  mismatches); higher-timeframe alignment asserted bar-by-bar on explicit close timestamps; negative
+  control passed on 200 permutations.
+- **Result — NULL.** Top bucket mean net +0.084%, CI [−0.219%, +0.386%]. Top−reference +0.206%, CI
+  [−0.066%, +0.485%], permutation p=0.070 — the noise null itself reaches +0.230%, so the observed spread
+  is inside what chance produces. Means are not monotone. The only statistically detectable relationship
+  runs the **wrong way**: Spearman −0.0285 (CI excludes zero), with median return and win rate both
+  declining as agreement rises (49.1% → 44.3%). Higher agreement buys right-skew, not expectation.
+- **Consequence:** no agreement-scaled position sizing and no agreement-scaled stops. Scaling on this score
+  would over-allocate to the lowest-median, lowest-hit-rate states — worse than sizing at random.
+- **Bears on earlier decisions:** the D-118 gate loosening (0.25→0.15) widened coverage by just 2.66 points
+  (the score is coarse and bimodal, k/35) and the two gates are statistically indistinguishable — recorded
+  as having produced no measurable performance change in either direction. Separately, roster signals are
+  state rather than transition, so the study cannot separate a 7-strategy multi-timeframe vote from a
+  single trend filter: **that the ensemble earns its complexity is undemonstrated.**
+- A H=72h cut clearing the fee with a CI excluding zero is recorded and DISMISSED as noise — off-primary
+  horizon, non-monotone, contradicted at other horizons, no multiplicity correction. Promoting it is the
+  exact move that produced this project's retracted CFTC PASS.
+- **Limitations stated, not buried:** the live lane scores {5m,15m,1h} but only 1h/4h/1d are stored, so the
+  study used {1h,4h} — a structural analogue, not the deployed configuration (the v8.154 price capture
+  begins making the live config testable). 14 large-cap survivors of 40; one macro path; Binance data vs
+  Bybit execution; optimistic flat-20bps costs make net figures upper bounds. Fifteen confounders
+  enumerated in the report.
+
+Manifest-tracked file rehashed (D-030): `DECISION_LOG.md`. Package integrity PASS.
+
 ## v8.156 — 2026-07-27 — Opt-in supervised auto-start (boundary change); lane resilience; venue identity + cash; Watch/Evidence/Machine
 
 **This release reverses part of D-121/D-123.** Those recorded that order-placing lanes were human-armed

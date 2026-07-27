@@ -2801,3 +2801,73 @@ bounded at 5 per window and fail closed when they cannot be counted or audited. 
 execution authority `NONE`; 0 validated strategies; demo P&L remains NON-EVIDENCE — supervision increases
 measurement UPTIME only and cannot improve results. Arm-expiry is a hard precondition for any real-money
 use. No venue, order, live, or real-money authority is granted, and no investment advice is given.**
+
+### D-126 — "Agreement" does not predict forward returns: NULL result, pre-registered; NO agreement-scaled position sizing, and the only detectable relationship runs the wrong way
+
+Decision: the operator asked to make the confluence score drive protection/sizing ("so it can be moved up
+or down a bit for certain cases"). Before changing any level, a pre-registered offline study asked the
+prerequisite question nobody had ever asked: **does agreement predict anything?** Answer: **no.** The
+requested change is therefore NOT made — no agreement-scaled position size, and no agreement-scaled stop.
+
+Method (read-only, offline, no orders, nothing in the repo modified; scripts and outputs under the session
+scratchpad `agreement_study/`). Pre-specification was frozen in `PRESPEC.md` BEFORE any result was
+computed: five fixed agreement buckets, primary horizon H=24 bars with H=6/H=72 declared
+non-decision-bearing in advance, 0.2% flat round-trip fee, non-overlapping stride-H sampling, moving-block
+bootstrap (30-day blocks, coins travelling together, 2000 resamples), and a three-part decision rule
+(top-bucket net > 0 with CI excluding 0, AND monotone non-decreasing, AND top−reference > 0.20%). The
+deployed scoring path was IMPORTED, not reimplemented (`ROSTER`, `TIMEFRAME_WEIGHTS`, `roster_signals`,
+`confluence_score`, `candles_from_bars`, `MIN_ROSTER_BARS`). Universe: the 14 coins holding both 1h and 4h
+bars, 2021-01-01→2026-07-27, 664,198 scored bars, 27,665 non-overlapping observations, **effective sample
+68 blocks — not 27,665 rows**, because agreement is highly persistent (mean run 16.3 bars, max 178) and 14
+majors co-move.
+
+Integrity: look-ahead causality ENFORCED, not assumed — 4,900 prefix-vs-full-series comparisons, zero
+mismatches. Higher-timeframe alignment asserted bar-by-bar on explicit close timestamps (the classic leak).
+Negative control PASSED on 200 permutations.
+
+Result: **NULL on the primary analysis.** Top bucket (≥0.25) mean net **+0.084%, CI [−0.219%, +0.386%]**;
+top−reference **+0.206%, CI [−0.066%, +0.485%]**, permutation p=0.070 — the permutation null itself reaches
++0.230%, so **the observed spread is inside what pure noise produces**. Bucket means are NOT monotone. The
+one relationship that IS statistically detectable runs the **wrong way**: Spearman **−0.0285, CI
+[−0.0522, −0.0060]** (excludes zero, negative), with median net return and win rate BOTH declining
+monotonically as agreement rises (win rate 49.1% → 45.9% → 43.6% → 45.3% → 44.3%). What increases with
+agreement is right-skew, not expectation. Therefore agreement-scaled sizing would put MORE capital into the
+states with the LOWEST median outcome and LOWEST hit rate — measurably worse than sizing at random.
+
+Two findings that bear on decisions already taken:
+- **The D-118 gate loosening (0.25 → 0.15) bought almost nothing and changed nothing measurable.** The
+  score is coarse and bimodal (denominator fixed at 35, so values are k/35); `[0.15,0.25)` is reachable by
+  only 3 of 71 possible values, so loosening widened coverage from 29.22% to 31.88% of bars — **+2.66
+  points** — and the two gates are statistically indistinguishable (b3−b4 = +0.039%, CI [−0.346%, +0.437%],
+  sign flipping across horizons). The loosening remains recorded as activity tuning; it is now also
+  recorded as having produced no measurable performance change in either direction.
+- **The roster may add nothing over a single trend filter.** Roster signals are state, not transition, so
+  agreement behaves largely as a trend-state flag; this study cannot separate "7-strategy × multi-timeframe
+  vote" from "one trend indicator". That the ensemble earns its complexity is UNDEMONSTRATED.
+
+A H=72h cut showed top-bucket net +1.119% with a CI excluding zero and clearing the fee. It is recorded and
+DISMISSED as noise, deliberately: it is not the primary horizon (named non-decision-bearing in advance
+precisely to prevent this promotion — this is the exact move that produced the retracted CFTC PASS),
+monotonicity fails badly so the effect sits in one bucket, its Spearman CI includes zero, it contradicts
+H=6 and H=24 where the rank correlation is significantly negative, and three horizons were examined with no
+multiplicity correction. Promoting it would repeat a known failure of this project.
+
+Limitations, stated rather than buried: the live lane scores `{5m,15m,1h}@{1,1,2}` but only 1h/4h/1d are
+stored, so the study used `{1h,4h}@{2,3}` — a structural ANALOGUE, not the deployed configuration, and the
+live config is untestable until 5m/15m bars accumulate (the v8.154 price capture begins that). Universe is
+14 large-cap survivors of 40 (survivorship; dead coins absent; MATIC ends 2024-09-10); one macro path;
+Binance data vs Bybit execution; costs modelled optimistically at a flat 20bps with no slippage or impact,
+so net figures are UPPER bounds; and the study measures bucket forward returns, not the lane's actual P&L
+path (no hysteresis hold, no −15% stop, no capital cap). Fifteen confounders are enumerated in the study
+report.
+
+Evidence: operator instruction 2026-07-27; the pre-registered study (`PRESPEC.md`, `extract.py`,
+`analyze.py`, `results.md`, 664,198 scored bars) in the session scratchpad; the imported deployed scoring
+path; the passing causality and negative-control checks. Documentation-only decision — no code changed by
+this entry.
+Status: **NULL RESULT ACCEPTED. Agreement is NOT demonstrated to predict forward returns; the only
+detectable relationship is negative. NO agreement-scaled position sizing and NO agreement-scaled stops are
+adopted — doing so would fit noise and would over-allocate to the worst-median states. "Agreement" remains
+what the code already calls it: an activity and inspectability device, NOT measured edge. The −15% tail
+stop and the 0.05 exit gate are unchanged. 0 validated strategies; demo P&L remains NON-EVIDENCE. No venue,
+order, live, or real-money authority is granted, and no investment advice is given.**

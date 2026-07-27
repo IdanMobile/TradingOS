@@ -1,6 +1,6 @@
 # Package Integrity Manifest
 
-Package version: v8.156 opt-in supervised auto-start (boundary change, D-125); lane resilience; venue identity + cash surfaced; Watch/Evidence/Machine + verdict line (2026-07-27). Supersedes v8.155 hashes.
+Package version: v8.157 pre-registered study: agreement does not predict forward returns (NULL, D-126); no agreement-scaled sizing adopted (2026-07-27). Supersedes v8.156 hashes.
 
 Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed below requires regenerating this manifest in the same change and noting it in `PACKAGE_CHANGELOG.md`. A hash mismatch against an unmodified checkout is a hard blocker; a mismatch caused by a logged, changelog-recorded edit means the manifest regeneration step was missed — fix the manifest, do not fork the file.
 
@@ -11,7 +11,7 @@ Regeneration rule (D-030 / task T-000-02): any controlled edit to a file listed 
 | `handoffs/START_HERE_SINGLE_CODING_AGENT_PROMPT.md` | `63edd37b00b9f9606f60c1caa7a89f53181d9665e98df14e2b3005e7edd1ea39` |
 | `TRADING_OS_NORTH_STAR.md` | `2a47f65612bd8f103335de828e398f83713d660f74aedc6ca1c2435077e593d8` |
 | `PROJECT_STATE.md` | `c8d381d9bfc5ae7b3cfe81eb1bda33187add52f181c4974901580ed0a63fa238` |
-| `DECISION_LOG.md` | `70684bd158ff9e963d4c6eb026fb12dbe0134d53ef29a47ee1d41174a160dd84` |
+| `DECISION_LOG.md` | `f99bce50a27dd0bdf631d79993d578c8c6b794e9056efc9a1cb1570ec185724d` |
 | `decisions/CODING_AGENT_READINESS_GATE_V1.md` | `b9d54695685dbc5bea0e1779c43274d5927fc9df03d8e0fe8321a9c005330a13` |
 | `decisions/INITIAL_REUSE_MATRIX.md` | `113b6919f1121659b68219a6843cacf4bff24efd4afa961d0e7592716b46d7a9` |
 | `decisions/CRYPTO_SPOT_VENUE_AND_DATA_MATRIX_V1.md` | `1989968805132385c4e81ef23f9f4bbc5b4ab84414716f4469814c21d8313d48` |
