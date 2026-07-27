@@ -1,8 +1,38 @@
 # Trading Intelligence OS — Project State
 
-Last updated: 2026-07-24 (through D-117; operational and integrity state reconciled at v8.146)
-Package version: v8.146 (planning system) + S1 evidence + S2 governance entry + autonomous orchestration substrate + Stage B demo-evidence v2 (implemented, default-disabled)
-Status: **CONSTRAINED RESEARCH/DEMO OPERATIONS ACTIVE; NO ADMISSION OR LIVE AUTHORITY.** Dashboard, 24/7 orchestrator, protected demo lane, and jobs worker are running; the demo lane reports `real_money=false` and an active venue-resting disaster stop. Legacy closed-family research jobs are quarantined and their execution surface is retired. Phases 1, 2, 2b, and 5 are implemented within their fail-closed scopes; Phases 3 and 4 remain blocked pending actual external activation evidence and independent review. All 7 searchable strategy families have been run once: 0 passes (4 FAIL, 3 INSUFFICIENT_ACTIVITY). Two prospective observation lanes collect live evidence daily/weekly. No candidate admission, strategy promotion, production venue connection, or real-money trading is approved.
+Last updated: 2026-07-27 (through D-123; operational and integrity state reconciled at v8.154)
+Package version: v8.154 (planning system) + S1 evidence + S2 governance entry + autonomous orchestration substrate + Stage B demo-evidence v2 (implemented, default-disabled) + confluence demo lane and Watch/Lab operator console (fake money, authority NONE)
+Status: **CONSTRAINED RESEARCH/DEMO OPERATIONS ACTIVE; NO ADMISSION OR LIVE AUTHORITY.** Dashboard, 24/7 orchestrator, protected demo lane, and jobs worker are running; the demo lane reports `real_money=false` and an active venue-resting disaster stop. Legacy closed-family research jobs are quarantined and their execution surface is retired. Phases 1, 2, 2b, and 5 are implemented within their fail-closed scopes; Phases 3 and 4 remain blocked pending actual external activation evidence and independent review. All 7 searchable strategy families have been run once: 0 passes (4 FAIL, 3 INSUFFICIENT_ACTIVITY). Two prospective observation lanes collect live evidence daily/weekly. No candidate admission, strategy promotion, production venue connection, or real-money trading is approved. The v8.147–v8.154 work built a continuously running **measurement instrument** (confluence demo lane + Watch/Lab operator console); it validated nothing — **0 strategies are validated** and demo P&L remains NON-EVIDENCE.
+
+## Shipped since v8.146 (2026-07-26 → 2026-07-27)
+
+Eight package versions, all fake-money / read-only / execution authority `NONE`. One line each;
+`PACKAGE_CHANGELOG.md` holds the detail and `DECISION_LOG.md` D-118…D-123 the governance framing.
+Architecture is recorded in `docs/architecture/AD.md` §AN (added 2026-07-27) and AD-18…AD-22.
+
+- **v8.147** — multi-coin demo lane (`demo_eth_lane.py --multi`, 10-coin universe, per-coin state,
+  shared kill switch and $300 cap) + a per-coin operator dashboard projection with a portfolio roll-up.
+  Stage B stays ETH-only and aggregate-only.
+- **v8.148** — confluence activity lane self-loop (`--loop` became an orthogonal cadence modifier) +
+  a read-only confluence view (`activity` / `activity_summary`) on `/api/v1/demo-lane`.
+- **v8.149** (D-118) — `START_ACTIVITY` added to the D-106 allowlisted/fixed-argv/audited spawn
+  surface; Overview control panel; ~5s read-only auto-refresh. Confluence lane tuned for demo
+  VISIBILITY: 4h dropped (`{5m,15m,1h}`), `ENTRY_THRESHOLD` 0.25 → 0.15. **Traffic, not edge.**
+- **v8.150** (D-119) — `START_MULTI` + `START_RESEARCH` actions; three read-only view endpoints
+  (`/demo-trades`, `/demo-status`, `/research-findings`). Research-guard Finding A fixed; Finding B
+  (check-then-spawn TOCTOU) deferred as a documented ceiling.
+- **v8.151** (D-120) — Watch/Lab navigation split + Live cockpit; `/live-feed` and `/equity-curve`;
+  honest-labelling doctrine made binding. Two real P&L reporting defects fixed (single global entry
+  slot → per-`(symbol, strategy)` pairing; hardcoded `ETH_delta` → the traded coin's own base delta);
+  the dashboard's duplicate round-trip folder DELETED.
+- **v8.152** (D-121) — scale-in cost-basis aggregation and unmatched-fill surfacing in
+  `report_demo_trades`; research self-lock closes Finding B; honest Watch status; new read-only
+  `Automation` Lab page. "Money printer" framing REJECTED on the project's own evidence.
+- **v8.153** (D-122) — `GET /api/v1/wallet` and a rebuilt Wallet page (budget, positions, realised /
+  unrealised, venue balances last and subordinated). No price chart drawn — no OHLC in that view.
+- **v8.154** (D-123) — all four D-121 parked items cleared; the lane persists the bars it already
+  fetches (`write_price_history`, zero new venue calls, strictly below every order path) and
+  `GET /api/v1/price-history` draws real per-position charts for held coins only.
 
 ## OPEN ITEMS — the only live task list
 
@@ -12,6 +42,18 @@ indexes it. For initiative-level task structure see `TODO.md` → `todos/NN_*.md
 live planning thread behind the 2026-07-21 work see the four `docs/supervisor/*_2026-07-21.md`
 documents and `handoffs/SESSION_HANDOFF_2026_07_21.md`. For the full research-gap/blocker
 ledger see `MISSING_AND_OPEN_ITEMS.md` (which now points back here as the entry point).
+
+**OPERATOR ACTION REQUIRED (v8.154, do this first):**
+- **Restart the dashboard** — `make dashboard`. A dashboard process started before v8.154 does not
+  serve the new pages or endpoints (`/api/v1/wallet`, `/api/v1/price-history`, the Wallet and
+  Automation pages). Read-only, no order path.
+- **Restart the lane** to begin capturing price history. `write_price_history` runs inside
+  `run_cycle`, so a lane process started before v8.154 never calls it. **Verified 2026-07-27: zero
+  `price_history_*.json` files exist** in `artifacts/trading_domain/demo_lane/` (against 37 activity
+  heartbeats), i.e. the running lane predates the change and every position chart honestly reports
+  "collecting price history" until it is restarted. Restarting an order-placing lane is a
+  **human-armed** action (AD-19) — no scheduler, cron or timer may do it, and the assistant does not
+  run it.
 
 **Awaiting operator decision:**
 - Operator attestation fill (`ops/OPERATOR_ATTESTATION.example.json`) — the 10 human-only
@@ -62,7 +104,56 @@ ledger see `MISSING_AND_OPEN_ITEMS.md` (which now points back here as the entry 
   activation statement) and is not authorized. A documented, test-pinned pre-send parse-error debt
   on the active exit path must be resolved before activation.
 
-**Resolved this cycle (D-113, D-114):**
+**Demo measurement instrument — point-in-time state, NOT a standing fact:**
+- Recorded at D-123 (2026-07-26, from the live `orders.jsonl`): **2 closed / 12 open**, realised
+  **+$0.4677**, fees **$0.4006**, the $300 cap fully deployed at 12/12 slots ($25 each), win rate
+  **50% (1W/1L)**. The lane's first turnover happened during that change: APTUSDT exited flat on the
+  market (−0.064%) yet realised **−0.28% (−$0.0702)** because fees were ≈3× the price move.
+- Re-read read-only on **2026-07-27** via `report_demo_trades.fold_fills`, showing exactly why the
+  line above is dated and not standing: **8 closed / 10 open**, realised **−$0.0115**, fees
+  **$0.6503**, win rate **37.5% (3W/5L)**, 0 unmatched fills. Cumulative fees now exceed the absolute
+  realised result — the D-121 fee-drag arithmetic continuing to hold in production.
+- **Standing caveat (unchanged):** this is fake money and execution measurement only. Demo P&L is
+  **NON-EVIDENCE** of edge, **0 strategies are validated**, the confluence gate was loosened to 0.15
+  for TRAFFIC not edge, and the concurrent positions are not independent bets (all long, all crypto,
+  opened within seconds on strategies that agree largely because they are correlated).
+
+**Resolved 2026-07-26/27 (D-119 Finding B; D-121's four parked items; D-122's chart gap):**
+- **D-119 Finding B (research double-spawn TOCTOU) — CLOSED (D-121).** `run_universe_search.py` now
+  holds its own non-blocking `flock` and returns exit 3 before any output work. Verified:
+  `exclusive_search_lock` in the script; `tests/test_universe_search.py::test_second_search_exits_3_and_writes_nothing`.
+- **D-121 parked item 1 (`PartiallyFilledCanceled` filtered out before the fold) — CLOSED (D-123).**
+  Admitted only on the exact status AND a non-zero reconciled delta, surfaced as an unmatched fill
+  (`reason: "partial_fill_cancelled"`), never folded, never priced. Verified:
+  `tests/test_report_demo_trades.py::test_partially_filled_cancelled_order_reaches_the_report`.
+- **D-121 parked items 2–4 (three missing tests) — CLOSED (D-123).** Verified present:
+  `test_three_successive_scale_ins_keep_the_money_exact`,
+  `test_second_search_exits_3_and_writes_nothing`,
+  `test_orphan_sell_does_not_corrupt_a_later_trip_on_the_same_key`.
+- **D-122's "no price chart" gap — CLOSED (D-123)** by lane-side capture plus
+  `GET /api/v1/price-history`, without inventing data (the ~13h-stale research parquets were
+  rejected as a source). Charts are a RECORD, never a forecast. *Effective only after the lane is
+  restarted — see OPERATOR ACTION REQUIRED above.*
+
+**Open, non-blocking, recorded at D-123 (ceilings, not defects):**
+- The price-history write's `except Exception` does not catch `KeyboardInterrupt`/`SystemExit`; a
+  Ctrl-C landing exactly there would skip one heartbeat write. No order impact.
+- Price-history files are keyed by **symbol, not lane**, so alternating `--multi` and `--activity` on
+  a shared coin restarts that coin's chart series. Continuity only.
+- Dedup is keyed on the bar close timestamp, so a venue that ever revised an already-closed kline
+  would leave the stale close in the series.
+- Recorded at D-122 and still open: the lane capital constants (`TOTAL_DEMO_CAPITAL_USDT`,
+  `BUY_QUOTE_USDT`) are **mirrored** in `dashboard_api/demo_lane.py` rather than imported, so a change
+  to the lane's cap could desync the Wallet projection; `orders.jsonl` is read twice per wallet
+  request; a ledger of only non-filled records yields `available:true` with empty balances.
+- Recorded at D-120 and still open: a SCAN-clustering heuristic in the live feed may cosmetically
+  split a slow cycle, and `_base_delta` has an unlogged fallback.
+- **Governance finding (2026-07-27, this documentation pass):** `POST /api/v1/signals/ingest` and
+  `POST /api/v1/signals/poll` exist in `dashboard_ui/server.py` but no `DECISION_LOG.md` entry was
+  found admitting them, while `docs/architecture/AD.md` §AI still claims three audited POST routes
+  (there are six). §AI now carries a dated correction; the missing decision record is open.
+
+**Resolved earlier cycle (D-113, D-114):**
 - Security-test diff review — `test_live_unreachable.py`'s strengthened assertion (post-D-104
   stage-1 un-quarantine) received operator sign-off 2026-07-21. Closed:
   `artifacts/driver/parked_items.jsonl` (phase "cross-cutting / stale security test").
@@ -82,7 +173,10 @@ input; see `artifacts/driver/parked_items.jsonl` for full causes):
 - SUP-006 (a) — venue margin/liquidation semantics; venue/account-gated, and intraperiod
   liquidation modelling needs intra-bar multi-pair data the project doesn't have.
 - SUP-006 (b) / G12 — empirical carry costs and paper-forward divergence; needs accumulated
-  demo-lane fills, which don't exist yet (lane is armed but operator-triggered, untraded).
+  demo-lane fills. **Updated 2026-07-27:** fills now exist (see the point-in-time block above), but
+  they are execution measurement on an UNVALIDATED signal over hours, not the paper-forward
+  divergence evidence G12 requires against an approved strategy — of which there are none. The item
+  stays open.
 - Independent statistical/risk/supervisor/security review (D-099) — structurally blocked:
   the implementing agent cannot review its own work independently; needs an
   operator-sourced independent reviewer.
@@ -1221,11 +1315,18 @@ daily loop (`src/tios/ops/orchestrator.py::observe_prospective_observers()`). Wa
 Operations → Orchestrator. It halts on escalation, holds no credential, and can place no
 order.
 
-**The S3 demo measurement lane (D-104/D-105/D-106) is BUILT, REVIEWED, and ARMED** at
-Wallets → Demo — Start / Stop / Run one cycle, with live status, position, fills, and caps.
-`scripts/demo_eth_lane.py` is the sole sanctioned order path; the dashboard holds no
-credential and places no order itself; order placement stays operator-triggered. Demo P&L is
-not validation evidence and no candidate becomes promotable from it.
+**The S3 demo measurement lane (D-104/D-105/D-106) is BUILT, REVIEWED, and ARMED.** Updated
+2026-07-27 for v8.147–v8.154: the controls live at **Watch ▸ Live** (lane strip) and
+**Lab ▸ Overview ▸ Lane control**, and the allowlist is now six actions — `START`,
+`START_ACTIVITY`, `START_MULTI`, `START_RESEARCH`, `STOP`, `RUN_ONCE` (fixed argv, `shell=False`,
+409 on `lane.lock`, every action audited to
+`artifacts/human_decisions/demo_lane_actions.jsonl`). Three order-path lanes now exist behind it:
+the ETH breakout lane (`--loop`), the 10-coin multi lane (`--multi`) and the ~40-coin confluence
+lane (`--activity --loop`), all sharing one `lane.lock`, one kill switch and the one $300 cap.
+`scripts/demo_eth_lane.py` is still the sole sanctioned order path; the dashboard holds no
+credential and places no order itself. **Order-placing lanes are HUMAN-ARMED ONLY — no scheduler,
+cron or timer can start one (AD-19).** Demo P&L is not validation evidence and no candidate becomes
+promotable from it. Architecture: `docs/architecture/AD.md` §AN.
 
 **Everything still open (operator decisions, parked blockers, pending/gated work) is
 consolidated in the "OPEN ITEMS" section above** — that section, not this narrative, is the

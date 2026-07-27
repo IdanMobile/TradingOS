@@ -1,5 +1,49 @@
 # Package Changelog
 
+## v8.155 — 2026-07-27 — SSOT resync: AD.md and PROJECT_STATE.md brought current after eight versions of drift
+
+Documentation-only; no source changed. The operator asked whether the architecture and state documents had
+been updated — they had not. `DECISION_LOG.md`, this changelog and the integrity manifest were current
+through every release, but `docs/architecture/AD.md` and `PROJECT_STATE.md` were last touched at v8.146
+while the package reached v8.154. Since `PROJECT_STATE.md` is the single authoritative task/state entry
+point, that was an SSOT integrity defect. Root cause: the gate hash-verifies these files but cannot detect
+that their content has stopped describing the system, so nothing failed while they went stale. Every
+statement in the resync was verified against the code (code wins on conflict). See DECISION_LOG.md D-124.
+
+- `docs/architecture/AD.md` (+197 lines, surgical, existing structure preserved): the confluence activity
+  lane (roster, `{5m,15m,1h}` weights, hysteresis 0.15/0.05, per-coin state, shared lock/kill-switch/cap);
+  the capital model ($300 cap, $25/position → 12 slots, −15% stop) and the capital÷size-then-turnover bound
+  on trade frequency; price-history capture with its exact position in `run_cycle` below every order path
+  plus the risk-reducing-order invariant; the verified read-only GET surface and the six allowlisted
+  fixed-argv audited actions; the Watch/Lab split and the poller / `schema_version === 1` contract;
+  `report_demo_trades` as the repo's only round-trip folder; the research self-lock. New register rows
+  AD-18…AD-22 record the human-armed-only execution boundary, price capture strictly below the order path,
+  the single round-trip folder, and the honest-labelling doctrine as a UI-layer architectural constraint.
+- `PROJECT_STATE.md` (+121 lines, structure preserved): version → v8.154; a per-version shipped summary for
+  v8.147–v8.154; closes D-119's Finding B and all four D-121 parked items, each against its verifying test;
+  opens the three D-123 non-blocking notes; leads with the operator actions still required.
+- **Governance finding (pre-existing, not authorized here):** AD.md claimed three audited POST routes;
+  `server.py` serves six. `POST /api/v1/signals/ingest` and `POST /api/v1/signals/poll` have NO
+  `DECISION_LOG` entry authorizing them. Recorded as an OPEN item in `PROJECT_STATE.md` for review rather
+  than retro-authorized.
+- **Verified by observation:** the running lane has NOT been restarted — 0 `price_history_*.json` files
+  against 37 activity heartbeats — so v8.154's price capture is not yet active.
+
+Production observation, dated 2026-07-27 (~24h after the confluence lane started), recorded as
+point-in-time and NON-EVIDENCE: **8 closed, 3W/5L, win rate 37.5%, realised NET −$0.0115, fees $0.6503, 10
+open.** Gross before fees ≈ **+$0.6388** — the signal picked net-positive price moves — but **fees consumed
+101.8% of gross**, turning a gross gain into a net loss. Win rate decayed 100% (n=1) → 50% (n=2) → 37.5%
+(n=8). Direct production confirmation of D-121's fee-drag arithmetic.
+
+Recorded for a later documentation sweep, not edited here: `TODO.md` initiative 14 still claims the console
+has "no write controls" (false since D-038/D-041/D-044/D-106, badly so since v8.149–v8.150);
+`docs/architecture/MODULE_CATALOG.md` may not reflect the seven new endpoints; `MISSING_AND_OPEN_ITEMS.md`,
+`README-dev.md`, `PACKAGE_README.md`, `TRADING_OS_NORTH_STAR.md`, `RESEARCH_BACKLOG.md`,
+`docs/supervisor/*` and `docs/program/DEMO_LANE_PLAN.md` not inspected.
+
+Manifest-tracked files rehashed (D-030): `PROJECT_STATE.md`, `docs/architecture/AD.md`, `DECISION_LOG.md`.
+Gates: package integrity PASS (453 rows); ruff and mypy re-confirmed green (no source changed).
+
 ## v8.154 — 2026-07-26 — Parked items cleared; lane price capture and real position charts
 
 Clears the four items parked in D-121 and closes D-122's "no price chart" gap without inventing data.

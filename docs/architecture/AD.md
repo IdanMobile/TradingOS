@@ -280,7 +280,9 @@ One-command setup (bootstrap script + per-engine env builders), one-command loca
 
 ## AI. UI / product information architecture [APPROVED for bounded S2]
 
-The existing dashboard remains a replaceable projection of manifests and the operational read model, never a store. S2 scope is limited to read-only Research Lab batch status/failures/blockers, source-linked candidates and independent score dimensions, run comparisons, an owned historical market chart with typed annotations, automation status/next eligible work, and inert trading-domain projections labeled disabled. Before the paper cockpit, `/api/v1/` had **two audited write exceptions, not one**: D-038 `POST /api/v1/workspace-actions/decision`, the fixed-allowlist append-only operator-decision route, and D-041 `POST /api/v1/workspace-actions/data-update`, the fixed-argv governed daily-data refresh trigger. D-044 adds the paper-first `POST /api/v1/cockpit-actions`, restricted to same-origin JSON, idempotency keys, fixed subject/action allowlists, and append-only audit evidence for acknowledgements and pause/resume controls over new local paper entries or future research schedules. The current server therefore has three bounded audited POST routes. All remain loopback-only and carry no exchange-order, credential, venue-route, stage-gate approval, live-control, or real-money authority. All other POST/PUT/PATCH/DELETE routes remain prohibited; any expansion requires a new decision gate. Framework replacement, command palette, generalized 27-page CRUD, AI command center, and executable live-trading controls are not part of this lock.
+The existing dashboard remains a replaceable projection of manifests and the operational read model, never a store. S2 scope is limited to read-only Research Lab batch status/failures/blockers, source-linked candidates and independent score dimensions, run comparisons, an owned historical market chart with typed annotations, automation status/next eligible work, and inert trading-domain projections labeled disabled. Before the paper cockpit, `/api/v1/` had **two audited write exceptions, not one**: D-038 `POST /api/v1/workspace-actions/decision`, the fixed-allowlist append-only operator-decision route, and D-041 `POST /api/v1/workspace-actions/data-update`, the fixed-argv governed daily-data refresh trigger. D-044 adds the paper-first `POST /api/v1/cockpit-actions`, restricted to same-origin JSON, idempotency keys, fixed subject/action allowlists, and append-only audit evidence for acknowledgements and pause/resume controls over new local paper entries or future research schedules. The current server therefore has three bounded audited POST routes. All remain loopback-only and carry no exchange-order, credential, venue-route, stage-gate approval, live-control, or real-money authority.
+
+> **Correction (2026-07-27, verified against `src/tios/services/dashboard_ui/server.py`).** The "three bounded audited POST routes" count above is stale and is superseded here rather than rewritten. `do_POST` today serves **six** routes: the three named above (`workspace-actions/decision` D-038, `workspace-actions/data-update` D-041, `cockpit-actions` D-044), plus `POST /api/v1/demo-lane-actions` (the D-106 allowlisted + fixed-argv + audited lane-control route, extended by D-118/D-119 — see §AN), plus `POST /api/v1/signals/ingest` and `POST /api/v1/signals/poll`. All six share the same `_read_same_origin_json` guard (JSON content type, `Sec-Fetch-Site`/`Origin` checks, ≤4096-byte body) and remain loopback-only with no exchange-order, credential, venue-route, stage-gate approval, live-control, or real-money authority. Recorded honestly: no `DECISION_LOG.md` entry was found for the two `signals/*` routes; that gap is a governance finding, not an authorization. All other POST/PUT/PATCH/DELETE routes remain prohibited; any expansion requires a new decision gate. Framework replacement, command palette, generalized 27-page CRUD, AI command center, and executable live-trading controls are not part of this lock.
 
 ## AJ. Deployment architecture [APPROVED for MVP]
 
@@ -315,6 +317,11 @@ Full project log remains `DECISION_LOG.md` (D-001…D-030). Architecture-specifi
 | AD-15 | backtesting.py, Backtrader, W&B, Kuzu, Memgraph, Skosify, Temporal(MVP), graph-DBs(MVP) rejected | APPROVED | REG §1–§9 | — | narrows candidate space with evidence | none | 90d registry sweep |
 | AD-16 | Prospective observers driven by the orchestrator, not the `jobs` module | APPROVED (v8.119) | §S; `src/tios/ops/orchestrator.py::observe_prospective_observers` | route fetch through `jobs` | `jobs` stays network-isolated; observers get their needed outbound call without weakening that boundary | none | if `jobs` network policy changes |
 | AD-17 | Campaign validation significance computed on trade-level returns, not bar count | APPROVED (v8.120, D-112) | DECISION_LOG D-112; `src/tios/validation/campaign.py::score_trade_significance` | keep per-bar Sharpe with the pre-existing sample_count | corrects an inflated-z defect; retracted FAM-CFTC-POSITIONING-V1's PASS-ELIGIBLE to INSUFFICIENT_ACTIVITY | verification recompute (bit-for-bit) | if evaluator return contract changes again |
+| AD-18 | Confluence activity lane composed on the reviewed demo lane, not a second order path | APPROVED (v8.147–v8.149, D-118) | §AN; `scripts/demo_activity_lane.py` calls `demo_eth_lane.run_cycle` per coin | a standalone multi-coin order path | one reviewed order/stop implementation; shared `lane.lock`, kill switch and $300 cap; a coin's failure is isolated | order-path review at D-118/D-120 | if a lane ever needs its own order path |
+| AD-19 | Order-placing lanes are HUMAN-ARMED ONLY; no scheduler, cron or timer may start one | APPROVED (v8.152, D-121) | §AN; `ACTIONS` in `dashboard_api/demo_lane.py`; no timer path exists in the repo | auto-arming on a schedule | deterministic automation (reports, screens, research, gates) stays free; the money side needs an explicit human click | none (absence verified) | only by a deliberate armed-state + expiry design |
+| AD-20 | Lane price capture is non-critical bookkeeping strictly below every order path | APPROVED (v8.154, D-123) | §AN; `scripts/demo_eth_lane.py::write_price_history` and its call site in `run_cycle` | fetch a chart series in the dashboard; source it from the research parquets | zero new venue calls; a failure can never block a risk-reducing order (test-locked); stale parquet prices never sit beside a live mark | order-path review at D-123 | if anything order-related is ever placed after the write |
+| AD-21 | Honest-labelling doctrine is an architectural constraint on the UI layer, not a disclaimer | APPROVED (v8.151/v8.153, D-120/D-122) | §AN; `dashboard_ui/dashboard.html`; the `venue`/`budget` separation test | free product framing with a footer disclaimer | a livelier console cannot make an UNVALIDATED fake-money lane read as validated edge | none | only by a superseding decision, never incidentally |
+| AD-22 | `report_demo_trades` is the repo's single round-trip folder | APPROVED (v8.151–v8.154, D-120/D-121/D-123) | §AN; `scripts/report_demo_trades.py::fold_fills`; the dashboard's private `_round_trips` was deleted | keep a dashboard-local fold for projection speed | one money definition; a defect is fixed once, not per copy | regression tests pin the legacy byte-identical fold | if a second consumer ever needs different pairing semantics |
 
 ### Custom Build Gate (mandatory template for any Build Custom decision)
 
@@ -416,3 +423,191 @@ flowchart TB
 
     HOLDOUT ~~~ CAMPAIGN
 ```
+
+## §AN Demo measurement lane & operator console (added 2026-07-27, covering v8.147–v8.154)
+
+Architecture that landed between v8.147 and v8.154 (D-118…D-123). Everything below is fake money on
+the Bybit venue-demo account: `execution_authority=NONE`, `real_money=false`, `promotion_eligible=false`,
+**0 validated strategies**. Demo P&L is execution measurement and is NON-EVIDENCE of edge. Nothing here
+grants venue, order, live, or real-money authority, and none of it is an investment recommendation.
+
+### AN.1 Confluence activity lane [APPROVED, v8.147–v8.149, D-118]
+
+`scripts/demo_activity_lane.py` is a scored measurement engine layered **additively** on the reviewed
+D-104/D-105 demo lane. It owns no order code: it calls `demo_eth_lane.run_cycle` once per coin, so
+entry/exit submission, quantization, reconciliation, the −15% disaster stop and the venue-resting stop
+are the single already-reviewed implementation (AD-18).
+
+- **Roster** (`ROSTER`, 7 OHLCV-only builders reused verbatim from the research search):
+  `EXT-KELTNER-BREAKOUT`, `EXT-BB-BREAKOUT`, `EXT-DONCHIAN-40`, `EXT-SMA-10-30`, `EXT-EMA-12-26`,
+  `EXT-EMA-8-21`, `SIG-VOLUME-BREAKOUT`.
+- **Timeframes** `CONFLUENCE_TIMEFRAMES = ("5m","15m","1h")`, weighted `5m:1, 15m:1, 1h:2` (`4h:3`
+  remains in the weight table but is out of the default set). `15m` and `1h` are always included;
+  `--interval` swaps only the fastest member. Bars are fetched once per `(coin, timeframe)` and reused
+  by all 7 strategies.
+- **Score**: every `(strategy × timeframe)` signal aggregates into ONE score in `[-1, +1]` per coin.
+  This is **weighted agreement among strategies that are heavily correlated with each other** — see
+  AN.6 on why it is never called "confidence".
+- **Hysteresis**: `ENTRY_THRESHOLD = 0.15`, `EXIT_THRESHOLD = 0.05`. One long per coin over the
+  40-symbol `ACTIVITY_UNIVERSE`. The 4h anchor was dropped and entry lowered `0.25 → 0.15` **for
+  demo TRAFFIC, not edge** — dropping a higher-timeframe trend filter admits weaker confluence, not
+  stronger, and the comments in the source say so.
+- **Cadence**: `--activity [--loop] [--interval …]`. `--loop` is an orthogonal modifier (not in the
+  mutually exclusive `--once/--multi/--activity` group), sleeping
+  `max(LOOP_MIN_SLEEP_SECONDS=60, interval_minutes × 60)` between cycles.
+- **State**: per-coin `lane_state_<SYMBOL>_activity.json` / `heartbeat_<SYMBOL>_activity.json` (state
+  key `f"{symbol}_activity"`), so the confluence engine can never corrupt the untagged ETH/multi state.
+  Orders/ledger/heartbeat rows carry `strategy = "ACTIVITY-CONFLUENCE"`.
+- **Shared safety, composed exactly as the multi-coin lane**: the single `lane.lock` (so no two lanes
+  ever run at once), one shared `KILL_SWITCH` checked per cycle, the shared total-capital cap gating
+  only NEW entries — never exits or stops — and per-coin failure isolation. Stage B stays ETH-only;
+  every confluence coin runs the `NOT_ACTIVATED` path.
+
+### AN.2 Lane capital model [APPROVED, v8.147; recorded structurally at D-121]
+
+`scripts/demo_eth_lane.py`: `TOTAL_DEMO_CAPITAL_USDT = 300`, `BUY_QUOTE_USDT = 25` → **12 slots**;
+`DEMO_DISASTER_STOP_PCT = 0.15`. Structural consequence, recorded because it bounds any "more trades"
+request: **trade frequency is bounded by capital ÷ position size, then by turnover** — not by the
+number of strategies, coins or timeframes scanned. A burst is not a rate: once 12 × $25 = $300 is
+deployed the cap correctly refuses further entries and the lane idles until a slot frees. At the
+observed ~0.2% round-trip fee, churning all 12 slots every 30 minutes burns ≈10% of a $300 account per
+day in fees, requiring >0.2% reliable edge per trip merely to break even. Levers that raise visible
+activity (smaller size, tighter exit gate, adding the short side) are ACTIVITY levers only: each
+increases fee drag and none creates edge.
+
+### AN.3 Price-history capture — an order-path change [APPROVED, v8.154, D-123]
+
+`demo_eth_lane.write_price_history(symbol, interval, bars)` persists the closed-bar window the cycle
+**already fetched** to `artifacts/trading_domain/demo_lane/price_history_<SYMBOL>.json`
+(`schema_version 1`, `symbol`, `interval` label, `updated_at`, `max_points`, `points[{at, close}]`).
+
+- **Zero new venue calls.** It reuses `bars` verbatim; `demo_activity_lane.py` needed no edit because
+  its prefetched reference bars already flow through `run_cycle`.
+- **Position in `run_cycle` (the load-bearing fact).** The call sits **after** the durable `final_state`
+  write and **immediately before** the heartbeat write. Every order path — entry, exit, disaster stop,
+  venue-stop reconcile/cancel — has already completed above it, and **nothing order-related, no
+  kill-switch check and no state transition executes below it**. The `try` wraps the whole call
+  expression so even argument evaluation cannot escape the guard, and any failure is printed to stderr
+  and swallowed.
+- **Binding invariant**: a price-history failure must never block or delay a risk-reducing order.
+  Test-locked for both an entry and a −15% disaster-stop sell with the writer forced to raise.
+- **Write semantics**: atomic `tmp` + `replace`; dedup by bar close time (`at`); capped at
+  `PRICE_HISTORY_MAX_POINTS = 288` (oldest dropped); interval guard — an existing file is merged only
+  when its `interval` label matches, so a timeframe change restarts the series rather than interleaving
+  non-comparable bars. The first write seeds the whole fetched window, so real history exists from the
+  first cycle instead of accumulating from zero.
+- Known non-blocking ceilings recorded at D-123: `except Exception` does not catch
+  `KeyboardInterrupt`/`SystemExit`; files are keyed by symbol, not by lane; timestamp-keyed dedup would
+  keep a stale close if a venue ever revised a closed kline. See `PROJECT_STATE.md` OPEN ITEMS.
+
+### AN.4 Dashboard read/write surfaces [APPROVED, v8.149–v8.154, D-118…D-123]
+
+**Read-only GET endpoints** — the authoritative list, verified line by line against
+`src/tios/services/dashboard_ui/server.py::do_GET` (2026-07-27):
+`/api/v1/dashboard`, `/status`, `/operations`, `/stage-gates`, `/search`, `/market`, `/cockpit`,
+`/signals`, `/signals/reliability`, `/skills`, `/demo-lane`, `/demo-trades`, `/demo-status`,
+`/live-feed`, `/wallet`, `/price-history`, `/equity-curve`, `/research-findings`, `/ai-costs`,
+`/open-work`, `/orchestrator`, `/eth-signal`. Anything else under `/api/` returns 410; everything else
+404s. Seven of these are new in this window: `/demo-trades`, `/demo-status`, `/research-findings`
+(D-119), `/live-feed`, `/equity-curve` (D-120), `/wallet` (D-122), `/price-history` (D-123).
+
+Every one is a pure projection: GET only, no subprocess, no writes, fixed paths, `schema_version 1`,
+and **fail-closed to an identical key set** (never a 500, never a traceback). `/live-feed` draws its
+rejection detail from a closed allowlist so venue error text, order ids, wallet balances, paths and
+pids can never reach a client. `/price-history` takes no query parameter and builds no
+request-derived path: it regex-gates the symbol (`^[A-Z0-9]{2,20}$`) before any filename exists, emits
+a series only for coins `build_wallet` says are HELD, and reuses that endpoint's `entry_price` /
+`stop_price` / `mark_price` verbatim — no second mark, stop precedence or held-set derivation. Stage B
+disclosure stays aggregate-only and outside all of these endpoints.
+
+**The single write surface for the lane** is `POST /api/v1/demo-lane-actions` under the D-106 pattern:
+a closed allowlist `ACTIONS = {START, START_ACTIVITY, START_MULTI, START_RESEARCH, STOP, RUN_ONCE}`;
+argv built only from module constants via `_SPAWN_FLAGS` (`--loop` / `--multi` /
+`--activity --loop --interval 5m`) with `shell=False`, so **no request or free-form value ever reaches
+a spawned command**; the payload accepts only `action` and `idempotency_key`; every action appends to
+`artifacts/human_decisions/demo_lane_actions.jsonl`. `START`/`START_ACTIVITY`/`START_MULTI`/`RUN_ONCE`
+refuse with 409 while a lane holds `lane.lock`, with the lane's own `exclusive_lane_lock` exit-3 as a
+second anti-double-spawn layer. `STOP` writes the kill switch *before* signalling, so a wedged process
+still cannot trade. `START_RESEARCH` is research-only (no orders, authority NONE), not lane-lock-gated,
+503 when the script is missing — see AN.7.
+
+**Execution boundary [AD-19]**: order-placing lanes are **HUMAN-ARMED ONLY**. No scheduler, cron, timer
+or background job in this system can start one, and none was added — the boundary is now stated in the
+product itself on the Automation page. Automating the deterministic half (reports, screens, research,
+gates) is free; starting the money side stays an explicit human click. Any future auto-arming must be
+designed deliberately (explicit armed state + expiry), never introduced incidentally.
+
+### AN.5 Watch/Lab UI split [APPROVED, v8.151–v8.153, D-120/D-122]
+
+`dashboard.html` splits navigation into a user-facing **Watch** mode — `Live` (what the system is doing
+right now: scanning, agreement, entries, exits) and `Wallet` (the money: venue holdings, lane budget,
+positions, result) — and a **collapsed-by-default `Lab ▸`** group holding the ten pre-existing developer
+pages (Overview, Signals, Trading, Testing, Research, Operations, Library, Skills, TODO, Settings) plus
+the new read-only **Automation** map. No page was deleted or made unreachable; collapse state persists
+in `localStorage`; `Live` is the landing view. The Automation page inventories every capability with its
+real command/endpoint, grouped deterministic-zero-AI / judgement-AI-assisted / human-gated-execution,
+and is guarded by an anti-fiction test that checks each cited route against the server, each `make`
+target against the Makefile and each script path against disk. It adds no input, POST path, action name
+or scheduler.
+
+Client refresh contract: `pollDemoLane` re-fetches `/api/v1/demo-lane` every
+`DEMO_LANE_REFRESH_MS = 5000`, guarded by an in-flight flag (a tick is skipped, never queued), paused
+when `document.hidden` or the active view is not one of `live`/`wallets-demo`/`now`, preserving scroll
+position and open `<details>`. Every fetch goes through `fetchJson`, which rejects any payload whose
+`schema_version !== 1` — the client gate. Watch header health derives from `/api/v1/demo-lane` and goes
+green only on a genuinely fresh heartbeat, degrading distinctly for stale / stopped / missing /
+fetch-failed / schema-mismatch; Lab keeps the raw source roll-up byte-for-byte.
+
+### AN.6 Honest-labelling doctrine [BINDING on the UI layer, D-120 extended by D-122; AD-21]
+
+A more engaging dashboard makes an UNVALIDATED fake-money lane easier to mistake for a validated edge,
+so framing is part of the design, not a disclaimer bolted on. Binding constraints:
+
+1. The confluence score is labelled **"agreement"** — never "confidence" or anything implying a
+   probability of profit. It is weighted agreement among correlated strategies on a gate deliberately
+   loosened to 0.15 for traffic.
+2. The equity curve is labelled **"execution measurement — not edge"** and renders the endpoint's
+   disclaimer verbatim.
+3. **Venue holdings are never summed with, or presented as, lane performance.** The venue demo wallet
+   holds ~$99.7k of PRE-FUNDED fake money seeded before any trading; `venue.*` and `budget.*`/`realised.*`
+   are separate blocks, no derived field mixes them, and a test asserts the combined figure never
+   appears in the response body at all. The LANE BUDGET is the page headline; the venue list renders
+   last, visually secondary, led by a "read this first" note.
+4. **Charts are a record, never a forecast.** No series is drawn from data the payload does not carry:
+   `interval` is `null` rather than a guessed cadence, coins still collecting are named rather than
+   dropped, 0/1/flat-point series render a note, a dot or a midline rather than a fabricated line, and
+   every chart is captioned as a CAPPED, lane-captured RECORD — not a full exchange chart, not a
+   forecast, not a signal. Null marks render as em dashes, never invented zeros. The research parquets
+   were rejected as a chart source (stale beside a live mark).
+5. Fake-money / authority-NONE / UNVALIDATED / DIAGNOSTIC badges stay pinned on every surface.
+
+### AN.7 Reporting and research locks [APPROVED, v8.151–v8.154, D-120/D-121/D-123]
+
+**`scripts/report_demo_trades.py` is the repo's ONLY round-trip folder** (AD-22); the dashboard's
+private single-slot, hardcoded-`ETHUSDT` duplicate `_round_trips` was DELETED rather than left as a
+landmine. `build_equity_curve` and `build_wallet` are library callers of it, so no endpoint can
+disagree with the Demo Trades report.
+
+- **Pairing is per `(symbol, strategy)`.** The pre-fix single global entry slot reported "1 open" while
+  12 positions were live, discarded 11 entries, and could pair one coin's exit against another coin's
+  entry. Untagged legacy records key `(None, None)` so an ETH-only ledger folds byte-identically.
+- **Cost-basis aggregation on scale-in**: a repeat Buy on an open key sums spend/size/fees and takes a
+  size-weighted entry price. The pre-fix overwrite dropped the first buy and OVER-reported the trip —
+  the failure direction that flatters the account. Aggregation, not FIFO, is correct **for this lane**:
+  entries fire only when the per-key position is flat and every exit path sells the whole position, so
+  no partial exit exists and FIFO would over-report.
+- **`fold_fills(filled) -> (trips, unmatched)`**, with `round_trips()` retained as a thin wrapper so the
+  library contract and `summarize(trips)`'s arity are unchanged. Nothing is silently dropped: an
+  `orphan_sell`, an `unknown_side` fill, and a `partial_fill_cancelled` row surface as **unmatched
+  fills** with their own `unmatched_fees_usd` — never folded into a trip, never given a fabricated P&L.
+  `load_filled` admits a `PartiallyFilledCanceled` row only on that exact status AND a non-zero
+  reconciled delta; folding it was rejected because `run_cycle` and `entry_price_from_ledger` both gate
+  on `ok`, so the lane never treats a partial fill as a position. `total_fees_usd` keeps its trips-only
+  meaning; `summarize(trips)` without the unmatched list reports `None`, not a false `0`.
+- **Research self-lock** (closing D-119's Finding B): `scripts/run_universe_search.py` takes its own
+  non-blocking `fcntl.flock` (`exclusive_search_lock`) and returns exit code **3** on contention before
+  any output work — never truncating a live holder's record, never partially writing the report,
+  releasing on every path including exceptions. This is the same self-locking contract the trading lanes
+  use, and it is the guarantee. The dashboard's `_research_running` PID probe is retained only as fast
+  409 feedback (it fails closed on a hostile/garbage lock file) and its own check-then-spawn race is
+  therefore no longer load-bearing.

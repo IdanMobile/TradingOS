@@ -2628,3 +2628,69 @@ risk-reducing-order invariant is preserved and test-locked. Fake-money demo only
 `NONE`; 0 validated strategies; demo P&L remains NON-EVIDENCE and charts are a record, never a forecast.
 The running lane must be restarted to begin capturing price history. No venue, order, live, or real-money
 authority is granted, and no investment advice is given.**
+
+### D-124 — SSOT resync after eight versions of documentation drift; two undocumented POST write routes found; fee drag confirmed in production at 101.8% of gross
+
+Decision: the operator asked whether the architecture and state documents had been updated. They had NOT.
+`DECISION_LOG.md`, `PACKAGE_CHANGELOG.md` and `PACKAGE_INTEGRITY_MANIFEST.md` were kept current through
+every release, but `docs/architecture/AD.md` and `PROJECT_STATE.md` were last touched at v8.146
+(commit 77235d9, 2026-07-25) and were therefore **eight versions stale** while the package reached v8.154.
+Because `PROJECT_STATE.md` is the project's single authoritative task/state entry point, this was an SSOT
+integrity defect, not a cosmetic one. Root cause worth recording: the integrity gate hash-verifies these
+files but cannot detect that their CONTENT has stopped describing the system, so nothing failed while they
+rotted — the drift was caught by the operator, not by tooling. Both documents are now resynced to v8.154
+from the changelog and decision log, with every statement verified against the code (code wins on conflict).
+
+`AD.md` gains: the confluence activity lane (roster, `{5m,15m,1h}` weights, hysteresis 0.15/0.05, per-coin
+state, shared lock/kill-switch/cap); the capital model (`$300` cap, `$25`/position → 12 slots, −15% stop)
+and the finding that trade frequency is bounded by capital ÷ position size then turnover; price-history
+capture with its exact position in `run_cycle` (below every order path) and the risk-reducing-order
+invariant; the verified read-only GET surface and the six allowlisted fixed-argv audited actions; the
+Watch/Lab split and the poller/`schema_version === 1` contract; `report_demo_trades` as the repo's only
+round-trip folder; the research self-lock. Five new architecture-register rows (AD-18…AD-22) record the
+human-armed-only execution boundary, price capture strictly below the order path, the single round-trip
+folder, and — as an architectural constraint on the UI layer, not merely a decision-log note — the binding
+honest-labelling doctrine. `PROJECT_STATE.md` gains a per-version shipped summary, closes D-119's Finding B
+and all four D-121 parked items (each against its verifying test), opens the three D-123 non-blocking
+notes, and leads with the operator actions still required.
+
+**Governance finding (pre-existing, NOT introduced by v8.147–v8.154, and NOT self-authorized here).**
+`AD.md` §AI claimed three bounded audited POST routes; `server.py` actually serves **six**:
+`workspace-actions/decision`, `workspace-actions/data-update`, `cockpit-actions`, `demo-lane-actions`,
+`signals/ingest`, `signals/poll`. **`POST /api/v1/signals/ingest` and `POST /api/v1/signals/poll` have no
+`DECISION_LOG` entry authorizing them.** They are write surfaces on the local dashboard with no recorded
+authorization. This is recorded as an OPEN governance item in `PROJECT_STATE.md`; no authorization is
+invented for them here, and their scope/audit posture should be reviewed and either recorded or removed.
+
+**Fee drag confirmed in production (the empirical answer to the "money printer" framing rejected in
+D-121).** Read-only over the live ledger on 2026-07-27, ~24h after the confluence lane started:
+**8 closed, 3W/5L, win rate 37.5%, realised NET −$0.0115, fees $0.6503, 10 open.** Gross P&L before fees was
+therefore ≈ **+$0.6388** — the signal did pick net-positive price moves — but **fees consumed 101.8% of
+gross**, turning a small gross gain into a net loss. The win rate decayed 100% (n=1, D-118) → 50% (n=2,
+D-123) → 37.5% (n=8) as the sample grew, exactly as expected when n stops being 1. This is direct
+production confirmation of D-121's arithmetic: on an UNVALIDATED signal, every round trip must clear a
+~0.2% fee hurdle, and churn is fee-negative. Recorded as a dated point-in-time observation; demo P&L
+remains NON-EVIDENCE of edge in either direction.
+
+Also verified by observation: the running lane has **NOT** been restarted — 0 `price_history_*.json` files
+against 37 activity heartbeats — so v8.154's price capture is not yet active. The operator restart is a
+verified fact, not a caution. Remaining documentation staleness found but deliberately not edited in this
+pass (recorded for a later sweep): `TODO.md` initiative 14 still claims the console has "no write
+controls", false since D-038/D-041/D-044/D-106 and badly so since v8.149–v8.150;
+`docs/architecture/MODULE_CATALOG.md` unread and may not reflect the seven new endpoints;
+`MISSING_AND_OPEN_ITEMS.md`, `README-dev.md`, `PACKAGE_README.md`, `TRADING_OS_NORTH_STAR.md`,
+`RESEARCH_BACKLOG.md`, `docs/supervisor/*` and `docs/program/DEMO_LANE_PLAN.md` not inspected.
+
+Evidence: operator's 2026-07-27 question; `git log` showing both documents last touched at 77235d9;
+`PACKAGE_CHANGELOG.md` v8.147–v8.154 and `DECISION_LOG.md` D-118–D-123 cross-checked against
+`server.py`, `dashboard_api/demo_lane.py`, `dashboard.html`, `demo_activity_lane.py`, `demo_eth_lane.py`,
+`report_demo_trades.py` and `run_universe_search.py`; a read-only `report_demo_trades` run over the live
+ledger for the P&L figures; a directory listing for the price-history absence. Documentation-only change —
+no source edited; ruff and mypy re-confirmed green. Normal reconciliation (v8.155) under D-030/T-000-02:
+`PROJECT_STATE.md` ×1, `docs/architecture/AD.md` ×1 and this decision log ×1 rehashed; NOT an integrity
+exception.
+Status: **SSOT resynced to v8.154; architecture and state documents now describe the running system. Two
+undocumented POST write routes recorded as an OPEN governance item, not authorized. Fee drag confirmed at
+101.8% of gross with realised P&L now NEGATIVE. Fake-money demo only; execution authority `NONE`; 0
+validated strategies; demo P&L remains NON-EVIDENCE. Price capture inactive until the operator restarts the
+lane. No venue, order, live, or real-money authority is granted, and no investment advice is given.**
